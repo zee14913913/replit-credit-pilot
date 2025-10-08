@@ -7,7 +7,7 @@
     <div class="row mb-5">
         <div class="col-12">
             <h1 class="mb-2">
-                <i class="bi bi-person-badge text-jade me-3"></i>{{ customer.name }}'s Dashboard
+                <span style="font-size: 2rem;" class="me-3">👤</span>{{ customer.name }}'s Dashboard
             </h1>
             <p class="text-silver">Comprehensive overview of your credit cards and spending patterns</p>
         </div>
@@ -17,20 +17,20 @@
         <div class="col-md-6">
             <div class="stat-card">
                 <div class="stat-value">RM {{ "{:,.2f}".format(customer.monthly_income) }}</div>
-                <div class="stat-label"><i class="bi bi-cash-stack me-2"></i>Monthly Income</div>
+                <div class="stat-label">💵 Monthly Income</div>
             </div>
         </div>
         <div class="col-md-6">
             <div class="stat-card">
                 <div class="stat-value">RM {{ "{:,.2f}".format(total_spending) }}</div>
-                <div class="stat-label"><i class="bi bi-credit-card me-2"></i>Total Spending</div>
+                <div class="stat-label">💳 Total Spending</div>
             </div>
         </div>
     </div>
 
     <div class="row mb-5">
         <div class="col-12">
-            <h3 class="mb-4"><i class="bi bi-credit-card-2-front text-champagne me-2"></i>Credit Cards</h3>
+            <h3 class="mb-4"><span class="text-champagne me-2">💳</span>Credit Cards</h3>
             <div class="row g-4">
                 {% for card in cards %}
                 <div class="col-md-6 col-lg-4">
@@ -38,7 +38,7 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
                                 <div class="icon-wrapper me-3">
-                                    <i class="bi bi-bank"></i>
+                                    🏦
                                 </div>
                                 <div>
                                     <h5 class="mb-0">{{ card.bank_name }}</h5>
@@ -66,11 +66,51 @@
         </div>
     </div>
 
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <h3 class="mb-4 text-champagne">Quick Actions</h3>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <a href="{{ url_for('search_transactions', customer_id=customer.id) }}" class="btn btn-outline-primary w-100 py-3">
+                        <div class="d-flex flex-column align-items-center">
+                            <span style="font-size: 1.5rem;">🔍</span>
+                            <span class="mt-2">Search & Filter</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{{ url_for('budget_management', customer_id=customer.id) }}" class="btn btn-outline-primary w-100 py-3">
+                        <div class="d-flex flex-column align-items-center">
+                            <span style="font-size: 1.5rem;">💰</span>
+                            <span class="mt-2">Budget Manager</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{{ url_for('batch_upload', customer_id=customer.id) }}" class="btn btn-outline-primary w-100 py-3">
+                        <div class="d-flex flex-column align-items-center">
+                            <span style="font-size: 1.5rem;">📤</span>
+                            <span class="mt-2">Batch Upload</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{{ url_for('export_transactions', customer_id=customer.id, format='excel') }}" class="btn btn-outline-primary w-100 py-3">
+                        <div class="d-flex flex-column align-items-center">
+                            <span style="font-size: 1.5rem;">📊</span>
+                            <span class="mt-2">Export Data</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <i class="bi bi-pie-chart me-2"></i>Spending Distribution
+                    📈 Spending Distribution
                 </div>
                 <div class="card-body">
                     <div id="spendingChart" style="height: 450px;"></div>

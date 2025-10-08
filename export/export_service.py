@@ -5,6 +5,7 @@ Supports Excel, CSV, and Enhanced PDF exports
 
 import csv
 import os
+import re
 from datetime import datetime
 from typing import List, Dict, Optional
 from openpyxl import Workbook
@@ -20,6 +21,19 @@ class ExportService:
     def __init__(self):
         os.makedirs(self.EXPORT_DIR, exist_ok=True)
     
+    @staticmethod
+    def _sanitize_filename(name: str) -> str:
+        """Sanitize customer name for safe filename use - prevents path traversal"""
+        # Remove any path separators and special characters
+        # Keep only alphanumeric, spaces, hyphens, underscores
+        sanitized = re.sub(r'[^\w\s\-]', '', name)
+        # Replace spaces with underscores
+        sanitized = sanitized.replace(' ', '_')
+        # Limit length to 50 characters
+        sanitized = sanitized[:50]
+        # Ensure it's not empty
+        return sanitized if sanitized else 'customer'
+    
     def export_to_excel(self, customer_id: int, filters: Optional[Dict] = None) -> str:
         """Export transactions to Excel with professional formatting"""
         
@@ -33,8 +47,9 @@ class ExportService:
         
         # Sheet 1: Transactions
         ws_trans = wb.active
-        ws_trans.title = "Transactions"
-        self._create_transactions_sheet(ws_trans, transactions, customer)
+        if ws_trans:
+            ws_trans.title = "Transactions"
+            self._create_transactions_sheet(ws_trans, transactions, customer)
         
         # Sheet 2: Summary
         ws_summary = wb.create_sheet("Summary")
@@ -46,7 +61,8 @@ class ExportService:
         
         # Save file
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f"transactions_{customer['name']}_{timestamp}.xlsx"
+        safe_name = self._sanitize_filename(customer['name'])
+        filename = f"transactions_{safe_name}_{timestamp}.xlsx"
         filepath = os.path.join(self.EXPORT_DIR, filename)
         wb.save(filepath)
         
@@ -62,7 +78,8 @@ class ExportService:
         customer = self._get_customer_info(customer_id)
         
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f"transactions_{customer['name']}_{timestamp}.csv"
+        safe_name = self._sanitize_filename(customer['name'])
+        filename = f"transactions_{safe_name}_{timestamp}.csv"
         filepath = os.path.join(self.EXPORT_DIR, filename)
         
         with open(filepath, 'w', newline='', encoding='utf-8') as csvfile:

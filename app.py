@@ -16,6 +16,22 @@ from news.bnm_api import get_latest_rates, save_bnm_rates, add_banking_news, get
 from report.pdf_generator import generate_monthly_report
 import pdfplumber
 
+# New services for advanced features
+from export.export_service import ExportService
+from search.search_service import SearchService
+from batch.batch_service import BatchService
+from budget.budget_service import BudgetService
+from email_service.email_sender import EmailService
+from db.tag_service import TagService
+
+# Initialize services
+export_service = ExportService()
+search_service = SearchService()
+batch_service = BatchService()
+budget_service = BudgetService()
+email_service = EmailService()
+tag_service = TagService()
+
 app = Flask(__name__)
 app.secret_key = os.environ.get('SESSION_SECRET', 'dev-secret-key-change-in-production')
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -392,6 +408,176 @@ def analytics(customer_id):
                          customer=customer,
                          spending_summary=spending_summary,
                          transactions=all_transactions)
+
+# ========== NEW FEATURES ==========
+
+@app.route('/export/<int:customer_id>/<format>')
+def export_transactions(customer_id, format):
+    """Export transactions to Excel or CSV"""
+    filters = {
+        'start_date': request.args.get('start_date'),
+        'end_date': request.args.get('end_date'),
+        'category': request.args.get('category')
+    }
+    filters = {k: v for k, v in filters.items() if v}
+    
+    try:
+        if format == 'excel':
+            filepath = export_service.export_to_excel(customer_id, filters)
+        elif format == 'csv':
+            filepath = export_service.export_to_csv(customer_id, filters)
+        else:
+            flash('Invalid export format', 'error')
+            return redirect(request.referrer or url_for('index'))
+        
+        return send_file(filepath, as_attachment=True)
+    except Exception as e:
+        flash(f'Export failed: {str(e)}', 'error')
+        return redirect(request.referrer or url_for('index'))
+
+@app.route('/search/<int:customer_id>', methods=['GET'])
+def search_transactions(customer_id):
+    """Search and filter transactions"""
+    query = request.args.get('q', '')
+    filters = {
+        'category': request.args.get('category'),
+        'start_date': request.args.get('start_date'),
+        'end_date': request.args.get('end_date'),
+        'min_amount': request.args.get('min_amount'),
+        'max_amount': request.args.get('max_amount'),
+        'bank': request.args.get('bank')
+    }
+    filters = {k: v for k, v in filters.items() if v}
+    
+    results = search_service.search_transactions(customer_id, query, filters)
+    suggestions = search_service.get_filter_suggestions(customer_id)
+    saved_filters = search_service.get_saved_filters(customer_id)
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+        customer_row = cursor.fetchone()
+        customer = dict(customer_row) if customer_row else None
+    
+    return render_template('search.html', customer=customer, transactions=results, 
+                          suggestions=suggestions, saved_filters=saved_filters, 
+                          current_query=query, current_filters=filters)
+
+@app.route('/budget/<int:customer_id>', methods=['GET', 'POST'])
+def budget_management(customer_id):
+    """Budget management page"""
+    if request.method == 'POST':
+        category = request.form.get('category')
+        
+        try:
+            monthly_limit = float(request.form.get('monthly_limit', 0))
+            alert_threshold = float(request.form.get('alert_threshold', 80))
+            
+            if monthly_limit <= 0:
+                flash('Budget limit must be greater than 0', 'error')
+                return redirect(url_for('budget_management', customer_id=customer_id))
+                
+            if not 0 < alert_threshold <= 100:
+                flash('Alert threshold must be between 1 and 100', 'error')
+                return redirect(url_for('budget_management', customer_id=customer_id))
+            
+            budget_service.create_budget(customer_id, category, monthly_limit, alert_threshold)
+            flash('Budget created successfully', 'success')
+            return redirect(url_for('budget_management', customer_id=customer_id))
+            
+        except ValueError:
+            flash('Invalid input: Please enter valid numbers', 'error')
+            return redirect(url_for('budget_management', customer_id=customer_id))
+    
+    budgets = budget_service.get_budget_status(customer_id)
+    recommendations = budget_service.get_budget_recommendations(customer_id)
+    alerts = budget_service.get_budget_alerts(customer_id)
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+        customer_row = cursor.fetchone()
+        customer = dict(customer_row) if customer_row else None
+    
+    return render_template('budget.html', customer=customer, budgets=budgets,
+                          recommendations=recommendations, alerts=alerts)
+
+@app.route('/budget/delete/<int:budget_id>/<int:customer_id>', methods=['POST'])
+def delete_budget(budget_id, customer_id):
+    """Delete a budget"""
+    budget_service.delete_budget(budget_id, customer_id)
+    flash('Budget deleted', 'success')
+    return redirect(url_for('budget_management', customer_id=customer_id))
+
+@app.route('/batch/upload/<int:customer_id>', methods=['GET', 'POST'])
+def batch_upload(customer_id):
+    """Batch upload statements"""
+    if request.method == 'POST':
+        files = request.files.getlist('statement_files')
+        card_id = request.form.get('card_id')
+        
+        if not files or not card_id:
+            flash('Please select files and card', 'error')
+            return redirect(request.url)
+        
+        batch_id = batch_service.create_batch_job('upload', customer_id, len(files))
+        
+        processed = 0
+        failed = 0
+        
+        for file in files:
+            try:
+                filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(file_path)
+                
+                result = parse_statement_auto(file_path)
+                
+                with get_db() as conn:
+                    cursor = conn.cursor()
+                    cursor.execute('''
+                        INSERT INTO statements (card_id, statement_date, statement_total, file_path, batch_job_id)
+                        VALUES (?, ?, ?, ?, ?)
+                    ''', (card_id, result['statement_date'], result['total'], file_path, batch_id))
+                    statement_id = cursor.lastrowid
+                    conn.commit()
+                
+                processed += 1
+                batch_service.update_batch_progress(batch_id, processed, failed)
+            except:
+                failed += 1
+                batch_service.update_batch_progress(batch_id, processed, failed)
+        
+        batch_service.complete_batch_job(batch_id, 'completed')
+        flash(f'Batch upload completed: {processed} succeeded, {failed} failed', 'success')
+        return redirect(url_for('customer_dashboard', customer_id=customer_id))
+    
+    cards = get_customer_cards(customer_id)
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+        customer_row = cursor.fetchone()
+        customer = dict(customer_row) if customer_row else None
+    
+    return render_template('batch_upload.html', customer=customer, cards=cards)
+
+@app.route('/transaction/<int:transaction_id>/note', methods=['POST'])
+def update_transaction_note(transaction_id):
+    """Update transaction note"""
+    notes = request.form.get('notes', '')
+    tag_service.update_transaction_note(transaction_id, notes)
+    return jsonify({'success': True})
+
+@app.route('/transaction/<int:transaction_id>/tag', methods=['POST'])
+def add_transaction_tag(transaction_id):
+    """Add tag to transaction"""
+    tag_name = request.form.get('tag_name')
+    customer_id = int(request.form.get('customer_id'))
+    
+    tag_id = tag_service.create_tag(customer_id, tag_name)
+    tag_service.add_tag_to_transaction(transaction_id, tag_id)
+    
+    return jsonify({'success': True, 'tag_id': tag_id})
 
 def run_scheduler():
     schedule.every().day.at("09:00").do(check_and_send_reminders)

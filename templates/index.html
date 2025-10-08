@@ -7,7 +7,7 @@
     <div class="row mb-5">
         <div class="col-12">
             <h1 class="mb-2">
-                <i class="bi bi-speedometer2 text-jade me-3"></i>Customer Dashboard
+                <span style="font-size: 2rem;" class="text-jade me-3">📊</span>Customer Dashboard
             </h1>
             <p class="text-silver">Manage your credit cards, analyze spending, and evaluate loan opportunities.</p>
         </div>
@@ -19,7 +19,7 @@
             <div class="card h-100">
                 <div class="card-header d-flex align-items-center">
                     <div class="icon-wrapper me-3">
-                        <i class="bi bi-person-circle"></i>
+                        👤
                     </div>
                     <div>
                         <h5 class="mb-0">{{ customer.name }}</h5>
@@ -29,11 +29,11 @@
                 <div class="card-body">
                     <div class="mb-4">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-silver"><i class="bi bi-envelope me-2"></i>Email</span>
+                            <span class="text-silver">📧 Email</span>
                             <span class="text-pearl">{{ customer.email }}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-silver"><i class="bi bi-cash-stack me-2"></i>Monthly Income</span>
+                            <span class="text-silver">💵 Monthly Income</span>
                             <span class="text-champagne fw-bold">RM {{ "{:,.2f}".format(customer.monthly_income) }}</span>
                         </div>
                     </div>
@@ -42,22 +42,22 @@
 
                     <div class="d-grid gap-2">
                         <a href="{{ url_for('customer_dashboard', customer_id=customer.id) }}" class="btn btn-primary">
-                            <i class="bi bi-graph-up me-2"></i>View Dashboard
+                            📈 View Dashboard
                         </a>
                         <div class="row g-2">
                             <div class="col-6">
                                 <a href="{{ url_for('loan_evaluation', customer_id=customer.id) }}" class="btn btn-success w-100">
-                                    <i class="bi bi-calculator me-1"></i>Loans
+                                    🧮 Loans
                                 </a>
                             </div>
                             <div class="col-6">
                                 <a href="{{ url_for('analytics', customer_id=customer.id) }}" class="btn btn-outline-primary w-100">
-                                    <i class="bi bi-bar-chart me-1"></i>Analytics
+                                    📊 Analytics
                                 </a>
                             </div>
                         </div>
                         <a href="{{ url_for('generate_report', customer_id=customer.id) }}" class="btn btn-link">
-                            <i class="bi bi-file-pdf me-2"></i>Generate PDF Report
+                            📄 Generate PDF Report
                         </a>
                     </div>
                 </div>
@@ -71,11 +71,11 @@
         <div class="col-12">
             <div class="card card-glass text-center py-5">
                 <div class="card-body">
-                    <i class="bi bi-inbox" style="font-size: 4rem; color: var(--charcoal);"></i>
+                    <span style="font-size: 4rem;">📥</span>
                     <h3 class="mt-4 mb-3">No Customers Found</h3>
                     <p class="text-silver mb-4">Get started by adding your first customer to the system.</p>
                     <a href="{{ url_for('upload_statement') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-2"></i>Add Customer
+                        ➕ Add Customer
                     </a>
                 </div>
             </div>

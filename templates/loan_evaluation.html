@@ -7,7 +7,7 @@
     <div class="row mb-5">
         <div class="col-12">
             <h1 class="mb-2">
-                <i class="bi bi-calculator text-jade me-3"></i>Loan Evaluation
+                🔹Loan Evaluation
             </h1>
             <p class="text-silver">{{ customer.name }}'s borrowing capacity based on Debt Service Ratio (DSR)</p>
         </div>
@@ -19,20 +19,20 @@
                 <div class="stat-value {{ 'text-jade' if dsr < 0.45 else 'text-amber' if dsr < 0.60 else 'text-ruby' }}">
                     {{ "{:.1%}".format(dsr) }}
                 </div>
-                <div class="stat-label"><i class="bi bi-speedometer me-2"></i>Current DSR</div>
+                <div class="stat-label">🔹Current DSR</div>
                 <small class="text-xs text-silver">{{ 'Healthy' if dsr < 0.45 else 'Moderate' if dsr < 0.60 else 'High Risk' }}</small>
             </div>
         </div>
         <div class="col-md-4">
             <div class="stat-card">
                 <div class="stat-value">RM {{ "{:,.2f}".format(customer.monthly_income) }}</div>
-                <div class="stat-label"><i class="bi bi-cash-stack me-2"></i>Monthly Income</div>
+                <div class="stat-label">🔹Monthly Income</div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="stat-card">
                 <div class="stat-value">RM {{ "{:,.2f}".format(current_repayments) }}</div>
-                <div class="stat-label"><i class="bi bi-credit-card me-2"></i>Current Repayments</div>
+                <div class="stat-label">🔹Current Repayments</div>
             </div>
         </div>
     </div>
@@ -41,7 +41,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <i class="bi bi-trophy me-2"></i>Maximum Loan Capacity
+                    🔹Maximum Loan Capacity
                 </div>
                 <div class="card-body">
                     <div class="row g-4">
@@ -79,7 +79,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <i class="bi bi-list-check me-2"></i>Loan Scenarios Analysis
+                    🔹Loan Scenarios Analysis
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -105,11 +105,11 @@
                                     <td>
                                         {% if scenario.affordable %}
                                         <span class="badge badge-success">
-                                            <i class="bi bi-check-circle me-1"></i>Affordable
+                                            🔹Affordable
                                         </span>
                                         {% else %}
                                         <span class="badge badge-danger">
-                                            <i class="bi bi-x-circle me-1"></i>Not Affordable
+                                            🔹Not Affordable
                                         </span>
                                         {% endif %}
                                     </td>
@@ -119,7 +119,7 @@
                         </table>
                     </div>
                     <div class="alert alert-info mt-3">
-                        <i class="bi bi-info-circle me-2"></i>
+                        🔹
                         <strong>DSR Guideline:</strong> Bank Negara Malaysia recommends maintaining DSR below 45% for healthy financial management.
                     </div>
                 </div>
