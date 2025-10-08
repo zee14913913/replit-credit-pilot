@@ -36,11 +36,11 @@ class ValidationResult:
 
 def extract_totals_from_pdf(pdf_text: str) -> Dict[str, float]:
     """从PDF文本中提取官方声明的总额"""
-    totals = {
-        'total_debit': None,
-        'total_credit': None,
-        'current_balance': None,
-        'previous_balance': None
+    totals: Dict[str, float] = {
+        'total_debit': 0.0,
+        'total_credit': 0.0,
+        'current_balance': 0.0,
+        'previous_balance': 0.0
     }
     
     # 提取 TOTAL DEBIT THIS MONTH
@@ -100,7 +100,7 @@ def validate_transactions(transactions: List[Dict], pdf_text: str) -> Validation
     tolerance = 0.01  # 允许0.01的浮点误差
     
     # 验证消费总额
-    if pdf_totals['total_debit'] is not None:
+    if pdf_totals['total_debit'] > 0:
         diff = abs(extracted_debit - pdf_totals['total_debit'])
         if diff > tolerance:
             result.add_error(
@@ -113,7 +113,7 @@ def validate_transactions(transactions: List[Dict], pdf_text: str) -> Validation
         result.add_warning("PDF中未找到消费总额声明，无法验证")
     
     # 验证付款/退款总额
-    if pdf_totals['total_credit'] is not None:
+    if pdf_totals['total_credit'] > 0:
         diff = abs(extracted_credit - pdf_totals['total_credit'])
         if diff > tolerance:
             result.add_error(
