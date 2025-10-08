@@ -104,6 +104,57 @@ TRANSLATIONS = {
         # Footer
         'all_rights_reserved': 'All rights reserved.',
         'powered_by': 'Powered by',
+        
+        # Customer Authorization Agreement
+        'customer_authorization': 'Customer Authorization Agreement',
+        'agreement_title': 'Customer Service Authorization and Consent Agreement',
+        'agreement_intro': 'This Authorization Agreement is entered between the Customer and INFINITE GZ SDN BHD for the provision of professional financial services.',
+        
+        'section_services': 'Authorized Services',
+        'service_credit_card': '1. Credit Card Management Services',
+        'service_credit_card_desc': 'Analysis of credit card statements, spending optimization, and smart recommendations for card selection.',
+        'service_debt_optimization': '2. Debt Optimization Services',
+        'service_debt_optimization_desc': 'Debt consolidation planning, balance transfer advisory, and debt restructuring solutions.',
+        'service_loan_advisory': '3. Bank Loan Advisory Services',
+        'service_loan_advisory_desc': 'Loan application assistance, DSR analysis, and loan product comparison across Malaysian banks.',
+        'service_audit_accounting': '4. Audit & Accounting Services',
+        'service_audit_accounting_desc': 'Financial record review, accounting consultation, and compliance advisory.',
+        'service_mortgage': '5. Mortgage Interest Discount (50% Off)',
+        'service_mortgage_desc': 'Exclusive mortgage refinancing with up to 50% interest rate discount through our banking partners.',
+        'service_sme_financing': '6. SME Financing Services',
+        'service_sme_financing_desc': 'Business financing solutions with credit line up to RM 1,000,000 for 1 year.',
+        
+        'section_authorization': 'Customer Authorization',
+        'auth_data_access': 'I authorize INFINITE GZ SDN BHD to:',
+        'auth_point_1': 'Access and analyze my credit card statements, bank statements, and financial records',
+        'auth_point_2': 'Contact financial institutions on my behalf for loan applications and refinancing',
+        'auth_point_3': 'Prepare and submit necessary documentation to banks and financial institutions',
+        'auth_point_4': 'Receive commission from banks for successful loan or credit card applications',
+        'auth_point_5': 'Store my financial data securely for service provision and future reference',
+        
+        'section_fee_structure': 'Fee Structure',
+        'fee_policy_title': 'Result-Based Fee Policy (50% Profit Sharing)',
+        'fee_point_1': 'NO BENEFIT, NO FEE: If our services do not generate any savings or benefits, we charge ZERO fees.',
+        'fee_point_2': '50% PROFIT SHARING: We charge 50% of the total benefit (savings, cashback, or interest reduction) as our service fee.',
+        'fee_point_3': 'Fee calculation is based on actual verified benefits over a minimum 12-month period.',
+        'fee_point_4': 'All fees are transparent and clearly communicated before service execution.',
+        
+        'section_terms': 'Terms and Conditions',
+        'term_1': '1. This agreement is valid for 12 months from the date of signing and auto-renews unless terminated.',
+        'term_2': '2. Customer may terminate this agreement with 30 days written notice.',
+        'term_3': '3. INFINITE GZ SDN BHD maintains strict confidentiality of all customer data in compliance with PDPA 2010.',
+        'term_4': '4. Customer acknowledges that final approval of loans and credit cards is subject to bank discretion.',
+        'term_5': '5. Service fees are payable only after confirmed benefit realization.',
+        
+        'section_consent': 'Customer Consent',
+        'consent_text': 'I have read and understood this agreement. I consent to the above terms and authorize INFINITE GZ SDN BHD to provide the listed services.',
+        'customer_signature': 'Customer Signature',
+        'date': 'Date',
+        'company_representative': 'INFINITE GZ SDN BHD Representative',
+        
+        'download_agreement': 'Download Agreement (PDF)',
+        'print_agreement': 'Print Agreement',
+        'back_to_dashboard': 'Back to Dashboard',
     },
     'zh': {
         # Navigation
@@ -205,6 +256,57 @@ TRANSLATIONS = {
         # Footer
         'all_rights_reserved': '版权所有。',
         'powered_by': '技术支持',
+        
+        # Customer Authorization Agreement
+        'customer_authorization': '客户授权协议',
+        'agreement_title': '客户服务授权与同意协议',
+        'agreement_intro': '本授权协议由客户与INFINITE GZ SDN BHD签订，用于提供专业金融服务。',
+        
+        'section_services': '授权服务范围',
+        'service_credit_card': '一、信用卡管理服务',
+        'service_credit_card_desc': '信用卡账单分析、消费优化、智能信用卡推荐服务。',
+        'service_debt_optimization': '二、债务优化服务',
+        'service_debt_optimization_desc': '债务整合规划、余额转移咨询、债务重组解决方案。',
+        'service_loan_advisory': '三、银行贷款咨询服务',
+        'service_loan_advisory_desc': '贷款申请协助、DSR分析、马来西亚各大银行贷款产品对比。',
+        'service_audit_accounting': '四、审计与会计服务',
+        'service_audit_accounting_desc': '财务记录审查、会计咨询、合规顾问服务。',
+        'service_mortgage': '五、房贷利息优惠（50%折扣）',
+        'service_mortgage_desc': '通过我们的银行合作伙伴，提供独家房贷再融资服务，最高可享50%利率折扣。',
+        'service_sme_financing': '六、中小企业融资服务',
+        'service_sme_financing_desc': '企业融资解决方案，1年期信用额度最高可达RM 1,000,000。',
+        
+        'section_authorization': '客户授权事项',
+        'auth_data_access': '本人授权INFINITE GZ SDN BHD：',
+        'auth_point_1': '访问和分析本人的信用卡账单、银行对账单及财务记录',
+        'auth_point_2': '代表本人联系金融机构进行贷款申请和再融资',
+        'auth_point_3': '准备并向银行和金融机构提交必要文件',
+        'auth_point_4': '从银行获取成功申请贷款或信用卡的佣金',
+        'auth_point_5': '安全存储本人的财务数据以提供服务和未来参考',
+        
+        'section_fee_structure': '收费结构',
+        'fee_policy_title': '成果导向收费政策（50%收益分成）',
+        'fee_point_1': '无收益，不收费：如果我们的服务未产生任何节省或收益，我们收取零费用。',
+        'fee_point_2': '50%收益分成：我们收取总收益（节省、返现或利息减免）的50%作为服务费。',
+        'fee_point_3': '费用计算基于至少12个月期间的实际验证收益。',
+        'fee_point_4': '所有费用透明公开，服务执行前清楚告知。',
+        
+        'section_terms': '条款与条件',
+        'term_1': '1. 本协议自签署之日起有效期为12个月，除非终止否则自动续约。',
+        'term_2': '2. 客户可提前30天书面通知终止本协议。',
+        'term_3': '3. INFINITE GZ SDN BHD严格遵守2010年个人资料保护法(PDPA)，对所有客户数据保密。',
+        'term_4': '4. 客户了解贷款和信用卡的最终批准取决于银行的决定。',
+        'term_5': '5. 服务费仅在确认收益实现后支付。',
+        
+        'section_consent': '客户同意声明',
+        'consent_text': '本人已阅读并理解本协议。本人同意上述条款，并授权INFINITE GZ SDN BHD提供所列服务。',
+        'customer_signature': '客户签名',
+        'date': '日期',
+        'company_representative': 'INFINITE GZ SDN BHD 代表',
+        
+        'download_agreement': '下载协议（PDF）',
+        'print_agreement': '打印协议',
+        'back_to_dashboard': '返回仪表板',
     }
 }
 

@@ -707,6 +707,11 @@ def set_employment_type(customer_id):
                           employment=employment,
                           income_requirements=income_requirements)
 
+@app.route('/customer-authorization')
+def customer_authorization():
+    """Display customer authorization agreement"""
+    return render_template('customer_authorization.html')
+
 @app.route('/generate_report/<int:customer_id>')
 def generate_enhanced_report(customer_id):
     """Generate enhanced monthly report with financial advisory"""

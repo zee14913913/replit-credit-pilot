@@ -33,7 +33,20 @@ The Smart Credit & Loan Manager is a **Premium Enterprise-Grade SaaS Platform** 
 - ✅ **Mature UI Components**: Professional cards, tables, badges, alerts with sophisticated color palette
 - ✅ **Responsive Navigation**: Sticky navigation bar with company logo, system name, and language switcher
 - ✅ **Typography Enhancement**: Inter font family for professional, modern look
-- ✅ **Color Scheme**: Dark theme with blue (#4a90e2) and gold (#d4af37) accents for premium feel
+- ✅ **Color Scheme (Updated)**: Mature professional palette - Deep Bronze Gold (#b8860b), Deep Gray (#2c2c2e), Deep Green (#2f5233) - NO blue/cyan colors
+
+### 📄 CUSTOMER AUTHORIZATION AGREEMENT (Oct 8, 2025)
+- ✅ **Comprehensive Service Agreement**: Professional bilingual (EN/CN) authorization document
+- ✅ **Service Coverage**:
+  - Credit Card Management Services
+  - Debt Optimization Services
+  - Bank Loan Advisory Services
+  - Audit & Accounting Services
+  - **Mortgage Interest Discount (50% Off)** - Exclusive refinancing through banking partners
+  - **SME Financing** - Business credit line up to RM 1,000,000 for 1 year
+- ✅ **Legal Framework**: Customer authorization, fee structure (50% profit sharing), terms & conditions (PDPA 2010 compliant)
+- ✅ **Professional Layout**: Signature section, downloadable PDF, print-friendly design
+- ✅ **Route**: `/customer-authorization` - accessible from main navigation
 
 ### UI/UX Improvements (Earlier)
 - Added Quick Actions dashboard for key features
