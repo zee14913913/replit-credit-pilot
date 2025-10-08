@@ -85,6 +85,14 @@ def get_latest_rates():
         
         return {'opr': opr, 'sbr': sbr}
 
+def fetch_bnm_rates():
+    """Simplified version for financial optimizer - returns just rate values"""
+    rates = get_latest_rates()
+    return {
+        'opr': rates['opr'].get('rate_value', 3.00) if isinstance(rates['opr'], dict) else 3.00,
+        'sbr': rates['sbr'].get('rate_value', 3.15) if isinstance(rates['sbr'], dict) else 3.15
+    }
+
 def add_banking_news(bank_name, news_type, title, content, effective_date=None):
     with get_db() as conn:
         cursor = conn.cursor()
