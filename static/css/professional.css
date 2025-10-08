@@ -163,17 +163,20 @@ p {
 
 .professional-nav {
     background: 
-        radial-gradient(circle, white 0px, white 1px, transparent 2px),
-        radial-gradient(circle, rgba(192,192,192,0.9) 0px, rgba(192,192,192,0.9) 1.5px, transparent 3px),
-        radial-gradient(circle, white 0px, white 0.5px, transparent 1.5px),
-        radial-gradient(circle, rgba(192,192,192,0.8) 0px, rgba(192,192,192,0.8) 1px, transparent 2px),
-        radial-gradient(circle, white 0px, white 1.5px, transparent 2.5px),
-        radial-gradient(circle, rgba(192,192,192,0.7) 0px, rgba(192,192,192,0.7) 1px, transparent 2px),
-        radial-gradient(circle, white 0px, white 0.8px, transparent 1.8px),
-        radial-gradient(circle, rgba(192,192,192,0.9) 0px, rgba(192,192,192,0.9) 1.2px, transparent 2.5px),
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.7) 0px, transparent 0.3px),
+        radial-gradient(circle at 60% 70%, rgba(192,192,192,0.5) 0px, transparent 0.3px),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.6) 0px, transparent 0.3px),
+        radial-gradient(circle at 80% 10%, rgba(192,192,192,0.6) 0px, transparent 0.3px),
+        radial-gradient(circle at 90% 60%, rgba(255,255,255,0.8) 0px, transparent 0.3px),
+        radial-gradient(circle at 30% 80%, rgba(192,192,192,0.4) 0px, transparent 0.3px),
+        radial-gradient(circle at 15% 45%, rgba(255,255,255,0.5) 0px, transparent 0.3px),
+        radial-gradient(circle at 75% 25%, rgba(192,192,192,0.7) 0px, transparent 0.3px),
+        radial-gradient(circle at 40% 15%, rgba(255,255,255,0.6) 0px, transparent 0.3px),
+        radial-gradient(circle at 65% 85%, rgba(192,192,192,0.5) 0px, transparent 0.3px),
+        radial-gradient(circle at 10% 60%, rgba(255,255,255,0.7) 0px, transparent 0.3px),
+        radial-gradient(circle at 85% 40%, rgba(192,192,192,0.6) 0px, transparent 0.3px),
         linear-gradient(135deg, rgba(15, 15, 15, 0.98) 0%, rgba(26, 26, 26, 0.98) 100%);
-    background-size: 300px 300px, 250px 250px, 400px 400px, 350px 350px, 280px 280px, 320px 320px, 450px 450px, 380px 380px, 100% 100%;
-    background-position: 20% 30%, 60% 70%, 50% 50%, 80% 10%, 90% 60%, 30% 80%, 15% 45%, 75% 25%, 0% 0%;
+    background-size: 40px 40px, 60px 60px, 45px 45px, 55px 55px, 50px 50px, 65px 65px, 48px 48px, 58px 58px, 42px 42px, 52px 52px, 47px 47px, 62px 62px, 100% 100%;
     backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border-silver);
     position: sticky;
@@ -181,13 +184,12 @@ p {
     z-index: 1000;
     padding: 0;
     box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 10px rgba(192,192,192,0.1);
-    animation: galaxyTwinkle 4s ease-in-out infinite alternate;
+    animation: galaxyShimmer 3s ease-in-out infinite;
 }
 
-@keyframes galaxyTwinkle {
-    0% { opacity: 1; }
-    50% { opacity: 0.85; }
-    100% { opacity: 1; }
+@keyframes galaxyShimmer {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.88; }
 }
 
 .nav-container {
@@ -696,22 +698,25 @@ p {
 
 .professional-footer {
     background: 
-        radial-gradient(circle, white 0px, white 1.2px, transparent 2.5px),
-        radial-gradient(circle, rgba(192,192,192,0.9) 0px, rgba(192,192,192,0.9) 1px, transparent 2px),
-        radial-gradient(circle, white 0px, white 0.8px, transparent 1.5px),
-        radial-gradient(circle, rgba(192,192,192,0.8) 0px, rgba(192,192,192,0.8) 1.5px, transparent 2.8px),
-        radial-gradient(circle, white 0px, white 1px, transparent 2px),
-        radial-gradient(circle, rgba(192,192,192,0.7) 0px, rgba(192,192,192,0.7) 1.2px, transparent 2.3px),
-        radial-gradient(circle, rgba(192,192,192,0.9) 0px, rgba(192,192,192,0.9) 0.8px, transparent 1.8px),
-        radial-gradient(circle, white 0px, white 1.3px, transparent 2.5px),
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.7) 0px, transparent 0.3px),
+        radial-gradient(circle at 50% 40%, rgba(192,192,192,0.5) 0px, transparent 0.3px),
+        radial-gradient(circle at 85% 60%, rgba(255,255,255,0.6) 0px, transparent 0.3px),
+        radial-gradient(circle at 70% 80%, rgba(192,192,192,0.6) 0px, transparent 0.3px),
+        radial-gradient(circle at 25% 70%, rgba(255,255,255,0.8) 0px, transparent 0.3px),
+        radial-gradient(circle at 40% 30%, rgba(192,192,192,0.4) 0px, transparent 0.3px),
+        radial-gradient(circle at 65% 55%, rgba(255,255,255,0.5) 0px, transparent 0.3px),
+        radial-gradient(circle at 88% 15%, rgba(192,192,192,0.7) 0px, transparent 0.3px),
+        radial-gradient(circle at 30% 50%, rgba(255,255,255,0.6) 0px, transparent 0.3px),
+        radial-gradient(circle at 55% 75%, rgba(192,192,192,0.5) 0px, transparent 0.3px),
+        radial-gradient(circle at 12% 65%, rgba(255,255,255,0.7) 0px, transparent 0.3px),
+        radial-gradient(circle at 78% 35%, rgba(192,192,192,0.6) 0px, transparent 0.3px),
         linear-gradient(135deg, rgba(15, 15, 15, 0.98) 0%, rgba(26, 26, 26, 0.98) 100%);
-    background-size: 280px 280px, 320px 320px, 380px 380px, 260px 260px, 340px 340px, 300px 300px, 420px 420px, 290px 290px, 100% 100%;
-    background-position: 15% 20%, 50% 40%, 85% 60%, 70% 80%, 25% 70%, 40% 30%, 65% 55%, 88% 15%, 0% 0%;
+    background-size: 42px 42px, 58px 58px, 47px 47px, 53px 53px, 48px 48px, 63px 63px, 45px 45px, 56px 56px, 44px 44px, 54px 54px, 49px 49px, 60px 60px, 100% 100%;
     border-top: 1px solid var(--border-silver);
     margin-top: var(--space-2xl);
     padding: var(--space-xl) 0;
     box-shadow: 0 -4px 20px rgba(0,0,0,0.5), 0 0 10px rgba(192,192,192,0.1);
-    animation: galaxyTwinkle 4s ease-in-out infinite alternate;
+    animation: galaxyShimmer 3.5s ease-in-out infinite;
 }
 
 .footer-divider {
