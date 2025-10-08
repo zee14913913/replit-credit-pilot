@@ -27,6 +27,15 @@ from db.tag_service import TagService
 # i18n support
 from i18n.translations import translate, TRANSLATIONS
 
+# Customer authentication
+from auth.customer_auth import (
+    create_customer_login, 
+    authenticate_customer, 
+    verify_session, 
+    logout_customer,
+    get_customer_data_summary
+)
+
 # Initialize services
 export_service = ExportService()
 search_service = SearchService()
@@ -734,6 +743,147 @@ def generate_enhanced_report(customer_id):
     
     flash('增强版月结报告生成成功！包含信用卡推荐和财务优化建议。', 'success')
     return send_file(output_path, as_attachment=True, download_name=output_filename)
+
+# ==================== CUSTOMER AUTHENTICATION SYSTEM ====================
+
+@app.route('/customer/login', methods=['GET', 'POST'])
+def customer_login():
+    """Customer login page"""
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        result = authenticate_customer(email, password)
+        
+        if result['success']:
+            session['customer_token'] = result['session_token']
+            session['customer_id'] = result['customer_id']
+            session['customer_name'] = result['customer_name']
+            flash(f"{translate('welcome_back', session.get('language', 'en'))}, {result['customer_name']}!", 'success')
+            return redirect(url_for('customer_portal'))
+        else:
+            return render_template('customer_login.html', error=result['error'])
+    
+    return render_template('customer_login.html')
+
+@app.route('/customer/register', methods=['GET', 'POST'])
+def customer_register():
+    """Customer registration page"""
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        monthly_income = request.form.get('monthly_income')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        
+        # Validate password
+        if password != confirm_password:
+            return render_template('customer_register.html', error="Passwords do not match")
+        
+        # Create customer first
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO customers (name, phone, email, monthly_income)
+                VALUES (?, ?, ?, ?)
+            """, (name, phone, email, float(monthly_income)))
+            customer_id = cursor.lastrowid
+            conn.commit()
+        
+        # Create login credentials
+        result = create_customer_login(customer_id, email, password)
+        
+        if result['success']:
+            flash('Registration successful! Please login.', 'success')
+            return redirect(url_for('customer_login'))
+        else:
+            return render_template('customer_register.html', error=result['error'])
+    
+    return render_template('customer_register.html')
+
+@app.route('/customer/portal')
+def customer_portal():
+    """Customer data portal - view and download personal records"""
+    token = session.get('customer_token')
+    
+    if not token:
+        flash('Please login to access your portal', 'warning')
+        return redirect(url_for('customer_login'))
+    
+    # Verify session
+    verification = verify_session(token)
+    
+    if not verification['success']:
+        session.clear()
+        flash(verification['error'], 'warning')
+        return redirect(url_for('customer_login'))
+    
+    # Get customer data
+    customer_id = verification['customer_id']
+    data = get_customer_data_summary(customer_id)
+    
+    return render_template('customer_portal.html', 
+                         customer=data['customer'],
+                         credit_cards=data['credit_cards'],
+                         statements=data['statements'],
+                         total_spending=data['total_spending'])
+
+@app.route('/customer/logout')
+def customer_logout():
+    """Logout customer"""
+    token = session.get('customer_token')
+    
+    if token:
+        logout_customer(token)
+    
+    session.clear()
+    flash('Logged out successfully', 'success')
+    return redirect(url_for('customer_login'))
+
+@app.route('/customer/download/<int:statement_id>')
+def customer_download_statement(statement_id):
+    """Download specific statement (customer access only)"""
+    token = session.get('customer_token')
+    
+    if not token:
+        flash('Please login to access your data', 'warning')
+        return redirect(url_for('customer_login'))
+    
+    # Verify session and ownership
+    verification = verify_session(token)
+    
+    if not verification['success']:
+        session.clear()
+        flash(verification['error'], 'warning')
+        return redirect(url_for('customer_login'))
+    
+    customer_id = verification['customer_id']
+    
+    # Check if statement belongs to customer
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT s.file_path, s.statement_date
+            FROM statements s
+            WHERE s.id = ? AND s.customer_id = ?
+        """, (statement_id, customer_id))
+        
+        result = cursor.fetchone()
+        
+        if not result:
+            flash('Statement not found or access denied', 'danger')
+            return redirect(url_for('customer_portal'))
+        
+        file_path = result[0]
+        
+        if os.path.exists(file_path):
+            return send_file(file_path, as_attachment=True)
+        else:
+            flash('File not found', 'danger')
+            return redirect(url_for('customer_portal'))
+
+# ==================== END CUSTOMER AUTHENTICATION ====================
 
 def run_scheduler():
     schedule.every().day.at("09:00").do(check_and_send_reminders)

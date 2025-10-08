@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t['customer_portal'] }}{% endblock %}
+
+{% block content %}
+<div class="container-professional">
+    <!-- Welcome Header -->
+    <div class="section-header">
+        <h1 class="section-title">{{ t['welcome_back'] }}, {{ customer.name }}!</h1>
+        <p class="section-subtitle">{{ t['login_subtitle'] }}</p>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-value">RM {{ "{:,.2f}".format(customer.monthly_income) }}</div>
+                <div class="stat-label">{{ t['monthly_income'] }}</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-value">RM {{ "{:,.2f}".format(total_spending) }}</div>
+                <div class="stat-label">{{ t['total_spending'] }}</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-value">{{ credit_cards|length }}</div>
+                <div class="stat-label">{{ t['credit_cards'] }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credit Cards -->
+    <div class="mb-5">
+        <h3 style="color: var(--champagne-gold); margin-bottom: 1.5rem;">{{ t['credit_cards'] }}</h3>
+        <div class="row">
+            {% for card in credit_cards %}
+            <div class="col-md-6 mb-3">
+                <div class="professional-card">
+                    <h5 style="color: var(--luxury-gold);">{{ card.bank_name }}</h5>
+                    <p class="text-secondary mb-2">{{ card.card_type }} •••• {{ card.last_4_digits }}</p>
+                    <div class="mt-3">
+                        <span class="badge badge-primary-pro">{{ t['credit_limit'] }}: RM {{ "{:,.2f}".format(card.credit_limit) }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Statements -->
+    <div class="mb-5">
+        <h3 style="color: var(--champagne-gold); margin-bottom: 1.5rem;">{{ t['my_statements'] }}</h3>
+        
+        {% if statements %}
+        <div class="table-responsive">
+            <table class="table table-professional">
+                <thead>
+                    <tr>
+                        <th>{{ t['statement_date'] }}</th>
+                        <th>{{ t['amount'] }}</th>
+                        <th>{{ t['status'] }}</th>
+                        <th>{{ t['actions'] }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for statement in statements %}
+                    <tr>
+                        <td>{{ statement.statement_date }}</td>
+                        <td>RM {{ "{:,.2f}".format(statement.total_amount) }}</td>
+                        <td>
+                            {% if statement.is_confirmed %}
+                            <span class="badge badge-success-pro">{{ t['confirmed'] }}</span>
+                            {% else %}
+                            <span class="badge badge-warning-pro">{{ t['pending'] }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if statement.is_confirmed %}
+                            <a href="/customer/download/{{ statement.id }}" class="btn btn-sm btn-professional-outline">
+                                {{ t['download'] }}
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">{{ t['no_statements'] }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Actions -->
+    <div class="text-center mt-5">
+        <a href="/customer/logout" class="btn btn-professional-outline">{{ t['logout'] }}</a>
+    </div>
+</div>
+{% endblock %}

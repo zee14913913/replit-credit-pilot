@@ -46,6 +46,17 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    {% if session.get('customer_token') %}
+                    <a class="nav-link {{ 'active' if request.endpoint == 'customer_portal' }}" href="{{ url_for('customer_portal') }}">
+                        {{ t('customer_portal') }}
+                    </a>
+                    {% else %}
+                    <a class="nav-link {{ 'active' if request.endpoint == 'customer_login' }}" href="{{ url_for('customer_login') }}">
+                        {{ t('customer_login') }}
+                    </a>
+                    {% endif %}
+                </li>
+                <li class="nav-item">
                     <div class="language-switcher">
                         <button class="lang-btn {{ 'active' if current_lang == 'en' }}" 
                                 onclick="window.location.href='{{ url_for('set_language', lang='en') }}'">

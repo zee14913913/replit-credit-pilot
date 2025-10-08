@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t['customer_login'] }}{% endblock %}
+
+{% block content %}
+<div class="container-professional">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="professional-card" style="margin-top: 3rem;">
+                <div class="text-center mb-4">
+                    <h2 class="section-title" style="font-size: 2rem;">{{ t['customer_portal'] }}</h2>
+                    <p class="text-secondary">{{ t['login_subtitle'] }}</p>
+                </div>
+
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                <form method="POST" action="/customer/login">
+                    <div class="mb-4">
+                        <label for="email" class="form-label" style="color: var(--champagne-gold); font-weight: 600;">{{ t['email'] }}</label>
+                        <input type="email" class="form-control form-control-professional" id="email" name="email" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label" style="color: var(--champagne-gold); font-weight: 600;">{{ t['password'] }}</label>
+                        <input type="password" class="form-control form-control-professional" id="password" name="password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-professional w-100 mb-3">{{ t['login'] }}</button>
+                    
+                    <div class="text-center">
+                        <a href="/customer/register" style="color: var(--champagne-gold);">{{ t['no_account'] }}</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
