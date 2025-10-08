@@ -163,15 +163,17 @@ p {
 
 .professional-nav {
     background: 
-        radial-gradient(2px 2px at 20% 30%, white, transparent),
-        radial-gradient(2px 2px at 60% 70%, rgba(192,192,192,0.8), transparent),
-        radial-gradient(1px 1px at 50% 50%, rgba(192,192,192,0.6), transparent),
-        radial-gradient(1px 1px at 80% 10%, white, transparent),
-        radial-gradient(2px 2px at 90% 60%, rgba(192,192,192,0.7), transparent),
-        radial-gradient(1px 1px at 30% 80%, rgba(192,192,192,0.5), transparent),
+        radial-gradient(circle, white 0px, white 1px, transparent 2px),
+        radial-gradient(circle, rgba(192,192,192,0.9) 0px, rgba(192,192,192,0.9) 1.5px, transparent 3px),
+        radial-gradient(circle, white 0px, white 0.5px, transparent 1.5px),
+        radial-gradient(circle, rgba(192,192,192,0.8) 0px, rgba(192,192,192,0.8) 1px, transparent 2px),
+        radial-gradient(circle, white 0px, white 1.5px, transparent 2.5px),
+        radial-gradient(circle, rgba(192,192,192,0.7) 0px, rgba(192,192,192,0.7) 1px, transparent 2px),
+        radial-gradient(circle, white 0px, white 0.8px, transparent 1.8px),
+        radial-gradient(circle, rgba(192,192,192,0.9) 0px, rgba(192,192,192,0.9) 1.2px, transparent 2.5px),
         linear-gradient(135deg, rgba(15, 15, 15, 0.98) 0%, rgba(26, 26, 26, 0.98) 100%);
-    background-size: 200% 200%, 200% 200%, 200% 200%, 200% 200%, 200% 200%, 200% 200%, 100% 100%;
-    background-position: 0% 0%;
+    background-size: 300px 300px, 250px 250px, 400px 400px, 350px 350px, 280px 280px, 320px 320px, 450px 450px, 380px 380px, 100% 100%;
+    background-position: 20% 30%, 60% 70%, 50% 50%, 80% 10%, 90% 60%, 30% 80%, 15% 45%, 75% 25%, 0% 0%;
     backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border-silver);
     position: sticky;
@@ -179,12 +181,13 @@ p {
     z-index: 1000;
     padding: 0;
     box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 10px rgba(192,192,192,0.1);
-    animation: galaxyTwinkle 3s ease-in-out infinite alternate;
+    animation: galaxyTwinkle 4s ease-in-out infinite alternate;
 }
 
 @keyframes galaxyTwinkle {
-    0% { background-position: 0% 0%, 10% 10%, 20% 20%, 30% 30%, 40% 40%, 50% 50%; }
-    100% { background-position: 10% 10%, 20% 20%, 30% 30%, 40% 40%, 50% 50%, 60% 60%; }
+    0% { opacity: 1; }
+    50% { opacity: 0.85; }
+    100% { opacity: 1; }
 }
 
 .nav-container {
@@ -693,14 +696,17 @@ p {
 
 .professional-footer {
     background: 
-        radial-gradient(2px 2px at 15% 20%, white, transparent),
-        radial-gradient(1px 1px at 50% 40%, rgba(192,192,192,0.7), transparent),
-        radial-gradient(2px 2px at 85% 60%, rgba(192,192,192,0.8), transparent),
-        radial-gradient(1px 1px at 70% 80%, white, transparent),
-        radial-gradient(1px 1px at 25% 70%, rgba(192,192,192,0.6), transparent),
-        radial-gradient(2px 2px at 40% 30%, rgba(192,192,192,0.5), transparent),
+        radial-gradient(circle, white 0px, white 1.2px, transparent 2.5px),
+        radial-gradient(circle, rgba(192,192,192,0.9) 0px, rgba(192,192,192,0.9) 1px, transparent 2px),
+        radial-gradient(circle, white 0px, white 0.8px, transparent 1.5px),
+        radial-gradient(circle, rgba(192,192,192,0.8) 0px, rgba(192,192,192,0.8) 1.5px, transparent 2.8px),
+        radial-gradient(circle, white 0px, white 1px, transparent 2px),
+        radial-gradient(circle, rgba(192,192,192,0.7) 0px, rgba(192,192,192,0.7) 1.2px, transparent 2.3px),
+        radial-gradient(circle, rgba(192,192,192,0.9) 0px, rgba(192,192,192,0.9) 0.8px, transparent 1.8px),
+        radial-gradient(circle, white 0px, white 1.3px, transparent 2.5px),
         linear-gradient(135deg, rgba(15, 15, 15, 0.98) 0%, rgba(26, 26, 26, 0.98) 100%);
-    background-size: 200% 200%, 200% 200%, 200% 200%, 200% 200%, 200% 200%, 200% 200%, 100% 100%;
+    background-size: 280px 280px, 320px 320px, 380px 380px, 260px 260px, 340px 340px, 300px 300px, 420px 420px, 290px 290px, 100% 100%;
+    background-position: 15% 20%, 50% 40%, 85% 60%, 70% 80%, 25% 70%, 40% 30%, 65% 55%, 88% 15%, 0% 0%;
     border-top: 1px solid var(--border-silver);
     margin-top: var(--space-2xl);
     padding: var(--space-xl) 0;
