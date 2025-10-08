@@ -132,7 +132,16 @@ p {
    ======================================== */
 
 .professional-nav {
-    background: linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
+    background: 
+        radial-gradient(2px 2px at 20% 30%, white, transparent),
+        radial-gradient(2px 2px at 60% 70%, rgba(192,192,192,0.8), transparent),
+        radial-gradient(1px 1px at 50% 50%, rgba(192,192,192,0.6), transparent),
+        radial-gradient(1px 1px at 80% 10%, white, transparent),
+        radial-gradient(2px 2px at 90% 60%, rgba(192,192,192,0.7), transparent),
+        radial-gradient(1px 1px at 30% 80%, rgba(192,192,192,0.5), transparent),
+        linear-gradient(135deg, rgba(15, 15, 15, 0.98) 0%, rgba(26, 26, 26, 0.98) 100%);
+    background-size: 200% 200%, 200% 200%, 200% 200%, 200% 200%, 200% 200%, 200% 200%, 100% 100%;
+    background-position: 0% 0%;
     backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border-silver);
     position: sticky;
@@ -140,6 +149,12 @@ p {
     z-index: 1000;
     padding: 0;
     box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 10px rgba(192,192,192,0.1);
+    animation: galaxyTwinkle 3s ease-in-out infinite alternate;
+}
+
+@keyframes galaxyTwinkle {
+    0% { background-position: 0% 0%, 10% 10%, 20% 20%, 30% 30%, 40% 40%, 50% 50%; }
+    100% { background-position: 10% 10%, 20% 20%, 30% 30%, 40% 40%, 50% 50%, 60% 60%; }
 }
 
 .nav-container {
@@ -259,6 +274,31 @@ p {
     padding: var(--space-3xl) var(--space-2xl);
     position: relative;
     z-index: 1;
+}
+
+/* Subtle decorative gradients in content area */
+.container-professional::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.container-professional::after {
+    content: '';
+    position: absolute;
+    bottom: 20%;
+    left: -10%;
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(192,192,192,0.03) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
 }
 
 /* ========================================
@@ -591,10 +631,20 @@ p {
    ======================================== */
 
 .professional-footer {
-    background: var(--bg-secondary);
-    border-top: 1px solid var(--border-subtle);
-    margin-top: var(--space-3xl);
-    padding-top: var(--space-2xl);
+    background: 
+        radial-gradient(2px 2px at 15% 20%, white, transparent),
+        radial-gradient(1px 1px at 50% 40%, rgba(192,192,192,0.7), transparent),
+        radial-gradient(2px 2px at 85% 60%, rgba(192,192,192,0.8), transparent),
+        radial-gradient(1px 1px at 70% 80%, white, transparent),
+        radial-gradient(1px 1px at 25% 70%, rgba(192,192,192,0.6), transparent),
+        radial-gradient(2px 2px at 40% 30%, rgba(192,192,192,0.5), transparent),
+        linear-gradient(135deg, rgba(15, 15, 15, 0.98) 0%, rgba(26, 26, 26, 0.98) 100%);
+    background-size: 200% 200%, 200% 200%, 200% 200%, 200% 200%, 200% 200%, 200% 200%, 100% 100%;
+    border-top: 1px solid var(--border-silver);
+    margin-top: var(--space-2xl);
+    padding: var(--space-xl) 0;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.5), 0 0 10px rgba(192,192,192,0.1);
+    animation: galaxyTwinkle 4s ease-in-out infinite alternate;
 }
 
 .footer-divider {
@@ -604,8 +654,8 @@ p {
 .footer-content {
     display: grid;
     grid-template-columns: 1.5fr 2fr;
-    gap: var(--space-3xl);
-    padding: var(--space-xl) 0;
+    gap: var(--space-2xl);
+    padding: var(--space-lg) 0;
     border-bottom: 1px solid var(--border-subtle);
 }
 
@@ -685,7 +735,7 @@ p {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--space-xl) 0;
+    padding: var(--space-lg) 0;
 }
 
 .footer-copyright {
