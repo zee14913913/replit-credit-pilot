@@ -34,15 +34,15 @@
 
     <!-- Credit Cards -->
     <div class="mb-5">
-        <h3 style="color: var(--champagne-gold); margin-bottom: 1.5rem;">{{ t['credit_cards'] }}</h3>
+        <h3 style="color: var(--accent-primary); margin-bottom: 1.5rem;">{{ t['credit_cards'] }}</h3>
         <div class="row">
             {% for card in credit_cards %}
             <div class="col-md-6 mb-3">
                 <div class="professional-card">
-                    <h5 style="color: var(--luxury-gold);">{{ card.bank_name }}</h5>
+                    <h5 style="color: var(--accent-primary);">{{ card.bank_name }}</h5>
                     <p class="text-secondary mb-2">{{ card.card_type }} •••• {{ card.last_4_digits }}</p>
                     <div class="mt-3">
-                        <span class="badge badge-primary-pro">{{ t['credit_limit'] }}: RM {{ "{:,.2f}".format(card.credit_limit) }}</span>
+                        <span class="badge-professional badge-primary-pro">{{ t['credit_limit'] }}: RM {{ "{:,.2f}".format(card.credit_limit) }}</span>
                     </div>
                 </div>
             </div>
@@ -52,11 +52,11 @@
 
     <!-- Statements -->
     <div class="mb-5">
-        <h3 style="color: var(--champagne-gold); margin-bottom: 1.5rem;">{{ t['my_statements'] }}</h3>
+        <h3 style="color: var(--accent-primary); margin-bottom: 1.5rem;">{{ t['my_statements'] }}</h3>
         
         {% if statements %}
         <div class="table-responsive">
-            <table class="table table-professional">
+            <table class="table-professional">
                 <thead>
                     <tr>
                         <th>{{ t['statement_date'] }}</th>
@@ -72,14 +72,14 @@
                         <td>RM {{ "{:,.2f}".format(statement.total_amount) }}</td>
                         <td>
                             {% if statement.is_confirmed %}
-                            <span class="badge badge-success-pro">{{ t['confirmed'] }}</span>
+                            <span class="badge-professional badge-success-pro">{{ t['confirmed'] }}</span>
                             {% else %}
-                            <span class="badge badge-warning-pro">{{ t['pending'] }}</span>
+                            <span class="badge-professional badge-warning-pro">{{ t['pending'] }}</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if statement.is_confirmed %}
-                            <a href="/customer/download/{{ statement.id }}" class="btn btn-sm btn-professional-outline">
+                            <a href="/customer/download/{{ statement.id }}" class="btn-professional-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
                                 {{ t['download'] }}
                             </a>
                             {% endif %}
@@ -90,13 +90,13 @@
             </table>
         </div>
         {% else %}
-        <div class="alert alert-info">{{ t['no_statements'] }}</div>
+        <div class="alert-professional alert-info-pro">{{ t['no_statements'] }}</div>
         {% endif %}
     </div>
 
     <!-- Actions -->
     <div class="text-center mt-5">
-        <a href="/customer/logout" class="btn btn-professional-outline">{{ t['logout'] }}</a>
+        <a href="/customer/logout" class="btn-professional-outline">{{ t['logout'] }}</a>
     </div>
 </div>
 {% endblock %}

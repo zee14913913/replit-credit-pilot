@@ -29,7 +29,7 @@
                     <div class="professional-card">
                         <div class="row align-items-center">
                             <div class="col-md-8">
-                                <h5 style="color: var(--accent-gold); margin-bottom: 0.75rem;">{{ rec.bank_name }} {{ rec.card_name }}</h5>
+                                <h5 style="color: var(--accent-primary); margin-bottom: 0.75rem;">{{ rec.bank_name }} {{ rec.card_name }}</h5>
                                 <p style="margin-bottom: 0.5rem; color: var(--text-secondary);">{{ rec.reasoning }}</p>
                                 <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">{{ rec.special_promotions }}</p>
                             </div>
@@ -58,7 +58,7 @@
         {% if optimizations %}
             {% for opt in optimizations %}
             <div class="professional-card mb-4">
-                <div style="background: rgba(74, 144, 226, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                <div style="background: var(--accent-subtle); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
                     <h5 style="color: var(--text-primary); margin: 0;">
                         {% if opt.optimization_type == 'debt_consolidation' %}
                             {{ t('debt_consolidation') }}
@@ -71,7 +71,7 @@
                 </div>
                 
                 <div class="mb-3">
-                    <h5 style="color: var(--accent-gold); margin-bottom: 1rem;">{{ t('before_vs_after') }}</h5>
+                    <h5 style="color: var(--accent-primary); margin-bottom: 1rem;">{{ t('before_vs_after') }}</h5>
                     <table class="table-professional">
                         <thead>
                             <tr>
