@@ -115,9 +115,39 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: var(--space-md);
 }
 
-h1 { font-size: 2.5rem; font-weight: 700; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.5rem; }
+h1 { 
+    font-size: 2.5rem; 
+    font-weight: 700;
+    background: linear-gradient(135deg, #FFFFFF 0%, #C0C0C0 50%, #FFFFFF 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(192, 192, 192, 0.3);
+    position: relative;
+    display: inline-block;
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-silver), transparent);
+    border-radius: 2px;
+}
+
+h2 { 
+    font-size: 2rem;
+    color: var(--text-silver);
+    text-shadow: 0 0 20px rgba(192, 192, 192, 0.2);
+}
+
+h3 { 
+    font-size: 1.5rem;
+    color: var(--text-primary);
+}
 h4 { font-size: 1.25rem; }
 h5 { font-size: 1.125rem; }
 h6 { font-size: 1rem; }
@@ -315,6 +345,20 @@ p {
     overflow: hidden;
 }
 
+/* Silver corner accents on cards */
+.professional-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 30px;
+    border-top: 2px solid var(--accent-silver);
+    border-left: 2px solid var(--accent-silver);
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
 /* Silver shimmer effect on cards */
 .professional-card::after {
     content: '';
@@ -329,8 +373,12 @@ p {
 
 .professional-card:hover {
     border-color: var(--border-silver);
-    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    box-shadow: var(--shadow-lg), var(--shadow-glow), 0 0 20px rgba(192,192,192,0.2);
     transform: translateY(-2px);
+}
+
+.professional-card:hover::before {
+    opacity: 1;
 }
 
 .professional-card:hover::after {
@@ -349,6 +397,19 @@ p {
     text-align: center;
     position: relative;
     box-shadow: var(--shadow-md), 0 0 15px rgba(192,192,192,0.1);
+}
+
+/* Silver decorative corners for stat cards */
+.stat-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    border-bottom: 2px solid var(--accent-silver);
+    border-right: 2px solid var(--accent-silver);
+    opacity: 0.5;
 }
 
 .stat-value {

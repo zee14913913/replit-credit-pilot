@@ -13,15 +13,20 @@ Design requirements: Premium, sophisticated, high-end - suitable for professiona
 
 ### UI/UX Decisions
 
-The platform features a **Premium Luxury UI** with a **Deep Violet + Purple Gradient + Pearl White + Silver Bright White** color scheme (深紫罗兰色 + 紫色渐层 + 珍珠白 + 银亮白), inspired by modern SaaS platforms like Stripe, Vercel, and Linear. The design uses:
-- **Deep Violet Primary Colors**: #5B21B6, #7C3AED, #8B5CF6 with purple gradient backgrounds
-- **Pearl White Text**: #F8FAFC, #F1F5F9 for maximum readability
-- **Silver Bright White Accents**: #E2E8F0, #CBD5E1 for secondary elements
-- **Purple Glow Effects**: Enhanced with sophisticated shadow and glow effects throughout
+The platform features a **Premium Galaxy-Themed UI** with a **Pure White + Elephant Gray + Silver Metallic** minimalist color scheme, inspired by modern SaaS platforms like Stripe, Vercel, and Linear. The design uses:
+- **Color Palette**: Pure white (#FFFFFF) primary buttons, elephant gray (#71717A) success states, silver (rgba(192,192,192)) metallic accents
+- **Text Brightness**: Enhanced readability with #E5E5E5 secondary text on dark backgrounds
+- **Galaxy Starfield Effects**: Subtle twinkling stars in header/footer using multi-layer radial gradients with 3-4s animation cycles
+- **Silver Decorations**: 
+  - H1 titles with silver gradient text and decorative underlines
+  - H2 titles with silver glow effects
+  - Card frames with silver corner accents (L-shaped borders)
+  - Stat cards with bottom-right silver corners
+- **Layered Visual Effects**: Black-to-gray gradients, shimmer animations, and subtle decorative gradients in content areas
 - **Professional Typography**: Inter font family with modern letter spacing
-- **Company Branding**: INFINITE GZ SDN BHD prominently displayed with enhanced logo size (120px) and purple glow effects
+- **Company Branding**: INFINITE GZ SDN BHD prominently displayed
 - **Multi-language Support**: Complete language separation (English/Chinese) with bilingual UI elements
-- **No Emojis**: Clean, professional design without childish elements
+- **Design Philosophy**: Zero colorful/childish elements - premium, sophisticated, enterprise-grade only
 
 ### Technical Implementations
 
