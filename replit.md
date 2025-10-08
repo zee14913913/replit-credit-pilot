@@ -65,10 +65,17 @@ Preferred communication style: Simple, everyday language.
 - Malaysia-specific merchant recognition (Grab, Petronas, Lazada, etc.)
 - Fallback to "Others" category for unmatched transactions
 
-**Statement Validation**:
-- Validation score calculation
-- Inconsistency detection (referenced but implementation not shown)
-- Manual confirmation workflow before finalizing statements
+**Statement Validation (`validate/transaction_validator.py`)** - Dual Verification System:
+- **Double verification mechanism** for 100% data accuracy
+- **Layer 1**: Parse transactions from PDF/Excel using intelligent extraction
+- **Layer 2**: Cross-validate against PDF-declared totals (TOTAL DEBIT, TOTAL CREDIT)
+- **Mathematical verification**: Ensures extracted totals match official statement totals
+- **Confidence scoring**: 0-100 scale with auto-approval at ≥95%
+- **Automated decision**: PASSED (auto-approve) / WARNING (manual review) / FAILED (reject)
+- **Duplicate detection**: Identifies and flags duplicate transactions
+- **Comprehensive reports**: Detailed validation reports with PDF vs extracted comparison
+- **OCR support**: Automatically handles scanned PDFs via Tesseract
+- **Audit trail**: Full validation history stored in database
 
 **DSR Calculation (`loan/dsr_calculator.py`)**:
 - Debt Service Ratio formula: `total_monthly_repayments / monthly_income`

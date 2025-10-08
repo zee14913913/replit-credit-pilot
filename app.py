@@ -9,10 +9,12 @@ import schedule
 from db.database import get_db, log_audit, get_all_customers, get_customer_cards, get_card_statements, get_statement_transactions
 from ingest.statement_parser import parse_statement_auto
 from validate.categorizer import categorize_transaction, validate_statement, get_spending_summary
+from validate.transaction_validator import validate_transactions, generate_validation_report
 from validate.reminder_service import check_and_send_reminders, create_reminder, get_pending_reminders, mark_as_paid
 from loan.dsr_calculator import calculate_dsr, calculate_max_loan_amount, simulate_loan_scenarios
 from news.bnm_api import get_latest_rates, save_bnm_rates, add_banking_news, get_all_banking_news
 from report.pdf_generator import generate_monthly_report
+import pdfplumber
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SESSION_SECRET', 'dev-secret-key-change-in-production')
@@ -75,13 +77,48 @@ def upload_statement():
         
         file_type = 'pdf' if filename.lower().endswith('.pdf') else 'excel'
         
+        # Step 1: Parse statement
         statement_info, transactions = parse_statement_auto(file_path)
         
         if not statement_info or not transactions:
             flash('Failed to parse statement', 'error')
             return redirect(request.url)
         
+        # Step 2: Dual Validation - Extract PDF text for cross-verification
+        pdf_text = ""
+        if file_type == 'pdf':
+            try:
+                with pdfplumber.open(file_path) as pdf:
+                    pdf_text = "\n".join(p.extract_text() for p in pdf.pages)
+            except:
+                pass
+        
+        dual_validation = validate_transactions(transactions, pdf_text) if pdf_text else None
+        
+        # Print validation report to console (for monitoring)
+        if dual_validation:
+            print("\n" + "="*80)
+            print(f"📋 Statement Upload - Dual Validation Report")
+            print("="*80)
+            print(generate_validation_report(dual_validation))
+        
+        # Step 3: Original validation for backwards compatibility
         validation_result = validate_statement(statement_info['total'], transactions)
+        
+        # Combine validation scores
+        final_confidence = validation_result['confidence']
+        if dual_validation:
+            final_confidence = (final_confidence + dual_validation.confidence_score) / 2
+        
+        # Determine auto-confirm based on dual validation
+        auto_confirmed = 0
+        validation_status = "pending"
+        if dual_validation:
+            if dual_validation.get_status() == "PASSED" and final_confidence >= 95:
+                auto_confirmed = 1
+                validation_status = "auto_approved"
+            elif dual_validation.get_status() == "FAILED":
+                validation_status = "requires_review"
         
         with get_db() as conn:
             cursor = conn.cursor()
@@ -96,9 +133,14 @@ def upload_statement():
                 statement_info['total'],
                 file_path,
                 file_type,
-                validation_result['confidence'],
-                0,
-                json.dumps(validation_result['inconsistencies'])
+                final_confidence,
+                auto_confirmed,
+                json.dumps({
+                    'old_validation': validation_result['inconsistencies'],
+                    'dual_validation_status': dual_validation.get_status() if dual_validation else 'N/A',
+                    'dual_validation_errors': dual_validation.errors if dual_validation else [],
+                    'dual_validation_warnings': dual_validation.warnings if dual_validation else []
+                })
             ))
             statement_id = cursor.lastrowid
             
@@ -119,9 +161,16 @@ def upload_statement():
             
             conn.commit()
             log_audit(None, 'UPLOAD_STATEMENT', 'statement', statement_id, 
-                     f"Uploaded {file_type} statement with {len(transactions)} transactions")
+                     f"Uploaded {file_type} statement with {len(transactions)} transactions. Validation: {validation_status}")
         
-        flash(f'Statement uploaded successfully. Validation Score: {validation_result["confidence"]:.0%}', 'success')
+        # Flash message based on validation status
+        if validation_status == "auto_approved":
+            flash(f'✅ Statement uploaded & auto-approved! Dual validation passed with {final_confidence:.0f}% confidence.', 'success')
+        elif validation_status == "requires_review":
+            flash(f'⚠️ Statement uploaded but requires manual review. Validation issues detected.', 'warning')
+        else:
+            flash(f'Statement uploaded. Validation Score: {final_confidence:.0f}%. Please review.', 'info')
+        
         return redirect(url_for('validate_statement', statement_id=statement_id))
     
     customers = get_all_customers()
