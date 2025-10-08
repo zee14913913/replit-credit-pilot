@@ -1,19 +1,94 @@
 {% extends "base.html" %}
+
+{% block title %}Upload Statement - Smart Credit & Loan Manager{% endblock %}
+
 {% block content %}
-<h2>Upload Credit Card Statement</h2>
-<form method="POST" enctype="multipart/form-data">
-    <div class="mb-3">
-        <label class="form-label">Select Credit Card</label>
-        <select name="card_id" class="form-select" required>
-            {% for card in cards %}
-            <option value="{{ card.id }}">{{ card.customer_name }} - {{ card.bank_name }} ****{{ card.card_number_last4 }}</option>
-            {% endfor %}
-        </select>
+<div class="fade-in">
+    <div class="row mb-5">
+        <div class="col-12">
+            <h1 class="mb-2">
+                <i class="bi bi-cloud-upload text-jade me-3"></i>Upload Credit Card Statement
+            </h1>
+            <p class="text-silver">Upload PDF or Excel statements for automatic parsing and verification</p>
+        </div>
     </div>
-    <div class="mb-3">
-        <label class="form-label">Statement File (PDF or Excel)</label>
-        <input type="file" name="statement_file" class="form-control" accept=".pdf,.xlsx,.xls" required>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-file-earmark-arrow-up me-2"></i>Statement Upload Form
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="bi bi-credit-card me-2"></i>Select Credit Card
+                            </label>
+                            <select name="card_id" class="form-select" required>
+                                <option value="" selected disabled>Choose a credit card...</option>
+                                {% for card in cards %}
+                                <option value="{{ card.id }}">
+                                    {{ card.customer_name }} - {{ card.bank_name }} ****{{ card.card_number_last4 }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-silver mt-1 d-block">Select the card associated with this statement</small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="bi bi-file-pdf me-2"></i>Statement File
+                            </label>
+                            <input type="file" name="statement_file" class="form-control" accept=".pdf,.xlsx,.xls" required>
+                            <small class="text-silver mt-1 d-block">
+                                Supported formats: PDF, Excel (.xlsx, .xls) | Max size: 16MB
+                            </small>
+                        </div>
+
+                        <div class="divider my-4"></div>
+
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Dual Verification System:</strong> Your statement will be automatically parsed and cross-verified against official PDF totals to ensure 100% accuracy.
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-upload me-2"></i>Upload & Parse Statement
+                            </button>
+                            <a href="{{ url_for('index') }}" class="btn btn-link">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row g-3 mt-4">
+                <div class="col-md-4">
+                    <div class="card card-glass text-center py-3">
+                        <i class="bi bi-shield-check text-jade" style="font-size: 2rem;"></i>
+                        <h6 class="mt-2 mb-0">100% Accurate</h6>
+                        <small class="text-silver">Dual verification</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-glass text-center py-3">
+                        <i class="bi bi-lightning-charge text-champagne" style="font-size: 2rem;"></i>
+                        <h6 class="mt-2 mb-0">Instant OCR</h6>
+                        <small class="text-silver">Scanned PDF support</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-glass text-center py-3">
+                        <i class="bi bi-diagram-3 text-jade" style="font-size: 2rem;"></i>
+                        <h6 class="mt-2 mb-0">Auto Categorize</h6>
+                        <small class="text-silver">Smart classification</small>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Upload & Parse</button>
-</form>
+</div>
 {% endblock %}

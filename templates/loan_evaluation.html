@@ -1,32 +1,130 @@
 {% extends "base.html" %}
+
+{% block title %}Loan Evaluation - {{ customer.name }} - Smart Credit & Loan Manager{% endblock %}
+
 {% block content %}
-<h2>Loan Evaluation - {{ customer.name }}</h2>
-<div class="alert alert-info">
-    <h4>Current DSR: {{ "{:.2%}".format(dsr) }}</h4>
-    <p>Monthly Income: RM {{ "{:,.2f}".format(customer.monthly_income) }}</p>
-    <p>Current Repayments: RM {{ "{:,.2f}".format(current_repayments) }}</p>
-</div>
-<div class="card">
-    <div class="card-header"><h5>Maximum Loan Capacity</h5></div>
-    <div class="card-body">
-        <p><strong>Max Loan Amount:</strong> RM {{ "{:,.2f}".format(max_loan_calc.max_loan_amount) }}</p>
-        <p><strong>Monthly Installment:</strong> RM {{ "{:,.2f}".format(max_loan_calc.monthly_installment) }}</p>
-        <p><strong>Interest Rate:</strong> {{ "{:.2%}".format(max_loan_calc.interest_rate) }}</p>
-        <p><strong>Loan Term:</strong> {{ max_loan_calc.loan_term_months }} months</p>
+<div class="fade-in">
+    <div class="row mb-5">
+        <div class="col-12">
+            <h1 class="mb-2">
+                <i class="bi bi-calculator text-jade me-3"></i>Loan Evaluation
+            </h1>
+            <p class="text-silver">{{ customer.name }}'s borrowing capacity based on Debt Service Ratio (DSR)</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-value {{ 'text-jade' if dsr < 0.45 else 'text-amber' if dsr < 0.60 else 'text-ruby' }}">
+                    {{ "{:.1%}".format(dsr) }}
+                </div>
+                <div class="stat-label"><i class="bi bi-speedometer me-2"></i>Current DSR</div>
+                <small class="text-xs text-silver">{{ 'Healthy' if dsr < 0.45 else 'Moderate' if dsr < 0.60 else 'High Risk' }}</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-value">RM {{ "{:,.2f}".format(customer.monthly_income) }}</div>
+                <div class="stat-label"><i class="bi bi-cash-stack me-2"></i>Monthly Income</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-value">RM {{ "{:,.2f}".format(current_repayments) }}</div>
+                <div class="stat-label"><i class="bi bi-credit-card me-2"></i>Current Repayments</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-trophy me-2"></i>Maximum Loan Capacity
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h2 class="text-champagne mb-2">RM {{ "{:,.0f}".format(max_loan_calc.max_loan_amount) }}</h2>
+                                <p class="text-silver mb-0">Max Loan Amount</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h2 class="text-jade mb-2">RM {{ "{:,.2f}".format(max_loan_calc.monthly_installment) }}</h2>
+                                <p class="text-silver mb-0">Monthly Installment</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h2 class="text-pearl mb-2">{{ "{:.2%}".format(max_loan_calc.interest_rate) }}</h2>
+                                <p class="text-silver mb-0">Interest Rate</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h2 class="text-pearl mb-2">{{ max_loan_calc.loan_term_months }}</h2>
+                                <p class="text-silver mb-0">Loan Term (months)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-list-check me-2"></i>Loan Scenarios Analysis
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Loan Amount</th>
+                                    <th>Monthly Payment</th>
+                                    <th>New DSR</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for scenario in scenarios %}
+                                <tr>
+                                    <td class="fw-bold">RM {{ "{:,.0f}".format(scenario.loan_amount) }}</td>
+                                    <td>RM {{ "{:,.2f}".format(scenario.monthly_payment) }}</td>
+                                    <td>
+                                        <span class="{{ 'text-jade' if scenario.new_dsr < 0.45 else 'text-amber' if scenario.new_dsr < 0.60 else 'text-ruby' }}">
+                                            {{ "{:.2%}".format(scenario.new_dsr) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if scenario.affordable %}
+                                        <span class="badge badge-success">
+                                            <i class="bi bi-check-circle me-1"></i>Affordable
+                                        </span>
+                                        {% else %}
+                                        <span class="badge badge-danger">
+                                            <i class="bi bi-x-circle me-1"></i>Not Affordable
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="alert alert-info mt-3">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>DSR Guideline:</strong> Bank Negara Malaysia recommends maintaining DSR below 45% for healthy financial management.
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<h4 class="mt-4">Loan Scenarios</h4>
-<table class="table">
-    <thead><tr><th>Loan Amount</th><th>Monthly Payment</th><th>New DSR</th><th>Affordable</th></tr></thead>
-    <tbody>
-    {% for scenario in scenarios %}
-    <tr class="{{ 'table-success' if scenario.affordable else 'table-danger' }}">
-        <td>RM {{ "{:,.0f}".format(scenario.loan_amount) }}</td>
-        <td>RM {{ "{:,.2f}".format(scenario.monthly_payment) }}</td>
-        <td>{{ "{:.2%}".format(scenario.new_dsr) }}</td>
-        <td>{{ 'Yes' if scenario.affordable else 'No' }}</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
 {% endblock %}

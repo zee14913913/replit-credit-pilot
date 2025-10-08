@@ -1,34 +1,110 @@
 {% extends "base.html" %}
+
+{% block title %}Validate Statement - Smart Credit & Loan Manager{% endblock %}
+
 {% block content %}
-<h2>Validate Statement</h2>
-<div class="alert alert-{{ 'success' if statement.validation_score > 0.8 else 'warning' }}">
-    Validation Score: {{ "{:.0%}".format(statement.validation_score) }}
+<div class="fade-in">
+    <div class="row mb-5">
+        <div class="col-12">
+            <h1 class="mb-2">
+                <i class="bi bi-shield-check text-jade me-3"></i>Statement Validation
+            </h1>
+            <p class="text-silver">Review extracted transactions and verification results before confirming</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card {{ 'border-success' if statement.validation_score > 0.8 else 'border-warning' }}" style="border-width: 2px;">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-{{ 'check-circle-fill' if statement.validation_score > 0.8 else 'exclamation-triangle-fill' }}" 
+                           style="font-size: 3rem; color: {{ 'var(--jade)' if statement.validation_score > 0.8 else 'var(--amber)' }};"></i>
+                    </div>
+                    <h2 class="{{ 'text-jade' if statement.validation_score > 0.8 else 'text-amber' }}">
+                        {{ "{:.0%}".format(statement.validation_score) }}
+                    </h2>
+                    <p class="text-silver mb-0">Validation Score</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-list-check" style="font-size: 3rem; color: var(--champagne);"></i>
+                    </div>
+                    <h2 class="text-champagne">{{ transactions|length }}</h2>
+                    <p class="text-silver mb-0">Transactions Extracted</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if inconsistencies %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-danger">
+                <h5><i class="bi bi-exclamation-octagon me-2"></i>Inconsistencies Detected</h5>
+                <ul class="mb-0 mt-3">
+                    {% for issue in inconsistencies %}
+                    <li>{{ issue }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-receipt me-2"></i>Transaction Details</span>
+                    <span class="badge badge-info">{{ transactions|length }} items</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Category</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for trans in transactions %}
+                                <tr>
+                                    <td>{{ trans.transaction_date }}</td>
+                                    <td>{{ trans.description }}</td>
+                                    <td class="fw-bold">RM {{ "{:,.2f}".format(trans.amount) }}</td>
+                                    <td>
+                                        <span class="badge badge-info">
+                                            <i class="bi bi-tag me-1"></i>{{ trans.category }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <form method="POST" action="{{ url_for('confirm_statement', statement_id=statement.id) }}">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('index') }}" class="btn btn-link">
+                                <i class="bi bi-x-circle me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle me-2"></i>Confirm Statement
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-{% if inconsistencies %}
-<div class="alert alert-danger">
-    <h5>Inconsistencies Found:</h5>
-    <ul>
-    {% for issue in inconsistencies %}
-        <li>{{ issue }}</li>
-    {% endfor %}
-    </ul>
-</div>
-{% endif %}
-<h4>Transactions ({{ transactions|length }})</h4>
-<table class="table table-striped">
-    <thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Category</th></tr></thead>
-    <tbody>
-    {% for trans in transactions %}
-    <tr>
-        <td>{{ trans.transaction_date }}</td>
-        <td>{{ trans.description }}</td>
-        <td>RM {{ "{:.2f}".format(trans.amount) }}</td>
-        <td><span class="badge bg-info">{{ trans.category }}</span></td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
-<form method="POST" action="{{ url_for('confirm_statement', statement_id=statement.id) }}">
-    <button type="submit" class="btn btn-success">Confirm Statement</button>
-</form>
 {% endblock %}

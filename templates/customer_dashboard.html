@@ -1,39 +1,120 @@
 {% extends "base.html" %}
 
-{% block content %}
-<h2>{{ customer.name }}'s Dashboard</h2>
-<p><strong>Monthly Income:</strong> RM {{ "{:,.2f}".format(customer.monthly_income) }}</p>
-<p><strong>Total Spending:</strong> RM {{ "{:,.2f}".format(total_spending) }}</p>
+{% block title %}{{ customer.name }}'s Dashboard - Smart Credit & Loan Manager{% endblock %}
 
-<h3 class="mt-4">Credit Cards</h3>
-<div class="row">
-    {% for card in cards %}
-    <div class="col-md-6 mb-3">
-        <div class="card">
-            <div class="card-body">
-                <h5>{{ card.bank_name }}</h5>
-                <p>Card: ****{{ card.card_number_last4 }}</p>
-                <p>Limit: RM {{ "{:,.2f}".format(card.credit_limit) }}</p>
-                <p>Due Date: Day {{ card.due_date }}</p>
+{% block content %}
+<div class="fade-in">
+    <div class="row mb-5">
+        <div class="col-12">
+            <h1 class="mb-2">
+                <i class="bi bi-person-badge text-jade me-3"></i>{{ customer.name }}'s Dashboard
+            </h1>
+            <p class="text-silver">Comprehensive overview of your credit cards and spending patterns</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="stat-card">
+                <div class="stat-value">RM {{ "{:,.2f}".format(customer.monthly_income) }}</div>
+                <div class="stat-label"><i class="bi bi-cash-stack me-2"></i>Monthly Income</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="stat-card">
+                <div class="stat-value">RM {{ "{:,.2f}".format(total_spending) }}</div>
+                <div class="stat-label"><i class="bi bi-credit-card me-2"></i>Total Spending</div>
             </div>
         </div>
     </div>
-    {% endfor %}
-</div>
 
-<h3 class="mt-4">Spending Summary</h3>
-<div id="spendingChart"></div>
+    <div class="row mb-5">
+        <div class="col-12">
+            <h3 class="mb-4"><i class="bi bi-credit-card-2-front text-champagne me-2"></i>Credit Cards</h3>
+            <div class="row g-4">
+                {% for card in cards %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="icon-wrapper me-3">
+                                    <i class="bi bi-bank"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">{{ card.bank_name }}</h5>
+                                    <small class="text-silver">****{{ card.card_number_last4 }}</small>
+                                </div>
+                            </div>
+                            <div class="divider my-3"></div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-silver">Credit Limit</span>
+                                    <span class="text-pearl fw-bold">RM {{ "{:,.2f}".format(card.credit_limit) }}</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-silver">Due Date</span>
+                                    <span class="badge badge-info">Day {{ card.due_date }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-pie-chart me-2"></i>Spending Distribution
+                </div>
+                <div class="card-body">
+                    <div id="spendingChart" style="height: 450px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
 var data = [{
     values: [{% for category, data in spending_summary.items() %}{{ data.total }},{% endfor %}],
     labels: [{% for category in spending_summary.keys() %}'{{ category }}',{% endfor %}],
-    type: 'pie'
+    type: 'pie',
+    hole: 0.4,
+    marker: {
+        colors: ['#1FAA59', '#F5E6C8', '#3B82F6', '#F59E0B', '#DC2626', '#8B5CF6', '#EC4899', '#14B8A6', '#F97316', '#6366F1']
+    },
+    textfont: {
+        color: '#F8FAFC',
+        size: 14
+    }
 }];
+
 var layout = {
-    height: 400,
-    title: 'Spending by Category'
+    height: 450,
+    paper_bgcolor: 'transparent',
+    plot_bgcolor: 'transparent',
+    font: {
+        color: '#F8FAFC',
+        family: 'Inter, sans-serif'
+    },
+    showlegend: true,
+    legend: {
+        orientation: 'v',
+        x: 1,
+        y: 0.5,
+        font: {
+            color: '#94A3B8'
+        }
+    }
 };
-Plotly.newPlot('spendingChart', data, layout);
+
+var config = {responsive: true};
+Plotly.newPlot('spendingChart', data, layout, config);
 </script>
 {% endblock %}

@@ -1,19 +1,130 @@
 {% extends "base.html" %}
+
+{% block title %}Analytics - {{ customer.name }} - Smart Credit & Loan Manager{% endblock %}
+
 {% block content %}
-<h2>Financial Analytics - {{ customer.name }}</h2>
-<div id="categoryChart"></div>
-<div id="trendChart" class="mt-4"></div>
+<div class="fade-in">
+    <div class="row mb-5">
+        <div class="col-12">
+            <h1 class="mb-2">
+                <i class="bi bi-bar-chart-line text-jade me-3"></i>Financial Analytics
+            </h1>
+            <p class="text-silver">Deep insights into {{ customer.name }}'s spending patterns and trends</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-bar-chart me-2"></i>Spending by Category
+                </div>
+                <div class="card-body">
+                    <div id="categoryChart" style="height: 400px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-graph-up me-2"></i>Spending Trend Over Time
+                </div>
+                <div class="card-body">
+                    <div id="trendChart" style="height: 400px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 var categoryData = [{
     x: [{% for cat, data in spending_summary.items() %}'{{ cat }}',{% endfor %}],
     y: [{% for cat, data in spending_summary.items() %}{{ data.total }},{% endfor %}],
-    type: 'bar'
+    type: 'bar',
+    marker: {
+        color: '#1FAA59',
+        line: {
+            color: '#F5E6C8',
+            width: 1
+        }
+    },
+    text: [{% for cat, data in spending_summary.items() %}'RM {{ "{:,.2f}".format(data.total) }}',{% endfor %}],
+    textposition: 'outside',
+    textfont: {
+        color: '#F8FAFC'
+    }
 }];
-Plotly.newPlot('categoryChart', categoryData, {title: 'Spending by Category'});
+
+var categoryLayout = {
+    height: 400,
+    paper_bgcolor: 'transparent',
+    plot_bgcolor: 'transparent',
+    font: {
+        color: '#F8FAFC',
+        family: 'Inter, sans-serif'
+    },
+    xaxis: {
+        color: '#94A3B8',
+        gridcolor: 'rgba(148, 163, 184, 0.1)'
+    },
+    yaxis: {
+        color: '#94A3B8',
+        gridcolor: 'rgba(148, 163, 184, 0.1)',
+        title: 'Amount (RM)'
+    },
+    margin: { t: 30, b: 80, l: 80, r: 30 }
+};
+
+var config = {responsive: true};
+Plotly.newPlot('categoryChart', categoryData, categoryLayout, config);
 
 var dates = [{% for t in transactions %}'{{ t.transaction_date }}',{% endfor %}];
 var amounts = [{% for t in transactions %}{{ t.amount }},{% endfor %}];
-var trendData = [{x: dates, y: amounts, mode: 'lines+markers', type: 'scatter'}];
-Plotly.newPlot('trendChart', trendData, {title: 'Spending Trend'});
+
+var trendData = [{
+    x: dates,
+    y: amounts,
+    mode: 'lines+markers',
+    type: 'scatter',
+    line: {
+        color: '#1FAA59',
+        width: 3
+    },
+    marker: {
+        color: '#F5E6C8',
+        size: 8,
+        line: {
+            color: '#1FAA59',
+            width: 2
+        }
+    }
+}];
+
+var trendLayout = {
+    height: 400,
+    paper_bgcolor: 'transparent',
+    plot_bgcolor: 'transparent',
+    font: {
+        color: '#F8FAFC',
+        family: 'Inter, sans-serif'
+    },
+    xaxis: {
+        color: '#94A3B8',
+        gridcolor: 'rgba(148, 163, 184, 0.1)',
+        title: 'Date'
+    },
+    yaxis: {
+        color: '#94A3B8',
+        gridcolor: 'rgba(148, 163, 184, 0.1)',
+        title: 'Amount (RM)'
+    },
+    margin: { t: 30, b: 80, l: 80, r: 30 }
+};
+
+Plotly.newPlot('trendChart', trendData, trendLayout, config);
 </script>
 {% endblock %}
