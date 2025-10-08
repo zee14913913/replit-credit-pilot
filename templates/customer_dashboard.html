@@ -1,171 +1,140 @@
 {% extends "base.html" %}
 
-{% block title %}{{ customer.name }}'s Dashboard - Smart Credit & Loan Manager{% endblock %}
+{% block title %}{{ customer.name }} - {{ t('nav_dashboard') }}{% endblock %}
 
 {% block content %}
 <div class="fade-in">
-    <div class="row mb-5">
-        <div class="col-12">
-            <h1 class="mb-2">
-                <span style="font-size: 2rem;" class="me-3">👤</span>{{ customer.name }}'s Dashboard
-            </h1>
-            <p class="text-silver">Comprehensive overview of your credit cards and spending patterns</p>
-        </div>
+    <!-- Page Header -->
+    <div class="section-header">
+        <h1 class="section-title">{{ customer.name }}'s {{ t('nav_dashboard') }}</h1>
+        <p class="section-subtitle">Comprehensive overview of your credit cards and spending patterns</p>
     </div>
 
+    <!-- Stats Overview -->
     <div class="row g-4 mb-5">
         <div class="col-md-6">
             <div class="stat-card">
                 <div class="stat-value">RM {{ "{:,.2f}".format(customer.monthly_income) }}</div>
-                <div class="stat-label">💵 Monthly Income</div>
+                <div class="stat-label">{{ t('monthly_income') }}</div>
             </div>
         </div>
         <div class="col-md-6">
             <div class="stat-card">
                 <div class="stat-value">RM {{ "{:,.2f}".format(total_spending) }}</div>
-                <div class="stat-label">💳 Total Spending</div>
+                <div class="stat-label">{{ t('total_spending') }}</div>
             </div>
         </div>
     </div>
 
-    <div class="row mb-5">
-        <div class="col-12">
-            <h3 class="mb-4"><span class="text-champagne me-2">💳</span>Credit Cards</h3>
-            <div class="row g-4">
-                {% for card in cards %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="icon-wrapper me-3">
-                                    🏦
-                                </div>
-                                <div>
-                                    <h5 class="mb-0">{{ card.bank_name }}</h5>
-                                    <small class="text-silver">****{{ card.card_number_last4 }}</small>
-                                </div>
-                            </div>
-                            <div class="divider my-3"></div>
-                            <div class="mb-2">
-                                <div class="d-flex justify-content-between">
-                                    <span class="text-silver">Credit Limit</span>
-                                    <span class="text-pearl fw-bold">RM {{ "{:,.2f}".format(card.credit_limit) }}</span>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="d-flex justify-content-between">
-                                    <span class="text-silver">Due Date</span>
-                                    <span class="badge badge-info">Day {{ card.due_date }}</span>
-                                </div>
-                            </div>
+    <!-- Credit Cards Section -->
+    <div class="mb-5">
+        <h3 class="mb-4" style="color: var(--text-primary);">{{ t('credit_cards') }}</h3>
+        <div class="row g-4">
+            {% for card in cards %}
+            <div class="col-md-6 col-lg-4">
+                <div class="professional-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary-blue), var(--accent-gold)); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 1rem; font-size: 1.5rem; color: white;">
+                            {{ card.bank_name[0] }}
+                        </div>
+                        <div>
+                            <h5 style="margin: 0; color: var(--text-primary);">{{ card.bank_name }}</h5>
+                            <small style="color: var(--text-secondary);">****{{ card.card_number_last4 }}</small>
+                        </div>
+                    </div>
+                    <div class="divider-professional"></div>
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span style="color: var(--text-secondary);">{{ t('credit_limit') }}</span>
+                            <span style="color: var(--text-primary); font-weight: 600;">RM {{ "{:,.2f}".format(card.credit_limit) }}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="d-flex justify-content-between">
+                            <span style="color: var(--text-secondary);">{{ t('due_date') }}</span>
+                            <span class="badge-professional badge-primary-pro">{{ t('day') }} {{ card.due_date }}</span>
                         </div>
                     </div>
                 </div>
-                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mb-5">
+        <h3 class="mb-4" style="color: var(--text-primary);">{{ t('quick_actions') }}</h3>
+        <div class="row g-3">
+            <div class="col-md-3">
+                <a href="{{ url_for('search_transactions', customer_id=customer.id) }}" class="btn-professional-outline w-100 py-3 text-center" style="text-decoration: none;">
+                    <div>{{ t('search_filter') }}</div>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{{ url_for('budget_management', customer_id=customer.id) }}" class="btn-professional-outline w-100 py-3 text-center" style="text-decoration: none;">
+                    <div>{{ t('budget_manager') }}</div>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{{ url_for('batch_upload', customer_id=customer.id) }}" class="btn-professional-outline w-100 py-3 text-center" style="text-decoration: none;">
+                    <div>{{ t('batch_upload') }}</div>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{{ url_for('export_transactions', customer_id=customer.id, format='excel') }}" class="btn-professional-outline w-100 py-3 text-center" style="text-decoration: none;">
+                    <div>{{ t('export_data') }}</div>
+                </a>
+            </div>
+            <div class="col-12 mt-3">
+                <a href="{{ url_for('financial_advisory', customer_id=customer.id) }}" class="btn-success-pro btn-professional w-100 py-3" style="text-decoration: none;">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div class="text-center">
+                            <div style="font-size: 1.1rem; font-weight: bold;">{{ t('financial_advisory_service') }}</div>
+                            <small>{{ t('advisory_subtitle') }}</small>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
 
-    <div class="row g-4 mb-5">
-        <div class="col-12">
-            <h3 class="mb-4 text-champagne">Quick Actions</h3>
-            <div class="row g-3">
-                <div class="col-md-3">
-                    <a href="{{ url_for('search_transactions', customer_id=customer.id) }}" class="btn btn-outline-primary w-100 py-3">
-                        <div class="d-flex flex-column align-items-center">
-                            <span style="font-size: 1.5rem;">🔍</span>
-                            <span class="mt-2">Search & Filter</span>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-3">
-                    <a href="{{ url_for('budget_management', customer_id=customer.id) }}" class="btn btn-outline-primary w-100 py-3">
-                        <div class="d-flex flex-column align-items-center">
-                            <span style="font-size: 1.5rem;">💰</span>
-                            <span class="mt-2">Budget Manager</span>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-3">
-                    <a href="{{ url_for('batch_upload', customer_id=customer.id) }}" class="btn btn-outline-primary w-100 py-3">
-                        <div class="d-flex flex-column align-items-center">
-                            <span style="font-size: 1.5rem;">📤</span>
-                            <span class="mt-2">Batch Upload</span>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-3">
-                    <a href="{{ url_for('export_transactions', customer_id=customer.id, format='excel') }}" class="btn btn-outline-primary w-100 py-3">
-                        <div class="d-flex flex-column align-items-center">
-                            <span style="font-size: 1.5rem;">📊</span>
-                            <span class="mt-2">Export Data</span>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-12 mt-3">
-                    <a href="{{ url_for('financial_advisory', customer_id=customer.id) }}" class="btn btn-success w-100 py-3">
-                        <div class="d-flex align-items-center justify-content-center">
-                            <span style="font-size: 1.8rem;" class="me-3">💡</span>
-                            <div class="text-start">
-                                <div style="font-size: 1.1rem; font-weight: bold;">财务优化咨询服务</div>
-                                <small>信用卡推荐 · 贷款优化 · 成功收费（50%分成）</small>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
+    <!-- Recent Statements -->
+    {% if statements %}
+    <div>
+        <h3 class="mb-4" style="color: var(--text-primary);">Recent Statements</h3>
+        <div class="professional-card">
+            <table class="table-professional">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Bank</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stmt in statements[:5] %}
+                    <tr>
+                        <td>{{ stmt.statement_date }}</td>
+                        <td>{{ stmt.bank_name }}</td>
+                        <td style="color: var(--text-primary); font-weight: 600;">RM {{ "{:,.2f}".format(stmt.statement_total) }}</td>
+                        <td>
+                            {% if stmt.is_confirmed %}
+                                <span class="badge-professional badge-success-pro">Confirmed</span>
+                            {% else %}
+                                <span class="badge-professional badge-primary-pro">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('validate', statement_id=stmt.id) }}" class="btn-professional-outline" style="padding: 0.4rem 1rem; font-size: 0.85rem;">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    📈 Spending Distribution
-                </div>
-                <div class="card-body">
-                    <div id="spendingChart" style="height: 450px;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% endif %}
 </div>
-
-<script>
-var data = [{
-    values: [{% for category, data in spending_summary.items() %}{{ data.total }},{% endfor %}],
-    labels: [{% for category in spending_summary.keys() %}'{{ category }}',{% endfor %}],
-    type: 'pie',
-    hole: 0.4,
-    marker: {
-        colors: ['#1FAA59', '#F5E6C8', '#3B82F6', '#F59E0B', '#DC2626', '#8B5CF6', '#EC4899', '#14B8A6', '#F97316', '#6366F1']
-    },
-    textfont: {
-        color: '#F8FAFC',
-        size: 14
-    }
-}];
-
-var layout = {
-    height: 450,
-    paper_bgcolor: 'transparent',
-    plot_bgcolor: 'transparent',
-    font: {
-        color: '#F8FAFC',
-        family: 'Inter, sans-serif'
-    },
-    showlegend: true,
-    legend: {
-        orientation: 'v',
-        x: 1,
-        y: 0.5,
-        font: {
-            color: '#94A3B8'
-        }
-    }
-};
-
-var config = {responsive: true};
-Plotly.newPlot('spendingChart', data, layout, config);
-</script>
 {% endblock %}

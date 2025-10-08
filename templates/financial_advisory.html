@@ -1,184 +1,171 @@
 {% extends "base.html" %}
 
-{% block title %}财务咨询服务 - {{ customer.name }}{% endblock %}
+{% block title %}{{ t('nav_advisory') }} - {{ customer.name }}{% endblock %}
 
 {% block content %}
 <div class="fade-in">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="mb-2">💡 财务优化咨询服务</h1>
-            <p class="text-silver">为您量身定制的信用卡推荐和财务优化方案</p>
-        </div>
+    <!-- Page Header -->
+    <div class="section-header">
+        <h1 class="section-title">{{ t('advisory_title') }}</h1>
+        <p class="section-subtitle">{{ t('advisory_tagline') }}</p>
     </div>
 
     <!-- Success Fee Policy Banner -->
-    <div class="alert alert-success mb-4">
-        <h5>💎 我们的承诺：成功收费政策</h5>
-        <p class="mb-2"><strong>无收益，不收费！</strong> 如果我们的优化方案未能为您节省或赚取任何收益，我们将不收取任何费用。</p>
-        <p class="mb-0"><strong>50%收益分成：</strong> 只有当我们成功为您节省费用或创造收益时，我们才收取总收益的50%作为服务费用。</p>
+    <div class="alert-professional alert-success-pro mb-4">
+        <h5 style="margin-bottom: 1rem;">{{ t('success_fee_policy') }}</h5>
+        <p style="margin-bottom: 0.75rem;"><strong>{{ t('no_benefit_no_fee') }}</strong> {{ t('no_benefit_text') }}</p>
+        <p style="margin-bottom: 0;"><strong>{{ t('profit_sharing') }}</strong> {{ t('profit_sharing_text') }}</p>
     </div>
 
     <!-- Credit Card Recommendations -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <h3 class="mb-4">🎯 智能信用卡推荐</h3>
-            <p class="text-silver mb-3">根据您的消费习惯，我们为您推荐以下信用卡，助您获取更多积分和福利：</p>
-            
-            {% if card_recommendations %}
-                <div class="row g-4">
-                    {% for rec in card_recommendations %}
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <h5 class="text-champagne">{{ rec.bank_name }} {{ rec.card_name }}</h5>
-                                        <p class="mb-2">{{ rec.reasoning }}</p>
-                                        <p class="text-silver mb-0">{{ rec.special_promotions }}</p>
-                                    </div>
-                                    <div class="col-md-4 text-md-end">
-                                        <div class="badge badge-success mb-2" style="font-size: 1rem;">匹配度: {{ rec.match_score|int }}%</div>
-                                        <h4 class="text-jade mb-1">RM {{ "%.2f"|format(rec.estimated_monthly_benefit) }}/月</h4>
-                                        <p class="text-silver mb-0">年度净收益: RM {{ "%.2f"|format(rec.annual_benefit) }}</p>
-                                    </div>
-                                </div>
+    <div class="mb-5">
+        <h3 class="mb-4" style="color: var(--text-primary);">{{ t('card_recommendations') }}</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">{{ t('card_reco_subtitle') }}</p>
+        
+        {% if card_recommendations %}
+            <div class="row g-4">
+                {% for rec in card_recommendations %}
+                <div class="col-12">
+                    <div class="professional-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h5 style="color: var(--accent-gold); margin-bottom: 0.75rem;">{{ rec.bank_name }} {{ rec.card_name }}</h5>
+                                <p style="margin-bottom: 0.5rem; color: var(--text-secondary);">{{ rec.reasoning }}</p>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">{{ rec.special_promotions }}</p>
                             </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="alert alert-info">
-                    您目前使用的信用卡已经很适合您的消费习惯。继续保持！
-                </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Financial Optimization Suggestions -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <h3 class="mb-4">💰 财务优化建议</h3>
-            <p class="text-silver mb-3">基于马来西亚国家银行(BNM)最新政策和各大银行最新利率，我们为您提供以下优化方案：</p>
-            
-            {% if optimizations %}
-                {% for opt in optimizations %}
-                <div class="card mb-4">
-                    <div class="card-header">
-                        {% if opt.optimization_type == 'debt_consolidation' %}
-                            🔄 债务整合方案
-                        {% elif opt.optimization_type == 'balance_transfer' %}
-                            💳 余额转移方案
-                        {% else %}
-                            🏦 贷款再融资方案
-                        {% endif %}
-                    </div>
-                    <div class="card-body">
-                        <div class="row mb-3">
-                            <div class="col-md-12">
-                                <h5 class="text-champagne mb-3">优化前 vs 优化后对比：</h5>
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>项目</th>
-                                            <th class="text-center">优化前</th>
-                                            <th class="text-center">优化后</th>
-                                            <th class="text-center text-success">节省</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>月供</td>
-                                            <td class="text-center">RM {{ "%.2f"|format(opt.current_monthly_payment) }}</td>
-                                            <td class="text-center">RM {{ "%.2f"|format(opt.optimized_monthly_payment) }}</td>
-                                            <td class="text-center text-success fw-bold">RM {{ "%.2f"|format(opt.monthly_savings) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>利率</td>
-                                            <td class="text-center">{{ "%.2f"|format(opt.current_interest_rate) }}%</td>
-                                            <td class="text-center">{{ "%.2f"|format(opt.optimized_interest_rate) }}%</td>
-                                            <td class="text-center text-success fw-bold">{{ "%.2f"|format(opt.current_interest_rate - opt.optimized_interest_rate) }}%</td>
-                                        </tr>
-                                        <tr>
-                                            <td>总成本 (3年)</td>
-                                            <td class="text-center">RM {{ "%.2f"|format(opt.current_total_cost) }}</td>
-                                            <td class="text-center">RM {{ "%.2f"|format(opt.optimized_total_cost) }}</td>
-                                            <td class="text-center text-success fw-bold">RM {{ "%.2f"|format(opt.total_savings) }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        
-                        <div class="alert alert-success">
-                            <h6 class="mb-2">⭐ 采用此方案的收益：</h6>
-                            <ul class="mb-0">
-                                <li>每月节省: <strong>RM {{ "%.2f"|format(opt.monthly_savings) }}</strong></li>
-                                <li>3年总节省: <strong>RM {{ "%.2f"|format(opt.total_savings) }}</strong></li>
-                                <li>额外好处: {{ opt.additional_benefits }}</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <p class="mb-1"><strong>推荐银行:</strong> {{ opt.recommended_bank }}</p>
-                                <p class="mb-1"><strong>推荐产品:</strong> {{ opt.recommended_product }}</p>
-                            </div>
-                            <div class="col-md-6 text-md-end">
-                                <form method="POST" action="{{ url_for('request_consultation', customer_id=customer.id) }}">
-                                    <input type="hidden" name="optimization_id" value="{{ opt.id }}">
-                                    <input type="hidden" name="request_type" value="optimization">
-                                    <button type="submit" class="btn btn-primary">
-                                        📞 我想了解详情
-                                    </button>
-                                </form>
+                            <div class="col-md-4 text-md-end">
+                                <div class="badge-professional badge-success-pro mb-2" style="font-size: 1rem;">{{ t('match_score') }}: {{ rec.match_score|int }}%</div>
+                                <h4 style="color: var(--success); margin-bottom: 0.5rem;">RM {{ "%.2f"|format(rec.estimated_monthly_benefit) }}/{{ t('monthly_benefit').split()[0] }}</h4>
+                                <p style="color: var(--text-secondary); margin: 0; font-size: 0.9rem;">{{ t('annual_benefit') }}: RM {{ "%.2f"|format(rec.annual_benefit) }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 {% endfor %}
-            {% else %}
-                <div class="alert alert-info">
-                    您目前的财务状况良好，暂无需优化。继续保持良好的财务管理！
+            </div>
+        {% else %}
+            <div class="alert-professional alert-info-pro">
+                {{ t('no_recommendations') }}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Financial Optimization Suggestions -->
+    <div class="mb-5">
+        <h3 class="mb-4" style="color: var(--text-primary);">{{ t('optimization_suggestions') }}</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">{{ t('optimization_subtitle') }}</p>
+        
+        {% if optimizations %}
+            {% for opt in optimizations %}
+            <div class="professional-card mb-4">
+                <div style="background: rgba(74, 144, 226, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <h5 style="color: var(--text-primary); margin: 0;">
+                        {% if opt.optimization_type == 'debt_consolidation' %}
+                            {{ t('debt_consolidation') }}
+                        {% elif opt.optimization_type == 'balance_transfer' %}
+                            {{ t('balance_transfer') }}
+                        {% else %}
+                            {{ t('refinancing') }}
+                        {% endif %}
+                    </h5>
                 </div>
-            {% endif %}
-        </div>
+                
+                <div class="mb-3">
+                    <h5 style="color: var(--accent-gold); margin-bottom: 1rem;">{{ t('before_vs_after') }}</h5>
+                    <table class="table-professional">
+                        <thead>
+                            <tr>
+                                <th>{{ t('item') }}</th>
+                                <th style="text-align: center;">{{ t('before') }}</th>
+                                <th style="text-align: center;">{{ t('after') }}</th>
+                                <th style="text-align: center; color: var(--success);">{{ t('savings') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ t('monthly_payment') }}</td>
+                                <td style="text-align: center;">RM {{ "%.2f"|format(opt.current_monthly_payment) }}</td>
+                                <td style="text-align: center;">RM {{ "%.2f"|format(opt.optimized_monthly_payment) }}</td>
+                                <td style="text-align: center; color: var(--success); font-weight: 600;">RM {{ "%.2f"|format(opt.monthly_savings) }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ t('interest_rate') }}</td>
+                                <td style="text-align: center;">{{ "%.2f"|format(opt.current_interest_rate) }}%</td>
+                                <td style="text-align: center;">{{ "%.2f"|format(opt.optimized_interest_rate) }}%</td>
+                                <td style="text-align: center; color: var(--success); font-weight: 600;">{{ "%.2f"|format(opt.current_interest_rate - opt.optimized_interest_rate) }}%</td>
+                            </tr>
+                            <tr>
+                                <td>{{ t('total_cost_3years') }}</td>
+                                <td style="text-align: center;">RM {{ "%.2f"|format(opt.current_total_cost) }}</td>
+                                <td style="text-align: center;">RM {{ "%.2f"|format(opt.optimized_total_cost) }}</td>
+                                <td style="text-align: center; color: var(--success); font-weight: 600;">RM {{ "%.2f"|format(opt.total_savings) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="alert-professional alert-success-pro">
+                    <h6 style="margin-bottom: 0.75rem; color: var(--text-primary);">{{ t('additional_benefits') }}:</h6>
+                    <ul style="margin-bottom: 0; padding-left: 1.5rem;">
+                        <li>{{ t('benefit_highlight', monthly="%.2f"|format(opt.monthly_savings), total="%.2f"|format(opt.total_savings)) }}</li>
+                        <li>{{ opt.additional_benefits }}</li>
+                    </ul>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <p style="margin-bottom: 0.5rem;"><strong>{{ t('recommended_bank') }}:</strong> {{ opt.recommended_bank }}</p>
+                        <p style="margin-bottom: 0;"><strong>{{ t('recommended_product') }}:</strong> {{ opt.recommended_product }}</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <form method="POST" action="{{ url_for('request_consultation', customer_id=customer.id) }}">
+                            <input type="hidden" name="optimization_id" value="{{ opt.id }}">
+                            <input type="hidden" name="request_type" value="optimization">
+                            <button type="submit" class="btn-professional">
+                                {{ t('interested') }}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert-professional alert-info-pro">
+                {{ t('no_optimization') }}
+            </div>
+        {% endif %}
     </div>
 
     <!-- General Consultation Request -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card card-glass">
-                <div class="card-body text-center py-5">
-                    <h4 class="mb-3">💬 需要一对一专业咨询？</h4>
-                    <p class="text-silver mb-4">我们的财务顾问团队随时为您提供个性化的财务规划建议</p>
-                    <form method="POST" action="{{ url_for('request_consultation', customer_id=customer.id) }}" class="row g-3 justify-content-center">
-                        <div class="col-md-6">
-                            <select name="request_type" class="form-select" required>
-                                <option value="">选择咨询类型...</option>
-                                <option value="full_optimization">完整财务优化方案</option>
-                                <option value="card_recommendation">信用卡推荐咨询</option>
-                                <option value="loan_restructure">贷款重组咨询</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <select name="contact_method" class="form-select" required>
-                                <option value="email">Email联系</option>
-                                <option value="phone">电话联系</option>
-                                <option value="whatsapp">WhatsApp联系</option>
-                            </select>
-                        </div>
-                        <div class="col-md-12">
-                            <textarea name="message" class="form-control" rows="3" placeholder="请简述您的需求或问题（可选）"></textarea>
-                        </div>
-                        <div class="col-md-6">
-                            <button type="submit" class="btn btn-success w-100">
-                                ✉️ 提交咨询请求
-                            </button>
-                        </div>
-                    </form>
+    <div>
+        <div class="professional-card" style="text-align: center; padding: 3rem 2rem;">
+            <h4 style="margin-bottom: 1rem; color: var(--text-primary);">{{ t('need_consultation') }}</h4>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">{{ t('consultation_text') }}</p>
+            <form method="POST" action="{{ url_for('request_consultation', customer_id=customer.id) }}" class="row g-3 justify-content-center">
+                <div class="col-md-6">
+                    <select name="request_type" class="form-control-professional" required>
+                        <option value="">{{ t('select_type') }}</option>
+                        <option value="full_optimization">{{ t('full_optimization') }}</option>
+                        <option value="card_recommendation">{{ t('card_consultation') }}</option>
+                        <option value="loan_restructure">{{ t('loan_consultation') }}</option>
+                    </select>
                 </div>
-            </div>
+                <div class="col-md-6">
+                    <select name="contact_method" class="form-control-professional" required>
+                        <option value="email">{{ t('email_contact') }}</option>
+                        <option value="phone">{{ t('phone_contact') }}</option>
+                        <option value="whatsapp">{{ t('whatsapp_contact') }}</option>
+                    </select>
+                </div>
+                <div class="col-md-12">
+                    <textarea name="message" class="form-control-professional" rows="3" placeholder="{{ t('your_message') }}"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <button type="submit" class="btn-success-pro btn-professional w-100">
+                        {{ t('submit_request') }}
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

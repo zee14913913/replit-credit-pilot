@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file, session
 import os
 from datetime import datetime, timedelta
 import json
@@ -24,6 +24,9 @@ from budget.budget_service import BudgetService
 from email_service.email_sender import EmailService
 from db.tag_service import TagService
 
+# i18n support
+from i18n.translations import translate, TRANSLATIONS
+
 # Initialize services
 export_service = ExportService()
 search_service = SearchService()
@@ -38,6 +41,23 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+# Language support
+@app.context_processor
+def inject_language():
+    """Inject language into all templates"""
+    lang = session.get('language', 'en')
+    return {
+        'current_lang': lang,
+        't': lambda key, **kwargs: translate(key, lang, **kwargs)
+    }
+
+@app.route('/set-language/<lang>')
+def set_language(lang):
+    """Set user language preference"""
+    if lang in ['en', 'zh']:
+        session['language'] = lang
+    return redirect(request.referrer or url_for('index'))
 
 
 @app.route('/')
