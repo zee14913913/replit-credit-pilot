@@ -13,12 +13,11 @@ Design requirements: Premium, sophisticated, high-end - suitable for professiona
 
 ### UI/UX Decisions
 
-The platform features a **Premium Luxury UI** with a **Deep Violet Navigation + Warm Beige Content Area + White Cards** color scheme (深紫罗兰导航 + 温暖米白内容区 + 白色卡片), inspired by modern SaaS platforms like Stripe, Vercel, and Linear. The design uses:
-- **Deep Violet Navigation & Footer**: #5B21B6, #7C3AED with purple gradients for header and footer sections
-- **Warm Beige Content Background**: #FAF8F3 for comfortable long-term viewing and reduced eye strain
-- **White Cards**: #FFFFFF cards with subtle shadows for content sections
-- **Dark Text on Light Background**: #1a1a1a primary text, #4a4a4a secondary text for optimal readability
-- **Purple Glow Effects**: Enhanced with sophisticated shadow and glow effects on navigation and interactive elements
+The platform features a **Premium Luxury UI** with a **Deep Violet + Purple Gradient + Pearl White + Silver Bright White** color scheme (深紫罗兰色 + 紫色渐层 + 珍珠白 + 银亮白), inspired by modern SaaS platforms like Stripe, Vercel, and Linear. The design uses:
+- **Deep Violet Primary Colors**: #5B21B6, #7C3AED, #8B5CF6 with purple gradient backgrounds
+- **Pearl White Text**: #F8FAFC, #F1F5F9 for maximum readability
+- **Silver Bright White Accents**: #E2E8F0, #CBD5E1 for secondary elements
+- **Purple Glow Effects**: Enhanced with sophisticated shadow and glow effects throughout
 - **Professional Typography**: Inter font family with modern letter spacing
 - **Company Branding**: INFINITE GZ SDN BHD prominently displayed with enhanced logo size (120px) and purple glow effects
 - **Multi-language Support**: Complete language separation (English/Chinese) with bilingual UI elements
