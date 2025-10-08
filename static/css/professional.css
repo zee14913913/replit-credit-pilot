@@ -470,6 +470,143 @@ h5 { font-size: 1.25rem; }
     color: var(--text-muted);
 }
 
+/* Professional Footer - 专业页脚 */
+.professional-footer {
+    margin-top: 5rem;
+    padding: 3rem 0;
+    background: rgba(20, 0, 31, 0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(91, 33, 182, 0.4);
+    box-shadow: 0 -4px 20px rgba(91, 33, 182, 0.2);
+}
+
+.footer-text {
+    color: var(--nav-text-secondary) !important;
+}
+
+/* Dashboard Special Buttons - 控制面板特殊按钮 */
+
+/* 1. 主要紫色渐变按钮 - 查看控制面板 */
+.btn-dashboard-primary {
+    background: var(--gradient-purple-1);
+    color: #FFFFFF;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(91, 33, 182, 0.3);
+}
+
+.btn-dashboard-primary:hover {
+    background: var(--gradient-purple-2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(91, 33, 182, 0.5);
+    color: #FFFFFF;
+}
+
+/* 2. 金色/香槟金按钮 - 上传账单 */
+.btn-dashboard-gold {
+    background: linear-gradient(135deg, #D4AF37 0%, #F4E4C1 100%);
+    color: #1a1a1a;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.btn-dashboard-gold:hover {
+    background: linear-gradient(135deg, #FFD700 0%, #F4E4C1 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+    color: #1a1a1a;
+}
+
+/* 3. 青绿色按钮 - 查看数据 */
+.btn-dashboard-teal {
+    background: linear-gradient(135deg, #14B8A6 0%, #5EEAD4 100%);
+    color: #FFFFFF;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(20, 184, 166, 0.3);
+}
+
+.btn-dashboard-teal:hover {
+    background: linear-gradient(135deg, #0D9488 0%, #5EEAD4 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(20, 184, 166, 0.5);
+    color: #FFFFFF;
+}
+
+/* 4. 银白色渐变按钮 - 生成财务报表 */
+.btn-dashboard-silver {
+    background: linear-gradient(135deg, #E5E7EB 0%, #F9FAFB 100%);
+    color: #1a1a1a;
+    border: 1px solid #D1D5DB;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-dashboard-silver:hover {
+    background: linear-gradient(135deg, #FFFFFF 0%, #F3F4F6 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+    border-color: var(--border-purple);
+    color: #1a1a1a;
+}
+
+/* 5. 玫瑰金渐变按钮 - 金融咨询服务 */
+.btn-dashboard-rose {
+    background: linear-gradient(135deg, #E879F9 0%, #F0ABFC 100%);
+    color: #FFFFFF;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(232, 121, 249, 0.3);
+}
+
+.btn-dashboard-rose:hover {
+    background: linear-gradient(135deg, #D946EF 0%, #E879F9 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(232, 121, 249, 0.5);
+    color: #FFFFFF;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .nav-menu {

@@ -28,19 +28,19 @@
                     <div class="divider-professional"></div>
                     
                     <div class="d-grid gap-2">
-                        <a href="{{ url_for('customer_dashboard', customer_id=customer.id) }}" class="btn-professional">
+                        <a href="{{ url_for('customer_dashboard', customer_id=customer.id) }}" class="btn-dashboard-primary">
                             {{ t('view_dashboard') }}
                         </a>
-                        <a href="{{ url_for('upload_statement') }}?customer_id={{ customer.id }}" class="btn-professional-outline">
+                        <a href="{{ url_for('upload_statement') }}?customer_id={{ customer.id }}" class="btn-dashboard-gold">
                             {{ t('upload_statement') }}
                         </a>
-                        <a href="{{ url_for('analytics', customer_id=customer.id) }}" class="btn-professional-outline">
+                        <a href="{{ url_for('analytics', customer_id=customer.id) }}" class="btn-dashboard-teal">
                             {{ t('view_analytics') }}
                         </a>
-                        <a href="{{ url_for('generate_enhanced_report', customer_id=customer.id) }}" class="btn-professional-outline">
+                        <a href="{{ url_for('generate_enhanced_report', customer_id=customer.id) }}" class="btn-dashboard-silver">
                             {{ t('generate_report') }}
                         </a>
-                        <a href="{{ url_for('financial_advisory', customer_id=customer.id) }}" class="btn-success-pro">
+                        <a href="{{ url_for('financial_advisory', customer_id=customer.id) }}" class="btn-dashboard-rose">
                             {{ t('nav_advisory') }}
                         </a>
                     </div>
