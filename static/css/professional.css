@@ -21,10 +21,10 @@
     --text-secondary: #9CA3AF;      /* Secondary text - medium gray */
     --text-tertiary: #6B7280;       /* Tertiary text - subtle gray */
     
-    /* Accent Color - Refined Blue */
-    --accent-primary: #3B82F6;      /* Professional blue */
-    --accent-hover: #2563EB;        /* Darker blue on hover */
-    --accent-subtle: rgba(59, 130, 246, 0.1);  /* Subtle blue background */
+    /* Accent Color - Pure White Minimal */
+    --accent-primary: #FFFFFF;      /* Pure white - futuristic minimal */
+    --accent-hover: #E5E7EB;        /* Light gray on hover */
+    --accent-subtle: rgba(255, 255, 255, 0.1);  /* Subtle white background */
     
     /* Semantic Colors - Professional & Clear */
     --success: #10B981;             /* Success green */
@@ -278,7 +278,7 @@ p {
 
 .btn-professional {
     background: var(--accent-primary);
-    color: white;
+    color: var(--bg-primary);
     border: none;
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius-md);
@@ -294,7 +294,7 @@ p {
     background: var(--accent-hover);
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
-    color: white;
+    color: var(--bg-primary);
 }
 
 .btn-professional-outline {
@@ -423,8 +423,8 @@ p {
 }
 
 .badge-primary-pro {
-    background: var(--accent-subtle);
-    color: var(--accent-primary);
+    background: var(--accent-primary);
+    color: var(--bg-primary);
 }
 
 .badge-success-pro {
