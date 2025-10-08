@@ -6,7 +6,16 @@ The Smart Credit & Loan Manager is a **Premium Enterprise-Grade SaaS Platform** 
 
 ## Recent Updates (October 2025)
 
-### Major Feature Release
+### 🚀 REVENUE-GENERATING ADVISORY SERVICES (Latest - Oct 8, 2025)
+- ✅ **AI-Powered Credit Card Recommendations**: Analyzes spending patterns to suggest optimal cards from 11+ Malaysian banks (Maybank, CIMB, Public Bank, RHB, etc.) to maximize rewards and cashback
+- ✅ **Financial Optimization Engine**: Provides debt consolidation, balance transfer, and loan refinancing suggestions based on latest BNM rates and bank policies with before/after ROI comparisons
+- ✅ **Success-Based Fee System**: Revolutionary 50% profit-sharing model - zero fees if no savings/benefits achieved, ensuring complete client trust
+- ✅ **Customer Type Classification**: Differentiated income proof requirements for employees, self-employed, and business owners with detailed documentation guides
+- ✅ **Enhanced Monthly Reports**: Integrated PDF reports with card recommendations, optimization suggestions, fee policy declaration, and consultation CTA
+- ✅ **Consultation Request System**: One-click client consultation requests with email/phone/WhatsApp preferences, creating revenue pipeline
+- ✅ **Database Expansion**: 7 new advisory tables (credit_card_products, card_recommendations, financial_optimization_suggestions, consultation_requests, success_fee_calculations, customer_employment_types, service_terms)
+
+### Major Feature Release (Earlier Oct 2025)
 - ✅ **Premium UI/UX Redesign**: Luxury dark theme (Obsidian/Champagne/Jade palette), Playfair Display + Inter typography
 - ✅ **Data Export Suite**: Excel/CSV export with professional formatting, multi-sheet workbooks
 - ✅ **Advanced Search & Filter**: Full-text search, saved filters, smart suggestions
@@ -51,6 +60,15 @@ Design requirements: Premium, sophisticated, high-end - suitable for professiona
 - `bnm_rates`: Bank Negara Malaysia interest rates
 - `banking_news`: Banking industry updates
 - `audit_logs`: User action tracking
+
+**Advisory System Models (NEW)**:
+- `credit_card_products`: Malaysian credit card database (11+ banks, cashback/points/benefits data)
+- `card_recommendations`: AI-generated card suggestions with match scores and estimated monthly benefits
+- `financial_optimization_suggestions`: Debt consolidation, balance transfer, refinancing recommendations with BNM rates
+- `customer_employment_types`: Employment classification (employee/self-employed/business owner) with income verification
+- `consultation_requests`: Client consultation pipeline with contact preferences and status tracking
+- `success_fee_calculations`: 50% profit-sharing fee calculations, zero-fee guarantee enforcement
+- `service_terms`: Multilingual (EN/CN) service terms, fee policies, income requirements by customer type
 
 ### Frontend Architecture
 
