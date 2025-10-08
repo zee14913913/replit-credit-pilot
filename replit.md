@@ -13,7 +13,15 @@ Design requirements: Premium, sophisticated, high-end - suitable for professiona
 
 ### UI/UX Decisions
 
-The platform features a **Premium Luxury UI** with a dark jewel-tone palette, incorporating champagne gold, rose gold, platinum, and deep navy backgrounds. Professional typography (Playfair Display, Inter) and a sophisticated design system are used, avoiding emojis and integrating company branding (INFINITE GZ SDN BHD) prominently. It includes a customer portal, professional cards, tables, badges, alerts, and multi-language support (English/Chinese).
+The platform features a **Premium Luxury UI** with a **Deep Violet + Purple Gradient + Pearl White + Silver Bright White** color scheme (深紫罗兰色 + 紫色渐层 + 珍珠白 + 银亮白), inspired by modern SaaS platforms like Stripe, Vercel, and Linear. The design uses:
+- **Deep Violet Primary Colors**: #5B21B6, #7C3AED, #8B5CF6 with purple gradient backgrounds
+- **Pearl White Text**: #F8FAFC, #F1F5F9 for maximum readability
+- **Silver Bright White Accents**: #E2E8F0, #CBD5E1 for secondary elements
+- **Purple Glow Effects**: Enhanced with sophisticated shadow and glow effects throughout
+- **Professional Typography**: Inter font family with modern letter spacing
+- **Company Branding**: INFINITE GZ SDN BHD prominently displayed with enhanced logo size (90px) and purple glow effects
+- **Multi-language Support**: Complete language separation (English/Chinese) with bilingual UI elements
+- **No Emojis**: Clean, professional design without childish elements
 
 ### Technical Implementations
 
