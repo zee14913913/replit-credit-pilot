@@ -79,12 +79,37 @@ def parse_maybank_statement(file_path):
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
                 text = "\n".join(p.extract_text() for p in pdf.pages)
-            for m in re.findall(r"(\d{2}\s[A-Za-z]+)\s+([A-Za-z\s\-&.,]+?)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})", text):
-                transactions.append({"date": m[0], "description": m[1].strip(), "amount": float(m[2].replace(",", ""))})
+            
+            # Updated regex to match Maybank format: DD/MM DD/MM DESCRIPTION ... AMOUNT or AMOUNTCR
+            pattern = r"(\d{2}/\d{2})\s+\d{2}/\d{2}\s+(.+?)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})(CR)?\s*$"
+            
+            for line in text.split('\n'):
+                m = re.search(pattern, line)
+                if m:
+                    date = m.group(1)
+                    description = m.group(2).strip()
+                    amount_str = m.group(3).replace(",", "")
+                    is_credit = m.group(4) == "CR"
+                    
+                    # Remove extra location info from description
+                    description = re.sub(r'\s+[A-Z\s]+MY\s*$', '', description)
+                    description = re.sub(r'\s+:[0-9A-Z/]+\s*$', '', description)
+                    description = re.sub(r'\s+[0-9A-Z]+\s+MY\s*$', '', description)
+                    
+                    amount = float(amount_str)
+                    if is_credit:
+                        amount = -amount  # CR means credit/refund (negative)
+                    
+                    transactions.append({
+                        "date": date, 
+                        "description": description.strip(), 
+                        "amount": amount
+                    })
         else:
             df = pd.read_excel(file_path, sheet_name="Transactions")
             for _, r in df.iterrows():
                 transactions.append({"date": str(r["Txn Date"]), "description": str(r["Merchant"]), "amount": float(r["Amount (RM)"])})
+        
         info["total"] = sum(t["amount"] for t in transactions)
         print(f"✅ Maybank parsed {len(transactions)} transactions.")
         return info, transactions
