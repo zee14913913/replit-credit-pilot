@@ -739,53 +739,44 @@ p {
 }
 
 .footer-divider {
-    display: none; /* Remove decorative divider for cleaner look */
+    display: none;
 }
 
-.footer-content {
-    display: grid;
-    grid-template-columns: 1.5fr 2fr;
+/* Centered Header with Logo and Company Name */
+.footer-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: var(--space-md);
-    padding: var(--space-sm) 0;
+    padding: var(--space-lg) 10%;
     border-bottom: 1px solid var(--border-subtle);
 }
 
-.footer-brand {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-lg);
-}
-
 .footer-logo {
-    height: 36px;
-    width: auto;
-    opacity: 0.8;
-}
-
-.footer-brand-text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.375rem;
+    width: 48px;
+    height: 48px;
+    filter: drop-shadow(0 0 8px rgba(192, 192, 192, 0.3));
 }
 
 .footer-company-name {
-    font-size: 1.125rem;
+    font-size: 1.5rem;
     font-weight: 600;
     color: var(--text-primary);
     margin: 0;
+    background: linear-gradient(135deg, #FFFFFF 0%, rgba(192, 192, 192, 0.9) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.02em;
 }
 
-.footer-system-name {
-    font-size: 0.875rem;
-    color: var(--text-tertiary);
-    font-weight: 400;
-    margin: 0;
-}
-
-.footer-links {
+/* Three Column Layout */
+.footer-columns {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-xl);
+    padding: var(--space-lg) 10%;
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .footer-column {
@@ -794,9 +785,9 @@ p {
 }
 
 .footer-heading {
-    font-size: 0.8rem;
+    font-size: 1rem;
     font-weight: 600;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: var(--space-md);

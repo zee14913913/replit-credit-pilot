@@ -92,49 +92,48 @@
     <footer class="professional-footer">
         <div class="footer-divider"></div>
         <div class="container-professional">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <img src="{{ url_for('static', filename='logo.png') }}" alt="{{ t('company_name') }}" class="footer-logo">
-                    <div class="footer-brand-text">
-                        <h3 class="footer-company-name">{{ t('company_name') }}</h3>
-                        <p class="footer-system-name">{{ t('system_name') }}</p>
-                    </div>
+            <!-- Centered Header with Logo and Company Name -->
+            <div class="footer-header">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="INFINITE GZ SDN BHD" class="footer-logo">
+                <h3 class="footer-company-name">INFINITE GZ SDN BHD</h3>
+            </div>
+            
+            <!-- Three Column Layout -->
+            <div class="footer-columns">
+                <!-- Left Column: Credit Card -->
+                <div class="footer-column">
+                    <h4 class="footer-heading">Credit Card</h4>
+                    <ul class="footer-menu">
+                        <li><a href="{{ url_for('upload_statement') }}" class="footer-link">Upload</a></li>
+                        <li><a href="{{ url_for('reminders') }}" class="footer-link">Reminders</a></li>
+                        <li><a href="{{ url_for('index') }}" class="footer-link">Monthly Summary</a></li>
+                    </ul>
                 </div>
                 
-                <div class="footer-links">
-                    <div class="footer-column">
-                        <h4 class="footer-heading">{{ t('quick_actions') }}</h4>
-                        <ul class="footer-menu">
-                            <li><a href="{{ url_for('index') }}" class="footer-link">{{ t('nav_dashboard') }}</a></li>
-                            <li><a href="{{ url_for('upload_statement') }}" class="footer-link">{{ t('nav_upload') }}</a></li>
-                            <li><a href="{{ url_for('customer_authorization') }}" class="footer-link">{{ t('customer_authorization') }}</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h4 class="footer-heading">{{ t('nav_services') }}</h4>
-                        <ul class="footer-menu">
-                            <li><a href="{{ url_for('reminders') }}" class="footer-link">{{ t('nav_reminders') }}</a></li>
-                            <li><a href="{{ url_for('banking_news') }}" class="footer-link">{{ t('nav_news') }}</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h4 class="footer-heading">{{ t('nav_account') }}</h4>
-                        <ul class="footer-menu">
-                            {% if session.get('customer_token') %}
-                            <li><a href="{{ url_for('customer_portal') }}" class="footer-link">{{ t('customer_portal') }}</a></li>
-                            {% else %}
-                            <li><a href="{{ url_for('customer_login') }}" class="footer-link">{{ t('customer_login') }}</a></li>
-                            <li><a href="{{ url_for('customer_register') }}" class="footer-link">{{ t('customer_register') }}</a></li>
-                            {% endif %}
-                        </ul>
-                    </div>
+                <!-- Center Column: Customers -->
+                <div class="footer-column">
+                    <h4 class="footer-heading">Customers</h4>
+                    <ul class="footer-menu">
+                        <li><a href="{{ url_for('customer_register') }}" class="footer-link">Register</a></li>
+                        <li><a href="{{ url_for('customer_login') }}" class="footer-link">Login</a></li>
+                        <li><a href="{{ url_for('customer_portal') }}" class="footer-link">Dashboard</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Right Column: Services -->
+                <div class="footer-column">
+                    <h4 class="footer-heading">Services</h4>
+                    <ul class="footer-menu">
+                        <li><a href="{{ url_for('banking_news') }}" class="footer-link">Loans</a></li>
+                        <li><a href="{{ url_for('customer_authorization') }}" class="footer-link">Business</a></li>
+                        <li><a href="{{ url_for('customer_authorization') }}" class="footer-link">Agreements</a></li>
+                    </ul>
                 </div>
             </div>
             
+            <!-- Bottom: Copyright and Language Switcher -->
             <div class="footer-bottom">
-                <p class="footer-copyright">&copy; 2025 {{ t('company_name') }}. {{ t('all_rights_reserved') }}</p>
+                <p class="footer-copyright">&copy; 2025 INFINITE GZ SDN BHD. All Rights Reserved</p>
                 <div class="footer-language">
                     <button class="footer-lang-btn {{ 'active' if current_lang == 'en' }}" 
                             onclick="window.location.href='{{ url_for('set_language', lang='en') }}'">
