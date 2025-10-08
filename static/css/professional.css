@@ -451,6 +451,19 @@ h5 { font-size: 1.25rem; }
     padding: 4rem 3rem;
 }
 
+/* Main content area with dark gray background */
+body > .container-professional {
+    background: #2a2a2a;
+    border-radius: 12px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Keep footer content area transparent to show footer background */
+.professional-footer .container-professional {
+    background: transparent;
+}
+
 /* Fade In Animation */
 .fade-in {
     animation: fadeIn 0.5s ease-in;
