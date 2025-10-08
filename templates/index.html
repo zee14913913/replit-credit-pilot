@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">Customer Dashboard</h2>
+    </div>
+</div>
+
+<div class="row">
+    {% for customer in customers %}
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-person-circle"></i> {{ customer.name }}</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Email:</strong> {{ customer.email }}</p>
+                <p><strong>Monthly Income:</strong> RM {{ "{:,.2f}".format(customer.monthly_income) }}</p>
+                <div class="btn-group" role="group">
+                    <a href="{{ url_for('customer_dashboard', customer_id=customer.id) }}" class="btn btn-primary">
+                        <i class="bi bi-graph-up"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('loan_evaluation', customer_id=customer.id) }}" class="btn btn-success">
+                        <i class="bi bi-calculator"></i> Loan Evaluation
+                    </a>
+                    <a href="{{ url_for('analytics', customer_id=customer.id) }}" class="btn btn-info">
+                        <i class="bi bi-bar-chart"></i> Analytics
+                    </a>
+                    <a href="{{ url_for('generate_report', customer_id=customer.id) }}" class="btn btn-secondary">
+                        <i class="bi bi-file-pdf"></i> Generate Report
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

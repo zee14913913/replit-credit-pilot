@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Upload Credit Card Statement</h2>
+<form method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label class="form-label">Select Credit Card</label>
+        <select name="card_id" class="form-select" required>
+            {% for card in cards %}
+            <option value="{{ card.id }}">{{ card.customer_name }} - {{ card.bank_name }} ****{{ card.card_number_last4 }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Statement File (PDF or Excel)</label>
+        <input type="file" name="statement_file" class="form-control" accept=".pdf,.xlsx,.xls" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Upload & Parse</button>
+</form>
+{% endblock %}

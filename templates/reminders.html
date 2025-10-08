@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Repayment Reminders</h2>
+<div class="row">
+    <div class="col-md-8">
+        <table class="table">
+            <thead><tr><th>Customer</th><th>Bank</th><th>Card</th><th>Due Date</th><th>Amount</th><th>Action</th></tr></thead>
+            <tbody>
+            {% for reminder in reminders %}
+            <tr>
+                <td>{{ reminder.name }}</td>
+                <td>{{ reminder.bank_name }}</td>
+                <td>****{{ reminder.card_number_last4 }}</td>
+                <td>{{ reminder.due_date }}</td>
+                <td>RM {{ "{:.2f}".format(reminder.amount_due) }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('mark_paid_route', reminder_id=reminder.id) }}" style="display:inline;">
+                        <button class="btn btn-sm btn-success">Mark Paid</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

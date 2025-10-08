@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Malaysia Banking Insights</h2>
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white"><h5>Bank Negara Malaysia Rates</h5></div>
+            <div class="card-body">
+                <p><strong>OPR (Overnight Policy Rate):</strong> {{ rates.opr.rate_value }}%</p>
+                <p><strong>SBR (Statutory Reserve Rate):</strong> {{ rates.sbr.rate_value }}%</p>
+                <a href="{{ url_for('refresh_rates') }}" class="btn btn-primary">Refresh Rates</a>
+            </div>
+        </div>
+    </div>
+</div>
+<h4>Banking News & Updates</h4>
+<div class="row">
+    {% for news in news_items %}
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header">{{ news.bank_name }} - {{ news.news_type }}</div>
+            <div class="card-body">
+                <h6>{{ news.title }}</h6>
+                <p>{{ news.content }}</p>
+                <small class="text-muted">{{ news.effective_date }}</small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

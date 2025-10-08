@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ customer.name }}'s Dashboard</h2>
+<p><strong>Monthly Income:</strong> RM {{ "{:,.2f}".format(customer.monthly_income) }}</p>
+<p><strong>Total Spending:</strong> RM {{ "{:,.2f}".format(total_spending) }}</p>
+
+<h3 class="mt-4">Credit Cards</h3>
+<div class="row">
+    {% for card in cards %}
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5>{{ card.bank_name }}</h5>
+                <p>Card: ****{{ card.card_number_last4 }}</p>
+                <p>Limit: RM {{ "{:,.2f}".format(card.credit_limit) }}</p>
+                <p>Due Date: Day {{ card.due_date }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<h3 class="mt-4">Spending Summary</h3>
+<div id="spendingChart"></div>
+
+<script>
+var data = [{
+    values: [{% for category, data in spending_summary.items() %}{{ data.total }},{% endfor %}],
+    labels: [{% for category in spending_summary.keys() %}'{{ category }}',{% endfor %}],
+    type: 'pie'
+}];
+var layout = {
+    height: 400,
+    title: 'Spending by Category'
+};
+Plotly.newPlot('spendingChart', data, layout);
+</script>
+{% endblock %}

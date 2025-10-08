@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Financial Analytics - {{ customer.name }}</h2>
+<div id="categoryChart"></div>
+<div id="trendChart" class="mt-4"></div>
+<script>
+var categoryData = [{
+    x: [{% for cat, data in spending_summary.items() %}'{{ cat }}',{% endfor %}],
+    y: [{% for cat, data in spending_summary.items() %}{{ data.total }},{% endfor %}],
+    type: 'bar'
+}];
+Plotly.newPlot('categoryChart', categoryData, {title: 'Spending by Category'});
+
+var dates = [{% for t in transactions %}'{{ t.transaction_date }}',{% endfor %}];
+var amounts = [{% for t in transactions %}{{ t.amount }},{% endfor %}];
+var trendData = [{x: dates, y: amounts, mode: 'lines+markers', type: 'scatter'}];
+Plotly.newPlot('trendChart', trendData, {title: 'Spending Trend'});
+</script>
+{% endblock %}

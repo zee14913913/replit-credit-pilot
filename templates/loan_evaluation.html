@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Loan Evaluation - {{ customer.name }}</h2>
+<div class="alert alert-info">
+    <h4>Current DSR: {{ "{:.2%}".format(dsr) }}</h4>
+    <p>Monthly Income: RM {{ "{:,.2f}".format(customer.monthly_income) }}</p>
+    <p>Current Repayments: RM {{ "{:,.2f}".format(current_repayments) }}</p>
+</div>
+<div class="card">
+    <div class="card-header"><h5>Maximum Loan Capacity</h5></div>
+    <div class="card-body">
+        <p><strong>Max Loan Amount:</strong> RM {{ "{:,.2f}".format(max_loan_calc.max_loan_amount) }}</p>
+        <p><strong>Monthly Installment:</strong> RM {{ "{:,.2f}".format(max_loan_calc.monthly_installment) }}</p>
+        <p><strong>Interest Rate:</strong> {{ "{:.2%}".format(max_loan_calc.interest_rate) }}</p>
+        <p><strong>Loan Term:</strong> {{ max_loan_calc.loan_term_months }} months</p>
+    </div>
+</div>
+<h4 class="mt-4">Loan Scenarios</h4>
+<table class="table">
+    <thead><tr><th>Loan Amount</th><th>Monthly Payment</th><th>New DSR</th><th>Affordable</th></tr></thead>
+    <tbody>
+    {% for scenario in scenarios %}
+    <tr class="{{ 'table-success' if scenario.affordable else 'table-danger' }}">
+        <td>RM {{ "{:,.0f}".format(scenario.loan_amount) }}</td>
+        <td>RM {{ "{:,.2f}".format(scenario.monthly_payment) }}</td>
+        <td>{{ "{:.2%}".format(scenario.new_dsr) }}</td>
+        <td>{{ 'Yes' if scenario.affordable else 'No' }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
