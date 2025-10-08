@@ -2,56 +2,7 @@
 
 ## Overview
 
-The Smart Credit & Loan Manager is a **Premium Enterprise-Grade SaaS Platform** for Malaysian banking customers. Built with Flask, it provides comprehensive financial management including credit card statement processing, advanced analytics, budget management, batch operations, and intelligent automation. The system features a sophisticated dark jewel-tone UI with 100% data accuracy guarantee through dual verification.
-
-## Recent Updates (October 2025)
-
-### 🚀 REVENUE-GENERATING ADVISORY SERVICES (Latest - Oct 8, 2025)
-- ✅ **AI-Powered Credit Card Recommendations**: Analyzes spending patterns to suggest optimal cards from 11+ Malaysian banks (Maybank, CIMB, Public Bank, RHB, etc.) to maximize rewards and cashback
-- ✅ **Financial Optimization Engine**: Provides debt consolidation, balance transfer, and loan refinancing suggestions based on latest BNM rates and bank policies with before/after ROI comparisons
-- ✅ **Success-Based Fee System**: Revolutionary 50% profit-sharing model - zero fees if no savings/benefits achieved, ensuring complete client trust
-- ✅ **Customer Type Classification**: Differentiated income proof requirements for employees, self-employed, and business owners with detailed documentation guides
-- ✅ **Enhanced Monthly Reports**: Integrated PDF reports with card recommendations, optimization suggestions, fee policy declaration, and consultation CTA
-- ✅ **Consultation Request System**: One-click client consultation requests with email/phone/WhatsApp preferences, creating revenue pipeline
-- ✅ **Database Expansion**: 7 new advisory tables (credit_card_products, card_recommendations, financial_optimization_suggestions, consultation_requests, success_fee_calculations, customer_employment_types, service_terms)
-
-### Major Feature Release (Earlier Oct 2025)
-- ✅ **Premium UI/UX Redesign**: Luxury dark theme (Obsidian/Champagne/Jade palette), Playfair Display + Inter typography
-- ✅ **Data Export Suite**: Excel/CSV export with professional formatting, multi-sheet workbooks
-- ✅ **Advanced Search & Filter**: Full-text search, saved filters, smart suggestions
-- ✅ **Batch Operations**: Multi-file upload with progress tracking
-- ✅ **Budget Management**: Category budgets, utilization tracking, smart alerts
-- ✅ **Tags & Notes**: Custom transaction tagging and annotation system
-- ✅ **Email Notifications**: Upload alerts, payment reminders, budget warnings
-- ✅ **Database Expansion**: 13 new tables for advanced features
-
-### 🎨 PROFESSIONAL ENTERPRISE UI REDESIGN (Latest - Oct 8, 2025)
-- ✅ **Company Branding Integration**: INFINITE GZ SDN BHD logo prominently displayed in navigation and footer
-- ✅ **Professional Design System**: Removed all emoji icons, implemented text-based navigation with enterprise-grade styling
-- ✅ **Multi-language Support**: Complete i18n system with English/Chinese (中文) language switcher
-- ✅ **Advanced CSS Framework**: Custom professional.css with enterprise SaaS design patterns
-- ✅ **Mature UI Components**: Professional cards, tables, badges, alerts with sophisticated color palette
-- ✅ **Responsive Navigation**: Sticky navigation bar with company logo, system name, and language switcher
-- ✅ **Typography Enhancement**: Inter font family for professional, modern look
-- ✅ **Color Scheme (Updated)**: Mature professional palette - Deep Bronze Gold (#b8860b), Deep Gray (#2c2c2e), Deep Green (#2f5233) - NO blue/cyan colors
-
-### 📄 CUSTOMER AUTHORIZATION AGREEMENT (Oct 8, 2025)
-- ✅ **Comprehensive Service Agreement**: Professional bilingual (EN/CN) authorization document
-- ✅ **Service Coverage**:
-  - Credit Card Management Services
-  - Debt Optimization Services
-  - Bank Loan Advisory Services
-  - Audit & Accounting Services
-  - **Mortgage Interest Discount (50% Off)** - Exclusive refinancing through banking partners
-  - **SME Financing** - Business credit line up to RM 1,000,000 for 1 year
-- ✅ **Legal Framework**: Customer authorization, fee structure (50% profit sharing), terms & conditions (PDPA 2010 compliant)
-- ✅ **Professional Layout**: Signature section, downloadable PDF, print-friendly design
-- ✅ **Route**: `/customer-authorization` - accessible from main navigation
-
-### UI/UX Improvements (Earlier)
-- Added Quick Actions dashboard for key features
-- Glassmorphism effects and premium card designs
-- Optimized for professional client presentations
+The Smart Credit & Loan Manager is a **Premium Enterprise-Grade SaaS Platform** for Malaysian banking customers, built with Flask. Its purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, budget management, batch operations, and intelligent automation. The platform features a sophisticated dark jewel-tone UI and guarantees 100% data accuracy through a dual verification system. It aims to generate revenue through AI-powered advisory services, offering credit card recommendations, financial optimization suggestions (debt consolidation, balance transfers, loan refinancing), and a success-based fee model. The business vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
 ## User Preferences
 
@@ -60,223 +11,58 @@ Design requirements: Premium, sophisticated, high-end - suitable for professiona
 
 ## System Architecture
 
-### Backend Architecture
+### UI/UX Decisions
 
-**Framework**: Flask (Python web framework)
-- Chosen for rapid development and simplicity
-- Lightweight and flexible for small to medium-scale applications
-- Easy integration with Python-based data processing libraries
+The platform features a **Premium Luxury UI** with a dark jewel-tone palette, incorporating champagne gold, rose gold, platinum, and deep navy backgrounds. Professional typography (Playfair Display, Inter) and a sophisticated design system are used, avoiding emojis and integrating company branding (INFINITE GZ SDN BHD) prominently. It includes a customer portal, professional cards, tables, badges, alerts, and multi-language support (English/Chinese).
 
-**Database Layer**: SQLite with context manager pattern
-- SQLite chosen for simplicity and zero-configuration deployment
-- Context manager (`@contextmanager`) ensures proper connection handling and automatic cleanup
-- `sqlite3.Row` row factory enables dictionary-like access to query results
-- Database path: `db/smart_loan_manager.db`
+### Technical Implementations
 
-**Core Data Models**:
-- `customers`: Customer profiles with income information
-- `credit_cards`: Credit card details linked to customers
-- `statements`: Uploaded statements with validation metadata
-- `transactions`: Individual statement line items with categories
-- `repayment_reminders`: Payment reminders with tracking flags
-- `bnm_rates`: Bank Negara Malaysia interest rates
-- `banking_news`: Banking industry updates
-- `audit_logs`: User action tracking
+The backend is built with **Flask**, chosen for rapid development and flexibility. The database layer uses **SQLite** with a context manager pattern for efficient connection handling, with a design consideration for Drizzle ORM and potential Postgres support. Jinja2 is used for server-side rendering, and Bootstrap 5 with Bootstrap Icons provides a responsive UI. Plotly.js handles client-side data visualization.
 
-**Advisory System Models (NEW)**:
-- `credit_card_products`: Malaysian credit card database (11+ banks, cashback/points/benefits data)
-- `card_recommendations`: AI-generated card suggestions with match scores and estimated monthly benefits
-- `financial_optimization_suggestions`: Debt consolidation, balance transfer, refinancing recommendations with BNM rates
-- `customer_employment_types`: Employment classification (employee/self-employed/business owner) with income verification
-- `consultation_requests`: Client consultation pipeline with contact preferences and status tracking
-- `success_fee_calculations`: 50% profit-sharing fee calculations, zero-fee guarantee enforcement
-- `service_terms`: Multilingual (EN/CN) service terms, fee policies, income requirements by customer type
+### Feature Specifications
 
-### Frontend Architecture
+**Core Features:**
+- **Statement Ingestion:** PDF parsing (with OCR via `pdfplumber`) and Excel support, regex-based transaction extraction, and batch upload.
+- **Transaction Categorization:** Keyword-based system with 10+ predefined categories and Malaysia-specific merchant recognition.
+- **Statement Validation (Dual Verification):** Ensures 100% data accuracy by cross-validating parsed transactions against PDF totals, with confidence scoring, duplicate detection, and OCR support.
+- **Revenue-Generating Advisory Services:**
+    - **AI-Powered Credit Card Recommendations:** Analyzes spending patterns for optimal card suggestions from 11+ Malaysian banks.
+    - **Financial Optimization Engine:** Offers debt consolidation, balance transfer, and loan refinancing suggestions based on BNM rates.
+    - **Success-Based Fee System:** 50% profit-sharing model; zero fees if no savings are achieved.
+    - **Consultation Request System:** Facilitates client consultation requests.
+- **Budget Management:** Category-based monthly budgets, real-time utilization tracking, and smart alerts.
+- **Data Export & Reporting:** Professional Excel/CSV export and PDF report generation (using ReportLab).
+- **Advanced Search & Filter:** Full-text search, advanced filtering, and saved filter presets.
+- **Batch Operations:** Multi-file upload, batch job management, and error handling.
+- **Reminder System:** Scheduled payment reminders via email.
+- **Authentication & Authorization:** Secure customer login/registration with SHA-256 password hashing and token-based session management.
+- **Customer Authorization Agreement:** Bilingual (EN/CN) service agreement including Credit Card Management, Debt Optimization, Bank Loan Advisory, Audit & Accounting, Mortgage Interest Discount, and SME Financing.
 
-**Template Engine**: Jinja2 (Flask default)
-- Server-side rendering for simplicity
-- Template inheritance with `base.html` as master template
-- Bootstrap 5 for responsive UI components
+### System Design Choices
 
-**Data Visualization**: Plotly.js
-- Client-side interactive charts for spending analysis
-- Pie charts for category breakdown
-- Line charts for spending trends
-- Chosen for ease of use and interactivity without complex setup
-
-**UI Framework**: Bootstrap 5 with Bootstrap Icons
-- Responsive design out of the box
-- Consistent styling across all pages
-- Icon library for visual enhancement
-
-### Core Feature Modules
-
-**Statement Ingestion (`ingest/statement_parser.py`)**:
-- PDF parsing using `pdfplumber` library with OCR support
-- Regex-based transaction extraction
-- Statement metadata extraction (date, total, card number)
-- Supports both PDF and Excel formats
-- Batch upload support for multiple files
-
-**Transaction Categorization (`validate/categorizer.py`)**:
-- Keyword-based categorization system
-- 10+ predefined categories (Food & Dining, Transport, Shopping, etc.)
-- Malaysia-specific merchant recognition (Grab, Petronas, Lazada, etc.)
-- Fallback to "Others" category for unmatched transactions
-
-**Statement Validation (`validate/transaction_validator.py`)** - Dual Verification System:
-- **Double verification mechanism** for 100% data accuracy
-- **Layer 1**: Parse transactions from PDF/Excel using intelligent extraction
-- **Layer 2**: Cross-validate against PDF-declared totals (TOTAL DEBIT, TOTAL CREDIT)
-- **Mathematical verification**: Ensures extracted totals match official statement totals
-- **Confidence scoring**: 0-100 scale with auto-approval at ≥95%
-- **Automated decision**: PASSED (auto-approve) / WARNING (manual review) / FAILED (reject)
-- **Duplicate detection**: Identifies and flags duplicate transactions
-- **Comprehensive reports**: Detailed validation reports with PDF vs extracted comparison
-- **OCR support**: Automatically handles scanned PDFs via Tesseract
-- **Audit trail**: Full validation history stored in database
-
-**DSR Calculation (`loan/dsr_calculator.py`)**:
-- Debt Service Ratio formula: `total_monthly_repayments / monthly_income`
-- Maximum loan amount calculation based on DSR threshold (default 45%)
-- Monthly installment calculation using amortization formula
-- Loan scenario simulation with varying amounts
-
-**Reminder System (`validate/reminder_service.py`)**:
-- Scheduled reminders at 7, 3, and 1 day(s) before due date
-- Email notification system (send logic referenced but not shown)
-- Payment tracking and reminder deactivation
-- Uses `schedule` library for periodic task execution
-
-**Report Generation (`report/pdf_generator.py` + `export/export_service.py`)**:
-- ReportLab library for PDF creation
-- Monthly financial summary reports
-- Excel export with professional formatting (multiple sheets)
-- CSV export for accounting software integration
-- Data export with filtering support
-- Export history tracking
-
-**Search & Filter System (`search/search_service.py`)**:
-- Full-text search across transactions, notes, and tags
-- Advanced filtering (category, date range, amount, bank)
-- Saved filter presets with usage tracking
-- Smart filter suggestions based on data
-
-**Batch Operations (`batch/batch_service.py`)**:
-- Multi-file upload with progress tracking
-- Batch job management and monitoring
-- Batch deletion and archiving
-- Error handling and reporting
-
-**Budget Management (`budget/budget_service.py`)**:
-- Category-based monthly budgets
-- Real-time utilization tracking
-- Alert thresholds (80%, 100%)
-- Smart budget recommendations based on history
-- Budget status dashboard (safe/warning/exceeded)
-
-**Tag & Notes System (`db/tag_service.py`)**:
-- Custom transaction tagging
-- Transaction notes and annotations
-- Tag usage tracking and suggestions
-- Receipt file upload support (planned)
-
-**Email Notification Service (`email_service/email_sender.py`)**:
-- Upload success/failure notifications
-- Payment reminders (7, 3, 1 days before due)
-- Budget alert emails
-- Customizable notification preferences
-- Email delivery tracking and logging
-
-**Banking Information (`news/bnm_api.py`)**:
-- Integration with Bank Negara Malaysia public API
-- Fetches Overnight Policy Rate (OPR) and Statutory Base Rate (SBR)
-- Fallback default rates if API unavailable
-- Banking news management system
-
-### Data Flow Architecture
-
-1. **Statement Upload Flow**:
-   - User uploads PDF/Excel → Parser extracts transactions → Categorizer assigns categories → Validator checks consistency → User confirms → Data saved to database
-
-2. **Loan Evaluation Flow**:
-   - Fetch customer income + confirmed transactions → Calculate current repayments → Compute DSR → Simulate loan scenarios → Display eligibility
-
-3. **Reminder Flow**:
-   - Background scheduler runs daily → Checks due dates → Sends reminders based on timeline → Updates reminder status → User marks as paid
-
-4. **Analytics Flow**:
-   - Query confirmed transactions → Group by category → Calculate totals → Render Plotly charts → Display insights
-
-### Design Patterns
-
-**Repository Pattern**: Database access abstracted through `db/database.py` functions
-- Centralized data access logic
-- Easier testing and maintenance
-- Clear separation between business logic and data layer
-
-**Template Inheritance**: All HTML templates extend `base.html`
-- Consistent navigation and layout
-- Reduced code duplication
-- Easier global UI changes
-
-**Context Manager Pattern**: Database connection handling
-- Automatic resource cleanup
-- Exception safety
-- Pythonic resource management
-
-### Security Considerations
-
-- Session secret key from environment variable with fallback
-- File upload size limit (16MB)
-- SQL injection prevention via parameterized queries
-- Audit logging for user actions (referenced in database functions)
+- **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, and new models for authentication (customer_logins, customer_sessions) and advisory services (credit_card_products, card_recommendations, financial_optimization_suggestions, consultation_requests, success_fee_calculations, customer_employment_types, service_terms).
+- **Design Patterns:** Utilizes Repository Pattern for database abstraction, Template Inheritance for consistent UI, and Context Manager Pattern for database connection handling.
+- **Security:** Implements session secret key from environment variables, file upload size limits, SQL injection prevention via parameterized queries, and audit logging.
 
 ## External Dependencies
 
 ### Third-Party Libraries
 
-**Core Framework**:
-- `flask`: Web application framework
-
-**PDF Processing**:
-- `pdfplumber`: PDF text and table extraction
-- `reportlab`: PDF report generation
-
-**Data Processing**:
-- `pandas`: Excel file processing and data manipulation
-- `schedule`: Task scheduling for reminders
-
-**HTTP Requests**:
-- `requests`: Bank Negara Malaysia API integration
-
-**Visualization**:
-- `plotly.js`: Client-side charting (CDN)
-
-**UI Framework**:
-- `bootstrap@5.3.0`: Responsive UI (CDN)
-- `bootstrap-icons@1.11.0`: Icon library (CDN)
+- **Core Framework**: `flask`
+- **PDF Processing**: `pdfplumber`, `reportlab`
+- **Data Processing**: `pandas`, `schedule`
+- **HTTP Requests**: `requests`
+- **Visualization**: `plotly.js` (CDN)
+- **UI Framework**: `bootstrap@5.3.0` (CDN), `bootstrap-icons@1.11.0` (CDN)
 
 ### External APIs
 
-**Bank Negara Malaysia Public API**:
-- Base URL: `https://api.bnm.gov.my`
-- Endpoints: `/public/opr`, `/public/base-rate`
-- Purpose: Fetch current interest rates
-- Fallback: Hardcoded default rates if API fails
+- **Bank Negara Malaysia Public API**: `https://api.bnm.gov.my` for fetching current interest rates (OPR, SBR) with a fallback to default rates.
 
 ### Database
 
-**SQLite**: File-based relational database
-- No separate server required
-- Database file: `db/smart_loan_manager.db`
-- Suitable for single-user or low-concurrency scenarios
-- Note: The application is designed to work with Drizzle ORM, but currently uses raw SQLite queries. Future implementations may add Postgres support.
+- **SQLite**: File-based relational database (`db/smart_loan_manager.db`) used for its simplicity and zero-configuration deployment.
 
 ### File Storage
 
-**Local File System**:
-- Upload directory: `static/uploads`
-- Stores uploaded credit card statements
-- Generated PDF reports saved to filesystem
+- **Local File System**: `static/uploads` for storing uploaded statements and generated PDF reports.
