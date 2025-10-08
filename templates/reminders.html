@@ -1,84 +1,64 @@
 {% extends "base.html" %}
 
-{% block title %}Payment Reminders - Smart Credit & Loan Manager{% endblock %}
+{% block title %}{{ t('nav_reminders') }} - {{ t('company_name') }}{% endblock %}
 
 {% block content %}
 <div class="fade-in">
-    <div class="row mb-5">
-        <div class="col-12">
-            <h1 class="mb-2">
-                🔹Repayment Reminders
-            </h1>
-            <p class="text-silver">Track and manage upcoming credit card payment due dates</p>
-        </div>
+    <div class="section-header">
+        <h1 class="section-title">{{ t('nav_reminders') }}</h1>
+        <p class="section-subtitle">Track and manage upcoming credit card payment due dates</p>
     </div>
 
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>🔹Upcoming Payments</span>
-                    <span class="badge badge-primary">{{ reminders|length }} Pending</span>
-                </div>
-                <div class="card-body p-0">
-                    {% if reminders %}
-                    <div class="table-responsive">
-                        <table class="table mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Customer</th>
-                                    <th>Bank</th>
-                                    <th>Card</th>
-                                    <th>Due Date</th>
-                                    <th>Amount</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for reminder in reminders %}
-                                <tr>
-                                    <td>
-                                        🔹
-                                        <strong>{{ reminder.name }}</strong>
-                                    </td>
-                                    <td>{{ reminder.bank_name }}</td>
-                                    <td><code class="text-champagne">****{{ reminder.card_number_last4 }}</code></td>
-                                    <td>
-                                        🔹{{ reminder.due_date }}
-                                    </td>
-                                    <td class="fw-bold text-pearl">RM {{ "{:,.2f}".format(reminder.amount_due) }}</td>
-                                    <td>
-                                        <form method="POST" action="{{ url_for('mark_paid_route', reminder_id=reminder.id) }}" style="display:inline;">
-                                            <button class="btn btn-success btn-sm">
-                                                🔹Mark Paid
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    {% else %}
-                    <div class="text-center py-5">
-                        🔹
-                        <h4 class="mt-4 mb-3">All Caught Up!</h4>
-                        <p class="text-silver">No pending payment reminders at the moment.</p>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
+    <div class="professional-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 style="color: var(--text-primary); margin: 0;">Upcoming Payments</h3>
+            <span class="badge-professional badge-primary-pro">{{ reminders|length }} Pending</span>
         </div>
+        
+        {% if reminders %}
+        <div class="table-responsive">
+            <table class="table-professional">
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Bank</th>
+                        <th>Card</th>
+                        <th>Due Date</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reminder in reminders %}
+                    <tr>
+                        <td>
+                            <strong style="color: var(--text-primary);">{{ reminder.name }}</strong>
+                        </td>
+                        <td>{{ reminder.bank_name }}</td>
+                        <td><code style="color: var(--primary);">****{{ reminder.card_number_last4 }}</code></td>
+                        <td>{{ reminder.due_date }}</td>
+                        <td class="fw-bold" style="color: var(--text-primary);">RM {{ "{:,.2f}".format(reminder.amount_due) }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('mark_paid_route', reminder_id=reminder.id) }}" style="display:inline;">
+                                <button class="btn-professional">Mark Paid</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <h4 class="mt-4 mb-3" style="color: var(--text-primary);">All Caught Up!</h4>
+            <p style="color: var(--text-secondary);">No pending payment reminders at the moment.</p>
+        </div>
+        {% endif %}
     </div>
 
     {% if reminders %}
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="alert alert-info">
-                🔹
-                <strong>Pro Tip:</strong> Mark payments as paid after settling to keep your reminder list clean and organized.
-            </div>
-        </div>
+    <div class="alert-professional alert-info-pro mt-4">
+        <strong>Pro Tip:</strong> Mark payments as paid after settling to keep your reminder list clean and organized.
     </div>
     {% endif %}
 </div>

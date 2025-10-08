@@ -89,20 +89,21 @@ h5 { font-size: 1.25rem; }
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem 3rem;
+    padding: 2rem 4rem;
 }
 
 .nav-brand {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.5rem;
     text-decoration: none;
+    flex: 1;
 }
 
 .nav-logo {
-    height: 70px;
+    height: 90px;
     width: auto;
-    filter: brightness(1.1) contrast(1.1) drop-shadow(0 0 20px rgba(139, 92, 246, 0.5));
+    filter: brightness(1.2) contrast(1.1) drop-shadow(0 0 30px rgba(139, 92, 246, 0.6));
 }
 
 .nav-brand-text {
@@ -111,18 +112,20 @@ h5 { font-size: 1.25rem; }
 }
 
 .company-name {
-    font-size: 1.75rem;
+    font-size: 2.25rem;
     font-weight: 900;
     color: var(--text-primary);
     letter-spacing: -0.02em;
-    text-shadow: 0 0 30px rgba(139, 92, 246, 0.6);
+    text-shadow: 0 0 40px rgba(139, 92, 246, 0.8);
+    line-height: 1;
 }
 
 .system-name {
-    font-size: 1rem;
+    font-size: 1.125rem;
     color: var(--text-secondary);
     font-weight: 400;
     letter-spacing: -0.01em;
+    margin-top: 0.25rem;
 }
 
 .nav-menu {
@@ -277,18 +280,19 @@ h5 { font-size: 1.25rem; }
 }
 
 .btn-success-pro {
-    background: linear-gradient(135deg, #10b981, #059669);
+    background: rgba(255, 255, 255, 0.1);
     color: white;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.3);
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
     font-weight: 600;
 }
 
 .btn-success-pro:hover {
-    background: linear-gradient(135deg, #059669, #047857);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.5);
     transform: translateY(-1px);
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
     color: white;
 }
 

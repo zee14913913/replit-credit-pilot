@@ -1,60 +1,60 @@
 {% extends "base.html" %}
 
-{% block title %}{{ t['customer_registration'] }}{% endblock %}
+{% block title %}{{ t('customer_registration') }} - {{ t('company_name') }}{% endblock %}
 
 {% block content %}
 <div class="container-professional">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
-            <div class="professional-card" style="margin-top: 3rem;">
+            <div class="professional-card" style="margin-top: 4rem;">
                 <div class="text-center mb-4">
-                    <h2 class="section-title" style="font-size: 2rem;">{{ t['create_account'] }}</h2>
-                    <p class="text-secondary">{{ t['register_subtitle'] }}</p>
+                    <h2 class="section-title" style="font-size: 2.5rem; margin-bottom: 1rem;">{{ t('create_account') }}</h2>
+                    <p style="color: var(--text-secondary);">{{ t('register_subtitle') }}</p>
                 </div>
 
                 {% if error %}
-                <div class="alert alert-danger">{{ error }}</div>
+                <div class="alert-professional alert-danger-pro mb-4">{{ error }}</div>
                 {% endif %}
 
                 {% if success %}
-                <div class="alert alert-success">{{ success }}</div>
+                <div class="alert-professional alert-success-pro mb-4">{{ success }}</div>
                 {% endif %}
 
                 <form method="POST" action="/customer/register">
                     <div class="mb-3">
-                        <label for="name" class="form-label" style="color: var(--champagne-gold); font-weight: 600;">{{ t['full_name'] }}</label>
-                        <input type="text" class="form-control form-control-professional" id="name" name="name" required>
+                        <label for="name" class="form-label" style="color: var(--text-primary); font-weight: 600;">{{ t('full_name') }}</label>
+                        <input type="text" class="form-control-professional" id="name" name="name" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="email" class="form-label" style="color: var(--champagne-gold); font-weight: 600;">{{ t['email'] }}</label>
-                        <input type="email" class="form-control form-control-professional" id="email" name="email" required>
+                        <label for="email" class="form-label" style="color: var(--text-primary); font-weight: 600;">{{ t('email') }}</label>
+                        <input type="email" class="form-control-professional" id="email" name="email" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="phone" class="form-label" style="color: var(--champagne-gold); font-weight: 600;">{{ t['phone'] }}</label>
-                        <input type="tel" class="form-control form-control-professional" id="phone" name="phone" required>
+                        <label for="phone" class="form-label" style="color: var(--text-primary); font-weight: 600;">{{ t('phone') }}</label>
+                        <input type="tel" class="form-control-professional" id="phone" name="phone" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="monthly_income" class="form-label" style="color: var(--champagne-gold); font-weight: 600;">{{ t['monthly_income'] }}</label>
-                        <input type="number" class="form-control form-control-professional" id="monthly_income" name="monthly_income" step="0.01" required>
+                        <label for="monthly_income" class="form-label" style="color: var(--text-primary); font-weight: 600;">{{ t('monthly_income') }}</label>
+                        <input type="number" class="form-control-professional" id="monthly_income" name="monthly_income" step="0.01" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="password" class="form-label" style="color: var(--champagne-gold); font-weight: 600;">{{ t['password'] }}</label>
-                        <input type="password" class="form-control form-control-professional" id="password" name="password" required minlength="6">
+                        <label for="password" class="form-label" style="color: var(--text-primary); font-weight: 600;">{{ t('password') }}</label>
+                        <input type="password" class="form-control-professional" id="password" name="password" required minlength="6">
                     </div>
 
                     <div class="mb-4">
-                        <label for="confirm_password" class="form-label" style="color: var(--champagne-gold); font-weight: 600;">{{ t['confirm_password'] }}</label>
-                        <input type="password" class="form-control form-control-professional" id="confirm_password" name="confirm_password" required minlength="6">
+                        <label for="confirm_password" class="form-label" style="color: var(--text-primary); font-weight: 600;">{{ t('confirm_password') }}</label>
+                        <input type="password" class="form-control-professional" id="confirm_password" name="confirm_password" required minlength="6">
                     </div>
 
-                    <button type="submit" class="btn btn-professional w-100 mb-3">{{ t['register'] }}</button>
+                    <button type="submit" class="btn-professional w-100 mb-3">{{ t('register') }}</button>
                     
                     <div class="text-center">
-                        <a href="/customer/login" style="color: var(--champagne-gold);">{{ t['have_account'] }}</a>
+                        <a href="/customer/login" style="color: var(--primary);">{{ t('have_account') }}</a>
                     </div>
                 </form>
             </div>
