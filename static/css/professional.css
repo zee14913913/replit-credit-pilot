@@ -226,10 +226,10 @@ p {
 }
 
 .nav-logo {
-    height: 80px;
+    height: 100px;
     width: auto;
     opacity: 0.95;
-    filter: drop-shadow(0 0 8px rgba(192, 192, 192, 0.3));
+    filter: drop-shadow(0 0 10px rgba(192, 192, 192, 0.4));
 }
 
 .nav-brand-text {
