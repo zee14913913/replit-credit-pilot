@@ -18,8 +18,8 @@
     
     /* Text Colors - Ultra High Contrast */
     --text-primary: #ffffff;
-    --text-secondary: #a1a1aa;
-    --text-muted: #71717a;
+    --text-secondary: #ffffff;
+    --text-muted: #e5e5e5;
     
     /* Border Colors */
     --border-subtle: #27272a;
@@ -277,14 +277,19 @@ h5 { font-size: 1.25rem; }
 }
 
 .btn-success-pro {
-    background: var(--success);
+    background: linear-gradient(135deg, #10b981, #059669);
     color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
 }
 
 .btn-success-pro:hover {
-    background: var(--success-light);
-    box-shadow: 0 4px 12px rgba(47, 82, 51, 0.4);
-    color: var(--text-primary);
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-1px);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    color: white;
 }
 
 /* Professional Table */
