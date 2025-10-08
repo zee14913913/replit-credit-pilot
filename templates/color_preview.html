@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>配色方案预览 - Color Scheme Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0A0F1E;
+            color: #FFFFFF;
+            padding: 3rem 1rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #9CA3AF;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .scheme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .scheme-card {
+            background: #111827;
+            border: 1px solid #1F2937;
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .scheme-card:hover {
+            border-color: #374151;
+            transform: translateY(-2px);
+        }
+
+        .scheme-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .scheme-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .scheme-desc {
+            color: #9CA3AF;
+            font-size: 0.95rem;
+        }
+
+        .color-info {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #0A0F1E;
+            border-radius: 8px;
+        }
+
+        .color-swatch {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .color-details {
+            flex: 1;
+        }
+
+        .color-label {
+            font-size: 0.85rem;
+            color: #9CA3AF;
+            margin-bottom: 0.25rem;
+        }
+
+        .color-value {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #FFFFFF;
+        }
+
+        .demo-section {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .demo-label {
+            font-size: 0.9rem;
+            color: #9CA3AF;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Button styles for each scheme */
+        .btn-demo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            margin-right: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-demo:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Scheme 1: Deep Purple */
+        .scheme-1 .btn-primary {
+            background: #7C3AED;
+            color: #FFFFFF;
+        }
+        .scheme-1 .btn-primary:hover {
+            background: #6D28D9;
+        }
+        .scheme-1 .btn-outline {
+            background: transparent;
+            border: 1px solid #7C3AED;
+            color: #7C3AED;
+        }
+        .scheme-1 .btn-outline:hover {
+            background: rgba(124, 58, 237, 0.1);
+        }
+
+        /* Scheme 2: Slate Gray */
+        .scheme-2 .btn-primary {
+            background: #64748B;
+            color: #FFFFFF;
+        }
+        .scheme-2 .btn-primary:hover {
+            background: #475569;
+        }
+        .scheme-2 .btn-outline {
+            background: transparent;
+            border: 1px solid #64748B;
+            color: #64748B;
+        }
+        .scheme-2 .btn-outline:hover {
+            background: rgba(100, 116, 139, 0.1);
+        }
+
+        /* Scheme 3: Emerald Green */
+        .scheme-3 .btn-primary {
+            background: #059669;
+            color: #FFFFFF;
+        }
+        .scheme-3 .btn-primary:hover {
+            background: #047857;
+        }
+        .scheme-3 .btn-outline {
+            background: transparent;
+            border: 1px solid #059669;
+            color: #059669;
+        }
+        .scheme-3 .btn-outline:hover {
+            background: rgba(5, 150, 105, 0.1);
+        }
+
+        /* Scheme 4: Amber Gold */
+        .scheme-4 .btn-primary {
+            background: #D97706;
+            color: #FFFFFF;
+        }
+        .scheme-4 .btn-primary:hover {
+            background: #B45309;
+        }
+        .scheme-4 .btn-outline {
+            background: transparent;
+            border: 1px solid #D97706;
+            color: #D97706;
+        }
+        .scheme-4 .btn-outline:hover {
+            background: rgba(217, 119, 6, 0.1);
+        }
+
+        /* Scheme 5: Pure White */
+        .scheme-5 .btn-primary {
+            background: #FFFFFF;
+            color: #0A0F1E;
+        }
+        .scheme-5 .btn-primary:hover {
+            background: #E5E7EB;
+        }
+        .scheme-5 .btn-outline {
+            background: transparent;
+            border: 1px solid #FFFFFF;
+            color: #FFFFFF;
+        }
+        .scheme-5 .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Scheme 6: Rose Pink */
+        .scheme-6 .btn-primary {
+            background: #E11D48;
+            color: #FFFFFF;
+        }
+        .scheme-6 .btn-primary:hover {
+            background: #BE123C;
+        }
+        .scheme-6 .btn-outline {
+            background: transparent;
+            border: 1px solid #E11D48;
+            color: #E11D48;
+        }
+        .scheme-6 .btn-outline:hover {
+            background: rgba(225, 29, 72, 0.1);
+        }
+
+        /* Scheme 7: Indigo */
+        .scheme-7 .btn-primary {
+            background: #4F46E5;
+            color: #FFFFFF;
+        }
+        .scheme-7 .btn-primary:hover {
+            background: #4338CA;
+        }
+        .scheme-7 .btn-outline {
+            background: transparent;
+            border: 1px solid #4F46E5;
+            color: #4F46E5;
+        }
+        .scheme-7 .btn-outline:hover {
+            background: rgba(79, 70, 229, 0.1);
+        }
+
+        /* Scheme 8: Teal */
+        .scheme-8 .btn-primary {
+            background: #0D9488;
+            color: #FFFFFF;
+        }
+        .scheme-8 .btn-primary:hover {
+            background: #0F766E;
+        }
+        .scheme-8 .btn-outline {
+            background: transparent;
+            border: 1px solid #0D9488;
+            color: #0D9488;
+        }
+        .scheme-8 .btn-outline:hover {
+            background: rgba(13, 148, 136, 0.1);
+        }
+
+        .card-demo {
+            background: #1F2937;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #374151;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+        }
+
+        .action-btn {
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .note {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            color: #9CA3AF;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 配色方案预览</h1>
+        <p class="subtitle">请选择您喜欢的配色方案 - 点击对应的按钮样式进行预览</p>
+
+        <div class="scheme-grid">
+            <!-- Scheme 1: Deep Purple -->
+            <div class="scheme-card scheme-1">
+                <div class="scheme-header">
+                    <h3 class="scheme-title">方案 1：深紫罗兰</h3>
+                    <p class="scheme-desc">优雅神秘，专业而不张扬 - 适合体现品牌独特性</p>
+                </div>
+                <div class="color-info">
+                    <div class="color-swatch" style="background: #7C3AED; color: white;">主色</div>
+                    <div class="color-details">
+                        <div class="color-label">Primary Color</div>
+                        <div class="color-value">#7C3AED</div>
+                    </div>
+                </div>
+                <div class="demo-section">
+                    <div class="demo-label">按钮效果：</div>
+                    <div>
+                        <button class="btn-demo btn-primary">立即开始</button>
+                        <button class="btn-demo btn-outline">了解更多</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scheme 2: Slate Gray -->
+            <div class="scheme-card scheme-2">
+                <div class="scheme-header">
+                    <h3 class="scheme-title">方案 2：石板银灰</h3>
+                    <p class="scheme-desc">极简高端，最高级的科技感 - Apple 风格</p>
+                </div>
+                <div class="color-info">
+                    <div class="color-swatch" style="background: #64748B; color: white;">主色</div>
+                    <div class="color-details">
+                        <div class="color-label">Primary Color</div>
+                        <div class="color-value">#64748B</div>
+                    </div>
+                </div>
+                <div class="demo-section">
+                    <div class="demo-label">按钮效果：</div>
+                    <div>
+                        <button class="btn-demo btn-primary">立即开始</button>
+                        <button class="btn-demo btn-outline">了解更多</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scheme 3: Emerald Green -->
+            <div class="scheme-card scheme-3">
+                <div class="scheme-header">
+                    <h3 class="scheme-title">方案 3：深翡翠绿</h3>
+                    <p class="scheme-desc">稳重信赖，金融行业经典 - 象征财富与成长</p>
+                </div>
+                <div class="color-info">
+                    <div class="color-swatch" style="background: #059669; color: white;">主色</div>
+                    <div class="color-details">
+                        <div class="color-label">Primary Color</div>
+                        <div class="color-value">#059669</div>
+                    </div>
+                </div>
+                <div class="demo-section">
+                    <div class="demo-label">按钮效果：</div>
+                    <div>
+                        <button class="btn-demo btn-primary">立即开始</button>
+                        <button class="btn-demo btn-outline">了解更多</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scheme 4: Amber Gold -->
+            <div class="scheme-card scheme-4">
+                <div class="scheme-header">
+                    <h3 class="scheme-title">方案 4：琥珀金</h3>
+                    <p class="scheme-desc">奢华尊贵，高端私人银行风格 - 体现财富管理</p>
+                </div>
+                <div class="color-info">
+                    <div class="color-swatch" style="background: #D97706; color: white;">主色</div>
+                    <div class="color-details">
+                        <div class="color-label">Primary Color</div>
+                        <div class="color-value">#D97706</div>
+                    </div>
+                </div>
+                <div class="demo-section">
+                    <div class="demo-label">按钮效果：</div>
+                    <div>
+                        <button class="btn-demo btn-primary">立即开始</button>
+                        <button class="btn-demo btn-outline">了解更多</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scheme 5: Pure White -->
+            <div class="scheme-card scheme-5">
+                <div class="scheme-header">
+                    <h3 class="scheme-title">方案 5：纯白极简</h3>
+                    <p class="scheme-desc">未来感，最极简的设计 - 突出内容本身</p>
+                </div>
+                <div class="color-info">
+                    <div class="color-swatch" style="background: #FFFFFF; color: #0A0F1E;">主色</div>
+                    <div class="color-details">
+                        <div class="color-label">Primary Color</div>
+                        <div class="color-value">#FFFFFF</div>
+                    </div>
+                </div>
+                <div class="demo-section">
+                    <div class="demo-label">按钮效果：</div>
+                    <div>
+                        <button class="btn-demo btn-primary">立即开始</button>
+                        <button class="btn-demo btn-outline">了解更多</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scheme 6: Rose Pink -->
+            <div class="scheme-card scheme-6">
+                <div class="scheme-header">
+                    <h3 class="scheme-title">方案 6：玫瑰红</h3>
+                    <p class="scheme-desc">现代活力，专业而不失温度 - 吸引年轻客户</p>
+                </div>
+                <div class="color-info">
+                    <div class="color-swatch" style="background: #E11D48; color: white;">主色</div>
+                    <div class="color-details">
+                        <div class="color-label">Primary Color</div>
+                        <div class="color-value">#E11D48</div>
+                    </div>
+                </div>
+                <div class="demo-section">
+                    <div class="demo-label">按钮效果：</div>
+                    <div>
+                        <button class="btn-demo btn-primary">立即开始</button>
+                        <button class="btn-demo btn-outline">了解更多</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scheme 7: Indigo -->
+            <div class="scheme-card scheme-7">
+                <div class="scheme-header">
+                    <h3 class="scheme-title">方案 7：靛蓝紫</h3>
+                    <p class="scheme-desc">深邃专业，科技与金融的完美平衡</p>
+                </div>
+                <div class="color-info">
+                    <div class="color-swatch" style="background: #4F46E5; color: white;">主色</div>
+                    <div class="color-details">
+                        <div class="color-label">Primary Color</div>
+                        <div class="color-value">#4F46E5</div>
+                    </div>
+                </div>
+                <div class="demo-section">
+                    <div class="demo-label">按钮效果：</div>
+                    <div>
+                        <button class="btn-demo btn-primary">立即开始</button>
+                        <button class="btn-demo btn-outline">了解更多</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scheme 8: Teal -->
+            <div class="scheme-card scheme-8">
+                <div class="scheme-header">
+                    <h3 class="scheme-title">方案 8：青翠蓝</h3>
+                    <p class="scheme-desc">清新专业，现代金融科技风格</p>
+                </div>
+                <div class="color-info">
+                    <div class="color-swatch" style="background: #0D9488; color: white;">主色</div>
+                    <div class="color-details">
+                        <div class="color-label">Primary Color</div>
+                        <div class="color-value">#0D9488</div>
+                    </div>
+                </div>
+                <div class="demo-section">
+                    <div class="demo-label">按钮效果：</div>
+                    <div>
+                        <button class="btn-demo btn-primary">立即开始</button>
+                        <button class="btn-demo btn-outline">了解更多</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>💡 使用说明：</strong> 请在上方选择您喜欢的配色方案，然后告诉我方案编号（例如："我喜欢方案 1" 或 "用方案 3"），我会立即为您更新整个系统的配色。
+        </div>
+    </div>
+</body>
+</html>

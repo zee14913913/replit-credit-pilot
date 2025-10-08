@@ -893,6 +893,11 @@ def run_scheduler():
         schedule.run_pending()
         time.sleep(60)
 
+@app.route('/color-preview')
+def color_preview():
+    """Display color scheme preview page"""
+    return render_template('color_preview.html')
+
 def start_scheduler():
     lock_file = '/tmp/smart_loan_scheduler.lock'
     max_retries = 5
