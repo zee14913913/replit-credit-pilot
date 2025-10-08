@@ -745,6 +745,7 @@ p {
 /* Centered Header with Logo and Company Name */
 .footer-header {
     display: flex;
+    flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
     gap: var(--space-xl);
@@ -757,19 +758,21 @@ p {
 .footer-logo {
     width: 120px;
     height: 120px;
+    flex-shrink: 0;
     filter: drop-shadow(0 0 16px rgba(192, 192, 192, 0.5));
 }
 
 .footer-company-name {
-    font-size: 5rem;
+    font-size: 4rem;
     font-weight: 800;
     color: var(--text-primary);
     margin: 0;
+    white-space: nowrap;
     background: linear-gradient(135deg, #FFFFFF 0%, rgba(192, 192, 192, 0.9) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
 }
 
 /* Three Column Layout */
