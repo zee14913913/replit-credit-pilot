@@ -1,115 +1,98 @@
 import pdfplumber
 import pandas as pd
+import openpyxl
 import re
 from datetime import datetime
 import os
 
-def parse_pdf_statement(file_path):
-    transactions = []
-    statement_info = {
-        'statement_date': None,
-        'total': 0,
-        'card_last4': None
-    }
-    
+def detect_bank(file_path):
+    bank = "UNKNOWN"
     try:
-        with pdfplumber.open(file_path) as pdf:
-            text = ""
-            for page in pdf.pages:
-                text += page.extract_text() + "\n"
-            
-            date_pattern = r'Statement Date[:\s]+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})'
-            date_match = re.search(date_pattern, text, re.IGNORECASE)
-            if date_match:
-                statement_info['statement_date'] = date_match.group(1)
-            
-            total_pattern = r'Total[:\s]+(?:RM)?[\s]*([0-9,]+\.?\d*)'
-            total_match = re.search(total_pattern, text, re.IGNORECASE)
-            if total_match:
-                statement_info['total'] = float(total_match.group(1).replace(',', ''))
-            
-            card_pattern = r'(?:Card.*?)?(\d{4})\s*$'
-            card_match = re.search(card_pattern, text, re.MULTILINE)
-            if card_match:
-                statement_info['card_last4'] = card_match.group(1)
-            
-            transaction_pattern = r'(\d{1,2}/\d{1,2})\s+([A-Za-z\s&\'\-\.]+?)\s+([\d,]+\.?\d{2})'
-            transactions_found = re.findall(transaction_pattern, text)
-            
-            for trans in transactions_found:
-                date_str, description, amount_str = trans
-                current_year = datetime.now().year
-                trans_date = f"{date_str}/{current_year}"
-                
-                transactions.append({
-                    'date': trans_date,
-                    'description': description.strip(),
-                    'amount': float(amount_str.replace(',', ''))
-                })
-    
+        ext = os.path.splitext(file_path.lower())[1]
+        if ext == ".pdf":
+            with pdfplumber.open(file_path) as pdf:
+                text = pdf.pages[0].extract_text().upper()
+                if "MAYBANK" in text:
+                    bank = "MAYBANK"
+                elif "CIMB" in text:
+                    bank = "CIMB"
+                elif "HSBC" in text:
+                    bank = "HSBC"
+        elif ext in [".xlsx", ".xls"]:
+            excel = pd.ExcelFile(file_path)
+            sheet_names = [name.upper() for name in excel.sheet_names]
+            if "CIMB" in sheet_names or "SUMMARY" in sheet_names:
+                bank = "CIMB"
+            elif "MAYBANK" in sheet_names:
+                bank = "MAYBANK"
+            elif "HSBC" in sheet_names:
+                bank = "HSBC"
     except Exception as e:
-        print(f"Error parsing PDF: {e}")
-        return None, None
-    
-    return statement_info, transactions
+        print(f"⚠️ Error detecting bank: {e}")
+    print(f"🏦 Detected Bank: {bank}")
+    return bank
 
-def parse_excel_statement(file_path):
-    transactions = []
-    statement_info = {
-        'statement_date': None,
-        'total': 0,
-        'card_last4': None
-    }
-    
+def parse_cimb_statement(file_path):
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "CIMB"}
     try:
-        df = pd.read_excel(file_path)
-        
-        if 'Statement Date' in df.columns:
-            statement_info['statement_date'] = str(df['Statement Date'].iloc[0])
-        elif 'Date' in df.columns and len(df) > 0:
-            statement_info['statement_date'] = str(df['Date'].iloc[0])
-        
-        if 'Card' in df.columns:
-            card_val = str(df['Card'].iloc[0])
-            statement_info['card_last4'] = card_val[-4:] if len(card_val) >= 4 else card_val
-        
-        date_col = None
-        desc_col = None
-        amount_col = None
-        
-        for col in df.columns:
-            col_lower = col.lower()
-            if 'date' in col_lower and not date_col:
-                date_col = col
-            elif any(x in col_lower for x in ['description', 'merchant', 'details']) and not desc_col:
-                desc_col = col
-            elif any(x in col_lower for x in ['amount', 'total', 'debit']) and not amount_col:
-                amount_col = col
-        
-        if date_col and desc_col and amount_col:
-            for _, row in df.iterrows():
-                if pd.notna(row[date_col]) and pd.notna(row[amount_col]):
-                    amount = float(row[amount_col]) if isinstance(row[amount_col], (int, float)) else float(str(row[amount_col]).replace(',', '').replace('RM', '').strip())
-                    
-                    transactions.append({
-                        'date': str(row[date_col]),
-                        'description': str(row[desc_col]) if pd.notna(row[desc_col]) else 'Unknown',
-                        'amount': amount
-                    })
-        
-        if transactions:
-            statement_info['total'] = sum(t['amount'] for t in transactions)
-    
+        if file_path.endswith(".pdf"):
+            with pdfplumber.open(file_path) as pdf:
+                text = "\n".join(p.extract_text() for p in pdf.pages)
+            for m in re.findall(r"(\d{1,2}/\d{1,2})\s+([A-Za-z\s]+)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})", text):
+                transactions.append({"date": m[0], "description": m[1].strip(), "amount": float(m[2].replace(",", ""))})
+        else:
+            df = pd.read_excel(file_path, sheet_name="Transactions")
+            for _, r in df.iterrows():
+                transactions.append({"date": str(r["Date"]), "description": str(r["Description"]), "amount": float(r["Amount (RM)"])})
+        info["total"] = sum(t["amount"] for t in transactions)
+        print(f"✅ CIMB parsed {len(transactions)} transactions.")
+        return info, transactions
     except Exception as e:
-        print(f"Error parsing Excel: {e}")
-        return None, None
-    
-    return statement_info, transactions
+        print(f"❌ Error parsing CIMB: {e}")
+        return info, transactions
 
-def parse_statement(file_path, file_type):
-    if file_type.lower() == 'pdf':
-        return parse_pdf_statement(file_path)
-    elif file_type.lower() in ['xlsx', 'xls', 'excel']:
-        return parse_excel_statement(file_path)
-    else:
-        return None, None
+def parse_maybank_statement(file_path):
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "MAYBANK"}
+    try:
+        if file_path.endswith(".pdf"):
+            with pdfplumber.open(file_path) as pdf:
+                text = "\n".join(p.extract_text() for p in pdf.pages)
+            for m in re.findall(r"(\d{2}\s[A-Za-z]+)\s+([A-Za-z\s\-&.,]+?)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})", text):
+                transactions.append({"date": m[0], "description": m[1].strip(), "amount": float(m[2].replace(",", ""))})
+        else:
+            df = pd.read_excel(file_path, sheet_name="Transactions")
+            for _, r in df.iterrows():
+                transactions.append({"date": str(r["Txn Date"]), "description": str(r["Merchant"]), "amount": float(r["Amount (RM)"])})
+        info["total"] = sum(t["amount"] for t in transactions)
+        print(f"✅ Maybank parsed {len(transactions)} transactions.")
+        return info, transactions
+    except Exception as e:
+        print(f"❌ Error parsing Maybank: {e}")
+        return info, transactions
+
+def parse_hsbc_statement(file_path):
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "HSBC"}
+    try:
+        if file_path.endswith(".pdf"):
+            with pdfplumber.open(file_path) as pdf:
+                text = "\n".join(p.extract_text() for p in pdf.pages)
+            for m in re.findall(r"(\d{2}\s[A-Za-z]+)\s+([A-Za-z\s\-&.,]+?)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})", text):
+                transactions.append({"date": m[0], "description": m[1].strip(), "amount": float(m[2].replace(",", ""))})
+        else:
+            df = pd.read_excel(file_path, sheet_name="Sheet1")
+            for _, r in df.iterrows():
+                transactions.append({"date": str(r["Date"]), "description": str(r["Details"]), "amount": float(r["Amount"])})
+        info["total"] = sum(t["amount"] for t in transactions)
+        print(f"✅ HSBC parsed {len(transactions)} transactions.")
+        return info, transactions
+    except Exception as e:
+        print(f"❌ Error parsing HSBC: {e}")
+        return info, transactions
+
+def parse_statement_auto(file_path):
+    bank = detect_bank(file_path)
+    if bank == "CIMB": return parse_cimb_statement(file_path)
+    elif bank == "MAYBANK": return parse_maybank_statement(file_path)
+    elif bank == "HSBC": return parse_hsbc_statement(file_path)
+    print("⚠️ Unsupported or unrecognized bank format.")
+    return None, []

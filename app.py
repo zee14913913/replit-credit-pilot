@@ -7,7 +7,7 @@ import time
 import schedule
 
 from db.database import get_db, log_audit, get_all_customers, get_customer_cards, get_card_statements, get_statement_transactions
-from ingest.statement_parser import parse_statement
+from ingest.statement_parser import parse_statement_auto
 from validate.categorizer import categorize_transaction, validate_statement, get_spending_summary
 from validate.reminder_service import check_and_send_reminders, create_reminder, get_pending_reminders, mark_as_paid
 from loan.dsr_calculator import calculate_dsr, calculate_max_loan_amount, simulate_loan_scenarios
@@ -75,7 +75,7 @@ def upload_statement():
         
         file_type = 'pdf' if filename.lower().endswith('.pdf') else 'excel'
         
-        statement_info, transactions = parse_statement(file_path, file_type)
+        statement_info, transactions = parse_statement_auto(file_path)
         
         if not statement_info or not transactions:
             flash('Failed to parse statement', 'error')

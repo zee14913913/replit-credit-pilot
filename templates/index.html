@@ -1,39 +1,48 @@
-{% extends "base.html" %}
-
-{% block content %}
-<div class="row">
-    <div class="col-12">
-        <h2 class="mb-4">Customer Dashboard</h2>
-    </div>
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>CreditPilot 管理系统</title>
+<style>
+body{font-family:Arial;background:#f6f7fb;margin:0}
+header{background:#004aad;color:#fff;padding:15px 25px;font-size:20px;font-weight:bold}
+.container{max-width:900px;margin:40px auto;background:white;border-radius:8px;padding:25px;box-shadow:0 0 10px rgba(0,0,0,0.1)}
+h2{border-left:5px solid #004aad;padding-left:10px}
+.section{margin-top:30px;padding:15px;border:1px solid #ddd;border-radius:8px}
+input,button{margin-top:10px;padding:10px;border:1px solid #ccc;border-radius:5px}
+button{background:#004aad;color:white;cursor:pointer}
+button:hover{background:#003080}
+.msg{margin-top:15px;font-weight:bold}
+</style>
+</head>
+<body>
+<header>CreditPilot 客户账单系统</header>
+<div class="container">
+  <h2>📤 上传账单文件</h2>
+  <div class="section">
+    <form id="uploadForm" enctype="multipart/form-data">
+      <label>选择账单（PDF / Excel）：</label><br>
+      <input type="file" name="file" id="fileInput" required><br>
+      <button type="submit">上传并生成报表</button>
+    </form>
+    <div id="uploadMessage" class="msg"></div>
+  </div>
 </div>
-
-<div class="row">
-    {% for customer in customers %}
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="bi bi-person-circle"></i> {{ customer.name }}</h5>
-            </div>
-            <div class="card-body">
-                <p><strong>Email:</strong> {{ customer.email }}</p>
-                <p><strong>Monthly Income:</strong> RM {{ "{:,.2f}".format(customer.monthly_income) }}</p>
-                <div class="btn-group" role="group">
-                    <a href="{{ url_for('customer_dashboard', customer_id=customer.id) }}" class="btn btn-primary">
-                        <i class="bi bi-graph-up"></i> Dashboard
-                    </a>
-                    <a href="{{ url_for('loan_evaluation', customer_id=customer.id) }}" class="btn btn-success">
-                        <i class="bi bi-calculator"></i> Loan Evaluation
-                    </a>
-                    <a href="{{ url_for('analytics', customer_id=customer.id) }}" class="btn btn-info">
-                        <i class="bi bi-bar-chart"></i> Analytics
-                    </a>
-                    <a href="{{ url_for('generate_report', customer_id=customer.id) }}" class="btn btn-secondary">
-                        <i class="bi bi-file-pdf"></i> Generate Report
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-</div>
-{% endblock %}
+<script>
+const form=document.getElementById('uploadForm');
+form.addEventListener('submit',async e=>{
+ e.preventDefault();
+ const file=document.getElementById('fileInput').files[0];
+ if(!file)return;
+ const fd=new FormData();fd.append('file',file);
+ const msg=document.getElementById('uploadMessage');
+ msg.innerText='⏳ 上传中...';
+ try{
+  const r=await fetch('/upload_statement',{method:'POST',body:fd});
+  if(r.ok){msg.innerText='✅ 上传成功！系统已自动生成并下载报表。';window.location.reload();}
+  else{const j=await r.json();msg.innerText='❌ 错误：'+(j.error||'上传失败');}
+ }catch{msg.innerText='⚠️ 上传出错，请稍后再试。';}
+});
+</script>
+</body>
+</html>
