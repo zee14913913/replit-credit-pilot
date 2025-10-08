@@ -756,10 +756,10 @@ p {
 }
 
 .footer-logo {
-    width: 120px;
-    height: 120px;
+    width: 180px;
+    height: 180px;
     flex-shrink: 0;
-    filter: drop-shadow(0 0 16px rgba(192, 192, 192, 0.5));
+    filter: drop-shadow(0 0 20px rgba(192, 192, 192, 0.6));
 }
 
 .footer-company-name {
