@@ -579,6 +579,137 @@ def add_transaction_tag(transaction_id):
     
     return jsonify({'success': True, 'tag_id': tag_id})
 
+# ========== FINANCIAL ADVISORY ROUTES ==========
+
+@app.route('/advisory/<int:customer_id>')
+def financial_advisory(customer_id):
+    """Financial advisory dashboard - card recommendations and optimizations"""
+    from advisory.card_recommendation_engine import CardRecommendationEngine
+    from advisory.financial_optimizer import FinancialOptimizer
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+        customer_row = cursor.fetchone()
+        customer = dict(customer_row) if customer_row else None
+    
+    if not customer:
+        flash('Customer not found', 'error')
+        return redirect(url_for('index'))
+    
+    # Get card recommendations
+    card_engine = CardRecommendationEngine()
+    card_recommendations = card_engine.analyze_and_recommend(customer_id)
+    
+    # Get optimization suggestions
+    optimizer = FinancialOptimizer()
+    optimizations = optimizer.generate_optimization_suggestions(customer_id)
+    
+    return render_template('financial_advisory.html',
+                          customer=customer,
+                          card_recommendations=card_recommendations,
+                          optimizations=optimizations)
+
+@app.route('/consultation/request/<int:customer_id>', methods=['POST'])
+def request_consultation(customer_id):
+    """Customer requests detailed consultation"""
+    
+    optimization_id = request.form.get('optimization_id')
+    request_type = request.form.get('request_type', 'full_optimization')
+    message = request.form.get('message', '')
+    contact_method = request.form.get('contact_method', 'email')
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO consultation_requests (
+                customer_id, optimization_suggestion_id, request_type,
+                customer_message, preferred_contact_method, status
+            ) VALUES (?, ?, ?, ?, ?, 'new')
+        ''', (customer_id, optimization_id, request_type, message, contact_method))
+        
+        # Mark optimization as client interested
+        if optimization_id:
+            cursor.execute('''
+                UPDATE financial_optimization_suggestions 
+                SET consultation_requested = 1, status = 'client_interested'
+                WHERE id = ?
+            ''', (optimization_id,))
+        
+        conn.commit()
+    
+    flash('咨询请求已提交！我们的财务顾问将尽快与您联系。', 'success')
+    return redirect(url_for('financial_advisory', customer_id=customer_id))
+
+@app.route('/customer/<int:customer_id>/employment', methods=['GET', 'POST'])
+def set_employment_type(customer_id):
+    """Set customer employment type and upload income documents"""
+    
+    if request.method == 'POST':
+        employment_type = request.form.get('employment_type')
+        employer_name = request.form.get('employer_name', '')
+        business_name = request.form.get('business_name', '')
+        
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT OR REPLACE INTO customer_employment_types (
+                    customer_id, employment_type, employer_name, business_name, 
+                    verification_status
+                ) VALUES (?, ?, ?, ?, 'pending')
+            ''', (customer_id, employment_type, employer_name, business_name))
+            conn.commit()
+        
+        flash('雇佣信息已更新', 'success')
+        return redirect(url_for('customer_dashboard', customer_id=customer_id))
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+        customer = dict(cursor.fetchone())
+        
+        cursor.execute('''
+            SELECT * FROM customer_employment_types WHERE customer_id = ?
+        ''', (customer_id,))
+        emp_row = cursor.fetchone()
+        employment = dict(emp_row) if emp_row else None
+        
+        # Get income requirement terms
+        cursor.execute('''
+            SELECT term_type, title_cn, content_cn FROM service_terms
+            WHERE term_type LIKE 'income_requirements_%'
+            ORDER BY display_order
+        ''')
+        income_requirements = [dict(row) for row in cursor.fetchall()]
+    
+    return render_template('employment_setup.html',
+                          customer=customer,
+                          employment=employment,
+                          income_requirements=income_requirements)
+
+@app.route('/generate_report/<int:customer_id>')
+def generate_enhanced_report(customer_id):
+    """Generate enhanced monthly report with financial advisory"""
+    from report.enhanced_pdf_generator import generate_enhanced_monthly_report
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+        customer_row = cursor.fetchone()
+        customer = dict(customer_row) if customer_row else None
+    
+    if not customer:
+        flash('Customer not found', 'error')
+        return redirect(url_for('index'))
+    
+    output_filename = f"enhanced_report_{customer_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+    output_path = os.path.join(app.config['UPLOAD_FOLDER'], output_filename)
+    
+    generate_enhanced_monthly_report(customer, output_path)
+    
+    flash('增强版月结报告生成成功！包含信用卡推荐和财务优化建议。', 'success')
+    return send_file(output_path, as_attachment=True, download_name=output_filename)
+
 def run_scheduler():
     schedule.every().day.at("09:00").do(check_and_send_reminders)
     schedule.every(6).hours.do(check_and_send_reminders)

@@ -56,8 +56,11 @@
                                 </a>
                             </div>
                         </div>
-                        <a href="{{ url_for('generate_report', customer_id=customer.id) }}" class="btn btn-link">
-                            📄 Generate PDF Report
+                        <a href="{{ url_for('generate_enhanced_report', customer_id=customer.id) }}" class="btn btn-link">
+                            📄 财务优化报告
+                        </a>
+                        <a href="{{ url_for('financial_advisory', customer_id=customer.id) }}" class="btn btn-outline-success w-100 mt-2">
+                            💡 财务咨询服务
                         </a>
                     </div>
                 </div>
