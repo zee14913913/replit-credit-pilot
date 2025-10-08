@@ -11,6 +11,9 @@ TRANSLATIONS = {
         'nav_reminders': 'Reminders',
         'nav_news': 'News',
         'nav_advisory': 'Financial Advisory',
+        'nav_analytics': 'Analytics',
+        'nav_services': 'Services',
+        'nav_account': 'Account',
         
         # Common
         'company_name': 'INFINITE GZ SDN BHD',
@@ -21,6 +24,7 @@ TRANSLATIONS = {
         'customer_login': 'Customer Login',
         'customer_portal': 'Customer Portal',
         'customer_registration': 'Customer Registration',
+        'customer_register': 'Register',
         'login': 'Login',
         'register': 'Register',
         'logout': 'Logout',
@@ -196,6 +200,9 @@ TRANSLATIONS = {
         'nav_reminders': '提醒',
         'nav_news': '资讯',
         'nav_advisory': '财务咨询',
+        'nav_analytics': '分析',
+        'nav_services': '服务',
+        'nav_account': '账户',
         
         # Common
         'company_name': 'INFINITE GZ SDN BHD',
@@ -206,6 +213,7 @@ TRANSLATIONS = {
         'customer_login': '客户登录',
         'customer_portal': '客户门户',
         'customer_registration': '客户注册',
+        'customer_register': '注册',
         'login': '登录',
         'register': '注册',
         'logout': '退出登录',

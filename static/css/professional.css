@@ -5,12 +5,14 @@
  */
 
 :root {
-    /* Deep Violet/Purple Gradient Color Palette - 深紫罗兰渐层配色 */
-    --bg-black: #0a0014;
-    --bg-dark: #14001f;
-    --bg-darker: #1a0029;
-    --bg-card: #20003d;
-    --bg-card-hover: #2d0052;
+    /* Warm Beige Background - 温暖米白色背景 */
+    --bg-warm-beige: #FAF8F3;
+    --bg-beige-light: #FFF8F0;
+    --bg-beige-soft: #F5F3EE;
+    
+    /* Card backgrounds for light theme */
+    --bg-card: #FFFFFF;
+    --bg-card-hover: #F8F6F1;
     
     /* Deep Violet Primary Colors - 深紫罗兰主色 */
     --primary: #5B21B6;
@@ -23,21 +25,20 @@
     --gradient-purple-2: linear-gradient(135deg, #4C1D95 0%, #6D28D9 50%, #8B5CF6 100%);
     --gradient-purple-3: linear-gradient(180deg, #5B21B6 0%, #2d0052 100%);
     
-    /* Pearl White + Silver Bright White - 珍珠白 + 银亮白 */
-    --pearl-white: #F8FAFC;
-    --pearl-white-soft: #F1F5F9;
-    --silver-bright: #E2E8F0;
-    --silver-white: #CBD5E1;
+    /* Text Colors for Light Background - 浅色背景深色文字 */
+    --text-primary: #1a1a1a;
+    --text-secondary: #4a4a4a;
+    --text-muted: #6b6b6b;
     
-    /* Text Colors - Ultra High Contrast */
-    --text-primary: var(--pearl-white);
-    --text-secondary: var(--silver-bright);
-    --text-muted: var(--silver-white);
+    /* Nav Text Colors (for dark nav) - 导航栏文字（深色导航） */
+    --nav-text-primary: #F8FAFC;
+    --nav-text-secondary: #E2E8F0;
     
-    /* Border Colors with Purple Tint */
-    --border-subtle: #3d1a5f;
-    --border-default: #5B21B6;
-    --border-strong: #7C3AED;
+    /* Border Colors */
+    --border-subtle: #e5e5e5;
+    --border-default: #d4d4d4;
+    --border-strong: #a3a3a3;
+    --border-purple: #8B5CF6;
     
     /* Semantic Colors - Modern & Vibrant */
     --success: #22c55e;
@@ -46,16 +47,16 @@
     --danger: #ef4444;
     --info: #8B5CF6;
     
-    /* Shadows with Purple Glow */
-    --shadow-sm: 0 1px 2px 0 rgba(91, 33, 182, 0.3);
-    --shadow-md: 0 4px 6px -1px rgba(91, 33, 182, 0.4);
-    --shadow-lg: 0 10px 15px -3px rgba(91, 33, 182, 0.5);
-    --shadow-xl: 0 20px 25px -5px rgba(91, 33, 182, 0.6);
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     
     /* Purple Glow Effects - 紫色光晕效果 */
-    --glow-primary: 0 0 30px rgba(91, 33, 182, 0.6);
-    --glow-strong: 0 0 50px rgba(124, 58, 237, 0.8);
-    --glow-pearl: 0 0 20px rgba(248, 250, 252, 0.3);
+    --glow-primary: 0 0 30px rgba(91, 33, 182, 0.3);
+    --glow-strong: 0 0 50px rgba(124, 58, 237, 0.5);
+    --glow-pearl: 0 0 20px rgba(139, 92, 246, 0.2);
 }
 
 * {
@@ -484,6 +485,162 @@ h5 { font-size: 1.25rem; }
     color: var(--silver-white);
 }
 
+/* Professional Footer */
+.professional-footer {
+    background: linear-gradient(180deg, rgba(10, 0, 20, 0.4) 0%, var(--bg-dark) 100%);
+    margin-top: 8rem;
+    position: relative;
+}
+
+.footer-divider {
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--border-default) 20%, 
+        var(--border-strong) 50%, 
+        var(--border-default) 80%, 
+        transparent 100%);
+    margin-bottom: 4rem;
+    box-shadow: 0 0 20px rgba(91, 33, 182, 0.5);
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr;
+    gap: 4rem;
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.footer-brand {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+}
+
+.footer-logo {
+    height: 60px;
+    width: auto;
+    filter: brightness(1.3) contrast(1.2) drop-shadow(0 0 30px rgba(124, 58, 237, 0.8));
+}
+
+.footer-brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.footer-company-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--pearl-white);
+    margin: 0;
+    letter-spacing: -0.02em;
+    text-shadow: 0 0 30px rgba(124, 58, 237, 0.6);
+}
+
+.footer-system-name {
+    font-size: 0.95rem;
+    color: var(--silver-bright);
+    font-weight: 500;
+    margin: 0;
+    letter-spacing: 0.02em;
+}
+
+.footer-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.footer-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-heading {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--pearl-white);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.25rem;
+    background: var(--gradient-purple-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.footer-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.footer-link {
+    color: var(--silver-bright);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.footer-link:hover {
+    color: var(--pearl-white);
+    transform: translateX(5px);
+    text-shadow: 0 0 10px rgba(124, 58, 237, 0.6);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.footer-copyright {
+    color: var(--silver-white);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.footer-language {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    background: rgba(32, 0, 61, 0.6);
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-subtle);
+}
+
+.footer-lang-btn {
+    background: none;
+    border: none;
+    color: var(--silver-bright);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.footer-lang-btn:hover {
+    color: var(--pearl-white);
+    background: rgba(91, 33, 182, 0.3);
+}
+
+.footer-lang-btn.active {
+    background: var(--gradient-purple-1);
+    color: var(--pearl-white);
+    font-weight: 600;
+    box-shadow: 0 0 15px rgba(91, 33, 182, 0.5);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .nav-menu {
@@ -505,5 +662,27 @@ h5 { font-size: 1.25rem; }
     
     .system-name {
         font-size: 0.75rem;
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .footer-links {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: center;
+    }
+    
+    .footer-brand {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
     }
 }
