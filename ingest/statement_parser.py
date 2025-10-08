@@ -4,6 +4,9 @@ import openpyxl
 import re
 from datetime import datetime
 import os
+from pdf2image import convert_from_path
+import pytesseract
+from PIL import Image
 
 def detect_bank(file_path):
     bank = "UNKNOWN"
@@ -11,13 +14,32 @@ def detect_bank(file_path):
         ext = os.path.splitext(file_path.lower())[1]
         if ext == ".pdf":
             with pdfplumber.open(file_path) as pdf:
-                text = pdf.pages[0].extract_text().upper()
-                if "MAYBANK" in text:
-                    bank = "MAYBANK"
-                elif "CIMB" in text:
-                    bank = "CIMB"
-                elif "HSBC" in text:
-                    bank = "HSBC"
+                text = pdf.pages[0].extract_text()
+                
+                if text and len(text.strip()) > 50:
+                    text = text.upper()
+                    if "MAYBANK" in text:
+                        bank = "MAYBANK"
+                    elif "CIMB" in text:
+                        bank = "CIMB"
+                    elif "HSBC" in text:
+                        bank = "HSBC"
+                else:
+                    print("🧠 Using OCR for bank detection...")
+                    images = convert_from_path(file_path, first_page=1, last_page=1, dpi=300)
+                    if images:
+                        ocr_text = pytesseract.image_to_string(images[0]).upper()
+                        if "MAYBANK" in ocr_text:
+                            bank = "MAYBANK"
+                        elif "CIMB" in ocr_text:
+                            bank = "CIMB"
+                        elif "HSBC" in ocr_text:
+                            bank = "HSBC"
+                        elif "PUBLIC BANK" in ocr_text or "PUBLIC" in ocr_text:
+                            bank = "PUBLIC BANK"
+                        elif "HONG LEONG" in ocr_text or "HONGLEONG" in ocr_text:
+                            bank = "HONG LEONG"
+                        
         elif ext in [".xlsx", ".xls"]:
             excel = pd.ExcelFile(file_path)
             sheet_names = [name.upper() for name in excel.sheet_names]
@@ -29,7 +51,7 @@ def detect_bank(file_path):
                 bank = "HSBC"
     except Exception as e:
         print(f"⚠️ Error detecting bank: {e}")
-    print(f"🏦 Detected Bank: {bank}")
+    print(f"✅ Detected Bank: {bank}")
     return bank
 
 def parse_cimb_statement(file_path):
