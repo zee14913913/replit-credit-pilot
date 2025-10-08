@@ -27,7 +27,7 @@
     --accent-subtle: rgba(255, 255, 255, 0.1);  /* Subtle white background */
     
     /* Semantic Colors - Professional & Clear */
-    --success: #10B981;             /* Success green */
+    --success: #71717A;             /* Elephant gray - professional neutral */
     --warning: #F59E0B;             /* Warning amber */
     --error: #EF4444;               /* Error red */
     
@@ -332,7 +332,7 @@ p {
 }
 
 .btn-success-pro:hover {
-    background: #059669;
+    background: #52525B;
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
     color: white;
@@ -428,7 +428,7 @@ p {
 }
 
 .badge-success-pro {
-    background: rgba(16, 185, 129, 0.1);
+    background: rgba(113, 113, 122, 0.1);
     color: var(--success);
 }
 
