@@ -4,43 +4,48 @@
  */
 
 :root {
-    /* Professional Color Palette - Mature & Stable */
-    --primary-dark: #1c1c1e;
-    --primary-gray: #2c2c2e;
-    --secondary-gray: #3a3a3c;
+    /* Luxury Professional Color Palette */
+    --primary-dark: #1a1a2e;
+    --primary-navy: #0f0f23;
+    --secondary-dark: #16213e;
     
-    /* Accent Colors - Deep Bronze Gold (No Blue/Cyan) */
-    --accent-gold: #b8860b;
-    --accent-gold-light: #d4a574;
-    --accent-bronze: #8b6914;
-    --accent-silver: #c0c0c0;
+    /* Accent Colors - Champagne Gold & Luxury */
+    --champagne-gold: #f4c430;
+    --rose-gold: #e8a87c;
+    --platinum: #e5e4e2;
+    --luxury-gold: #ffd700;
     
-    /* Supporting Colors */
-    --deep-brown: #5c4033;
-    --charcoal: #36454f;
+    /* Rich Deep Colors */
+    --deep-purple: #4a0e4e;
+    --burgundy: #800020;
+    --navy: #000080;
     
-    /* Text Colors */
-    --text-primary: #f5f5f7;
-    --text-secondary: #c0c0c0;
-    --text-muted: #8e8e93;
+    /* Text Colors - High Contrast */
+    --text-primary: #ffffff;
+    --text-secondary: #e0e0e0;
+    --text-muted: #b0b0b0;
+    --text-gold: #ffd700;
     
     /* Background Colors */
-    --bg-dark: #0d0d0d;
-    --bg-card: #1c1c1e;
-    --bg-card-hover: #2c2c2e;
-    --border-color: #3a3a3c;
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #1a1a2e;
+    --bg-card: #16213e;
+    --bg-card-hover: #1f2e4d;
+    --border-color: #2a3f5f;
     
-    /* Semantic Colors - Muted Professional Tones */
-    --success: #2f5233;
-    --success-light: #3d6b42;
-    --warning: #8b6914;
-    --danger: #7a2828;
-    --info: #5a5a5c;
+    /* Semantic Colors - Vibrant & Professional */
+    --success: #10b981;
+    --success-light: #34d399;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
     
-    /* Shadows & Effects */
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-    --glow-gold: 0 0 20px rgba(184, 134, 11, 0.3);
+    /* Premium Shadows & Effects */
+    --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.7);
+    --glow-gold: 0 0 30px rgba(255, 215, 0, 0.5);
+    --glow-platinum: 0 0 20px rgba(229, 228, 226, 0.3);
 }
 
 * {
@@ -51,10 +56,11 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1d2e 100%);
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--primary-dark) 50%, var(--primary-navy) 100%);
     color: var(--text-primary);
-    line-height: 1.6;
+    line-height: 1.7;
     min-height: 100vh;
+    letter-spacing: 0.3px;
 }
 
 /* Typography */
@@ -99,9 +105,9 @@ h5 { font-size: 1.25rem; }
 }
 
 .nav-logo {
-    height: 45px;
+    height: 55px;
     width: auto;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    filter: drop-shadow(0 4px 12px rgba(255, 215, 0, 0.4)) brightness(1.2) contrast(1.1);
 }
 
 .nav-brand-text {
@@ -110,16 +116,21 @@ h5 { font-size: 1.25rem; }
 }
 
 .company-name {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    letter-spacing: 0.5px;
+    font-size: 1.3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--champagne-gold) 0%, var(--luxury-gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
 }
 
 .system-name {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    font-weight: 400;
+    font-size: 0.9rem;
+    color: var(--platinum);
+    font-weight: 500;
+    letter-spacing: 0.5px;
 }
 
 .nav-menu {
@@ -145,13 +156,14 @@ h5 { font-size: 1.25rem; }
 }
 
 .nav-link:hover {
-    color: var(--accent-gold);
-    background: rgba(184, 134, 11, 0.1);
+    color: var(--champagne-gold);
+    background: linear-gradient(135deg, rgba(244, 196, 48, 0.1), rgba(232, 168, 124, 0.1));
 }
 
 .nav-link.active {
-    color: var(--accent-gold);
-    background: rgba(184, 134, 11, 0.15);
+    color: var(--luxury-gold);
+    background: linear-gradient(135deg, rgba(244, 196, 48, 0.2), rgba(232, 168, 124, 0.15));
+    box-shadow: var(--glow-gold);
 }
 
 /* Language Switcher */
@@ -183,9 +195,10 @@ h5 { font-size: 1.25rem; }
 }
 
 .lang-btn.active {
-    background: var(--accent-gold);
-    color: var(--bg-dark);
-    font-weight: 600;
+    background: linear-gradient(135deg, var(--champagne-gold), var(--luxury-gold));
+    color: var(--primary-navy);
+    font-weight: 700;
+    box-shadow: var(--glow-gold);
 }
 
 /* Professional Cards */
@@ -199,9 +212,10 @@ h5 { font-size: 1.25rem; }
 }
 
 .professional-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--glow-gold);
-    border-color: var(--accent-gold);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(255, 215, 0, 0.3);
+    border-color: var(--champagne-gold);
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%);
 }
 
 /* Stats Cards */
@@ -214,10 +228,14 @@ h5 { font-size: 1.25rem; }
 }
 
 .stat-value {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--accent-gold);
+    font-size: 2.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--champagne-gold) 0%, var(--luxury-gold) 50%, var(--rose-gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-bottom: 0.5rem;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
 }
 
 .stat-label {
@@ -230,44 +248,50 @@ h5 { font-size: 1.25rem; }
 
 /* Professional Buttons */
 .btn-professional {
-    background: var(--accent-gold);
-    color: var(--bg-dark);
+    background: linear-gradient(135deg, var(--champagne-gold), var(--luxury-gold));
+    color: var(--primary-navy);
     border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.95rem;
+    padding: 0.875rem 2rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
     display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: var(--glow-gold);
 }
 
 .btn-professional:hover {
-    background: var(--accent-gold-light);
-    transform: translateY(-2px);
-    box-shadow: var(--glow-gold);
-    color: var(--bg-dark);
+    background: linear-gradient(135deg, var(--luxury-gold), var(--rose-gold));
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(255, 215, 0, 0.6);
+    color: var(--primary-navy);
 }
 
 .btn-professional-outline {
     background: transparent;
-    color: var(--accent-gold);
-    border: 2px solid var(--accent-gold);
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
+    color: var(--champagne-gold);
+    border: 2px solid var(--champagne-gold);
+    padding: 0.875rem 2rem;
+    border-radius: 10px;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
     display: inline-block;
+    letter-spacing: 0.5px;
 }
 
 .btn-professional-outline:hover {
-    background: rgba(184, 134, 11, 0.1);
-    border-color: var(--accent-gold-light);
-    color: var(--accent-gold-light);
+    background: linear-gradient(135deg, rgba(244, 196, 48, 0.15), rgba(255, 215, 0, 0.1));
+    border-color: var(--luxury-gold);
+    color: var(--luxury-gold);
+    transform: translateY(-2px);
+    box-shadow: var(--glow-gold);
 }
 
 .btn-success-pro {
@@ -290,14 +314,14 @@ h5 { font-size: 1.25rem; }
 }
 
 .table-professional th {
-    background: rgba(184, 134, 11, 0.1);
-    color: var(--accent-gold);
-    font-weight: 600;
+    background: linear-gradient(135deg, rgba(244, 196, 48, 0.15), rgba(255, 215, 0, 0.1));
+    color: var(--champagne-gold);
+    font-weight: 700;
     text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-    padding: 1rem;
-    border-bottom: 2px solid var(--accent-gold);
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    padding: 1.25rem;
+    border-bottom: 3px solid var(--luxury-gold);
 }
 
 .table-professional td {
@@ -307,7 +331,9 @@ h5 { font-size: 1.25rem; }
 }
 
 .table-professional tr:hover {
-    background: rgba(184, 134, 11, 0.05);
+    background: linear-gradient(135deg, rgba(244, 196, 48, 0.08), rgba(255, 215, 0, 0.05));
+    transform: scale(1.01);
+    transition: all 0.3s ease;
 }
 
 /* Alert Professional */
@@ -347,8 +373,10 @@ h5 { font-size: 1.25rem; }
 }
 
 .badge-primary-pro {
-    background: rgba(184, 134, 11, 0.2);
-    color: var(--accent-gold);
+    background: linear-gradient(135deg, rgba(244, 196, 48, 0.3), rgba(255, 215, 0, 0.2));
+    color: var(--luxury-gold);
+    font-weight: 600;
+    border: 1px solid var(--champagne-gold);
 }
 
 .badge-success-pro {
@@ -358,21 +386,28 @@ h5 { font-size: 1.25rem; }
 
 /* Section Headers */
 .section-header {
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 1rem;
-    margin-bottom: 2rem;
+    border-bottom: 3px solid;
+    border-image: linear-gradient(90deg, var(--champagne-gold), var(--luxury-gold), transparent) 1;
+    padding-bottom: 1.5rem;
+    margin-bottom: 3rem;
 }
 
 .section-title {
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--champagne-gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
 }
 
 .section-subtitle {
     color: var(--text-secondary);
-    font-size: 1rem;
+    font-size: 1.15rem;
+    line-height: 1.8;
+    max-width: 800px;
 }
 
 /* Divider */
@@ -386,7 +421,7 @@ h5 { font-size: 1.25rem; }
 .container-professional {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 3rem 2rem;
 }
 
 /* Fade In Animation */
@@ -413,8 +448,9 @@ h5 { font-size: 1.25rem; }
 
 .form-control-professional:focus {
     outline: none;
-    border-color: var(--accent-gold);
+    border-color: var(--champagne-gold);
     box-shadow: var(--glow-gold);
+    background: rgba(244, 196, 48, 0.05);
 }
 
 .form-control-professional::placeholder {
