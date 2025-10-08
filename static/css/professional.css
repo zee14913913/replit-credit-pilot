@@ -5,12 +5,14 @@
  */
 
 :root {
-    /* Deep Violet/Purple Gradient Color Palette - 深紫罗兰渐层配色 */
-    --bg-black: #0a0014;
-    --bg-dark: #14001f;
-    --bg-darker: #1a0029;
-    --bg-card: #20003d;
-    --bg-card-hover: #2d0052;
+    /* Warm Beige Background - 温暖米白色背景 */
+    --bg-warm-beige: #FAF8F3;
+    --bg-beige-light: #FFF8F0;
+    --bg-beige-soft: #F5F3EE;
+    
+    /* Card backgrounds for light theme */
+    --bg-card: #FFFFFF;
+    --bg-card-hover: #F8F6F1;
     
     /* Deep Violet Primary Colors - 深紫罗兰主色 */
     --primary: #5B21B6;
@@ -23,21 +25,20 @@
     --gradient-purple-2: linear-gradient(135deg, #4C1D95 0%, #6D28D9 50%, #8B5CF6 100%);
     --gradient-purple-3: linear-gradient(180deg, #5B21B6 0%, #2d0052 100%);
     
-    /* Pearl White + Silver Bright White - 珍珠白 + 银亮白 */
-    --pearl-white: #F8FAFC;
-    --pearl-white-soft: #F1F5F9;
-    --silver-bright: #E2E8F0;
-    --silver-white: #CBD5E1;
+    /* Text Colors for Light Background - 浅色背景深色文字 */
+    --text-primary: #1a1a1a;
+    --text-secondary: #4a4a4a;
+    --text-muted: #6b6b6b;
     
-    /* Text Colors - Ultra High Contrast */
-    --text-primary: var(--pearl-white);
-    --text-secondary: var(--silver-bright);
-    --text-muted: var(--silver-white);
+    /* Nav Text Colors (for dark nav) - 导航栏文字（深色导航） */
+    --nav-text-primary: #F8FAFC;
+    --nav-text-secondary: #E2E8F0;
     
-    /* Border Colors with Purple Tint */
-    --border-subtle: #3d1a5f;
-    --border-default: #5B21B6;
-    --border-strong: #7C3AED;
+    /* Border Colors */
+    --border-subtle: #e5e5e5;
+    --border-default: #d4d4d4;
+    --border-strong: #a3a3a3;
+    --border-purple: #8B5CF6;
     
     /* Semantic Colors - Modern & Vibrant */
     --success: #22c55e;
@@ -46,16 +47,16 @@
     --danger: #ef4444;
     --info: #8B5CF6;
     
-    /* Shadows with Purple Glow */
-    --shadow-sm: 0 1px 2px 0 rgba(91, 33, 182, 0.3);
-    --shadow-md: 0 4px 6px -1px rgba(91, 33, 182, 0.4);
-    --shadow-lg: 0 10px 15px -3px rgba(91, 33, 182, 0.5);
-    --shadow-xl: 0 20px 25px -5px rgba(91, 33, 182, 0.6);
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     
     /* Purple Glow Effects - 紫色光晕效果 */
-    --glow-primary: 0 0 30px rgba(91, 33, 182, 0.6);
-    --glow-strong: 0 0 50px rgba(124, 58, 237, 0.8);
-    --glow-pearl: 0 0 20px rgba(248, 250, 252, 0.3);
+    --glow-primary: 0 0 30px rgba(91, 33, 182, 0.3);
+    --glow-strong: 0 0 50px rgba(124, 58, 237, 0.5);
+    --glow-pearl: 0 0 20px rgba(139, 92, 246, 0.2);
 }
 
 * {
@@ -66,8 +67,7 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg-black);
-    background-image: var(--gradient-purple-3);
+    background: var(--bg-warm-beige);
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
@@ -79,7 +79,7 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
     letter-spacing: -0.02em;
     margin-bottom: 0.5rem;
-    color: var(--pearl-white);
+    color: var(--text-primary);
 }
 
 h1 { font-size: 2.5rem; }
@@ -131,7 +131,7 @@ h5 { font-size: 1.25rem; }
 .company-name {
     font-size: 2.25rem;
     font-weight: 900;
-    color: var(--pearl-white);
+    color: var(--nav-text-primary);
     letter-spacing: -0.02em;
     text-shadow: 0 0 50px rgba(124, 58, 237, 1), 0 0 30px rgba(91, 33, 182, 0.8);
     line-height: 1;
@@ -139,7 +139,7 @@ h5 { font-size: 1.25rem; }
 
 .system-name {
     font-size: 1.125rem;
-    color: var(--silver-bright);
+    color: var(--nav-text-secondary);
     font-weight: 400;
     letter-spacing: -0.01em;
     margin-top: 0.25rem;
@@ -157,7 +157,7 @@ h5 { font-size: 1.25rem; }
 }
 
 .nav-link {
-    color: var(--silver-bright);
+    color: var(--nav-text-secondary);
     text-decoration: none;
     font-weight: 500;
     font-size: 0.95rem;
@@ -168,13 +168,13 @@ h5 { font-size: 1.25rem; }
 }
 
 .nav-link:hover {
-    color: var(--pearl-white);
+    color: var(--nav-text-primary);
     background: rgba(91, 33, 182, 0.2);
     box-shadow: 0 0 15px rgba(91, 33, 182, 0.3);
 }
 
 .nav-link.active {
-    color: var(--pearl-white);
+    color: var(--nav-text-primary);
     background: var(--gradient-purple-1);
     box-shadow: var(--glow-primary);
 }
@@ -184,16 +184,16 @@ h5 { font-size: 1.25rem; }
     display: flex;
     gap: 0.5rem;
     align-items: center;
-    background: var(--bg-card);
+    background: rgba(32, 0, 61, 0.4);
     padding: 0.5rem 1rem;
     border-radius: 8px;
-    border: 1px solid var(--border-subtle);
+    border: 1px solid rgba(91, 33, 182, 0.3);
 }
 
 .lang-btn {
     background: none;
     border: none;
-    color: var(--silver-bright);
+    color: var(--nav-text-secondary);
     padding: 0.25rem 0.75rem;
     border-radius: 4px;
     cursor: pointer;
@@ -203,20 +203,20 @@ h5 { font-size: 1.25rem; }
 }
 
 .lang-btn:hover {
-    color: var(--pearl-white);
+    color: var(--nav-text-primary);
     background: rgba(91, 33, 182, 0.3);
 }
 
 .lang-btn.active {
     background: var(--gradient-purple-1);
-    color: var(--pearl-white);
+    color: var(--nav-text-primary);
     font-weight: 600;
     box-shadow: var(--glow-primary);
 }
 
 /* Professional Cards */
 .professional-card {
-    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(45, 0, 82, 0.8) 100%);
+    background: var(--bg-card);
     border: 1px solid var(--border-subtle);
     border-radius: 12px;
     padding: 2rem;
@@ -227,8 +227,8 @@ h5 { font-size: 1.25rem; }
 .professional-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
-    border-color: var(--border-default);
-    background: linear-gradient(135deg, var(--bg-card-hover) 0%, rgba(45, 0, 82, 1) 100%);
+    border-color: var(--border-purple);
+    background: var(--bg-card-hover);
 }
 
 /* Stats Cards */
@@ -244,14 +244,13 @@ h5 { font-size: 1.25rem; }
 .stat-value {
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--pearl-white);
+    color: #FFFFFF;
     margin-bottom: 0.5rem;
     letter-spacing: -0.02em;
-    text-shadow: var(--glow-pearl);
 }
 
 .stat-label {
-    color: var(--silver-bright);
+    color: #E2E8F0;
     font-size: 0.95rem;
     font-weight: 500;
     text-transform: uppercase;
@@ -261,7 +260,7 @@ h5 { font-size: 1.25rem; }
 /* Professional Buttons */
 .btn-professional {
     background: var(--gradient-purple-1);
-    color: var(--pearl-white);
+    color: #FFFFFF;
     border: none;
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
@@ -279,7 +278,7 @@ h5 { font-size: 1.25rem; }
     background: var(--gradient-purple-2);
     transform: translateY(-1px);
     box-shadow: var(--glow-strong);
-    color: var(--pearl-white);
+    color: #FFFFFF;
 }
 
 .btn-professional-outline {
@@ -304,20 +303,20 @@ h5 { font-size: 1.25rem; }
 }
 
 .btn-success-pro {
-    background: rgba(248, 250, 252, 0.1);
-    color: var(--pearl-white);
-    border: 1px solid var(--silver-bright);
+    background: rgba(255, 255, 255, 0.5);
+    color: var(--text-primary);
+    border: 1px solid var(--border-default);
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
     font-weight: 600;
 }
 
 .btn-success-pro:hover {
-    background: rgba(248, 250, 252, 0.15);
-    border-color: var(--pearl-white);
+    background: rgba(255, 255, 255, 0.9);
+    border-color: var(--border-purple);
     transform: translateY(-1px);
     box-shadow: var(--glow-pearl);
-    color: var(--pearl-white);
+    color: var(--text-primary);
 }
 
 /* Professional Table */
@@ -331,7 +330,7 @@ h5 { font-size: 1.25rem; }
 
 .table-professional th {
     background: var(--gradient-purple-1);
-    color: var(--pearl-white);
+    color: #FFFFFF;
     font-weight: 600;
     text-transform: uppercase;
     font-size: 0.75rem;
@@ -343,11 +342,11 @@ h5 { font-size: 1.25rem; }
 .table-professional td {
     padding: 1rem;
     border-bottom: 1px solid var(--border-subtle);
-    color: var(--silver-bright);
+    color: var(--text-secondary);
 }
 
 .table-professional tr:hover {
-    background: rgba(91, 33, 182, 0.1);
+    background: var(--bg-beige-soft);
 }
 
 /* Alert Professional */
@@ -361,19 +360,19 @@ h5 { font-size: 1.25rem; }
 .alert-success-pro {
     background: rgba(34, 197, 94, 0.1);
     border-color: var(--success);
-    color: var(--pearl-white);
+    color: var(--text-primary);
 }
 
 .alert-info-pro {
     background: rgba(139, 92, 246, 0.1);
     border-color: var(--info);
-    color: var(--pearl-white);
+    color: var(--text-primary);
 }
 
 .alert-warning-pro {
     background: rgba(245, 158, 11, 0.1);
     border-color: var(--warning);
-    color: var(--pearl-white);
+    color: var(--text-primary);
 }
 
 /* Badge Professional */
@@ -387,10 +386,10 @@ h5 { font-size: 1.25rem; }
 }
 
 .badge-primary-pro {
-    background: rgba(91, 33, 182, 0.2);
-    color: var(--pearl-white);
+    background: rgba(91, 33, 182, 0.15);
+    color: var(--primary);
     font-weight: 500;
-    border: 1px solid var(--border-default);
+    border: 1px solid var(--border-purple);
 }
 
 .badge-success-pro {
@@ -408,7 +407,7 @@ h5 { font-size: 1.25rem; }
 .section-title {
     font-size: 3rem;
     font-weight: 700;
-    color: var(--pearl-white);
+    color: var(--text-primary);
     margin-bottom: 1rem;
     letter-spacing: -0.03em;
     background: var(--gradient-purple-1);
@@ -418,7 +417,7 @@ h5 { font-size: 1.25rem; }
 }
 
 .section-subtitle {
-    color: var(--silver-bright);
+    color: var(--text-secondary);
     font-size: 1.125rem;
     line-height: 1.6;
     max-width: 700px;
@@ -450,9 +449,9 @@ h5 { font-size: 1.25rem; }
 
 /* Form Professional */
 .form-control-professional {
-    background: rgba(32, 0, 61, 0.6);
-    border: 1px solid var(--border-subtle);
-    color: var(--pearl-white);
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
     padding: 0.75rem 1rem;
     border-radius: 8px;
     font-size: 0.95rem;
@@ -464,11 +463,11 @@ h5 { font-size: 1.25rem; }
     outline: none;
     border-color: var(--primary);
     box-shadow: var(--glow-primary);
-    background: rgba(32, 0, 61, 0.8);
+    background: var(--bg-card);
 }
 
 .form-control-professional::placeholder {
-    color: var(--silver-white);
+    color: var(--text-muted);
 }
 
 /* Responsive */
