@@ -748,28 +748,28 @@ p {
     align-items: center;
     justify-content: center;
     gap: var(--space-xl);
-    padding: var(--space-2xl) 0;
+    padding: var(--space-lg) 0 var(--space-md) 0;
     border-bottom: 1px solid var(--border-subtle);
     width: 80%;
     margin: 0 auto;
 }
 
 .footer-logo {
-    width: 80px;
-    height: 80px;
-    filter: drop-shadow(0 0 12px rgba(192, 192, 192, 0.4));
+    width: 120px;
+    height: 120px;
+    filter: drop-shadow(0 0 16px rgba(192, 192, 192, 0.5));
 }
 
 .footer-company-name {
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-size: 5rem;
+    font-weight: 800;
     color: var(--text-primary);
     margin: 0;
     background: linear-gradient(135deg, #FFFFFF 0%, rgba(192, 192, 192, 0.9) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
 }
 
 /* Three Column Layout */
@@ -777,7 +777,7 @@ p {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-xl);
-    padding: var(--space-lg) 0;
+    padding: var(--space-md) 0;
     border-bottom: 1px solid var(--border-subtle);
     width: 80%;
     margin: 0 auto;
@@ -819,9 +819,9 @@ p {
 
 .footer-bottom {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: var(--space-sm) 0;
+    padding: var(--space-xs) 0;
     width: 80%;
     margin: 0 auto;
 }

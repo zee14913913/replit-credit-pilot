@@ -131,19 +131,9 @@
                 </div>
             </div>
             
-            <!-- Bottom: Copyright and Language Switcher -->
+            <!-- Bottom: Copyright -->
             <div class="footer-bottom">
                 <p class="footer-copyright">&copy; 2025 INFINITE GZ SDN BHD. All Rights Reserved</p>
-                <div class="footer-language">
-                    <button class="footer-lang-btn {{ 'active' if current_lang == 'en' }}" 
-                            onclick="window.location.href='{{ url_for('set_language', lang='en') }}'">
-                        EN
-                    </button>
-                    <button class="footer-lang-btn {{ 'active' if current_lang == 'zh' }}" 
-                            onclick="window.location.href='{{ url_for('set_language', lang='zh') }}'">
-                        中文
-                    </button>
-                </div>
             </div>
         </div>
     </footer>
