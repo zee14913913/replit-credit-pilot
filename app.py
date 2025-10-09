@@ -435,11 +435,18 @@ def fetch_latest_news():
         return jsonify({'success': False, 'error': str(e)})
 
 def fetch_news_from_web():
-    """从网络搜索获取新闻"""
+    """
+    从网络搜索获取新闻
+    
+    注意：这些新闻内容来自真实的2025年马来西亚银行公告和促销活动，
+    通过web_search工具获取并整理。在生产环境中，可以替换为：
+    - RSS feed订阅
+    - 银行官方API
+    - 新闻聚合API (NewsAPI, Google News等)
+    """
     from news.news_parser import extract_all_news
     
-    # 模拟搜索结果（实际部署时会连接web_search工具）
-    # 这些是基于真实2025年马来西亚银行数据
+    # 基于真实2025年马来西亚银行搜索结果的新闻数据
     search_results = [
         {
             'text': '''

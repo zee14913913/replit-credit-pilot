@@ -30,23 +30,23 @@ NEWS_SEARCH_TOPICS = {
 
 def extract_news_from_search_results(search_results, category):
     """
-    从搜索结果中提取新闻
+    从搜索结果中提取新闻 - 使用news_parser模块
     """
-    news_items = []
+    from news.news_parser import extract_all_news
     
-    # 这里会解析搜索结果并提取关键信息
-    # 实际实现时会与web_search工具集成
+    # 使用news_parser解析搜索结果
+    news_items = extract_all_news(search_results)
     
     return news_items
 
 def save_pending_news(news_items):
     """
-    保存待审核的新闻到数据库
+    保存待审核的新闻到数据库（带去重）
     """
     with get_db() as conn:
         cursor = conn.cursor()
         
-        # 创建待审核新闻表（如果不存在）
+        # 创建待审核新闻表（如果不存在）- 添加唯一约束
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS pending_news (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -58,32 +58,40 @@ def save_pending_news(news_items):
                 source_url TEXT,
                 effective_date TEXT,
                 created_at TEXT NOT NULL,
-                status TEXT DEFAULT 'pending'
+                status TEXT DEFAULT 'pending',
+                UNIQUE(bank_name, title, effective_date)
             )
         ''')
         
-        # 插入待审核新闻
+        # 插入待审核新闻（忽略重复）
+        inserted_count = 0
         for news in news_items:
-            cursor.execute('''
-                INSERT INTO pending_news 
-                (bank_name, news_type, category, title, content, source_url, effective_date, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (
-                news.get('bank_name'),
-                news.get('news_type'),
-                news.get('category'),
-                news['title'],
-                news['content'],
-                news.get('source_url'),
-                news.get('effective_date', datetime.now().strftime('%Y-%m-%d')),
-                datetime.now().isoformat()
-            ))
+            try:
+                cursor.execute('''
+                    INSERT OR IGNORE INTO pending_news 
+                    (bank_name, news_type, category, title, content, source_url, effective_date, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (
+                    news.get('bank_name'),
+                    news.get('news_type'),
+                    news.get('category'),
+                    news['title'],
+                    news['content'],
+                    news.get('source_url'),
+                    news.get('effective_date', datetime.now().strftime('%Y-%m-%d')),
+                    datetime.now().isoformat()
+                ))
+                if cursor.rowcount > 0:
+                    inserted_count += 1
+            except Exception as e:
+                print(f"Error inserting news: {e}")
+                continue
         
         conn.commit()
-        return len(news_items)
+        return inserted_count
 
 def ensure_pending_news_table():
-    """确保pending_news表存在"""
+    """确保pending_news表存在（带UNIQUE约束）"""
     with get_db() as conn:
         cursor = conn.cursor()
         cursor.execute('''
@@ -97,7 +105,8 @@ def ensure_pending_news_table():
                 source_url TEXT,
                 effective_date TEXT,
                 created_at TEXT NOT NULL,
-                status TEXT DEFAULT 'pending'
+                status TEXT DEFAULT 'pending',
+                UNIQUE(bank_name, title, effective_date)
             )
         ''')
         conn.commit()
