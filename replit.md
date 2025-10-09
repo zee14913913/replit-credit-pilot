@@ -50,6 +50,12 @@ The backend is built with **Flask**, chosen for rapid development and flexibilit
 - **Reminder System:** Scheduled payment reminders via email.
 - **Authentication & Authorization:** Secure customer login/registration with SHA-256 password hashing and token-based session management.
 - **Customer Authorization Agreement:** Bilingual (EN/CN) service agreement including Credit Card Management, Debt Optimization, Bank Loan Advisory, Audit & Accounting, Mortgage Interest Discount, and SME Financing.
+- **Automated News Management System (NEW):**
+    - **Real Banking News:** Curated 2025 Malaysia banking news covering credit cards, loans, investments, and SME financing
+    - **Admin Approval Workflow:** Dedicated /admin/news interface for reviewing and publishing news
+    - **Intelligent Deduplication:** UNIQUE constraints prevent duplicate news insertion
+    - **Scheduled Auto-Fetch:** Daily 8:00 AM automatic news gathering via integrated scheduler
+    - **Categories:** Credit card promotions, loan rates, investment products (FD), SME business financing
 
 ### System Design Choices
 
