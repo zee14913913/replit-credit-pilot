@@ -1,10 +1,11 @@
 modules = ["python-3.11", "postgresql-16"]
 [agent]
 expertMode = true
+integrations = ["twilio:1.0.0"]
 
 [nix]
 channel = "stable-25_05"
-packages = ["freetype", "glibcLocales", "lcms2", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "poppler_utils", "tcl", "tesseract", "tk", "zlib", "poppler"]
+packages = ["freetype", "glibcLocales", "lcms2", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "poppler", "poppler_utils", "tcl", "tesseract", "tk", "zlib"]
 
 [workflows]
 runButton = "Project"
@@ -49,7 +50,3 @@ externalPort = 3000
 [[ports]]
 localPort = 36189
 externalPort = 3001
-
-[[ports]]
-localPort = 38835
-externalPort = 3003
