@@ -80,12 +80,17 @@
     box-sizing: border-box;
 }
 
+html {
+    height: 100%;
+}
+
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 100%);
     color: var(--text-primary);
     line-height: 1.6;
-    min-height: 100vh;
+    min-height: 100%;
+    height: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     position: relative;
@@ -731,8 +736,9 @@ p {
 .professional-footer {
     background: linear-gradient(135deg, rgba(15, 15, 15, 0.98) 0%, rgba(26, 26, 26, 0.98) 100%);
     border-top: 1px solid var(--border-silver);
-    margin-top: calc(-1 * var(--space-3xl));
-    padding: var(--space-md) 0;
+    margin-top: auto;
+    margin-bottom: 0;
+    padding: var(--space-md) 0 0 0;
     box-shadow: 0 -4px 20px rgba(0,0,0,0.5), 0 0 10px rgba(192,192,192,0.1);
     position: relative;
 }
@@ -866,7 +872,7 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: var(--space-xs) 0;
+    padding: var(--space-xs) 0 0 0;
     width: 80%;
     margin: 0 auto;
 }
@@ -875,6 +881,8 @@ p {
     color: var(--text-tertiary);
     font-size: 0.85rem;
     margin: 0;
+    padding: 0;
+    line-height: 1;
 }
 
 .footer-language {
