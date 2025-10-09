@@ -83,3 +83,27 @@ The backend is built with **Flask**. The database layer uses **SQLite** with a c
 
 ### File Storage
 - **Local File System**: `static/uploads` for uploaded statements and generated PDF reports.
+## Recent Updates - 2025-10-09
+
+### 信用卡账单核心管理系统 (Complete Statement Management)
+**用户最重要的3大核心功能，完整实现了信用卡账单全生命周期管理：**
+
+#### 1. 分期付款管理系统 (Instalment Tracking System)
+- **核心模块：** `validate/instalment_tracker.py`
+- **功能：** 记录分期计划（商品、本金、利率、期限、月供），自动生成付款时间表，计算总月供用于DSR分析
+- **数据库：** `instalment_plans`、`instalment_payment_records`
+- **集成：** Customer dashboard显示活跃分期、总月供、到期提醒
+
+#### 2. 月度报表自动生成系统 (Monthly Report Auto-Generator)
+- **核心模块：** `report/monthly_report_generator.py`
+- **关键逻辑：** 按statement的statement_date月份归属（用户要求）
+- **报表内容：** Debit汇总（Supplier+AIA+其他）、Credit汇总（Owner+其他）、Instalment汇总、净额计算、DSR分析
+- **自动化：** 每月5号10:00自动生成上月报表，支持手动生成任意月份
+- **Supplier费用：** 7个指定商家1% merchant fee单独追踪显示
+
+#### 3. 账单对比展示界面 (Statement Comparison View)
+- **设计：** 左侧原始PDF，右侧分类报告，并列对比展示
+- **功能：** 验证100%数据准确性，下载原始账单，导出分类报告（Excel/CSV）
+- **访问：** Dashboard "Comparison/对比"按钮直达
+
+**Architect审查：** ✅ 所有功能通过验证，正常运行
