@@ -39,8 +39,6 @@ GET_ROUTES = [
     "/admin-login",
     "/admin",
     "/admin/news",
-    f"/admin/news/approve/{NEWS_ID}",
-    f"/admin/news/reject/{NEWS_ID}",
     "/admin-logout",
     "/banking_news",
     "/reminders",
@@ -83,7 +81,9 @@ POST_ROUTES = {
         "monthly_income": "8000",
         "years_employed": "3"
     },
-    f"/budget/delete/{BUDGET_ID}/{CUSTOMER_ID}": {}
+    f"/budget/delete/{BUDGET_ID}/{CUSTOMER_ID}": {},
+    f"/admin/news/approve/{NEWS_ID}": {},
+    f"/admin/news/reject/{NEWS_ID}": {}
 }
 
 session = requests.Session()

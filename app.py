@@ -604,6 +604,10 @@ def budget_management(customer_id):
     if request.method == 'POST':
         category = request.form.get('category')
         
+        if not category:
+            flash('Category is required', 'error')
+            return redirect(url_for('budget_management', customer_id=customer_id))
+        
         try:
             monthly_limit = float(request.form.get('monthly_limit', 0))
             alert_threshold = float(request.form.get('alert_threshold', 80))
@@ -668,12 +672,25 @@ def batch_upload(customer_id):
                 
                 result = parse_statement_auto(file_path)
                 
+                # Extract data from result tuple (data_dict, transactions_list)
+                if isinstance(result, tuple) and len(result) >= 2:
+                    data_dict, _ = result
+                    if data_dict and isinstance(data_dict, dict):
+                        statement_date = str(data_dict.get('statement_date', ''))
+                        total = float(data_dict.get('total', 0))
+                    else:
+                        statement_date = ''
+                        total = 0.0
+                else:
+                    statement_date = ''
+                    total = 0.0
+                
                 with get_db() as conn:
                     cursor = conn.cursor()
                     cursor.execute('''
                         INSERT INTO statements (card_id, statement_date, statement_total, file_path, batch_job_id)
                         VALUES (?, ?, ?, ?, ?)
-                    ''', (card_id, result['statement_date'], result['total'], file_path, batch_id))
+                    ''', (card_id, statement_date, total, file_path, batch_id))
                     statement_id = cursor.lastrowid
                     conn.commit()
                 
@@ -706,13 +723,22 @@ def update_transaction_note(transaction_id):
 @app.route('/transaction/<int:transaction_id>/tag', methods=['POST'])
 def add_transaction_tag(transaction_id):
     """Add tag to transaction"""
-    tag_name = request.form.get('tag_name')
-    customer_id = int(request.form.get('customer_id'))
+    tag_name = request.form.get('tag_name') or request.form.get('tags')
+    customer_id_str = request.form.get('customer_id')
     
-    tag_id = tag_service.create_tag(customer_id, tag_name)
-    tag_service.add_tag_to_transaction(transaction_id, tag_id)
+    if not tag_name:
+        return jsonify({'success': False, 'error': 'Tag name is required'}), 400
     
-    return jsonify({'success': True, 'tag_id': tag_id})
+    if not customer_id_str:
+        return jsonify({'success': False, 'error': 'Customer ID is required'}), 400
+    
+    try:
+        customer_id = int(customer_id_str)
+        tag_id = tag_service.create_tag(customer_id, tag_name)
+        tag_service.add_tag_to_transaction(transaction_id, tag_id)
+        return jsonify({'success': True, 'tag_id': tag_id})
+    except ValueError:
+        return jsonify({'success': False, 'error': 'Invalid customer ID'}), 400
 
 # ========== FINANCIAL ADVISORY ROUTES ==========
 
@@ -859,6 +885,9 @@ def customer_login():
         email = request.form.get('email')
         password = request.form.get('password')
         
+        if not email or not password:
+            return render_template('customer_login.html', error='Email and password are required')
+        
         result = authenticate_customer(email, password)
         
         if result['success']:
@@ -887,17 +916,34 @@ def customer_register():
         if password != confirm_password:
             return render_template('customer_register.html', error="Passwords do not match")
         
+        # Validate inputs
+        if not all([name, email, phone, monthly_income, password]):
+            return render_template('customer_register.html', error='All fields are required')
+        
+        # Type assertions for safety
+        assert isinstance(email, str) and isinstance(password, str) and isinstance(name, str)
+        assert isinstance(phone, str) and isinstance(monthly_income, str)
+        
+        try:
+            income_float = float(monthly_income)
+        except (ValueError, TypeError):
+            return render_template('customer_register.html', error='Invalid monthly income')
+        
         # Create customer first
         with get_db() as conn:
             cursor = conn.cursor()
             cursor.execute("""
                 INSERT INTO customers (name, phone, email, monthly_income)
                 VALUES (?, ?, ?, ?)
-            """, (name, phone, email, float(monthly_income)))
+            """, (name, phone, email, income_float))
             customer_id = cursor.lastrowid
             conn.commit()
         
-        # Create login credentials
+        # Verify customer_id is valid
+        if not customer_id:
+            return render_template('customer_register.html', error='Failed to create customer')
+        
+        # Create login credentials - customer_id is guaranteed to be int here
         result = create_customer_login(customer_id, email, password)
         
         if result['success']:
