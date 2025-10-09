@@ -1211,6 +1211,94 @@ def notify_admin_consultation_request(customer_name, service_type):
 
 # ==================== END NOTIFICATION SERVICES ====================
 
+# ==================== ADVANCED ANALYTICS FEATURES ====================
+
+# Import new analytics modules
+from analytics.financial_health_score import FinancialHealthScore
+from analytics.cashflow_predictor import CashflowPredictor
+from analytics.customer_tier_system import CustomerTierSystem
+from analytics.anomaly_detector import AnomalyDetector
+from analytics.recommendation_engine import RecommendationEngine
+
+# Initialize analytics services
+health_score_service = FinancialHealthScore()
+cashflow_service = CashflowPredictor()
+tier_service = CustomerTierSystem()
+anomaly_service = AnomalyDetector()
+recommendation_service = RecommendationEngine()
+
+@app.route('/advanced-analytics/<int:customer_id>')
+def advanced_analytics(customer_id):
+    """高级财务分析仪表板"""
+    lang = session.get('language', 'en')
+    
+    # 财务健康评分
+    health_score = health_score_service.calculate_score(customer_id)
+    score_trend = health_score_service.get_score_trend(customer_id, months=6)
+    
+    # 客户等级
+    tier_info = tier_service.calculate_customer_tier(customer_id)
+    
+    # 异常检测
+    anomalies = anomaly_service.detect_anomalies(customer_id)
+    
+    # 个性化推荐
+    recommendations = recommendation_service.generate_recommendations(customer_id)
+    
+    # 现金流预测（12个月）
+    cashflow_data = cashflow_service.get_cashflow_chart_data(customer_id, months=12)
+    
+    return render_template('advanced_analytics.html',
+                         customer_id=customer_id,
+                         health_score=health_score,
+                         score_trend=score_trend,
+                         tier_info=tier_info,
+                         anomalies=anomalies,
+                         recommendations=recommendations,
+                         cashflow_data=cashflow_data,
+                         current_lang=lang)
+
+@app.route('/api/cashflow-prediction/<int:customer_id>')
+def api_cashflow_prediction(customer_id):
+    """API: 获取现金流预测数据"""
+    months = request.args.get('months', 12, type=int)
+    prediction = cashflow_service.predict_cashflow(customer_id, months)
+    return jsonify(prediction)
+
+@app.route('/api/financial-score/<int:customer_id>')
+def api_financial_score(customer_id):
+    """API: 获取财务健康评分"""
+    score_data = health_score_service.calculate_score(customer_id)
+    return jsonify(score_data)
+
+@app.route('/api/anomalies/<int:customer_id>')
+def api_anomalies(customer_id):
+    """API: 获取财务异常"""
+    anomalies = anomaly_service.get_active_anomalies(customer_id)
+    return jsonify({'anomalies': anomalies})
+
+@app.route('/api/recommendations/<int:customer_id>')
+def api_recommendations(customer_id):
+    """API: 获取个性化推荐"""
+    recommendations = recommendation_service.generate_recommendations(customer_id)
+    return jsonify(recommendations)
+
+@app.route('/api/tier-info/<int:customer_id>')
+def api_tier_info(customer_id):
+    """API: 获取客户等级信息"""
+    tier_info = tier_service.calculate_customer_tier(customer_id)
+    return jsonify(tier_info)
+
+@app.route('/resolve-anomaly/<int:anomaly_id>', methods=['POST'])
+def resolve_anomaly_route(anomaly_id):
+    """解决财务异常"""
+    resolution_note = request.form.get('resolution_note', '')
+    anomaly_service.resolve_anomaly(anomaly_id, resolution_note)
+    flash('异常已成功解决', 'success')
+    return redirect(request.referrer or url_for('index'))
+
+# ==================== END ADVANCED ANALYTICS ====================
+
 def auto_fetch_daily_news():
     """每日自动获取新闻任务"""
     try:

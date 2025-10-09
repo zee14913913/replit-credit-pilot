@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{% block title %}高级财务分析 - Advanced Analytics{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="gradient-text">
+                <i class="bi bi-graph-up-arrow"></i>
+                {% if current_lang == 'zh' %}高级财务分析{% else %}Advanced Analytics{% endif %}
+            </h1>
+            <p class="text-secondary">
+                {% if current_lang == 'zh' %}
+                AI驱动的智能财务健康分析与预测
+                {% else %}
+                AI-Powered Financial Health Analysis & Predictions
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <!-- 财务健康评分卡 -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="text-secondary">
+                        {% if current_lang == 'zh' %}财务健康评分{% else %}Financial Health Score{% endif %}
+                    </h3>
+                    <div class="display-1 my-4 
+                        {% if health_score.total_score >= 80 %}text-success
+                        {% elif health_score.total_score >= 60 %}text-warning
+                        {% else %}text-danger{% endif %}">
+                        {{ health_score.total_score }}
+                    </div>
+                    <h4>
+                        <span class="badge bg-{{ health_score.rating.color }}">
+                            {{ health_score.rating.grade }} - {{ health_score.rating.label }}
+                        </span>
+                    </h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- 客户等级 -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="text-secondary">
+                        {% if current_lang == 'zh' %}客户等级{% else %}Customer Tier{% endif %}
+                    </h3>
+                    <div class="display-3 my-4">
+                        {% if tier_info.current_tier == 'Platinum' %}
+                            <i class="bi bi-gem text-info"></i>
+                        {% elif tier_info.current_tier == 'Gold' %}
+                            <i class="bi bi-star-fill text-warning"></i>
+                        {% else %}
+                            <i class="bi bi-shield-fill text-secondary"></i>
+                        {% endif %}
+                    </div>
+                    <h4>{{ tier_info.current_tier }}</h4>
+                    {% if tier_info.fee_discount > 0 %}
+                    <p class="text-success">
+                        <i class="bi bi-tag-fill"></i>
+                        {{ (tier_info.fee_discount * 100)|int }}% {% if current_lang == 'zh' %}服务费折扣{% else %}Fee Discount{% endif %}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- 异常警告 -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-{{ 'danger' if anomalies.critical_count > 0 else ('warning' if anomalies.warning_count > 0 else 'success') }}">
+                <div class="card-body text-center">
+                    <h3 class="text-secondary">
+                        {% if current_lang == 'zh' %}异常监控{% else %}Anomaly Detection{% endif %}
+                    </h3>
+                    <div class="display-4 my-4 text-{{ 'danger' if anomalies.critical_count > 0 else ('warning' if anomalies.warning_count > 0 else 'success') }}">
+                        <i class="bi bi-{% if anomalies.total_anomalies > 0 %}exclamation-triangle{% else %}check-circle{% endif %}"></i>
+                    </div>
+                    <h4>
+                        {{ anomalies.total_anomalies }}
+                        {% if current_lang == 'zh' %}个异常{% else %}Anomalies{% endif %}
+                    </h4>
+                    {% if anomalies.critical_count > 0 %}
+                    <p class="text-danger mb-0">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                        {{ anomalies.critical_count }} {% if current_lang == 'zh' %}严重{% else %}Critical{% endif %}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 现金流预测图表 -->
+    {% if cashflow_data %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4>
+                        <i class="bi bi-graph-up"></i>
+                        {% if current_lang == 'zh' %}12个月现金流预测{% else %}12-Month Cashflow Prediction{% endif %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>
+                            {% if current_lang == 'zh' %}优化收益：{% else %}Optimization Benefit:{% endif %}
+                        </strong>
+                        RM {{ cashflow_data.comparison.total_improvement|abs }}
+                        ({{ cashflow_data.comparison.improvement_percentage|abs }}%)
+                    </div>
+                    <canvas id="cashflowChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 评分明细 -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4>
+                        <i class="bi bi-clipboard-data"></i>
+                        {% if current_lang == 'zh' %}评分维度明细{% else %}Score Breakdown{% endif %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for dimension, score in health_score.score_breakdown.items() %}
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                {% if dimension == 'payment_timeliness' %}
+                                    {% if current_lang == 'zh' %}还款及时率{% else %}Payment Timeliness{% endif %}
+                                {% elif dimension == 'dsr' %}
+                                    {% if current_lang == 'zh' %}DSR债务比{% else %}DSR Ratio{% endif %}
+                                {% elif dimension == 'utilization' %}
+                                    {% if current_lang == 'zh' %}信用卡使用率{% else %}Utilization Rate{% endif %}
+                                {% elif dimension == 'category_health' %}
+                                    {% if current_lang == 'zh' %}消费分类健康度{% else %}Category Health{% endif %}
+                                {% else %}
+                                    {% if current_lang == 'zh' %}财务稳定性{% else %}Financial Stability{% endif %}
+                                {% endif %}
+                            </label>
+                            <div class="progress" style="height: 25px;">
+                                <div class="progress-bar bg-{{ 'success' if score >= 80 else ('warning' if score >= 60 else 'danger') }}" 
+                                     role="progressbar" 
+                                     style="width: {{ score }}%"
+                                     aria-valuenow="{{ score }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    {{ score }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 优化建议 -->
+    {% if health_score.optimization_suggestions %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4>
+                        <i class="bi bi-lightbulb"></i>
+                        {% if current_lang == 'zh' %}优化建议{% else %}Optimization Suggestions{% endif %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for suggestion in health_score.optimization_suggestions %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{ suggestion.area }}</h5>
+                                {% if suggestion.potential_saving > 0 %}
+                                <span class="badge bg-success">
+                                    {% if current_lang == 'zh' %}可节省{% else %}Save{% endif %} RM {{ suggestion.potential_saving }}
+                                </span>
+                                {% endif %}
+                            </div>
+                            <p class="mb-1">{{ suggestion.suggestion }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 个性化推荐 -->
+    {% if recommendations.recommendations %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4>
+                        <i class="bi bi-stars"></i>
+                        {% if current_lang == 'zh' %}个性化推荐{% else %}Personalized Recommendations{% endif %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for rec in recommendations.recommendations %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-{{ 'primary' if rec.priority == 'high' else 'secondary' }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ rec.title }}</h5>
+                                    <p class="card-text">{{ rec.description }}</p>
+                                    {% if rec.potential_saving > 0 %}
+                                    <p class="text-success mb-2">
+                                        <i class="bi bi-piggy-bank"></i>
+                                        {% if current_lang == 'zh' %}潜在节省：{% else %}Potential Saving:{% endif %}
+                                        RM {{ rec.potential_saving }}
+                                    </p>
+                                    {% endif %}
+                                    <button class="btn btn-sm btn-primary">{{ rec.action }}</button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 异常列表 -->
+    {% if anomalies.anomalies %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4>
+                        <i class="bi bi-exclamation-triangle"></i>
+                        {% if current_lang == 'zh' %}检测到的异常{% else %}Detected Anomalies{% endif %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% for anomaly in anomalies.anomalies %}
+                    <div class="alert alert-{{ 'danger' if anomaly.severity == 'critical' else 'warning' }}">
+                        <h5>
+                            <i class="bi bi-{{ 'exclamation-circle-fill' if anomaly.severity == 'critical' else 'exclamation-triangle' }}"></i>
+                            {{ anomaly.title }}
+                        </h5>
+                        <p>{{ anomaly.description }}</p>
+                        <p class="mb-0">
+                            <strong>{% if current_lang == 'zh' %}建议操作：{% else %}Action Required:{% endif %}</strong>
+                            {{ anomaly.action_required }}
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 等级权益 -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4>
+                        <i class="bi bi-award"></i>
+                        {% if current_lang == 'zh' %}{{ tier_info.current_tier }} 等级权益{% else %}{{ tier_info.current_tier }} Tier Benefits{% endif %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for benefit in tier_info.tier_benefits %}
+                        <li class="list-group-item">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            {{ benefit }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    {% if tier_info.next_tier_requirements %}
+                    <div class="mt-4">
+                        <h5>
+                            {% if current_lang == 'zh' %}升级到{% else %}Upgrade to{% endif %}
+                            {{ tier_info.next_tier_requirements.next_tier }}
+                        </h5>
+                        <p class="text-secondary">
+                            {% if current_lang == 'zh' %}预计{% else %}Estimated{% endif %}
+                            {{ tier_info.next_tier_requirements.estimated_months_to_upgrade }}
+                            {% if current_lang == 'zh' %}个月可升级{% else %}months to upgrade{% endif %}
+                        </p>
+                        {% for gap in tier_info.next_tier_requirements.gaps %}
+                        <div class="mb-2">
+                            <small>{{ gap.metric }}: {{ gap.current }} → {{ gap.required }}</small>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-info" 
+                                     style="width: {{ (gap.current / gap.required * 100)|int }}%"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+{% if cashflow_data %}
+// 现金流预测图表
+const ctx = document.getElementById('cashflowChart');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ cashflow_data.labels|tojson }},
+        datasets: {{ cashflow_data.datasets|tojson }}
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return 'RM ' + value.toLocaleString();
+                    }
+                }
+            }
+        }
+    }
+});
+{% endif %}
+</script>
+{% endblock %}
