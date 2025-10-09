@@ -744,38 +744,16 @@ p {
     right: 0;
     bottom: 0;
     background: 
-        radial-gradient(circle at 6% 10%, rgba(255,255,255,0.17) 0%, transparent 29%),
-        radial-gradient(circle at 18% 5%, rgba(192,192,192,0.15) 0%, transparent 31%),
-        radial-gradient(circle at 32% 22%, rgba(255,255,255,0.16) 0%, transparent 28%),
-        radial-gradient(circle at 25% 38%, rgba(192,192,192,0.14) 0%, transparent 32%),
-        radial-gradient(circle at 48% 12%, rgba(255,255,255,0.18) 0%, transparent 27%),
-        radial-gradient(circle at 62% 28%, rgba(192,192,192,0.13) 0%, transparent 33%),
-        radial-gradient(circle at 78% 18%, rgba(255,255,255,0.15) 0%, transparent 30%),
-        radial-gradient(circle at 88% 35%, rgba(192,192,192,0.16) 0%, transparent 29%),
-        radial-gradient(circle at 42% 45%, rgba(255,255,255,0.14) 0%, transparent 31%),
-        radial-gradient(circle at 15% 52%, rgba(192,192,192,0.17) 0%, transparent 28%),
-        radial-gradient(circle at 55% 58%, rgba(255,255,255,0.15) 0%, transparent 30%),
-        radial-gradient(circle at 72% 48%, rgba(192,192,192,0.14) 0%, transparent 32%),
-        radial-gradient(circle at 92% 62%, rgba(255,255,255,0.16) 0%, transparent 29%),
-        radial-gradient(circle at 8% 68%, rgba(192,192,192,0.13) 0%, transparent 33%),
-        radial-gradient(circle at 28% 75%, rgba(255,255,255,0.17) 0%, transparent 27%),
-        radial-gradient(circle at 38% 88%, rgba(192,192,192,0.15) 0%, transparent 30%),
-        radial-gradient(circle at 52% 72%, rgba(255,255,255,0.14) 0%, transparent 31%),
-        radial-gradient(circle at 68% 82%, rgba(192,192,192,0.16) 0%, transparent 28%),
-        radial-gradient(circle at 82% 92%, rgba(255,255,255,0.13) 0%, transparent 33%),
-        radial-gradient(circle at 95% 78%, rgba(192,192,192,0.17) 0%, transparent 27%),
-        radial-gradient(circle at 12% 25%, rgba(255,255,255,0.15) 0%, transparent 30%),
-        radial-gradient(circle at 35% 8%, rgba(192,192,192,0.14) 0%, transparent 32%),
-        radial-gradient(circle at 58% 35%, rgba(255,255,255,0.16) 0%, transparent 29%),
-        radial-gradient(circle at 75% 65%, rgba(192,192,192,0.15) 0%, transparent 30%),
-        radial-gradient(circle at 22% 62%, rgba(255,255,255,0.14) 0%, transparent 31%),
-        radial-gradient(circle at 45% 95%, rgba(192,192,192,0.16) 0%, transparent 28%),
-        radial-gradient(circle at 65% 15%, rgba(255,255,255,0.17) 0%, transparent 29%),
-        radial-gradient(circle at 85% 45%, rgba(192,192,192,0.13) 0%, transparent 33%),
-        radial-gradient(circle at 98% 25%, rgba(255,255,255,0.15) 0%, transparent 30%),
-        radial-gradient(circle at 3% 85%, rgba(192,192,192,0.14) 0%, transparent 32%);
+        radial-gradient(circle at 18% 15%, rgba(255,255,255,0.08) 0%, transparent 16%),
+        radial-gradient(circle at 40% 25%, rgba(192,192,192,0.07) 0%, transparent 18%),
+        radial-gradient(circle at 65% 20%, rgba(255,255,255,0.09) 0%, transparent 15%),
+        radial-gradient(circle at 25% 55%, rgba(192,192,192,0.08) 0%, transparent 17%),
+        radial-gradient(circle at 75% 65%, rgba(255,255,255,0.07) 0%, transparent 18%),
+        radial-gradient(circle at 15% 80%, rgba(192,192,192,0.08) 0%, transparent 16%),
+        radial-gradient(circle at 50% 45%, rgba(255,255,255,0.09) 0%, transparent 17%),
+        radial-gradient(circle at 85% 50%, rgba(192,192,192,0.07) 0%, transparent 19%);
     pointer-events: none;
-    filter: blur(0.5px);
+    filter: blur(0.4px);
     animation: sparkleShimmer 3.2s ease-in-out infinite;
 }
 
