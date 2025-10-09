@@ -981,9 +981,26 @@ def customer_download_statement(statement_id):
 
 # ==================== END CUSTOMER AUTHENTICATION ====================
 
+def auto_fetch_daily_news():
+    """每日自动获取新闻任务"""
+    try:
+        print(f"Auto-fetching news at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        news_items = fetch_news_from_web()
+        
+        from news.auto_news_fetcher import save_pending_news
+        count = save_pending_news(news_items)
+        
+        print(f"Successfully fetched {count} news items for review")
+    except Exception as e:
+        print(f"Error auto-fetching news: {e}")
+
 def run_scheduler():
+    # 提醒任务
     schedule.every().day.at("09:00").do(check_and_send_reminders)
     schedule.every(6).hours.do(check_and_send_reminders)
+    
+    # 新闻获取任务 - 每天早上8点自动获取
+    schedule.every().day.at("08:00").do(auto_fetch_daily_news)
     
     while True:
         schedule.run_pending()
