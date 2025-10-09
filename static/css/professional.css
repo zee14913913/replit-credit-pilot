@@ -245,7 +245,7 @@ p {
 }
 
 .nav-logo {
-    height: 120px;
+    height: 140px;
     width: auto;
     opacity: 0.95;
     filter: drop-shadow(0 0 10px rgba(192, 192, 192, 0.4));
@@ -259,7 +259,7 @@ p {
 
 .company-name {
     font-family: 'Montserrat', sans-serif;
-    font-size: 1.35rem;
+    font-size: 1.65rem;
     font-weight: 700;
     line-height: 1.6;
     letter-spacing: 0.08em;
