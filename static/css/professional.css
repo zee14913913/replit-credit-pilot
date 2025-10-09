@@ -792,23 +792,23 @@ p {
     flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
-    gap: var(--space-md);
-    padding: var(--space-sm) 0 var(--space-xs) 0;
+    gap: var(--space-xl);
+    padding: var(--space-lg) 0 var(--space-md) 0;
     border-bottom: 1px solid var(--border-subtle);
     width: 80%;
     margin: 0 auto;
 }
 
 .footer-logo {
-    width: 100px;
-    height: 100px;
+    width: 160px;
+    height: 160px;
     flex-shrink: 0;
-    filter: drop-shadow(0 0 20px rgba(192, 192, 192, 0.6));
+    filter: drop-shadow(0 0 30px rgba(192, 192, 192, 0.7));
 }
 
 .footer-company-name {
-    font-size: 2rem;
-    font-weight: 700;
+    font-size: 3.5rem;
+    font-weight: 800;
     color: var(--text-primary);
     margin: 0;
     white-space: nowrap;
