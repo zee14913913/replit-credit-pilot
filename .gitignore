@@ -61,6 +61,11 @@ static/uploads/*
 .coverage
 htmlcov/
 
+# Temporary
+*.tmp
+*.bak
+current_packages.txt
+
 # Replit (DO NOT IGNORE)
 !.replit
 !replit.nix
