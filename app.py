@@ -724,21 +724,37 @@ def update_transaction_note(transaction_id):
 def add_transaction_tag(transaction_id):
     """Add tag to transaction"""
     tag_name = request.form.get('tag_name') or request.form.get('tags')
-    customer_id_str = request.form.get('customer_id')
     
     if not tag_name:
         return jsonify({'success': False, 'error': 'Tag name is required'}), 400
     
-    if not customer_id_str:
-        return jsonify({'success': False, 'error': 'Customer ID is required'}), 400
+    # Try to get customer_id from form, or derive from transaction
+    customer_id_str = request.form.get('customer_id')
     
-    try:
-        customer_id = int(customer_id_str)
-        tag_id = tag_service.create_tag(customer_id, tag_name)
-        tag_service.add_tag_to_transaction(transaction_id, tag_id)
-        return jsonify({'success': True, 'tag_id': tag_id})
-    except ValueError:
-        return jsonify({'success': False, 'error': 'Invalid customer ID'}), 400
+    if customer_id_str:
+        try:
+            customer_id = int(customer_id_str)
+        except ValueError:
+            return jsonify({'success': False, 'error': 'Invalid customer ID'}), 400
+    else:
+        # Derive customer_id from transaction
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT c.id FROM customers c
+                JOIN credit_cards cc ON c.id = cc.customer_id
+                JOIN statements s ON cc.id = s.card_id
+                JOIN transactions t ON s.id = t.statement_id
+                WHERE t.id = ?
+            ''', (transaction_id,))
+            row = cursor.fetchone()
+            if not row:
+                return jsonify({'success': False, 'error': 'Transaction not found'}), 404
+            customer_id = row[0]
+    
+    tag_id = tag_service.create_tag(customer_id, tag_name)
+    tag_service.add_tag_to_transaction(transaction_id, tag_id)
+    return jsonify({'success': True, 'tag_id': tag_id})
 
 # ========== FINANCIAL ADVISORY ROUTES ==========
 
