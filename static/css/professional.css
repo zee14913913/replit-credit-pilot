@@ -840,9 +840,9 @@ p {
 
 /* Three Column Layout */
 .footer-columns {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-xl);
+    display: flex;
+    justify-content: center;
+    gap: var(--space-2xl);
     padding: var(--space-md) 0;
     border-bottom: 1px solid var(--border-subtle);
     width: 80%;
