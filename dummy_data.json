@@ -1,0 +1,22 @@
+{
+  "reminder": {
+    "title": "Quarterly Loan Payment",
+    "amount": 1500,
+    "due_date": "2025-12-31"
+  },
+  "news": {
+    "title": "System Automation Test",
+    "content": "This is a dummy article created for QA testing."
+  },
+  "transaction": {
+    "note": "Routine QA verification",
+    "tag": "Automated"
+  },
+  "employment": {
+    "company": "Infinite GZ Testing Ltd.",
+    "position": "System QA Engineer"
+  },
+  "consultation": {
+    "message": "Need loan restructuring analysis."
+  }
+}
