@@ -1,0 +1,45 @@
+================================================================================
+INFINITE GZ SDN BHD - Detailed Test Report
+================================================================================
+
+[10:35:58] [PASS]     POST  /customer/login                                    200    
+[10:35:58] [PASS]     GET   /                                                  200   0.02s 
+[10:35:58] [PASS]     GET   /customer/login                                    200    
+[10:35:58] [PASS]     GET   /customer/register                                 200   0.02s 
+[10:35:58] [PASS]     GET   /customer/logout                                   302   0.01s 
+[10:35:58] [PASS]     GET   /customer-authorization                            200   0.02s 
+[10:35:58] [PASS]     GET   /customer/1                                        200   0.03s 
+[10:35:58] [PASS]     GET   /customer/download/1                               302   0.01s 
+[10:35:58] [PASS]     GET   /customer/portal                                   302   0.01s 
+[10:35:58] [PASS]     GET   /analytics/1                                       200   0.01s 
+[10:35:58] [PASS]     GET   /generate_report/1                                 200   0.07s 
+[10:35:58] [PASS]     GET   /advisory/1                                        200   0.06s 
+[10:35:58] [PASS]     GET   /upload_statement                                  200   0.02s 
+[10:35:58] [PASS]     GET   /loan_evaluation/1                                 200   0.04s 
+[10:35:58] [FAIL]     GET   /budget/1                                          500   0.02s 
+[10:35:58] [FAIL]     GET   /batch/upload/1                                    500   0.01s 
+[10:35:58] [FAIL]     GET   /search/1                                          500   0.02s 
+[10:35:58] [PASS]     GET   /export/1/pdf                                      302   0.01s 
+[10:35:58] [PASS]     GET   /admin-login                                       200   0.01s 
+[10:35:58] [PASS]     GET   /admin                                             302    
+[10:35:58] [PASS]     GET   /admin/news                                        200   0.02s 
+[10:35:58] [FAIL]     GET   /admin/news/approve/1                              405    
+[10:35:58] [FAIL]     GET   /admin/news/reject/1                               405   0.01s 
+[10:35:58] [PASS]     GET   /admin-logout                                      302   0.01s 
+[10:35:58] [PASS]     GET   /banking_news                                      200   0.02s 
+[10:35:58] [PASS]     GET   /reminders                                         200   0.01s 
+[10:36:03] [PASS]     GET   /refresh_bnm_rates                                 302   4.44s 
+[10:36:03] [PASS]     GET   /validate_statement/1                              200   0.01s 
+[10:36:03] [FAIL]     GET   /customer/1/employment                             500   0.01s 
+[10:36:03] [PASS]     GET   /set-language/en                                   302    
+[10:36:03] [PASS]     GET   /set-language/zh                                   302    
+[10:36:03] [PASS]     POST  /confirm_statement/1                               302   0.05s 
+[10:36:03] [PASS]     POST  /create_reminder                                   302   0.05s 
+[10:36:03] [PASS]     POST  /mark_paid/1                                       302   0.05s 
+[10:36:03] [PASS]     POST  /add_news                                          302   0.04s 
+[10:36:03] [PASS]     POST  /admin/news/fetch                                  200   0.02s 
+[10:36:03] [PASS]     POST  /transaction/1/note                                200   0.02s 
+[10:36:03] [FAIL]     POST  /transaction/1/tag                                 500   0.01s 
+[10:36:03] [PASS]     POST  /consultation/request/1                            302   0.02s 
+[10:36:03] [PASS]     POST  /customer/1/employment                             302   0.03s 
+[10:36:03] [PASS]     POST  /budget/delete/1/1                                 302   0.01s 
