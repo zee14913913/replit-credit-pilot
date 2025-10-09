@@ -15,6 +15,7 @@ TRANSACTION_ID = "1"
 BUDGET_ID = "1"
 REMINDER_ID = "1"
 NEWS_ID = "1"
+CARD_ID = "1"
 
 # ========= GET路由结构 ==========
 GET_ROUTES = [
@@ -53,14 +54,35 @@ GET_ROUTES = [
 # ========= POST路由结构 ==========
 POST_ROUTES = {
     f"/confirm_statement/{STATEMENT_ID}": {},
-    "/create_reminder": {"title": "Test Reminder", "amount": 100, "due_date": "2025-12-31"},
+    "/create_reminder": {
+        "card_id": CARD_ID, 
+        "due_date": "2025-12-31", 
+        "amount_due": "100.00"
+    },
     f"/mark_paid/{REMINDER_ID}": {},
-    "/add_news": {"title": "Automation Test News", "content": "System generated news"},
+    "/add_news": {
+        "bank_name": "Test Bank",
+        "title": "Automation Test News", 
+        "content": "System generated news for testing",
+        "category": "credit_card",
+        "effective_date": "2025-12-31"
+    },
     "/admin/news/fetch": {},
     f"/transaction/{TRANSACTION_ID}/note": {"note": "Automated test note"},
-    f"/transaction/{TRANSACTION_ID}/tag": {"tag": "QA-Test"},
-    f"/consultation/request/{CUSTOMER_ID}": {"message": "Automated consultation request"},
-    f"/customer/{CUSTOMER_ID}/employment": {"company": "TestCorp", "position": "QA Engineer"},
+    f"/transaction/{TRANSACTION_ID}/tag": {"tags": "QA-Test"},
+    f"/consultation/request/{CUSTOMER_ID}": {
+        "service_type": "loan_advisory",
+        "current_debt": "50000",
+        "monthly_income": "8000",
+        "message": "Automated consultation request"
+    },
+    f"/customer/{CUSTOMER_ID}/employment": {
+        "employment_type": "permanent",
+        "company_name": "TestCorp", 
+        "position": "QA Engineer",
+        "monthly_income": "8000",
+        "years_employed": "3"
+    },
     f"/budget/delete/{BUDGET_ID}/{CUSTOMER_ID}": {}
 }
 
