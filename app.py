@@ -39,6 +39,9 @@ from auth.customer_auth import (
     get_customer_data_summary
 )
 
+# Admin Portfolio Management
+from admin.portfolio_manager import PortfolioManager
+
 # Initialize services
 export_service = ExportService()
 search_service = SearchService()
@@ -1210,6 +1213,56 @@ def notify_admin_consultation_request(customer_name, service_type):
         send_email_notification(admin_email, "New Consultation Request", message)
 
 # ==================== END NOTIFICATION SERVICES ====================
+
+# ==================== ADMIN PORTFOLIO MANAGEMENT ====================
+
+@app.route('/admin/portfolio')
+def admin_portfolio():
+    """管理员Portfolio管理仪表板 - 核心运营工具"""
+    portfolio_mgr = PortfolioManager()
+    
+    # 获取总览数据
+    overview = portfolio_mgr.get_portfolio_overview()
+    
+    # 获取所有客户portfolio
+    clients = portfolio_mgr.get_all_clients_portfolio()
+    
+    # 获取风险客户
+    risk_clients = portfolio_mgr.get_risk_clients()
+    
+    # 获取收入明细
+    revenue_breakdown = portfolio_mgr.get_revenue_breakdown()
+    
+    return render_template('admin_portfolio.html',
+                         overview=overview,
+                         clients=clients,
+                         risk_clients=risk_clients,
+                         revenue_breakdown=revenue_breakdown)
+
+@app.route('/admin/portfolio/client/<int:customer_id>')
+def admin_client_detail(customer_id):
+    """查看单个客户完整workflow详情"""
+    portfolio_mgr = PortfolioManager()
+    client_detail = portfolio_mgr.get_client_detail(customer_id)
+    
+    return render_template('admin_client_detail.html',
+                         client=client_detail)
+
+@app.route('/api/portfolio/overview')
+def api_portfolio_overview():
+    """API: 获取Portfolio总览"""
+    portfolio_mgr = PortfolioManager()
+    overview = portfolio_mgr.get_portfolio_overview()
+    return jsonify(overview)
+
+@app.route('/api/portfolio/revenue')
+def api_portfolio_revenue():
+    """API: 获取收入明细"""
+    portfolio_mgr = PortfolioManager()
+    revenue = portfolio_mgr.get_revenue_breakdown()
+    return jsonify(revenue)
+
+# ==================== END ADMIN PORTFOLIO ====================
 
 # ==================== ADVANCED ANALYTICS FEATURES ====================
 

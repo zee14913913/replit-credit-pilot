@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Portfolio Manager - INFINITE GZ{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="gradient-text">
+                <i class="bi bi-briefcase"></i>
+                INFINITE GZ Portfolio Management
+            </h1>
+            <p class="text-secondary">
+                50/50 Profit-Sharing Advisory Service - Operational Dashboard
+            </p>
+        </div>
+    </div>
+
+    <!-- Key Metrics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-primary">
+                <div class="card-body">
+                    <h6 class="text-secondary">Active Clients</h6>
+                    <h2 class="text-primary">{{ overview.active_customers }}</h2>
+                    <small class="text-muted">/ {{ overview.total_customers }} total</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card shadow-sm border-success">
+                <div class="card-body">
+                    <h6 class="text-secondary">Total Savings (All Clients)</h6>
+                    <h2 class="text-success">RM {{ "{:,.2f}".format(overview.total_savings_all_clients) }}</h2>
+                    <small class="text-muted">Actual savings achieved</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card shadow-sm border-info">
+                <div class="card-body">
+                    <h6 class="text-secondary">INFINITE GZ Revenue</h6>
+                    <h2 class="text-info">RM {{ "{:,.2f}".format(overview.gz_total_revenue) }}</h2>
+                    <small class="text-muted">
+                        Advisory: RM {{ "{:,.2f}".format(overview.gz_revenue_advisory) }} |
+                        Supplier: RM {{ "{:,.2f}".format(overview.gz_revenue_supplier) }}
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card shadow-sm border-{{ 'danger' if overview.risk_customers > 0 else 'secondary' }}">
+                <div class="card-body">
+                    <h6 class="text-secondary">Risk Clients</h6>
+                    <h2 class="text-{{ 'danger' if overview.risk_customers > 0 else 'secondary' }}">
+                        {{ overview.risk_customers }}
+                    </h2>
+                    <small class="text-muted">Overdrawn/High DSR</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workflow Pipeline Status -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5>
+                        <i class="bi bi-diagram-3"></i>
+                        Advisory Workflow Pipeline
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col">
+                            <div class="bg-light p-3 rounded">
+                                <h3 class="text-info">{{ overview.pending_consultations }}</h3>
+                                <small>Pending Consultations</small>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="bg-light p-3 rounded">
+                                <h3 class="text-success">{{ overview.active_contracts }}</h3>
+                                <small>Active Contracts</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Risk Clients Alert -->
+    {% if risk_clients %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5>
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        Risk Clients - Action Required
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Client</th>
+                                    <th>Risk Type</th>
+                                    <th>Detail</th>
+                                    <th>Action Required</th>
+                                    <th>Severity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for client in risk_clients %}
+                                <tr>
+                                    <td>
+                                        <a href="/admin/portfolio/client/{{ client.customer_id }}">
+                                            {{ client.name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ 'danger' if client.severity == 'critical' else 'warning' }}">
+                                            {{ client.risk_type }}
+                                        </span>
+                                    </td>
+                                    <td>{{ client.detail }}</td>
+                                    <td>{{ client.action_required }}</td>
+                                    <td>
+                                        {% if client.severity == 'critical' %}
+                                            <i class="bi bi-exclamation-circle-fill text-danger"></i> Critical
+                                        {% else %}
+                                            <i class="bi bi-exclamation-triangle text-warning"></i> Warning
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- All Clients Portfolio Table -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5>
+                        <i class="bi bi-people"></i>
+                        All Clients Portfolio
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="portfolioTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Client Name</th>
+                                    <th>Workflow Stage</th>
+                                    <th>Total Savings</th>
+                                    <th>GZ Revenue</th>
+                                    <th>Client Keeps</th>
+                                    <th>DSR</th>
+                                    <th>Risk</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for client in clients %}
+                                <tr>
+                                    <td>{{ client.id }}</td>
+                                    <td>
+                                        <strong>{{ client.name }}</strong><br>
+                                        <small class="text-muted">{{ client.email }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ client.workflow_stage.status }}">
+                                            Stage {{ client.workflow_stage.stage }}
+                                        </span><br>
+                                        <small>{{ client.workflow_stage.stage_name }}</small><br>
+                                        <small class="text-muted">{{ client.workflow_stage.stage_detail }}</small>
+                                    </td>
+                                    <td class="text-success">
+                                        <strong>RM {{ "{:,.2f}".format(client.metrics.total_savings) }}</strong>
+                                    </td>
+                                    <td class="text-info">
+                                        <strong>RM {{ "{:,.2f}".format(client.metrics.gz_revenue) }}</strong>
+                                    </td>
+                                    <td class="text-primary">
+                                        RM {{ "{:,.2f}".format(client.metrics.customer_keeps) }}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ 'danger' if client.metrics.dsr > 70 else ('warning' if client.metrics.dsr > 50 else 'success') }}">
+                                            {{ "{:.1f}".format(client.metrics.dsr) }}%
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if client.metrics.risk_status == 'safe' %}
+                                            <i class="bi bi-check-circle text-success"></i> Safe
+                                        {% elif client.metrics.risk_status == 'high_dsr' %}
+                                            <i class="bi bi-exclamation-triangle text-warning"></i> High DSR
+                                        {% else %}
+                                            <i class="bi bi-exclamation-circle text-danger"></i> Overdrawn
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="/admin/portfolio/client/{{ client.id }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue Breakdown -->
+    {% if revenue_breakdown %}
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5>
+                        <i class="bi bi-graph-up"></i>
+                        Advisory Revenue (Last 12 Months)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Clients</th>
+                                    <th>Total Savings</th>
+                                    <th>GZ Revenue (50%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for month_data in revenue_breakdown.advisory_revenue_monthly[:6] %}
+                                <tr>
+                                    <td>{{ month_data.month }}</td>
+                                    <td>{{ month_data.client_count }}</td>
+                                    <td class="text-success">RM {{ "{:,.2f}".format(month_data.total_savings) }}</td>
+                                    <td class="text-info">RM {{ "{:,.2f}".format(month_data.gz_revenue) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5>
+                        <i class="bi bi-shop"></i>
+                        Supplier Fee Revenue (Top Suppliers)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Supplier</th>
+                                    <th>Transactions</th>
+                                    <th>Total Spending</th>
+                                    <th>GZ Commission (1%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for supplier in revenue_breakdown.revenue_by_supplier[:6] %}
+                                <tr>
+                                    <td>{{ supplier.supplier }}</td>
+                                    <td>{{ supplier.transaction_count }}</td>
+                                    <td>RM {{ "{:,.2f}".format(supplier.total_spending) }}</td>
+                                    <td class="text-info">RM {{ "{:,.2f}".format(supplier.gz_commission) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+// Enable DataTable for better sorting/filtering
+$(document).ready(function() {
+    if ($.fn.DataTable) {
+        $('#portfolioTable').DataTable({
+            "pageLength": 25,
+            "order": [[3, "desc"]], // Sort by Total Savings descending
+            "language": {
+                "search": "Search clients:",
+                "lengthMenu": "Show _MENU_ clients per page"
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

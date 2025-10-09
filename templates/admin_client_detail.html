@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+
+{% block title %}Client Detail - {{ client.customer.name }} - INFINITE GZ{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- Back Button -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <a href="/admin/portfolio" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Portfolio
+            </a>
+        </div>
+    </div>
+
+    <!-- Client Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="gradient-text">{{ client.customer.name }}</h1>
+            <p class="text-secondary">
+                <i class="bi bi-envelope"></i> {{ client.customer.email }} |
+                <i class="bi bi-telephone"></i> {{ client.customer.phone }} |
+                <i class="bi bi-cash"></i> Monthly Income: RM {{ "{:,.2f}".format(client.customer.monthly_income or 0) }}
+            </p>
+        </div>
+        <div class="col-md-4 text-end">
+            <h3 class="text-muted">Client ID: {{ client.customer.id }}</h3>
+        </div>
+    </div>
+
+    <!-- Financial Metrics Summary -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-success">
+                <div class="card-body">
+                    <h6 class="text-secondary">Total Savings</h6>
+                    <h3 class="text-success">RM {{ "{:,.2f}".format(client.metrics.total_savings) }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-info">
+                <div class="card-body">
+                    <h6 class="text-secondary">GZ Revenue (50%)</h6>
+                    <h3 class="text-info">RM {{ "{:,.2f}".format(client.metrics.gz_revenue) }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-primary">
+                <div class="card-body">
+                    <h6 class="text-secondary">Client Keeps (50%)</h6>
+                    <h3 class="text-primary">RM {{ "{:,.2f}".format(client.metrics.customer_keeps) }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-{{ 'danger' if client.metrics.dsr > 70 else ('warning' if client.metrics.dsr > 50 else 'success') }}">
+                <div class="card-body">
+                    <h6 class="text-secondary">DSR</h6>
+                    <h3 class="text-{{ 'danger' if client.metrics.dsr > 70 else ('warning' if client.metrics.dsr > 50 else 'success') }}">
+                        {{ "{:.1f}".format(client.metrics.dsr) }}%
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credit Cards -->
+    {% if client.credit_cards %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5><i class="bi bi-credit-card"></i> Credit Cards</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for card in client.credit_cards %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-{{ 'danger' if card.current_balance > card.credit_limit else ('warning' if card.utilization > 80 else 'success') }}">
+                                <div class="card-body">
+                                    <h6>{{ card.card_name }}</h6>
+                                    <p class="mb-1"><small>{{ card.bank_name }}</small></p>
+                                    <div class="progress mb-2" style="height: 25px;">
+                                        <div class="progress-bar bg-{{ 'danger' if card.utilization > 100 else ('warning' if card.utilization > 80 else 'success') }}" 
+                                             style="width: {{ min(card.utilization, 100) }}%">
+                                            {{ "{:.1f}".format(card.utilization) }}%
+                                        </div>
+                                    </div>
+                                    <p class="mb-0">
+                                        Balance: RM {{ "{:,.2f}".format(card.current_balance) }} / 
+                                        Limit: RM {{ "{:,.2f}".format(card.credit_limit) }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Advisory Workflow Timeline -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5><i class="bi bi-diagram-3"></i> Advisory Workflow Status</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Proposals -->
+                    <h6 class="text-primary">1. Optimization Proposals</h6>
+                    {% if client.workflow.proposals %}
+                    <div class="table-responsive mb-4">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Details</th>
+                                    <th>Expected Savings</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for proposal in client.workflow.proposals %}
+                                <tr>
+                                    <td>{{ proposal.suggestion_type }}</td>
+                                    <td>{{ proposal.details[:100] }}...</td>
+                                    <td class="text-success">RM {{ "{:,.2f}".format(proposal.expected_annual_savings or 0) }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if proposal.status == 'accepted' else ('warning' if proposal.status == 'proposed' else 'secondary') }}">
+                                            {{ proposal.status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ proposal.created_at }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No proposals yet</p>
+                    {% endif %}
+
+                    <!-- Consultations -->
+                    <h6 class="text-info">2. Consultation Requests</h6>
+                    {% if client.workflow.consultations %}
+                    <div class="table-responsive mb-4">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Service Type</th>
+                                    <th>Preferred Time</th>
+                                    <th>Status</th>
+                                    <th>Outcome</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for consult in client.workflow.consultations %}
+                                <tr>
+                                    <td>{{ consult.service_type }}</td>
+                                    <td>{{ consult.preferred_time }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if consult.status == 'completed' else ('warning' if consult.status == 'scheduled' else 'secondary') }}">
+                                            {{ consult.status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ consult.consultation_outcome or 'N/A' }}</td>
+                                    <td>{{ consult.created_at }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No consultations yet</p>
+                    {% endif %}
+
+                    <!-- Contracts -->
+                    <h6 class="text-success">3. Service Contracts</h6>
+                    {% if client.workflow.contracts %}
+                    <div class="table-responsive mb-4">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Services</th>
+                                    <th>Expected Savings</th>
+                                    <th>Fee Rate</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for contract in client.workflow.contracts %}
+                                <tr>
+                                    <td>{{ contract.services_agreed }}</td>
+                                    <td class="text-success">RM {{ "{:,.2f}".format(contract.expected_annual_savings or 0) }}</td>
+                                    <td>{{ contract.fee_percentage }}%</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if contract.status == 'active' else ('info' if contract.status == 'signed' else 'secondary') }}">
+                                            {{ contract.status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ contract.created_at }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No contracts yet</p>
+                    {% endif %}
+
+                    <!-- Payment on Behalf -->
+                    <h6 class="text-warning">4. Payment on Behalf Records</h6>
+                    {% if client.workflow.payments %}
+                    <div class="table-responsive mb-4">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Payment Type</th>
+                                    <th>Amount</th>
+                                    <th>Recipient</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in client.workflow.payments %}
+                                <tr>
+                                    <td>{{ payment.payment_type }}</td>
+                                    <td class="text-primary">RM {{ "{:,.2f}".format(payment.amount) }}</td>
+                                    <td>{{ payment.recipient_name }}</td>
+                                    <td>{{ payment.payment_date }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if payment.status == 'completed' else ('warning' if payment.status == 'pending' else 'danger') }}">
+                                            {{ payment.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No payment-on-behalf records yet</p>
+                    {% endif %}
+
+                    <!-- Fee Calculations -->
+                    <h6 class="text-danger">5. Success Fee Calculations (50/50 Split)</h6>
+                    {% if client.workflow.fee_calculations %}
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Service Period</th>
+                                    <th>Actual Savings</th>
+                                    <th>Client Keeps (50%)</th>
+                                    <th>GZ Fee (50%)</th>
+                                    <th>Fee Paid</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for fee in client.workflow.fee_calculations %}
+                                <tr>
+                                    <td>{{ fee.service_period }}</td>
+                                    <td class="text-success"><strong>RM {{ "{:,.2f}".format(fee.actual_savings_achieved or 0) }}</strong></td>
+                                    <td class="text-primary">RM {{ "{:,.2f}".format((fee.actual_savings_achieved or 0) * 0.5) }}</td>
+                                    <td class="text-info"><strong>RM {{ "{:,.2f}".format(fee.our_fee_50_percent or 0) }}</strong></td>
+                                    <td>
+                                        {% if fee.fee_paid %}
+                                            <span class="badge bg-success"><i class="bi bi-check-circle"></i> Paid</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ fee.calculation_date }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No fee calculations yet - Waiting for service completion</p>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
