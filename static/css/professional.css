@@ -89,6 +89,8 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Subtle shimmer overlay */
@@ -353,6 +355,7 @@ p {
     padding: var(--space-3xl) var(--space-2xl);
     position: relative;
     z-index: 1;
+    flex: 1;
 }
 
 /* Subtle decorative gradients in content area */
