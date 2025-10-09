@@ -47,14 +47,14 @@
         <h3 style="color: var(--text-primary); margin-bottom: 2rem;">Banking News & Updates</h3>
         <div class="row g-4">
             {% for news in news_items %}
-            <div class="col-lg-6">
-                <div class="professional-card h-100">
+            <div class="col-12">
+                <div class="professional-card">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span style="color: var(--text-primary); font-weight: 600;">{{ news.bank_name }}</span>
                         <span class="badge-professional badge-primary-pro">{{ news.news_type }}</span>
                     </div>
                     <h5 style="color: var(--text-primary); margin-bottom: 1rem;">{{ news.title }}</h5>
-                    <p style="color: var(--text-secondary);">{{ news.content }}</p>
+                    <p style="color: var(--text-secondary); line-height: 1.8;">{{ news.content }}</p>
                     <div class="divider-professional"></div>
                     <small style="color: var(--text-tertiary);">Effective: {{ news.effective_date }}</small>
                 </div>
