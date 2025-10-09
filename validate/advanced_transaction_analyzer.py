@@ -68,7 +68,6 @@ class AdvancedTransactionAnalyzer:
             
             tx = dict(cursor.fetchone())
             description = tx['description'].lower() if tx['description'] else ''
-            merchant = tx['merchant'].lower() if tx['merchant'] else ''
             
             # 默认归属客户
             belongs_to = 'customer'
@@ -77,14 +76,14 @@ class AdvancedTransactionAnalyzer:
             
             # 检查是否为GZ供应商消费
             is_gz_supplier = any(
-                supplier.lower() in description or supplier.lower() in merchant 
+                supplier.lower() in description 
                 for supplier in self.GZ_SUPPLIERS
             )
             
             if is_gz_supplier:
                 belongs_to = 'gz'
                 user_name = 'INFINITE GZ'
-                purpose = tx['merchant'] or 'Supplier Purchase'
+                purpose = 'Supplier Purchase'
             else:
                 # 检查客户自定义规则
                 cursor.execute('''

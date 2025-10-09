@@ -47,3 +47,4 @@ CREATE TABLE IF NOT EXISTS statement_balance_analysis (
 
 -- 扩展statements表
 ALTER TABLE statements ADD COLUMN previous_balance REAL DEFAULT 0;
+ALTER TABLE statements ADD COLUMN due_date TEXT;

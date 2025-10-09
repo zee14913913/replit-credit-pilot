@@ -52,7 +52,6 @@ class TransactionClassifier:
         }
         
         description_lower = description.lower() if description else ''
-        merchant_lower = merchant.lower() if merchant else ''
         
         # 检查是否为付款交易（Credit）
         is_payment = any(keyword in description_lower for keyword in self.PAYMENT_KEYWORDS)
@@ -75,7 +74,7 @@ class TransactionClassifier:
             # 检查是否为特定供应商（需收取1%手续费）
             supplier_matched = None
             for supplier in self.SUPPLIER_FEE_MERCHANTS:
-                if supplier.lower() in description_lower or supplier.lower() in merchant_lower:
+                if supplier.lower() in description_lower:
                     supplier_matched = supplier
                     break
             
@@ -84,7 +83,7 @@ class TransactionClassifier:
                 result['supplier_fee'] = abs(amount) * 0.01  # 1% fee
             
             # 检查是否为Shop/Utilities
-            elif any(shop.lower() in description_lower or shop.lower() in merchant_lower 
+            elif any(shop.lower() in description_lower 
                     for shop in self.SHOP_UTILITIES_MERCHANTS):
                 result['transaction_subtype'] = 'shop_debit'
             
@@ -118,7 +117,7 @@ class TransactionClassifier:
             
             # 获取交易详情
             cursor.execute('''
-                SELECT description, amount, merchant 
+                SELECT description, amount 
                 FROM transactions 
                 WHERE id = ?
             ''', (transaction_id,))
@@ -127,10 +126,10 @@ class TransactionClassifier:
             if not row:
                 return False
             
-            description, amount, merchant = row['description'], row['amount'], row['merchant']
+            description, amount = row['description'], row['amount']
             
             # 分类
-            classification = self.classify_transaction(description, amount, merchant)
+            classification = self.classify_transaction(description, amount)
             
             # 保存
             cursor.execute('''
@@ -220,7 +219,6 @@ class TransactionClassifier:
                 SELECT 
                     transaction_date,
                     description,
-                    merchant,
                     amount,
                     supplier_fee
                 FROM transactions

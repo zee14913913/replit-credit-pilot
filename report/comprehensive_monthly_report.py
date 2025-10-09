@@ -143,7 +143,7 @@ class ComprehensiveMonthlyReport:
         with get_db() as conn:
             cursor = conn.cursor()
             cursor.execute('''
-                SELECT SUM(previous_balance) as total
+                SELECT SUM(customer_previous_balance) as total
                 FROM statement_balance_analysis
                 WHERE customer_id = ?
                 AND strftime('%Y-%m', (SELECT statement_date FROM statements WHERE id = statement_id)) = ?
@@ -378,7 +378,7 @@ class ComprehensiveMonthlyReport:
             with get_db() as conn:
                 cursor = conn.cursor()
                 cursor.execute('''
-                    SELECT transaction_date, merchant, amount, supplier_fee
+                    SELECT transaction_date, description, amount, supplier_fee
                     FROM transactions
                     WHERE statement_id = ? AND supplier_fee > 0
                     ORDER BY transaction_date
@@ -386,7 +386,7 @@ class ComprehensiveMonthlyReport:
                 
                 for tx in cursor.fetchall():
                     ws.cell(row, 1, tx['transaction_date'])
-                    ws.cell(row, 2, tx['merchant'])
+                    ws.cell(row, 2, tx['description'][:50])  # Supplier name from description
                     ws.cell(row, 3, abs(tx['amount']))
                     ws.cell(row, 4, tx['supplier_fee'])
                     ws.cell(row, 5, stmt['bank_name'])

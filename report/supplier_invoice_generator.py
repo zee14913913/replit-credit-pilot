@@ -42,9 +42,9 @@ class SupplierInvoiceGenerator:
                 JOIN customers c ON cc.customer_id = c.id
                 WHERE t.statement_id = ? 
                 AND t.transaction_subtype = 'supplier_debit'
-                AND (t.description LIKE ? OR t.merchant LIKE ?)
+                AND t.description LIKE ?
                 ORDER BY t.transaction_date
-            ''', (statement_id, f'%{supplier_name}%', f'%{supplier_name}%'))
+            ''', (statement_id, f'%{supplier_name}%'))
             
             transactions = [dict(row) for row in cursor.fetchall()]
             
