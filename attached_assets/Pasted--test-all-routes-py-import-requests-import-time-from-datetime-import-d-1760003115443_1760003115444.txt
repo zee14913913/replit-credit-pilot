@@ -1,0 +1,137 @@
+✅ 文件名
+
+test_all_routes.py
+
+⸻
+
+🧩 完整自动测试脚本（含日志输出）
+
+import requests
+import time
+from datetime import datetime
+
+# ========= 配置区域 ==========
+BASE_URL = "https://<your-replit-project>.replit.dev"  # 这里换成你的Replit网址
+TEST_USER = {
+    "email": "testuser@example.com",   # 改成你系统里的测试账号
+    "password": "123456"
+}
+# ============================
+
+ROUTES = [
+    "/",  # 首页
+    "/login",
+    "/register",
+    "/dashboard",
+    "/upload",
+    "/analytics",
+    "/generate-report",
+    "/advisory"
+]
+
+RESULTS = []
+
+
+def log_result(status, route, code=None, duration=None, error=None):
+    """记录测试结果"""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    entry = {
+        "time": timestamp,
+        "route": route,
+        "status": status,
+        "code": code,
+        "duration": duration,
+        "error": error
+    }
+    RESULTS.append(entry)
+    if status == "PASS":
+        print(f"[✅ PASS] {route:<20} | {code} | {duration}s")
+    elif status == "FAIL":
+        print(f"[⚠️ FAIL] {route:<20} | {code} | {duration}s")
+    else:
+        print(f"[❌ ERROR] {route:<20} | {error}")
+
+
+def test_route(path):
+    """测试单一路由"""
+    url = BASE_URL + path
+    try:
+        start = time.time()
+        res = requests.get(url, timeout=8)
+        duration = round(time.time() - start, 2)
+        if res.status_code == 200:
+            log_result("PASS", path, res.status_code, duration)
+        else:
+            log_result("FAIL", path, res.status_code, duration)
+    except Exception as e:
+        log_result("ERROR", path, error=str(e))
+
+
+def test_login():
+    """测试登录接口"""
+    url = BASE_URL + "/login"
+    try:
+        res = requests.post(url, data=TEST_USER, timeout=10)
+        if res.status_code in [200, 302]:
+            log_result("PASS", "/login (POST)", res.status_code)
+        else:
+            log_result("FAIL", "/login (POST)", res.status_code)
+    except Exception as e:
+        log_result("ERROR", "/login (POST)", error=str(e))
+
+
+def save_report():
+    """保存测试结果到文件"""
+    filename = "test_results.txt"
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write("====== Flask Website Functional Test Report ======\n")
+        f.write(f"Generated at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"Target URL: {BASE_URL}\n\n")
+        for r in RESULTS:
+            f.write(
+                f"[{r['time']}] {r['route']:<25} "
+                f"→ {r['status']} ({r.get('code', '')}) "
+                f"{'Error: ' + r['error'] if r['error'] else ''}\n"
+            )
+        f.write("\n=================================================\n")
+        passed = sum(1 for r in RESULTS if r["status"] == "PASS")
+        failed = sum(1 for r in RESULTS if r["status"] == "FAIL")
+        errors = sum(1 for r in RESULTS if r["status"] == "ERROR")
+        f.write(f"Summary: {passed} passed, {failed} failed, {errors} errors\n")
+    print(f"\n📝 测试结果已保存到 {filename}\n")
+
+
+def main():
+    print("\n🚀 Starting full Flask system test...\n")
+    for route in ROUTES:
+        test_route(route)
+
+    print("\n🔐 Testing login function...\n")
+    test_login()
+
+    print("\n✅ All tests completed. Generating report...\n")
+    save_report()
+
+
+if __name__ == "__main__":
+    main()
+
+
+⸻
+
+⚙️ 使用步骤
+	1.	在 Replit 里新建文件 test_all_routes.py
+	2.	把上面整段代码复制进去
+	3.	把 BASE_URL 改成你项目的实际网址（例如：
+
+BASE_URL = "https://creditpilot.business183.replit.dev"
+
+）
+
+	4.	若有测试账号，填写 email / password。
+	5.	打开底部 Shell / Console 输入：
+
+python3 test_all_routes.py
+
+
+	6.	运行完成后，会在项目文件中生成 test_results.txt，里面保存了完整的测试日志和统计。
