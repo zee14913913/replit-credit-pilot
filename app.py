@@ -1273,4 +1273,9 @@ def start_scheduler():
 start_scheduler()
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Get environment settings
+    flask_env = os.getenv('FLASK_ENV', 'development')
+    debug_mode = flask_env != 'production'
+    port = int(os.getenv('PORT', 5000))
+    
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)
