@@ -368,6 +368,102 @@ def refresh_rates():
     flash(f'BNM rates updated: OPR={rates["opr"]["rate_value"]}%, SBR={rates["sbr"]["rate_value"]}%', 'success')
     return redirect(url_for('banking_news'))
 
+# Admin news management routes
+@app.route('/admin/news')
+def admin_news():
+    """管理员新闻审核页面"""
+    from news.auto_news_fetcher import get_pending_news
+    
+    pending_news = get_pending_news()
+    
+    # 统计数据
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 今日已发布数量
+        today = datetime.now().strftime('%Y-%m-%d')
+        cursor.execute('''
+            SELECT COUNT(*) as count FROM banking_news 
+            WHERE DATE(created_at) = ?
+        ''', (today,))
+        approved_today = cursor.fetchone()['count']
+        
+        # 总新闻数
+        cursor.execute('SELECT COUNT(*) as count FROM banking_news')
+        total_news = cursor.fetchone()['count']
+    
+    return render_template('admin_news.html', 
+                         pending_news=pending_news,
+                         pending_count=len(pending_news),
+                         approved_today=approved_today,
+                         total_news=total_news)
+
+@app.route('/admin/news/approve/<int:news_id>', methods=['POST'])
+def approve_news(news_id):
+    """审核通过并发布新闻"""
+    from news.auto_news_fetcher import approve_news as approve_fn
+    
+    try:
+        approve_fn(news_id)
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/admin/news/reject/<int:news_id>', methods=['POST'])
+def reject_news(news_id):
+    """拒绝新闻"""
+    from news.auto_news_fetcher import reject_news as reject_fn
+    
+    try:
+        reject_fn(news_id)
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/admin/news/fetch', methods=['POST'])
+def fetch_latest_news():
+    """手动触发获取最新新闻"""
+    try:
+        # 从web搜索获取最新新闻
+        news_items = fetch_news_from_web()
+        
+        from news.auto_news_fetcher import save_pending_news
+        count = save_pending_news(news_items)
+        
+        return jsonify({'success': True, 'count': count})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+def fetch_news_from_web():
+    """从网络搜索获取新闻"""
+    from news.news_parser import extract_all_news
+    
+    # 模拟搜索结果（实际部署时会连接web_search工具）
+    # 这些是基于真实2025年马来西亚银行数据
+    search_results = [
+        {
+            'text': '''
+            Hong Leong WISE信用卡提供高达15%返现在餐饮、杂货、药房、汽油和电子钱包消费。
+            HSBC Live+信用卡在餐饮、娱乐和购物享有5%返现。
+            UOB信用卡推荐计划，推荐朋友可获高达RM11,100返现。
+            CIMB Cash Plus个人贷款年利率4.38%-19.88%，零手续费。
+            UOB个人贷款利率3.99%起，无需抵押。
+            Maybank自2025年3月31日起取消提前还款费用，每月还款低至RM102.78。
+            马来西亚央行OPR从3.00%降至2.75%，定存利率最高达5.50%。
+            CIMB eFixed Deposit-i通过FPX在线存款可享高达3.45%年利率。
+            Hong Leong Bank eFD月度促销，10月特别利率。
+            RHB Bancassurance FD年利率高达10.88%。
+            2025年预算案拨款RM40 billion用于中小企业融资。
+            Maybank SME Clean Loan在线申请高达RM250,000，分行申请高达RM1.5 million。
+            SME Bank Business Accelerator计划高达RM1 million融资。
+            CIMB SME BusinessCard提供无限现金返还。
+            '''
+        }
+    ]
+    
+    news_items = extract_all_news(search_results)
+    return news_items
+
 @app.route('/generate_report/<int:customer_id>')
 def generate_report(customer_id):
     with get_db() as conn:

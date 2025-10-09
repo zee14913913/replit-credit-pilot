@@ -46,6 +46,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_news' }}" href="{{ url_for('admin_news') }}">
+                        <i class="bi bi-shield-check"></i> 新闻管理
+                    </a>
+                </li>
+                <li class="nav-item">
                     {% if session.get('customer_token') %}
                     <a class="nav-link {{ 'active' if request.endpoint == 'customer_portal' }}" href="{{ url_for('customer_portal') }}">
                         {{ t('customer_portal') }}
