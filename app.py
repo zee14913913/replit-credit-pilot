@@ -1000,8 +1000,12 @@ def admin_login():
         email = request.form.get('email')
         password = request.form.get('password')
         
-        admin_email = os.environ.get('ADMIN_EMAIL', 'admin@infinitegz.com')
-        admin_password = os.environ.get('ADMIN_PASSWORD', 'Admin@2025')
+        admin_email = os.environ.get('ADMIN_EMAIL')
+        admin_password = os.environ.get('ADMIN_PASSWORD')
+        
+        if not admin_email or not admin_password:
+            flash('Admin credentials not configured. Please set ADMIN_EMAIL and ADMIN_PASSWORD environment variables.', 'danger')
+            return render_template('admin_login.html')
         
         if email == admin_email and password == admin_password:
             session['is_admin'] = True

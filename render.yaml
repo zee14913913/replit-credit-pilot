@@ -13,9 +13,9 @@ services:
       - key: SESSION_SECRET
         generateValue: true
       - key: ADMIN_EMAIL
-        value: admin@infinitegz.com
+        sync: false
       - key: ADMIN_PASSWORD
-        value: Admin@2025
+        sync: false
       - key: SMTP_SERVER
         value: smtp.gmail.com
       - key: SMTP_PORT

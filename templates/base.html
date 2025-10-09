@@ -57,6 +57,17 @@
                     {% endif %}
                 </li>
                 <li class="nav-item">
+                    {% if session.get('is_admin') %}
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_dashboard' }}" href="{{ url_for('admin_dashboard') }}">
+                        Admin
+                    </a>
+                    {% else %}
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_login' }}" href="{{ url_for('admin_login') }}">
+                        Admin
+                    </a>
+                    {% endif %}
+                </li>
+                <li class="nav-item">
                     <div class="language-switcher">
                         <button class="lang-btn {{ 'active' if current_lang == 'en' }}" 
                                 onclick="window.location.href='{{ url_for('set_language', lang='en') }}'">
