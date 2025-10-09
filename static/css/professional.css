@@ -187,21 +187,14 @@ p {
     right: 0;
     bottom: 0;
     background: 
-        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.14) 0%, transparent 18%),
-        radial-gradient(circle at 35% 15%, rgba(192,192,192,0.12) 0%, transparent 20%),
-        radial-gradient(circle at 55% 30%, rgba(255,255,255,0.15) 0%, transparent 16%),
-        radial-gradient(circle at 25% 50%, rgba(192,192,192,0.13) 0%, transparent 19%),
-        radial-gradient(circle at 70% 25%, rgba(255,255,255,0.14) 0%, transparent 17%),
-        radial-gradient(circle at 85% 40%, rgba(192,192,192,0.11) 0%, transparent 21%),
-        radial-gradient(circle at 45% 60%, rgba(255,255,255,0.13) 0%, transparent 18%),
-        radial-gradient(circle at 10% 65%, rgba(192,192,192,0.12) 0%, transparent 19%),
-        radial-gradient(circle at 65% 70%, rgba(255,255,255,0.12) 0%, transparent 20%),
-        radial-gradient(circle at 80% 80%, rgba(192,192,192,0.14) 0%, transparent 17%),
-        radial-gradient(circle at 30% 85%, rgba(255,255,255,0.11) 0%, transparent 21%),
-        radial-gradient(circle at 90% 60%, rgba(192,192,192,0.13) 0%, transparent 18%),
-        radial-gradient(circle at 50% 10%, rgba(255,255,255,0.12) 0%, transparent 19%),
-        radial-gradient(circle at 5% 35%, rgba(192,192,192,0.11) 0%, transparent 22%),
-        radial-gradient(circle at 95% 20%, rgba(255,255,255,0.14) 0%, transparent 16%);
+        radial-gradient(circle at 20% 25%, rgba(255,255,255,0.08) 0%, transparent 15%),
+        radial-gradient(circle at 45% 20%, rgba(192,192,192,0.07) 0%, transparent 18%),
+        radial-gradient(circle at 70% 30%, rgba(255,255,255,0.09) 0%, transparent 14%),
+        radial-gradient(circle at 30% 60%, rgba(192,192,192,0.08) 0%, transparent 16%),
+        radial-gradient(circle at 80% 70%, rgba(255,255,255,0.07) 0%, transparent 17%),
+        radial-gradient(circle at 10% 75%, rgba(192,192,192,0.08) 0%, transparent 15%),
+        radial-gradient(circle at 55% 50%, rgba(255,255,255,0.09) 0%, transparent 16%),
+        radial-gradient(circle at 90% 40%, rgba(192,192,192,0.07) 0%, transparent 18%);
     pointer-events: none;
     filter: blur(0.3px);
     animation: sparkleShimmer 3s ease-in-out infinite;
