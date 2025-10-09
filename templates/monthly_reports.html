@@ -13,22 +13,28 @@
 
     <!-- Summary Cards -->
     <div class="row g-4 mb-5">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="stat-card">
                 <div class="stat-value">{{ reports|length }}</div>
                 <div class="stat-label">Total Reports / 报表总数</div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="stat-card">
-                <div class="stat-value">RM {{ "{:,.2f}".format(reports|sum(attribute='total_debit')|default(0)) }}</div>
-                <div class="stat-label">Total Debit / 总消费</div>
+                <div class="stat-value">{{ reports_by_period|length }}</div>
+                <div class="stat-label">Periods / 期数</div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="stat-card">
-                <div class="stat-value">RM {{ "{:,.2f}".format(reports|sum(attribute='supplier_fees')|default(0)) }}</div>
-                <div class="stat-label">Total Supplier Fees / 商家费用总计</div>
+                <div class="stat-value">RM {{ "{:,.2f}".format(reports|sum(attribute='customer_total_debit', start=0)|default(0)) }}</div>
+                <div class="stat-label">Customer Debit / 客户消费</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-value">RM {{ "{:,.2f}".format(reports|sum(attribute='infinite_total_debit', start=0)|default(0)) }}</div>
+                <div class="stat-label">INFINITE Debit / INFINITE消费</div>
             </div>
         </div>
     </div>
@@ -65,72 +71,152 @@
         </div>
     </div>
 
-    <!-- Reports List -->
+    <!-- Reports List (Grouped by Period) -->
     <div>
         <h3 class="mb-4" style="color: var(--text-primary);">
             <i class="bi bi-list-ul"></i> All Monthly Reports / 所有月度报表
+            <small style="color: var(--text-secondary); font-size: 0.9rem; font-weight: normal;">
+                (按期间分组 / Grouped by Period)
+            </small>
         </h3>
         
-        {% if reports %}
-        <div class="professional-card">
+        {% if reports_by_period %}
+        {% for period, period_reports in reports_by_period.items() %}
+        <div class="professional-card mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 style="color: var(--text-primary); margin: 0;">
+                    📅 {{ period }} 
+                    <span class="badge-professional badge-primary-pro">{{ period_reports|length }} cards</span>
+                </h4>
+            </div>
+            
             <div class="table-responsive">
                 <table class="table-professional">
                     <thead>
                         <tr>
-                            <th>Period / 报表期间</th>
-                            <th class="text-end">Total Debit / 消费总计</th>
-                            <th class="text-end">Total Credit / 付款总计</th>
+                            <th>Credit Card / 信用卡</th>
+                            <th class="text-end">Customer Debit / 客户消费</th>
+                            <th class="text-end">Customer Credit / 客户付款</th>
+                            <th class="text-end">Customer Outstanding / 客户未清</th>
+                            <th class="text-end">INFINITE Debit / INFINITE消费</th>
+                            <th class="text-end">INFINITE Outstanding / INFINITE未清</th>
                             <th class="text-end">Instalment / 分期</th>
-                            <th class="text-end">Net Amount / 净额</th>
                             <th class="text-end">DSR</th>
-                            <th class="text-end">Supplier Fees / 商家费用</th>
-                            <th class="text-end">Generated / 生成时间</th>
                             <th class="text-center">Actions / 操作</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for report in reports %}
+                        {% for report in period_reports %}
                         <tr>
                             <td>
                                 <div style="font-weight: 600; color: var(--text-primary);">
-                                    {{ report.report_year }}-{{ "%02d"|format(report.report_month) }}
+                                    {% if report.bank_name %}
+                                        {{ report.bank_name }} ****{{ report.card_number_last4 }}
+                                    {% else %}
+                                        <span style="color: var(--text-secondary); font-style: italic;">Legacy Report (All Cards)</span>
+                                    {% endif %}
                                 </div>
                             </td>
-                            <td class="text-end" style="color: var(--text-primary);">
-                                RM {{ "{:,.2f}".format(report.total_debit) }}
+                            <td class="text-end" style="color: var(--text-danger);">
+                                RM {{ "{:,.2f}".format(report.customer_total_debit or report.total_debit or 0) }}
                             </td>
                             <td class="text-end" style="color: var(--accent-success);">
-                                RM {{ "{:,.2f}".format(report.total_credit) }}
+                                RM {{ "{:,.2f}".format(report.customer_total_credit or report.total_credit or 0) }}
+                            </td>
+                            <td class="text-end" style="font-weight: 600; color: #3498db;">
+                                RM {{ "{:,.2f}".format(report.customer_outstanding or 0) }}
+                            </td>
+                            <td class="text-end" style="color: #8e44ad;">
+                                RM {{ "{:,.2f}".format(report.infinite_total_debit or 0) }}
+                            </td>
+                            <td class="text-end" style="font-weight: 600; color: #e67e22;">
+                                RM {{ "{:,.2f}".format(report.infinite_outstanding or 0) }}
                             </td>
                             <td class="text-end" style="color: var(--text-primary);">
-                                RM {{ "{:,.2f}".format(report.total_instalment) }}
-                            </td>
-                            <td class="text-end" style="font-weight: 600; color: {{ 'var(--text-danger)' if report.net_amount > 0 else 'var(--accent-success)' }};">
-                                RM {{ "{:,.2f}".format(report.net_amount) }}
+                                RM {{ "{:,.2f}".format(report.total_instalment or 0) }}
+                                {% if report.instalment_capital_balance %}
+                                <br><small style="color: var(--text-secondary);">Capital: RM {{ "{:,.2f}".format(report.instalment_capital_balance) }}</small>
+                                {% endif %}
                             </td>
                             <td class="text-end">
                                 <span class="badge-professional {{ 'badge-danger-pro' if report.dsr >= 70 else 'badge-success-pro' if report.dsr < 50 else 'badge-warning-pro' }}">
                                     {{ "%.1f"|format(report.dsr) }}%
                                 </span>
                             </td>
-                            <td class="text-end" style="color: var(--accent-success); font-weight: 600;">
-                                RM {{ "{:,.2f}".format(report.supplier_fees) }}
-                            </td>
-                            <td class="text-end" style="color: var(--text-secondary); font-size: 0.9rem;">
-                                {{ report.generated_at[:10] }}
-                            </td>
                             <td class="text-center">
                                 <a href="{{ url_for('download_monthly_report', report_id=report.id) }}" 
                                    class="btn-professional-sm">
-                                    <i class="bi bi-download"></i> Download PDF
+                                    <i class="bi bi-download"></i> PDF
                                 </a>
                             </td>
                         </tr>
                         {% endfor %}
+                        
+                        <!-- Period Totals -->
+                        <tr style="background: var(--bg-secondary); font-weight: 600;">
+                            <td style="color: var(--text-primary);">Period Total / 期间合计</td>
+                            <td class="text-end" style="color: var(--text-danger);">
+                                RM {{ "{:,.2f}".format(period_reports|sum(attribute='customer_total_debit', start=0)|default(0)) }}
+                            </td>
+                            <td class="text-end" style="color: var(--accent-success);">
+                                RM {{ "{:,.2f}".format(period_reports|sum(attribute='customer_total_credit', start=0)|default(0)) }}
+                            </td>
+                            <td class="text-end" style="color: #3498db;">
+                                RM {{ "{:,.2f}".format(period_reports|sum(attribute='customer_outstanding', start=0)|default(0)) }}
+                            </td>
+                            <td class="text-end" style="color: #8e44ad;">
+                                RM {{ "{:,.2f}".format(period_reports|sum(attribute='infinite_total_debit', start=0)|default(0)) }}
+                            </td>
+                            <td class="text-end" style="color: #e67e22;">
+                                RM {{ "{:,.2f}".format(period_reports|sum(attribute='infinite_outstanding', start=0)|default(0)) }}
+                            </td>
+                            <td class="text-end" style="color: var(--text-primary);">
+                                RM {{ "{:,.2f}".format(period_reports|sum(attribute='total_instalment', start=0)|default(0)) }}
+                            </td>
+                            <td colspan="2"></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+        {% endfor %}
+        
+        <!-- Legend -->
+        <div class="professional-card mt-4" style="background: rgba(52, 152, 219, 0.1); border: 1px solid rgba(52, 152, 219, 0.3);">
+            <h5 style="color: var(--text-primary); margin-bottom: 1rem;">
+                <i class="bi bi-info-circle"></i> Understanding Your Reports / 了解您的报表
+            </h5>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div style="padding: 0.75rem; background: rgba(52, 73, 94, 0.1); border-radius: 6px;">
+                        <strong style="color: #3498db;">Customer Transactions / 客户交易:</strong>
+                        <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;">
+                            Your personal expenses and payments on this card.
+                            您在此卡上的个人消费和付款。
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div style="padding: 0.75rem; background: rgba(142, 68, 173, 0.1); border-radius: 6px;">
+                        <strong style="color: #8e44ad;">INFINITE GZ Transactions / INFINITE交易:</strong>
+                        <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;">
+                            Company expenses at 7 designated suppliers and 3rd party payments.
+                            公司在7家指定商家的消费和第三方付款。
+                        </p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div style="padding: 0.75rem; background: rgba(230, 126, 34, 0.1); border-radius: 6px;">
+                        <strong style="color: #e67e22;">Per-Card Reports / 按卡分离报表:</strong>
+                        <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;">
+                            Each credit card now has a separate report - no mixing of transactions between cards!
+                            每张信用卡现在有独立的报表 - 不会混合不同卡的交易记录！
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         {% else %}
         <div class="professional-card text-center py-5">
             <i class="bi bi-inbox" style="font-size: 3rem; color: var(--text-secondary); opacity: 0.5;"></i>

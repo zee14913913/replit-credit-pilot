@@ -1579,25 +1579,36 @@ def export_statement_transactions(statement_id, format):
 # Monthly Reports Routes
 @app.route('/customer/<int:customer_id>/monthly-reports')
 def customer_monthly_reports(customer_id):
-    """查看客户的所有月度报表"""
+    """查看客户的所有月度报表（按信用卡分组）"""
     with get_db() as conn:
         cursor = conn.cursor()
         
         cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
         customer = dict(cursor.fetchone())
         
+        # 获取所有月度报表，包含信用卡信息
         cursor.execute('''
-            SELECT *
-            FROM monthly_reports
-            WHERE customer_id = ?
-            ORDER BY report_year DESC, report_month DESC
+            SELECT mr.*, cc.bank_name, cc.card_number_last4
+            FROM monthly_reports mr
+            LEFT JOIN credit_cards cc ON mr.card_id = cc.id
+            WHERE mr.customer_id = ?
+            ORDER BY mr.report_year DESC, mr.report_month DESC, cc.bank_name
         ''', (customer_id,))
         
         reports = [dict(row) for row in cursor.fetchall()]
+        
+        # 按年月分组报表
+        reports_by_period = {}
+        for report in reports:
+            period_key = f"{report['report_year']}-{str(report['report_month']).zfill(2)}"
+            if period_key not in reports_by_period:
+                reports_by_period[period_key] = []
+            reports_by_period[period_key].append(report)
     
     return render_template('monthly_reports.html',
                          customer=customer,
-                         reports=reports)
+                         reports=reports,
+                         reports_by_period=reports_by_period)
 
 @app.route('/customer/<int:customer_id>/generate-monthly-report/<int:year>/<int:month>')
 def generate_customer_monthly_report(customer_id, year, month):
