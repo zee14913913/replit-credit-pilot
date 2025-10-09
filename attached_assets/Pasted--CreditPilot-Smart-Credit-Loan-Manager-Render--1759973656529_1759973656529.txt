@@ -1,0 +1,254 @@
+🧭【主要任务】
+请帮我将当前的《CreditPilot》—— Smart Credit & Loan Manager 系统：
+✅ 自动部署到 Render 平台；
+✅ 启用管理员登录保护；
+✅ 启用邮件提醒功能；
+✅ 启用 WhatsApp 自动通知模块（Twilio API）；
+✅ 添加图形化后台管理面板（Admin Dashboard）；
+✅ 完成依赖、配置文件与公网访问部署。
+
+---
+
+🎯【环境设置与依赖】
+环境要求：
+- Python 3.10+
+- Flask 框架
+- SQLite 数据库
+- 模块依赖：
+  Flask, flask_sqlalchemy, pdf2image, pytesseract, Pillow, reportlab, schedule,
+  smtplib, email-validator, twilio, flask_login
+
+📦 生成 requirements.txt：
+Flask
+flask_sqlalchemy
+flask_login
+pdf2image
+pytesseract
+Pillow
+reportlab
+schedule
+sqlite3
+smtplib
+email-validator
+twilio
+
+---
+
+📄 生成 render.yaml：
+---
+services:
+  - type: web
+    name: creditpilot
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python app.py"
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.10
+      - key: DATABASE_URL
+        value: sqlite:///creditpilot.db
+      - key: ADMIN_EMAIL
+        value: admin@creditpilot.com
+      - key: ADMIN_PASSWORD
+        value: Credit@2025
+      - key: SMTP_SERVER
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: EMAIL_USER
+        value: your_email@gmail.com
+      - key: EMAIL_PASSWORD
+        value: your_app_password
+      - key: TWILIO_ACCOUNT_SID
+        value: your_twilio_account_sid
+      - key: TWILIO_AUTH_TOKEN
+        value: your_twilio_auth_token
+      - key: TWILIO_WHATSAPP_FROM
+        value: whatsapp:+14155238886
+      - key: WHATSAPP_ADMIN_TO
+        value: whatsapp:+60123456789
+    autoDeploy: true
+    branch: main
+    region: singapore
+---
+
+---
+
+🔐【管理员登录模块】
+
+@app.route(’/admin-login’, methods=[‘GET’, ‘POST’])
+def admin_login():
+if request.method == ‘POST’:
+email = request.form.get(‘email’)
+password = request.form.get(‘password’)
+if email == os.getenv(‘ADMIN_EMAIL’) and password == os.getenv(‘ADMIN_PASSWORD’):
+session[‘is_admin’] = True
+flash(‘Admin login successful’, ‘success’)
+return redirect(url_for(‘admin_dashboard’))
+else:
+flash(‘Invalid credentials’, ‘danger’)
+return render_template(‘admin_login.html’)
+
+---
+
+📄 templates/admin_login.html
+
+<!DOCTYPE html>
+
+
+<html>
+<head>
+<title>Admin Login</title>
+<style>
+body { font-family: Arial; background: #f5f5f5; margin-top: 80px; }
+form { background: white; padding: 25px; width: 320px; margin: auto; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+input, button { width: 100%; padding: 10px; margin-bottom: 12px; }
+button { background-color: #2b6cb0; color: white; border: none; border-radius: 5px;}
+</style>
+</head>
+<body>
+<h2 style="text-align:center;">🔐 Admin Login</h2>
+<form method="POST">
+<input type="email" name="email" placeholder="Admin Email" required>
+<input type="password" name="password" placeholder="Password" required>
+<button type="submit">Login</button>
+</form>
+</body>
+</html>
+```
+
+
+
+⸻
+
+📊【后台管理面板模块】
+
+在 app.py 加入：
+
+@app.route('/admin')
+def admin_dashboard():
+    if not session.get('is_admin'):
+        return redirect(url_for('admin_login'))
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM customers")
+        customers = cursor.fetchall()
+        cursor.execute("SELECT COUNT(*) FROM statements")
+        statement_count = cursor.fetchone()[0]
+        cursor.execute("SELECT COUNT(*) FROM transactions")
+        txn_count = cursor.fetchone()[0]
+    return render_template('admin_dashboard.html',
+                           customers=customers,
+                           statement_count=statement_count,
+                           txn_count=txn_count)
+
+📄 templates/admin_dashboard.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>CreditPilot Admin Dashboard</title>
+<style>
+body { font-family: 'Segoe UI'; background: #edf2f7; padding: 30px; }
+table { width: 100%; border-collapse: collapse; background: white; }
+th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+th { background: #2b6cb0; color: white; }
+h2 { color: #2b6cb0; }
+.summary { margin-bottom: 20px; background: white; padding: 15px; border-radius: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.1);}
+</style>
+</head>
+<body>
+<h2>📊 CreditPilot Admin Dashboard</h2>
+<div class="summary">
+<b>Total Customers:</b> {{ customers|length }} |
+<b>Total Statements:</b> {{ statement_count }} |
+<b>Total Transactions:</b> {{ txn_count }}
+</div>
+<table>
+<tr><th>ID</th><th>Name</th><th>Email</th><th>Monthly Income</th><th>Created At</th></tr>
+{% for c in customers %}
+<tr>
+<td>{{ c.id }}</td>
+<td>{{ c.name }}</td>
+<td>{{ c.email }}</td>
+<td>{{ c.monthly_income }}</td>
+<td>{{ c.created_at }}</td>
+</tr>
+{% endfor %}
+</table>
+</body>
+</html>
+
+
+⸻
+
+📧【邮件提醒模块】
+
+import smtplib
+from email.mime.text import MIMEText
+def send_email(to, subject, body):
+    sender = os.getenv('EMAIL_USER')
+    password = os.getenv('EMAIL_PASSWORD')
+    msg = MIMEText(body, 'plain')
+    msg['From'], msg['To'], msg['Subject'] = sender, to, subject
+    try:
+        server = smtplib.SMTP(os.getenv('SMTP_SERVER'), int(os.getenv('SMTP_PORT')))
+        server.starttls()
+        server.login(sender, password)
+        server.send_message(msg)
+        server.quit()
+        print(f"✅ Email sent to {to}")
+    except Exception as e:
+        print(f"❌ Email failed: {e}")
+
+
+⸻
+
+📱【WhatsApp 自动提醒模块（Twilio API）】
+
+from twilio.rest import Client
+def send_whatsapp(to, message):
+    try:
+        client = Client(os.getenv('TWILIO_ACCOUNT_SID'), os.getenv('TWILIO_AUTH_TOKEN'))
+        from_num = os.getenv('TWILIO_WHATSAPP_FROM')
+        client.messages.create(from_=from_num, body=message, to=to)
+        print(f"✅ WhatsApp sent to {to}")
+    except Exception as e:
+        print(f"❌ WhatsApp failed: {e}")
+
+触发逻辑：
+	•	客户上传账单 → send_whatsapp(admin_phone, “📄 客户上传账单，请审核。”)
+	•	提交贷款咨询 → send_whatsapp(admin_phone, “💬 新贷款咨询请求。”)
+
+⸻
+
+🚀【执行命令】
+
+pip install -r requirements.txt
+python app.py
+
+Render 将自动运行 Flask 并返回公网访问链接。
+
+⸻
+
+✅【部署完成后输出】
+	•	🌍 CreditPilot SaaS 部署成功
+	•	🔐 管理后台：http:///admin
+	•	📬 邮件提醒：已启用
+	•	📱 WhatsApp 通知：已启用
+	•	📊 管理面板：可实时查看客户数据
+
+---
+
+## ⚙️【你的操作步骤】
+
+1️⃣ 打开 Replit → Agent 3  
+2️⃣ 复制上面全部内容 → 粘贴输入框  
+3️⃣ 按 Enter 执行  
+4️⃣ 等 Agent 输出 Render 域名  
+5️⃣ 把链接发给我 ✅ 我会帮你检测后台是否完全可用  
+
+---

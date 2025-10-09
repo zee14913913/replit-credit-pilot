@@ -5,6 +5,9 @@ import json
 import threading
 import time
 import schedule
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 from db.database import get_db, log_audit, get_all_customers, get_customer_cards, get_card_statements, get_statement_transactions
 from ingest.statement_parser import parse_statement_auto
@@ -987,6 +990,160 @@ def customer_download_statement(statement_id):
             return redirect(url_for('customer_portal'))
 
 # ==================== END CUSTOMER AUTHENTICATION ====================
+
+# ==================== ADMIN AUTHENTICATION ====================
+
+@app.route('/admin-login', methods=['GET', 'POST'])
+def admin_login():
+    """Admin login route"""
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        admin_email = os.environ.get('ADMIN_EMAIL', 'admin@infinitegz.com')
+        admin_password = os.environ.get('ADMIN_PASSWORD', 'Admin@2025')
+        
+        if email == admin_email and password == admin_password:
+            session['is_admin'] = True
+            session['admin_email'] = email
+            flash('Admin login successful', 'success')
+            return redirect(url_for('admin_dashboard'))
+        else:
+            flash('Invalid admin credentials', 'danger')
+    
+    return render_template('admin_login.html')
+
+@app.route('/admin')
+def admin_dashboard():
+    """Admin dashboard route"""
+    if not session.get('is_admin'):
+        flash('Please login as admin first', 'warning')
+        return redirect(url_for('admin_login'))
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # Get all customers
+        cursor.execute("SELECT * FROM customers ORDER BY created_at DESC")
+        customers = [dict(row) for row in cursor.fetchall()]
+        
+        # Get statement count
+        cursor.execute("SELECT COUNT(*) FROM statements")
+        statement_count = cursor.fetchone()[0]
+        
+        # Get transaction count
+        cursor.execute("SELECT COUNT(*) FROM transactions")
+        txn_count = cursor.fetchone()[0]
+        
+        # Get active cards count
+        cursor.execute("SELECT COUNT(*) FROM credit_cards")
+        active_cards = cursor.fetchone()[0]
+    
+    return render_template('admin_dashboard.html', 
+                         customers=customers,
+                         statement_count=statement_count,
+                         txn_count=txn_count,
+                         active_cards=active_cards)
+
+@app.route('/admin-logout')
+def admin_logout():
+    """Admin logout route"""
+    session.pop('is_admin', None)
+    session.pop('admin_email', None)
+    flash('Admin logged out successfully', 'success')
+    return redirect(url_for('index'))
+
+# ==================== END ADMIN AUTHENTICATION ====================
+
+# ==================== NOTIFICATION SERVICES ====================
+
+def send_email_notification(to_email, subject, body):
+    """Send email notification via SMTP"""
+    try:
+        sender = os.environ.get('EMAIL_USER')
+        password = os.environ.get('EMAIL_PASSWORD')
+        smtp_server = os.environ.get('SMTP_SERVER', 'smtp.gmail.com')
+        smtp_port = int(os.environ.get('SMTP_PORT', 587))
+        
+        if not sender or not password:
+            print("Email credentials not configured")
+            return False
+        
+        msg = MIMEMultipart()
+        msg['From'] = sender
+        msg['To'] = to_email
+        msg['Subject'] = subject
+        msg.attach(MIMEText(body, 'plain'))
+        
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(sender, password)
+        server.send_message(msg)
+        server.quit()
+        
+        print(f"✅ Email sent to {to_email}")
+        return True
+    except Exception as e:
+        print(f"❌ Email failed: {e}")
+        return False
+
+def send_whatsapp_notification(to_number, message):
+    """Send WhatsApp notification via Twilio"""
+    try:
+        account_sid = os.environ.get('TWILIO_ACCOUNT_SID')
+        auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
+        from_whatsapp = os.environ.get('TWILIO_WHATSAPP_FROM', 'whatsapp:+14155238886')
+        
+        if not account_sid or not auth_token:
+            print("Twilio credentials not configured")
+            return False
+        
+        from twilio.rest import Client
+        
+        client = Client(account_sid, auth_token)
+        client.messages.create(
+            from_=from_whatsapp,
+            body=message,
+            to=to_number
+        )
+        
+        print(f"✅ WhatsApp sent to {to_number}")
+        return True
+    except Exception as e:
+        print(f"❌ WhatsApp failed: {e}")
+        return False
+
+def notify_admin_statement_upload(customer_name, statement_date):
+    """Notify admin when customer uploads statement"""
+    admin_whatsapp = os.environ.get('WHATSAPP_ADMIN_TO')
+    admin_email = os.environ.get('ADMIN_EMAIL')
+    
+    message = f"📄 New Statement Upload\nCustomer: {customer_name}\nDate: {statement_date}\nPlease review in admin panel."
+    
+    # Send WhatsApp if configured
+    if admin_whatsapp:
+        send_whatsapp_notification(admin_whatsapp, message)
+    
+    # Send Email if configured
+    if admin_email:
+        send_email_notification(admin_email, "New Statement Upload", message)
+
+def notify_admin_consultation_request(customer_name, service_type):
+    """Notify admin when customer requests consultation"""
+    admin_whatsapp = os.environ.get('WHATSAPP_ADMIN_TO')
+    admin_email = os.environ.get('ADMIN_EMAIL')
+    
+    message = f"💬 New Consultation Request\nCustomer: {customer_name}\nService: {service_type}\nPlease respond promptly."
+    
+    # Send WhatsApp if configured
+    if admin_whatsapp:
+        send_whatsapp_notification(admin_whatsapp, message)
+    
+    # Send Email if configured
+    if admin_email:
+        send_email_notification(admin_email, "New Consultation Request", message)
+
+# ==================== END NOTIFICATION SERVICES ====================
 
 def auto_fetch_daily_news():
     """每日自动获取新闻任务"""

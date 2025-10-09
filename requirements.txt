@@ -1,0 +1,17 @@
+Flask==3.0.0
+flask_sqlalchemy
+flask_login
+pdf2image
+pytesseract
+Pillow
+reportlab
+schedule
+email-validator
+twilio
+openpyxl
+pandas
+pdfplumber
+plotly
+requests
+werkzeug
+gunicorn
