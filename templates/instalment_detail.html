@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}Instalment Plan Detail - {{ plan.product_name }}{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="section-header">
+        <h1 class="section-title">
+            <i class="bi bi-credit-card-2-front"></i> Instalment Plan Detail / 分期付款详情
+        </h1>
+        <p class="section-subtitle">{{ plan.product_name }} - {{ plan.bank_name }} ****{{ plan.card_number_last4 }}</p>
+    </div>
+
+    <!-- Plan Overview -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-value">RM {{ "{:,.2f}".format(plan.principal_amount) }}</div>
+                <div class="stat-label">Principal Amount / 本金</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-value">{{ plan.interest_rate }}%</div>
+                <div class="stat-label">Interest Rate / 年利率</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-value">{{ plan.tenure_months }}</div>
+                <div class="stat-label">Tenure (Months) / 分期月数</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-value">RM {{ "{:,.2f}".format(plan.monthly_payment) }}</div>
+                <div class="stat-label">Monthly Payment / 月供</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="professional-card">
+                <h5 style="color: var(--text-secondary); margin-bottom: 0.5rem;">Total Interest / 总利息</h5>
+                <div style="color: var(--text-primary); font-size: 1.5rem; font-weight: 600;">
+                    RM {{ "{:,.2f}".format(plan.total_interest) }}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="professional-card">
+                <h5 style="color: var(--text-secondary); margin-bottom: 0.5rem;">Payment Progress / 还款进度</h5>
+                <div style="color: var(--text-primary); font-size: 1.5rem; font-weight: 600;">
+                    {{ plan.paid_payments }} / {{ plan.total_payments }}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="professional-card">
+                <h5 style="color: var(--text-secondary); margin-bottom: 0.5rem;">Current Balance / 当前余额</h5>
+                <div style="color: {{ 'var(--accent-success)' if current_balance == 0 else 'var(--text-danger)' }}; font-size: 1.5rem; font-weight: 600;">
+                    RM {{ "{:,.2f}".format(current_balance) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Schedule Table -->
+    <div class="professional-card">
+        <h3 style="color: var(--text-primary); margin-bottom: 1.5rem;">
+            <i class="bi bi-calendar-check"></i> Payment Schedule / 付款时间表
+        </h3>
+        
+        <div class="table-responsive">
+            <table class="table-professional">
+                <thead>
+                    <tr>
+                        <th>Period / 期数</th>
+                        <th>Date / 日期</th>
+                        <th class="text-end">Payment / 月供</th>
+                        <th class="text-end">Principal / 本金</th>
+                        <th class="text-end">Interest / 利息</th>
+                        <th class="text-end">Remaining Balance / 余额</th>
+                        <th class="text-center">Status / 状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payment_schedule %}
+                    <tr style="{{ 'background: rgba(46, 204, 113, 0.1);' if payment.status == 'paid' else '' }}">
+                        <td style="font-weight: 600; color: var(--text-primary);">
+                            #{{ payment.payment_number }}
+                        </td>
+                        <td style="color: var(--text-secondary);">
+                            {{ payment.scheduled_date }}
+                        </td>
+                        <td class="text-end" style="font-weight: 600; color: var(--text-primary);">
+                            RM {{ "{:,.2f}".format(payment.scheduled_amount) }}
+                        </td>
+                        <td class="text-end" style="color: #3498db;">
+                            RM {{ "{:,.2f}".format(payment.principal_portion) }}
+                        </td>
+                        <td class="text-end" style="color: #e74c3c;">
+                            RM {{ "{:,.2f}".format(payment.interest_portion) }}
+                        </td>
+                        <td class="text-end" style="font-weight: 600; color: {{ 'var(--accent-success)' if payment.remaining_balance == 0 else 'var(--text-primary)' }};">
+                            RM {{ "{:,.2f}".format(payment.remaining_balance) }}
+                        </td>
+                        <td class="text-center">
+                            {% if payment.status == 'paid' %}
+                                <span class="badge-professional badge-success-pro">
+                                    <i class="bi bi-check-circle"></i> Paid
+                                </span>
+                            {% elif payment.status == 'pending' %}
+                                <span class="badge-professional badge-warning-pro">
+                                    <i class="bi bi-clock"></i> Pending
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr style="background: var(--bg-secondary); font-weight: 600;">
+                        <td colspan="2" style="color: var(--text-primary);">TOTAL / 总计</td>
+                        <td class="text-end" style="color: var(--text-primary);">
+                            RM {{ "{:,.2f}".format(plan.total_amount) }}
+                        </td>
+                        <td class="text-end" style="color: #3498db;">
+                            RM {{ "{:,.2f}".format(plan.principal_amount) }}
+                        </td>
+                        <td class="text-end" style="color: #e74c3c;">
+                            RM {{ "{:,.2f}".format(plan.total_interest) }}
+                        </td>
+                        <td class="text-end" style="color: var(--accent-success);">
+                            RM 0.00
+                        </td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="mt-4">
+        <div class="professional-card" style="background: rgba(52, 152, 219, 0.1); border: 1px solid rgba(52, 152, 219, 0.3);">
+            <h5 style="color: var(--text-primary); margin-bottom: 1rem;">
+                <i class="bi bi-info-circle"></i> Understanding Your Payments / 了解您的付款
+            </h5>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div style="padding: 0.75rem; background: rgba(52, 152, 219, 0.1); border-radius: 6px;">
+                        <strong style="color: #3498db;">Principal (本金):</strong>
+                        <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;">
+                            The portion of your payment that reduces the original loan amount.
+                            您付款中用于减少原始贷款金额的部分。
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div style="padding: 0.75rem; background: rgba(231, 76, 60, 0.1); border-radius: 6px;">
+                        <strong style="color: #e74c3c;">Interest (利息):</strong>
+                        <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;">
+                            The cost of borrowing money, calculated based on the remaining balance.
+                            借款成本，根据剩余余额计算。
+                        </p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div style="padding: 0.75rem; background: rgba(46, 204, 113, 0.1); border-radius: 6px;">
+                        <strong style="color: #2ecc71;">Remaining Balance (余额欠款):</strong>
+                        <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;">
+                            The amount you still owe after each payment. Notice how the balance decreases with each payment!
+                            每次付款后您仍欠的金额。注意余额如何随着每次付款而减少！
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-5">
+        <a href="{{ url_for('customer_dashboard', customer_id=customer_id) }}" class="btn-professional-outline">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard / 返回仪表板
+        </a>
+    </div>
+</div>
+{% endblock %}

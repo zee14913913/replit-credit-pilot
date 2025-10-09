@@ -78,27 +78,55 @@ class InstalmentTracker:
             return plan_id
     
     def _generate_payment_schedule(self, plan_id, plan_details):
-        """生成分期付款时间表"""
+        """生成分期付款时间表（包含每期余额欠款计算）"""
         with get_db() as conn:
             cursor = conn.cursor()
             
             start_date = datetime.strptime(plan_details['start_date'], '%Y-%m-%d')
             tenure = plan_details['tenure_months']
             monthly_payment = plan_details['monthly_payment']
+            principal = plan_details['principal_amount']
+            interest_rate = plan_details['interest_rate']
+            
+            # 计算每月利息率
+            monthly_interest_rate = interest_rate / 100 / 12
+            
+            # 追踪余额
+            remaining_balance = principal
             
             for month in range(1, tenure + 1):
                 payment_date = start_date + timedelta(days=month * 30)
                 
+                # 计算这期的利息和本金
+                interest_amount = remaining_balance * monthly_interest_rate
+                principal_amount = monthly_payment - interest_amount
+                
+                # 计算付款后余额
+                balance_after_payment = remaining_balance - principal_amount
+                
+                # 确保最后一期余额为0
+                if month == tenure:
+                    balance_after_payment = 0
+                    principal_amount = remaining_balance
+                    interest_amount = monthly_payment - principal_amount
+                
                 cursor.execute('''
                     INSERT INTO instalment_payment_records (
                         plan_id, payment_number, scheduled_date,
-                        scheduled_amount, status
-                    ) VALUES (?, ?, ?, ?, 'pending')
+                        scheduled_amount, principal_portion, interest_portion,
+                        remaining_balance, status
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
                 ''', (
                     plan_id, month,
                     payment_date.strftime('%Y-%m-%d'),
-                    monthly_payment
+                    monthly_payment,
+                    principal_amount,
+                    interest_amount,
+                    balance_after_payment
                 ))
+                
+                # 更新余额用于下一期
+                remaining_balance = balance_after_payment
             
             conn.commit()
     

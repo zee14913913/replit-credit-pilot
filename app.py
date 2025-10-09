@@ -1431,6 +1431,60 @@ def start_scheduler():
     
     print("Failed to acquire scheduler lock after retries")
 
+# Instalment Detail Route
+@app.route('/instalment/<int:plan_id>')
+def instalment_detail(plan_id):
+    """分期付款详情页面：显示完整的付款时间表和余额追踪"""
+    from validate.instalment_tracker import InstalmentTracker
+    
+    tracker = InstalmentTracker()
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # Get plan info
+        cursor.execute('''
+            SELECT ip.*, cc.bank_name, cc.card_number_last4, cc.customer_id,
+                   COUNT(ipr.id) as total_payments,
+                   SUM(CASE WHEN ipr.status = 'paid' THEN 1 ELSE 0 END) as paid_payments
+            FROM instalment_plans ip
+            LEFT JOIN credit_cards cc ON ip.card_id = cc.id
+            LEFT JOIN instalment_payment_records ipr ON ip.id = ipr.plan_id
+            WHERE ip.id = ?
+            GROUP BY ip.id
+        ''', (plan_id,))
+        
+        plan = dict(cursor.fetchone())
+        customer_id = plan['customer_id']
+    
+    # Get payment schedule
+    payment_schedule = tracker.get_plan_payment_schedule(plan_id)
+    
+    # Calculate current balance (last unpaid payment's remaining balance)
+    current_balance = 0
+    for payment in payment_schedule:
+        if payment['status'] == 'pending':
+            # 找到第一个pending的付款，它的上一期的remaining_balance就是当前余额
+            prev_payment_num = payment['payment_number'] - 1
+            if prev_payment_num > 0:
+                for p in payment_schedule:
+                    if p['payment_number'] == prev_payment_num:
+                        current_balance = p['remaining_balance']
+                        break
+            else:
+                current_balance = plan['principal_amount']
+            break
+    
+    # 如果所有都已支付，余额为0
+    if all(p['status'] == 'paid' for p in payment_schedule):
+        current_balance = 0
+    
+    return render_template('instalment_detail.html',
+                         plan=plan,
+                         payment_schedule=payment_schedule,
+                         current_balance=current_balance,
+                         customer_id=customer_id)
+
 # Statement Comparison Route
 @app.route('/statement/<int:statement_id>/comparison')
 def statement_comparison(statement_id):

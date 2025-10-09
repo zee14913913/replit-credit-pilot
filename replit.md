@@ -107,3 +107,35 @@ The backend is built with **Flask**. The database layer uses **SQLite** with a c
 - **访问：** Dashboard "Comparison/对比"按钮直达
 
 **Architect审查：** ✅ 所有功能通过验证，正常运行
+
+### 分期付款余额追踪增强功能 (Instalment Balance Tracking Enhancement)
+
+**完善分期付款管理系统，添加每次付款后的余额欠款追踪：**
+
+**新增功能：**
+- ✅ **本金/利息分离计算**：每期付款自动计算本金部分和利息部分
+- ✅ **余额欠款追踪**：每期付款后自动计算剩余欠款金额
+- ✅ **完整还款时间表**：显示每期的Payment/Principal/Interest/Remaining Balance
+- ✅ **可视化进度展示**：清晰显示已还本金vs剩余欠款
+
+**数据库扩展：**
+- `principal_portion`: 本金部分
+- `interest_portion`: 利息部分  
+- `remaining_balance`: 剩余欠款余额
+
+**前端展示：**
+- 分期详情页面 (`/instalment/<plan_id>`)
+- 完整付款时间表（12期分期完整显示所有数据）
+- 彩色标识：本金(蓝色) / 利息(红色) / 余额(绿色)
+- 说明指南：帮助用户理解本金、利息和余额的含义
+
+**计算示例（Huawei Mate 60 Pro - RM 4,800 @ 6.5% APR）：**
+- 第1期：月供RM 420 = 本金RM 394 + 利息RM 26，余额RM 4,406
+- 第2期：月供RM 420 = 本金RM 396 + 利息RM 24，余额RM 4,010
+- ...
+- 第12期：月供RM 420 = 本金RM 347 + 利息RM 73，余额RM 0
+
+**业务价值：**
+- 客户清楚知道每次还款后还欠多少钱
+- 透明显示利息成本，帮助理解分期付款真实成本
+- 完整的财务记录用于DSR分析和贷款评估
