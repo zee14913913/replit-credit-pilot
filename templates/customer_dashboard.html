@@ -61,6 +61,69 @@
         </div>
     </div>
 
+    <!-- Instalment Plans Section -->
+    {% if instalment_summary and instalment_summary.active_plans > 0 %}
+    <div class="mb-5">
+        <h3 class="mb-4" style="color: var(--text-primary);">
+            <i class="bi bi-credit-card-2-front"></i> Instalment Plans / 分期付款计划
+        </h3>
+        <div class="row g-4 mb-3">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-value">{{ instalment_summary.active_plans }}</div>
+                    <div class="stat-label">Active Plans / 活跃分期</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-value">RM {{ "{:,.2f}".format(instalment_summary.total_monthly) }}</div>
+                    <div class="stat-label">Total Monthly / 总月供</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-value">{{ instalment_summary.upcoming_payments }}</div>
+                    <div class="stat-label">Due in 7 Days / 7天内到期</div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-3">
+            {% for plan in instalment_plans %}
+            <div class="col-md-6">
+                <div class="professional-card">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 style="color: var(--text-primary); margin-bottom: 0.5rem;">{{ plan.product_name }}</h5>
+                            <small style="color: var(--text-secondary);">{{ plan.bank_name }} ****{{ plan.card_number_last4 }}</small>
+                        </div>
+                        <span class="badge-professional badge-primary-pro">{{ plan.status }}</span>
+                    </div>
+                    <div class="divider-professional"></div>
+                    <div class="row g-2 mt-3">
+                        <div class="col-6">
+                            <small style="color: var(--text-secondary);">Monthly Payment / 月供</small>
+                            <div style="color: var(--text-primary); font-weight: 600;">RM {{ "{:,.2f}".format(plan.monthly_payment) }}</div>
+                        </div>
+                        <div class="col-6">
+                            <small style="color: var(--text-secondary);">Tenure / 期限</small>
+                            <div style="color: var(--text-primary); font-weight: 600;">{{ plan.tenure_months }} months</div>
+                        </div>
+                        <div class="col-6">
+                            <small style="color: var(--text-secondary);">Progress / 进度</small>
+                            <div style="color: var(--text-primary); font-weight: 600;">{{ plan.paid_payments }}/{{ plan.total_payments }}</div>
+                        </div>
+                        <div class="col-6">
+                            <small style="color: var(--text-secondary);">Interest Rate / 利率</small>
+                            <div style="color: var(--text-primary); font-weight: 600;">{{ plan.interest_rate }}%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Quick Actions -->
     <div class="mb-5">
         <h3 class="mb-4" style="color: var(--text-primary);">{{ t('quick_actions') }}</h3>
@@ -83,6 +146,11 @@
             <div class="col-md-3">
                 <a href="{{ url_for('export_transactions', customer_id=customer.id, format='excel') }}" class="btn-professional-outline w-100 py-3 text-center" style="text-decoration: none;">
                     <div>{{ t('export_data') }}</div>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{{ url_for('customer_monthly_reports', customer_id=customer.id) }}" class="btn-professional-outline w-100 py-3 text-center" style="text-decoration: none;">
+                    <div><i class="bi bi-file-earmark-bar-graph"></i> Monthly Reports / 月度报表</div>
                 </a>
             </div>
             <div class="col-12 mt-3">
@@ -127,7 +195,14 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{{ url_for('validate', statement_id=stmt.id) }}" class="btn-professional-outline" style="padding: 0.4rem 1rem; font-size: 0.85rem;">View</a>
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('validate', statement_id=stmt.id) }}" class="btn-professional-outline" style="padding: 0.4rem 1rem; font-size: 0.85rem;">View</a>
+                                {% if stmt.is_confirmed %}
+                                <a href="{{ url_for('statement_comparison', statement_id=stmt.id) }}" class="btn-professional" style="padding: 0.4rem 1rem; font-size: 0.85rem;">
+                                    <i class="bi bi-layout-split"></i> Comparison / 对比
+                                </a>
+                                {% endif %}
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}

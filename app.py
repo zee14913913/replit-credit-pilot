@@ -106,11 +106,18 @@ def customer_dashboard(customer_id):
     
     spending_summary = get_spending_summary(all_transactions) if all_transactions else {}
     
+    from validate.instalment_tracker import InstalmentTracker
+    tracker = InstalmentTracker()
+    instalment_plans = tracker.get_customer_instalment_plans(customer_id)
+    instalment_summary = tracker.get_instalment_summary(customer_id)
+    
     return render_template('customer_dashboard.html', 
                          customer=customer, 
                          cards=cards,
                          spending_summary=spending_summary,
-                         total_spending=total_spending)
+                         total_spending=total_spending,
+                         instalment_plans=instalment_plans,
+                         instalment_summary=instalment_summary)
 
 @app.route('/upload_statement', methods=['GET', 'POST'])
 def upload_statement():
@@ -1373,6 +1380,19 @@ def run_scheduler():
     # 新闻获取任务 - 每天早上8点自动获取
     schedule.every().day.at("08:00").do(auto_fetch_daily_news)
     
+    # 月度报表自动生成 - 每月5号早上10点自动生成上月报表
+    from report.monthly_report_generator import auto_generate_monthly_reports
+    
+    def check_and_generate_monthly_reports():
+        """检查是否为每月5号，如果是则生成报表"""
+        today = datetime.now()
+        if today.day == 5:
+            print(f"📊 Generating monthly reports for {today.strftime('%Y-%m')}...")
+            reports = auto_generate_monthly_reports()
+            print(f"✅ Generated {len(reports)} monthly reports")
+    
+    schedule.every().day.at("10:00").do(check_and_generate_monthly_reports)
+    
     while True:
         schedule.run_pending()
         time.sleep(60)
@@ -1410,6 +1430,152 @@ def start_scheduler():
                 return
     
     print("Failed to acquire scheduler lock after retries")
+
+# Statement Comparison Route
+@app.route('/statement/<int:statement_id>/comparison')
+def statement_comparison(statement_id):
+    """账单对比页面：原始账单 vs 分类报告并列展示"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # Get statement info
+        cursor.execute('''
+            SELECT s.*, cc.bank_name, cc.card_number_last4, cc.customer_id
+            FROM statements s
+            JOIN credit_cards cc ON s.card_id = cc.id
+            WHERE s.id = ?
+        ''', (statement_id,))
+        
+        statement = dict(cursor.fetchone())
+        customer_id = statement['customer_id']
+        
+        # Get transactions
+        cursor.execute('''
+            SELECT * FROM transactions
+            WHERE statement_id = ?
+            ORDER BY transaction_date DESC
+        ''', (statement_id,))
+        
+        transactions = [dict(row) for row in cursor.fetchall()]
+        
+        # Calculate summary
+        total_debit = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'debit')
+        total_credit = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'credit')
+        supplier_fees = sum(t.get('supplier_fee', 0) for t in transactions if t.get('supplier_fee'))
+        
+        # Category breakdown
+        categories = {}
+        for t in transactions:
+            if t['transaction_type'] == 'debit':
+                cat = t.get('category', 'Uncategorized')
+                categories[cat] = categories.get(cat, 0) + abs(t['amount'])
+        
+        summary = {
+            'total_debit': total_debit,
+            'total_credit': total_credit,
+            'supplier_fees': supplier_fees,
+            'categories': categories
+        }
+    
+    return render_template('statement_comparison.html',
+                         statement=statement,
+                         transactions=transactions,
+                         summary=summary,
+                         customer_id=customer_id)
+
+@app.route('/export_statement_transactions/<int:statement_id>/<format>')
+def export_statement_transactions(statement_id, format):
+    """导出单个statement的交易记录"""
+    import pandas as pd
+    from io import BytesIO
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT t.*, s.statement_date, cc.bank_name
+            FROM transactions t
+            JOIN statements s ON t.statement_id = s.id
+            JOIN credit_cards cc ON s.card_id = cc.id
+            WHERE t.statement_id = ?
+        ''', (statement_id,))
+        
+        transactions = [dict(row) for row in cursor.fetchall()]
+    
+    # Create DataFrame
+    df = pd.DataFrame(transactions)
+    
+    if format == 'excel':
+        output = BytesIO()
+        df.to_excel(output, index=False, engine='openpyxl')
+        output.seek(0)
+        return send_file(output, 
+                        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        as_attachment=True,
+                        download_name=f'Statement_{statement_id}_Transactions.xlsx')
+    else:
+        output = BytesIO()
+        df.to_csv(output, index=False)
+        output.seek(0)
+        return send_file(output, 
+                        mimetype='text/csv',
+                        as_attachment=True,
+                        download_name=f'Statement_{statement_id}_Transactions.csv')
+
+# Monthly Reports Routes
+@app.route('/customer/<int:customer_id>/monthly-reports')
+def customer_monthly_reports(customer_id):
+    """查看客户的所有月度报表"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+        customer = dict(cursor.fetchone())
+        
+        cursor.execute('''
+            SELECT *
+            FROM monthly_reports
+            WHERE customer_id = ?
+            ORDER BY report_year DESC, report_month DESC
+        ''', (customer_id,))
+        
+        reports = [dict(row) for row in cursor.fetchall()]
+    
+    return render_template('monthly_reports.html',
+                         customer=customer,
+                         reports=reports)
+
+@app.route('/customer/<int:customer_id>/generate-monthly-report/<int:year>/<int:month>')
+def generate_customer_monthly_report(customer_id, year, month):
+    """手动生成指定月份的月度报表"""
+    from report.monthly_report_generator import generate_monthly_report
+    
+    try:
+        pdf_path = generate_monthly_report(customer_id, year, month)
+        
+        if pdf_path:
+            flash(f'月度报表生成成功！({year}-{month})', 'success')
+        else:
+            flash(f'该月份没有账单数据 ({year}-{month})', 'error')
+    except Exception as e:
+        flash(f'生成报表失败: {str(e)}', 'error')
+    
+    return redirect(url_for('customer_monthly_reports', customer_id=customer_id))
+
+@app.route('/download-monthly-report/<int:report_id>')
+def download_monthly_report(report_id):
+    """下载月度报表PDF"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM monthly_reports WHERE id = ?', (report_id,))
+        report = cursor.fetchone()
+    
+    if report and os.path.exists(report['pdf_path']):
+        return send_file(report['pdf_path'], as_attachment=True)
+    else:
+        flash('报表文件不存在', 'error')
+        return redirect(url_for('index'))
+
 
 start_scheduler()
 

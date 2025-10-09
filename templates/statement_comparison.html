@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}Statement Comparison - {{ statement.bank_name }}{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="section-header">
+        <h1 class="section-title">
+            <i class="bi bi-layout-split"></i> Statement Comparison / 账单对比
+        </h1>
+        <p class="section-subtitle">原始账单 vs 分类报告 - {{ statement.bank_name }} ****{{ statement.card_number_last4 }}</p>
+    </div>
+
+    <!-- Statement Info Card -->
+    <div class="professional-card mb-4">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <small style="color: var(--text-secondary);">Statement Date / 账单日期</small>
+                <div style="color: var(--text-primary); font-weight: 600;">{{ statement.statement_date }}</div>
+            </div>
+            <div class="col-md-3">
+                <small style="color: var(--text-secondary);">Total Amount / 账单总额</small>
+                <div style="color: var(--text-primary); font-weight: 600;">RM {{ "{:,.2f}".format(statement.statement_total) }}</div>
+            </div>
+            <div class="col-md-3">
+                <small style="color: var(--text-secondary);">Transactions / 交易记录数</small>
+                <div style="color: var(--text-primary); font-weight: 600;">{{ transactions|length }}</div>
+            </div>
+            <div class="col-md-3">
+                <small style="color: var(--text-secondary);">Validation Score / 验证分数</small>
+                <div style="color: var(--text-primary); font-weight: 600;">{{ "%.1f"|format(statement.validation_score) }}%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Split View -->
+    <div class="row g-4">
+        <!-- Left: Original Statement PDF -->
+        <div class="col-lg-6">
+            <div class="professional-card" style="height: 800px; display: flex; flex-direction: column;">
+                <h3 style="color: var(--text-primary); margin-bottom: 1rem; flex-shrink: 0;">
+                    <i class="bi bi-file-pdf"></i> Original Statement / 原始账单
+                </h3>
+                <div class="divider-professional" style="flex-shrink: 0;"></div>
+                <div style="flex: 1; overflow: hidden; margin-top: 1rem;">
+                    {% if statement.file_type == 'pdf' %}
+                    <iframe src="/{{ statement.file_path }}" 
+                            style="width: 100%; height: 100%; border: 1px solid var(--border-color); border-radius: 8px;">
+                    </iframe>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-file-earmark-excel" style="font-size: 4rem; color: var(--accent-success);"></i>
+                        <p style="color: var(--text-secondary); margin-top: 1rem;">Excel file - Download to view</p>
+                        <a href="/{{ statement.file_path }}" class="btn-professional-sm mt-3" download>
+                            <i class="bi bi-download"></i> Download Excel
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Classified Transactions Report -->
+        <div class="col-lg-6">
+            <div class="professional-card" style="height: 800px; display: flex; flex-direction: column;">
+                <h3 style="color: var(--text-primary); margin-bottom: 1rem; flex-shrink: 0;">
+                    <i class="bi bi-table"></i> Classified Report / 分类报告
+                </h3>
+                <div class="divider-professional" style="flex-shrink: 0;"></div>
+                
+                <!-- Summary Stats -->
+                <div class="row g-3 mt-3 mb-3" style="flex-shrink: 0;">
+                    <div class="col-6">
+                        <div style="background: rgba(231, 76, 60, 0.1); padding: 1rem; border-radius: 8px;">
+                            <small style="color: var(--text-secondary);">Total Debit / 总消费</small>
+                            <div style="color: #e74c3c; font-weight: 600; font-size: 1.1rem;">
+                                RM {{ "{:,.2f}".format(summary.total_debit) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div style="background: rgba(46, 204, 113, 0.1); padding: 1rem; border-radius: 8px;">
+                            <small style="color: var(--text-secondary);">Total Credit / 总付款</small>
+                            <div style="color: #2ecc71; font-weight: 600; font-size: 1.1rem;">
+                                RM {{ "{:,.2f}".format(summary.total_credit) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Supplier Fees (if any) -->
+                {% if summary.supplier_fees > 0 %}
+                <div class="alert-professional alert-success-pro mb-3" style="flex-shrink: 0;">
+                    <i class="bi bi-cash-coin"></i>
+                    <strong>Supplier Merchant Fee (1%):</strong> RM {{ "{:,.2f}".format(summary.supplier_fees) }}
+                </div>
+                {% endif %}
+
+                <!-- Transactions Table -->
+                <div style="flex: 1; overflow-y: auto;">
+                    <table class="table-professional">
+                        <thead style="position: sticky; top: 0; background: var(--bg-primary); z-index: 10;">
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th class="text-end">Amount</th>
+                                <th class="text-center">Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for t in transactions %}
+                            <tr style="{{ 'background: rgba(46, 204, 113, 0.05);' if t.transaction_type == 'credit' else '' }}">
+                                <td style="color: var(--text-secondary); font-size: 0.9rem;">
+                                    {{ t.transaction_date }}
+                                </td>
+                                <td style="color: var(--text-primary);">
+                                    {{ t.description[:40] }}{% if t.description|length > 40 %}...{% endif %}
+                                    {% if t.transaction_subtype == 'supplier_debit' %}
+                                    <span class="badge-professional badge-success-pro ms-2">Supplier</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge-professional badge-primary-pro">{{ t.category or 'Uncategorized' }}</span>
+                                </td>
+                                <td class="text-end" style="font-weight: 600; color: {{ '#e74c3c' if t.transaction_type == 'debit' else '#2ecc71' }};">
+                                    {{ '-' if t.transaction_type == 'debit' else '+' }}RM {{ "{:,.2f}".format(t.amount|abs) }}
+                                    {% if t.supplier_fee and t.supplier_fee > 0 %}
+                                    <br><small style="color: #2ecc71;">(Fee: +RM {{ "{:.2f}".format(t.supplier_fee) }})</small>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% if t.transaction_type == 'debit' %}
+                                    <i class="bi bi-arrow-down-circle text-danger"></i>
+                                    {% else %}
+                                    <i class="bi bi-arrow-up-circle text-success"></i>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Category Breakdown -->
+                <div class="mt-3" style="flex-shrink: 0;">
+                    <div class="divider-professional"></div>
+                    <h5 style="color: var(--text-primary); margin: 1rem 0;">Category Breakdown / 分类汇总</h5>
+                    <div class="row g-2">
+                        {% for category, amount in summary.categories.items() %}
+                        <div class="col-6">
+                            <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: var(--bg-secondary); border-radius: 6px;">
+                                <span style="color: var(--text-secondary); font-size: 0.9rem;">{{ category }}</span>
+                                <span style="color: var(--text-primary); font-weight: 600;">RM {{ "{:,.2f}".format(amount) }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-4 d-flex gap-3">
+        <a href="{{ url_for('customer_dashboard', customer_id=customer_id) }}" class="btn-professional-outline">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+        <a href="/{{ statement.file_path }}" class="btn-professional" download>
+            <i class="bi bi-download"></i> Download Original Statement
+        </a>
+        <a href="{{ url_for('export_statement_transactions', statement_id=statement.id, format='excel') }}" class="btn-professional">
+            <i class="bi bi-file-earmark-excel"></i> Export Classified Report
+        </a>
+    </div>
+</div>
+
+<style>
+/* Custom scrollbar for transactions table */
+.professional-card > div::-webkit-scrollbar {
+    width: 8px;
+}
+
+.professional-card > div::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 4px;
+}
+
+.professional-card > div::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+.professional-card > div::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-primary);
+}
+</style>
+{% endblock %}
