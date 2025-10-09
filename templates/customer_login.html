@@ -5,11 +5,11 @@
 {% block content %}
 <div class="container-professional">
     <div class="row justify-content-center">
-        <div class="col-12 col-lg-10">
-            <div class="professional-card" style="margin-top: 4rem; padding: 3rem;">
-                <div class="text-center mb-4">
-                    <h2 class="section-title" style="font-size: 2.5rem; margin-bottom: 1rem;">{{ t('customer_portal') }}</h2>
-                    <p style="color: var(--text-secondary);">{{ t('login_subtitle') }}</p>
+        <div class="col-12 col-lg-8">
+            <div class="professional-card" style="margin-top: 4rem; padding: 4rem;">
+                <div class="text-center mb-5">
+                    <h2 class="section-title" style="font-size: 2.8rem; margin-bottom: 1.5rem;">{{ t('customer_portal') }}</h2>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem;">{{ t('login_subtitle') }}</p>
                 </div>
 
                 {% if error %}
@@ -17,17 +17,17 @@
                 {% endif %}
 
                 <form method="POST" action="/customer/login">
-                    <div class="mb-4">
-                        <label for="email" class="form-label" style="color: var(--text-primary); font-weight: 600;">{{ t('email') }}</label>
-                        <input type="email" class="form-control-professional" id="email" name="email" required>
+                    <div class="mb-5">
+                        <label for="email" class="form-label" style="color: var(--text-primary); font-weight: 600; font-size: 1.1rem; margin-bottom: 0.75rem;">{{ t('email') }}</label>
+                        <input type="email" class="form-control-professional" id="email" name="email" required style="padding: 1.25rem; font-size: 1.1rem;">
                     </div>
 
-                    <div class="mb-4">
-                        <label for="password" class="form-label" style="color: var(--text-primary); font-weight: 600;">{{ t('password') }}</label>
-                        <input type="password" class="form-control-professional" id="password" name="password" required>
+                    <div class="mb-5">
+                        <label for="password" class="form-label" style="color: var(--text-primary); font-weight: 600; font-size: 1.1rem; margin-bottom: 0.75rem;">{{ t('password') }}</label>
+                        <input type="password" class="form-control-professional" id="password" name="password" required style="padding: 1.25rem; font-size: 1.1rem;">
                     </div>
 
-                    <button type="submit" class="btn-professional w-100 mb-3">{{ t('login') }}</button>
+                    <button type="submit" class="btn-professional w-100 mb-3" style="padding: 1.25rem; font-size: 1.2rem; font-weight: 600;">{{ t('login') }}</button>
                     
                     <div class="text-center">
                         <a href="/customer/register" style="color: var(--accent-primary);">{{ t('no_account') }}</a>
