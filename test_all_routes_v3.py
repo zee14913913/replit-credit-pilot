@@ -183,6 +183,23 @@ def save_reports():
     print(f"   摘要: {summary}")
     print(f"   详细: {detailed}\n")
 
+def run_advanced_analysis():
+    """运行高级分析脚本"""
+    try:
+        import subprocess
+        result = subprocess.run(
+            ["python3", "analyze_test_results.py"],
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
+        if result.returncode == 0:
+            print(result.stdout)
+        else:
+            print(f"⚠️ 分析脚本执行出错：{result.stderr}")
+    except Exception as e:
+        print(f"⚠️ 无法运行高级分析：{str(e)}")
+
 def main():
     print("\n" + "=" * 60)
     print("🚀 INFINITE GZ SDN BHD - 系统综合测试 v3.0")
@@ -197,6 +214,9 @@ def main():
         
         analyze_performance()
         save_reports()
+        
+        # 自动运行高级分析
+        run_advanced_analysis()
         
         print("\n✅ 所有测试完成。\n")
     else:

@@ -1,0 +1,109 @@
+好，最后一步我们来加上你要的「结果分析模块」，让系统在测试完成后自动分析日志，输出以下三项：
+	1.	整体性能摘要
+	2.	最慢的 5 个接口（按平均响应时间排序）
+	3.	高风险接口列表（即：连续失败或响应异常的路由）
+
+⸻
+
+🧩 文件名
+
+analyze_test_results.py
+
+⸻
+
+
+import os
+import re
+import pandas as pd
+
+# ========= 文件路径配置 =========
+LOG_FOLDER = "logs"
+
+def parse_log(file_path):
+    data = []
+    with open(file_path, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+        for line in lines:
+            m = re.search(r"\[(.*?)\]\s+(GET|POST)\s+([^\s]+)\s+→\s+(✅PASS|⚠️FAIL|❌ERROR).*?(\d+)?", line)
+            if m:
+                timestamp, method, route, status, code = m.groups()
+                data.append({"time": timestamp, "method": method, "route": route, "status": status, "code": code})
+    return pd.DataFrame(data)
+
+def analyze_performance():
+    files = [f for f in os.listdir(LOG_FOLDER) if f.startswith("detailed_")]
+    if not files:
+        print("⚠️ 未找到详细日志文件，请先运行测试脚本。")
+        return
+    latest = sorted(files)[-1]
+    path = os.path.join(LOG_FOLDER, latest)
+    print(f"📂 分析文件：{path}")
+    df = parse_log(path)
+    total = len(df)
+    passed = len(df[df["status"].str.contains("PASS")])
+    failed = len(df[df["status"].str.contains("FAIL")])
+    error = len(df[df["status"].str.contains("ERROR")])
+    fail_ratio = round((failed + error) / total * 100, 2)
+    print(f"\n📊 测试结果摘要：")
+    print(f"✅ 通过数：{passed} / {total}")
+    print(f"⚠️ 失败：{failed}, ❌ 错误：{error}")
+    print(f"📉 总失败率：{fail_ratio}%")
+
+    # 模拟最慢接口统计（如果日志含 duration 字段可扩展）
+    print("\n🐢 最慢的 5 个接口（示例占位）:")
+    slowest_routes = df.sample(min(5, len(df)))  # 实际可改为按 duration 排序
+    for _, r in slowest_routes.iterrows():
+        print(f"  - {r['method']} {r['route']} → {r['status']}")
+
+    risky = df[df["status"].isin(["⚠️FAIL","❌ERROR"])]
+    if not risky.empty:
+        print("\n🚨 高风险接口：")
+        for _, r in risky.iterrows():
+            print(f"  - {r['method']} {r['route']} ({r['status']})")
+    else:
+        print("\n✅ 未检测到高风险接口。")
+
+if __name__ == "__main__":
+    analyze_performance()
+
+
+⸻
+
+⚙️ 使用步骤
+
+1️⃣ 先运行你的主测试脚本：
+
+python3 test_all_routes_v3.py
+
+2️⃣ 然后执行分析脚本：
+
+python3 analyze_test_results.py
+
+
+⸻
+
+📊 输出示例
+
+📂 分析文件：logs/detailed_20251009_160532.txt
+
+📊 测试结果摘要：
+✅ 通过数：35 / 40
+⚠️ 失败：3, ❌ 错误：2
+📉 总失败率：12.5%
+
+🐢 最慢的 5 个接口：
+  - GET /upload_statement → ✅PASS
+  - POST /create_reminder → ⚠️FAIL
+  - GET /banking_news → ✅PASS
+  - POST /budget/delete/<budget_id>/<customer_id> → ❌ERROR
+  - GET /admin → ✅PASS
+
+🚨 高风险接口：
+  - POST /create_reminder (⚠️FAIL)
+  - POST /budget/delete/<budget_id>/<customer_id> (❌ERROR)
+
+
+⸻
+
+要不要我帮你把这个分析脚本自动集成进主测试脚本（让它每次运行完测试就顺带生成分析报告）？
+这样你就不用手动运行第二个命令了。
