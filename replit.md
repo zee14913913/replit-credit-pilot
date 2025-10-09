@@ -139,3 +139,56 @@ The backend is built with **Flask**. The database layer uses **SQLite** with a c
 - 客户清楚知道每次还款后还欠多少钱
 - 透明显示利息成本，帮助理解分期付款真实成本
 - 完整的财务记录用于DSR分析和贷款评估
+
+### 月度报表系统2.0 - 按卡分离版 (Monthly Report System 2.0 - Per-Card Edition)
+
+**核心升级：每张信用卡独立生成月度报表，不再混合交易记录**
+
+**关键改进：**
+- ✅ **按卡分离报表**：每张信用卡生成独立PDF，不混合不同卡的交易
+- ✅ **客户 vs INFINITE交易分离**：
+  - **客户交易**：个人Supplier消费 + 其他消费 + Owner付款
+  - **INFINITE交易**：7家指定商家消费 + 3rd party payment
+- ✅ **独立未清余额追踪**：
+  - **客户未清余额** = 客户消费 - 客户付款
+  - **INFINITE未清余额** = INFINITE消费（无Credit抵消）
+- ✅ **分期本金余额**：显示当前剩余本金（capital balance）
+- ✅ **优化建议**：根据DSR、未清余额、分期余额生成个性化建议
+- ✅ **50/50服务流程**：集成咨询服务信息和利润分成说明
+
+**7家INFINITE指定商家：**
+1. 7sl
+2. Dinas
+3. Raub Syc Hainan
+4. Ai Smart Tech
+5. Huawei
+6. Pasar Raya
+7. Puchong Herbs
+
+**数据库新增字段（monthly_reports表）：**
+- `card_id`: 信用卡ID（支持按卡分离）
+- `customer_total_debit`: 客户总消费
+- `customer_total_credit`: 客户总付款
+- `customer_outstanding`: 客户未清余额
+- `infinite_total_debit`: INFINITE总消费
+- `infinite_outstanding`: INFINITE未清余额
+- `instalment_capital_balance`: 分期本金余额
+- `infinite_supplier_fees`: INFINITE商家费用（1%）
+
+**前端显示改进：**
+- 按年月期间分组显示
+- 每个期间内按信用卡列出所有报表
+- 期间合计汇总
+- 彩色区分：客户交易（红/绿）、INFINITE交易（紫/橙）
+- 说明指南：帮助理解客户 vs INFINITE交易
+
+**自动化：**
+- 每月5号10:00自动生成上月所有信用卡报表
+- 支持手动生成任意月份报表
+- 自动删除旧版本报表（避免UNIQUE约束冲突）
+
+**Architect审查通过** ✅
+- 逻辑正确性：交易分类、outstanding计算、DSR分析
+- 数据完整性：数据库兼容、字段映射
+- 端到端测试：成功为2张卡分别生成报表
+- 建议实施：回归测试、数据回填（future enhancement）
