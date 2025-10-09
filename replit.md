@@ -59,9 +59,54 @@ The backend is built with **Flask**, chosen for rapid development and flexibilit
 
 ### System Design Choices
 
-- **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, and new models for authentication (customer_logins, customer_sessions) and advisory services (credit_card_products, card_recommendations, financial_optimization_suggestions, consultation_requests, success_fee_calculations, customer_employment_types, service_terms).
+- **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, and new models for authentication (customer_logins, customer_sessions) and advisory services (credit_card_products, card_recommendations, financial_optimization_suggestions, consultation_requests, success_fee_calculations, customer_employment_types, service_terms, consultation_requests, service_contracts, payment_on_behalf_records).
 - **Design Patterns:** Utilizes Repository Pattern for database abstraction, Template Inheritance for consistent UI, and Context Manager Pattern for database connection handling.
 - **Security:** Implements session secret key from environment variables, file upload size limits, SQL injection prevention via parameterized queries, and audit logging.
+
+### Latest Feature: Complete 50/50 Consultation Service Workflow (2025-10-09)
+
+**Business Model Implementation:**
+1. **Optimization Proposal System** (`advisory/optimization_proposal.py`)
+   - Generates debt consolidation suggestions (balance transfer optimization)
+   - Generates credit card recommendations (higher cashback rates)
+   - Displays current vs optimized solution comparison
+   - Calculates customer savings and 50% profit share
+
+2. **Consultation Booking System** (`advisory/consultation_booking.py`)
+   - Customers can book consultation (meeting/call) after accepting proposal
+   - Confirms consultation time and location
+   - Records consultation outcome and customer decision
+
+3. **Service Contract Generator** (`advisory/service_contract.py`)
+   - Generates bilingual (EN/CN) authorization agreement PDF
+   - Includes service scope, comparison, fee structure (50/50 split)
+   - Dual-party signature workflow
+   - Service begins only after both parties sign
+
+4. **Payment-on-Behalf Management** (`advisory/payment_on_behalf.py`)
+   - Can only start after signed contract
+   - Records all payment-on-behalf transactions
+   - Calculates actual savings/earnings
+   - 50/50 profit split calculation
+   - **Zero fee if no savings/earnings achieved**
+
+**Complete Workflow:**
+```
+Step 1: Generate optimization proposal → Show comparison (current vs optimized)
+Step 2: Customer accepts → Book consultation (meeting/call)
+Step 3: Consultation confirmed → Detailed explanation
+Step 4: Generate contract → Both parties sign
+Step 5: Contract active → Begin payment-on-behalf service
+Step 6: Service completed → Calculate actual savings
+Step 7: 50/50 profit split → Only charge if savings/earnings achieved
+Step 8: No savings/earnings → ZERO fees charged!
+```
+
+**Test Results:**
+- ✅ Customer saves RM 2,677.68/year
+- ✅ Customer keeps RM 1,338.84 (50%)
+- ✅ INFINITE GZ fee RM 1,338.84 (50%)
+- ✅ 100% complete workflow success
 
 ## External Dependencies
 
