@@ -226,7 +226,7 @@ p {
 .nav-container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: var(--space-lg) var(--space-2xl);
+    padding: var(--space-xl) var(--space-2xl);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -235,7 +235,7 @@ p {
 .nav-brand {
     display: flex;
     align-items: center;
-    gap: var(--space-lg);
+    gap: var(--space-xl);
     text-decoration: none;
     transition: opacity 0.2s ease;
 }
@@ -261,12 +261,13 @@ p {
     font-family: 'Montserrat', sans-serif;
     font-size: 1.35rem;
     font-weight: 700;
-    line-height: 1;
+    line-height: 1.6;
     letter-spacing: 0.08em;
     background: linear-gradient(135deg, #FFFFFF 0%, rgba(192, 192, 192, 0.9) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    padding: 0.15rem 0;
 }
 
 .system-name {
