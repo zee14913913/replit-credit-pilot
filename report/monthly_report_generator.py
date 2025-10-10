@@ -96,6 +96,7 @@ class MonthlyReportGenerator:
             
             infinite_debit_suppliers = 0  # INFINITE在7家商家的消费
             infinite_debit_3rdparty = 0   # INFINITE的3rd party payment
+            infinite_credit = 0           # INFINITE的付款
             infinite_supplier_fees = 0    # INFINITE的1% merchant fee
             
             for t in transactions:
@@ -124,11 +125,14 @@ class MonthlyReportGenerator:
                 
                 elif t['transaction_type'] == 'credit':
                     # Credit交易（付款）
-                    if t.get('payment_user') == 'owner':
+                    if t.get('payment_user') == 'infinite' or t.get('transaction_subtype') == 'infinite_payment':
+                        # INFINITE付款
+                        infinite_credit += amount
+                    elif t.get('payment_user') == 'owner':
                         # Owner付款 → 客户付款
                         customer_credit_owner += amount
                     else:
-                        # 其他付款
+                        # 其他付款 → 客户付款
                         customer_credit_other += amount
             
             # 5. 获取该客户该月的分期付款
@@ -155,7 +159,8 @@ class MonthlyReportGenerator:
             customer_outstanding = customer_total_debit - customer_total_credit
             
             infinite_total_debit = infinite_debit_suppliers + infinite_debit_3rdparty
-            infinite_outstanding = infinite_total_debit  # INFINITE无Credit付款
+            infinite_total_credit = infinite_credit
+            infinite_outstanding = infinite_total_debit - infinite_total_credit
             
             # 7. DSR计算
             monthly_income = card_info['monthly_income']
@@ -185,6 +190,7 @@ class MonthlyReportGenerator:
                     'debit_suppliers': infinite_debit_suppliers,
                     'debit_3rdparty': infinite_debit_3rdparty,
                     'total_debit': infinite_total_debit,
+                    'total_credit': infinite_total_credit,
                     'outstanding': infinite_outstanding,
                     'supplier_fees': infinite_supplier_fees
                 },
@@ -260,8 +266,152 @@ class MonthlyReportGenerator:
         story.append(info_table)
         story.append(Spacer(1, 0.4*inch))
         
+        # === 交易记录明细表 (TRANSACTION DETAILS) ===
+        story.append(Paragraph("<b>TRANSACTION DETAILS / 交易记录明细</b>", styles['Heading2']))
+        story.append(Spacer(1, 0.2*inch))
+        
+        # 对交易进行分类
+        customer_debit_txns = []
+        customer_credit_txns = []
+        infinite_debit_txns = []
+        infinite_credit_txns = []
+        
+        for t in data['transactions']:
+            desc_lower = t['description'].lower()
+            is_infinite_supplier = any(supplier in desc_lower for supplier in INFINITE_SUPPLIERS)
+            
+            if t['transaction_type'] == 'debit':
+                # Debit交易（消费）
+                if t.get('transaction_subtype') == 'supplier_debit' and is_infinite_supplier:
+                    infinite_debit_txns.append(t)
+                elif t.get('transaction_subtype') == '3rd_party_payment':
+                    infinite_debit_txns.append(t)
+                else:
+                    customer_debit_txns.append(t)
+            elif t['transaction_type'] == 'credit':
+                # Credit交易（付款）
+                # 检查是否为INFINITE付款（如果payment_user标记为'infinite'或相关标识）
+                if t.get('payment_user') == 'infinite' or t.get('transaction_subtype') == 'infinite_payment':
+                    infinite_credit_txns.append(t)
+                elif t.get('payment_user') == 'owner':
+                    customer_credit_txns.append(t)
+                else:
+                    # 默认归类为客户付款
+                    customer_credit_txns.append(t)
+        
+        # 1. 客户消费明细
+        if customer_debit_txns:
+            story.append(Paragraph("<b>1. CUSTOMER DEBIT / 客户消费明细</b>", styles['Heading3']))
+            story.append(Spacer(1, 0.1*inch))
+            
+            debit_data = [['Date/日期', 'Description/描述', 'Amount/金额']]
+            for t in customer_debit_txns:
+                debit_data.append([
+                    t['transaction_date'][:10] if t['transaction_date'] else 'N/A',
+                    t['description'][:50],  # 限制长度
+                    f"RM {abs(t['amount']):,.2f}"
+                ])
+            
+            debit_table = Table(debit_data, colWidths=[1.2*inch, 3.5*inch, 1.3*inch])
+            debit_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#e74c3c')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (2, 0), (2, -1), 'RIGHT'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8f9fa')])
+            ]))
+            story.append(debit_table)
+            story.append(Spacer(1, 0.3*inch))
+        
+        # 2. 客户付款明细
+        if customer_credit_txns:
+            story.append(Paragraph("<b>2. CUSTOMER CREDIT / 客户付款明细</b>", styles['Heading3']))
+            story.append(Spacer(1, 0.1*inch))
+            
+            credit_data = [['Date/日期', 'Description/描述', 'Amount/金额']]
+            for t in customer_credit_txns:
+                credit_data.append([
+                    t['transaction_date'][:10] if t['transaction_date'] else 'N/A',
+                    t['description'][:50],
+                    f"RM {abs(t['amount']):,.2f}"
+                ])
+            
+            credit_table = Table(credit_data, colWidths=[1.2*inch, 3.5*inch, 1.3*inch])
+            credit_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#27ae60')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (2, 0), (2, -1), 'RIGHT'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8f9fa')])
+            ]))
+            story.append(credit_table)
+            story.append(Spacer(1, 0.3*inch))
+        
+        # 3. INFINITE消费明细
+        if infinite_debit_txns:
+            story.append(Paragraph("<b>3. INFINITE GZ DEBIT / INFINITE消费明细</b>", styles['Heading3']))
+            story.append(Spacer(1, 0.1*inch))
+            
+            inf_debit_data = [['Date/日期', 'Description/描述', 'Amount/金额']]
+            for t in infinite_debit_txns:
+                inf_debit_data.append([
+                    t['transaction_date'][:10] if t['transaction_date'] else 'N/A',
+                    t['description'][:50],
+                    f"RM {abs(t['amount']):,.2f}"
+                ])
+            
+            inf_debit_table = Table(inf_debit_data, colWidths=[1.2*inch, 3.5*inch, 1.3*inch])
+            inf_debit_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#8e44ad')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (2, 0), (2, -1), 'RIGHT'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8f9fa')])
+            ]))
+            story.append(inf_debit_table)
+            story.append(Spacer(1, 0.3*inch))
+        
+        # 4. INFINITE付款明细（如果有）
+        if infinite_credit_txns:
+            story.append(Paragraph("<b>4. INFINITE GZ CREDIT / INFINITE付款明细</b>", styles['Heading3']))
+            story.append(Spacer(1, 0.1*inch))
+            
+            inf_credit_data = [['Date/日期', 'Description/描述', 'Amount/金额']]
+            for t in infinite_credit_txns:
+                inf_credit_data.append([
+                    t['transaction_date'][:10] if t['transaction_date'] else 'N/A',
+                    t['description'][:50],
+                    f"RM {abs(t['amount']):,.2f}"
+                ])
+            
+            inf_credit_table = Table(inf_credit_data, colWidths=[1.2*inch, 3.5*inch, 1.3*inch])
+            inf_credit_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#e67e22')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (2, 0), (2, -1), 'RIGHT'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8f9fa')])
+            ]))
+            story.append(inf_credit_table)
+            story.append(Spacer(1, 0.3*inch))
+        
+        # 分页 - 明细和汇总分开
+        story.append(PageBreak())
+        
         # === A. 客户交易汇总 ===
-        story.append(Paragraph("<b>A. CUSTOMER TRANSACTIONS / 客户交易汇总</b>", styles['Heading2']))
+        story.append(Paragraph("<b>A. CUSTOMER TRANSACTIONS SUMMARY / 客户交易汇总</b>", styles['Heading2']))
         story.append(Spacer(1, 0.15*inch))
         
         customer_debit_data = [
@@ -332,15 +482,15 @@ class MonthlyReportGenerator:
         story.append(Paragraph("<b>B. INFINITE GZ TRANSACTIONS / INFINITE GZ交易汇总</b>", styles['Heading2']))
         story.append(Spacer(1, 0.15*inch))
         
-        infinite_data = [
+        infinite_debit_data = [
             ['<b>INFINITE DEBIT / INFINITE消费</b>', '<b>Amount / 金额</b>'],
             ['7 Suppliers Merchants / 7家指定商家', f"RM {data['infinite']['debit_suppliers']:,.2f}"],
             ['3rd Party Payments / 第三方付款', f"RM {data['infinite']['debit_3rdparty']:,.2f}"],
             ['<b>Total INFINITE Debit / INFINITE总消费</b>', f"<b>RM {data['infinite']['total_debit']:,.2f}</b>"]
         ]
         
-        infinite_table = Table(infinite_data, colWidths=[3.5*inch, 2.5*inch])
-        infinite_table.setStyle(TableStyle([
+        infinite_debit_table = Table(infinite_debit_data, colWidths=[3.5*inch, 2.5*inch])
+        infinite_debit_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#8e44ad')),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
             ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#ebdef0')),
@@ -351,8 +501,30 @@ class MonthlyReportGenerator:
             ('GRID', (0, 0), (-1, -1), 1, colors.grey)
         ]))
         
-        story.append(infinite_table)
+        story.append(infinite_debit_table)
         story.append(Spacer(1, 0.2*inch))
+        
+        # INFINITE Credit（如果有）
+        if data['infinite']['total_credit'] > 0:
+            infinite_credit_data = [
+                ['<b>INFINITE CREDIT / INFINITE付款</b>', '<b>Amount / 金额</b>'],
+                ['<b>Total INFINITE Credit / INFINITE总付款</b>', f"<b>RM {data['infinite']['total_credit']:,.2f}</b>"]
+            ]
+            
+            infinite_credit_table = Table(infinite_credit_data, colWidths=[3.5*inch, 2.5*inch])
+            infinite_credit_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#e67e22')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#fdebd0')),
+                ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+                ('GRID', (0, 0), (-1, -1), 1, colors.grey)
+            ]))
+            
+            story.append(infinite_credit_table)
+            story.append(Spacer(1, 0.2*inch))
         
         # INFINITE Supplier Fee (1%)
         if data['infinite']['supplier_fees'] > 0:
@@ -494,27 +666,55 @@ class MonthlyReportGenerator:
         return pdf_path
     
     def _get_optimization_recommendation(self, data):
-        """根据数据生成优化建议"""
+        """根据该信用卡的数据生成个性化优化建议"""
+        card = data['card_info']
         dsr = data['dsr']
         customer_outstanding = data['customer']['outstanding']
         infinite_outstanding = data['infinite']['outstanding']
+        customer_debit = data['customer']['total_debit']
+        infinite_debit = data['infinite']['total_debit']
         
         recommendations = []
         
+        # 1. 整体DSR评估
         if dsr > 70:
-            recommendations.append("⚠️ 您的DSR超过70%，建议考虑债务整合降低月供")
+            recommendations.append(f"<b>⚠️ 高风险警告：</b>您的DSR为 {dsr:.1f}%，已超过70%健康标准。强烈建议考虑债务整合以降低月供压力。")
         elif dsr > 50:
-            recommendations.append("建议通过余额转移降低信用卡利率")
+            recommendations.append(f"<b>💡 优化建议：</b>您的DSR为 {dsr:.1f}%，建议通过余额转移或再融资降低利率，减轻债务负担。")
         else:
-            recommendations.append("✅ 您的财务状况健康")
+            recommendations.append(f"<b>✅ 财务健康：</b>您的DSR为 {dsr:.1f}%，属于健康范围，继续保持良好的理财习惯。")
         
-        if customer_outstanding > 5000:
-            recommendations.append(f"客户未清余额较高(RM {customer_outstanding:,.2f})，建议优先还款")
+        # 2. 客户未清余额分析
+        if customer_outstanding > 10000:
+            recommendations.append(f"<b>📊 客户未清余额：</b>RM {customer_outstanding:,.2f}（较高）- 建议优先还款或申请低利率余额转移，可节省利息支出。")
+        elif customer_outstanding > 5000:
+            recommendations.append(f"<b>📊 客户未清余额：</b>RM {customer_outstanding:,.2f}（中等）- 建议制定还款计划，逐步降低欠款。")
+        elif customer_outstanding > 0:
+            recommendations.append(f"<b>📊 客户未清余额：</b>RM {customer_outstanding:,.2f}（较低）- 维持良好的还款习惯。")
+        else:
+            recommendations.append(f"<b>✅ 客户账户：</b>无未清余额，财务管理优秀！")
         
+        # 3. INFINITE未清余额分析
+        if infinite_outstanding > 0:
+            recommendations.append(f"<b>🏢 INFINITE未清余额：</b>RM {infinite_outstanding:,.2f} - 公司业务欠款，需要公司财务部门结算。")
+        
+        # 4. 信用卡使用模式分析
+        if customer_debit > 0 and infinite_debit > 0:
+            recommendations.append(f"<b>💳 用卡模式：</b>此卡混合使用（客户消费 RM {customer_debit:,.2f} + INFINITE业务 RM {infinite_debit:,.2f}）。建议分开使用不同卡片以便更清晰管理。")
+        elif customer_debit > 0:
+            recommendations.append(f"<b>💳 用卡模式：</b>此卡主要用于个人消费（RM {customer_debit:,.2f}），使用模式清晰。")
+        elif infinite_debit > 0:
+            recommendations.append(f"<b>💳 用卡模式：</b>此卡主要用于公司业务（RM {infinite_debit:,.2f}），使用模式清晰。")
+        
+        # 5. 分期付款优化
         if data['instalment']['capital_balance'] > 0:
-            recommendations.append(f"分期付款剩余本金 RM {data['instalment']['capital_balance']:,.2f}，可考虑再融资降低利率")
+            recommendations.append(f"<b>📅 分期付款：</b>剩余本金 RM {data['instalment']['capital_balance']:,.2f}。如果找到更低利率贷款，可考虑提前还清再融资，能节省利息成本。")
         
-        return "<br/>".join(recommendations) if recommendations else "保持良好的财务习惯"
+        # 6. 信用卡推荐
+        if customer_debit > 3000:
+            recommendations.append(f"<b>💡 信用卡优化：</b>您本月消费 RM {customer_debit:,.2f}，可考虑申请高回赠率信用卡（如现金回赠2-5%），每月可省RM {customer_debit * 0.03:,.2f}左右。")
+        
+        return "<br/><br/>".join(recommendations) if recommendations else "✅ 您的财务管理良好，继续保持！"
     
     def _save_report_record(self, card_id, year, month, pdf_path, data):
         """保存报表记录到数据库"""
