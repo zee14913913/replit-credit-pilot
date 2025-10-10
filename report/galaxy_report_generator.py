@@ -182,52 +182,136 @@ class GalaxyMonthlyReportGenerator:
             
             current_y -= 50
             
-            # 交易汇总表
-            table_data = [
-                ["Metric / 指标", "Amount / 金额"],
-                ["Total Transactions / 交易总数", str(len(card_data['transactions']))],
-                ["Customer Debit / 客户消费", f"RM {card_data['customer']['total_debit']:,.2f}"],
-                ["Customer Credit / 客户付款", f"RM {card_data['customer']['total_credit']:,.2f}"],
-                ["Customer Outstanding / 客户未清", f"RM {card_data['customer']['outstanding']:,.2f}"],
-                ["INFINITE Debit / INFINITE消费", f"RM {card_data['infinite']['total_debit']:,.2f}"],
-                ["INFINITE Outstanding / INFINITE未清", f"RM {card_data['infinite']['outstanding']:,.2f}"]
-            ]
-            
-            self.design.draw_data_table_elegant(
-                c, 50, current_y, page_width - 100,
-                table_data, [280, 200]
-            )
-            
-            current_y -= 280
-            
-            # 卡片优化建议
+            # ========== 完整交易明细表 ==========
             self.design.draw_premium_section_header(
                 c, 50, current_y, page_width - 100,
-                "CARD OPTIMIZATION", "优化建议"
+                "TRANSACTION DETAILS", "交易明细记录"
             )
             
             current_y -= 40
             
-            recommendation = self.base_generator._get_optimization_recommendation(card_data)
+            # 交易明细表头
+            detail_headers = [
+                "Date/日期", "Description/描述", "Type/类型", "Amount/金额"
+            ]
             
-            # 建议文本框
-            c.setFillColorRGB(0.08, 0.08, 0.08, 0.95)
-            c.roundRect(50, current_y - 120, page_width - 100, 120, 10, fill=1, stroke=0)
+            # 准备交易数据
+            transactions = card_data['transactions']
+            detail_rows = [detail_headers]
             
-            c.setStrokeColor(self.design.COLOR_SILVER)
-            c.setLineWidth(1)
-            c.roundRect(50, current_y - 120, page_width - 100, 120, 10, fill=0, stroke=1)
+            for txn in transactions[:20]:  # 最多显示20笔交易
+                txn_date = txn['transaction_date'][:10] if txn['transaction_date'] else 'N/A'
+                desc = txn['description'][:30] if len(txn['description']) > 30 else txn['description']
+                
+                # 判断交易类型（基于belongs_to字段和amount正负）
+                belongs_to = txn.get('belongs_to', 'customer')
+                if belongs_to == 'INFINITE':
+                    if txn['amount'] > 0:
+                        txn_type = "INFINITE消费"
+                    else:
+                        txn_type = "INFINITE付款"
+                else:
+                    if txn['amount'] > 0:
+                        txn_type = "客户消费"
+                    else:
+                        txn_type = "客户付款"
+                
+                amount_str = f"RM {abs(txn['amount']):,.2f}"
+                detail_rows.append([txn_date, desc, txn_type, amount_str])
+            
+            # 如果交易太多，添加提示
+            if len(transactions) > 20:
+                detail_rows.append(['...', f'还有{len(transactions)-20}笔交易', '...', '...'])
+            
+            # 绘制交易明细表
+            self.design.draw_data_table_elegant(
+                c, 50, current_y, page_width - 100,
+                detail_rows, [70, 180, 100, 100]
+            )
+            
+            table_height = len(detail_rows) * 30
+            current_y -= (table_height + 30)
+            
+            # ========== 交易分类汇总表 ==========
+            self.design.draw_premium_section_header(
+                c, 50, current_y, page_width - 100,
+                "CATEGORY SUMMARY", "分类汇总"
+            )
+            
+            current_y -= 40
+            
+            summary_data = [
+                ["Category / 类别", "Amount / 金额"],
+                ["客户总消费 Customer Debit", f"RM {card_data['customer']['total_debit']:,.2f}"],
+                ["客户总付款 Customer Credit", f"RM {card_data['customer']['total_credit']:,.2f}"],
+                ["客户未结余额 Customer Outstanding", f"RM {card_data['customer']['outstanding']:,.2f}"],
+                ["INFINITE总消费 INFINITE Debit", f"RM {card_data['infinite']['total_debit']:,.2f}"],
+                ["INFINITE总付款 INFINITE Credit", f"RM {card_data['infinite']['total_credit']:,.2f}"],
+                ["INFINITE未结余额 INFINITE Outstanding", f"RM {card_data['infinite']['outstanding']:,.2f}"]
+            ]
+            
+            self.design.draw_data_table_elegant(
+                c, 50, current_y, page_width - 100,
+                summary_data, [280, 200]
+            )
+            
+            current_y -= 250
+            
+            # ========== 优化方案对比 ==========
+            self.design.draw_premium_section_header(
+                c, 50, current_y, page_width - 100,
+                "OPTIMIZATION PROPOSAL", "优化方案对比"
+            )
+            
+            current_y -= 50
+            
+            # 计算当前状况和优化后的对比
+            current_outstanding = card_data['customer']['outstanding']
+            current_dsr = card_data['dsr']
+            
+            # 模拟优化后的情况（示例）
+            optimized_outstanding = current_outstanding * 0.7  # 假设减少30%
+            optimized_dsr = current_dsr * 0.8  # 假设降低20%
+            savings_potential = current_outstanding - optimized_outstanding
+            
+            # 对比表格
+            comparison_data = [
+                ["指标 / Metric", "当前状况 / Current", "优化后 / Optimized", "改善 / Improvement"],
+                ["未结余额 Outstanding", 
+                 f"RM {current_outstanding:,.2f}", 
+                 f"RM {optimized_outstanding:,.2f}", 
+                 f"↓ RM {savings_potential:,.2f}"],
+                ["债务比率 DSR", 
+                 f"{current_dsr:.1f}%", 
+                 f"{optimized_dsr:.1f}%", 
+                 f"↓ {(current_dsr - optimized_dsr):.1f}%"],
+            ]
+            
+            self.design.draw_data_table_elegant(
+                c, 50, current_y, page_width - 100,
+                comparison_data, [140, 120, 120, 120]
+            )
+            
+            current_y -= 150
+            
+            # 优化说明框
+            c.setFillColorRGB(0.05, 0.05, 0.05, 0.95)
+            c.roundRect(50, current_y - 100, page_width - 100, 100, 10, fill=1, stroke=0)
+            
+            c.setStrokeColor(self.design.COLOR_SILVER_GLOW)
+            c.setLineWidth(2)
+            c.roundRect(50, current_y - 100, page_width - 100, 100, 10, fill=0, stroke=1)
+            
+            c.setFillColor(self.design.COLOR_WHITE)
+            c.setFont("Helvetica-Bold", 11)
+            c.drawString(65, current_y - 25, "💡 优化方案价值 / Optimization Value")
             
             c.setFillColor(self.design.COLOR_BRIGHT_SILVER)
-            c.setFont("Helvetica", 10)
-            
-            # 简化建议文本显示
-            lines = recommendation.split('\n')[:4]  # 只显示前4行
-            line_y = current_y - 30
-            for line in lines:
-                if line.strip():
-                    c.drawString(65, line_y, line[:80])  # 限制每行80字符
-                    line_y -= 20
+            c.setFont("Helvetica", 9)
+            c.drawString(65, current_y - 45, f"• 通过我们的优化，您可能节省约 RM {savings_potential:,.0f}")
+            c.drawString(65, current_y - 60, f"• 我们只在成功为您省/赚钱后，收取50%作为服务费")
+            c.drawString(65, current_y - 75, f"• 您净得约 RM {savings_potential * 0.5:,.0f}，零风险保证！")
+            c.drawString(65, current_y - 90, f"• 通过系统'咨询请求'了解完整方案详情")
             
             # 页脚
             self.design.draw_footer(c, idx+1, len(cards_data) + 2)

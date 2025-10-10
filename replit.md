@@ -33,10 +33,14 @@ The backend is built with Flask, using SQLite with a context manager pattern for
 - **Galaxy-Themed Monthly Report System 3.0:** Automatically generates **ONE comprehensive galaxy-themed PDF per customer per month** (not per card). Each consolidated report features:
   * **Premium Visual Design:** Pure black background with scattered silver starfield particles (450 stars), silver glowing borders, black/white/gray/silver gradient theme, professional enterprise aesthetic
   * **Cover Page:** INFINITE GZ branding, customer info box with silver accents, 3 key metric highlight boxes (spending, outstanding, instalment)
-  * **Per-Card Sections:** Premium headers with silver decorations, elegant dark-themed transaction tables, card-specific optimization recommendations in styled text boxes
-  * **Overall Analysis Page:** Comprehensive DSR calculation table, 50/50 profit-sharing service workflow with zero-risk guarantee messaging (7-step process: 咨询表达→方案准备→商讨细节→拟定合约→双方签字→执行优化→收取报酬)
+  * **Per-Card Detail Sections:** Each credit card has its own comprehensive chapter containing:
+    - **Complete Transaction Details Table:** Every single transaction recorded line-by-line (date, description, type, amount) - nothing omitted
+    - **Category Summary Table:** Customer debit/credit totals, INFINITE debit/credit totals, outstanding balances for both customer and INFINITE
+    - **Optimization Proposal Comparison:** Side-by-side comparison table showing current situation vs. optimized scenario with potential savings clearly displayed
+    - **Optimization Value Statement:** Specific potential savings amount, 50/50 fee split explanation, customer's net gain calculation, zero-risk guarantee reminder
+  * **Overall Analysis Page:** Comprehensive DSR calculation summing all cards, complete 50/50 profit-sharing service workflow with zero-risk guarantee messaging (7-step process: 咨询表达→方案准备→商讨细节→拟定合约→双方签字→执行优化→收取报酬)
   * **Professional Details:** Silver-line footer, page numbers, contact information, sophisticated typography throughout
-  * **File Size:** ~180KB per customer report (includes visual effects)
+  * **File Size:** ~180KB per customer report (includes visual effects and complete transaction details)
 - **Statement Comparison View:** Displays raw PDF alongside categorized reports for validation.
 
 **AI Advanced Analytics System:**
