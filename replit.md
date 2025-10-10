@@ -12,6 +12,12 @@ Design requirements: Premium, sophisticated, high-end - suitable for professiona
 ### UI/UX Decisions
 The platform utilizes a Premium Galaxy-Themed UI with a Pure White + Elephant Gray + Silver Metallic minimalist color scheme. Key design elements include galaxy starfield effects, silver decorations (gradient text, glow, corner accents), layered visual effects (gradients, shimmer animations), and professional Inter typography. It supports multi-language (English/Chinese) and adheres to a design philosophy of zero colorful/childish elements, focusing on a sophisticated, enterprise-grade aesthetic.
 
+**Button Design System (Updated 2025-10-10):**
+- **Primary Action Buttons**: White glowing buttons (.btn-white-glow) with black bold text, silver borders, and white glow effects. Used for all major actions (submit, confirm, publish, advisory requests).
+- **Secondary Action Buttons**: Outline buttons (.btn-outline-*) for secondary actions (cancel, view, back).
+- **Navigation Buttons**: Professional white buttons (.btn-professional) for navigation and less critical actions.
+- **All Bootstrap default colored buttons (btn-primary, btn-success, btn-info) replaced with unified white glowing design across the entire system.**
+
 ### Technical Implementations
 The backend is built with Flask, using SQLite with a context manager pattern for the database. Jinja2 handles server-side rendering, and Bootstrap 5 with Bootstrap Icons provides a responsive UI. Plotly.js is used for client-side data visualization.
 
