@@ -1380,16 +1380,16 @@ def run_scheduler():
     # 新闻获取任务 - 每天早上8点自动获取
     schedule.every().day.at("08:00").do(auto_fetch_daily_news)
     
-    # 月度报表自动生成 - 每月5号早上10点自动生成上月报表
-    from report.monthly_report_generator import auto_generate_monthly_reports
+    # 月度报表自动生成 - 每月5号早上10点自动生成上月报表（银河主题）
+    from report.galaxy_report_generator import generate_galaxy_monthly_reports
     
     def check_and_generate_monthly_reports():
-        """检查是否为每月5号，如果是则生成报表"""
+        """检查是否为每月5号，如果是则生成银河主题报表"""
         today = datetime.now()
         if today.day == 5:
-            print(f"📊 Generating monthly reports for {today.strftime('%Y-%m')}...")
-            reports = auto_generate_monthly_reports()
-            print(f"✅ Generated {len(reports)} monthly reports")
+            print(f"🌌 Generating galaxy-themed monthly reports for {today.strftime('%Y-%m')}...")
+            reports = generate_galaxy_monthly_reports()
+            print(f"✨ Generated {len(reports)} galaxy-themed monthly reports")
     
     schedule.every().day.at("10:00").do(check_and_generate_monthly_reports)
     
@@ -1612,14 +1612,15 @@ def customer_monthly_reports(customer_id):
 
 @app.route('/customer/<int:customer_id>/generate-monthly-report/<int:year>/<int:month>')
 def generate_customer_monthly_report(customer_id, year, month):
-    """手动生成指定月份的月度报表"""
-    from report.monthly_report_generator import generate_monthly_report
+    """手动生成指定月份的银河主题月度报表"""
+    from report.galaxy_report_generator import GalaxyMonthlyReportGenerator
     
     try:
-        pdf_path = generate_monthly_report(customer_id, year, month)
+        generator = GalaxyMonthlyReportGenerator()
+        pdf_path = generator.generate_customer_monthly_report_galaxy(customer_id, year, month)
         
         if pdf_path:
-            flash(f'月度报表生成成功！({year}-{month})', 'success')
+            flash(f'🌌 银河主题月度报表生成成功！({year}-{month})', 'success')
         else:
             flash(f'该月份没有账单数据 ({year}-{month})', 'error')
     except Exception as e:
