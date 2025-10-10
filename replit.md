@@ -30,7 +30,11 @@ The backend is built with Flask, using SQLite with a context manager pattern for
 - **Customer Authorization Agreement:** Bilingual service agreement.
 - **Automated News Management System:** Curated 2025 Malaysia banking news with admin approval, deduplication, and scheduled fetching.
 - **Instalment Tracking System:** Records instalment plans, generates payment schedules, and tracks remaining balances with principal/interest separation.
-- **Monthly Report Auto-Generator:** Automatically generates per-card monthly PDF reports with transaction details, categorized spending (customer vs. INFINITE), outstanding balances, and personalized optimization advice.
+- **Consolidated Monthly Report System 3.0:** Automatically generates **ONE comprehensive PDF per customer per month** (not per card). Each consolidated report includes:
+  * **Customer Overview Section:** Monthly summary with aggregated totals across all credit cards
+  * **Per-Card Detail Sections:** Complete transaction breakdown for each card (4 categories: Customer Debit/Credit, INFINITE Debit/Credit), card-specific optimization recommendations
+  * **Overall Financial Analysis:** Comprehensive DSR calculation and financial health assessment
+  * **50/50 Profit-Sharing Service Workflow:** Zero-risk guarantee messaging, 7-step service process (咨询表达→方案准备→商讨细节→拟定合约→双方签字→执行优化→收取报酬), and benefit comparison to encourage customer interest
 - **Statement Comparison View:** Displays raw PDF alongside categorized reports for validation.
 
 **AI Advanced Analytics System:**
