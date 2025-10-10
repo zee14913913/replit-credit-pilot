@@ -93,11 +93,11 @@
                 <div class="card-footer">
                     <form method="POST" action="{{ url_for('confirm_statement', statement_id=statement.id) }}">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a href="{{ url_for('index') }}" class="btn btn-link">
-                                🔹Cancel
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
                             </a>
-                            <button type="submit" class="btn btn-success">
-                                🔹Confirm Statement
+                            <button type="submit" class="btn-white-glow">
+                                <i class="bi bi-check-circle"></i> Confirm Statement
                             </button>
                         </div>
                     </form>
