@@ -88,7 +88,7 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 100%);
     color: var(--text-primary);
-    line-height: 1.6;
+    line-height: 1.5;
     min-height: 100%;
     height: 100%;
     -webkit-font-smoothing: antialiased;
@@ -1018,7 +1018,7 @@ p {
     }
     
     .container-professional {
-        padding: var(--space-2xl) var(--space-lg);
+        padding: var(--space-xl) var(--space-lg);
     }
 }
 
