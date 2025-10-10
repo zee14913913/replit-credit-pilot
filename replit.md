@@ -30,11 +30,13 @@ The backend is built with Flask, using SQLite with a context manager pattern for
 - **Customer Authorization Agreement:** Bilingual service agreement.
 - **Automated News Management System:** Curated 2025 Malaysia banking news with admin approval, deduplication, and scheduled fetching.
 - **Instalment Tracking System:** Records instalment plans, generates payment schedules, and tracks remaining balances with principal/interest separation.
-- **Consolidated Monthly Report System 3.0:** Automatically generates **ONE comprehensive PDF per customer per month** (not per card). Each consolidated report includes:
-  * **Customer Overview Section:** Monthly summary with aggregated totals across all credit cards
-  * **Per-Card Detail Sections:** Complete transaction breakdown for each card (4 categories: Customer Debit/Credit, INFINITE Debit/Credit), card-specific optimization recommendations
-  * **Overall Financial Analysis:** Comprehensive DSR calculation and financial health assessment
-  * **50/50 Profit-Sharing Service Workflow:** Zero-risk guarantee messaging, 7-step service process (咨询表达→方案准备→商讨细节→拟定合约→双方签字→执行优化→收取报酬), and benefit comparison to encourage customer interest
+- **Galaxy-Themed Monthly Report System 3.0:** Automatically generates **ONE comprehensive galaxy-themed PDF per customer per month** (not per card). Each consolidated report features:
+  * **Premium Visual Design:** Pure black background with scattered silver starfield particles (450 stars), silver glowing borders, black/white/gray/silver gradient theme, professional enterprise aesthetic
+  * **Cover Page:** INFINITE GZ branding, customer info box with silver accents, 3 key metric highlight boxes (spending, outstanding, instalment)
+  * **Per-Card Sections:** Premium headers with silver decorations, elegant dark-themed transaction tables, card-specific optimization recommendations in styled text boxes
+  * **Overall Analysis Page:** Comprehensive DSR calculation table, 50/50 profit-sharing service workflow with zero-risk guarantee messaging (7-step process: 咨询表达→方案准备→商讨细节→拟定合约→双方签字→执行优化→收取报酬)
+  * **Professional Details:** Silver-line footer, page numbers, contact information, sophisticated typography throughout
+  * **File Size:** ~180KB per customer report (includes visual effects)
 - **Statement Comparison View:** Displays raw PDF alongside categorized reports for validation.
 
 **AI Advanced Analytics System:**
