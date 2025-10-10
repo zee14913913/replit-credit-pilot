@@ -1,13 +1,14 @@
 """
-月度报表自动生成系统 (Per-Card Version)
-Monthly Report Auto-Generator (Per Credit Card)
+月度报表自动生成系统 (Consolidated Customer Version)
+Monthly Report Auto-Generator (Consolidated Per Customer)
 
 核心改进：
-1. 每张信用卡独立生成一份报表（不混合）
+1. 一个月一份综合报表（包含所有信用卡）
 2. 客户交易 vs INFINITE交易分离
 3. 客户未清余额 vs INFINITE未清余额
 4. Instalment capital余额追踪
-5. 优化建议和50/50服务流程集成
+5. 每张卡的完整交易明细 + 优化建议
+6. 整体财务健康分析和50/50服务流程集成
 """
 
 from db.database import get_db
@@ -762,9 +763,311 @@ class MonthlyReportGenerator:
             
             conn.commit()
     
+    def generate_customer_monthly_report_pdf(self, customer_id, year, month):
+        """
+        生成客户的综合月度报表PDF（包含所有信用卡）
+        一个月一份PDF，包含该客户所有信用卡的完整交易明细和分析
+        """
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # 1. 获取客户信息
+            cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+            customer = cursor.fetchone()
+            if not customer:
+                return None
+            customer = dict(customer)
+            
+            # 2. 获取该客户该月所有有confirmed statements的信用卡
+            cursor.execute('''
+                SELECT DISTINCT cc.*
+                FROM credit_cards cc
+                JOIN statements s ON cc.id = s.card_id
+                WHERE cc.customer_id = ?
+                  AND strftime('%Y', s.statement_date) = ?
+                  AND strftime('%m', s.statement_date) = ?
+                  AND s.is_confirmed = 1
+                ORDER BY cc.id
+            ''', (customer_id, str(year), str(month).zfill(2)))
+            
+            cards = [dict(row) for row in cursor.fetchall()]
+            
+            if not cards:
+                return None
+            
+            # 3. 为每张卡获取数据
+            cards_data = []
+            for card in cards:
+                card_data = self.get_card_month_data(card['id'], year, month)
+                if card_data:
+                    cards_data.append(card_data)
+            
+            if not cards_data:
+                return None
+        
+        # 4. 创建综合PDF文件
+        filename = f"Monthly_Report_{customer['name']}_{year}_{str(month).zfill(2)}.pdf"
+        pdf_path = os.path.join(self.output_folder, filename)
+        
+        doc = SimpleDocTemplate(pdf_path, pagesize=A4,
+                               leftMargin=0.75*inch, rightMargin=0.75*inch,
+                               topMargin=0.75*inch, bottomMargin=0.75*inch)
+        story = []
+        styles = getSampleStyleSheet()
+        
+        # ===  标题页 ===
+        title_style = ParagraphStyle(
+            'CustomTitle',
+            parent=styles['Heading1'],
+            fontSize=24,
+            textColor=colors.HexColor('#1a1a1a'),
+            spaceAfter=20,
+            alignment=TA_CENTER,
+            fontName='Helvetica-Bold'
+        )
+        
+        story.append(Paragraph(f"CONSOLIDATED MONTHLY REPORT", title_style))
+        story.append(Paragraph(f"{year}年{month}月综合月结报告", title_style))
+        story.append(Spacer(1, 0.3*inch))
+        
+        # 客户信息
+        customer_info_data = [
+            ['Customer / 客户', customer['name']],
+            ['Report Period / 报表期间', f"{year}-{str(month).zfill(2)}"],
+            ['Total Cards / 信用卡数量', f"{len(cards_data)} cards"],
+            ['Monthly Income / 月收入', f"RM {customer['monthly_income']:,.2f}"]
+        ]
+        
+        customer_info_table = Table(customer_info_data, colWidths=[2.5*inch, 4*inch])
+        customer_info_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#34495e')),
+            ('TEXTCOLOR', (0, 0), (0, -1), colors.whitesmoke),
+            ('TEXTCOLOR', (1, 0), (1, -1), colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 11),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 12),
+            ('GRID', (0, 0), (-1, -1), 1, colors.grey)
+        ]))
+        
+        story.append(customer_info_table)
+        story.append(Spacer(1, 0.3*inch))
+        
+        # 月度总览汇总
+        total_customer_debit = sum(d['customer']['total_debit'] for d in cards_data)
+        total_customer_credit = sum(d['customer']['total_credit'] for d in cards_data)
+        total_customer_outstanding = sum(d['customer']['outstanding'] for d in cards_data)
+        total_infinite_debit = sum(d['infinite']['total_debit'] for d in cards_data)
+        total_infinite_credit = sum(d['infinite']['total_credit'] for d in cards_data)
+        total_infinite_outstanding = sum(d['infinite']['outstanding'] for d in cards_data)
+        total_instalment = sum(d['instalment']['total_payment'] for d in cards_data)
+        
+        overview_data = [
+            ['<b>MONTHLY OVERVIEW / 月度总览</b>', '<b>Amount / 金额</b>'],
+            ['Total Customer Debit / 客户总消费', f"RM {total_customer_debit:,.2f}"],
+            ['Total Customer Credit / 客户总付款', f"RM {total_customer_credit:,.2f}"],
+            ['Total Customer Outstanding / 客户总未清', f"RM {total_customer_outstanding:,.2f}"],
+            ['Total INFINITE Debit / INFINITE总消费', f"RM {total_infinite_debit:,.2f}"],
+            ['Total INFINITE Credit / INFINITE总付款', f"RM {total_infinite_credit:,.2f}"],
+            ['Total INFINITE Outstanding / INFINITE总未清', f"RM {total_infinite_outstanding:,.2f}"],
+            ['Total Monthly Instalment / 总月供', f"RM {total_instalment:,.2f}"]
+        ]
+        
+        overview_table = Table(overview_data, colWidths=[3.5*inch, 2.5*inch])
+        overview_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2c3e50')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+            ('GRID', (0, 0), (-1, -1), 1, colors.grey),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#ecf0f1')])
+        ]))
+        
+        story.append(overview_table)
+        story.append(PageBreak())
+        
+        # === 为每张信用卡生成独立章节 ===
+        for idx, card_data in enumerate(cards_data, 1):
+            card = card_data['card_info']
+            
+            # 卡片章节标题
+            card_title = f"CARD {idx}: {card['bank_name']} ****{card['card_number_last4']}"
+            story.append(Paragraph(f"<b>{card_title}</b>", styles['Heading1']))
+            story.append(Spacer(1, 0.2*inch))
+            
+            # 调用现有的卡片详情生成逻辑
+            self._add_card_details_to_story(story, card_data, styles)
+            
+            # 每张卡后分页（除了最后一张）
+            if idx < len(cards_data):
+                story.append(PageBreak())
+        
+        # === 整体财务分析和50/50服务 ===
+        self._add_overall_analysis_to_story(story, cards_data, customer, styles)
+        
+        # 生成PDF
+        doc.build(story)
+        
+        # 保存记录到数据库
+        self._save_consolidated_report_record(customer_id, year, month, pdf_path, cards_data)
+        
+        return pdf_path
+    
+    def _add_card_details_to_story(self, story, data, styles):
+        """添加单张卡的详细内容到story中"""
+        # 交易明细（简化版 - 仅列出交易数量）
+        story.append(Paragraph(f"<b>Transaction Summary / 交易汇总</b>", styles['Heading3']))
+        story.append(Spacer(1, 0.1*inch))
+        
+        txn_summary = [
+            ['Total Transactions / 交易总数', str(len(data['transactions']))],
+            ['Customer Debit / 客户消费', f"RM {data['customer']['total_debit']:,.2f}"],
+            ['Customer Credit / 客户付款', f"RM {data['customer']['total_credit']:,.2f}"],
+            ['Customer Outstanding / 客户未清', f"RM {data['customer']['outstanding']:,.2f}"],
+            ['INFINITE Debit / INFINITE消费', f"RM {data['infinite']['total_debit']:,.2f}"],
+            ['INFINITE Outstanding / INFINITE未清', f"RM {data['infinite']['outstanding']:,.2f}"]
+        ]
+        
+        txn_table = Table(txn_summary, colWidths=[3*inch, 2.5*inch])
+        txn_table.setStyle(TableStyle([
+            ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('GRID', (0, 0), (-1, -1), 1, colors.grey),
+            ('ROWBACKGROUNDS', (0, 0), (-1, -1), [colors.white, colors.HexColor('#f8f9fa')])
+        ]))
+        story.append(txn_table)
+        story.append(Spacer(1, 0.3*inch))
+        
+        # 卡片优化建议
+        recommendation = self._get_optimization_recommendation(data)
+        story.append(Paragraph(f"<b>Card Optimization / 优化建议</b>", styles['Heading3']))
+        story.append(Paragraph(recommendation, styles['Normal']))
+        story.append(Spacer(1, 0.3*inch))
+    
+    def _add_overall_analysis_to_story(self, story, cards_data, customer, styles):
+        """添加整体分析和50/50服务说明"""
+        story.append(PageBreak())
+        story.append(Paragraph("<b>OVERALL FINANCIAL ANALYSIS / 整体财务分析</b>", styles['Heading1']))
+        story.append(Spacer(1, 0.3*inch))
+        
+        # 计算整体DSR
+        total_instalment = sum(d['instalment']['total_payment'] for d in cards_data)
+        overall_dsr = (total_instalment / customer['monthly_income'] * 100) if customer['monthly_income'] > 0 else 0
+        
+        dsr_data = [
+            ['Monthly Income / 月收入', f"RM {customer['monthly_income']:,.2f}"],
+            ['Total Monthly Instalment / 总月供', f"RM {total_instalment:,.2f}"],
+            ['<b>Overall DSR / 整体DSR</b>', f"<b>{overall_dsr:.1f}%</b>"]
+        ]
+        
+        dsr_table = Table(dsr_data, colWidths=[3.5*inch, 2.5*inch])
+        dsr_table.setStyle(TableStyle([
+            ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+            ('FONTSIZE', (0, 0), (-1, -1), 11),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+            ('GRID', (0, 0), (-1, -1), 1, colors.grey),
+            ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#ecf0f1'))
+        ]))
+        story.append(dsr_table)
+        story.append(Spacer(1, 0.3*inch))
+        
+        # 50/50服务说明
+        service_info = """
+        <b>💡 INFINITE GZ 50/50 PROFIT-SHARING ADVISORY SERVICE / 咨询优化服务</b><br/>
+        <br/>
+        <b>🎯 零风险保证 / Zero-Risk Guarantee:</b><br/>
+        如果我们的优化方案没有为您创造任何收益，我们<b>分毫不取</b>。<br/>
+        If our optimization doesn't create any savings or earnings for you, we charge <b>absolutely nothing</b>.<br/>
+        <br/>
+        <b>💰 50/50 利润分成模式 / 50/50 Profit Split:</b><br/>
+        • 我们倾尽所有资源和服务，为您争取最高利益<br/>
+        • 从节省或赚取的利润中，您保留50%，我们收取50%作为服务费<br/>
+        • 例如：我们帮您省/赚RM 10,000 → 您净得RM 5,000，我们收取RM 5,000<br/>
+        <br/>
+        <b>📋 服务流程 / Service Process:</b><br/>
+        1️⃣ <b>客户表达意愿</b>：通过系统告知您想了解优化方案<br/>
+        2️⃣ <b>方案准备</b>：我们的顾问为您准备详细的优化方案和收益分析<br/>
+        3️⃣ <b>商讨细节</b>：与您讨论方案具体内容、预期收益和执行计划<br/>
+        4️⃣ <b>拟定合约</b>：双方达成共识后，生成中英双语授权合约<br/>
+        5️⃣ <b>双方签字</b>：客户与INFINITE GZ双方签署合约<br/>
+        6️⃣ <b>执行优化</b>：我们全力执行优化方案<br/>
+        7️⃣ <b>收取报酬</b>：<b>仅在成功为您省/赚钱后</b>，我们才收取50%服务费<br/>
+        <br/>
+        <b>✨ 为什么选择我们？</b><br/>
+        • <b>资源共享、利益结合</b>：我们的成功建立在您的成功之上<br/>
+        • <b>专业分析</b>：利用AI和金融专家团队进行深度分析<br/>
+        • <b>透明对比</b>：清晰展示优化前后的收益对比，让您做出明智选择<br/>
+        • <b>全程跟进</b>：从咨询到执行，一站式服务<br/>
+        <br/>
+        <i>📞 联系我们: infinitegz.reminder@gmail.com</i><br/>
+        <i>🔗 通过系统"咨询请求"功能联系我们了解更多</i>
+        """
+        
+        service_style = ParagraphStyle(
+            'ServiceInfo',
+            parent=styles['Normal'],
+            fontSize=9,
+            textColor=colors.HexColor('#2c3e50'),
+            spaceAfter=10,
+            leftIndent=10,
+            rightIndent=10
+        )
+        
+        story.append(Paragraph(service_info, service_style))
+    
+    def _save_consolidated_report_record(self, customer_id, year, month, pdf_path, cards_data):
+        """保存综合报表记录到数据库"""
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # 删除该客户该月的所有旧记录
+            cursor.execute('''
+                DELETE FROM monthly_reports
+                WHERE customer_id = ? AND report_year = ? AND report_month = ?
+            ''', (customer_id, year, month))
+            
+            # 为每张卡插入记录（保持数据库兼容性）
+            for data in cards_data:
+                card_id = data['card_info']['id']
+                
+                total_debit = data['customer']['total_debit'] + data['infinite']['total_debit']
+                total_credit = data['customer']['total_credit']
+                net_amount = total_debit - total_credit
+                
+                cursor.execute('''
+                    INSERT INTO monthly_reports (
+                        customer_id, card_id, report_year, report_month,
+                        total_debit, total_credit, net_amount,
+                        customer_total_debit, customer_total_credit, customer_outstanding,
+                        infinite_total_debit, infinite_outstanding,
+                        total_instalment, instalment_capital_balance,
+                        dsr, supplier_fees, infinite_supplier_fees,
+                        pdf_path, generated_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                ''', (
+                    customer_id, card_id, year, month,
+                    total_debit, total_credit, net_amount,
+                    data['customer']['total_debit'],
+                    data['customer']['total_credit'],
+                    data['customer']['outstanding'],
+                    data['infinite']['total_debit'],
+                    data['infinite']['outstanding'],
+                    data['instalment']['total_payment'],
+                    data['instalment']['capital_balance'],
+                    data['dsr'],
+                    data['infinite']['supplier_fees'],
+                    data['infinite']['supplier_fees'],
+                    pdf_path  # 所有卡共享同一个PDF路径
+                ))
+            
+            conn.commit()
+    
     def auto_generate_last_month_reports(self):
         """
-        自动生成上个月的所有信用卡报表
+        自动生成上个月的所有客户综合报表（每个客户一份PDF）
         （每月5号运行）
         """
         # 计算上个月
@@ -776,40 +1079,41 @@ class MonthlyReportGenerator:
         with get_db() as conn:
             cursor = conn.cursor()
             
-            # 获取所有有confirmed statements的信用卡
+            # 获取所有有confirmed statements的客户
             cursor.execute('''
-                SELECT DISTINCT cc.id, cc.bank_name, cc.card_number_last4, c.name as customer_name
-                FROM credit_cards cc
-                JOIN customers c ON cc.customer_id = c.id
+                SELECT DISTINCT c.id, c.name
+                FROM customers c
+                JOIN credit_cards cc ON c.id = cc.customer_id
                 JOIN statements s ON cc.id = s.card_id
                 WHERE strftime('%Y', s.statement_date) = ?
                   AND strftime('%m', s.statement_date) = ?
                   AND s.is_confirmed = 1
+                ORDER BY c.id
             ''', (str(year), str(month).zfill(2)))
             
-            cards = cursor.fetchall()
+            customers = cursor.fetchall()
         
         generated_reports = []
         
-        for card in cards:
-            card_id = card['id']
+        for customer in customers:
+            customer_id = customer['id']
+            customer_name = customer['name']
             
             try:
-                pdf_path = self.generate_card_monthly_report_pdf(card_id, year, month)
+                pdf_path = self.generate_customer_monthly_report_pdf(customer_id, year, month)
                 
                 if pdf_path:
                     generated_reports.append({
-                        'card_id': card_id,
-                        'customer_name': card['customer_name'],
-                        'card': f"{card['bank_name']} ****{card['card_number_last4']}",
+                        'customer_id': customer_id,
+                        'customer_name': customer_name,
                         'year': year,
                         'month': month,
                         'pdf_path': pdf_path
                     })
-                    print(f"✅ Generated report for {card['customer_name']} - {card['bank_name']} ****{card['card_number_last4']} ({year}-{month})")
+                    print(f"✅ Generated consolidated report for {customer_name} ({year}-{month})")
             
             except Exception as e:
-                print(f"❌ Failed to generate report for card {card_id}: {e}")
+                print(f"❌ Failed to generate report for customer {customer_id}: {e}")
         
         return generated_reports
 
