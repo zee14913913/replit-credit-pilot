@@ -347,15 +347,15 @@ p {
 .nav-link:hover {
     color: #000000;
     background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%);
-    text-shadow: 0 0 5px rgba(212,175,55,0.8), 0 0 8px rgba(255,215,0,0.6);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3), 0 0 12px rgba(212,175,55,0.4);
+    text-shadow: 0 0 3px rgba(255,255,255,0.6);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3), 0 0 12px rgba(255,255,255,0.3);
 }
 
 .nav-link.active {
     color: #000000;
     background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%);
-    text-shadow: 0 0 5px rgba(212,175,55,0.8), 0 0 8px rgba(255,215,0,0.6);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3), 0 0 12px rgba(212,175,55,0.4);
+    text-shadow: 0 0 3px rgba(255,255,255,0.6);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3), 0 0 12px rgba(255,255,255,0.3);
 }
 
 /* Language Switcher */
@@ -379,18 +379,17 @@ p {
     font-weight: 600;
     font-size: 0.85rem;
     transition: all 0.2s ease;
-    text-shadow: 0 0 3px rgba(212,175,55,0.4);
 }
 
 .lang-btn:hover {
     background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%);
-    text-shadow: 0 0 5px rgba(212,175,55,0.7);
+    text-shadow: 0 0 3px rgba(255,255,255,0.4);
 }
 
 .lang-btn.active {
     background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%);
     color: #000000;
-    text-shadow: 0 0 5px rgba(212,175,55,0.8), 0 0 8px rgba(255,215,0,0.6);
+    text-shadow: 0 0 3px rgba(255,255,255,0.5);
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
@@ -413,8 +412,8 @@ p {
 .theme-toggle-btn:hover {
     color: #000000;
     background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%);
-    border-color: rgba(212,175,55,0.5);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3), 0 0 12px rgba(212,175,55,0.4);
+    border-color: rgba(255,255,255,0.5);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3), 0 0 12px rgba(255,255,255,0.3);
 }
 
 .theme-toggle-btn i {
@@ -538,6 +537,26 @@ p {
 
 .equal-height-cards > [class*="col-"] > .professional-card > .d-grid {
     margin-top: auto;
+}
+
+/* Card Title Styles - Two Variants */
+.card-title-gold {
+    color: #F5DEB3 !important;
+    font-weight: 700;
+    text-shadow: 0 0 8px rgba(245,222,179,0.4), 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.card-title-glow {
+    color: rgba(255,255,255,0.98) !important;
+    font-weight: 700;
+    text-shadow: 0 0 12px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3), 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Professional Card Content - Ensure silver-white text */
+.professional-card p,
+.professional-card span,
+.professional-card div:not(.card-title-gold):not(.card-title-glow) {
+    color: #C0C0C0;
 }
 
 /* ========================================
