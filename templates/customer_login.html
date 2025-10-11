@@ -3,55 +3,95 @@
 {% block title %}{{ t('customer_login') }} - {{ t('company_name') }}{% endblock %}
 
 {% block content %}
-<div class="container-professional" style="max-width: 900px;">
-    <div class="row justify-content-center">
-        <div class="col-12">
-            <div class="professional-card" style="margin-top: 3rem; padding: 3.5rem 4rem;">
-                <!-- Header Section -->
-                <div class="text-center mb-5">
-                    <div style="display: inline-block; background: linear-gradient(135deg, rgba(192,192,192,0.15), rgba(255,255,255,0.08)); padding: 1rem 2rem; border-radius: 50px; margin-bottom: 1.5rem; border: 1px solid rgba(192,192,192,0.2);">
-                        <i class="bi bi-shield-lock-fill" style="font-size: 2.5rem; color: var(--accent-silver);"></i>
-                    </div>
-                    <h2 class="section-title" style="font-size: 3rem; margin-bottom: 1rem;">{{ t('customer_portal') }}</h2>
-                    <p style="color: var(--text-secondary); font-size: 1.15rem;">{{ t('login_subtitle') }}</p>
-                </div>
-
-                <div class="divider-professional" style="margin: 2rem 0;"></div>
-
-                {% if error %}
-                <div class="alert-professional alert-danger-pro mb-4">{{ error }}</div>
-                {% endif %}
-
-                <form method="POST" action="/customer/login">
-                    <div class="mb-4">
-                        <label for="email" class="form-label" style="color: var(--text-primary); font-weight: 600; font-size: 1.1rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <i class="bi bi-envelope"></i> {{ t('email') }}
-                        </label>
-                        <input type="email" class="form-control-professional" id="email" name="email" required style="padding: 1.25rem; font-size: 1.1rem;" placeholder="your@email.com">
-                    </div>
-
-                    <div class="mb-5">
-                        <label for="password" class="form-label" style="color: var(--text-primary); font-weight: 600; font-size: 1.1rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <i class="bi bi-key"></i> {{ t('password') }}
-                        </label>
-                        <input type="password" class="form-control-professional" id="password" name="password" required style="padding: 1.25rem; font-size: 1.1rem;" placeholder="Enter your password">
-                    </div>
-
-                    <div class="divider-professional" style="margin: 2rem 0;"></div>
-
-                    <button type="submit" class="btn-white-glow w-100 mb-4" style="padding: 1.25rem; font-size: 1.2rem; font-weight: 700;">
-                        <i class="bi bi-box-arrow-in-right"></i> {{ t('login') }}
-                    </button>
-                    
-                    <div class="text-center" style="padding: 1rem; background: rgba(192,192,192,0.05); border-radius: 8px; border: 1px solid rgba(192,192,192,0.1);">
-                        <p style="color: var(--text-tertiary); margin-bottom: 0.5rem; font-size: 0.95rem;">Don't have an account?</p>
-                        <a href="/customer/register" class="btn-professional-outline" style="padding: 0.625rem 1.5rem; display: inline-block;">
-                            <i class="bi bi-person-plus"></i> {{ t('no_account') }}
-                        </a>
-                    </div>
-                </form>
+<div class="container-professional" style="max-width: 650px; padding-top: 4rem; padding-bottom: 4rem;">
+    <!-- Elegant Header with Galaxy Effect -->
+    <div class="text-center" style="margin-bottom: 3.5rem;">
+        <div style="position: relative; display: inline-block; margin-bottom: 2rem;">
+            <div style="width: 100px; height: 100px; margin: 0 auto; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), rgba(192,192,192,0.1), transparent); border: 2px solid rgba(192,192,192,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: 0 0 35px rgba(192,192,192,0.2), inset 0 0 18px rgba(255,255,255,0.05);">
+                <i class="bi bi-shield-lock-fill" style="font-size: 3rem; color: var(--accent-silver); filter: drop-shadow(0 0 8px rgba(192,192,192,0.4));"></i>
             </div>
         </div>
+        <h1 style="font-size: 2.8rem; font-weight: 300; letter-spacing: 2px; background: linear-gradient(135deg, #FFFFFF, #C0C0C0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">
+            {{ t('customer_portal') }}
+        </h1>
+        <p style="font-size: 1.1rem; color: var(--text-secondary); max-width: 450px; margin: 0 auto; line-height: 1.6;">
+            {{ t('login_subtitle') }}
+        </p>
     </div>
+
+    {% if error %}
+    <div class="alert-professional alert-danger-pro mb-4" style="animation: slideDown 0.3s ease;">{{ error }}</div>
+    {% endif %}
+
+    <!-- Modern Login Form -->
+    <form method="POST" action="/customer/login" style="margin-top: 2.5rem;">
+        <!-- Login Card -->
+        <div class="professional-card" style="padding: 2.5rem; margin-bottom: 1.5rem; border-left: 3px solid var(--accent-silver); background: linear-gradient(135deg, rgba(18,18,18,0.95), rgba(30,30,30,0.9));">
+            <div style="margin-bottom: 2rem;">
+                <label for="email" style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
+                    <i class="bi bi-envelope-at" style="color: var(--accent-silver); margin-right: 0.5rem;"></i>{{ t('email') }}
+                </label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    required 
+                    class="form-control-professional" 
+                    placeholder="{{ t('email_placeholder') }}"
+                    style="font-size: 1.15rem; padding: 1.25rem 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.2); transition: all 0.3s ease;"
+                    onfocus="this.style.borderColor='rgba(192,192,192,0.5)'; this.style.boxShadow='0 0 15px rgba(192,192,192,0.15)'"
+                    onblur="this.style.borderColor='rgba(192,192,192,0.2)'; this.style.boxShadow='none'">
+            </div>
+
+            <div>
+                <label for="password" style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
+                    <i class="bi bi-key" style="color: var(--accent-silver); margin-right: 0.5rem;"></i>{{ t('password') }}
+                </label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    required 
+                    class="form-control-professional" 
+                    placeholder="{{ t('password_placeholder') }}"
+                    style="font-size: 1.15rem; padding: 1.25rem 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.2); transition: all 0.3s ease;"
+                    onfocus="this.style.borderColor='rgba(192,192,192,0.5)'; this.style.boxShadow='0 0 15px rgba(192,192,192,0.15)'"
+                    onblur="this.style.borderColor='rgba(192,192,192,0.2)'; this.style.boxShadow='none'">
+            </div>
+        </div>
+
+        <!-- Submit Button with Galaxy Effect -->
+        <div style="margin-top: 2rem;">
+            <button 
+                type="submit" 
+                class="btn-white-glow w-100" 
+                style="padding: 1.5rem; font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; position: relative; overflow: hidden; transition: all 0.3s ease;">
+                <i class="bi bi-box-arrow-in-right" style="margin-right: 0.75rem;"></i>{{ t('login') }}
+            </button>
+        </div>
+
+        <!-- Registration Link -->
+        <div class="text-center" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(192,192,192,0.15);">
+            <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 1rem;">{{ t('no_account_question') }}</p>
+            <a href="/customer/register" style="color: var(--accent-silver); text-decoration: none; font-weight: 600; font-size: 1.05rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;" 
+               onmouseover="this.style.color='#FFFFFF'; this.style.textShadow='0 0 10px rgba(192,192,192,0.5)'" 
+               onmouseout="this.style.color='var(--accent-silver)'; this.style.textShadow='none'">
+                <i class="bi bi-person-plus-fill"></i> {{ t('no_account') }}
+            </a>
+        </div>
+    </form>
 </div>
+
+<style>
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
 {% endblock %}
