@@ -14,7 +14,7 @@ The platform utilizes a Premium Enterprise UI with **Vibrant Orange + Black + Si
 
 **Color Scheme (Updated 2025-10-11 - BRIGHT ORANGE THEME):**
 - **Header/Footer**: Bright orange gradient (#FF7043 → #FF5722) with luminous white text (rgba(255,255,255,0.98)) + subtle glow (text-shadow: 0 0 5px rgba(255,255,255,0.15))
-- **Navigation Buttons**: Silver-white gradient background (#F5F5F5 → #E0E0E0) with black bold text (#1A1A1A, font-weight 900)
+- **Navigation Buttons**: Silver-white gradient background (#F5F5F5 → #E0E0E0) with black-gold bold text (#3D3020, font-weight 900, hover: #2C2416)
 - **Main Content**: Bright orange gradient backgrounds (#FF7043 → #FF5722) with white borders and bright white bold typography
   - Cards: Bright orange gradient background + 3px white border (rgba(255,255,255,0.9))
   - All text: Bright white (rgba(255,255,255,0.95)) with bold weights (700-900) - FORCED with !important
