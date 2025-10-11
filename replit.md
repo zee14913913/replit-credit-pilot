@@ -24,6 +24,13 @@ The platform utilizes a Premium Enterprise UI with **Vibrant Orange + Black + Si
   - Stat values: font-weight 900, labels: font-weight 900
   - Decorative corners: White (rgba(255,255,255,0.5))
 - **Theme Toggle**: Sun/moon icon button in navigation, localStorage persistence (main content only)
+- **Card Title System (Updated 2025-10-11)**: Two variant classes for different visual emphasis
+  - .card-title-gold: Light golden-white tone (#F5DEB3) with soft glow effect for subtle elegance
+  - .card-title-glow: Luminous white (rgba(255,255,255,0.98)) with strong multi-layer glow for premium emphasis
+- **Navigation Hover Effects (Updated 2025-10-11)**: Pure white glow on all navigation elements (no yellow/gold tints)
+  - nav-link:hover: White text-shadow and white box-shadow only
+  - Language buttons: White glow on hover and active states
+  - Theme toggle: White border and glow effects on hover
 
 **Typography Enhancement:**
 - Company name (header): rgba(255,255,255,0.98) font-weight 900 + text-shadow: 0 0 5px rgba(255,255,255,0.15)
