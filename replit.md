@@ -28,17 +28,27 @@ The platform utilizes a Premium Galaxy-Themed UI with a Pure White + Elephant Gr
 - **Responsive**: Maintained compact spacing across all breakpoints
 
 **Customer Registration/Login Form Design (Updated 2025-10-11):**
-- **Registration Form**: Full-width container (max-width: 1200px) with responsive two-column grid layout (row g-4, col-md-6)
-  - Personal Information section: Full Name, Email, Phone, Monthly Income
-  - Security Information section: Password, Confirm Password
-  - Large input fields: padding 1rem 1.25rem, font-size 1.05rem
-  - Icon decorations on all labels, silver badge icon (person-plus) header
-  - Visual section dividers with icon titles
-- **Login Form**: Optimized container (max-width: 900px) with enlarged elements
-  - Input padding: 1.25rem, font-size 1.1rem
-  - Silver badge icon (shield-lock) header
-  - Icon decorations, dividers, and background-boxed registration prompt
-- **Visual Enhancements**: Both forms feature white glowing submit buttons, placeholder text, and consistent professional styling
+- **Modern Galaxy-Themed Forms**: Complete redesign with sophisticated visual hierarchy and progressive experience
+- **Registration Form** (800px container):
+  - **Galaxy Header**: 120px circular icon with radial gradient, stars icon, "Welcome to INFINITE GZ" gradient title (3.2rem), elegant subtitle
+  - **Progressive 3-Step Layout**: Separate cards for each section with numbered badges (1-2-3)
+    - Step 1: Your Identity (Full Name, Email, Phone)
+    - Step 2: Financial Profile (Monthly Income with RM prefix)
+    - Step 3: Account Security (Password, Confirm Password)
+  - **Card Styling**: Gradient backgrounds rgba(18,18,18,0.95)→rgba(30,30,30,0.9), 3px silver left border, 2.5rem padding
+  - **Enhanced Inputs**: 1.15rem font, 1.25rem padding, dark semi-transparent bg, silver glow on focus
+  - **Submit Button**: 1.5rem padding, white glow effect, rocket icon
+- **Login Form** (650px container):
+  - **Galaxy Header**: 100px circular shield icon with gradient glow, "Customer Portal" gradient title (2.8rem)
+  - **Single Card Layout**: Email and Password fields in unified card
+  - **Consistent Styling**: Matching galaxy theme, silver icons, focus glow effects
+  - **Submit Button**: White glow login button with arrow icon
+- **Shared Features**: 
+  - slideDown animations for alerts
+  - Silver icon decorations on all labels
+  - Hover glow effects on links
+  - Full i18n support with all text translatable (EN/ZH)
+  - Responsive design maintaining visual impact
 
 ### Technical Implementations
 The backend is built with Flask, using SQLite with a context manager pattern for the database. Jinja2 handles server-side rendering, and Bootstrap 5 with Bootstrap Icons provides a responsive UI. Plotly.js is used for client-side data visualization.
