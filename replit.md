@@ -27,6 +27,19 @@ The platform utilizes a Premium Galaxy-Themed UI with a Pure White + Elephant Gr
 - **Visual Density**: Compact stat cards, tighter dividers, reduced alert/form spacing for professional enterprise feel
 - **Responsive**: Maintained compact spacing across all breakpoints
 
+**Customer Registration/Login Form Design (Updated 2025-10-11):**
+- **Registration Form**: Full-width container (max-width: 1200px) with responsive two-column grid layout (row g-4, col-md-6)
+  - Personal Information section: Full Name, Email, Phone, Monthly Income
+  - Security Information section: Password, Confirm Password
+  - Large input fields: padding 1rem 1.25rem, font-size 1.05rem
+  - Icon decorations on all labels, silver badge icon (person-plus) header
+  - Visual section dividers with icon titles
+- **Login Form**: Optimized container (max-width: 900px) with enlarged elements
+  - Input padding: 1.25rem, font-size 1.1rem
+  - Silver badge icon (shield-lock) header
+  - Icon decorations, dividers, and background-boxed registration prompt
+- **Visual Enhancements**: Both forms feature white glowing submit buttons, placeholder text, and consistent professional styling
+
 ### Technical Implementations
 The backend is built with Flask, using SQLite with a context manager pattern for the database. Jinja2 handles server-side rendering, and Bootstrap 5 with Bootstrap Icons provides a responsive UI. Plotly.js is used for client-side data visualization.
 
