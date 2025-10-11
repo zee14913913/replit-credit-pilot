@@ -6,12 +6,12 @@
 <div class="container-professional" style="max-width: 1400px; padding-top: 3rem; padding-bottom: 4rem;">
     <!-- Page Header -->
     <div class="text-center" style="margin-bottom: 3rem;">
-        <i class="bi bi-shield-lock-fill" style="font-size: 4rem; color: rgba(255,255,255,0.95); filter: drop-shadow(0 0 20px rgba(255,255,255,0.3)); display: inline-block; margin-bottom: 1rem;"></i>
-        <div style="width: 80px; height: 2px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent); margin: 0 auto 1.5rem; box-shadow: 0 0 15px rgba(255,255,255,0.2);"></div>
-        <h1 style="font-size: 3rem; font-weight: 700; letter-spacing: 2px; color: rgba(255,255,255,0.98); text-shadow: 0 0 10px rgba(255,255,255,0.3), 0 4px 8px rgba(0,0,0,0.4); margin-bottom: 0.5rem;">
+        <i class="bi bi-shield-lock-fill" style="font-size: 4rem; color: #C0C0C0; filter: drop-shadow(0 0 20px rgba(192,192,192,0.4)); display: inline-block; margin-bottom: 1rem;"></i>
+        <div style="width: 80px; height: 2px; background: linear-gradient(90deg, transparent, #C0C0C0, transparent); margin: 0 auto 1.5rem; box-shadow: 0 0 15px rgba(192,192,192,0.3);"></div>
+        <h1 style="font-size: 3rem; font-weight: 700; letter-spacing: 2px; color: #C0C0C0; margin-bottom: 0.5rem;">
             {{ t('customer_portal') }}
         </h1>
-        <p style="font-size: 1.1rem; color: #FFFFFF; font-weight: 600;">{{ t('login_subtitle') }}</p>
+        <p style="font-size: 1.1rem; color: #C0C0C0; font-weight: 700;">{{ t('login_subtitle') }}</p>
     </div>
 
     {% if error %}
@@ -23,15 +23,15 @@
         <!-- Left Column: Login Form -->
         <div class="col-lg-5">
             <div class="professional-card" style="padding: 3rem; height: 100%;">
-                <h3 style="color: #FFFFFF; margin-bottom: 2rem; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 0.75rem;">
-                    <i class="bi bi-box-arrow-in-right" style="color: rgba(255,255,255,0.9);"></i>
+                <h3 style="color: #C0C0C0; margin-bottom: 2rem; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="bi bi-box-arrow-in-right" style="color: #C0C0C0;"></i>
                     {{ t('login') }}
                 </h3>
 
                 <form method="POST" action="/customer/login">
                     <div style="margin-bottom: 2rem;">
-                        <label for="email" style="display: block; color: #FFFFFF; font-weight: 700; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
-                            <i class="bi bi-envelope-at" style="color: rgba(255,255,255,0.9); margin-right: 0.5rem;"></i>{{ t('email') }}
+                        <label for="email" style="display: block; color: #C0C0C0; font-weight: 700; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
+                            <i class="bi bi-envelope-at" style="color: #C0C0C0; margin-right: 0.5rem;"></i>{{ t('email') }}
                         </label>
                         <input 
                             type="email" 
@@ -46,8 +46,8 @@
                     </div>
 
                     <div style="margin-bottom: 2.5rem;">
-                        <label for="password" style="display: block; color: #FFFFFF; font-weight: 700; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
-                            <i class="bi bi-key" style="color: rgba(255,255,255,0.9); margin-right: 0.5rem;"></i>{{ t('password') }}
+                        <label for="password" style="display: block; color: #C0C0C0; font-weight: 700; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
+                            <i class="bi bi-key" style="color: #C0C0C0; margin-right: 0.5rem;"></i>{{ t('password') }}
                         </label>
                         <input 
                             type="password" 
@@ -68,11 +68,11 @@
                         <i class="bi bi-arrow-right-circle" style="margin-right: 0.75rem;"></i>{{ t('login') }}
                     </button>
 
-                    <div class="text-center" style="padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.15);">
-                        <p style="color: rgba(255,255,255,0.85); margin-bottom: 0.75rem; font-size: 0.95rem; font-weight: 600;">{{ t('no_account_question') }}</p>
-                        <a href="/customer/register" style="color: rgba(255,255,255,0.95); text-decoration: none; font-weight: 700; font-size: 1.05rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem; text-shadow: 0 0 5px rgba(255,255,255,0.2);" 
-                           onmouseover="this.style.color='#FFFFFF'; this.style.textShadow='0 0 10px rgba(255,255,255,0.4)'" 
-                           onmouseout="this.style.color='rgba(255,255,255,0.95)'; this.style.textShadow='0 0 5px rgba(255,255,255,0.2)'">
+                    <div class="text-center" style="padding-top: 1.5rem; border-top: 1px solid rgba(192,192,192,0.3);">
+                        <p style="color: #C0C0C0; margin-bottom: 0.75rem; font-size: 0.95rem; font-weight: 700;">{{ t('no_account_question') }}</p>
+                        <a href="/customer/register" style="color: #C0C0C0; text-decoration: none; font-weight: 700; font-size: 1.05rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;" 
+                           onmouseover="this.style.color='#E0E0E0'" 
+                           onmouseout="this.style.color='#C0C0C0'">
                             <i class="bi bi-person-plus-fill"></i> {{ t('create_account') }}
                         </a>
                     </div>
@@ -83,8 +83,8 @@
         <!-- Right Column: Platform Features & Benefits -->
         <div class="col-lg-7">
             <div class="professional-card" style="padding: 3rem; height: 100%;">
-                <h3 style="color: #FFFFFF; margin-bottom: 2rem; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 0.75rem;">
-                    <i class="bi bi-stars" style="color: rgba(255,255,255,0.9);"></i>
+                <h3 style="color: #C0C0C0; margin-bottom: 2rem; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="bi bi-stars" style="color: #C0C0C0;"></i>
                     {{ t('why_choose_infinite') }}
                 </h3>
 
@@ -93,62 +93,62 @@
                     <!-- Feature 1: AI-Powered Advisory -->
                     <div style="display: flex; gap: 1.5rem; align-items: start;">
                         <div style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(255,255,255,0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(192,192,192,0.3);">
-                            <i class="bi bi-cpu" style="font-size: 2rem; color: rgba(255,255,255,0.9);"></i>
+                            <i class="bi bi-cpu" style="font-size: 2rem; color: #C0C0C0;"></i>
                         </div>
                         <div>
-                            <h4 style="color: #FFFFFF; font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 700;">{{ t('feature_ai_advisory') }}</h4>
-                            <p style="color: rgba(255,255,255,0.9); font-size: 1rem; line-height: 1.6; margin: 0; font-weight: 600;">{{ t('feature_ai_advisory_desc') }}</p>
+                            <h4 style="color: #C0C0C0; font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 700;">{{ t('feature_ai_advisory') }}</h4>
+                            <p style="color: #C0C0C0; font-size: 1rem; line-height: 1.6; margin: 0; font-weight: 700;">{{ t('feature_ai_advisory_desc') }}</p>
                         </div>
                     </div>
 
                     <!-- Feature 2: 50/50 Profit Sharing -->
                     <div style="display: flex; gap: 1.5rem; align-items: start;">
                         <div style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(255,255,255,0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(192,192,192,0.3);">
-                            <i class="bi bi-cash-coin" style="font-size: 2rem; color: rgba(255,255,255,0.9);"></i>
+                            <i class="bi bi-cash-coin" style="font-size: 2rem; color: #C0C0C0;"></i>
                         </div>
                         <div>
-                            <h4 style="color: #FFFFFF; font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 700;">{{ t('feature_zero_risk') }}</h4>
-                            <p style="color: rgba(255,255,255,0.9); font-size: 1rem; line-height: 1.6; margin: 0; font-weight: 600;">{{ t('feature_zero_risk_desc') }}</p>
+                            <h4 style="color: #C0C0C0; font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 700;">{{ t('feature_zero_risk') }}</h4>
+                            <p style="color: #C0C0C0; font-size: 1rem; line-height: 1.6; margin: 0; font-weight: 700;">{{ t('feature_zero_risk_desc') }}</p>
                         </div>
                     </div>
 
                     <!-- Feature 3: Comprehensive Management -->
                     <div style="display: flex; gap: 1.5rem; align-items: start;">
                         <div style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(255,255,255,0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(192,192,192,0.3);">
-                            <i class="bi bi-graph-up-arrow" style="font-size: 2rem; color: rgba(255,255,255,0.9);"></i>
+                            <i class="bi bi-graph-up-arrow" style="font-size: 2rem; color: #C0C0C0;"></i>
                         </div>
                         <div>
-                            <h4 style="color: #FFFFFF; font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 700;">{{ t('feature_management') }}</h4>
-                            <p style="color: rgba(255,255,255,0.9); font-size: 1rem; line-height: 1.6; margin: 0; font-weight: 600;">{{ t('feature_management_desc') }}</p>
+                            <h4 style="color: #C0C0C0; font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 700;">{{ t('feature_management') }}</h4>
+                            <p style="color: #C0C0C0; font-size: 1rem; line-height: 1.6; margin: 0; font-weight: 700;">{{ t('feature_management_desc') }}</p>
                         </div>
                     </div>
 
                     <!-- Feature 4: Bank-Grade Security -->
                     <div style="display: flex; gap: 1.5rem; align-items: start;">
                         <div style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(255,255,255,0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(192,192,192,0.3);">
-                            <i class="bi bi-shield-check" style="font-size: 2rem; color: rgba(255,255,255,0.9);"></i>
+                            <i class="bi bi-shield-check" style="font-size: 2rem; color: #C0C0C0;"></i>
                         </div>
                         <div>
-                            <h4 style="color: #FFFFFF; font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 700;">{{ t('feature_security') }}</h4>
-                            <p style="color: rgba(255,255,255,0.9); font-size: 1rem; line-height: 1.6; margin: 0; font-weight: 600;">{{ t('feature_security_desc') }}</p>
+                            <h4 style="color: #C0C0C0; font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 700;">{{ t('feature_security') }}</h4>
+                            <p style="color: #C0C0C0; font-size: 1rem; line-height: 1.6; margin: 0; font-weight: 700;">{{ t('feature_security_desc') }}</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Trust Indicators -->
-                <div style="margin-top: 3rem; padding: 1.5rem; background: rgba(255,255,255,0.05); border-radius: 8px; border: 1px solid rgba(255,255,255,0.15);">
+                <div style="margin-top: 3rem; padding: 1.5rem; background: rgba(192,192,192,0.1); border-radius: 8px; border: 1px solid rgba(192,192,192,0.3);">
                     <div style="display: flex; justify-content: space-around; text-align: center; flex-wrap: wrap; gap: 2rem;">
                         <div>
-                            <div style="font-size: 2rem; font-weight: 900; color: #FFFFFF; margin-bottom: 0.5rem;">100%</div>
-                            <div style="color: rgba(255,255,255,0.95); font-size: 0.95rem; font-weight: 900;">{{ t('trust_data_accuracy') }}</div>
+                            <div style="font-size: 2rem; font-weight: 900; color: #C0C0C0; margin-bottom: 0.5rem;">100%</div>
+                            <div style="color: #C0C0C0; font-size: 0.95rem; font-weight: 900;">{{ t('trust_data_accuracy') }}</div>
                         </div>
                         <div>
-                            <div style="font-size: 2rem; font-weight: 900; color: #FFFFFF; margin-bottom: 0.5rem;">24/7</div>
-                            <div style="color: rgba(255,255,255,0.95); font-size: 0.95rem; font-weight: 900;">{{ t('trust_access_anytime') }}</div>
+                            <div style="font-size: 2rem; font-weight: 900; color: #C0C0C0; margin-bottom: 0.5rem;">24/7</div>
+                            <div style="color: #C0C0C0; font-size: 0.95rem; font-weight: 900;">{{ t('trust_access_anytime') }}</div>
                         </div>
                         <div>
-                            <div style="font-size: 2rem; font-weight: 900; color: #FFFFFF; margin-bottom: 0.5rem;">50%</div>
-                            <div style="color: rgba(255,255,255,0.95); font-size: 0.95rem; font-weight: 900;">{{ t('trust_profit_sharing') }}</div>
+                            <div style="font-size: 2rem; font-weight: 900; color: #C0C0C0; margin-bottom: 0.5rem;">50%</div>
+                            <div style="color: #C0C0C0; font-size: 0.95rem; font-weight: 900;">{{ t('trust_profit_sharing') }}</div>
                         </div>
                     </div>
                 </div>
