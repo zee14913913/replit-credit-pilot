@@ -38,17 +38,28 @@ The platform utilizes a Premium Galaxy-Themed UI with a Pure White + Elephant Gr
   - **Card Styling**: Gradient backgrounds rgba(18,18,18,0.95)→rgba(30,30,30,0.9), 3px silver left border, 2.5rem padding
   - **Enhanced Inputs**: 1.15rem font, 1.25rem padding, dark semi-transparent bg, silver glow on focus
   - **Submit Button**: 1.5rem padding, white glow effect, rocket icon
-- **Login Form** (650px container):
-  - **Galaxy Header**: 100px circular shield icon with gradient glow, "Customer Portal" gradient title (2.8rem)
-  - **Single Card Layout**: Email and Password fields in unified card
-  - **Consistent Styling**: Matching galaxy theme, silver icons, focus glow effects
-  - **Submit Button**: White glow login button with arrow icon
+- **Login Form - Two-Column Layout** (1400px container):
+  - **Left Column (col-lg-5)**: Login form card
+    - **Galaxy Header**: 100px circular shield icon with gradient glow, "Customer Portal" gradient title (2.8rem)
+    - Email and Password fields in unified card (3rem padding)
+    - **Enhanced Inputs**: 1.15rem font, 1.25rem padding, dark semi-transparent bg, silver glow on focus
+    - **Submit Button**: White glow login button with arrow icon (1.5rem padding)
+    - Register link at bottom
+  - **Right Column (col-lg-7)**: Platform features showcase
+    - **"Why Choose INFINITE GZ?"** section with stars icon
+    - **4 Core Features** with 60px icon cards and descriptions:
+      1. AI-Powered Financial Advisory (CPU icon)
+      2. Zero-Risk Guarantee 50% Profit Sharing (Cash-coin icon)
+      3. Complete Financial Management (Graph icon)
+      4. Bank-Grade Security (Shield icon)
+    - **Trust Indicators** section: 100% Data Accuracy, 24/7 Access, 50% Profit Sharing
+    - All content fully translated (EN/ZH) using i18n system
 - **Shared Features**: 
   - slideDown animations for alerts
   - Silver icon decorations on all labels
   - Hover glow effects on links
   - Full i18n support with all text translatable (EN/ZH)
-  - Responsive design maintaining visual impact
+  - Responsive design maintaining visual impact (stacks on mobile)
 
 ### Technical Implementations
 The backend is built with Flask, using SQLite with a context manager pattern for the database. Jinja2 handles server-side rendering, and Bootstrap 5 with Bootstrap Icons provides a responsive UI. Plotly.js is used for client-side data visualization.
