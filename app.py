@@ -54,8 +54,22 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SESSION_SECRET', 'dev-secret-key-change-in-production')
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable static file caching
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+# Force no-cache headers for all responses
+@app.after_request
+def add_no_cache_headers(response):
+    """Add no-cache headers to prevent browser/server caching issues"""
+    if request.path.startswith('/static/css/'):
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, public, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        # Remove ETag and Last-Modified to prevent 304 responses
+        response.headers.pop('ETag', None)
+        response.headers.pop('Last-Modified', None)
+    return response
 
 # Language support
 @app.context_processor
