@@ -41,11 +41,11 @@ The platform utilizes a Premium Enterprise UI with **Vibrant Orange + Black + Si
 - Footer links: font-size 0.95rem, font-weight 700
 - All content typography: Silver-white (#C0C0C0) with bold weights (700-900)
 
-**Button Design System (Updated 2025-10-10):**
-- **Primary Action Buttons**: White glowing buttons (.btn-white-glow) with black bold text, silver borders, and white glow effects. Used for all major actions (submit, confirm, publish, advisory requests).
+**Button Design System (Updated 2025-10-11):**
+- **Primary Action Buttons**: White glowing buttons (.btn-white-glow) with black-gold bold text (#3D3020, hover: #2C2416), silver borders, and gold-tinted glow effects. Used for all major actions (submit, confirm, publish, advisory requests).
 - **Secondary Action Buttons**: Outline buttons (.btn-outline-*) for secondary actions (cancel, view, back).
-- **Navigation Buttons**: Professional white buttons (.btn-professional) for navigation and less critical actions.
-- **All Bootstrap default colored buttons (btn-primary, btn-success, btn-info) replaced with unified white glowing design across the entire system.**
+- **Navigation Buttons**: Professional white buttons (.btn-professional) with black-gold bold text (#3D3020, hover: #2C2416, font-weight 900) for navigation and less critical actions.
+- **All white background buttons now feature black-gold text instead of pure black for premium aesthetic.**
 
 **Compact Layout Optimization (Updated 2025-10-10):**
 - **Spacing System**: Reduced all spacing variables by ~20-30% for tighter, more professional layout
