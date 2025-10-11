@@ -45,7 +45,10 @@ The platform utilizes a Premium Enterprise UI with **Vibrant Orange + Black + Si
 - **Primary Action Buttons**: White glowing buttons (.btn-white-glow) with black-gold bold text (#3D3020, hover: #2C2416), silver borders, and gold-tinted glow effects. Used for all major actions (submit, confirm, publish, advisory requests).
 - **Secondary Action Buttons**: Outline buttons (.btn-outline-*) for secondary actions (cancel, view, back).
 - **Navigation Buttons**: Professional white buttons (.btn-professional) with black-gold bold text (#3D3020, hover: #2C2416, font-weight 900) for navigation and less critical actions.
-- **All white background buttons now feature black-gold text instead of pure black for premium aesthetic.**
+- **Bootstrap Button Overrides**: All Bootstrap buttons (.btn-outline-*, .btn-light, .btn-secondary, .btn-sm) override with black-gold text (#3D3020, hover: #2C2416, font-weight 900) using !important.
+- **File Input Buttons**: File selector buttons styled with white gradient background and black-gold text (#3D3020, hover: #2C2416, font-weight 900).
+- **Admin Login Button**: Custom styled with white gradient background and black-gold text (#3D3020, hover: #2C2416, font-weight 900).
+- **All white/silver background buttons consistently feature black-gold text (#3D3020) for premium luxury aesthetic.**
 
 **Compact Layout Optimization (Updated 2025-10-10):**
 - **Spacing System**: Reduced all spacing variables by ~20-30% for tighter, more professional layout
