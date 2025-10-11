@@ -6,12 +6,12 @@
 <div class="container-professional" style="max-width: 1400px; padding-top: 3rem; padding-bottom: 4rem;">
     <!-- Page Header -->
     <div class="text-center" style="margin-bottom: 3rem;">
-        <i class="bi bi-shield-lock-fill" style="font-size: 4rem; color: var(--accent-silver); filter: drop-shadow(0 0 20px rgba(192,192,192,0.5)); display: inline-block; margin-bottom: 1rem;"></i>
-        <div style="width: 80px; height: 2px; background: linear-gradient(90deg, transparent, var(--accent-silver), transparent); margin: 0 auto 1.5rem; box-shadow: 0 0 15px rgba(192,192,192,0.3);"></div>
-        <h1 style="font-size: 3rem; font-weight: 300; letter-spacing: 2px; background: linear-gradient(135deg, #FFFFFF, #C0C0C0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem;">
+        <i class="bi bi-shield-lock-fill" style="font-size: 4rem; color: rgba(255,255,255,0.95); filter: drop-shadow(0 0 20px rgba(255,255,255,0.3)); display: inline-block; margin-bottom: 1rem;"></i>
+        <div style="width: 80px; height: 2px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent); margin: 0 auto 1.5rem; box-shadow: 0 0 15px rgba(255,255,255,0.2);"></div>
+        <h1 style="font-size: 3rem; font-weight: 700; letter-spacing: 2px; color: rgba(255,255,255,0.98); text-shadow: 0 0 10px rgba(255,255,255,0.3), 0 4px 8px rgba(0,0,0,0.4); margin-bottom: 0.5rem;">
             {{ t('customer_portal') }}
         </h1>
-        <p style="font-size: 1.1rem; color: var(--text-secondary);">{{ t('login_subtitle') }}</p>
+        <p style="font-size: 1.1rem; color: #FFFFFF; font-weight: 600;">{{ t('login_subtitle') }}</p>
     </div>
 
     {% if error %}
@@ -22,16 +22,16 @@
     <div class="row g-4" style="margin-top: 2rem;">
         <!-- Left Column: Login Form -->
         <div class="col-lg-5">
-            <div class="professional-card" style="padding: 3rem; border-left: 3px solid var(--accent-silver); background: linear-gradient(135deg, rgba(18,18,18,0.95), rgba(30,30,30,0.9)); height: 100%;">
-                <h3 style="color: var(--text-primary); margin-bottom: 2rem; font-size: 1.5rem; font-weight: 600; display: flex; align-items: center; gap: 0.75rem;">
-                    <i class="bi bi-box-arrow-in-right" style="color: var(--accent-silver);"></i>
+            <div class="professional-card" style="padding: 3rem; height: 100%;">
+                <h3 style="color: #FFFFFF; margin-bottom: 2rem; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="bi bi-box-arrow-in-right" style="color: rgba(255,255,255,0.9);"></i>
                     {{ t('login') }}
                 </h3>
 
                 <form method="POST" action="/customer/login">
                     <div style="margin-bottom: 2rem;">
-                        <label for="email" style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
-                            <i class="bi bi-envelope-at" style="color: var(--accent-silver); margin-right: 0.5rem;"></i>{{ t('email') }}
+                        <label for="email" style="display: block; color: #FFFFFF; font-weight: 700; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
+                            <i class="bi bi-envelope-at" style="color: rgba(255,255,255,0.9); margin-right: 0.5rem;"></i>{{ t('email') }}
                         </label>
                         <input 
                             type="email" 
@@ -46,8 +46,8 @@
                     </div>
 
                     <div style="margin-bottom: 2.5rem;">
-                        <label for="password" style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
-                            <i class="bi bi-key" style="color: var(--accent-silver); margin-right: 0.5rem;"></i>{{ t('password') }}
+                        <label for="password" style="display: block; color: #FFFFFF; font-weight: 700; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
+                            <i class="bi bi-key" style="color: rgba(255,255,255,0.9); margin-right: 0.5rem;"></i>{{ t('password') }}
                         </label>
                         <input 
                             type="password" 
@@ -68,11 +68,11 @@
                         <i class="bi bi-arrow-right-circle" style="margin-right: 0.75rem;"></i>{{ t('login') }}
                     </button>
 
-                    <div class="text-center" style="padding-top: 1.5rem; border-top: 1px solid rgba(192,192,192,0.15);">
-                        <p style="color: var(--text-tertiary); margin-bottom: 0.75rem; font-size: 0.95rem;">{{ t('no_account_question') }}</p>
-                        <a href="/customer/register" style="color: var(--accent-silver); text-decoration: none; font-weight: 600; font-size: 1.05rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;" 
-                           onmouseover="this.style.color='#FFFFFF'; this.style.textShadow='0 0 10px rgba(192,192,192,0.5)'" 
-                           onmouseout="this.style.color='var(--accent-silver)'; this.style.textShadow='none'">
+                    <div class="text-center" style="padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.15);">
+                        <p style="color: rgba(255,255,255,0.85); margin-bottom: 0.75rem; font-size: 0.95rem; font-weight: 600;">{{ t('no_account_question') }}</p>
+                        <a href="/customer/register" style="color: rgba(255,255,255,0.95); text-decoration: none; font-weight: 700; font-size: 1.05rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem; text-shadow: 0 0 5px rgba(255,255,255,0.2);" 
+                           onmouseover="this.style.color='#FFFFFF'; this.style.textShadow='0 0 10px rgba(255,255,255,0.4)'" 
+                           onmouseout="this.style.color='rgba(255,255,255,0.95)'; this.style.textShadow='0 0 5px rgba(255,255,255,0.2)'">
                             <i class="bi bi-person-plus-fill"></i> {{ t('create_account') }}
                         </a>
                     </div>
@@ -82,9 +82,9 @@
 
         <!-- Right Column: Platform Features & Benefits -->
         <div class="col-lg-7">
-            <div class="professional-card" style="padding: 3rem; background: linear-gradient(135deg, rgba(18,18,18,0.95), rgba(30,30,30,0.9)); height: 100%;">
-                <h3 style="color: var(--text-primary); margin-bottom: 2rem; font-size: 1.5rem; font-weight: 600; display: flex; align-items: center; gap: 0.75rem;">
-                    <i class="bi bi-stars" style="color: var(--accent-silver);"></i>
+            <div class="professional-card" style="padding: 3rem; height: 100%;">
+                <h3 style="color: #FFFFFF; margin-bottom: 2rem; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="bi bi-stars" style="color: rgba(255,255,255,0.9);"></i>
                     {{ t('why_choose_infinite') }}
                 </h3>
 
@@ -93,44 +93,44 @@
                     <!-- Feature 1: AI-Powered Advisory -->
                     <div style="display: flex; gap: 1.5rem; align-items: start;">
                         <div style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(255,255,255,0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(192,192,192,0.3);">
-                            <i class="bi bi-cpu" style="font-size: 2rem; color: var(--accent-silver);"></i>
+                            <i class="bi bi-cpu" style="font-size: 2rem; color: rgba(255,255,255,0.9);"></i>
                         </div>
                         <div>
-                            <h4 style="color: var(--text-primary); font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 600;">{{ t('feature_ai_advisory') }}</h4>
-                            <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.6; margin: 0;">{{ t('feature_ai_advisory_desc') }}</p>
+                            <h4 style="color: #FFFFFF; font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 700;">{{ t('feature_ai_advisory') }}</h4>
+                            <p style="color: rgba(255,255,255,0.9); font-size: 1rem; line-height: 1.6; margin: 0; font-weight: 600;">{{ t('feature_ai_advisory_desc') }}</p>
                         </div>
                     </div>
 
                     <!-- Feature 2: 50/50 Profit Sharing -->
                     <div style="display: flex; gap: 1.5rem; align-items: start;">
                         <div style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(255,255,255,0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(192,192,192,0.3);">
-                            <i class="bi bi-cash-coin" style="font-size: 2rem; color: var(--accent-silver);"></i>
+                            <i class="bi bi-cash-coin" style="font-size: 2rem; color: rgba(255,255,255,0.9);"></i>
                         </div>
                         <div>
-                            <h4 style="color: var(--text-primary); font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 600;">{{ t('feature_zero_risk') }}</h4>
-                            <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.6; margin: 0;">{{ t('feature_zero_risk_desc') }}</p>
+                            <h4 style="color: #FFFFFF; font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 700;">{{ t('feature_zero_risk') }}</h4>
+                            <p style="color: rgba(255,255,255,0.9); font-size: 1rem; line-height: 1.6; margin: 0; font-weight: 600;">{{ t('feature_zero_risk_desc') }}</p>
                         </div>
                     </div>
 
                     <!-- Feature 3: Comprehensive Management -->
                     <div style="display: flex; gap: 1.5rem; align-items: start;">
                         <div style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(255,255,255,0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(192,192,192,0.3);">
-                            <i class="bi bi-graph-up-arrow" style="font-size: 2rem; color: var(--accent-silver);"></i>
+                            <i class="bi bi-graph-up-arrow" style="font-size: 2rem; color: rgba(255,255,255,0.9);"></i>
                         </div>
                         <div>
-                            <h4 style="color: var(--text-primary); font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 600;">{{ t('feature_management') }}</h4>
-                            <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.6; margin: 0;">{{ t('feature_management_desc') }}</p>
+                            <h4 style="color: #FFFFFF; font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 700;">{{ t('feature_management') }}</h4>
+                            <p style="color: rgba(255,255,255,0.9); font-size: 1rem; line-height: 1.6; margin: 0; font-weight: 600;">{{ t('feature_management_desc') }}</p>
                         </div>
                     </div>
 
                     <!-- Feature 4: Bank-Grade Security -->
                     <div style="display: flex; gap: 1.5rem; align-items: start;">
                         <div style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(255,255,255,0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(192,192,192,0.3);">
-                            <i class="bi bi-shield-check" style="font-size: 2rem; color: var(--accent-silver);"></i>
+                            <i class="bi bi-shield-check" style="font-size: 2rem; color: rgba(255,255,255,0.9);"></i>
                         </div>
                         <div>
-                            <h4 style="color: var(--text-primary); font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 600;">{{ t('feature_security') }}</h4>
-                            <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.6; margin: 0;">{{ t('feature_security_desc') }}</p>
+                            <h4 style="color: #FFFFFF; font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 700;">{{ t('feature_security') }}</h4>
+                            <p style="color: rgba(255,255,255,0.9); font-size: 1rem; line-height: 1.6; margin: 0; font-weight: 600;">{{ t('feature_security_desc') }}</p>
                         </div>
                     </div>
                 </div>
@@ -139,16 +139,16 @@
                 <div style="margin-top: 3rem; padding: 1.5rem; background: rgba(192,192,192,0.05); border-radius: 8px; border: 1px solid rgba(192,192,192,0.15);">
                     <div style="display: flex; justify-content: space-around; text-align: center; flex-wrap: wrap; gap: 2rem;">
                         <div>
-                            <div style="font-size: 2rem; font-weight: 700; color: var(--accent-silver); margin-bottom: 0.5rem;">100%</div>
-                            <div style="color: var(--text-tertiary); font-size: 0.95rem;">{{ t('trust_data_accuracy') }}</div>
+                            <div style="font-size: 2rem; font-weight: 900; color: #FFFFFF; margin-bottom: 0.5rem;">100%</div>
+                            <div style="color: rgba(255,255,255,0.85); font-size: 0.95rem; font-weight: 600;">{{ t('trust_data_accuracy') }}</div>
                         </div>
                         <div>
-                            <div style="font-size: 2rem; font-weight: 700; color: var(--accent-silver); margin-bottom: 0.5rem;">24/7</div>
-                            <div style="color: var(--text-tertiary); font-size: 0.95rem;">{{ t('trust_access_anytime') }}</div>
+                            <div style="font-size: 2rem; font-weight: 900; color: #FFFFFF; margin-bottom: 0.5rem;">24/7</div>
+                            <div style="color: rgba(255,255,255,0.85); font-size: 0.95rem; font-weight: 600;">{{ t('trust_access_anytime') }}</div>
                         </div>
                         <div>
-                            <div style="font-size: 2rem; font-weight: 700; color: var(--accent-silver); margin-bottom: 0.5rem;">50%</div>
-                            <div style="color: var(--text-tertiary); font-size: 0.95rem;">{{ t('trust_profit_sharing') }}</div>
+                            <div style="font-size: 2rem; font-weight: 900; color: #FFFFFF; margin-bottom: 0.5rem;">50%</div>
+                            <div style="color: rgba(255,255,255,0.85); font-size: 0.95rem; font-weight: 600;">{{ t('trust_profit_sharing') }}</div>
                         </div>
                     </div>
                 </div>
