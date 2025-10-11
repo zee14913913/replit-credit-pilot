@@ -12,24 +12,25 @@ Design requirements: Premium, sophisticated, high-end - suitable for professiona
 ### UI/UX Decisions
 The platform utilizes a Premium Enterprise UI with **Vibrant Orange + Black + Silver** color scheme. Key design elements include orange header/footer sections, silver-white navigation buttons with black-gold text, orange accent borders and glows, and professional Inter typography. It supports multi-language (English/Chinese), dark/light theme toggle, and adheres to a sophisticated, high-end enterprise aesthetic.
 
-**Color Scheme (Updated 2025-10-11 - ORANGE THEME):**
-- **Header/Footer**: Bright orange gradient (#E64A19 → #D84315) with luminous white text (rgba(255,255,255,0.98)) + subtle glow (text-shadow: 0 0 6px rgba(255,255,255,0.25))
+**Color Scheme (Updated 2025-10-11 - BRIGHT ORANGE THEME):**
+- **Header/Footer**: Bright orange gradient (#FF7043 → #FF5722) with luminous white text (rgba(255,255,255,0.98)) + subtle glow (text-shadow: 0 0 5px rgba(255,255,255,0.15))
 - **Navigation Buttons**: Silver-white gradient background (#F5F5F5 → #E0E0E0) with black bold text (#1A1A1A, font-weight 900)
-- **Main Content**: Bright orange gradient backgrounds (#E64A19 → #D84315) with white borders and white bold typography
-  - Cards: Orange gradient background + 3px white border (rgba(255,255,255,0.9))
-  - All text: Bright white (#FFFFFF) with bold weights (600-900)
-  - Headings h3/h4: #FFFFFF font-weight 700
-  - Body text: #FFFFFF font-weight 600
-  - Table headers: font-weight 900, data cells: font-weight 600
-  - Stat values: font-weight 900, labels: font-weight 700
+- **Main Content**: Bright orange gradient backgrounds (#FF7043 → #FF5722) with white borders and silver-white bold typography
+  - Cards: Bright orange gradient background + 3px white border (rgba(255,255,255,0.9))
+  - All text: Silver-white (#C0C0C0) with bold weights (700-900)
+  - Headings h3/h4: #C0C0C0 font-weight 700
+  - Body text: #C0C0C0 font-weight 700
+  - Table headers: font-weight 900, data cells: font-weight 700
+  - Stat values: font-weight 900, labels: font-weight 900
   - Decorative corners: White (rgba(255,255,255,0.5))
 - **Theme Toggle**: Sun/moon icon button in navigation, localStorage persistence (main content only)
 
 **Typography Enhancement:**
-- Company name (header): rgba(255,255,255,0.98) + text-shadow: 0 0 6px rgba(255,255,255,0.25)
-- Company name (footer): White + text-shadow: 0 0 10px rgba(255,255,255,0.3)
-- Footer headings/links: White + glow effects
-- All content typography: Bright white (#FFFFFF) with bold weights (600-900)
+- Company name (header): rgba(255,255,255,0.98) font-weight 900 + text-shadow: 0 0 5px rgba(255,255,255,0.15)
+- Company name (footer): rgba(255,255,255,0.98) font-weight 900 + text-shadow: 0 0 8px rgba(255,255,255,0.2)
+- Footer headings: font-size 1.35rem, font-weight 900, letter-spacing 0.08em (increased from 1rem for better distinction)
+- Footer links: font-size 0.95rem, font-weight 700
+- All content typography: Silver-white (#C0C0C0) with bold weights (700-900)
 
 **Button Design System (Updated 2025-10-10):**
 - **Primary Action Buttons**: White glowing buttons (.btn-white-glow) with black bold text, silver borders, and white glow effects. Used for all major actions (submit, confirm, publish, advisory requests).
@@ -46,8 +47,8 @@ The platform utilizes a Premium Enterprise UI with **Vibrant Orange + Black + Si
 - **Visual Density**: Compact stat cards, tighter dividers, reduced alert/form spacing for professional enterprise feel
 - **Responsive**: Maintained compact spacing across all breakpoints
 
-**Customer Registration/Login Form Design (Updated 2025-10-11 - ORANGE THEME):**
-- **Modern Orange-Themed Forms**: Complete redesign with bright orange backgrounds, white borders, and bright white bold typography
+**Customer Registration/Login Form Design (Updated 2025-10-11 - BRIGHT ORANGE THEME):**
+- **Modern Orange-Themed Forms**: Complete redesign with bright orange backgrounds (#FF7043 → #FF5722), white borders, and silver-white bold typography
 - **Registration Form** (800px container):
   - **Orange Header**: 120px circular icon with white glow, stars icon, white bold title (3.2rem font-weight 700), white subtitle (font-weight 600)
   - **Progressive 3-Step Layout**: Separate orange gradient cards with numbered badges (1-2-3)
