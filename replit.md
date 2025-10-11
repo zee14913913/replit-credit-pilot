@@ -10,7 +10,21 @@ Design requirements: Premium, sophisticated, high-end - suitable for professiona
 ## System Architecture
 
 ### UI/UX Decisions
-The platform utilizes a Premium Galaxy-Themed UI with a Pure White + Elephant Gray + Silver Metallic minimalist color scheme. Key design elements include galaxy starfield effects, silver decorations (gradient text, glow, corner accents), layered visual effects (gradients, shimmer animations), and professional Inter typography. It supports multi-language (English/Chinese) and adheres to a design philosophy of zero colorful/childish elements, focusing on a sophisticated, enterprise-grade aesthetic.
+The platform utilizes a Premium Enterprise UI with **Vibrant Orange + Black + Silver** color scheme. Key design elements include orange header/footer sections, silver-white navigation buttons with black-gold text, orange accent borders and glows, and professional Inter typography. It supports multi-language (English/Chinese), dark/light theme toggle, and adheres to a sophisticated, high-end enterprise aesthetic.
+
+**Color Scheme (Updated 2025-10-11):**
+- **Header/Footer**: Bright orange gradient (#E64A19 → #D84315) with orange glow effects
+- **Navigation Buttons**: Silver-white gradient background (#F5F5F5 → #E0E0E0) with black text (#1A1A1A) + gold text-shadow for enhanced readability
+- **Main Content (Dark Theme)**: Black background with orange accent elements
+  - Cards: 3px orange left border with orange glow shadow
+  - Headings: Orange-to-silver gradient underline decoration
+  - Stat Cards: 2px orange top border with glow
+- **Main Content (Light Theme)**: White background with CSS variable system for adaptive colors
+- **Theme Toggle**: Sun/moon icon button in navigation, localStorage persistence
+
+**Brand Text Enhancement:**
+- Company name: White text with black drop-shadow and gold glow for maximum contrast on orange background
+- Navigation links: Black text on silver-white buttons with gold accents on hover
 
 **Button Design System (Updated 2025-10-10):**
 - **Primary Action Buttons**: White glowing buttons (.btn-white-glow) with black bold text, silver borders, and white glow effects. Used for all major actions (submit, confirm, publish, advisory requests).
