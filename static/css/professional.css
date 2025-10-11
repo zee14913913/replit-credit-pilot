@@ -166,8 +166,8 @@ h1, h2, h3, h4, h5, h6 {
 h1 { 
     font-size: 2.5rem; 
     font-weight: 700;
-    color: #FFFFFF;
-    background: linear-gradient(135deg, #E64A19 0%, #D84315 100%);
+    color: #C0C0C0;
+    background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%);
     padding: 1rem 2rem;
     border-radius: var(--radius-md);
     position: relative;
@@ -178,8 +178,8 @@ h1 {
 
 h2 { 
     font-size: 2rem;
-    color: #FFFFFF;
-    background: linear-gradient(135deg, #E64A19 0%, #D84315 100%);
+    color: #C0C0C0;
+    background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%);
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius-md);
     display: inline-block;
@@ -570,14 +570,14 @@ p {
 .stat-value {
     font-size: 2.25rem;
     font-weight: 900;
-    color: #FFFFFF;
+    color: #C0C0C0;
     margin-bottom: var(--space-xs);
     line-height: 1;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .stat-label {
-    color: rgba(255,255,255,0.95);
+    color: #C0C0C0;
     font-size: 0.875rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -753,7 +753,7 @@ p {
 
 .table-professional th {
     background: rgba(0,0,0,0.2);
-    color: #FFFFFF;
+    color: #C0C0C0;
     font-weight: 900;
     text-transform: uppercase;
     font-size: 0.75rem;
@@ -766,8 +766,8 @@ p {
 .table-professional td {
     padding: var(--space-sm) var(--space-md);
     border-bottom: 1px solid rgba(255,255,255,0.2);
-    color: #FFFFFF;
-    font-weight: 600;
+    color: #C0C0C0;
+    font-weight: 700;
 }
 
 .table-professional tr:last-child td {
@@ -847,8 +847,8 @@ p {
 .section-title {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #FFFFFF;
-    background: linear-gradient(135deg, #E64A19 0%, #D84315 100%);
+    color: #C0C0C0;
+    background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%);
     padding: 1rem 2rem;
     border-radius: var(--radius-md);
     margin-bottom: var(--space-sm);
