@@ -189,28 +189,28 @@ h2 {
 
 h3 { 
     font-size: 1.5rem;
-    color: #FFFFFF;
+    color: #C0C0C0;
     font-weight: 700;
 }
 h4 { 
     font-size: 1.25rem;
-    color: #FFFFFF;
+    color: #C0C0C0;
     font-weight: 700;
 }
 h5 { 
     font-size: 1.125rem;
-    color: #FFFFFF;
+    color: #C0C0C0;
     font-weight: 600;
 }
 h6 { 
     font-size: 1rem;
-    color: #FFFFFF;
+    color: #C0C0C0;
     font-weight: 600;
 }
 
 p {
-    color: #FFFFFF;
-    font-weight: 600;
+    color: #C0C0C0;
+    font-weight: 700;
     margin-bottom: var(--space-sm);
     line-height: 1.5;
 }
@@ -220,7 +220,7 @@ p {
    ======================================== */
 
 .professional-nav {
-    background: linear-gradient(135deg, #E64A19 0%, #D84315 100%);
+    background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%);
     backdrop-filter: blur(16px);
     border-bottom: 1px solid rgba(0,0,0,0.3);
     position: sticky;
@@ -311,11 +311,11 @@ p {
 .company-name {
     font-family: 'Montserrat', sans-serif;
     font-size: 1.65rem;
-    font-weight: 700;
+    font-weight: 900;
     line-height: 1.6;
     letter-spacing: 0.08em;
     color: rgba(255,255,255,0.98);
-    text-shadow: 0 0 6px rgba(255,255,255,0.25), 0 2px 4px rgba(0,0,0,0.4);
+    text-shadow: 0 0 5px rgba(255,255,255,0.15), 0 2px 4px rgba(0,0,0,0.4);
     padding: 0.15rem 0;
 }
 
@@ -468,7 +468,7 @@ p {
    ======================================== */
 
 .professional-card {
-    background: linear-gradient(135deg, #E64A19 0%, #D84315 100%);
+    background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%);
     border: 3px solid rgba(255,255,255,0.9);
     border-radius: var(--radius-lg);
     padding: var(--space-lg);
@@ -545,7 +545,7 @@ p {
    ======================================== */
 
 .stat-card {
-    background: linear-gradient(135deg, #E64A19 0%, #D84315 100%);
+    background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%);
     border: 3px solid rgba(255,255,255,0.9);
     border-radius: var(--radius-lg);
     padding: var(--space-lg);
@@ -744,7 +744,7 @@ p {
 
 .table-professional {
     width: 100%;
-    background: linear-gradient(135deg, #E64A19 0%, #D84315 100%);
+    background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%);
     border-radius: var(--radius-lg);
     overflow: hidden;
     border: 3px solid rgba(255,255,255,0.9);
@@ -918,7 +918,7 @@ p {
    ======================================== */
 
 .professional-footer {
-    background: linear-gradient(135deg, #E64A19 0%, #D84315 100%);
+    background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%);
     border-top: 1px solid rgba(0,0,0,0.3);
     margin-top: auto;
     margin-bottom: 0;
@@ -980,11 +980,11 @@ p {
 
 .footer-company-name {
     font-size: 3.5rem;
-    font-weight: 800;
+    font-weight: 900;
     margin: 0;
     white-space: nowrap;
     color: rgba(255,255,255,0.98);
-    text-shadow: 0 0 10px rgba(255,255,255,0.3), 0 4px 8px rgba(0,0,0,0.4);
+    text-shadow: 0 0 8px rgba(255,255,255,0.2), 0 4px 8px rgba(0,0,0,0.4);
     letter-spacing: 0.08em;
 }
 
@@ -1005,13 +1005,13 @@ p {
 }
 
 .footer-heading {
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: 1.15rem;
+    font-weight: 900;
     color: rgba(255,255,255,0.98);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: 1.25rem;
-    text-shadow: 0 0 5px rgba(255,255,255,0.2), 0 2px 3px rgba(0,0,0,0.3);
+    text-shadow: 0 0 5px rgba(255,255,255,0.15), 0 2px 3px rgba(0,0,0,0.3);
 }
 
 .footer-menu {
@@ -1024,17 +1024,17 @@ p {
 }
 
 .footer-link {
-    color: rgba(255,255,255,0.85);
+    color: rgba(255,255,255,0.90);
     text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 0.95rem;
+    font-weight: 700;
     transition: all 0.2s ease;
-    text-shadow: 0 0 3px rgba(255,255,255,0.15);
+    text-shadow: 0 0 3px rgba(255,255,255,0.1);
 }
 
 .footer-link:hover {
     color: rgba(255,255,255,0.98);
-    text-shadow: 0 0 6px rgba(255,255,255,0.25), 0 2px 3px rgba(0,0,0,0.3);
+    text-shadow: 0 0 5px rgba(255,255,255,0.15), 0 2px 3px rgba(0,0,0,0.3);
 }
 
 .footer-bottom {
