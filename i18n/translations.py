@@ -22,7 +22,7 @@ TRANSLATIONS = {
         'language': 'Language',
         
         # Customer Authentication
-        'customer_login': 'Customer Login',
+        'customer_login': 'Login',
         'customer_portal': 'Customer Portal',
         'customer_registration': 'Customer Registration',
         'customer_register': 'Register',
@@ -238,7 +238,7 @@ TRANSLATIONS = {
         'language': '语言',
         
         # Customer Authentication
-        'customer_login': '客户登录',
+        'customer_login': '登录',
         'customer_portal': '客户门户',
         'customer_registration': '客户注册',
         'customer_register': '注册',
