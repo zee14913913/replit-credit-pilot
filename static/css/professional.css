@@ -166,50 +166,50 @@ h1, h2, h3, h4, h5, h6 {
 h1 { 
     font-size: 2.5rem; 
     font-weight: 700;
-    color: #C0C0C0;
+    color: rgba(255,255,255,0.95);
     background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%);
     padding: 1rem 2rem;
     border-radius: var(--radius-md);
     position: relative;
     display: inline-block;
     box-shadow: 0 4px 15px rgba(230,74,25,0.3), 0 0 20px rgba(230,74,25,0.2);
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5), 0 0 8px rgba(255,255,255,0.3);
 }
 
 h2 { 
     font-size: 2rem;
-    color: #C0C0C0;
+    color: rgba(255,255,255,0.95);
     background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%);
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius-md);
     display: inline-block;
     box-shadow: 0 4px 12px rgba(230,74,25,0.25);
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5), 0 0 8px rgba(255,255,255,0.3);
 }
 
 h3 { 
     font-size: 1.5rem;
-    color: #C0C0C0;
+    color: rgba(255,255,255,0.95);
     font-weight: 700;
 }
 h4 { 
     font-size: 1.25rem;
-    color: #C0C0C0;
+    color: rgba(255,255,255,0.95);
     font-weight: 700;
 }
 h5 { 
     font-size: 1.125rem;
-    color: #C0C0C0;
+    color: rgba(255,255,255,0.95);
     font-weight: 600;
 }
 h6 { 
     font-size: 1rem;
-    color: #C0C0C0;
+    color: rgba(255,255,255,0.95);
     font-weight: 600;
 }
 
 p {
-    color: #C0C0C0;
+    color: rgba(255,255,255,0.95);
     font-weight: 700;
     margin-bottom: var(--space-sm);
     line-height: 1.5;
@@ -552,11 +552,22 @@ p {
     text-shadow: 0 0 12px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3), 0 2px 4px rgba(0,0,0,0.3);
 }
 
-/* Professional Card Content - Ensure silver-white text */
+/* Professional Card Content - Force bright white text */
+.professional-card *:not(.btn):not(.badge),
 .professional-card p,
 .professional-card span,
-.professional-card div:not(.card-title-gold):not(.card-title-glow) {
-    color: #C0C0C0;
+.professional-card div,
+.professional-card li,
+.professional-card td,
+.professional-card th,
+.professional-card label,
+.professional-card h1,
+.professional-card h2,
+.professional-card h3,
+.professional-card h4,
+.professional-card h5,
+.professional-card h6 {
+    color: rgba(255,255,255,0.95) !important;
 }
 
 /* ========================================
@@ -589,14 +600,14 @@ p {
 .stat-value {
     font-size: 2.25rem;
     font-weight: 900;
-    color: #C0C0C0;
+    color: rgba(255,255,255,0.95) !important;
     margin-bottom: var(--space-xs);
     line-height: 1;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3), 0 0 8px rgba(255,255,255,0.3);
 }
 
 .stat-label {
-    color: #C0C0C0;
+    color: rgba(255,255,255,0.95) !important;
     font-size: 0.875rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -772,7 +783,7 @@ p {
 
 .table-professional th {
     background: rgba(0,0,0,0.2);
-    color: #C0C0C0;
+    color: rgba(255,255,255,0.95) !important;
     font-weight: 900;
     text-transform: uppercase;
     font-size: 0.75rem;
@@ -785,7 +796,7 @@ p {
 .table-professional td {
     padding: var(--space-sm) var(--space-md);
     border-bottom: 1px solid rgba(255,255,255,0.2);
-    color: #C0C0C0;
+    color: rgba(255,255,255,0.95) !important;
     font-weight: 700;
 }
 
@@ -866,7 +877,7 @@ p {
 .section-title {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #C0C0C0;
+    color: rgba(255,255,255,0.95);
     background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%);
     padding: 1rem 2rem;
     border-radius: var(--radius-md);
@@ -875,7 +886,7 @@ p {
     position: relative;
     display: inline-block;
     box-shadow: 0 4px 15px rgba(230,74,25,0.3);
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5), 0 0 8px rgba(255,255,255,0.3);
 }
 
 .section-title::after {
