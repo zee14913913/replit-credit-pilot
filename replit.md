@@ -12,19 +12,24 @@ Design requirements: Premium, sophisticated, high-end - suitable for professiona
 ### UI/UX Decisions
 The platform utilizes a Premium Enterprise UI with **Vibrant Orange + Black + Silver** color scheme. Key design elements include orange header/footer sections, silver-white navigation buttons with black-gold text, orange accent borders and glows, and professional Inter typography. It supports multi-language (English/Chinese), dark/light theme toggle, and adheres to a sophisticated, high-end enterprise aesthetic.
 
-**Color Scheme (Updated 2025-10-11):**
-- **Header/Footer**: Bright orange gradient (#E64A19 → #D84315) with orange glow effects
-- **Navigation Buttons**: Silver-white gradient background (#F5F5F5 → #E0E0E0) with black text (#1A1A1A) + gold text-shadow for enhanced readability
-- **Main Content (Dark Theme)**: Black background with orange accent elements
-  - Cards: 3px orange left border with orange glow shadow
-  - Headings: Orange-to-silver gradient underline decoration
-  - Stat Cards: 2px orange top border with glow
-- **Main Content (Light Theme)**: White background with CSS variable system for adaptive colors
-- **Theme Toggle**: Sun/moon icon button in navigation, localStorage persistence
+**Color Scheme (Updated 2025-10-11 - ORANGE THEME):**
+- **Header/Footer**: Bright orange gradient (#E64A19 → #D84315) with luminous white text (rgba(255,255,255,0.98)) + subtle glow (text-shadow: 0 0 6px rgba(255,255,255,0.25))
+- **Navigation Buttons**: Silver-white gradient background (#F5F5F5 → #E0E0E0) with black bold text (#1A1A1A, font-weight 900)
+- **Main Content**: Bright orange gradient backgrounds (#E64A19 → #D84315) with white borders and white bold typography
+  - Cards: Orange gradient background + 3px white border (rgba(255,255,255,0.9))
+  - All text: Bright white (#FFFFFF) with bold weights (600-900)
+  - Headings h3/h4: #FFFFFF font-weight 700
+  - Body text: #FFFFFF font-weight 600
+  - Table headers: font-weight 900, data cells: font-weight 600
+  - Stat values: font-weight 900, labels: font-weight 700
+  - Decorative corners: White (rgba(255,255,255,0.5))
+- **Theme Toggle**: Sun/moon icon button in navigation, localStorage persistence (main content only)
 
-**Brand Text Enhancement:**
-- Company name: White text with black drop-shadow and gold glow for maximum contrast on orange background
-- Navigation links: Black text on silver-white buttons with gold accents on hover
+**Typography Enhancement:**
+- Company name (header): rgba(255,255,255,0.98) + text-shadow: 0 0 6px rgba(255,255,255,0.25)
+- Company name (footer): White + text-shadow: 0 0 10px rgba(255,255,255,0.3)
+- Footer headings/links: White + glow effects
+- All content typography: Bright white (#FFFFFF) with bold weights (600-900)
 
 **Button Design System (Updated 2025-10-10):**
 - **Primary Action Buttons**: White glowing buttons (.btn-white-glow) with black bold text, silver borders, and white glow effects. Used for all major actions (submit, confirm, publish, advisory requests).
@@ -41,39 +46,45 @@ The platform utilizes a Premium Enterprise UI with **Vibrant Orange + Black + Si
 - **Visual Density**: Compact stat cards, tighter dividers, reduced alert/form spacing for professional enterprise feel
 - **Responsive**: Maintained compact spacing across all breakpoints
 
-**Customer Registration/Login Form Design (Updated 2025-10-11):**
-- **Modern Galaxy-Themed Forms**: Complete redesign with sophisticated visual hierarchy and progressive experience
+**Customer Registration/Login Form Design (Updated 2025-10-11 - ORANGE THEME):**
+- **Modern Orange-Themed Forms**: Complete redesign with bright orange backgrounds, white borders, and bright white bold typography
 - **Registration Form** (800px container):
-  - **Galaxy Header**: 120px circular icon with radial gradient, stars icon, "Welcome to INFINITE GZ" gradient title (3.2rem), elegant subtitle
-  - **Progressive 3-Step Layout**: Separate cards for each section with numbered badges (1-2-3)
+  - **Orange Header**: 120px circular icon with white glow, stars icon, white bold title (3.2rem font-weight 700), white subtitle (font-weight 600)
+  - **Progressive 3-Step Layout**: Separate orange gradient cards with numbered badges (1-2-3)
     - Step 1: Your Identity (Full Name, Email, Phone)
     - Step 2: Financial Profile (Monthly Income with RM prefix)
     - Step 3: Account Security (Password, Confirm Password)
-  - **Card Styling**: Gradient backgrounds rgba(18,18,18,0.95)→rgba(30,30,30,0.9), 3px silver left border, 2.5rem padding
-  - **Enhanced Inputs**: 1.15rem font, 1.25rem padding, dark semi-transparent bg, silver glow on focus
+  - **Card Styling**: Orange gradient backgrounds (#E64A19 → #D84315), 3px white border, 2.5rem padding
+  - **Enhanced Inputs**: 1.15rem font, 1.25rem padding, dark semi-transparent bg, white glow on focus
   - **Submit Button**: 1.5rem padding, white glow effect, rocket icon
 - **Login Form - Two-Column Layout** (1400px container):
-  - **Left Column (col-lg-5)**: Login form card
-    - **Galaxy Header**: 100px circular shield icon with gradient glow, "Customer Portal" gradient title (2.8rem)
-    - Email and Password fields in unified card (3rem padding)
-    - **Enhanced Inputs**: 1.15rem font, 1.25rem padding, dark semi-transparent bg, silver glow on focus
+  - **Left Column (col-lg-5)**: Login form card with orange background
+    - **Orange Hero Section**: White shield icon (rgba(255,255,255,0.95)) with white glow, white divider line, "Customer Portal" white bold title (font-weight 700) with text-shadow glow, white subtitle (font-weight 600)
+    - Email and Password fields in orange card (3rem padding)
+    - **All Labels**: White (#FFFFFF) font-weight 700 with white icon decorations
+    - **Enhanced Inputs**: 1.15rem font, 1.25rem padding, dark semi-transparent bg, white glow on focus
     - **Submit Button**: White glow login button with arrow icon (1.5rem padding)
-    - Register link at bottom
-  - **Right Column (col-lg-7)**: Platform features showcase
-    - **"Why Choose INFINITE GZ?"** section with stars icon
-    - **4 Core Features** with 60px icon cards and descriptions:
+    - Helper text: rgba(255,255,255,0.85) font-weight 600
+    - Register link: rgba(255,255,255,0.95) font-weight 700 with white glow on hover
+  - **Right Column (col-lg-7)**: Platform features showcase with orange background
+    - **"Why Choose INFINITE GZ?"** section with white bold title (font-weight 700) + white stars icon
+    - **4 Core Features** with 60px icon cards (white icons) and white bold descriptions:
       1. AI-Powered Financial Advisory (CPU icon)
       2. Zero-Risk Guarantee 50% Profit Sharing (Cash-coin icon)
       3. Complete Financial Management (Graph icon)
       4. Bank-Grade Security (Shield icon)
-    - **Trust Indicators** section: 100% Data Accuracy, 24/7 Access, 50% Profit Sharing
+    - **All Feature Text**: Titles #FFFFFF font-weight 700, descriptions rgba(255,255,255,0.9) font-weight 600
+    - **Trust Indicators** section: Orange background with white borders
+      - Values: #FFFFFF font-weight 900 (100%, 24/7, 50%)
+      - Labels: rgba(255,255,255,0.95) font-weight 900
     - All content fully translated (EN/ZH) using i18n system
 - **Shared Features**: 
   - slideDown animations for alerts
-  - Silver icon decorations on all labels
-  - Hover glow effects on links
+  - White icon decorations on all labels
+  - White glow effects on links (text-shadow)
   - Full i18n support with all text translatable (EN/ZH)
   - Responsive design maintaining visual impact (stacks on mobile)
+  - Consistent orange theme: bright orange backgrounds + white borders + bright white bold text
 
 ### Technical Implementations
 The backend is built with Flask, using SQLite with a context manager pattern for the database. Jinja2 handles server-side rendering, and Bootstrap 5 with Bootstrap Icons provides a responsive UI. Plotly.js is used for client-side data visualization.
