@@ -2,8 +2,8 @@
  * INFINITE GZ SDN BHD - Premium Enterprise SaaS Design System
  * Modern Minimal Professional Design - Inspired by Vercel, Linear, Stripe
  * 2025 Enterprise Grade UI
- * FORCE REFRESH: 1760155136988
- * ALL BUTTONS NOW USE BLACK-GOLD TEXT COLOR: #3D3020
+ * FORCE REFRESH: 1760155696885
+ * ALL BUTTONS NOW USE BLACK-GOLD TEXT COLOR: #3D3020 WITH !IMPORTANT
  */
 
 :root {
@@ -619,7 +619,7 @@ p {
 
 .btn-professional {
     background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%);
-    color: #3D3020;
+    color: #3D3020 !important;
     border: 2px solid rgba(230,74,25,0.2);
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius-md);
@@ -655,12 +655,12 @@ p {
     transform: translateY(-2px);
     box-shadow: 0 4px 20px rgba(255,255,255,0.4), var(--glow-white);
     border-color: rgba(230,74,25,0.5);
-    color: #2C2416;
+    color: #2C2416 !important;
 }
 
 .btn-professional-outline {
     background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%);
-    color: #3D3020;
+    color: #3D3020 !important;
     border: 2px solid rgba(230,74,25,0.3);
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius-md);
@@ -673,7 +673,7 @@ p {
 }
 
 .btn-professional-outline:hover {
-    color: #2C2416;
+    color: #2C2416 !important;
     border-color: rgba(230,74,25,0.5);
     background: linear-gradient(135deg, #FFFFFF 0%, #E5E5E5 100%);
 }
@@ -721,7 +721,7 @@ p {
 /* White Glowing Button - For Admin Pages */
 .btn-white-glow {
     background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%);
-    color: #3D3020;
+    color: #3D3020 !important;
     border: 2px solid rgba(230,74,25,0.3);
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius-md);
@@ -759,7 +759,7 @@ p {
     transform: translateY(-3px);
     box-shadow: 0 0 30px rgba(230,74,25,0.3), 0 6px 20px rgba(0, 0, 0, 0.5);
     border-color: rgba(230,74,25,0.5);
-    color: #2C2416;
+    color: #2C2416 !important;
     text-shadow: 0 0 12px rgba(44, 36, 22, 0.4), 0 0 20px rgba(44, 36, 22, 0.3);
 }
 
