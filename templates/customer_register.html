@@ -3,14 +3,20 @@
 {% block title %}{{ t('customer_registration') }} - {{ t('company_name') }}{% endblock %}
 
 {% block content %}
-<div class="container-professional">
+<div class="container-professional" style="max-width: 1200px;">
     <div class="row justify-content-center">
-        <div class="col-12 col-lg-10">
-            <div class="professional-card" style="margin-top: 4rem; padding: 3rem;">
-                <div class="text-center mb-4">
-                    <h2 class="section-title" style="font-size: 2.5rem; margin-bottom: 1rem;">{{ t('create_account') }}</h2>
-                    <p style="color: var(--text-secondary);">{{ t('register_subtitle') }}</p>
+        <div class="col-12">
+            <div class="professional-card" style="margin-top: 2.5rem; padding: 3.5rem 4rem;">
+                <!-- Header Section -->
+                <div class="text-center mb-5">
+                    <div style="display: inline-block; background: linear-gradient(135deg, rgba(192,192,192,0.15), rgba(255,255,255,0.08)); padding: 1rem 2rem; border-radius: 50px; margin-bottom: 1.5rem; border: 1px solid rgba(192,192,192,0.2);">
+                        <i class="bi bi-person-plus-fill" style="font-size: 2.5rem; color: var(--accent-silver);"></i>
+                    </div>
+                    <h2 class="section-title" style="font-size: 3rem; margin-bottom: 1rem;">{{ t('create_account') }}</h2>
+                    <p style="color: var(--text-secondary); font-size: 1.15rem; max-width: 600px; margin: 0 auto;">{{ t('register_subtitle') }}</p>
                 </div>
+
+                <div class="divider-professional" style="margin: 2rem 0;"></div>
 
                 {% if error %}
                 <div class="alert-professional alert-danger-pro mb-4">{{ error }}</div>
@@ -21,40 +27,85 @@
                 {% endif %}
 
                 <form method="POST" action="/customer/register">
-                    <div class="mb-3">
-                        <label for="name" class="form-label" style="color: var(--text-primary); font-weight: 600;">{{ t('full_name') }}</label>
-                        <input type="text" class="form-control-professional" id="name" name="name" required>
+                    <!-- Personal Information Section -->
+                    <div style="margin-bottom: 2.5rem;">
+                        <h4 style="color: var(--text-primary); margin-bottom: 1.5rem; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="bi bi-person-circle" style="color: var(--accent-silver);"></i>
+                            Personal Information
+                        </h4>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label" style="color: var(--text-primary); font-weight: 600; font-size: 1.05rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="bi bi-person"></i> {{ t('full_name') }}
+                                </label>
+                                <input type="text" class="form-control-professional" id="name" name="name" required style="padding: 1rem 1.25rem; font-size: 1.05rem;">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="email" class="form-label" style="color: var(--text-primary); font-weight: 600; font-size: 1.05rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="bi bi-envelope"></i> {{ t('email') }}
+                                </label>
+                                <input type="email" class="form-control-professional" id="email" name="email" required style="padding: 1rem 1.25rem; font-size: 1.05rem;">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label" style="color: var(--text-primary); font-weight: 600; font-size: 1.05rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="bi bi-telephone"></i> {{ t('phone') }}
+                                </label>
+                                <input type="tel" class="form-control-professional" id="phone" name="phone" required style="padding: 1rem 1.25rem; font-size: 1.05rem;" placeholder="+60 12-345 6789">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="monthly_income" class="form-label" style="color: var(--text-primary); font-weight: 600; font-size: 1.05rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="bi bi-cash-stack"></i> {{ t('monthly_income') }}
+                                </label>
+                                <input type="number" class="form-control-professional" id="monthly_income" name="monthly_income" step="0.01" required style="padding: 1rem 1.25rem; font-size: 1.05rem;" placeholder="RM 0.00">
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="email" class="form-label" style="color: var(--text-primary); font-weight: 600;">{{ t('email') }}</label>
-                        <input type="email" class="form-control-professional" id="email" name="email" required>
+                    <div class="divider-professional" style="margin: 2rem 0;"></div>
+
+                    <!-- Security Information Section -->
+                    <div style="margin-bottom: 2.5rem;">
+                        <h4 style="color: var(--text-primary); margin-bottom: 1.5rem; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="bi bi-shield-lock" style="color: var(--accent-silver);"></i>
+                            Security Information
+                        </h4>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label for="password" class="form-label" style="color: var(--text-primary); font-weight: 600; font-size: 1.05rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="bi bi-key"></i> {{ t('password') }}
+                                </label>
+                                <input type="password" class="form-control-professional" id="password" name="password" required minlength="6" style="padding: 1rem 1.25rem; font-size: 1.05rem;" placeholder="Minimum 6 characters">
+                                <small style="color: var(--text-tertiary); font-size: 0.9rem; margin-top: 0.5rem; display: block;">
+                                    <i class="bi bi-info-circle"></i> Use a strong password with letters, numbers, and symbols
+                                </small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="confirm_password" class="form-label" style="color: var(--text-primary); font-weight: 600; font-size: 1.05rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="bi bi-key-fill"></i> {{ t('confirm_password') }}
+                                </label>
+                                <input type="password" class="form-control-professional" id="confirm_password" name="confirm_password" required minlength="6" style="padding: 1rem 1.25rem; font-size: 1.05rem;" placeholder="Re-enter your password">
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="phone" class="form-label" style="color: var(--text-primary); font-weight: 600;">{{ t('phone') }}</label>
-                        <input type="tel" class="form-control-professional" id="phone" name="phone" required>
-                    </div>
+                    <div class="divider-professional" style="margin: 2rem 0;"></div>
 
-                    <div class="mb-3">
-                        <label for="monthly_income" class="form-label" style="color: var(--text-primary); font-weight: 600;">{{ t('monthly_income') }}</label>
-                        <input type="number" class="form-control-professional" id="monthly_income" name="monthly_income" step="0.01" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="password" class="form-label" style="color: var(--text-primary); font-weight: 600;">{{ t('password') }}</label>
-                        <input type="password" class="form-control-professional" id="password" name="password" required minlength="6">
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="confirm_password" class="form-label" style="color: var(--text-primary); font-weight: 600;">{{ t('confirm_password') }}</label>
-                        <input type="password" class="form-control-professional" id="confirm_password" name="confirm_password" required minlength="6">
-                    </div>
-
-                    <button type="submit" class="btn-professional w-100 mb-3">{{ t('register') }}</button>
-                    
-                    <div class="text-center">
-                        <a href="/customer/login" style="color: var(--primary);">{{ t('have_account') }}</a>
+                    <!-- Submit Section -->
+                    <div style="margin-top: 2.5rem;">
+                        <button type="submit" class="btn-white-glow w-100 mb-4" style="padding: 1.25rem; font-size: 1.2rem; font-weight: 700;">
+                            <i class="bi bi-check-circle"></i> {{ t('register') }}
+                        </button>
+                        
+                        <div class="text-center" style="padding: 1rem; background: rgba(192,192,192,0.05); border-radius: 8px; border: 1px solid rgba(192,192,192,0.1);">
+                            <p style="color: var(--text-tertiary); margin-bottom: 0.5rem; font-size: 0.95rem;">Already have an account?</p>
+                            <a href="/customer/login" class="btn-professional-outline" style="padding: 0.625rem 1.5rem; display: inline-block;">
+                                <i class="bi bi-box-arrow-in-right"></i> {{ t('have_account') }}
+                            </a>
+                        </div>
                     </div>
                 </form>
             </div>
