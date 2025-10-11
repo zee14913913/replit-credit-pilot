@@ -17,7 +17,7 @@
     --bg-solid-tertiary: #2A2A2A;
     
     /* Dark text for light backgrounds */
-    --text-dark: #0F0F0F;
+    --text-dark: #3D3020;
     
     /* Borders - Silver Accents */
     --border-primary: #404040;      /* Elephant gray borders */
@@ -85,7 +85,7 @@
     --bg-solid-secondary: #F5F5F5;
     --bg-solid-tertiary: #E5E5E5;
     
-    --text-dark: #0F0F0F;
+    --text-dark: #3D3020;
     
     /* Light Theme Borders */
     --border-primary: #D4D4D4;
@@ -661,12 +661,12 @@ p {
 }
 
 .btn-professional-outline {
-    background: transparent;
-    color: var(--text-secondary);
+    background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%);
+    color: #3D3020;
     border: 2px solid rgba(230,74,25,0.3);
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius-md);
-    font-weight: 500;
+    font-weight: 900;
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -675,9 +675,9 @@ p {
 }
 
 .btn-professional-outline:hover {
-    color: var(--text-primary);
+    color: #2C2416;
     border-color: rgba(230,74,25,0.5);
-    background: var(--bg-tertiary);
+    background: linear-gradient(135deg, #FFFFFF 0%, #E5E5E5 100%);
 }
 
 .btn-success-pro {
