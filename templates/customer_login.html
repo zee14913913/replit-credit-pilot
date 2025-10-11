@@ -3,82 +3,158 @@
 {% block title %}{{ t('customer_login') }} - {{ t('company_name') }}{% endblock %}
 
 {% block content %}
-<div class="container-professional" style="max-width: 650px; padding-top: 4rem; padding-bottom: 4rem;">
-    <!-- Elegant Header with Silver Line Design -->
-    <div class="text-center" style="margin-bottom: 3.5rem;">
-        <div style="margin-bottom: 2rem;">
-            <i class="bi bi-shield-lock-fill" style="font-size: 4.5rem; color: var(--accent-silver); filter: drop-shadow(0 0 20px rgba(192,192,192,0.5)); display: inline-block; margin-bottom: 1rem;"></i>
-        </div>
+<div class="container-professional" style="max-width: 1400px; padding-top: 3rem; padding-bottom: 4rem;">
+    <!-- Page Header -->
+    <div class="text-center" style="margin-bottom: 3rem;">
+        <i class="bi bi-shield-lock-fill" style="font-size: 4rem; color: var(--accent-silver); filter: drop-shadow(0 0 20px rgba(192,192,192,0.5)); display: inline-block; margin-bottom: 1rem;"></i>
         <div style="width: 80px; height: 2px; background: linear-gradient(90deg, transparent, var(--accent-silver), transparent); margin: 0 auto 1.5rem; box-shadow: 0 0 15px rgba(192,192,192,0.3);"></div>
-        <h1 style="font-size: 2.8rem; font-weight: 300; letter-spacing: 2px; background: linear-gradient(135deg, #FFFFFF, #C0C0C0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">
+        <h1 style="font-size: 3rem; font-weight: 300; letter-spacing: 2px; background: linear-gradient(135deg, #FFFFFF, #C0C0C0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem;">
             {{ t('customer_portal') }}
         </h1>
-        <p style="font-size: 1.1rem; color: var(--text-secondary); max-width: 450px; margin: 0 auto; line-height: 1.6;">
-            {{ t('login_subtitle') }}
-        </p>
+        <p style="font-size: 1.1rem; color: var(--text-secondary);">{{ t('login_subtitle') }}</p>
     </div>
 
     {% if error %}
-    <div class="alert-professional alert-danger-pro mb-4" style="animation: slideDown 0.3s ease;">{{ error }}</div>
+    <div class="alert-professional alert-danger-pro mb-4" style="animation: slideDown 0.3s ease; max-width: 900px; margin-left: auto; margin-right: auto;">{{ error }}</div>
     {% endif %}
 
-    <!-- Modern Login Form -->
-    <form method="POST" action="/customer/login" style="margin-top: 2.5rem;">
-        <!-- Login Card -->
-        <div class="professional-card" style="padding: 2.5rem; margin-bottom: 1.5rem; border-left: 3px solid var(--accent-silver); background: linear-gradient(135deg, rgba(18,18,18,0.95), rgba(30,30,30,0.9));">
-            <div style="margin-bottom: 2rem;">
-                <label for="email" style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
-                    <i class="bi bi-envelope-at" style="color: var(--accent-silver); margin-right: 0.5rem;"></i>{{ t('email') }}
-                </label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    required 
-                    class="form-control-professional" 
-                    placeholder="{{ t('email_placeholder') }}"
-                    style="font-size: 1.15rem; padding: 1.25rem 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.2); transition: all 0.3s ease;"
-                    onfocus="this.style.borderColor='rgba(192,192,192,0.5)'; this.style.boxShadow='0 0 15px rgba(192,192,192,0.15)'"
-                    onblur="this.style.borderColor='rgba(192,192,192,0.2)'; this.style.boxShadow='none'">
+    <!-- Two Column Layout -->
+    <div class="row g-4" style="margin-top: 2rem;">
+        <!-- Left Column: Login Form -->
+        <div class="col-lg-5">
+            <div class="professional-card" style="padding: 3rem; border-left: 3px solid var(--accent-silver); background: linear-gradient(135deg, rgba(18,18,18,0.95), rgba(30,30,30,0.9)); height: 100%;">
+                <h3 style="color: var(--text-primary); margin-bottom: 2rem; font-size: 1.5rem; font-weight: 600; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="bi bi-box-arrow-in-right" style="color: var(--accent-silver);"></i>
+                    {{ t('login') }}
+                </h3>
+
+                <form method="POST" action="/customer/login">
+                    <div style="margin-bottom: 2rem;">
+                        <label for="email" style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
+                            <i class="bi bi-envelope-at" style="color: var(--accent-silver); margin-right: 0.5rem;"></i>{{ t('email') }}
+                        </label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            required 
+                            class="form-control-professional" 
+                            placeholder="{{ t('email_placeholder') }}"
+                            style="font-size: 1.15rem; padding: 1.25rem 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.2); transition: all 0.3s ease;"
+                            onfocus="this.style.borderColor='rgba(192,192,192,0.5)'; this.style.boxShadow='0 0 15px rgba(192,192,192,0.15)'"
+                            onblur="this.style.borderColor='rgba(192,192,192,0.2)'; this.style.boxShadow='none'">
+                    </div>
+
+                    <div style="margin-bottom: 2.5rem;">
+                        <label for="password" style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
+                            <i class="bi bi-key" style="color: var(--accent-silver); margin-right: 0.5rem;"></i>{{ t('password') }}
+                        </label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            required 
+                            class="form-control-professional" 
+                            placeholder="{{ t('password_placeholder') }}"
+                            style="font-size: 1.15rem; padding: 1.25rem 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.2); transition: all 0.3s ease;"
+                            onfocus="this.style.borderColor='rgba(192,192,192,0.5)'; this.style.boxShadow='0 0 15px rgba(192,192,192,0.15)'"
+                            onblur="this.style.borderColor='rgba(192,192,192,0.2)'; this.style.boxShadow='none'">
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        class="btn-white-glow w-100" 
+                        style="padding: 1.5rem; font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; margin-bottom: 2rem;">
+                        <i class="bi bi-arrow-right-circle" style="margin-right: 0.75rem;"></i>{{ t('login') }}
+                    </button>
+
+                    <div class="text-center" style="padding-top: 1.5rem; border-top: 1px solid rgba(192,192,192,0.15);">
+                        <p style="color: var(--text-tertiary); margin-bottom: 0.75rem; font-size: 0.95rem;">{{ t('no_account_question') }}</p>
+                        <a href="/customer/register" style="color: var(--accent-silver); text-decoration: none; font-weight: 600; font-size: 1.05rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;" 
+                           onmouseover="this.style.color='#FFFFFF'; this.style.textShadow='0 0 10px rgba(192,192,192,0.5)'" 
+                           onmouseout="this.style.color='var(--accent-silver)'; this.style.textShadow='none'">
+                            <i class="bi bi-person-plus-fill"></i> {{ t('create_account') }}
+                        </a>
+                    </div>
+                </form>
             </div>
+        </div>
 
-            <div>
-                <label for="password" style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
-                    <i class="bi bi-key" style="color: var(--accent-silver); margin-right: 0.5rem;"></i>{{ t('password') }}
-                </label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    required 
-                    class="form-control-professional" 
-                    placeholder="{{ t('password_placeholder') }}"
-                    style="font-size: 1.15rem; padding: 1.25rem 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.2); transition: all 0.3s ease;"
-                    onfocus="this.style.borderColor='rgba(192,192,192,0.5)'; this.style.boxShadow='0 0 15px rgba(192,192,192,0.15)'"
-                    onblur="this.style.borderColor='rgba(192,192,192,0.2)'; this.style.boxShadow='none'">
+        <!-- Right Column: Platform Features & Benefits -->
+        <div class="col-lg-7">
+            <div class="professional-card" style="padding: 3rem; background: linear-gradient(135deg, rgba(18,18,18,0.95), rgba(30,30,30,0.9)); height: 100%;">
+                <h3 style="color: var(--text-primary); margin-bottom: 2rem; font-size: 1.5rem; font-weight: 600; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="bi bi-stars" style="color: var(--accent-silver);"></i>
+                    {{ t('why_choose_infinite') }}
+                </h3>
+
+                <!-- Feature List -->
+                <div style="display: grid; gap: 2rem;">
+                    <!-- Feature 1: AI-Powered Advisory -->
+                    <div style="display: flex; gap: 1.5rem; align-items: start;">
+                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(255,255,255,0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(192,192,192,0.3);">
+                            <i class="bi bi-cpu" style="font-size: 2rem; color: var(--accent-silver);"></i>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--text-primary); font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 600;">{{ t('feature_ai_advisory') }}</h4>
+                            <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.6; margin: 0;">{{ t('feature_ai_advisory_desc') }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Feature 2: 50/50 Profit Sharing -->
+                    <div style="display: flex; gap: 1.5rem; align-items: start;">
+                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(255,255,255,0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(192,192,192,0.3);">
+                            <i class="bi bi-cash-coin" style="font-size: 2rem; color: var(--accent-silver);"></i>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--text-primary); font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 600;">{{ t('feature_zero_risk') }}</h4>
+                            <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.6; margin: 0;">{{ t('feature_zero_risk_desc') }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Feature 3: Comprehensive Management -->
+                    <div style="display: flex; gap: 1.5rem; align-items: start;">
+                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(255,255,255,0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(192,192,192,0.3);">
+                            <i class="bi bi-graph-up-arrow" style="font-size: 2rem; color: var(--accent-silver);"></i>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--text-primary); font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 600;">{{ t('feature_management') }}</h4>
+                            <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.6; margin: 0;">{{ t('feature_management_desc') }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Feature 4: Bank-Grade Security -->
+                    <div style="display: flex; gap: 1.5rem; align-items: start;">
+                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(255,255,255,0.1)); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(192,192,192,0.3);">
+                            <i class="bi bi-shield-check" style="font-size: 2rem; color: var(--accent-silver);"></i>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--text-primary); font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 600;">{{ t('feature_security') }}</h4>
+                            <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.6; margin: 0;">{{ t('feature_security_desc') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trust Indicators -->
+                <div style="margin-top: 3rem; padding: 1.5rem; background: rgba(192,192,192,0.05); border-radius: 8px; border: 1px solid rgba(192,192,192,0.15);">
+                    <div style="display: flex; justify-content: space-around; text-align: center; flex-wrap: wrap; gap: 2rem;">
+                        <div>
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--accent-silver); margin-bottom: 0.5rem;">100%</div>
+                            <div style="color: var(--text-tertiary); font-size: 0.95rem;">{{ t('trust_data_accuracy') }}</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--accent-silver); margin-bottom: 0.5rem;">24/7</div>
+                            <div style="color: var(--text-tertiary); font-size: 0.95rem;">{{ t('trust_access_anytime') }}</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--accent-silver); margin-bottom: 0.5rem;">50%</div>
+                            <div style="color: var(--text-tertiary); font-size: 0.95rem;">{{ t('trust_profit_sharing') }}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <!-- Submit Button with Galaxy Effect -->
-        <div style="margin-top: 2rem;">
-            <button 
-                type="submit" 
-                class="btn-white-glow w-100" 
-                style="padding: 1.5rem; font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; position: relative; overflow: hidden; transition: all 0.3s ease;">
-                <i class="bi bi-box-arrow-in-right" style="margin-right: 0.75rem;"></i>{{ t('login') }}
-            </button>
-        </div>
-
-        <!-- Registration Link -->
-        <div class="text-center" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(192,192,192,0.15);">
-            <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 1rem;">{{ t('no_account_question') }}</p>
-            <a href="/customer/register" style="color: var(--accent-silver); text-decoration: none; font-weight: 600; font-size: 1.05rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;" 
-               onmouseover="this.style.color='#FFFFFF'; this.style.textShadow='0 0 10px rgba(192,192,192,0.5)'" 
-               onmouseout="this.style.color='var(--accent-silver)'; this.style.textShadow='none'">
-                <i class="bi bi-person-plus-fill"></i> {{ t('no_account') }}
-            </a>
-        </div>
-    </form>
+    </div>
 </div>
 
 <style>

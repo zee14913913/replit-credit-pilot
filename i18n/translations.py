@@ -52,6 +52,20 @@ TRANSLATIONS = {
         'password_hint': 'Use letters, numbers & symbols',
         'already_member': 'Already part of INFINITE GZ?',
         
+        # Login Page Features
+        'why_choose_infinite': 'Why Choose INFINITE GZ?',
+        'feature_ai_advisory': 'AI-Powered Financial Advisory',
+        'feature_ai_advisory_desc': 'Smart credit card recommendations and financial optimization solutions tailored to your spending habits and income profile.',
+        'feature_zero_risk': 'Zero-Risk Guarantee (50% Profit Sharing)',
+        'feature_zero_risk_desc': 'We only charge when you save money. No results, no fee! Share 50% of your savings with us - it\'s a win-win partnership.',
+        'feature_management': 'Complete Financial Management',
+        'feature_management_desc': 'Manage all credit cards, analyze spending patterns, track instalments, and access detailed monthly reports - all in one premium platform.',
+        'feature_security': 'Bank-Grade Security',
+        'feature_security_desc': 'Your financial data is encrypted and protected with enterprise-level security. Full compliance with PDPA 2010 regulations.',
+        'trust_data_accuracy': 'Data Accuracy',
+        'trust_access_anytime': 'Access Anytime',
+        'trust_profit_sharing': 'Profit Sharing',
+        
         # Customer Portal
         'my_dashboard': 'My Dashboard',
         'my_statements': 'My Statements',
@@ -253,6 +267,20 @@ TRANSLATIONS = {
         'income_help_text': '这有助于我们为您提供个性化的财务建议',
         'password_hint': '使用字母、数字和符号',
         'already_member': '已经是 INFINITE GZ 会员？',
+        
+        # Login Page Features
+        'why_choose_infinite': '为什么选择 INFINITE GZ？',
+        'feature_ai_advisory': 'AI智能财务咨询',
+        'feature_ai_advisory_desc': '根据您的消费习惯和收入状况，为您量身定制智能信用卡推荐和财务优化方案。',
+        'feature_zero_risk': '零风险保证（50%利润分成）',
+        'feature_zero_risk_desc': '只有在您省钱时我们才收费。无收益，不收费！与我们分享50%的节省金额 - 双赢合作模式。',
+        'feature_management': '全面财务管理',
+        'feature_management_desc': '管理所有信用卡、分析消费模式、跟踪分期付款、查看详细月度报告 - 一站式高端平台。',
+        'feature_security': '银行级安全保障',
+        'feature_security_desc': '您的财务数据采用企业级加密保护。完全符合2010年个人资料保护法(PDPA)规定。',
+        'trust_data_accuracy': '数据准确度',
+        'trust_access_anytime': '随时访问',
+        'trust_profit_sharing': '利润分成',
         
         # Customer Portal
         'my_dashboard': '我的仪表板',
