@@ -1215,3 +1215,84 @@ p {
 .mb-4 { margin-bottom: var(--space-lg); }
 .mb-5 { margin-bottom: var(--space-xl); }
 .mt-3 { margin-top: var(--space-md); }
+
+/* ========================================
+   BOOTSTRAP BUTTON OVERRIDES - BLACK GOLD TEXT
+   ======================================== */
+
+/* All Bootstrap outline buttons */
+.btn-outline-secondary,
+.btn-outline-light,
+.btn-outline-primary,
+.btn-outline-info,
+.btn-outline-warning,
+.btn-outline-danger {
+    color: #3D3020 !important;
+    font-weight: 900 !important;
+    border-width: 2px !important;
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-light:hover,
+.btn-outline-primary:hover,
+.btn-outline-info:hover,
+.btn-outline-warning:hover,
+.btn-outline-danger:hover {
+    color: #2C2416 !important;
+}
+
+/* All Bootstrap solid buttons with light backgrounds */
+.btn-light,
+.btn-secondary {
+    background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%) !important;
+    color: #3D3020 !important;
+    font-weight: 900 !important;
+    border: 2px solid rgba(0,0,0,0.1) !important;
+}
+
+.btn-light:hover,
+.btn-secondary:hover {
+    color: #2C2416 !important;
+    background: linear-gradient(135deg, #FFFFFF 0%, #E5E5E5 100%) !important;
+}
+
+/* Small buttons */
+.btn-sm,
+.btn-professional-sm {
+    color: #3D3020 !important;
+    font-weight: 900 !important;
+}
+
+.btn-sm:hover,
+.btn-professional-sm:hover {
+    color: #2C2416 !important;
+}
+
+/* File input button */
+.form-control::file-selector-button,
+input[type="file"]::file-selector-button {
+    background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%) !important;
+    color: #3D3020 !important;
+    font-weight: 900 !important;
+    border: 2px solid rgba(0,0,0,0.1) !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+}
+
+.form-control::file-selector-button:hover,
+input[type="file"]::file-selector-button:hover {
+    color: #2C2416 !important;
+    background: linear-gradient(135deg, #FFFFFF 0%, #E5E5E5 100%) !important;
+}
+
+/* Admin login button */
+.btn-admin-login {
+    background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%) !important;
+    color: #3D3020 !important;
+    font-weight: 900 !important;
+}
+
+.btn-admin-login:hover {
+    color: #2C2416 !important;
+}
