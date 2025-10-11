@@ -465,7 +465,7 @@ p {
     box-shadow: 0 4px 15px rgba(0,0,0,0.3), -3px 0 10px rgba(230,74,25,0.15);
 }
 
-/* Silver corner accents on cards */
+/* Orange corner accents on cards */
 .professional-card::before {
     content: '';
     position: absolute;
@@ -473,8 +473,8 @@ p {
     left: 0;
     width: 30px;
     height: 30px;
-    border-top: 2px solid var(--accent-silver);
-    border-left: 2px solid var(--accent-silver);
+    border-top: 2px solid rgba(230,74,25,0.4);
+    border-left: 2px solid rgba(230,74,25,0.4);
     opacity: 0.6;
     transition: opacity 0.3s ease;
 }
@@ -542,7 +542,7 @@ p {
     box-shadow: var(--shadow-md), 0 -3px 10px rgba(230,74,25,0.2);
 }
 
-/* Silver decorative corners for stat cards */
+/* Orange decorative corners for stat cards */
 .stat-card::before {
     content: '';
     position: absolute;
@@ -550,8 +550,8 @@ p {
     right: 0;
     width: 40px;
     height: 40px;
-    border-bottom: 2px solid var(--accent-silver);
-    border-right: 2px solid var(--accent-silver);
+    border-bottom: 2px solid rgba(230,74,25,0.4);
+    border-right: 2px solid rgba(230,74,25,0.4);
     opacity: 0.5;
 }
 
@@ -578,7 +578,7 @@ p {
 .btn-professional {
     background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%);
     color: var(--text-dark);
-    border: 1px solid var(--border-silver);
+    border: 2px solid rgba(230,74,25,0.2);
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius-md);
     font-weight: 600;
@@ -589,7 +589,7 @@ p {
     display: inline-block;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    box-shadow: 0 0 20px rgba(230,74,25,0.15);
 }
 
 /* Shimmer effect on buttons */
@@ -612,14 +612,14 @@ p {
     background: linear-gradient(135deg, #FFFFFF 0%, #E5E5E5 100%);
     transform: translateY(-2px);
     box-shadow: 0 4px 20px rgba(255,255,255,0.4), var(--glow-white);
-    border-color: var(--border-secondary);
+    border-color: rgba(230,74,25,0.5);
     color: var(--text-dark);
 }
 
 .btn-professional-outline {
     background: transparent;
     color: var(--text-secondary);
-    border: 1px solid var(--border-secondary);
+    border: 2px solid rgba(230,74,25,0.3);
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius-md);
     font-weight: 500;
@@ -632,14 +632,14 @@ p {
 
 .btn-professional-outline:hover {
     color: var(--text-primary);
-    border-color: var(--text-tertiary);
+    border-color: rgba(230,74,25,0.5);
     background: var(--bg-tertiary);
 }
 
 .btn-success-pro {
     background: linear-gradient(135deg, #404040 0%, #525252 100%);
     color: white;
-    border: 1px solid var(--border-silver);
+    border: 2px solid rgba(230,74,25,0.3);
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius-md);
     font-weight: 600;
@@ -650,7 +650,7 @@ p {
     display: inline-block;
     position: relative;
     overflow: hidden;
-    box-shadow: var(--shadow-sm), 0 0 10px rgba(192,192,192,0.1);
+    box-shadow: var(--shadow-sm), 0 0 10px rgba(230,74,25,0.15);
 }
 
 /* Shimmer on success buttons */
@@ -672,15 +672,15 @@ p {
 .btn-success-pro:hover {
     background: linear-gradient(135deg, #525252 0%, #666666 100%);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md), var(--glow-silver);
-    border-color: var(--border-secondary);
+    box-shadow: var(--shadow-md), 0 0 20px rgba(230,74,25,0.3);
+    border-color: rgba(230,74,25,0.5);
 }
 
 /* White Glowing Button - For Admin Pages */
 .btn-white-glow {
     background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%);
     color: #000000;
-    border: 2px solid var(--border-silver);
+    border: 2px solid rgba(230,74,25,0.3);
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius-md);
     font-weight: 700;
@@ -694,7 +694,7 @@ p {
     position: relative;
     overflow: hidden;
     text-shadow: 0 0 8px rgba(0, 0, 0, 0.3), 0 0 15px rgba(0, 0, 0, 0.2);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 4px 12px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 20px rgba(230,74,25,0.2), 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .btn-white-glow::before {
@@ -715,8 +715,8 @@ p {
 .btn-white-glow:hover {
     background: linear-gradient(135deg, #FFFFFF 0%, #FFFFFF 100%);
     transform: translateY(-3px);
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.5), 0 6px 20px rgba(0, 0, 0, 0.5);
-    border-color: rgba(192, 192, 192, 0.6);
+    box-shadow: 0 0 30px rgba(230,74,25,0.3), 0 6px 20px rgba(0, 0, 0, 0.5);
+    border-color: rgba(230,74,25,0.5);
     color: #000000;
     text-shadow: 0 0 12px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.3);
 }
@@ -746,13 +746,13 @@ p {
     font-size: 0.75rem;
     letter-spacing: 0.05em;
     padding: var(--space-sm) var(--space-md);
-    border-bottom: 1px solid var(--border-silver);
+    border-bottom: 2px solid rgba(230,74,25,0.3);
     text-align: left;
 }
 
 .table-professional td {
     padding: var(--space-sm) var(--space-md);
-    border-bottom: 1px solid var(--border-subtle);
+    border-bottom: 1px solid rgba(230,74,25,0.15);
     color: var(--text-secondary);
 }
 
@@ -825,7 +825,7 @@ p {
    ======================================== */
 
 .section-header {
-    border-bottom: 1px solid var(--border-subtle);
+    border-bottom: 2px solid rgba(230,74,25,0.3);
     padding-bottom: var(--space-lg);
     margin-bottom: var(--space-xl);
 }
@@ -867,8 +867,8 @@ p {
    ======================================== */
 
 .divider-professional {
-    height: 1px;
-    background: var(--border-subtle);
+    height: 2px;
+    background: rgba(230,74,25,0.3);
     margin: var(--space-md) 0;
 }
 
@@ -878,7 +878,7 @@ p {
 
 .form-control-professional {
     background: var(--bg-secondary);
-    border: 1px solid var(--border-silver);
+    border: 2px solid rgba(230,74,25,0.3);
     color: var(--text-primary);
     padding: 0.75rem 1.25rem;
     border-radius: var(--radius-md);
@@ -890,8 +890,8 @@ p {
 
 .form-control-professional:focus {
     outline: none;
-    border-color: var(--border-secondary);
-    box-shadow: var(--glow-silver);
+    border-color: rgba(230,74,25,0.6);
+    box-shadow: 0 0 20px rgba(230,74,25,0.3);
     background: var(--bg-tertiary);
 }
 
@@ -952,7 +952,7 @@ p {
     justify-content: center;
     gap: var(--space-xl);
     padding: 2.5rem 0 2rem 0;
-    border-bottom: 1px solid var(--border-subtle);
+    border-bottom: 2px solid rgba(230,74,25,0.3);
     width: 80%;
     margin: 0 auto;
 }
@@ -982,7 +982,7 @@ p {
     justify-content: space-between;
     gap: 3rem;
     padding: 2.5rem 0 2rem 0;
-    border-bottom: 1px solid var(--border-subtle);
+    border-bottom: 2px solid rgba(230,74,25,0.3);
     width: 75%;
     margin: 0 auto;
 }
@@ -1044,7 +1044,7 @@ p {
     background: var(--bg-tertiary);
     padding: 0.25rem;
     border-radius: var(--radius-md);
-    border: 1px solid var(--border-subtle);
+    border: 2px solid rgba(230,74,25,0.3);
 }
 
 .footer-lang-btn {
