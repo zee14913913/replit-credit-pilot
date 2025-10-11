@@ -3,113 +3,204 @@
 {% block title %}{{ t('customer_registration') }} - {{ t('company_name') }}{% endblock %}
 
 {% block content %}
-<div class="container-professional" style="max-width: 1200px;">
-    <div class="row justify-content-center">
-        <div class="col-12">
-            <div class="professional-card" style="margin-top: 2.5rem; padding: 3.5rem 4rem;">
-                <!-- Header Section -->
-                <div class="text-center mb-5">
-                    <div style="display: inline-block; background: linear-gradient(135deg, rgba(192,192,192,0.15), rgba(255,255,255,0.08)); padding: 1rem 2rem; border-radius: 50px; margin-bottom: 1.5rem; border: 1px solid rgba(192,192,192,0.2);">
-                        <i class="bi bi-person-plus-fill" style="font-size: 2.5rem; color: var(--accent-silver);"></i>
-                    </div>
-                    <h2 class="section-title" style="font-size: 3rem; margin-bottom: 1rem;">{{ t('create_account') }}</h2>
-                    <p style="color: var(--text-secondary); font-size: 1.15rem; max-width: 600px; margin: 0 auto;">{{ t('register_subtitle') }}</p>
-                </div>
-
-                <div class="divider-professional" style="margin: 2rem 0;"></div>
-
-                {% if error %}
-                <div class="alert-professional alert-danger-pro mb-4">{{ error }}</div>
-                {% endif %}
-
-                {% if success %}
-                <div class="alert-professional alert-success-pro mb-4">{{ success }}</div>
-                {% endif %}
-
-                <form method="POST" action="/customer/register">
-                    <!-- Personal Information Section -->
-                    <div style="margin-bottom: 2.5rem;">
-                        <h4 style="color: var(--text-primary); margin-bottom: 1.5rem; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <i class="bi bi-person-circle" style="color: var(--accent-silver);"></i>
-                            Personal Information
-                        </h4>
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <label for="name" class="form-label" style="color: var(--text-primary); font-weight: 600; font-size: 1.05rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-                                    <i class="bi bi-person"></i> {{ t('full_name') }}
-                                </label>
-                                <input type="text" class="form-control-professional" id="name" name="name" required style="padding: 1rem 1.25rem; font-size: 1.05rem;">
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="email" class="form-label" style="color: var(--text-primary); font-weight: 600; font-size: 1.05rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-                                    <i class="bi bi-envelope"></i> {{ t('email') }}
-                                </label>
-                                <input type="email" class="form-control-professional" id="email" name="email" required style="padding: 1rem 1.25rem; font-size: 1.05rem;">
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="phone" class="form-label" style="color: var(--text-primary); font-weight: 600; font-size: 1.05rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-                                    <i class="bi bi-telephone"></i> {{ t('phone') }}
-                                </label>
-                                <input type="tel" class="form-control-professional" id="phone" name="phone" required style="padding: 1rem 1.25rem; font-size: 1.05rem;" placeholder="+60 12-345 6789">
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="monthly_income" class="form-label" style="color: var(--text-primary); font-weight: 600; font-size: 1.05rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-                                    <i class="bi bi-cash-stack"></i> {{ t('monthly_income') }}
-                                </label>
-                                <input type="number" class="form-control-professional" id="monthly_income" name="monthly_income" step="0.01" required style="padding: 1rem 1.25rem; font-size: 1.05rem;" placeholder="RM 0.00">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="divider-professional" style="margin: 2rem 0;"></div>
-
-                    <!-- Security Information Section -->
-                    <div style="margin-bottom: 2.5rem;">
-                        <h4 style="color: var(--text-primary); margin-bottom: 1.5rem; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <i class="bi bi-shield-lock" style="color: var(--accent-silver);"></i>
-                            Security Information
-                        </h4>
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <label for="password" class="form-label" style="color: var(--text-primary); font-weight: 600; font-size: 1.05rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-                                    <i class="bi bi-key"></i> {{ t('password') }}
-                                </label>
-                                <input type="password" class="form-control-professional" id="password" name="password" required minlength="6" style="padding: 1rem 1.25rem; font-size: 1.05rem;" placeholder="Minimum 6 characters">
-                                <small style="color: var(--text-tertiary); font-size: 0.9rem; margin-top: 0.5rem; display: block;">
-                                    <i class="bi bi-info-circle"></i> Use a strong password with letters, numbers, and symbols
-                                </small>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="confirm_password" class="form-label" style="color: var(--text-primary); font-weight: 600; font-size: 1.05rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-                                    <i class="bi bi-key-fill"></i> {{ t('confirm_password') }}
-                                </label>
-                                <input type="password" class="form-control-professional" id="confirm_password" name="confirm_password" required minlength="6" style="padding: 1rem 1.25rem; font-size: 1.05rem;" placeholder="Re-enter your password">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="divider-professional" style="margin: 2rem 0;"></div>
-
-                    <!-- Submit Section -->
-                    <div style="margin-top: 2.5rem;">
-                        <button type="submit" class="btn-white-glow w-100 mb-4" style="padding: 1.25rem; font-size: 1.2rem; font-weight: 700;">
-                            <i class="bi bi-check-circle"></i> {{ t('register') }}
-                        </button>
-                        
-                        <div class="text-center" style="padding: 1rem; background: rgba(192,192,192,0.05); border-radius: 8px; border: 1px solid rgba(192,192,192,0.1);">
-                            <p style="color: var(--text-tertiary); margin-bottom: 0.5rem; font-size: 0.95rem;">Already have an account?</p>
-                            <a href="/customer/login" class="btn-professional-outline" style="padding: 0.625rem 1.5rem; display: inline-block;">
-                                <i class="bi bi-box-arrow-in-right"></i> {{ t('have_account') }}
-                            </a>
-                        </div>
-                    </div>
-                </form>
+<div class="container-professional" style="max-width: 800px; padding-top: 3rem; padding-bottom: 4rem;">
+    <!-- Elegant Header with Galaxy Effect -->
+    <div class="text-center" style="margin-bottom: 3.5rem;">
+        <div style="position: relative; display: inline-block; margin-bottom: 2rem;">
+            <div style="width: 120px; height: 120px; margin: 0 auto; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), rgba(192,192,192,0.1), transparent); border: 2px solid rgba(192,192,192,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: 0 0 40px rgba(192,192,192,0.2), inset 0 0 20px rgba(255,255,255,0.05);">
+                <i class="bi bi-stars" style="font-size: 3.5rem; color: var(--accent-silver); filter: drop-shadow(0 0 10px rgba(192,192,192,0.5));"></i>
             </div>
         </div>
+        <h1 style="font-size: 3.2rem; font-weight: 300; letter-spacing: 2px; background: linear-gradient(135deg, #FFFFFF, #C0C0C0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">
+            {{ t('welcome_infinite') }}
+        </h1>
+        <p style="font-size: 1.15rem; color: var(--text-secondary); max-width: 500px; margin: 0 auto; line-height: 1.6;">
+            {{ t('register_subtitle') }}
+        </p>
     </div>
+
+    {% if error %}
+    <div class="alert-professional alert-danger-pro mb-4" style="animation: slideDown 0.3s ease;">{{ error }}</div>
+    {% endif %}
+
+    {% if success %}
+    <div class="alert-professional alert-success-pro mb-4" style="animation: slideDown 0.3s ease;">{{ success }}</div>
+    {% endif %}
+
+    <!-- Modern Registration Form -->
+    <form method="POST" action="/customer/register" style="margin-top: 2.5rem;">
+        <!-- Your Identity -->
+        <div class="professional-card" style="padding: 2.5rem; margin-bottom: 1.5rem; border-left: 3px solid var(--accent-silver); background: linear-gradient(135deg, rgba(18,18,18,0.95), rgba(30,30,30,0.9));">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(255,255,255,0.1)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(192,192,192,0.3);">
+                    <span style="color: var(--accent-silver); font-weight: 700; font-size: 1.1rem;">1</span>
+                </div>
+                <h3 style="color: var(--text-primary); margin: 0; font-size: 1.4rem; font-weight: 600;">{{ t('your_identity') }}</h3>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <label for="name" style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
+                    <i class="bi bi-person-badge" style="color: var(--accent-silver); margin-right: 0.5rem;"></i>{{ t('full_name') }}
+                </label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    required 
+                    class="form-control-professional" 
+                    placeholder="{{ t('name_placeholder') }}"
+                    style="font-size: 1.15rem; padding: 1.25rem 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.2); transition: all 0.3s ease;"
+                    onfocus="this.style.borderColor='rgba(192,192,192,0.5)'; this.style.boxShadow='0 0 15px rgba(192,192,192,0.15)'"
+                    onblur="this.style.borderColor='rgba(192,192,192,0.2)'; this.style.boxShadow='none'">
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <label for="email" style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
+                        <i class="bi bi-envelope-at" style="color: var(--accent-silver); margin-right: 0.5rem;"></i>{{ t('email') }}
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        required 
+                        class="form-control-professional" 
+                        placeholder="{{ t('email_placeholder') }}"
+                        style="font-size: 1.15rem; padding: 1.25rem 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.2); transition: all 0.3s ease;"
+                        onfocus="this.style.borderColor='rgba(192,192,192,0.5)'; this.style.boxShadow='0 0 15px rgba(192,192,192,0.15)'"
+                        onblur="this.style.borderColor='rgba(192,192,192,0.2)'; this.style.boxShadow='none'">
+                </div>
+                <div class="col-md-6">
+                    <label for="phone" style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
+                        <i class="bi bi-phone" style="color: var(--accent-silver); margin-right: 0.5rem;"></i>{{ t('phone') }}
+                    </label>
+                    <input 
+                        type="tel" 
+                        id="phone" 
+                        name="phone" 
+                        required 
+                        class="form-control-professional" 
+                        placeholder="+60 12-345 6789"
+                        style="font-size: 1.15rem; padding: 1.25rem 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.2); transition: all 0.3s ease;"
+                        onfocus="this.style.borderColor='rgba(192,192,192,0.5)'; this.style.boxShadow='0 0 15px rgba(192,192,192,0.15)'"
+                        onblur="this.style.borderColor='rgba(192,192,192,0.2)'; this.style.boxShadow='none'">
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Profile -->
+        <div class="professional-card" style="padding: 2.5rem; margin-bottom: 1.5rem; border-left: 3px solid var(--accent-silver); background: linear-gradient(135deg, rgba(18,18,18,0.95), rgba(30,30,30,0.9));">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(255,255,255,0.1)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(192,192,192,0.3);">
+                    <span style="color: var(--accent-silver); font-weight: 700; font-size: 1.1rem;">2</span>
+                </div>
+                <h3 style="color: var(--text-primary); margin: 0; font-size: 1.4rem; font-weight: 600;">{{ t('financial_profile') }}</h3>
+            </div>
+
+            <div>
+                <label for="monthly_income" style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
+                    <i class="bi bi-cash-stack" style="color: var(--accent-silver); margin-right: 0.5rem;"></i>{{ t('monthly_income') }}
+                </label>
+                <div style="position: relative;">
+                    <span style="position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 1.15rem; font-weight: 600;">RM</span>
+                    <input 
+                        type="number" 
+                        id="monthly_income" 
+                        name="monthly_income" 
+                        step="0.01" 
+                        required 
+                        class="form-control-professional" 
+                        placeholder="0.00"
+                        style="font-size: 1.15rem; padding: 1.25rem 1.5rem 1.25rem 4rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.2); transition: all 0.3s ease;"
+                        onfocus="this.style.borderColor='rgba(192,192,192,0.5)'; this.style.boxShadow='0 0 15px rgba(192,192,192,0.15)'"
+                        onblur="this.style.borderColor='rgba(192,192,192,0.2)'; this.style.boxShadow='none'">
+                </div>
+                <small style="display: block; margin-top: 0.75rem; color: var(--text-tertiary); font-size: 0.95rem;">
+                    <i class="bi bi-info-circle" style="margin-right: 0.25rem;"></i>{{ t('income_help_text') }}
+                </small>
+            </div>
+        </div>
+
+        <!-- Account Security -->
+        <div class="professional-card" style="padding: 2.5rem; margin-bottom: 2rem; border-left: 3px solid var(--accent-silver); background: linear-gradient(135deg, rgba(18,18,18,0.95), rgba(30,30,30,0.9));">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(255,255,255,0.1)); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(192,192,192,0.3);">
+                    <span style="color: var(--accent-silver); font-weight: 700; font-size: 1.1rem;">3</span>
+                </div>
+                <h3 style="color: var(--text-primary); margin: 0; font-size: 1.4rem; font-weight: 600;">{{ t('account_security') }}</h3>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <label for="password" style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
+                        <i class="bi bi-shield-lock" style="color: var(--accent-silver); margin-right: 0.5rem;"></i>{{ t('password') }}
+                    </label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required 
+                        minlength="6"
+                        class="form-control-professional" 
+                        placeholder="{{ t('password_placeholder') }}"
+                        style="font-size: 1.15rem; padding: 1.25rem 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.2); transition: all 0.3s ease;"
+                        onfocus="this.style.borderColor='rgba(192,192,192,0.5)'; this.style.boxShadow='0 0 15px rgba(192,192,192,0.15)'"
+                        onblur="this.style.borderColor='rgba(192,192,192,0.2)'; this.style.boxShadow='none'">
+                    <small style="display: block; margin-top: 0.5rem; color: var(--text-tertiary); font-size: 0.9rem;">
+                        {{ t('password_hint') }}
+                    </small>
+                </div>
+                <div class="col-md-6">
+                    <label for="confirm_password" style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
+                        <i class="bi bi-shield-check" style="color: var(--accent-silver); margin-right: 0.5rem;"></i>{{ t('confirm_password') }}
+                    </label>
+                    <input 
+                        type="password" 
+                        id="confirm_password" 
+                        name="confirm_password" 
+                        required 
+                        minlength="6"
+                        class="form-control-professional" 
+                        placeholder="{{ t('confirm_password_placeholder') }}"
+                        style="font-size: 1.15rem; padding: 1.25rem 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.2); transition: all 0.3s ease;"
+                        onfocus="this.style.borderColor='rgba(192,192,192,0.5)'; this.style.boxShadow='0 0 15px rgba(192,192,192,0.15)'"
+                        onblur="this.style.borderColor='rgba(192,192,192,0.2)'; this.style.boxShadow='none'">
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button with Galaxy Effect -->
+        <div style="margin-top: 2.5rem;">
+            <button 
+                type="submit" 
+                class="btn-white-glow w-100" 
+                style="padding: 1.5rem; font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; position: relative; overflow: hidden; transition: all 0.3s ease;">
+                <i class="bi bi-rocket-takeoff" style="margin-right: 0.75rem;"></i>{{ t('register') }}
+            </button>
+        </div>
+
+        <!-- Login Link -->
+        <div class="text-center" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(192,192,192,0.15);">
+            <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 1rem;">{{ t('already_member') }}</p>
+            <a href="/customer/login" style="color: var(--accent-silver); text-decoration: none; font-weight: 600; font-size: 1.05rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;" 
+               onmouseover="this.style.color='#FFFFFF'; this.style.textShadow='0 0 10px rgba(192,192,192,0.5)'" 
+               onmouseout="this.style.color='var(--accent-silver)'; this.style.textShadow='none'">
+                <i class="bi bi-arrow-right-circle"></i> {{ t('have_account') }}
+            </a>
+        </div>
+    </form>
 </div>
+
+<style>
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
 {% endblock %}
