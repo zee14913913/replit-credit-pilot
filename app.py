@@ -1656,6 +1656,11 @@ def download_monthly_report(report_id):
         flash('报表文件不存在', 'error')
         return redirect(url_for('index'))
 
+@app.route('/test-buttons')
+def test_buttons():
+    """测试按钮颜色页面 - 用于验证CSS缓存是否清除"""
+    return render_template('test_buttons.html')
+
 
 start_scheduler()
 

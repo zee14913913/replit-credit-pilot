@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Color Test</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/professional.css') }}" id="professional-css">
+    <script>
+        (function() {
+            var cssLink = document.getElementById('professional-css');
+            if (cssLink) {
+                var href = cssLink.href.split('?')[0];
+                cssLink.href = href + '?v=' + Date.now();
+            }
+        })();
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .test-container {
+            background: rgba(255,255,255,0.1);
+            border: 3px solid rgba(255,255,255,0.9);
+            border-radius: 12px;
+            padding: 3rem;
+            max-width: 800px;
+        }
+        h1 {
+            color: white !important;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .button-row {
+            margin-bottom: 1.5rem;
+        }
+        .color-info {
+            background: rgba(0,0,0,0.3);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎨 按钮颜色测试页面</h1>
+        
+        <div class="button-row">
+            <h3 style="color: white; margin-bottom: 1rem;">按钮类型1: btn-professional</h3>
+            <a href="#" class="btn-professional">测试按钮 - 应该是黑金色文字 (#3D3020)</a>
+        </div>
+
+        <div class="button-row">
+            <h3 style="color: white; margin-bottom: 1rem;">按钮类型2: btn-professional-outline</h3>
+            <a href="#" class="btn-professional-outline">测试按钮 - 应该是黑金色文字 (#3D3020)</a>
+        </div>
+
+        <div class="button-row">
+            <h3 style="color: white; margin-bottom: 1rem;">按钮类型3: btn-white-glow</h3>
+            <a href="#" class="btn-white-glow">测试按钮 - 应该是黑金色文字 (#3D3020)</a>
+        </div>
+
+        <div class="color-info">
+            <strong>✅ 正确颜色：</strong> 所有按钮文字应该是 <strong>黑金色 (#3D3020)</strong><br>
+            <strong>❌ 错误颜色：</strong> 如果显示白色，说明CSS缓存未清除<br><br>
+            <strong>CSS加载时间戳：</strong> <span id="timestamp"></span><br>
+            <strong>当前时间：</strong> <span id="current-time"></span>
+        </div>
+    </div>
+
+    <script>
+        var link = document.getElementById('professional-css');
+        var timestamp = link.href.split('?v=')[1];
+        document.getElementById('timestamp').textContent = timestamp || '未知';
+        document.getElementById('current-time').textContent = new Date().toLocaleString('zh-CN');
+    </script>
+</body>
+</html>
