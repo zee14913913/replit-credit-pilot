@@ -13,8 +13,17 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/professional.css') }}?v=1760155696885">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/professional.css') }}?v=1760155696885" id="professional-css">
     <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+    <script>
+        (function() {
+            var cssLink = document.getElementById('professional-css');
+            if (cssLink) {
+                var href = cssLink.href.split('?')[0];
+                cssLink.href = href + '?v=' + Date.now();
+            }
+        })();
+    </script>
 </head>
 <body>
     <!-- Professional Navigation -->
