@@ -37,6 +37,14 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
     - Per-Card Detail Sections: Complete transaction details, category summaries, and optimization proposal comparisons with clear savings.
     - Overall Analysis Page: Comprehensive DSR calculation and a 7-step profit-sharing service workflow.
 - **Statement Comparison View:** Displays raw PDF alongside categorized reports for validation.
+- **12-Month Timeline View (Oct 2025):** Visual calendar grid for each credit card showing statement coverage across rolling 12-month window:
+    - Organized by statement_date for accurate monthly positioning
+    - Green checkmarks for months with statements, gray dash for missing months
+    - Displays amount, transaction count, and verification status per month
+    - Interactive click-to-view or upload missing statements
+    - Coverage percentage indicator for quick assessment
+    - Service module: `services/card_timeline.py`
+    - Reusable component: `templates/components/card_timeline_12months.html`
 
 **AI Advanced Analytics System:**
 - **Financial Health Scoring System:** 0-100 score with optimization suggestions.
