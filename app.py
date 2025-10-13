@@ -373,7 +373,7 @@ def upload_statement():
         else:
             flash(f'Statement uploaded. Validation Score: {final_confidence:.0f}%. Please review.', 'info')
         
-        return redirect(url_for('validate_statement', statement_id=statement_id))
+        return redirect(url_for('validate_statement_view', statement_id=statement_id))
     
     customers = get_all_customers()
     all_cards = []
