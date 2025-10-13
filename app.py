@@ -315,48 +315,55 @@ def upload_statement():
             elif dual_validation.get_status() == "FAILED":
                 validation_status = "requires_review"
         
+        # Ensure statement_date is never None
+        stmt_date = statement_info.get('statement_date') or datetime.now().strftime('%Y-%m-%d')
+        
         with get_db() as conn:
             cursor = conn.cursor()
-            cursor.execute('''
-                INSERT INTO statements 
-                (card_id, statement_date, statement_total, file_path, file_type, 
-                 validation_score, is_confirmed, inconsistencies)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (
-                card_id,
-                statement_info.get('statement_date', datetime.now().strftime('%Y-%m-%d')),
-                statement_info['total'],
-                file_path,
-                file_type,
-                final_confidence,
-                auto_confirmed,
-                json.dumps({
-                    'old_validation': validation_result['inconsistencies'],
-                    'dual_validation_status': dual_validation.get_status() if dual_validation else 'N/A',
-                    'dual_validation_errors': dual_validation.errors if dual_validation else [],
-                    'dual_validation_warnings': dual_validation.warnings if dual_validation else []
-                })
-            ))
-            statement_id = cursor.lastrowid
-            
-            for trans in transactions:
-                category, confidence = categorize_transaction(trans['description'])
+            try:
                 cursor.execute('''
-                    INSERT INTO transactions 
-                    (statement_id, transaction_date, description, amount, category, category_confidence)
-                    VALUES (?, ?, ?, ?, ?, ?)
+                    INSERT INTO statements 
+                    (card_id, statement_date, statement_total, file_path, file_type, 
+                     validation_score, is_confirmed, inconsistencies)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (
-                    statement_id,
-                    trans['date'],
-                    trans['description'],
-                    trans['amount'],
-                    category,
-                    confidence
+                    card_id,
+                    stmt_date,
+                    statement_info['total'],
+                    file_path,
+                    file_type,
+                    final_confidence,
+                    auto_confirmed,
+                    json.dumps({
+                        'old_validation': validation_result['inconsistencies'],
+                        'dual_validation_status': dual_validation.get_status() if dual_validation else 'N/A',
+                        'dual_validation_errors': dual_validation.errors if dual_validation else [],
+                        'dual_validation_warnings': dual_validation.warnings if dual_validation else []
+                    })
                 ))
-            
-            conn.commit()
-            log_audit(None, 'UPLOAD_STATEMENT', 'statement', statement_id, 
-                     f"Uploaded {file_type} statement with {len(transactions)} transactions. Validation: {validation_status}")
+                statement_id = cursor.lastrowid
+                
+                for trans in transactions:
+                    category, confidence = categorize_transaction(trans['description'])
+                    cursor.execute('''
+                        INSERT INTO transactions 
+                        (statement_id, transaction_date, description, amount, category, category_confidence)
+                        VALUES (?, ?, ?, ?, ?, ?)
+                    ''', (
+                        statement_id,
+                        trans['date'],
+                        trans['description'],
+                        trans['amount'],
+                        category,
+                        confidence
+                    ))
+                
+                conn.commit()
+                log_audit(None, 'UPLOAD_STATEMENT', 'statement', statement_id, 
+                         f"Uploaded {file_type} statement with {len(transactions)} transactions. Validation: {validation_status}")
+            except Exception as e:
+                conn.rollback()
+                raise e
         
         # Flash message based on validation status
         if validation_status == "auto_approved":
