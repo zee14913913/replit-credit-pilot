@@ -31,6 +31,9 @@ from db.tag_service import TagService
 from services.statement_organizer import StatementOrganizer
 from services.optimization_proposal import OptimizationProposal
 
+# Monthly report automation
+from services.monthly_report_scheduler import MonthlyReportScheduler
+
 # i18n support
 from i18n.translations import translate, TRANSLATIONS
 
@@ -55,6 +58,7 @@ email_service = EmailService()
 tag_service = TagService()
 statement_organizer = StatementOrganizer()
 optimization_service = OptimizationProposal()
+monthly_report_scheduler = MonthlyReportScheduler()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SESSION_SECRET', 'dev-secret-key-change-in-production')
@@ -1443,18 +1447,49 @@ def run_scheduler():
     # 新闻获取任务 - 每天早上8点自动获取
     schedule.every().day.at("08:00").do(auto_fetch_daily_news)
     
-    # 月度报表自动生成 - 每月5号早上10点自动生成上月报表（银河主题）
-    from report.galaxy_report_generator import generate_galaxy_monthly_reports
+    # ============================================================
+    # 月度报表自动化系统 - 30号生成，1号发送
+    # ============================================================
     
-    def check_and_generate_monthly_reports():
-        """检查是否为每月5号，如果是则生成银河主题报表"""
+    def auto_generate_monthly_reports():
+        """每月30号：自动生成所有客户的月度报表"""
         today = datetime.now()
-        if today.day == 5:
-            print(f"🌌 Generating galaxy-themed monthly reports for {today.strftime('%Y-%m')}...")
-            reports = generate_galaxy_monthly_reports()
-            print(f"✨ Generated {len(reports)} galaxy-themed monthly reports")
+        if today.day == 30:
+            print(f"\n{'='*60}")
+            print(f"🌌 [自动化任务] 开始生成所有客户的月度报表")
+            print(f"{'='*60}\n")
+            
+            result = monthly_report_scheduler.generate_all_customer_reports()
+            
+            print(f"\n{'='*60}")
+            print(f"✨ 报表生成完成！")
+            print(f"   - 成功: {result['success']} 份")
+            print(f"   - 失败: {result['failed']} 份")
+            print(f"   - 月份: {result['year']}-{result['month']}")
+            print(f"{'='*60}\n")
     
-    schedule.every().day.at("10:00").do(check_and_generate_monthly_reports)
+    def auto_send_monthly_reports():
+        """每月1号：自动发送上月报表给所有客户"""
+        today = datetime.now()
+        if today.day == 1:
+            print(f"\n{'='*60}")
+            print(f"📧 [自动化任务] 开始发送月度报表邮件")
+            print(f"{'='*60}\n")
+            
+            result = monthly_report_scheduler.send_reports_to_all_customers()
+            
+            print(f"\n{'='*60}")
+            print(f"✅ 邮件发送完成！")
+            print(f"   - 发送成功: {result['sent']} 封")
+            print(f"   - 发送失败: {result['failed']} 封")
+            print(f"   - 月份: {result['year']}-{result['month']}")
+            print(f"{'='*60}\n")
+    
+    # 每天上午10点检查是否为30号，如果是则生成报表
+    schedule.every().day.at("10:00").do(auto_generate_monthly_reports)
+    
+    # 每天上午9点检查是否为1号，如果是则发送报表邮件
+    schedule.every().day.at("09:00").do(auto_send_monthly_reports)
     
     while True:
         schedule.run_pending()
@@ -1833,6 +1868,71 @@ def init_consultation_table():
 
 # 初始化表
 init_consultation_table()
+
+
+# ============================================================================
+# 管理员测试路由 - 月度报表自动化系统
+# ============================================================================
+
+@app.route('/admin/test-generate-reports')
+def admin_test_generate_reports():
+    """
+    管理员测试：手动触发批量生成所有客户的月度报表
+    模拟每月30号的自动化任务
+    """
+    print(f"\n{'='*60}")
+    print(f"🧪 [管理员测试] 手动触发批量报表生成")
+    print(f"{'='*60}\n")
+    
+    result = monthly_report_scheduler.generate_all_customer_reports()
+    
+    flash(f'✅ 报表生成完成！成功: {result["success"]} 份，失败: {result["failed"]} 份（{result["year"]}-{result["month"]}月）', 'success')
+    return redirect(url_for('index'))
+
+
+@app.route('/admin/test-send-reports')
+def admin_test_send_reports():
+    """
+    管理员测试：手动触发批量发送月度报表邮件
+    模拟每月1号的自动化任务
+    """
+    print(f"\n{'='*60}")
+    print(f"🧪 [管理员测试] 手动触发批量邮件发送")
+    print(f"{'='*60}\n")
+    
+    result = monthly_report_scheduler.send_reports_to_all_customers()
+    
+    flash(f'✅ 邮件发送完成！成功: {result["sent"]} 封，失败: {result["failed"]} 封（{result["year"]}-{result["month"]}月）', 'success')
+    return redirect(url_for('index'))
+
+
+@app.route('/admin/automation-status')
+def admin_automation_status():
+    """查看自动化系统状态"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 统计本月已生成的报表
+        today = datetime.now()
+        cursor.execute('''
+            SELECT COUNT(*) as count, 
+                   SUM(CASE WHEN email_sent = 1 THEN 1 ELSE 0 END) as sent_count
+            FROM monthly_reports
+            WHERE report_year = ? AND report_month = ?
+        ''', (today.year, today.month - 1 if today.month > 1 else 12))
+        
+        stats = cursor.fetchone()
+    
+    return jsonify({
+        'status': 'running',
+        'current_month': f'{today.year}-{today.month}',
+        'last_month_reports_generated': stats['count'] if stats else 0,
+        'last_month_reports_sent': stats['sent_count'] if stats else 0,
+        'scheduler_tasks': [
+            {'task': '报表生成', 'schedule': '每月30号 10:00 AM', 'status': 'active'},
+            {'task': '邮件发送', 'schedule': '每月1号 9:00 AM', 'status': 'active'}
+        ]
+    })
 
 
 start_scheduler()

@@ -29,6 +29,8 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Customer Authorization Agreement:** Bilingual service agreement.
 - **Automated News Management System:** Curated 2025 Malaysia banking news with admin approval and deduplication.
 - **Instalment Tracking System:** Records instalment plans, generates payment schedules, and tracks remaining balances.
+- **Statement Organization System:** Organizes statements by statement_date (not due_date) with automatic monthly folder structure.
+- **Automated Monthly Report System:** Every month 30th at 10:00 AM - auto-generates all customer monthly reports; Every month 1st at 9:00 AM - auto-sends reports via email to all customers.
 - **Galaxy-Themed Monthly Report System 3.0:** Generates one comprehensive galaxy-themed PDF per customer per month, featuring:
     - Premium Visual Design: Pure black background with silver starfield, glowing borders, and professional typography.
     - Cover Page: Branding, customer info, and key metric highlights.
