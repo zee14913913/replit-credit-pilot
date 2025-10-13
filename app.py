@@ -2102,14 +2102,14 @@ def view_consumption_records(customer_id):
             return redirect(url_for('index'))
         customer_name = result[0]
         
-        # 获取消费记录（最近100条）
+        # 获取消费记录（最近100条）- 使用用户指定的字段名
         cursor.execute('''
-            SELECT c.id, c.bank, c.card_full_number, c.statement_date, 
-                   c.transaction_date, c.transaction_details, c.suppliers_usage,
-                   c.user_name, c.amount, c.category, c.supplier_fee
+            SELECT c.id, c.Bank, c.Card_FullNumber, c.Statement_Date, 
+                   c.Transactions_Date, c.Transaction_Details, c.Suppliers_Usage,
+                   c.User, c.Amount, c.category, c.supplier_fee
             FROM consumption_records c
             WHERE c.customer_id = ?
-            ORDER BY c.statement_date DESC, c.transaction_date DESC
+            ORDER BY c.Statement_Date DESC, c.Transactions_Date DESC
             LIMIT 100
         ''', (customer_id,))
         
@@ -2135,14 +2135,14 @@ def view_payment_records(customer_id):
             return redirect(url_for('index'))
         customer_name = result[0]
         
-        # 获取付款记录（最近100条）
+        # 获取付款记录（最近100条）- 使用用户指定的字段名
         cursor.execute('''
-            SELECT p.id, p.bank, p.credit_card_full_number, p.due_date,
-                   p.payment_date, p.payment_details, p.payment_user,
-                   p.payment_amount, p.category
+            SELECT p.id, p.Bank, p.CreditCard_Full_Number, p.DueDate,
+                   p.PaymentDate, p.PaymentDetails, p.PaymentUser,
+                   p.PaymentAmount, p.category
             FROM payment_records p
             WHERE p.customer_id = ?
-            ORDER BY p.payment_date DESC
+            ORDER BY p.PaymentDate DESC
             LIMIT 100
         ''', (customer_id,))
         

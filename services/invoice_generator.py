@@ -221,15 +221,15 @@ class SupplierInvoiceGenerator:
             cursor.execute('SELECT statement_date FROM statements WHERE id = ?', (statement_id,))
             statement_date = cursor.fetchone()[0]
             
-            # 获取所有供应商消费
+            # 获取所有供应商消费 - 使用用户指定的字段名
             cursor.execute('''
-                SELECT suppliers_usage, transaction_date, transaction_details, 
-                       amount, supplier_fee
+                SELECT Suppliers_Usage, Transactions_Date, Transaction_Details, 
+                       Amount, supplier_fee
                 FROM consumption_records
                 WHERE customer_id = ? AND statement_id = ?
                   AND category = 'Supplier Debit'
-                  AND suppliers_usage IS NOT NULL
-                ORDER BY suppliers_usage, transaction_date
+                  AND Suppliers_Usage IS NOT NULL
+                ORDER BY Suppliers_Usage, Transactions_Date
             ''', (customer_id, statement_id))
             
             all_supplier_txns = cursor.fetchall()

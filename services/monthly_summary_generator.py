@@ -108,26 +108,26 @@ class MonthlySummaryGenerator:
             total_points = 0
             
             for stmt_id, card_id, bank, last4, full_num, stmt_date in statements:
-                # 获取消费数据
+                # 获取消费数据 - 使用用户指定的字段名
                 cursor.execute('''
-                    SELECT category, suppliers_usage,
+                    SELECT category, Suppliers_Usage,
                            COUNT(*) as count,
-                           SUM(amount) as total,
+                           SUM(Amount) as total,
                            SUM(supplier_fee) as fees
                     FROM consumption_records
                     WHERE statement_id = ? AND customer_id = ?
-                    GROUP BY category, suppliers_usage
+                    GROUP BY category, Suppliers_Usage
                 ''', (stmt_id, customer_id))
                 consumption = cursor.fetchall()
                 
-                # 获取付款数据
+                # 获取付款数据 - 使用用户指定的字段名
                 cursor.execute('''
-                    SELECT category, payment_user,
+                    SELECT category, PaymentUser,
                            COUNT(*) as count,
-                           SUM(payment_amount) as total
+                           SUM(PaymentAmount) as total
                     FROM payment_records
                     WHERE statement_id = ? AND customer_id = ?
-                    GROUP BY category, payment_user
+                    GROUP BY category, PaymentUser
                 ''', (stmt_id, customer_id))
                 payments = cursor.fetchall()
                 

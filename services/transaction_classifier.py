@@ -227,12 +227,12 @@ def classify_and_save_transactions(statement_id: int, customer_id: int) -> Dict:
             )
             
             if classification['record_type'] == 'consumption':
-                # 保存到消费记录表
+                # 保存到消费记录表 - 使用精确的用户指定字段名
                 cursor.execute('''
                     INSERT INTO consumption_records 
-                    (customer_id, statement_id, bank, card_full_number, 
-                     statement_date, transaction_date, transaction_details,
-                     suppliers_usage, user_name, amount, category, supplier_fee)
+                    (customer_id, statement_id, Bank, Card_FullNumber, 
+                     Statement_Date, Transactions_Date, Transaction_Details,
+                     Suppliers_Usage, User, Amount, category, supplier_fee)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (
                     customer_id, statement_id, bank_name, card_full_number,
@@ -250,12 +250,12 @@ def classify_and_save_transactions(statement_id: int, customer_id: int) -> Dict:
                     stats['unclassified_debit'] += 1
             
             else:  # payment
-                # 保存到付款记录表
+                # 保存到付款记录表 - 使用精确的用户指定字段名
                 cursor.execute('''
                     INSERT INTO payment_records
-                    (customer_id, statement_id, bank, credit_card_full_number,
-                     due_date, payment_date, payment_details, payment_user,
-                     payment_amount, category)
+                    (customer_id, statement_id, Bank, CreditCard_Full_Number,
+                     DueDate, PaymentDate, PaymentDetails, PaymentUser,
+                     PaymentAmount, category)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (
                     customer_id, statement_id, bank_name, card_full_number,
@@ -286,9 +286,9 @@ def get_consumption_summary(customer_id: int, statement_id: int = None) -> List[
         cursor = conn.cursor()
         
         query = '''
-            SELECT category, suppliers_usage, 
+            SELECT category, Suppliers_Usage, 
                    COUNT(*) as count,
-                   SUM(amount) as total_amount,
+                   SUM(Amount) as total_amount,
                    SUM(supplier_fee) as total_fee
             FROM consumption_records
             WHERE customer_id = ?
@@ -299,7 +299,7 @@ def get_consumption_summary(customer_id: int, statement_id: int = None) -> List[
             query += ' AND statement_id = ?'
             params.append(statement_id)
         
-        query += ' GROUP BY category, suppliers_usage ORDER BY category, suppliers_usage'
+        query += ' GROUP BY category, Suppliers_Usage ORDER BY category, Suppliers_Usage'
         
         cursor.execute(query, params)
         results = cursor.fetchall()
@@ -330,9 +330,9 @@ def get_payment_summary(customer_id: int, statement_id: int = None) -> List[Dict
         cursor = conn.cursor()
         
         query = '''
-            SELECT category, payment_user,
+            SELECT category, PaymentUser,
                    COUNT(*) as count,
-                   SUM(payment_amount) as total_amount
+                   SUM(PaymentAmount) as total_amount
             FROM payment_records
             WHERE customer_id = ?
         '''
@@ -342,7 +342,7 @@ def get_payment_summary(customer_id: int, statement_id: int = None) -> List[Dict
             query += ' AND statement_id = ?'
             params.append(statement_id)
         
-        query += ' GROUP BY category, payment_user ORDER BY category'
+        query += ' GROUP BY category, PaymentUser ORDER BY category'
         
         cursor.execute(query, params)
         results = cursor.fetchall()
