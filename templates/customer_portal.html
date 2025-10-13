@@ -50,6 +50,26 @@
         </div>
     </div>
 
+    <!-- Monthly Reports -->
+    <div class="mb-5">
+        <h3 style="color: var(--accent-primary); margin-bottom: 1.5rem;">
+            <i class="bi bi-file-earmark-pdf"></i> {{ t.get('monthly_reports', 'Monthly Reports') }}
+        </h3>
+        
+        <div class="alert-professional alert-success-pro mb-3">
+            <i class="bi bi-stars"></i> 
+            <strong>Your professional financial reports are ready!</strong><br>
+            Download your comprehensive galaxy-themed monthly reports with complete analysis and optimization suggestions.
+        </div>
+        
+        <div class="d-grid gap-2">
+            <a href="{{ url_for('generate_enhanced_report', customer_id=customer.id) }}" 
+               class="btn-white-glow" target="_blank">
+                <i class="bi bi-file-earmark-arrow-down"></i> Download Latest Monthly Report (PDF)
+            </a>
+        </div>
+    </div>
+
     <!-- Statements -->
     <div class="mb-5">
         <h3 style="color: var(--accent-primary); margin-bottom: 1.5rem;">{{ t['my_statements'] }}</h3>
