@@ -617,6 +617,25 @@ p {
    BUTTONS - Modern & Professional
    ======================================== */
 
+/* FORCE BLACK-GOLD TEXT COLOR ON ALL BUTTON VARIANTS - MAXIMUM PRIORITY */
+a.btn-professional,
+a.btn-professional-outline,
+a.btn-white-glow,
+.btn-professional,
+.btn-professional-outline,
+.btn-white-glow {
+    color: #3D3020 !important;
+}
+
+a.btn-professional:hover,
+a.btn-professional-outline:hover,
+a.btn-white-glow:hover,
+.btn-professional:hover,
+.btn-professional-outline:hover,
+.btn-white-glow:hover {
+    color: #2C2416 !important;
+}
+
 .btn-professional {
     background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%);
     color: #3D3020 !important;
