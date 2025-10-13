@@ -10,7 +10,18 @@ Design requirements: Premium, sophisticated, high-end - suitable for professiona
 ## System Architecture
 
 ### UI/UX Decisions
-The platform features a Premium Enterprise UI with a **Vibrant Orange + Black + Silver** color scheme. Key design elements include orange header/footer sections, silver-white navigation buttons with black-gold text, and orange accent borders. It utilizes Inter typography, supports multi-language (English/Chinese), and includes a dark/light theme toggle. Forms, such as customer registration and login, are designed with a modern orange theme, white borders, and silver-white bold typography, featuring progressive layouts and enhanced input styling. Compact layout optimization has been implemented to ensure a professional enterprise feel.
+**Current Theme: Galaxy Universe (October 2025 Update)**
+The platform features an **elegant, mysterious, high-end Galaxy Universe theme** with pure black background, golden gradients, and starfield effects - matching the INFINITE GZ Finance Optimization Monthly Report cover aesthetic. 
+
+**Design System:**
+- **Color Palette:** Pure black (#000000) background, golden gradients (#D4AF37, #F4E6C3, #C9A961), champagne accents (#F7E7CE)
+- **Visual Effects:** Animated starfield background, golden light waves, frosted glass cards with golden borders, glowing hover effects
+- **Typography:** Inter font family with gradient golden headings, elegant letter-spacing, and subtle text shadows
+- **Interactive Elements:** Golden glow on hover, shimmer animations, smooth transitions
+- **Components:** Navigation with golden shimmer, glass-morphism cards, elegant tables, sophisticated footer
+- **Responsive Design:** Fully responsive with breakpoints at 1200px, 768px, and 480px
+- **Multi-language:** English/Chinese support with theme toggle
+- **CSS Architecture:** `galaxy-theme.css` - comprehensive styling for all page elements (navigation, cards, forms, tables, alerts, badges, footer)
 
 ### Technical Implementations
 The backend is built with Flask, utilizing SQLite with a context manager pattern for database interactions. Jinja2 handles server-side rendering, and Bootstrap 5 with Bootstrap Icons provides a responsive UI. Plotly.js is integrated for client-side data visualization.
