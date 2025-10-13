@@ -71,7 +71,7 @@ def get_customer_monthly_metrics(customer_id: int, year_month: str) -> Dict:
         
         # 4. 获取所有信用卡的指标
         cursor.execute('''
-            SELECT id, bank_name, last_four_digits
+            SELECT id, bank_name, card_number_last4
             FROM credit_cards
             WHERE customer_id = ?
         ''', (customer_id,))
@@ -117,48 +117,52 @@ def get_card_monthly_metrics(customer_id: int, card_id: int, year_month: str) ->
     with get_db() as conn:
         cursor = conn.cursor()
         
-        # 1. 该卡当月总消费
+        # 1. 该卡当月总消费（通过 statement_id 关联）
         cursor.execute('''
-            SELECT COALESCE(SUM(Amount), 0) as total
-            FROM consumption_records
-            WHERE customer_id = ? AND card_id = ?
-              AND strftime('%Y-%m', Statement_Date) = ?
+            SELECT COALESCE(SUM(c.Amount), 0) as total
+            FROM consumption_records c
+            INNER JOIN statements s ON c.statement_id = s.id
+            WHERE c.customer_id = ? AND s.card_id = ?
+              AND strftime('%Y-%m', c.Statement_Date) = ?
         ''', (customer_id, card_id, year_month))
         
         monthly_consumption = cursor.fetchone()[0]
         
-        # 2. 该卡当月总付款
+        # 2. 该卡当月总付款（通过 statement_id 关联）
         cursor.execute('''
-            SELECT COALESCE(SUM(PaymentAmount), 0) as total
-            FROM payment_records
-            WHERE customer_id = ? AND card_id = ?
-              AND strftime('%Y-%m', PaymentDate) = ?
+            SELECT COALESCE(SUM(p.PaymentAmount), 0) as total
+            FROM payment_records p
+            INNER JOIN statements s ON p.statement_id = s.id
+            WHERE p.customer_id = ? AND s.card_id = ?
+              AND strftime('%Y-%m', p.PaymentDate) = ?
         ''', (customer_id, card_id, year_month))
         
         monthly_payment = cursor.fetchone()[0]
         
-        # 3. 该卡累计欠款余额
+        # 3. 该卡累计欠款余额（通过 statement_id 关联）
         cursor.execute('''
-            SELECT COALESCE(SUM(Amount), 0) as total_consume
-            FROM consumption_records
-            WHERE customer_id = ? AND card_id = ?
+            SELECT COALESCE(SUM(c.Amount), 0) as total_consume
+            FROM consumption_records c
+            INNER JOIN statements s ON c.statement_id = s.id
+            WHERE c.customer_id = ? AND s.card_id = ?
         ''', (customer_id, card_id))
         
         card_all_consumption = cursor.fetchone()[0]
         
         cursor.execute('''
-            SELECT COALESCE(SUM(PaymentAmount), 0) as total_paid
-            FROM payment_records
-            WHERE customer_id = ? AND card_id = ?
+            SELECT COALESCE(SUM(p.PaymentAmount), 0) as total_paid
+            FROM payment_records p
+            INNER JOIN statements s ON p.statement_id = s.id
+            WHERE p.customer_id = ? AND s.card_id = ?
         ''', (customer_id, card_id))
         
         card_all_payment = cursor.fetchone()[0]
         
         cumulative_balance = card_all_consumption - card_all_payment
         
-        # 4. 该卡累计积分
+        # 4. 该卡累计积分（获取最新的累计积分）
         cursor.execute('''
-            SELECT COALESCE(SUM(points_earned), 0) as total_points
+            SELECT COALESCE(MAX(points_cumulative), 0) as total_points
             FROM points_tracking
             WHERE customer_id = ? AND card_id = ?
         ''', (customer_id, card_id))
@@ -167,13 +171,13 @@ def get_card_monthly_metrics(customer_id: int, card_id: int, year_month: str) ->
         
         # 5. 该月账单总欠款 (从statements表获取)
         cursor.execute('''
-            SELECT total_amount_due
+            SELECT statement_total
             FROM statements
-            WHERE customer_id = ? AND card_id = ?
+            WHERE card_id = ?
               AND strftime('%Y-%m', statement_date) = ?
             ORDER BY statement_date DESC
             LIMIT 1
-        ''', (customer_id, card_id, year_month))
+        ''', (card_id, year_month))
         
         stmt_result = cursor.fetchone()
         statement_balance = stmt_result[0] if stmt_result else 0.0
@@ -197,10 +201,10 @@ def get_all_cards_summary(customer_id: int, year_month: str) -> List[Dict]:
         cursor = conn.cursor()
         
         cursor.execute('''
-            SELECT id, bank_name, last_four_digits
+            SELECT id, bank_name, card_number_last4
             FROM credit_cards
             WHERE customer_id = ?
-            ORDER BY bank_name, last_four_digits
+            ORDER BY bank_name, card_number_last4
         ''', (customer_id,))
         
         cards = cursor.fetchall()
