@@ -27,6 +27,10 @@ from budget.budget_service import BudgetService
 from email_service.email_sender import EmailService
 from db.tag_service import TagService
 
+# Statement organizer and optimization
+from services.statement_organizer import StatementOrganizer
+from services.optimization_proposal import OptimizationProposal
+
 # i18n support
 from i18n.translations import translate, TRANSLATIONS
 
@@ -49,6 +53,8 @@ batch_service = BatchService()
 budget_service = BudgetService()
 email_service = EmailService()
 tag_service = TagService()
+statement_organizer = StatementOrganizer()
+optimization_service = OptimizationProposal()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SESSION_SECRET', 'dev-secret-key-change-in-production')
@@ -1698,6 +1704,135 @@ def download_monthly_report(report_id):
     else:
         flash('报表文件不存在', 'error')
         return redirect(url_for('index'))
+
+
+# ============================================================================
+# OPTIMIZATION PROPOSAL ROUTES - 自动化获客系统
+# ============================================================================
+
+@app.route('/customer/<int:customer_id>/optimization-proposal')
+def show_optimization_proposal(customer_id):
+    """
+    展示优化方案对比页面
+    核心：吸引客户点击「申请方案」按钮 = 自动获客
+    """
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取客户信息
+        cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+        customer = cursor.fetchone()
+        
+        if not customer:
+            flash('客户不存在', 'error')
+            return redirect(url_for('index'))
+        
+        # 获取客户所有信用卡
+        cursor.execute('SELECT * FROM credit_cards WHERE customer_id = ?', (customer_id,))
+        cards = cursor.fetchall()
+        
+        # 获取月度消费数据
+        cursor.execute('''
+            SELECT SUM(t.amount) as total_spending
+            FROM transactions t
+            JOIN statements s ON t.statement_id = s.id
+            JOIN credit_cards c ON s.card_id = c.id
+            WHERE c.customer_id = ? AND t.amount > 0
+            AND s.statement_date >= date('now', '-1 month')
+        ''', (customer_id,))
+        spending_row = cursor.fetchone()
+        monthly_spending = spending_row['total_spending'] if spending_row and spending_row['total_spending'] else 0
+    
+    # 准备客户数据
+    customer_data = {
+        'name': customer['name'],
+        'monthly_income': customer.get('monthly_income', 0),
+        'monthly_spending': monthly_spending,
+        'date': datetime.now().strftime('%Y-%m-%d'),
+        'cards': [
+            {
+                'bank_name': card['bank_name'],
+                'current_balance': card.get('current_balance', 0),
+                'credit_limit': card.get('credit_limit', 0)
+            }
+            for card in cards
+        ]
+    }
+    
+    # 生成优化方案
+    proposal = optimization_service.generate_comprehensive_proposal(customer_data)
+    
+    return render_template('optimization_proposal.html', 
+                          customer_name=customer['name'],
+                          customer_id=customer_id,
+                          proposal=proposal)
+
+
+@app.route('/customer/<int:customer_id>/request-optimization-consultation', methods=['GET', 'POST'])
+def request_optimization_consultation(customer_id):
+    """
+    客户申请咨询优化方案
+    关键：客户主动点击 = 自动获客成功！
+    """
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+        customer = cursor.fetchone()
+        
+        if not customer:
+            flash('客户不存在', 'error')
+            return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        # 记录咨询请求
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO consultation_requests 
+                (customer_id, request_date, status, notes)
+                VALUES (?, ?, 'pending', ?)
+            ''', (
+                customer_id,
+                datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                request.form.get('notes', '客户申请了解完整优化方案')
+            ))
+            conn.commit()
+        
+        # 发送通知给管理员（可选）
+        # email_service.send_consultation_request_notification(customer)
+        
+        flash('✅ 咨询申请已提交！我们的顾问将尽快与您联系。', 'success')
+        log_audit('consultation_request', customer_id, f'客户 {customer["name"]} 申请咨询优化方案')
+        
+        return redirect(url_for('customer_dashboard', customer_id=customer_id))
+    
+    # GET 请求：显示咨询申请表单
+    return render_template('request_consultation.html',
+                          customer_name=customer['name'],
+                          customer_id=customer_id)
+
+
+# 创建consultation_requests表（如果不存在）
+def init_consultation_table():
+    """初始化咨询请求表"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS consultation_requests (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                customer_id INTEGER NOT NULL,
+                request_date TEXT NOT NULL,
+                status TEXT DEFAULT 'pending',
+                notes TEXT,
+                follow_up_date TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (customer_id) REFERENCES customers(id)
+            )
+        ''')
+        conn.commit()
+
+# 初始化表
+init_consultation_table()
 
 
 start_scheduler()

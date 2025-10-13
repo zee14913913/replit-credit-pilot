@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}优化方案 - {{ customer_name }}{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- 页面标题 -->
+    <div class="section-header">
+        <h1 class="section-title">💰 财务优化方案</h1>
+        <p class="section-subtitle">为 {{ customer_name }} 量身定制的专业优化建议</p>
+    </div>
+
+    <!-- 总体节省对比卡片 - 超大展示吸引注意 -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="professional-card" style="background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%); border: 3px solid rgba(255,255,255,0.9); padding: 2.5rem;">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 style="color: #FFFFFF; font-weight: 900; font-size: 2rem; margin-bottom: 1rem;">
+                            🎯 使用我们的方案，您每月可以净赚：
+                        </h2>
+                        <div style="font-size: 4rem; font-weight: 900; color: #FFFFFF; text-shadow: 0 0 20px rgba(255,255,255,0.5);">
+                            RM {{ "%.2f"|format(proposal.total_benefit.customer_net_monthly) }}
+                        </div>
+                        <div style="font-size: 1.5rem; color: rgba(255,255,255,0.95); font-weight: 700; margin-top: 0.5rem;">
+                            年度净收益：RM {{ "%.2f"|format(proposal.total_benefit.customer_net_annual) }}
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div style="background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); padding: 1.5rem; border-radius: 12px;">
+                            <div style="color: #FFFFFF; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">
+                                50/50 零风险利润分成
+                            </div>
+                            <div style="color: rgba(255,255,255,0.9); font-weight: 600; font-size: 0.95rem;">
+                                ✅ 您保留：RM {{ "%.2f"|format(proposal.total_benefit.customer_net_monthly) }}/月<br>
+                                ✅ 顾问费：RM {{ "%.2f"|format(proposal.total_benefit.advisor_monthly_fee) }}/月<br>
+                                ✅ 只在实际节省后收费
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 当前状况 vs 优化方案对比 -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="professional-card" style="border: 3px solid rgba(255,122,67,0.3);">
+                <h3 style="color: rgba(255,255,255,0.95); font-weight: 700; margin-bottom: 1.5rem;">
+                    📊 您当前的财务状况
+                </h3>
+                <div class="mb-3">
+                    <div style="color: rgba(255,255,255,0.8); font-weight: 600; margin-bottom: 0.5rem;">总债务</div>
+                    <div style="font-size: 2rem; font-weight: 900; color: #FF6B6B;">
+                        RM {{ "%.2f"|format(proposal.current_status.total_debt) }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div style="color: rgba(255,255,255,0.8); font-weight: 600; margin-bottom: 0.5rem;">月度利息成本</div>
+                    <div style="font-size: 2rem; font-weight: 900; color: #FF6B6B;">
+                        RM {{ "%.2f"|format(proposal.current_status.monthly_interest_cost) }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div style="color: rgba(255,255,255,0.8); font-weight: 600; margin-bottom: 0.5rem;">平均利率</div>
+                    <div style="font-size: 2rem; font-weight: 900; color: #FF6B6B;">
+                        {{ "%.1f"|format(proposal.current_status.avg_interest_rate) }}% p.a.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div style="color: rgba(255,255,255,0.8); font-weight: 600; margin-bottom: 0.5rem;">年度利息成本</div>
+                    <div style="font-size: 1.5rem; font-weight: 900; color: #FF6B6B;">
+                        RM {{ "%.2f"|format(proposal.current_status.annual_interest_cost) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="professional-card" style="border: 3px solid #4CAF50;">
+                <h3 style="color: #4CAF50; font-weight: 700; margin-bottom: 1.5rem;">
+                    ✨ 使用优化方案后
+                </h3>
+                <div class="mb-3">
+                    <div style="color: rgba(255,255,255,0.8); font-weight: 600; margin-bottom: 0.5rem;">总债务</div>
+                    <div style="font-size: 2rem; font-weight: 900; color: #4CAF50;">
+                        RM {{ "%.2f"|format(proposal.current_status.total_debt) }}
+                        <small style="font-size: 0.7rem; color: rgba(255,255,255,0.7);">(不变)</small>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div style="color: rgba(255,255,255,0.8); font-weight: 600; margin-bottom: 0.5rem;">月度利息成本</div>
+                    <div style="font-size: 2rem; font-weight: 900; color: #4CAF50;">
+                        RM {{ "%.2f"|format(proposal.current_status.monthly_interest_cost - proposal.total_benefit.gross_monthly) }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div style="color: rgba(255,255,255,0.8); font-weight: 600; margin-bottom: 0.5rem;">优化后利率</div>
+                    <div style="font-size: 2rem; font-weight: 900; color: #4CAF50;">
+                        6.0% p.a.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div style="color: rgba(255,255,255,0.8); font-weight: 600; margin-bottom: 0.5rem;">月度节省</div>
+                    <div style="font-size: 1.5rem; font-weight: 900; color: #4CAF50;">
+                        RM {{ "%.2f"|format(proposal.total_benefit.gross_monthly) }} ⬇️
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 详细优化方案列表 -->
+    <div class="professional-card mb-4">
+        <h3 style="color: rgba(255,255,255,0.95); font-weight: 700; margin-bottom: 2rem;">
+            📋 优化方案详情（{{ proposal.num_proposals }} 个方案）
+        </h3>
+
+        {% for item in proposal.proposals %}
+        <div class="mb-4 pb-4" style="border-bottom: 2px solid rgba(255,122,67,0.2);">
+            <div class="row">
+                <div class="col-md-8">
+                    <h4 style="color: #FF7043; font-weight: 700; margin-bottom: 1rem;">
+                        {{ loop.index }}. {{ item.title }}
+                    </h4>
+                    <p style="color: rgba(255,255,255,0.85); font-weight: 600;">
+                        {{ item.description }}
+                    </p>
+
+                    <!-- 方案对比表格 -->
+                    <table class="table" style="margin-top: 1rem;">
+                        <thead>
+                            <tr style="background: rgba(255,122,67,0.1);">
+                                <th style="color: rgba(255,255,255,0.95); font-weight: 900;">项目</th>
+                                <th style="color: #FF6B6B; font-weight: 900;">当前</th>
+                                <th style="color: #4CAF50; font-weight: 900;">优化后</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if item.type == 'debt_consolidation' %}
+                            <tr>
+                                <td style="color: rgba(255,255,255,0.9); font-weight: 700;">利率</td>
+                                <td style="color: #FF6B6B; font-weight: 700;">{{ "%.1f"|format(item.current.interest_rate) }}%</td>
+                                <td style="color: #4CAF50; font-weight: 700;">{{ "%.1f"|format(item.proposed.interest_rate) }}%</td>
+                            </tr>
+                            <tr>
+                                <td style="color: rgba(255,255,255,0.9); font-weight: 700;">月度利息</td>
+                                <td style="color: #FF6B6B; font-weight: 700;">RM {{ "%.2f"|format(item.current.monthly_interest) }}</td>
+                                <td style="color: #4CAF50; font-weight: 700;">RM {{ "%.2f"|format(item.proposed.monthly_interest) }}</td>
+                            </tr>
+                            {% elif item.type == 'balance_transfer' %}
+                            <tr>
+                                <td style="color: rgba(255,255,255,0.9); font-weight: 700;">月度利息</td>
+                                <td style="color: #FF6B6B; font-weight: 700;">RM {{ "%.2f"|format(item.current.monthly_interest) }}</td>
+                                <td style="color: #4CAF50; font-weight: 700;">RM 0.00 ({{ item.proposed.promo_months }}个月促销)</td>
+                            </tr>
+                            <tr>
+                                <td style="color: rgba(255,255,255,0.9); font-weight: 700;">促销期成本</td>
+                                <td style="color: #FF6B6B; font-weight: 700;">RM {{ "%.2f"|format(item.current.promo_period_cost) }}</td>
+                                <td style="color: #4CAF50; font-weight: 700;">RM {{ "%.2f"|format(item.proposed.transfer_fee) }} (手续费)</td>
+                            </tr>
+                            {% elif item.type == 'cashback_optimization' %}
+                            <tr>
+                                <td style="color: rgba(255,255,255,0.9); font-weight: 700;">返现率</td>
+                                <td style="color: #FF6B6B; font-weight: 700;">{{ "%.1f"|format(item.current.cashback_rate) }}%</td>
+                                <td style="color: #4CAF50; font-weight: 700;">{{ "%.1f"|format(item.proposed.avg_cashback_rate) }}%</td>
+                            </tr>
+                            <tr>
+                                <td style="color: rgba(255,255,255,0.9); font-weight: 700;">月度返现</td>
+                                <td style="color: #FF6B6B; font-weight: 700;">RM {{ "%.2f"|format(item.current.monthly_cashback) }}</td>
+                                <td style="color: #4CAF50; font-weight: 700;">RM {{ "%.2f"|format(item.proposed.monthly_cashback) }}</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-md-4">
+                    <div style="background: rgba(76,175,80,0.15); border: 2px solid #4CAF50; padding: 1.5rem; border-radius: 12px;">
+                        <div style="color: #4CAF50; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">
+                            💰 节省金额
+                        </div>
+                        {% if item.type == 'debt_consolidation' %}
+                        <div style="font-size: 2rem; font-weight: 900; color: #4CAF50;">
+                            RM {{ "%.2f"|format(item.savings.monthly) }}
+                        </div>
+                        <div style="color: rgba(255,255,255,0.85); font-weight: 600;">每月节省</div>
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #4CAF50; margin-top: 0.5rem;">
+                            RM {{ "%.2f"|format(item.savings.annual) }}
+                        </div>
+                        <div style="color: rgba(255,255,255,0.85); font-weight: 600;">年度节省</div>
+                        {% elif item.type == 'balance_transfer' %}
+                        <div style="font-size: 2rem; font-weight: 900; color: #4CAF50;">
+                            RM {{ "%.2f"|format(item.savings.net_savings) }}
+                        </div>
+                        <div style="color: rgba(255,255,255,0.85); font-weight: 600;">促销期净省</div>
+                        {% elif item.type == 'cashback_optimization' %}
+                        <div style="font-size: 2rem; font-weight: 900; color: #4CAF50;">
+                            +RM {{ "%.2f"|format(item.earnings.monthly_increase) }}
+                        </div>
+                        <div style="color: rgba(255,255,255,0.85); font-weight: 600;">每月额外收入</div>
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #4CAF50; margin-top: 0.5rem;">
+                            +RM {{ "%.2f"|format(item.earnings.annual_increase) }}
+                        </div>
+                        <div style="color: rgba(255,255,255,0.85); font-weight: 600;">年度额外收入</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- CTA 按钮区域 - 超级显眼！ -->
+    <div class="professional-card" style="background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); border: 3px solid #FFFFFF; text-align: center; padding: 3rem;">
+        <h2 style="color: #2C2416; font-weight: 900; font-size: 2.5rem; margin-bottom: 1rem;">
+            🚀 立即行动，开始省钱！
+        </h2>
+        <p style="color: #3D3020; font-weight: 700; font-size: 1.3rem; margin-bottom: 2rem;">
+            每月净赚 RM {{ "%.2f"|format(proposal.total_benefit.customer_net_monthly) }}，一年净收益 RM {{ "%.2f"|format(proposal.total_benefit.customer_net_annual) }}
+        </p>
+        
+        <div class="d-flex gap-3 justify-content-center">
+            <a href="{{ url_for('request_optimization_consultation', customer_id=customer_id) }}" 
+               class="btn-white-glow" 
+               style="font-size: 1.5rem; padding: 1.25rem 3rem; background: #FFFFFF; color: #2C2416; font-weight: 900; box-shadow: 0 8px 20px rgba(0,0,0,0.3);">
+                <i class="bi bi-rocket-takeoff"></i> 申请了解完整优化方案
+            </a>
+            <a href="{{ url_for('customer_dashboard', customer_id=customer_id) }}" 
+               class="btn" 
+               style="font-size: 1.2rem; padding: 1.25rem 2rem; background: rgba(255,255,255,0.3); color: #2C2416; font-weight: 700; border: 2px solid #FFFFFF;">
+                <i class="bi bi-arrow-left"></i> 返回仪表板
+            </a>
+        </div>
+
+        <div style="margin-top: 2rem; color: #3D3020; font-weight: 600; font-size: 1.1rem;">
+            ✅ 零风险保证 | ✅ 只在实际节省后收费 | ✅ 50/50利润分成
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}申请咨询 - {{ customer_name }}{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- 页面标题 -->
+    <div class="section-header">
+        <h1 class="section-title">🚀 申请专业财务优化咨询</h1>
+        <p class="section-subtitle">我们的顾问将为 {{ customer_name }} 提供一对一专业服务</p>
+    </div>
+
+    <!-- 咨询申请表单 -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="professional-card">
+                <form method="POST">
+                    <div class="mb-4">
+                        <h3 style="color: rgba(255,255,255,0.95); font-weight: 700; margin-bottom: 1.5rem;">
+                            ✅ 您即将获得的服务：
+                        </h3>
+                        <ul style="color: rgba(255,255,255,0.9); font-weight: 600; font-size: 1.1rem; line-height: 2;">
+                            <li>✨ 一对一专业财务顾问咨询</li>
+                            <li>📊 详细优化方案分析和讲解</li>
+                            <li>💰 清晰的节省金额计算和实施步骤</li>
+                            <li>🛡️ 零风险50/50利润分成模式</li>
+                            <li>📈 持续跟进优化效果</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="notes" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
+                            <i class="bi bi-chat-dots"></i> 备注说明（可选）
+                        </label>
+                        <textarea 
+                            class="form-control" 
+                            id="notes" 
+                            name="notes" 
+                            rows="4"
+                            style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;"
+                            placeholder="请告诉我们您最关心的财务问题...（例如：想了解债务整合方案、希望提高信用卡返现等）"></textarea>
+                    </div>
+
+                    <div class="alert-professional alert-info-pro mb-4">
+                        <i class="bi bi-shield-check"></i> <strong>零风险承诺</strong><br>
+                        • 只在实际节省/收益后才收费<br>
+                        • 50/50利润分成，您保留50%的节省金额<br>
+                        • 没有隐藏费用，完全透明
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('show_optimization_proposal', customer_id=customer_id) }}" 
+                           class="btn-professional-outline flex-fill">
+                            <i class="bi bi-arrow-left"></i> 返回查看方案
+                        </a>
+                        <button type="submit" class="btn-white-glow flex-fill">
+                            <i class="bi bi-send-check"></i> 提交咨询申请
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 服务流程说明 -->
+            <div class="professional-card mt-4" style="background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%);">
+                <h3 style="color: #FFFFFF; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">
+                    📋 服务流程（7个步骤）
+                </h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px;">
+                                <div style="color: #FFFFFF; font-weight: 900;">1️⃣ 提交申请</div>
+                                <div style="color: rgba(255,255,255,0.9); font-weight: 600; font-size: 0.9rem;">填写咨询申请表</div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px;">
+                                <div style="color: #FFFFFF; font-weight: 900;">2️⃣ 顾问联系</div>
+                                <div style="color: rgba(255,255,255,0.9); font-weight: 600; font-size: 0.9rem;">24小时内专人联系</div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px;">
+                                <div style="color: #FFFFFF; font-weight: 900;">3️⃣ 深入分析</div>
+                                <div style="color: rgba(255,255,255,0.9); font-weight: 600; font-size: 0.9rem;">详细财务状况评估</div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px;">
+                                <div style="color: #FFFFFF; font-weight: 900;">4️⃣ 方案定制</div>
+                                <div style="color: rgba(255,255,255,0.9); font-weight: 600; font-size: 0.9rem;">量身定制优化方案</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px;">
+                                <div style="color: #FFFFFF; font-weight: 900;">5️⃣ 签约服务</div>
+                                <div style="color: rgba(255,255,255,0.9); font-weight: 600; font-size: 0.9rem;">双方确认方案并签约</div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px;">
+                                <div style="color: #FFFFFF; font-weight: 900;">6️⃣ 方案执行</div>
+                                <div style="color: rgba(255,255,255,0.9); font-weight: 600; font-size: 0.9rem;">协助客户完成优化</div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px;">
+                                <div style="color: #FFFFFF; font-weight: 900;">7️⃣ 收费结算</div>
+                                <div style="color: rgba(255,255,255,0.9); font-weight: 600; font-size: 0.9rem;">实际节省后收取50%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
