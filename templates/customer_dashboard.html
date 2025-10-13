@@ -28,7 +28,16 @@
 
     <!-- Credit Cards Section -->
     <div class="mb-5">
-        <h3 class="mb-4" style="color: var(--text-primary);">{{ t('credit_cards') }}</h3>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 style="color: var(--text-primary); margin: 0;">{{ t('credit_cards') }}</h3>
+            <a href="{{ url_for('add_credit_card', customer_id=customer.id) }}" 
+               class="btn-white-glow" 
+               style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">
+                <i class="bi bi-plus-circle"></i> 添加信用卡
+            </a>
+        </div>
+        
+        {% if cards %}
         <div class="row g-4">
             {% for card in cards %}
             <div class="col-md-6 col-lg-4">
@@ -59,6 +68,23 @@
             </div>
             {% endfor %}
         </div>
+        {% else %}
+        <!-- 没有信用卡时显示提示 -->
+        <div class="professional-card text-center py-5">
+            <div style="font-size: 3rem; color: rgba(255,122,67,0.3); margin-bottom: 1rem;">
+                <i class="bi bi-credit-card-2-front"></i>
+            </div>
+            <h4 style="color: rgba(255,255,255,0.9); margin-bottom: 1rem;">暂无信用卡</h4>
+            <p style="color: rgba(255,255,255,0.6); margin-bottom: 2rem;">
+                添加您的第一张信用卡开始管理财务
+            </p>
+            <a href="{{ url_for('add_credit_card', customer_id=customer.id) }}" 
+               class="btn-white-glow" 
+               style="padding: 1rem 2rem; font-size: 1.1rem;">
+                <i class="bi bi-plus-circle"></i> 添加第一张信用卡
+            </a>
+        </div>
+        {% endif %}
     </div>
 
     <!-- Instalment Plans Section -->

@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}添加信用卡 - {{ customer.name }}{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- 页面标题 -->
+    <div class="section-header">
+        <h1 class="section-title">💳 添加新信用卡</h1>
+        <p class="section-subtitle">为 {{ customer.name }} 添加信用卡账户</p>
+    </div>
+
+    <!-- 添加信用卡表单 -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="professional-card">
+                <form method="POST" action="{{ url_for('add_credit_card', customer_id=customer.id) }}">
+                    <h3 style="color: rgba(255,255,255,0.95); font-weight: 700; margin-bottom: 2rem; text-align: center;">
+                        🏦 信用卡信息
+                    </h3>
+
+                    <!-- 银行名称 -->
+                    <div class="mb-4">
+                        <label for="bank_name" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
+                            <i class="bi bi-bank"></i> 银行名称 / Bank Name <span style="color: #FF5722;">*</span>
+                        </label>
+                        <select 
+                            class="form-control" 
+                            id="bank_name" 
+                            name="bank_name" 
+                            required
+                            style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;">
+                            <option value="">-- 选择银行 / Select Bank --</option>
+                            <optgroup label="本地商业银行 / Local Commercial Banks">
+                                <option value="Maybank">Maybank (马来亚银行)</option>
+                                <option value="CIMB">CIMB Bank (联昌国际银行)</option>
+                                <option value="Public Bank">Public Bank (大众银行)</option>
+                                <option value="RHB Bank">RHB Bank (丰隆银行)</option>
+                                <option value="Hong Leong Bank">Hong Leong Bank (兴隆银行)</option>
+                                <option value="AmBank">AmBank (安联银行)</option>
+                                <option value="Alliance Bank">Alliance Bank (联盟银行)</option>
+                                <option value="Affin Bank">Affin Bank (艾芬银行)</option>
+                            </optgroup>
+                            <optgroup label="外资银行 / Foreign Banks">
+                                <option value="HSBC">HSBC (汇丰银行)</option>
+                                <option value="Standard Chartered">Standard Chartered (渣打银行)</option>
+                                <option value="Citibank">Citibank (花旗银行)</option>
+                                <option value="OCBC">OCBC Bank (华侨银行)</option>
+                                <option value="UOB">UOB (大华银行)</option>
+                            </optgroup>
+                            <optgroup label="伊斯兰银行 / Islamic Banks">
+                                <option value="Bank Islam">Bank Islam (伊斯兰银行)</option>
+                                <option value="Bank Rakyat">Bank Rakyat (人民银行)</option>
+                                <option value="Bank Muamalat">Bank Muamalat (木阿马拉银行)</option>
+                            </optgroup>
+                        </select>
+                        <small style="color: rgba(255,255,255,0.7);">支持马来西亚15家主要银行</small>
+                    </div>
+
+                    <!-- 卡号后四位 -->
+                    <div class="mb-4">
+                        <label for="card_number_last4" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
+                            <i class="bi bi-credit-card"></i> 卡号后四位 / Last 4 Digits <span style="color: #FF5722;">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="card_number_last4" 
+                            name="card_number_last4" 
+                            required
+                            maxlength="4"
+                            pattern="[0-9]{4}"
+                            placeholder="例如: 1234"
+                            style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;">
+                        <small style="color: rgba(255,255,255,0.7);">仅输入信用卡号码的最后4位数字</small>
+                    </div>
+
+                    <!-- 信用额度 -->
+                    <div class="mb-4">
+                        <label for="credit_limit" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
+                            <i class="bi bi-cash-stack"></i> 信用额度 / Credit Limit (RM) <span style="color: #FF5722;">*</span>
+                        </label>
+                        <input 
+                            type="number" 
+                            class="form-control" 
+                            id="credit_limit" 
+                            name="credit_limit" 
+                            required
+                            min="0"
+                            step="0.01"
+                            placeholder="例如: 10000.00"
+                            style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;">
+                        <small style="color: rgba(255,255,255,0.7);">您的信用卡最高可用额度</small>
+                    </div>
+
+                    <!-- 还款日 -->
+                    <div class="mb-4">
+                        <label for="due_date" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
+                            <i class="bi bi-calendar-event"></i> 每月还款日 / Monthly Due Date <span style="color: #FF5722;">*</span>
+                        </label>
+                        <select 
+                            class="form-control" 
+                            id="due_date" 
+                            name="due_date" 
+                            required
+                            style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;">
+                            <option value="">-- 选择日期 / Select Date --</option>
+                            {% for day in range(1, 32) %}
+                            <option value="{{ day }}">{{ day }} 号</option>
+                            {% endfor %}
+                        </select>
+                        <small style="color: rgba(255,255,255,0.7);">每月需要还款的日期（例如：每月15号）</small>
+                    </div>
+
+                    <!-- 提示信息 -->
+                    <div class="alert-professional alert-info-pro mb-4">
+                        <i class="bi bi-info-circle"></i> <strong>温馨提示</strong><br>
+                        • 添加信用卡后，您可以上传该卡的账单进行分析<br>
+                        • 系统支持PDF和Excel格式的账单文件<br>
+                        • 所有信息将被安全加密保存
+                    </div>
+
+                    <!-- 按钮组 -->
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('customer_dashboard', customer_id=customer.id) }}" 
+                           class="btn-professional-outline flex-fill">
+                            <i class="bi bi-arrow-left"></i> 返回
+                        </a>
+                        <button type="submit" class="btn-white-glow flex-fill">
+                            <i class="bi bi-plus-circle"></i> 添加信用卡
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 已有信用卡列表 -->
+            {% if existing_cards %}
+            <div class="professional-card mt-4" style="background: rgba(30,30,30,0.5); border: 1px solid rgba(192,192,192,0.2);">
+                <h4 style="color: rgba(255,255,255,0.95); font-weight: 700; margin-bottom: 1.5rem;">
+                    <i class="bi bi-credit-card-2-front"></i> 已有信用卡
+                </h4>
+                <div class="row g-3">
+                    {% for card in existing_cards %}
+                    <div class="col-md-6">
+                        <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255,122,67,0.2);">
+                            <div style="color: #FFFFFF; font-weight: 700; font-size: 1rem;">
+                                {{ card.bank_name }}
+                            </div>
+                            <div style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+                                ****{{ card.card_number_last4 }} | 额度: RM {{ "{:,.0f}".format(card.credit_limit) }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

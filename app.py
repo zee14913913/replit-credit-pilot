@@ -186,6 +186,68 @@ def customer_dashboard(customer_id):
                          instalment_plans=instalment_plans,
                          instalment_summary=instalment_summary)
 
+
+@app.route('/customer/<int:customer_id>/add-card', methods=['GET', 'POST'])
+def add_credit_card(customer_id):
+    """添加信用卡"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+        customer = cursor.fetchone()
+        
+        if not customer:
+            flash('客户不存在', 'error')
+            return redirect(url_for('index'))
+        
+        if request.method == 'POST':
+            bank_name = request.form.get('bank_name')
+            card_number_last4 = request.form.get('card_number_last4')
+            credit_limit = float(request.form.get('credit_limit', 0))
+            due_date = int(request.form.get('due_date'))
+            
+            # 验证必填字段
+            if not all([bank_name, card_number_last4, credit_limit, due_date]):
+                flash('请填写所有必填字段', 'error')
+                return redirect(request.url)
+            
+            # 验证卡号后四位
+            if not card_number_last4.isdigit() or len(card_number_last4) != 4:
+                flash('卡号后四位必须是4位数字', 'error')
+                return redirect(request.url)
+            
+            # 检查是否已存在相同的卡
+            cursor.execute('''
+                SELECT id FROM credit_cards 
+                WHERE customer_id = ? AND bank_name = ? AND card_number_last4 = ?
+            ''', (customer_id, bank_name, card_number_last4))
+            
+            if cursor.fetchone():
+                flash(f'该信用卡已存在：{bank_name} ****{card_number_last4}', 'error')
+                return redirect(request.url)
+            
+            # 插入新信用卡
+            cursor.execute('''
+                INSERT INTO credit_cards 
+                (customer_id, bank_name, card_number_last4, credit_limit, due_date)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (customer_id, bank_name, card_number_last4, credit_limit, due_date))
+            
+            conn.commit()
+            
+            flash(f'✅ 信用卡添加成功：{bank_name} ****{card_number_last4}', 'success')
+            log_audit('credit_card_added', customer_id, 
+                     f'添加信用卡：{bank_name} ****{card_number_last4}')
+            
+            return redirect(url_for('customer_dashboard', customer_id=customer_id))
+        
+        # GET 请求：显示添加表单
+        cursor.execute('SELECT * FROM credit_cards WHERE customer_id = ?', (customer_id,))
+        existing_cards = cursor.fetchall()
+    
+    return render_template('add_credit_card.html', 
+                          customer=customer,
+                          existing_cards=existing_cards)
+
 @app.route('/upload_statement', methods=['GET', 'POST'])
 def upload_statement():
     if request.method == 'POST':
