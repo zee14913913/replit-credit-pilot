@@ -11,9 +11,9 @@
                 <h1 class="section-title">{{ t('dashboard_title') }}</h1>
                 <p class="section-subtitle">{{ t('dashboard_subtitle') }}</p>
             </div>
-            <button type="button" class="btn-white-glow" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+            <a href="{{ url_for('add_customer_page') }}" class="btn-white-glow">
                 <i class="bi bi-person-plus"></i> Add Customer
-            </button>
+            </a>
         </div>
     </div>
 
@@ -62,65 +62,6 @@
                 </div>
             </div>
         {% endif %}
-    </div>
-</div>
-
-<!-- Add Customer Modal -->
-<div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%); border: 3px solid rgba(255,255,255,0.9);">
-            <div class="modal-header" style="border-bottom: 2px solid rgba(255,255,255,0.3);">
-                <h5 class="modal-title" id="addCustomerModalLabel" style="color: rgba(255,255,255,0.95); font-weight: 700;">
-                    <i class="bi bi-person-plus"></i> Add New Customer
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: brightness(0) invert(1);"></button>
-            </div>
-            <form method="POST" action="{{ url_for('add_customer') }}">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="customerName" class="form-label" style="color: #FFFFFF; font-weight: 700;">
-                            <i class="bi bi-person"></i> Full Name
-                        </label>
-                        <input type="text" class="form-control" id="customerName" name="name" required
-                               style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.3); color: #FFFFFF; font-weight: 600;"
-                               placeholder="e.g., John Tan">
-                    </div>
-                    <div class="mb-3">
-                        <label for="customerEmail" class="form-label" style="color: #FFFFFF; font-weight: 700;">
-                            <i class="bi bi-envelope"></i> Email Address
-                        </label>
-                        <input type="email" class="form-control" id="customerEmail" name="email" required
-                               style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.3); color: #FFFFFF; font-weight: 600;"
-                               placeholder="e.g., john@email.com">
-                    </div>
-                    <div class="mb-3">
-                        <label for="customerPhone" class="form-label" style="color: #FFFFFF; font-weight: 700;">
-                            <i class="bi bi-phone"></i> Phone Number
-                        </label>
-                        <input type="tel" class="form-control" id="customerPhone" name="phone" required
-                               style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.3); color: #FFFFFF; font-weight: 600;"
-                               placeholder="e.g., +60123456789">
-                    </div>
-                    <div class="mb-3">
-                        <label for="customerIncome" class="form-label" style="color: #FFFFFF; font-weight: 700;">
-                            <i class="bi bi-cash-coin"></i> Monthly Income (RM)
-                        </label>
-                        <input type="number" class="form-control" id="customerIncome" name="monthly_income" step="0.01" required
-                               style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.3); color: #FFFFFF; font-weight: 600;"
-                               placeholder="e.g., 5000.00">
-                    </div>
-                    <div class="alert" style="background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.95); font-weight: 600;">
-                        <i class="bi bi-info-circle"></i> After adding, the customer can register and login using their email address.
-                    </div>
-                </div>
-                <div class="modal-footer" style="border-top: 2px solid rgba(255,255,255,0.3);">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.3); color: #FFFFFF; font-weight: 700;">Cancel</button>
-                    <button type="submit" class="btn-white-glow">
-                        <i class="bi bi-check-circle"></i> Add Customer
-                    </button>
-                </div>
-            </form>
-        </div>
     </div>
 </div>
 {% endblock %}

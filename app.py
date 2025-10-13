@@ -94,6 +94,11 @@ def index():
     customers = get_all_customers()
     return render_template('index.html', customers=customers)
 
+@app.route('/add_customer_page')
+def add_customer_page():
+    """Show add customer form page"""
+    return render_template('add_customer.html')
+
 @app.route('/add_customer', methods=['POST'])
 def add_customer():
     """Admin: Add a new customer"""
