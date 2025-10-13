@@ -4,17 +4,10 @@ Provides 12-month timeline view for credit cards based on statement_date
 """
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
-import sqlite3
-from contextlib import contextmanager
-
-@contextmanager
-def get_db():
-    conn = sqlite3.connect('db/smart_loan_manager.db')
-    conn.row_factory = sqlite3.Row
-    try:
-        yield conn
-    finally:
-        conn.close()
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from db.database import get_db
 
 def get_card_12month_timeline(card_id):
     """

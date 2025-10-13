@@ -74,6 +74,8 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 
 ### Database
 - **SQLite**: File-based relational database (`db/smart_loan_manager.db`).
+- **Concurrency Optimization**: WAL mode enabled with 30-second timeout for concurrent access handling.
+- **Centralized Connection Management**: `db/database.py` provides unified `get_db()` context manager for all modules.
 
 ### File Storage
 - **Local File System**: `static/uploads` for uploaded statements and generated PDF reports.
