@@ -361,9 +361,35 @@ def upload_statement():
                 conn.commit()
                 log_audit(None, 'UPLOAD_STATEMENT', 'statement', statement_id, 
                          f"Uploaded {file_type} statement with {len(transactions)} transactions. Validation: {validation_status}")
+                
+                # **NEW: 自动分类和处理账单**
+                # 获取客户ID
+                cursor.execute('''
+                    SELECT customer_id FROM credit_cards WHERE id = ?
+                ''', (card_id,))
+                customer_id = cursor.fetchone()[0]
+                
             except Exception as e:
                 conn.rollback()
                 raise e
+        
+        # **NEW: 自动触发综合处理流程**
+        from services.statement_processor import process_uploaded_statement
+        try:
+            print("\n" + "="*80)
+            print("🚀 启动智能分类处理流程...")
+            print("="*80)
+            processing_result = process_uploaded_statement(customer_id, statement_id, file_path)
+            
+            if processing_result['success']:
+                flash(f'🎉 账单处理完成！已分类 {processing_result["step_1_classify"]["total_transactions"]} 笔交易', 'success')
+                if processing_result.get('step_2_invoices'):
+                    flash(f'📄 已生成 {len(processing_result["step_2_invoices"])} 张供应商发票', 'info')
+            else:
+                flash(f'⚠️ 账单已上传，但处理时出现问题：{"; ".join(processing_result["errors"])}', 'warning')
+        except Exception as e:
+            flash(f'⚠️ 账单已上传，但自动分类失败：{str(e)}', 'warning')
+            print(f"❌ 处理异常: {str(e)}")
         
         # Flash message based on validation status
         if validation_status == "auto_approved":
@@ -1976,6 +2002,156 @@ def init_consultation_table():
 
 # 初始化表
 init_consultation_table()
+
+
+# ============================================================================
+# 智能分类和月度报告路由
+# ============================================================================
+
+@app.route('/statement/<int:statement_id>/classification')
+def view_classification(statement_id):
+    """查看账单的分类结果"""
+    from services.transaction_classifier import get_consumption_summary, get_payment_summary
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取账单信息
+        cursor.execute('''
+            SELECT s.statement_date, s.statement_total, c.customer_id, c.bank_name, 
+                   c.card_number_last4, cu.name
+            FROM statements s
+            JOIN credit_cards c ON s.card_id = c.id
+            JOIN customers cu ON c.customer_id = cu.id
+            WHERE s.id = ?
+        ''', (statement_id,))
+        
+        stmt_info = cursor.fetchone()
+        if not stmt_info:
+            flash('账单不存在', 'error')
+            return redirect(url_for('index'))
+        
+        stmt_date, stmt_total, customer_id, bank, last4, customer_name = stmt_info
+    
+    # 获取分类汇总
+    consumption = get_consumption_summary(customer_id, statement_id)
+    payments = get_payment_summary(customer_id, statement_id)
+    
+    return render_template('classification_view.html',
+                          statement_id=statement_id,
+                          customer_name=customer_name,
+                          bank=bank,
+                          card_last4=last4,
+                          statement_date=stmt_date,
+                          statement_total=stmt_total,
+                          consumption=consumption,
+                          payments=payments)
+
+
+@app.route('/customer/<int:customer_id>/generate_monthly_report')
+def generate_monthly_report(customer_id):
+    """为客户生成月度报告"""
+    from services.statement_processor import generate_customer_monthly_report
+    from services.customer_folder_manager import setup_customer_folders
+    
+    month = request.args.get('month')  # 格式: YYYY-MM
+    
+    if not month:
+        # 默认使用当前月份
+        month = datetime.now().strftime('%Y-%m')
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT name FROM customers WHERE id = ?', (customer_id,))
+        result = cursor.fetchone()
+        if not result:
+            flash('客户不存在', 'error')
+            return redirect(url_for('index'))
+        customer_name = result[0]
+    
+    # 确保客户文件夹存在
+    try:
+        setup_customer_folders(customer_id)
+    except:
+        pass
+    
+    # 生成月度报告
+    report_path = generate_customer_monthly_report(customer_id, month)
+    
+    if report_path:
+        flash(f'✅ {month} 月度报告已生成！', 'success')
+        # 返回PDF文件供下载
+        return send_file(report_path, as_attachment=True, 
+                        download_name=f"Monthly_Report_{customer_name}_{month}.pdf")
+    else:
+        flash(f'⚠️ {month} 月份没有数据，无法生成报告', 'warning')
+        return redirect(url_for('customer_dashboard', customer_id=customer_id))
+
+
+@app.route('/customer/<int:customer_id>/consumption_records')
+def view_consumption_records(customer_id):
+    """查看客户的所有消费记录"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取客户信息
+        cursor.execute('SELECT name FROM customers WHERE id = ?', (customer_id,))
+        result = cursor.fetchone()
+        if not result:
+            flash('客户不存在', 'error')
+            return redirect(url_for('index'))
+        customer_name = result[0]
+        
+        # 获取消费记录（最近100条）
+        cursor.execute('''
+            SELECT c.id, c.bank, c.card_full_number, c.statement_date, 
+                   c.transaction_date, c.transaction_details, c.suppliers_usage,
+                   c.user_name, c.amount, c.category, c.supplier_fee
+            FROM consumption_records c
+            WHERE c.customer_id = ?
+            ORDER BY c.statement_date DESC, c.transaction_date DESC
+            LIMIT 100
+        ''', (customer_id,))
+        
+        records = cursor.fetchall()
+    
+    return render_template('consumption_records.html',
+                          customer_id=customer_id,
+                          customer_name=customer_name,
+                          records=records)
+
+
+@app.route('/customer/<int:customer_id>/payment_records')
+def view_payment_records(customer_id):
+    """查看客户的所有付款记录"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取客户信息
+        cursor.execute('SELECT name FROM customers WHERE id = ?', (customer_id,))
+        result = cursor.fetchone()
+        if not result:
+            flash('客户不存在', 'error')
+            return redirect(url_for('index'))
+        customer_name = result[0]
+        
+        # 获取付款记录（最近100条）
+        cursor.execute('''
+            SELECT p.id, p.bank, p.credit_card_full_number, p.due_date,
+                   p.payment_date, p.payment_details, p.payment_user,
+                   p.payment_amount, p.category
+            FROM payment_records p
+            WHERE p.customer_id = ?
+            ORDER BY p.payment_date DESC
+            LIMIT 100
+        ''', (customer_id,))
+        
+        records = cursor.fetchall()
+    
+    return render_template('payment_records.html',
+                          customer_id=customer_id,
+                          customer_name=customer_name,
+                          records=records)
 
 
 # ============================================================================
