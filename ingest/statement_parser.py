@@ -134,7 +134,7 @@ def detect_bank(file_path):
 
 def parse_cimb_statement(file_path):
     """CIMB Bank - Malaysia's 2nd largest bank"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "CIMB"}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -155,7 +155,7 @@ def parse_cimb_statement(file_path):
 
 def parse_maybank_statement(file_path):
     """Maybank - Malaysia's largest bank (40% market share)"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "MAYBANK"}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -199,7 +199,7 @@ def parse_maybank_statement(file_path):
 
 def parse_public_bank_statement(file_path):
     """Public Bank - Malaysia's 3rd largest bank (15% market share)"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "PUBLIC"}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -233,7 +233,7 @@ def parse_public_bank_statement(file_path):
 
 def parse_rhb_statement(file_path):
     """RHB Bank - Malaysia's 4th largest bank"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "RHB"}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -262,7 +262,7 @@ def parse_rhb_statement(file_path):
 
 def parse_hong_leong_statement(file_path):
     """Hong Leong Bank"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "HONGLEONG"}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -291,7 +291,7 @@ def parse_hong_leong_statement(file_path):
 
 def parse_ambank_statement(file_path):
     """AmBank"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "AMBANK"}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -320,7 +320,7 @@ def parse_ambank_statement(file_path):
 
 def parse_alliance_statement(file_path):
     """Alliance Bank"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "ALLIANCE"}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -349,7 +349,7 @@ def parse_alliance_statement(file_path):
 
 def parse_affin_statement(file_path):
     """Affin Bank"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "AFFIN"}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -378,7 +378,7 @@ def parse_affin_statement(file_path):
 
 def parse_hsbc_statement(file_path):
     """HSBC - International bank"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "HSBC"}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -399,7 +399,7 @@ def parse_hsbc_statement(file_path):
 
 def parse_standard_chartered_statement(file_path):
     """Standard Chartered - Premium international bank"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "STANCHART"}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -428,7 +428,7 @@ def parse_standard_chartered_statement(file_path):
 
 def parse_ocbc_statement(file_path):
     """OCBC Bank - Singapore bank"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "OCBC"}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -463,6 +463,25 @@ def parse_uob_statement(file_path):
             with pdfplumber.open(file_path) as pdf:
                 text = "\n".join(p.extract_text() for p in pdf.pages)
             
+            card_num_match = re.search(r"Card\s+(?:No|Number|Ending)?[\s:]*[*X\d\s-]*(\d{4})", text, re.IGNORECASE)
+            if card_num_match:
+                info["card_last4"] = card_num_match.group(1)
+            
+            date_match = re.search(r"Statement\s+Date[\s:]*(\d{2}[/-]\d{2}[/-]\d{2,4})", text, re.IGNORECASE)
+            if not date_match:
+                date_match = re.search(r"(?:Date|As of)[\s:]*(\d{2}[/-]\d{2}[/-]\d{2,4})", text, re.IGNORECASE)
+            if date_match:
+                date_str = date_match.group(1).replace("/", "-")
+                try:
+                    from datetime import datetime
+                    if len(date_str.split("-")[-1]) == 2:
+                        parsed_date = datetime.strptime(date_str, "%d-%m-%y")
+                    else:
+                        parsed_date = datetime.strptime(date_str, "%d-%m-%Y")
+                    info["statement_date"] = parsed_date.strftime("%Y-%m-%d")
+                except:
+                    info["statement_date"] = date_str
+            
             pattern = r"(\d{2}/\d{2})\s+(.+?)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})"
             
             for m in re.finditer(pattern, text):
@@ -477,7 +496,7 @@ def parse_uob_statement(file_path):
                 transactions.append({"date": str(r.get("Date", "")), "description": str(r.get("Description", "")), "amount": float(r.get("Amount", 0))})
         
         info["total"] = sum(t["amount"] for t in transactions)
-        print(f"✅ UOB parsed {len(transactions)} transactions.")
+        print(f"✅ UOB parsed {len(transactions)} transactions. Card: ****{info['card_last4']}, Date: {info['statement_date']}")
         return info, transactions
     except Exception as e:
         print(f"❌ Error parsing UOB: {e}")
@@ -486,7 +505,7 @@ def parse_uob_statement(file_path):
 
 def parse_bank_islam_statement(file_path):
     """Bank Islam - Islamic banking"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "ISLAM"}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -515,7 +534,7 @@ def parse_bank_islam_statement(file_path):
 
 def parse_bank_rakyat_statement(file_path):
     """Bank Rakyat - Cooperative bank"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "RAKYAT"}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -544,7 +563,7 @@ def parse_bank_rakyat_statement(file_path):
 
 def parse_bank_muamalat_statement(file_path):
     """Bank Muamalat - Islamic banking"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "MUAMALAT"}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -575,6 +594,11 @@ def parse_statement_auto(file_path):
     """
     Auto-detect and parse credit card statements
     Supports 15 Malaysian banks covering 95%+ of market
+    Returns: (info_dict, transactions_list) where info_dict contains:
+        - bank: detected bank name
+        - card_last4: last 4 digits of card
+        - statement_date: statement date (YYYY-MM-DD format)
+        - total: total amount
     """
     bank = detect_bank(file_path)
     
@@ -597,7 +621,10 @@ def parse_statement_auto(file_path):
     }
     
     if bank in bank_parsers:
-        return bank_parsers[bank](file_path)
+        info, transactions = bank_parsers[bank](file_path)
+        if info and isinstance(info, dict):
+            info['bank'] = bank
+        return info, transactions
     else:
         print(f"⚠️ Unsupported or unrecognized bank format: {bank}")
         return None, []

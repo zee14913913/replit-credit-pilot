@@ -789,19 +789,19 @@ def delete_budget(budget_id, customer_id):
 
 @app.route('/batch/upload/<int:customer_id>', methods=['GET', 'POST'])
 def batch_upload(customer_id):
-    """Batch upload statements"""
+    """Batch upload statements with auto-create credit cards"""
     if request.method == 'POST':
         files = request.files.getlist('statement_files')
-        card_id = request.form.get('card_id')
         
-        if not files or not card_id:
-            flash('Please select files and card', 'error')
+        if not files:
+            flash('Please select files to upload', 'error')
             return redirect(request.url)
         
         batch_id = batch_service.create_batch_job('upload', customer_id, len(files))
         
         processed = 0
         failed = 0
+        created_cards = []
         
         for file in files:
             try:
@@ -811,36 +811,67 @@ def batch_upload(customer_id):
                 
                 result = parse_statement_auto(file_path)
                 
-                # Extract data from result tuple (data_dict, transactions_list)
                 if isinstance(result, tuple) and len(result) >= 2:
                     data_dict, _ = result
                     if data_dict and isinstance(data_dict, dict):
+                        bank_name = data_dict.get('bank', 'Unknown')
+                        card_last4 = data_dict.get('card_last4', None)
                         statement_date = str(data_dict.get('statement_date', ''))
                         total = float(data_dict.get('total', 0))
+                        
+                        if not card_last4 or not card_last4.isdigit() or len(card_last4) != 4:
+                            print(f"❌ Skipped {file.filename}: Cannot extract valid 4-digit card number (got: {card_last4})")
+                            failed += 1
+                        elif bank_name == 'Unknown':
+                            print(f"❌ Skipped {file.filename}: Cannot detect bank")
+                            failed += 1
+                        else:
+                            with get_db() as conn:
+                                cursor = conn.cursor()
+                                
+                                cursor.execute('''
+                                    SELECT id FROM credit_cards 
+                                    WHERE customer_id = ? AND bank_name = ? AND card_number_last4 = ?
+                                ''', (customer_id, bank_name, card_last4))
+                                card_row = cursor.fetchone()
+                                
+                                if card_row:
+                                    card_id = card_row['id']
+                                else:
+                                    cursor.execute('''
+                                        INSERT INTO credit_cards (customer_id, bank_name, card_number_last4, credit_limit, due_date)
+                                        VALUES (?, ?, ?, ?, ?)
+                                    ''', (customer_id, bank_name, card_last4, 10000.0, 25))
+                                    card_id = cursor.lastrowid
+                                    created_cards.append(f"{bank_name} ****{card_last4}")
+                                    print(f"✅ Auto-created card: {bank_name} ****{card_last4}")
+                                
+                                cursor.execute('''
+                                    INSERT INTO statements (card_id, statement_date, statement_total, file_path, batch_job_id)
+                                    VALUES (?, ?, ?, ?, ?)
+                                ''', (card_id, statement_date, total, file_path, batch_id))
+                                statement_id = cursor.lastrowid
+                                conn.commit()
+                            
+                            processed += 1
                     else:
-                        statement_date = ''
-                        total = 0.0
+                        failed += 1
                 else:
-                    statement_date = ''
-                    total = 0.0
-                
-                with get_db() as conn:
-                    cursor = conn.cursor()
-                    cursor.execute('''
-                        INSERT INTO statements (card_id, statement_date, statement_total, file_path, batch_job_id)
-                        VALUES (?, ?, ?, ?, ?)
-                    ''', (card_id, statement_date, total, file_path, batch_id))
-                    statement_id = cursor.lastrowid
-                    conn.commit()
-                
-                processed += 1
+                    failed += 1
+                    
                 batch_service.update_batch_progress(batch_id, processed, failed)
-            except:
+            except Exception as e:
+                print(f"❌ Batch upload error: {e}")
                 failed += 1
                 batch_service.update_batch_progress(batch_id, processed, failed)
         
         batch_service.complete_batch_job(batch_id, 'completed')
-        flash(f'Batch upload completed: {processed} succeeded, {failed} failed', 'success')
+        
+        success_msg = f'Batch upload completed: {processed} succeeded, {failed} failed'
+        if created_cards:
+            success_msg += f'. Auto-created {len(created_cards)} new cards: {", ".join(created_cards)}'
+        
+        flash(success_msg, 'success')
         return redirect(url_for('customer_dashboard', customer_id=customer_id))
     
     cards = get_customer_cards(customer_id)
