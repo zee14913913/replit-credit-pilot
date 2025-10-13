@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}财务仪表板 - {{ customer_name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">
+                    <i class="bi bi-speedometer2"></i> 财务仪表板
+                </h2>
+                <a href="/customer/{{ customer_id }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> 返回客户中心
+                </a>
+            </div>
+            <p class="text-muted mt-2">客户：{{ customer_name }}</p>
+        </div>
+    </div>
+
+    <!-- 月份选择器 -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <form method="get" class="d-flex align-items-center gap-3">
+                <label class="fw-bold">选择月份：</label>
+                <select name="month" class="form-select w-auto" onchange="this.form.submit()">
+                    {% for option in month_options %}
+                    <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>
+                        {{ option.display }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <!-- 客户总览指标 -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h4 class="mb-3">
+                <i class="bi bi-person-circle"></i> 客户总览指标
+            </h4>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h6 class="card-subtitle mb-2 text-muted">当月总消费</h6>
+                    <h3 class="card-title text-primary">
+                        RM {{ "{:,.2f}".format(metrics.total_consumption) }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h6 class="card-subtitle mb-2 text-muted">当月总付款</h6>
+                    <h3 class="card-title text-success">
+                        RM {{ "{:,.2f}".format(metrics.total_payment) }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h6 class="card-subtitle mb-2 text-muted">当月净欠款</h6>
+                    <h3 class="card-title text-warning">
+                        RM {{ "{:,.2f}".format(metrics.monthly_balance) }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card border-danger">
+                <div class="card-body text-center">
+                    <h6 class="card-subtitle mb-2 text-muted">累计欠款总余额</h6>
+                    <h3 class="card-title text-danger">
+                        RM {{ "{:,.2f}".format(metrics.cumulative_balance) }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 信用卡详细指标 -->
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="mb-3">
+                <i class="bi bi-credit-card-2-front"></i> 信用卡详细指标
+            </h4>
+        </div>
+    </div>
+
+    {% if metrics.card_metrics %}
+    <div class="row">
+        {% for card in metrics.card_metrics %}
+        <div class="col-md-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-credit-card"></i> {{ card.display_name }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2 mb-3">
+                            <div class="metric-box">
+                                <small class="text-muted d-block">当月总消费</small>
+                                <strong class="text-primary d-block fs-5">
+                                    RM {{ "{:,.2f}".format(card.monthly_consumption) }}
+                                </strong>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2 mb-3">
+                            <div class="metric-box">
+                                <small class="text-muted d-block">当月总付款</small>
+                                <strong class="text-success d-block fs-5">
+                                    RM {{ "{:,.2f}".format(card.monthly_payment) }}
+                                </strong>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2 mb-3">
+                            <div class="metric-box">
+                                <small class="text-muted d-block">当月净欠款</small>
+                                <strong class="text-warning d-block fs-5">
+                                    RM {{ "{:,.2f}".format(card.monthly_balance) }}
+                                </strong>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2 mb-3">
+                            <div class="metric-box">
+                                <small class="text-muted d-block">累计欠款余额</small>
+                                <strong class="text-danger d-block fs-5">
+                                    RM {{ "{:,.2f}".format(card.cumulative_balance) }}
+                                </strong>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2 mb-3">
+                            <div class="metric-box">
+                                <small class="text-muted d-block">账单总欠款</small>
+                                <strong class="text-info d-block fs-5">
+                                    RM {{ "{:,.2f}".format(card.statement_balance) }}
+                                </strong>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2 mb-3">
+                            <div class="metric-box">
+                                <small class="text-muted d-block">累计积分</small>
+                                <strong class="text-purple d-block fs-5">
+                                    {{ "{:,}".format(card.cumulative_points) }} 分
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> 该客户暂无信用卡数据
+    </div>
+    {% endif %}
+
+    <!-- 快速操作 -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="bi bi-lightning"></i> 快速操作</h5>
+                </div>
+                <div class="card-body">
+                    <a href="/customer/{{ customer_id }}/consumption_records" class="btn btn-outline-primary me-2">
+                        <i class="bi bi-list-ul"></i> 查看消费记录
+                    </a>
+                    <a href="/customer/{{ customer_id }}/payment_records" class="btn btn-outline-success me-2">
+                        <i class="bi bi-cash-stack"></i> 查看付款记录
+                    </a>
+                    <a href="/customer/{{ customer_id }}/generate_monthly_report?month={{ selected_month }}" class="btn btn-outline-info">
+                        <i class="bi bi-file-earmark-pdf"></i> 生成月度报告
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.metric-box {
+    padding: 10px;
+    border-left: 3px solid #dee2e6;
+}
+
+.text-purple {
+    color: #6f42c1;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+</style>
+{% endblock %}

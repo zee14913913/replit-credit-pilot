@@ -49,6 +49,9 @@ from auth.customer_auth import (
 # Admin Portfolio Management
 from admin.portfolio_manager import PortfolioManager
 
+# Dashboard Metrics Service
+from services.dashboard_metrics import get_customer_monthly_metrics, get_all_cards_summary
+
 # Initialize services
 export_service = ExportService()
 search_service = SearchService()
@@ -2152,6 +2155,55 @@ def view_payment_records(customer_id):
                           customer_id=customer_id,
                           customer_name=customer_name,
                           records=records)
+
+
+# ============================================================================
+# 客户财务仪表板 - 关键指标展示
+# ============================================================================
+
+@app.route('/customer/<int:customer_id>/dashboard')
+def financial_dashboard(customer_id):
+    """
+    客户财务仪表板
+    展示关键指标：
+    - 客户当月总消费/总付款/累计欠款余额
+    - 每张信用卡的当月消费/付款/累计余额/积分
+    """
+    # 获取当前月份（默认）或用户选择的月份
+    selected_month = request.args.get('month', datetime.now().strftime('%Y-%m'))
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取客户信息
+        cursor.execute('SELECT full_name FROM customers WHERE id = ?', (customer_id,))
+        result = cursor.fetchone()
+        if not result:
+            flash('客户不存在', 'error')
+            return redirect(url_for('index'))
+        customer_name = result[0]
+    
+    # 获取所有指标
+    metrics = get_customer_monthly_metrics(customer_id, selected_month)
+    
+    # 生成月份选项（最近12个月）
+    month_options = []
+    for i in range(12):
+        date = datetime.now() - timedelta(days=30*i)
+        month_str = date.strftime('%Y-%m')
+        month_display = date.strftime('%Y年%m月')
+        month_options.append({
+            'value': month_str,
+            'display': month_display,
+            'selected': month_str == selected_month
+        })
+    
+    return render_template('financial_dashboard.html',
+                          customer_id=customer_id,
+                          customer_name=customer_name,
+                          metrics=metrics,
+                          month_options=month_options,
+                          selected_month=selected_month)
 
 
 # ============================================================================
