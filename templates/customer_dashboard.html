@@ -40,30 +40,39 @@
         {% if cards %}
         <div class="row g-4">
             {% for card in cards %}
-            <div class="col-md-6 col-lg-4">
-                <div class="professional-card">
-                    <div class="d-flex align-items-center mb-3">
-                        <div style="width: 50px; height: 50px; background: var(--accent-primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 1rem; font-size: 1.5rem; color: var(--text-primary);">
-                            {{ card.bank_name[0] }}
+            <div class="col-12">
+                <div class="professional-card" style="padding: 2rem;">
+                    <!-- Card Header -->
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div class="d-flex align-items-center">
+                            <div style="width: 60px; height: 60px; background: var(--accent-primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 1.25rem; font-size: 1.8rem; color: var(--text-primary);">
+                                {{ card.bank_name[0] }}
+                            </div>
+                            <div>
+                                <h4 style="margin: 0; color: var(--text-primary); font-weight: 700;">{{ card.bank_name }}</h4>
+                                <div class="mt-1">
+                                    <small style="color: var(--text-secondary); font-size: 0.95rem;">****{{ card.card_number_last4 }}</small>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <h5 style="margin: 0; color: var(--text-primary);">{{ card.bank_name }}</h5>
-                            <small style="color: var(--text-secondary);">****{{ card.card_number_last4 }}</small>
+                        <div class="d-flex gap-3">
+                            <div class="text-end">
+                                <small style="color: var(--text-secondary); display: block;">{{ t('credit_limit') }}</small>
+                                <span style="color: var(--text-primary); font-weight: 700; font-size: 1.1rem;">RM {{ "{:,.2f}".format(card.credit_limit) }}</span>
+                            </div>
+                            <div class="text-end">
+                                <small style="color: var(--text-secondary); display: block;">{{ t('due_date') }}</small>
+                                <span class="badge-professional badge-primary-pro" style="font-size: 0.9rem;">{{ t('day') }} {{ card.due_date }}</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="divider-professional"></div>
-                    <div class="mb-2">
-                        <div class="d-flex justify-content-between">
-                            <span style="color: var(--text-secondary);">{{ t('credit_limit') }}</span>
-                            <span style="color: var(--text-primary); font-weight: 600;">RM {{ "{:,.2f}".format(card.credit_limit) }}</span>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="d-flex justify-content-between">
-                            <span style="color: var(--text-secondary);">{{ t('due_date') }}</span>
-                            <span class="badge-professional badge-primary-pro">{{ t('day') }} {{ card.due_date }}</span>
-                        </div>
-                    </div>
+                    
+                    <!-- 12-Month Timeline -->
+                    {% if card.timeline %}
+                    {% with timeline=card.timeline, coverage_percentage=card.coverage_percentage %}
+                    {% include 'components/card_timeline_12months.html' %}
+                    {% endwith %}
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}

@@ -178,9 +178,17 @@ def customer_dashboard(customer_id):
     instalment_plans = tracker.get_customer_instalment_plans(customer_id)
     instalment_summary = tracker.get_instalment_summary(customer_id)
     
+    from services.card_timeline import get_card_12month_timeline, get_month_coverage_percentage
+    cards_with_timeline = []
+    for card in cards:
+        card_dict = dict(card)
+        card_dict['timeline'] = get_card_12month_timeline(card['id'])
+        card_dict['coverage_percentage'] = get_month_coverage_percentage(card['id'])
+        cards_with_timeline.append(card_dict)
+    
     return render_template('customer_dashboard.html', 
                          customer=customer, 
-                         cards=cards,
+                         cards=cards_with_timeline,
                          spending_summary=spending_summary,
                          total_spending=total_spending,
                          instalment_plans=instalment_plans,

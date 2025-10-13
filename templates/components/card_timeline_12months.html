@@ -1,0 +1,96 @@
+<!-- 12-Month Timeline Component for Credit Card Statements -->
+<!-- 
+Usage: Set timeline and coverage_percentage variables before including this template
+-->
+
+<div class="card-timeline-12months mb-4" style="background: linear-gradient(135deg, rgba(255,122,67,0.1), rgba(0,0,0,0.3)); border: 2px solid rgba(255,122,67,0.3); border-radius: 16px; padding: 1.5rem;">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 style="color: #FF7A43; font-weight: 700; margin: 0;">
+            <i class="bi bi-calendar3"></i> 12个月账单时间线
+        </h5>
+        {% if coverage_percentage is defined %}
+        <div style="background: rgba(0,0,0,0.4); padding: 0.5rem 1rem; border-radius: 8px;">
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">覆盖率：</span>
+            <span style="color: #4CAF50; font-weight: 700; font-size: 1.1rem;">{{ coverage_percentage|round(1) }}%</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Timeline Grid -->
+    <div class="timeline-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 0.75rem;">
+        {% for month in timeline %}
+        <div class="month-cell {% if month.has_statement %}has-statement{% else %}no-statement{% endif %} {% if month.is_confirmed %}confirmed{% endif %}"
+             onclick="{% if month.has_statement %}window.location.href='/statement/{{ month.statement_id }}'{% else %}showUploadModal('{{ month.month_key }}', '{{ card.id }}'){% endif %}"
+             style="
+                background: {% if month.has_statement %}linear-gradient(135deg, rgba(76,175,80,0.3), rgba(56,142,60,0.2)){% else %}rgba(0,0,0,0.3){% endif %};
+                border: 2px solid {% if month.has_statement %}#4CAF50{% else %}rgba(255,255,255,0.2){% endif %};
+                border-radius: 12px;
+                padding: 0.75rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                position: relative;
+             "
+             onmouseover="this.style.transform='translateY(-4px) scale(1.05)'; this.style.borderColor='#FF7A43';"
+             onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.borderColor='{% if month.has_statement %}#4CAF50{% else %}rgba(255,255,255,0.2){% endif %}';">
+            
+            <!-- Month Label -->
+            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.6); text-align: center; margin-bottom: 0.25rem;">
+                {{ month.month_display.split()[0] }}
+            </div>
+            <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5); text-align: center; margin-bottom: 0.5rem;">
+                {{ month.month_display.split()[1] }}
+            </div>
+
+            {% if month.has_statement %}
+                <!-- Has Statement -->
+                <div style="text-align: center;">
+                    <i class="bi bi-check-circle-fill" style="color: #4CAF50; font-size: 1.5rem;"></i>
+                    {% if month.is_confirmed %}
+                    <div style="position: absolute; top: 0.25rem; right: 0.25rem;">
+                        <i class="bi bi-shield-check" style="color: #2196F3; font-size: 0.9rem;"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                <div style="font-size: 0.75rem; color: #FFF; font-weight: 600; text-align: center; margin-top: 0.25rem;">
+                    RM {{ "%.0f"|format(month.total_amount) }}
+                </div>
+                <div style="font-size: 0.65rem; color: rgba(255,255,255,0.6); text-align: center;">
+                    {{ month.transaction_count }} 笔
+                </div>
+            {% else %}
+                <!-- No Statement -->
+                <div style="text-align: center;">
+                    <i class="bi bi-dash-circle" style="color: rgba(255,255,255,0.3); font-size: 1.5rem;"></i>
+                </div>
+                <div style="font-size: 0.7rem; color: rgba(255,255,255,0.4); text-align: center; margin-top: 0.25rem;">
+                    暂无账单
+                </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Legend -->
+    <div class="timeline-legend mt-3" style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <i class="bi bi-check-circle-fill" style="color: #4CAF50;"></i>
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.85rem;">已上传</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <i class="bi bi-shield-check" style="color: #2196F3;"></i>
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.85rem;">已验证</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <i class="bi bi-dash-circle" style="color: rgba(255,255,255,0.3);"></i>
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.85rem;">缺失（点击上传）</span>
+        </div>
+    </div>
+</div>
+
+<script>
+function showUploadModal(monthKey, cardId) {
+    // Redirect to upload page with pre-selected card
+    window.location.href = `/upload/${cardId}?target_month=${monthKey}`;
+}
+</script>
