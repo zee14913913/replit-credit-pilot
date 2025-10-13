@@ -147,7 +147,7 @@ def generate_business_plan(customer_id: int) -> dict:
                 {"role": "user", "content": prompt}
             ],
             response_format={"type": "json_object"},
-            max_completion_tokens=8192
+            max_tokens=8192
         )
         
         # 8. 解析AI响应

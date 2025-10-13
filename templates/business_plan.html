@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}AI商业计划 - {{ customer_name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">
+                    <i class="bi bi-robot"></i> AI商业计划分析
+                </h2>
+                <div>
+                    <a href="/customer/{{ customer_id }}/business_plans" class="btn btn-outline-info me-2">
+                        <i class="bi bi-clock-history"></i> 历史计划
+                    </a>
+                    <a href="/customer/{{ customer_id }}/resources" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> 返回资源管理
+                    </a>
+                </div>
+            </div>
+            <p class="text-muted mt-2">客户：{{ customer_name }} | 生成时间：{{ plan[8] }}</p>
+        </div>
+    </div>
+
+    <!-- 计划概览 -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-lightbulb"></i> {{ plan[0] }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="text-primary">推荐商业类型</h5>
+                            <p class="lead">{{ plan[1] }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-success">投资需求</h5>
+                            <p class="lead">{{ plan[3] }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 目标市场 -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-bullseye"></i> 目标市场分析</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ plan[2] }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 投资回报与风险 -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-graph-up-arrow"></i> 预期投资回报率 (ROI)</h5>
+                </div>
+                <div class="card-body">
+                    <h4 class="text-success">{{ plan[4] }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> 风险评估</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ plan[5] }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 行动步骤 -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-list-check"></i> 具体行动步骤</h5>
+                </div>
+                <div class="card-body">
+                    {% if action_steps %}
+                    <ol class="list-group list-group-numbered">
+                        {% for step in action_steps %}
+                        <li class="list-group-item">{{ step }}</li>
+                        {% endfor %}
+                    </ol>
+                    {% else %}
+                    <p class="text-muted">暂无行动步骤</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI完整分析 -->
+    {% if ai_analysis %}
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="bi bi-cpu"></i> AI完整分析报告</h5>
+                </div>
+                <div class="card-body">
+                    {% if ai_analysis.business_types %}
+                    <div class="mb-3">
+                        <h6 class="text-primary">可选商业类型：</h6>
+                        <ul>
+                            {% for type in ai_analysis.business_types %}
+                            <li>{{ type }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    
+                    {% if ai_analysis.resource_utilization %}
+                    <div class="mb-3">
+                        <h6 class="text-success">资源利用建议：</h6>
+                        <p>{{ ai_analysis.resource_utilization }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if ai_analysis.malaysia_insights %}
+                    <div class="mb-3">
+                        <h6 class="text-info">马来西亚市场洞察：</h6>
+                        <p>{{ ai_analysis.malaysia_insights }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if ai_analysis.ai_reasoning %}
+                    <div class="mb-3">
+                        <h6 class="text-warning">AI分析推理：</h6>
+                        <p>{{ ai_analysis.ai_reasoning }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 操作按钮 -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <a href="/customer/{{ customer_id }}/resources" class="btn btn-primary btn-lg me-2">
+                        <i class="bi bi-pencil"></i> 更新资源信息
+                    </a>
+                    <a href="/customer/{{ customer_id }}/generate_business_plan" class="btn btn-success btn-lg">
+                        <i class="bi bi-arrow-clockwise"></i> 重新生成计划
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
