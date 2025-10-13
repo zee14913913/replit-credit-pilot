@@ -94,6 +94,44 @@ def index():
     customers = get_all_customers()
     return render_template('index.html', customers=customers)
 
+@app.route('/add_customer', methods=['POST'])
+def add_customer():
+    """Admin: Add a new customer"""
+    try:
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        monthly_income = float(request.form.get('monthly_income', 0))
+        
+        if not all([name, email, phone]):
+            flash('All fields are required', 'error')
+            return redirect(url_for('index'))
+        
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # Check if email already exists
+            cursor.execute("SELECT id FROM customers WHERE email = ?", (email,))
+            if cursor.fetchone():
+                flash(f'Customer with email {email} already exists', 'error')
+                return redirect(url_for('index'))
+            
+            # Insert new customer
+            cursor.execute("""
+                INSERT INTO customers (name, email, phone, monthly_income)
+                VALUES (?, ?, ?, ?)
+            """, (name, email, phone, monthly_income))
+            
+            customer_id = cursor.lastrowid
+            conn.commit()
+            
+            flash(f'Customer {name} added successfully! They can now register and login using {email}', 'success')
+            return redirect(url_for('customer_dashboard', customer_id=customer_id))
+            
+    except Exception as e:
+        flash(f'Error adding customer: {str(e)}', 'error')
+        return redirect(url_for('index'))
+
 @app.route('/customer/<int:customer_id>')
 def customer_dashboard(customer_id):
     with get_db() as conn:
