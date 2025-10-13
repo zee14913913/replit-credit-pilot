@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+
+{% block title %}客户资源管理 - {{ customer_name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">
+                    <i class="bi bi-briefcase"></i> 客户资源管理
+                </h2>
+                <a href="/customer/{{ customer_id }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> 返回客户中心
+                </a>
+            </div>
+            <p class="text-muted mt-2">客户：{{ customer_name }}</p>
+        </div>
+    </div>
+
+    <!-- 选项卡导航 -->
+    <ul class="nav nav-tabs mb-4" id="resourceTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="resources-tab" data-bs-toggle="tab" data-bs-target="#resources" type="button">
+                <i class="bi bi-gem"></i> 个人资源
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="network-tab" data-bs-toggle="tab" data-bs-target="#network" type="button">
+                <i class="bi bi-people"></i> 人脉网络
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="skills-tab" data-bs-toggle="tab" data-bs-target="#skills" type="button">
+                <i class="bi bi-trophy"></i> 特长技能
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="resourceTabsContent">
+        <!-- 个人资源 Tab -->
+        <div class="tab-pane fade show active" id="resources" role="tabpanel">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">添加个人资源</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" action="/customer/{{ customer_id }}/add_resource">
+                                <div class="mb-3">
+                                    <label class="form-label">资源类型</label>
+                                    <select name="resource_type" class="form-select" required>
+                                        <option value="">选择类型</option>
+                                        <option value="资金">资金</option>
+                                        <option value="房产">房产</option>
+                                        <option value="设备">设备</option>
+                                        <option value="车辆">车辆</option>
+                                        <option value="库存">库存</option>
+                                        <option value="其他">其他</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">资源名称</label>
+                                    <input type="text" name="resource_name" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">描述</label>
+                                    <textarea name="description" class="form-control" rows="3"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">预估价值 (RM)</label>
+                                    <input type="number" step="0.01" name="estimated_value" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">可用性</label>
+                                    <select name="availability" class="form-select">
+                                        <option value="立即可用">立即可用</option>
+                                        <option value="需要时间">需要时间</option>
+                                        <option value="暂不可用">暂不可用</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-plus-circle"></i> 添加资源
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">资源列表</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if resources %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>类型</th>
+                                            <th>名称</th>
+                                            <th>描述</th>
+                                            <th>预估价值</th>
+                                            <th>可用性</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for resource in resources %}
+                                        <tr>
+                                            <td><span class="badge bg-info">{{ resource[2] }}</span></td>
+                                            <td>{{ resource[3] }}</td>
+                                            <td>{{ resource[4] or '-' }}</td>
+                                            <td>RM {{ "{:,.2f}".format(resource[5]) if resource[5] else '-' }}</td>
+                                            <td><span class="badge bg-success">{{ resource[6] or '-' }}</span></td>
+                                            <td>
+                                                <a href="/customer/{{ customer_id }}/delete_resource/{{ resource[0] }}" 
+                                                   class="btn btn-sm btn-danger" 
+                                                   onclick="return confirm('确定删除吗？')">删除</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i> 暂无资源记录，请添加
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 人脉网络 Tab -->
+        <div class="tab-pane fade" id="network" role="tabpanel">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">添加人脉联系人</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" action="/customer/{{ customer_id }}/add_network">
+                                <div class="mb-3">
+                                    <label class="form-label">联系人姓名</label>
+                                    <input type="text" name="contact_name" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">关系类型</label>
+                                    <select name="relationship_type" class="form-select" required>
+                                        <option value="">选择关系</option>
+                                        <option value="家人">家人</option>
+                                        <option value="朋友">朋友</option>
+                                        <option value="同事">同事</option>
+                                        <option value="商业伙伴">商业伙伴</option>
+                                        <option value="客户">客户</option>
+                                        <option value="供应商">供应商</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">行业</label>
+                                    <input type="text" name="industry" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">职位</label>
+                                    <input type="text" name="position" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">公司</label>
+                                    <input type="text" name="company" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">可提供的帮助</label>
+                                    <textarea name="can_provide_help" class="form-control" rows="2"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">联系方式</label>
+                                    <input type="text" name="contact_info" class="form-control">
+                                </div>
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="bi bi-plus-circle"></i> 添加联系人
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">人脉列表</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if networks %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>姓名</th>
+                                            <th>关系</th>
+                                            <th>行业/公司</th>
+                                            <th>可提供帮助</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for network in networks %}
+                                        <tr>
+                                            <td><strong>{{ network[2] }}</strong></td>
+                                            <td><span class="badge bg-primary">{{ network[3] }}</span></td>
+                                            <td>{{ network[4] or '-' }} / {{ network[6] or '-' }}</td>
+                                            <td>{{ network[7] or '-' }}</td>
+                                            <td>
+                                                <a href="/customer/{{ customer_id }}/delete_network/{{ network[0] }}" 
+                                                   class="btn btn-sm btn-danger"
+                                                   onclick="return confirm('确定删除吗？')">删除</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i> 暂无人脉记录，请添加
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 特长技能 Tab -->
+        <div class="tab-pane fade" id="skills" role="tabpanel">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">添加特长技能</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" action="/customer/{{ customer_id }}/add_skill">
+                                <div class="mb-3">
+                                    <label class="form-label">技能名称</label>
+                                    <input type="text" name="skill_name" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">技能类别</label>
+                                    <select name="skill_category" class="form-select" required>
+                                        <option value="">选择类别</option>
+                                        <option value="技术类">技术类</option>
+                                        <option value="管理类">管理类</option>
+                                        <option value="销售类">销售类</option>
+                                        <option value="设计类">设计类</option>
+                                        <option value="财务类">财务类</option>
+                                        <option value="语言类">语言类</option>
+                                        <option value="其他">其他</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">熟练程度</label>
+                                    <select name="proficiency_level" class="form-select" required>
+                                        <option value="">选择程度</option>
+                                        <option value="初级">初级</option>
+                                        <option value="中级">中级</option>
+                                        <option value="高级">高级</option>
+                                        <option value="专家">专家</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">经验年限</label>
+                                    <input type="number" name="years_experience" class="form-control" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">相关证书</label>
+                                    <input type="text" name="certifications" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">技能描述</label>
+                                    <textarea name="description" class="form-control" rows="2"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-warning w-100">
+                                    <i class="bi bi-plus-circle"></i> 添加技能
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">技能列表</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if skills %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>技能</th>
+                                            <th>类别</th>
+                                            <th>熟练度</th>
+                                            <th>经验</th>
+                                            <th>证书</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for skill in skills %}
+                                        <tr>
+                                            <td><strong>{{ skill[2] }}</strong></td>
+                                            <td><span class="badge bg-secondary">{{ skill[3] }}</span></td>
+                                            <td><span class="badge bg-warning">{{ skill[4] }}</span></td>
+                                            <td>{{ skill[5] or '-' }} 年</td>
+                                            <td>{{ skill[6] or '-' }}</td>
+                                            <td>
+                                                <a href="/customer/{{ customer_id }}/delete_skill/{{ skill[0] }}" 
+                                                   class="btn btn-sm btn-danger"
+                                                   onclick="return confirm('确定删除吗？')">删除</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i> 暂无技能记录，请添加
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 生成商业计划按钮 -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <h5 class="card-title">
+                        <i class="bi bi-robot"></i> AI智能分析
+                    </h5>
+                    <p class="card-text">基于您的资源、人脉和技能，AI将为您生成个性化的商业计划建议</p>
+                    <a href="/customer/{{ customer_id }}/generate_business_plan" class="btn btn-lg btn-primary">
+                        <i class="bi bi-magic"></i> 生成商业计划
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

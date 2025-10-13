@@ -52,6 +52,9 @@ from admin.portfolio_manager import PortfolioManager
 # Dashboard Metrics Service
 from services.dashboard_metrics import get_customer_monthly_metrics, get_all_cards_summary
 
+# Business Plan AI Service
+from services.business_plan_ai import generate_business_plan
+
 # Initialize services
 export_service = ExportService()
 search_service = SearchService()
@@ -2204,6 +2207,211 @@ def financial_dashboard(customer_id):
                           metrics=metrics,
                           month_options=month_options,
                           selected_month=selected_month)
+
+
+# ============================================================================
+# 客户资源、人脉、技能管理
+# ============================================================================
+
+@app.route('/customer/<int:customer_id>/resources')
+def customer_resources(customer_id):
+    """客户资源、人脉、技能管理页面"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取客户信息
+        cursor.execute('SELECT full_name FROM customers WHERE id = ?', (customer_id,))
+        result = cursor.fetchone()
+        if not result:
+            flash('客户不存在', 'error')
+            return redirect(url_for('index'))
+        customer_name = result[0]
+        
+        # 获取资源
+        cursor.execute('SELECT * FROM customer_resources WHERE customer_id = ? ORDER BY created_at DESC', (customer_id,))
+        resources = cursor.fetchall()
+        
+        # 获取人脉
+        cursor.execute('SELECT * FROM customer_network WHERE customer_id = ? ORDER BY created_at DESC', (customer_id,))
+        networks = cursor.fetchall()
+        
+        # 获取技能
+        cursor.execute('SELECT * FROM customer_skills WHERE customer_id = ? ORDER BY created_at DESC', (customer_id,))
+        skills = cursor.fetchall()
+    
+    return render_template('customer_resources.html',
+                          customer_id=customer_id,
+                          customer_name=customer_name,
+                          resources=resources,
+                          networks=networks,
+                          skills=skills)
+
+
+@app.route('/customer/<int:customer_id>/add_resource', methods=['POST'])
+def add_resource(customer_id):
+    """添加个人资源"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO customer_resources (customer_id, resource_type, resource_name, description, estimated_value, availability)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (customer_id, request.form['resource_type'], request.form['resource_name'], 
+              request.form.get('description'), request.form.get('estimated_value'), request.form.get('availability')))
+        conn.commit()
+    
+    flash('资源添加成功！', 'success')
+    return redirect(url_for('customer_resources', customer_id=customer_id))
+
+
+@app.route('/customer/<int:customer_id>/add_network', methods=['POST'])
+def add_network(customer_id):
+    """添加人脉联系人"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO customer_network (customer_id, contact_name, relationship_type, industry, position, company, can_provide_help, contact_info)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (customer_id, request.form['contact_name'], request.form['relationship_type'],
+              request.form.get('industry'), request.form.get('position'), request.form.get('company'),
+              request.form.get('can_provide_help'), request.form.get('contact_info')))
+        conn.commit()
+    
+    flash('人脉联系人添加成功！', 'success')
+    return redirect(url_for('customer_resources', customer_id=customer_id))
+
+
+@app.route('/customer/<int:customer_id>/add_skill', methods=['POST'])
+def add_skill(customer_id):
+    """添加特长技能"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO customer_skills (customer_id, skill_name, skill_category, proficiency_level, years_experience, certifications, description)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (customer_id, request.form['skill_name'], request.form['skill_category'],
+              request.form['proficiency_level'], request.form.get('years_experience'),
+              request.form.get('certifications'), request.form.get('description')))
+        conn.commit()
+    
+    flash('技能添加成功！', 'success')
+    return redirect(url_for('customer_resources', customer_id=customer_id))
+
+
+@app.route('/customer/<int:customer_id>/delete_resource/<int:resource_id>')
+def delete_resource(customer_id, resource_id):
+    """删除资源"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM customer_resources WHERE id = ? AND customer_id = ?', (resource_id, customer_id))
+        conn.commit()
+    
+    flash('资源已删除', 'success')
+    return redirect(url_for('customer_resources', customer_id=customer_id))
+
+
+@app.route('/customer/<int:customer_id>/delete_network/<int:network_id>')
+def delete_network(customer_id, network_id):
+    """删除人脉"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM customer_network WHERE id = ? AND customer_id = ?', (network_id, customer_id))
+        conn.commit()
+    
+    flash('人脉已删除', 'success')
+    return redirect(url_for('customer_resources', customer_id=customer_id))
+
+
+@app.route('/customer/<int:customer_id>/delete_skill/<int:skill_id>')
+def delete_skill(customer_id, skill_id):
+    """删除技能"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM customer_skills WHERE id = ? AND customer_id = ?', (skill_id, customer_id))
+        conn.commit()
+    
+    flash('技能已删除', 'success')
+    return redirect(url_for('customer_resources', customer_id=customer_id))
+
+
+@app.route('/customer/<int:customer_id>/generate_business_plan')
+def generate_plan(customer_id):
+    """生成AI商业计划"""
+    result = generate_business_plan(customer_id)
+    
+    if result['success']:
+        flash('AI商业计划生成成功！', 'success')
+        return redirect(url_for('view_business_plan', customer_id=customer_id, plan_id=result['plan_id']))
+    else:
+        flash(f'生成失败：{result["error"]}', 'error')
+        return redirect(url_for('customer_resources', customer_id=customer_id))
+
+
+@app.route('/customer/<int:customer_id>/business_plan/<int:plan_id>')
+def view_business_plan(customer_id, plan_id):
+    """查看商业计划"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取客户信息
+        cursor.execute('SELECT full_name FROM customers WHERE id = ?', (customer_id,))
+        result = cursor.fetchone()
+        if not result:
+            flash('客户不存在', 'error')
+            return redirect(url_for('index'))
+        customer_name = result[0]
+        
+        # 获取商业计划
+        cursor.execute('''
+            SELECT plan_title, business_type, target_market, investment_required,
+                   expected_roi, risk_assessment, action_steps, ai_analysis, generated_at
+            FROM business_plans
+            WHERE id = ? AND customer_id = ?
+        ''', (plan_id, customer_id))
+        
+        plan = cursor.fetchone()
+        if not plan:
+            flash('商业计划不存在', 'error')
+            return redirect(url_for('customer_resources', customer_id=customer_id))
+    
+    # 解析JSON数据
+    import json
+    action_steps = json.loads(plan[6]) if plan[6] else []
+    ai_analysis = json.loads(plan[7]) if plan[7] else {}
+    
+    return render_template('business_plan.html',
+                          customer_id=customer_id,
+                          customer_name=customer_name,
+                          plan=plan,
+                          action_steps=action_steps,
+                          ai_analysis=ai_analysis)
+
+
+@app.route('/customer/<int:customer_id>/business_plans')
+def list_business_plans(customer_id):
+    """查看所有商业计划历史"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT full_name FROM customers WHERE id = ?', (customer_id,))
+        result = cursor.fetchone()
+        if not result:
+            flash('客户不存在', 'error')
+            return redirect(url_for('index'))
+        customer_name = result[0]
+        
+        cursor.execute('''
+            SELECT id, plan_title, business_type, investment_required, generated_at
+            FROM business_plans
+            WHERE customer_id = ?
+            ORDER BY generated_at DESC
+        ''', (customer_id,))
+        
+        plans = cursor.fetchall()
+    
+    return render_template('business_plans_list.html',
+                          customer_id=customer_id,
+                          customer_name=customer_name,
+                          plans=plans)
 
 
 # ============================================================================
