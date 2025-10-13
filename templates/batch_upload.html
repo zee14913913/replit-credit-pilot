@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Batch Upload - {{ customer.name }}{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- Page Header -->
+    <div class="section-header">
+        <h1 class="section-title"><i class="bi bi-cloud-upload"></i> Batch Upload Statements</h1>
+        <p class="section-subtitle">Upload multiple credit card statements for {{ customer.name }}</p>
+    </div>
+
+    <!-- Upload Form Card -->
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="professional-card">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label for="card_id" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
+                            <i class="bi bi-credit-card"></i> Select Credit Card
+                        </label>
+                        <select class="form-select" id="card_id" name="card_id" required
+                                style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;">
+                            <option value="">Choose a credit card...</option>
+                            {% for card in cards %}
+                            <option value="{{ card.id }}">
+                                {{ card.bank_name }} - {{ card.card_type }} •••• {{ card.last_4_digits }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="statement_files" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
+                            <i class="bi bi-files"></i> Select Statement Files (PDF/Excel)
+                        </label>
+                        <input type="file" class="form-control" id="statement_files" name="statement_files" 
+                               multiple accept=".pdf,.xlsx,.xls" required
+                               style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;">
+                        <small style="color: rgba(255,255,255,0.7); display: block; margin-top: 0.5rem;">
+                            <i class="bi bi-info-circle"></i> You can select multiple files at once. Supported formats: PDF, Excel (.xlsx, .xls)
+                        </small>
+                    </div>
+
+                    <div class="alert-professional alert-info-pro mb-4">
+                        <i class="bi bi-lightbulb"></i> <strong>Batch Upload Tips:</strong><br>
+                        • All selected files will be uploaded for the same credit card<br>
+                        • System will automatically parse and categorize transactions<br>
+                        • Processing time: ~2 minutes per file<br>
+                        • You can track progress on the batch jobs page
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('customer_dashboard', customer_id=customer.id) }}" class="btn-professional-outline flex-fill">
+                            <i class="bi bi-arrow-left"></i> Back to Dashboard
+                        </a>
+                        <button type="submit" class="btn-white-glow flex-fill">
+                            <i class="bi bi-cloud-upload"></i> Upload All Files
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- No Cards Warning -->
+            {% if not cards %}
+            <div class="alert-professional alert-warning-pro mt-4">
+                <i class="bi bi-exclamation-triangle"></i> 
+                <strong>No Credit Cards Found</strong><br>
+                Please add a credit card for this customer first before uploading statements.
+                <div class="mt-3">
+                    <a href="{{ url_for('customer_dashboard', customer_id=customer.id) }}" class="btn-professional">
+                        <i class="bi bi-credit-card"></i> Add Credit Card
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
