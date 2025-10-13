@@ -14,9 +14,9 @@ Design requirements: Premium, sophisticated, high-end - suitable for professiona
 The platform features an **elegant, mysterious, high-end Galaxy Universe theme** with pure black background, golden gradients, and starfield effects - matching the INFINITE GZ Finance Optimization Monthly Report cover aesthetic. 
 
 **Design System:**
-- **Color Palette:** Pure black (#000000) background, golden gradients (#D4AF37, #F4E6C3, #C9A961), champagne accents (#F7E7CE)
-- **Visual Effects:** Animated starfield background, golden light waves, frosted glass cards with golden borders, glowing hover effects
-- **Typography:** Inter font family with gradient golden headings, elegant letter-spacing, and subtle text shadows
+- **Color Palette:** Pure black (#000000) background, golden accents for borders/decorations (#D4AF37), silver-pearl text colors (#F5F5F5, #E8E8E8)
+- **Visual Effects:** Animated silver dust sparkle, aurora borealis light waves (25s cycle), frosted glass cards with golden borders, glowing hover effects, dark area silver dust pattern
+- **Typography:** Inter font family with silver-pearl gradient headings (#FFFFFF → #F5F5F5 → #E8E8E8), elegant letter-spacing, and white glow text shadows
 - **Interactive Elements:** Golden glow on hover, shimmer animations, smooth transitions
 - **Components:** Navigation with golden shimmer, glass-morphism cards, elegant tables, sophisticated footer
 - **Responsive Design:** Fully responsive with breakpoints at 1200px, 768px, and 480px
