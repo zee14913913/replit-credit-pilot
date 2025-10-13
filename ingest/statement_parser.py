@@ -467,20 +467,36 @@ def parse_uob_statement(file_path):
             if card_num_match:
                 info["card_last4"] = card_num_match.group(1)
             
-            date_match = re.search(r"Statement\s+Date[\s:]*(\d{2}[/-]\d{2}[/-]\d{2,4})", text, re.IGNORECASE)
+            # Try format: "Statement Date 13 MAY 25"
+            date_match = re.search(r"Statement\s+Date[\s:]*(\d{1,2}\s+(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)[A-Z]*\s+\d{2,4})", text, re.IGNORECASE)
+            
+            # Fallback: "Statement Date 13-05-25" or "13/05/25"
+            if not date_match:
+                date_match = re.search(r"Statement\s+Date[\s:]*(\d{2}[/-]\d{2}[/-]\d{2,4})", text, re.IGNORECASE)
+            
+            # Last resort: any date pattern
             if not date_match:
                 date_match = re.search(r"(?:Date|As of)[\s:]*(\d{2}[/-]\d{2}[/-]\d{2,4})", text, re.IGNORECASE)
+            
             if date_match:
-                date_str = date_match.group(1).replace("/", "-")
+                date_str = date_match.group(1)
                 try:
                     from datetime import datetime
-                    if len(date_str.split("-")[-1]) == 2:
-                        parsed_date = datetime.strptime(date_str, "%d-%m-%y")
+                    # Handle "13 MAY 25" format
+                    if re.match(r"\d{1,2}\s+[A-Z]{3}", date_str, re.IGNORECASE):
+                        parsed_date = datetime.strptime(date_str.upper(), "%d %b %y") if len(date_str.split()[-1]) == 2 else datetime.strptime(date_str.upper(), "%d %B %Y")
                     else:
-                        parsed_date = datetime.strptime(date_str, "%d-%m-%Y")
+                        # Handle "13-05-25" or "13/05/25" format
+                        date_str = date_str.replace("/", "-")
+                        if len(date_str.split("-")[-1]) == 2:
+                            parsed_date = datetime.strptime(date_str, "%d-%m-%y")
+                        else:
+                            parsed_date = datetime.strptime(date_str, "%d-%m-%Y")
                     info["statement_date"] = parsed_date.strftime("%Y-%m-%d")
-                except:
-                    info["statement_date"] = date_str
+                except Exception as e:
+                    print(f"⚠️ Date parsing error: {e}, using current date")
+                    from datetime import datetime
+                    info["statement_date"] = datetime.now().strftime("%Y-%m-%d")
             
             pattern = r"(\d{2}/\d{2})\s+(.+?)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})"
             
