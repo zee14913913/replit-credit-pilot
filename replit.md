@@ -164,12 +164,21 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
    - Removed duplicate and obsolete code
    - Added type: ignore for pandas BytesIO compatibility
 
+6. **Delete Customer Functionality (October 14, 2025):**
+   - Added safe customer deletion with double confirmation dialog
+   - Frontend: Red delete button with trash icon on customer dashboard cards
+   - Backend: `/customer/<id>/delete` route with cascade deletion
+   - Cascade deletes all related data: credit cards, statements, transactions, monthly ledgers, supplier invoices, budgets, instalments, reminders, consultations, optimization proposals
+   - JavaScript confirmation shows detailed warning of data to be deleted
+   - Prevents accidental deletion with two-step confirmation process
+
 **System Status:**
 - ✅ 100% DR/CR classification accuracy guaranteed
 - ✅ All parsers updated with type field support
 - ✅ Savings account data integrity maintained
 - ✅ File structure organized and documented
 - ✅ Code quality validated (no LSP errors)
+- ✅ Delete customer functionality with safety confirmations
 - ✅ System ready for accurate data re-import
 
 **Next Steps for Users:**

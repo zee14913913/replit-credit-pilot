@@ -50,6 +50,11 @@
                         <a href="{{ url_for('financial_advisory', customer_id=customer.id) }}" class="btn-white-glow">
                             <i class="bi bi-stars"></i> {{ t('nav_advisory') }}
                         </a>
+                        <button onclick="deleteCustomer({{ customer.id }}, '{{ customer.name }}')" 
+                                class="btn-professional-outline" 
+                                style="color: #dc3545; border-color: #dc3545;">
+                            <i class="bi bi-trash"></i> 删除客户
+                        </button>
                     </div>
                 </div>
             </div>
@@ -64,4 +69,42 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+function deleteCustomer(customerId, customerName) {
+    // 显示确认对话框
+    if (confirm(`⚠️ 警告：删除客户将同时删除以下数据：\n\n` +
+                `• 所有信用卡\n` +
+                `• 所有账单\n` +
+                `• 所有交易记录\n` +
+                `• 所有月度账本\n` +
+                `• 所有供应商发票\n\n` +
+                `确定要删除客户 "${customerName}" 吗？\n\n` +
+                `此操作无法撤销！`)) {
+        
+        // 再次确认
+        if (confirm(`最后确认：您确定要永久删除 "${customerName}" 及其所有数据吗？`)) {
+            // 发送删除请求
+            fetch(`/customer/${customerId}/delete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ 客户已成功删除');
+                    window.location.reload();
+                } else {
+                    alert('❌ 删除失败：' + (data.error || '未知错误'));
+                }
+            })
+            .catch(error => {
+                alert('❌ 删除失败：' + error);
+            });
+        }
+    }
+}
+</script>
 {% endblock %}

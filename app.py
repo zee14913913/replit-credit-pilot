@@ -2390,6 +2390,74 @@ def financial_dashboard(customer_id):
                           selected_month=selected_month)
 
 
+@app.route('/customer/<int:customer_id>/delete', methods=['POST'])
+def delete_customer(customer_id):
+    """
+    删除客户及其所有相关数据
+    级联删除：信用卡、账单、交易、月度账本、供应商发票等
+    """
+    try:
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # 验证客户是否存在
+            cursor.execute('SELECT name FROM customers WHERE id = ?', (customer_id,))
+            customer = cursor.fetchone()
+            if not customer:
+                return jsonify({'success': False, 'error': '客户不存在'}), 404
+            
+            # 开始删除操作（按依赖顺序）
+            
+            # 1. 删除交易记录
+            cursor.execute('DELETE FROM transactions WHERE customer_id = ?', (customer_id,))
+            
+            # 2. 删除账单
+            cursor.execute('DELETE FROM statements WHERE customer_id = ?', (customer_id,))
+            
+            # 3. 删除月度账本
+            cursor.execute('DELETE FROM monthly_ledger WHERE customer_id = ?', (customer_id,))
+            
+            # 4. 删除INFINITE账本
+            cursor.execute('DELETE FROM infinite_monthly_ledger WHERE customer_id = ?', (customer_id,))
+            
+            # 5. 删除供应商发票
+            cursor.execute('DELETE FROM supplier_invoices WHERE customer_id = ?', (customer_id,))
+            
+            # 6. 删除信用卡
+            cursor.execute('DELETE FROM credit_cards WHERE customer_id = ?', (customer_id,))
+            
+            # 7. 删除预算
+            cursor.execute('DELETE FROM budgets WHERE customer_id = ?', (customer_id,))
+            
+            # 8. 删除分期付款计划
+            cursor.execute('DELETE FROM instalment_plans WHERE customer_id = ?', (customer_id,))
+            
+            # 9. 删除提醒
+            cursor.execute('DELETE FROM reminders WHERE customer_id = ?', (customer_id,))
+            
+            # 10. 删除咨询记录
+            cursor.execute('DELETE FROM consultation_requests WHERE customer_id = ?', (customer_id,))
+            
+            # 11. 删除优化建议
+            cursor.execute('DELETE FROM optimization_proposals WHERE customer_id = ?', (customer_id,))
+            
+            # 12. 最后删除客户本身
+            cursor.execute('DELETE FROM customers WHERE id = ?', (customer_id,))
+            
+            conn.commit()
+            
+            return jsonify({
+                'success': True,
+                'message': f'客户 {customer[0]} 及其所有数据已成功删除'
+            })
+            
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': f'删除失败: {str(e)}'
+        }), 500
+
+
 # ============================================================================
 # 客户资源、人脉、技能管理
 # ============================================================================
