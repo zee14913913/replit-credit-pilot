@@ -328,14 +328,15 @@ def parse_publicbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                                 j += 1
                             
                             # 判断是debit还是credit
-                            # 如果描述中有DR，则是debit；否则检查金额的逻辑
                             # Public Bank: DEBIT列在左，CREDIT列在右
+                            # 更robust的检测方法：检查描述中是否包含"DR"或"CR"标记
                             trans_type = 'credit'  # 默认credit
                             
-                            # 检查是否是debit交易（转出）
-                            if 'TRSF DR' in full_desc or 'MISC DR' in full_desc or 'DUITNOW TRSF DR' in full_desc or 'TSFR FUND DR' in full_desc:
+                            # 检查是否是debit交易（转出）- 更通用的DR检测
+                            if ' DR' in full_desc or full_desc.startswith('DR') or ' DR-' in full_desc:
                                 trans_type = 'debit'
-                            elif 'DEP-' in full_desc or 'TRSF CR' in full_desc or 'DUITNOW TRSF CR' in full_desc:
+                            # 明确的credit标记
+                            elif ' CR' in full_desc or full_desc.startswith('CR') or 'DEP-' in full_desc or 'DEPOSIT' in full_desc.upper():
                                 trans_type = 'credit'
                             
                             # 转换日期格式 DD/MM -> DD-MM-YYYY
