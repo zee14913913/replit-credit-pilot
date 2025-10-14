@@ -2625,6 +2625,80 @@ def savings_accounts():
     
     return render_template('savings/accounts.html', accounts=accounts)
 
+@app.route('/savings/account/<int:account_id>')
+def savings_account_detail(account_id):
+    """查看特定账户的详细信息、账单和交易记录"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取账户信息
+        cursor.execute('''
+            SELECT id, bank_name, account_number_last4, account_type, created_at
+            FROM savings_accounts
+            WHERE id = ?
+        ''', (account_id,))
+        
+        account = dict(cursor.fetchone())
+        
+        # 获取账单列表
+        cursor.execute('''
+            SELECT 
+                ss.id,
+                ss.statement_date,
+                ss.file_path,
+                ss.file_type,
+                ss.total_transactions,
+                ss.uploaded_at,
+                COUNT(st.id) as transaction_count,
+                SUM(CASE WHEN st.transaction_type = 'debit' THEN st.amount ELSE 0 END) as total_debit,
+                SUM(CASE WHEN st.transaction_type = 'credit' THEN st.amount ELSE 0 END) as total_credit
+            FROM savings_statements ss
+            LEFT JOIN savings_transactions st ON ss.id = st.savings_statement_id
+            WHERE ss.savings_account_id = ?
+            GROUP BY ss.id
+            ORDER BY ss.statement_date DESC, ss.uploaded_at DESC
+        ''', (account_id,))
+        
+        statements = [dict(row) for row in cursor.fetchall()]
+        
+        # 获取最近交易记录
+        cursor.execute('''
+            SELECT 
+                st.id,
+                st.transaction_date,
+                st.description,
+                st.amount,
+                st.transaction_type,
+                st.customer_name_tag,
+                ss.statement_date
+            FROM savings_transactions st
+            JOIN savings_statements ss ON st.savings_statement_id = ss.id
+            WHERE ss.savings_account_id = ?
+            ORDER BY st.transaction_date DESC, st.id DESC
+            LIMIT 100
+        ''', (account_id,))
+        
+        recent_transactions = [dict(row) for row in cursor.fetchall()]
+        
+        # 计算统计数据
+        cursor.execute('''
+            SELECT 
+                COUNT(st.id) as total_transactions,
+                SUM(CASE WHEN st.transaction_type = 'debit' THEN st.amount ELSE 0 END) as total_debit,
+                SUM(CASE WHEN st.transaction_type = 'credit' THEN st.amount ELSE 0 END) as total_credit
+            FROM savings_transactions st
+            JOIN savings_statements ss ON st.savings_statement_id = ss.id
+            WHERE ss.savings_account_id = ?
+        ''', (account_id,))
+        
+        stats = dict(cursor.fetchone())
+    
+    return render_template('savings/account_detail.html', 
+                         account=account, 
+                         statements=statements,
+                         recent_transactions=recent_transactions,
+                         stats=stats)
+
 @app.route('/savings/search', methods=['GET', 'POST'])
 def savings_search():
     """搜索转账记录（按客户名字或关键词）"""
