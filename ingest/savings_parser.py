@@ -282,18 +282,25 @@ def parse_alliance_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                         info['statement_date'] = match.group(1)
             
             # 解析交易记录 - Alliance Bank格式特殊，每笔交易跨多行
+            # 支持CR (credit) 和 DR (debit) 两种交易类型
             i = 0
             while i < len(lines):
                 line = lines[i].strip()
                 
-                # 匹配交易行：日期 + 交易类型 + 金额
-                # 格式: DDMMYY TransactionType Amount Balance
-                trans_match = re.match(r'^(\d{6})\s+(.+?)\s+([\d,]+\.?\d*)\s+([\d,]+\.\d{2})\s+CR\s*$', line)
+                # 匹配交易行：DDMMYY TransactionType Amount Balance CR/DR
+                # CR格式: DDMMYY Description Amount Balance CR
+                trans_cr_match = re.match(r'^(\d{6})\s+(.+?)\s+([\d,]+\.?\d*)\s+([\d,]+\.\d{2})\s+CR\s*$', line)
+                # DR格式: DDMMYY Description Amount Balance DR
+                trans_dr_match = re.match(r'^(\d{6})\s+(.+?)\s+([\d,]+\.?\d*)\s+([\d,]+\.\d{2})\s+DR\s*$', line)
                 
-                if trans_match:
-                    date_str = trans_match.group(1)
-                    description = trans_match.group(2).strip()
-                    amount_str = trans_match.group(3).replace(',', '')
+                if trans_cr_match or trans_dr_match:
+                    # 使用匹配到的对象
+                    match = trans_cr_match if trans_cr_match else trans_dr_match
+                    trans_type = 'credit' if trans_cr_match else 'debit'
+                    
+                    date_str = match.group(1)
+                    description = match.group(2).strip()
+                    amount_str = match.group(3).replace(',', '')
                     
                     # 转换日期格式 DDMMYY -> DD-MM-20YY
                     day = date_str[:2]
@@ -301,10 +308,6 @@ def parse_alliance_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                     year = '20' + date_str[4:6]
                     formatted_date = f"{day}-{month}-{year}"
                     
-                    # 判断是debit还是credit - 需要看下一行是否有金额
-                    # Alliance Bank格式：如果金额在debit列，则是转出；在credit列，则是转入
-                    # 通过检查行中金额位置判断
-                    trans_type = 'credit'  # 默认转入
                     amount = float(amount_str) if amount_str else 0
                     
                     # 收集完整描述（可能跨多行）
@@ -328,29 +331,6 @@ def parse_alliance_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                             'amount': amount,
                             'type': trans_type
                         })
-                
-                # 另一种格式：包含debit和credit两列
-                # 格式: DDMMYY Description DebitAmount CreditAmount Balance
-                trans_match2 = re.match(r'^(\d{6})\s+(.+?)\s+([\d,]+\.?\d*)\s+([\d,]+\.\d{2})\s+CR\s*$', line)
-                if trans_match2:
-                    date_str = trans_match2.group(1)
-                    rest = trans_match2.group(2).strip()
-                    
-                    # 尝试分离描述和金额
-                    parts = rest.rsplit(None, 1)  # 从右边分割最后一个空格
-                    if len(parts) == 2:
-                        description = parts[0]
-                        try:
-                            debit_amount = float(parts[1].replace(',', ''))
-                            trans_type = 'debit'
-                        except:
-                            description = rest
-                            debit_amount = 0
-                            trans_type = 'credit'
-                    else:
-                        description = rest
-                        debit_amount = 0
-                        trans_type = 'credit'
                 
                 i += 1
         
