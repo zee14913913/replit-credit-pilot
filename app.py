@@ -2501,6 +2501,225 @@ def admin_automation_status():
     })
 
 
+# ==================== 储蓄账户追踪系统 Savings Account Tracking ====================
+
+from ingest.savings_parser import parse_savings_statement
+
+@app.route('/savings/upload', methods=['GET', 'POST'])
+def upload_savings_statement():
+    """上传储蓄账户月结单"""
+    if request.method == 'POST':
+        try:
+            customer_id = request.form.get('customer_id')
+            bank_name = request.form.get('bank_name')
+            files = request.files.getlist('statements')
+            
+            if not files:
+                flash('请上传至少一个账单文件', 'error')
+                return redirect(url_for('upload_savings_statement'))
+            
+            processed_count = 0
+            total_transactions = 0
+            
+            for file in files:
+                if file and file.filename:
+                    # 保存文件
+                    filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
+                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    file.save(file_path)
+                    
+                    # 解析账单
+                    info, transactions = parse_savings_statement(file_path, bank_name)
+                    
+                    with get_db() as conn:
+                        cursor = conn.cursor()
+                        
+                        # 检查或创建储蓄账户
+                        cursor.execute('''
+                            SELECT id FROM savings_accounts 
+                            WHERE bank_name = ? AND account_number_last4 = ?
+                        ''', (info['bank_name'], info.get('account_last4', '')))
+                        
+                        account = cursor.fetchone()
+                        
+                        if not account:
+                            cursor.execute('''
+                                INSERT INTO savings_accounts (customer_id, bank_name, account_number_last4)
+                                VALUES (?, ?, ?)
+                            ''', (customer_id or None, info['bank_name'], info.get('account_last4', '')))
+                            savings_account_id = cursor.lastrowid
+                        else:
+                            savings_account_id = account['id']
+                        
+                        # 创建账单记录
+                        cursor.execute('''
+                            INSERT INTO savings_statements 
+                            (savings_account_id, statement_date, file_path, file_type, total_transactions, is_processed)
+                            VALUES (?, ?, ?, ?, ?, 1)
+                        ''', (
+                            savings_account_id,
+                            info.get('statement_date', datetime.now().strftime('%Y-%m-%d')),
+                            f"static/uploads/{filename}",
+                            'pdf' if file_path.endswith('.pdf') else 'excel',
+                            len(transactions)
+                        ))
+                        
+                        statement_id = cursor.lastrowid
+                        
+                        # 保存所有交易记录
+                        for trans in transactions:
+                            cursor.execute('''
+                                INSERT INTO savings_transactions
+                                (savings_statement_id, transaction_date, description, amount, transaction_type)
+                                VALUES (?, ?, ?, ?, ?)
+                            ''', (
+                                statement_id,
+                                trans.get('date', ''),
+                                trans.get('description', ''),
+                                trans.get('amount', 0),
+                                trans.get('type', 'debit')
+                            ))
+                        
+                        conn.commit()
+                        
+                        processed_count += 1
+                        total_transactions += len(transactions)
+            
+            flash(f'✅ 成功上传{processed_count}个账单，共{total_transactions}笔交易记录', 'success')
+            return redirect(url_for('savings_accounts'))
+            
+        except Exception as e:
+            flash(f'上传失败: {str(e)}', 'error')
+            import traceback
+            traceback.print_exc()
+            return redirect(url_for('upload_savings_statement'))
+    
+    # GET request - show upload form
+    customers = get_all_customers()
+    return render_template('savings/upload.html', customers=customers)
+
+@app.route('/savings/accounts')
+def savings_accounts():
+    """查看所有储蓄账户和账单"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT 
+                sa.id,
+                sa.bank_name,
+                sa.account_number_last4,
+                sa.created_at,
+                COUNT(DISTINCT ss.id) as statement_count,
+                COUNT(st.id) as total_transactions,
+                SUM(CASE WHEN st.transaction_type = 'debit' THEN st.amount ELSE 0 END) as total_debit,
+                SUM(CASE WHEN st.transaction_type = 'credit' THEN st.amount ELSE 0 END) as total_credit
+            FROM savings_accounts sa
+            LEFT JOIN savings_statements ss ON sa.id = ss.savings_account_id
+            LEFT JOIN savings_transactions st ON ss.id = st.savings_statement_id
+            GROUP BY sa.id
+            ORDER BY sa.created_at DESC
+        ''')
+        
+        accounts = [dict(row) for row in cursor.fetchall()]
+    
+    return render_template('savings/accounts.html', accounts=accounts)
+
+@app.route('/savings/search', methods=['GET', 'POST'])
+def savings_search():
+    """搜索转账记录（按客户名字或关键词）"""
+    transactions = []
+    search_query = ''
+    
+    if request.method == 'POST' or request.args.get('q'):
+        search_query = request.form.get('search_query') or request.args.get('q', '')
+        
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # 使用模糊搜索
+            cursor.execute('''
+                SELECT 
+                    st.id,
+                    st.transaction_date,
+                    st.description,
+                    st.amount,
+                    st.transaction_type,
+                    st.customer_name_tag,
+                    sa.bank_name,
+                    sa.account_number_last4,
+                    ss.statement_date
+                FROM savings_transactions st
+                JOIN savings_statements ss ON st.savings_statement_id = ss.id
+                JOIN savings_accounts sa ON ss.savings_account_id = sa.id
+                WHERE st.description LIKE ? OR st.customer_name_tag LIKE ?
+                ORDER BY st.transaction_date DESC
+                LIMIT 500
+            ''', (f'%{search_query}%', f'%{search_query}%'))
+            
+            transactions = [dict(row) for row in cursor.fetchall()]
+    
+    return render_template('savings/search.html', 
+                         transactions=transactions, 
+                         search_query=search_query)
+
+@app.route('/savings/settlement/<customer_name>')
+def savings_settlement(customer_name):
+    """生成客户结算报告"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 搜索该客户的所有转账记录
+        cursor.execute('''
+            SELECT 
+                st.id,
+                st.transaction_date,
+                st.description,
+                st.amount,
+                st.transaction_type,
+                sa.bank_name,
+                sa.account_number_last4,
+                ss.statement_date
+            FROM savings_transactions st
+            JOIN savings_statements ss ON st.savings_statement_id = ss.id
+            JOIN savings_accounts sa ON ss.savings_account_id = sa.id
+            WHERE st.description LIKE ? OR st.customer_name_tag = ?
+            ORDER BY st.transaction_date ASC
+        ''', (f'%{customer_name}%', customer_name))
+        
+        transactions = [dict(row) for row in cursor.fetchall()]
+        
+        # 计算总额
+        total_amount = sum(t['amount'] for t in transactions if t['transaction_type'] == 'debit')
+        
+        settlement_data = {
+            'customer_name': customer_name,
+            'total_amount': total_amount,
+            'transaction_count': len(transactions),
+            'transactions': transactions,
+            'generated_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+    
+    return render_template('savings/settlement.html', settlement=settlement_data)
+
+@app.route('/savings/tag/<int:transaction_id>', methods=['POST'])
+def tag_savings_transaction(transaction_id):
+    """标记交易的客户名字"""
+    customer_tag = request.form.get('customer_tag')
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            UPDATE savings_transactions
+            SET customer_name_tag = ?, is_prepayment = 1
+            WHERE id = ?
+        ''', (customer_tag, transaction_id))
+        conn.commit()
+    
+    flash(f'✅ 已标记交易为客户: {customer_tag}', 'success')
+    return redirect(request.referrer or url_for('savings_search'))
+
+
 start_scheduler()
 
 if __name__ == '__main__':

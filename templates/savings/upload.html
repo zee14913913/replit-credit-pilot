@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Savings Statement / 上传储蓄账单{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="section-header">
+        <h1 class="section-title">
+            <i class="bi bi-cloud-upload"></i> Upload Savings Statement / 上传储蓄账单
+        </h1>
+        <p class="section-subtitle">上传银行储蓄账户月结单，记录所有转账交易</p>
+    </div>
+
+    <!-- Upload Form -->
+    <div class="professional-card">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="row g-4">
+                <!-- Bank Selection -->
+                <div class="col-md-6">
+                    <label class="form-label">
+                        <i class="bi bi-bank"></i> Bank / 银行
+                    </label>
+                    <select name="bank_name" class="form-select" required>
+                        <option value="">-- Select Bank / 选择银行 --</option>
+                        <option value="Maybank">Maybank</option>
+                        <option value="GX Bank">GX Bank</option>
+                        <option value="Hong Leong Bank">Hong Leong Bank</option>
+                        <option value="CIMB">CIMB</option>
+                        <option value="UOB">UOB</option>
+                        <option value="OCBC">OCBC</option>
+                        <option value="Public Bank">Public Bank</option>
+                        <option value="Generic">其他银行 (Generic)</option>
+                    </select>
+                </div>
+
+                <!-- Customer (Optional) -->
+                <div class="col-md-6">
+                    <label class="form-label">
+                        <i class="bi bi-person"></i> Customer / 客户 (可选)
+                    </label>
+                    <select name="customer_id" class="form-select">
+                        <option value="">-- Not linked to customer --</option>
+                        {% for customer in customers %}
+                        <option value="{{ customer.id }}">{{ customer.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- File Upload -->
+                <div class="col-12">
+                    <label class="form-label">
+                        <i class="bi bi-file-earmark-pdf"></i> Statements / 账单文件 (PDF or Excel)
+                    </label>
+                    <input type="file" 
+                           name="statements" 
+                           class="form-control" 
+                           accept=".pdf,.xlsx,.xls" 
+                           multiple 
+                           required>
+                    <small style="color: var(--text-secondary); margin-top: 0.5rem; display: block;">
+                        支持批量上传，支持PDF和Excel格式
+                    </small>
+                </div>
+
+                <!-- Info Box -->
+                <div class="col-12">
+                    <div class="alert-professional alert-info-pro">
+                        <i class="bi bi-info-circle"></i>
+                        <div>
+                            <strong>功能说明：</strong>
+                            <ul style="margin-top: 0.5rem; margin-bottom: 0;">
+                                <li>系统会自动提取所有转账交易记录</li>
+                                <li>完整保留日期、描述和金额信息</li>
+                                <li>后续可按客户名字搜索并生成结算单</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-12">
+                    <button type="submit" class="btn-professional">
+                        <i class="bi bi-upload"></i> Upload Statements / 上传账单
+                    </button>
+                    <a href="{{ url_for('savings_accounts') }}" class="btn-professional-outline ms-3">
+                        <i class="bi bi-arrow-left"></i> Back to Accounts / 返回账户列表
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

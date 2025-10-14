@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Search Transactions / 搜索转账记录{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="section-header">
+        <h1 class="section-title">
+            <i class="bi bi-search"></i> Search Transactions / 搜索转账记录
+        </h1>
+        <p class="section-subtitle">按客户名字或关键词搜索转账记录</p>
+    </div>
+
+    <!-- Search Form -->
+    <div class="professional-card mb-4">
+        <form method="POST">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-9">
+                    <label class="form-label">
+                        <i class="bi bi-search"></i> Search by Customer Name or Description / 客户名字或描述关键词
+                    </label>
+                    <input type="text" 
+                           name="search_query" 
+                           class="form-control" 
+                           placeholder="例如：张三、TRANSFER、JUN YOON..." 
+                           value="{{ search_query }}"
+                           required>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn-professional w-100">
+                        <i class="bi bi-search"></i> Search / 搜索
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Search Results -->
+    {% if transactions %}
+    <div class="professional-card">
+        <h3 style="color: var(--text-primary); margin-bottom: 1rem;">
+            <i class="bi bi-list-ul"></i> Search Results / 搜索结果
+            <span class="badge-professional badge-info-pro ms-3">{{ transactions|length }} Records</span>
+        </h3>
+
+        <!-- Summary -->
+        {% set total_amount = transactions|selectattr('transaction_type', 'equalto', 'debit')|map(attribute='amount')|sum %}
+        {% if total_amount > 0 %}
+        <div class="alert-professional alert-success-pro mb-3">
+            <i class="bi bi-cash-coin"></i>
+            <strong>Total Amount / 总金额:</strong> RM {{ "{:,.2f}".format(total_amount) }}
+        </div>
+        {% endif %}
+
+        <div class="divider-professional mb-3"></div>
+
+        <!-- Transactions Table -->
+        <div class="table-responsive">
+            <table class="table-professional">
+                <thead>
+                    <tr>
+                        <th>Date / 日期</th>
+                        <th>Bank / 银行</th>
+                        <th>Description / 描述</th>
+                        <th>Amount / 金额</th>
+                        <th>Customer Tag / 客户标签</th>
+                        <th>Actions / 操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trans in transactions %}
+                    <tr>
+                        <td>{{ trans.transaction_date }}</td>
+                        <td>
+                            <span class="badge-professional badge-secondary-pro">
+                                {{ trans.bank_name }}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="max-width: 400px;">{{ trans.description }}</div>
+                        </td>
+                        <td>
+                            {% if trans.transaction_type == 'debit' %}
+                            <span style="color: #e74c3c; font-weight: 600;">
+                                -RM {{ "{:,.2f}".format(trans.amount) }}
+                            </span>
+                            {% else %}
+                            <span style="color: #2ecc71; font-weight: 600;">
+                                +RM {{ "{:,.2f}".format(trans.amount) }}
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if trans.customer_name_tag %}
+                            <span class="badge-professional badge-success-pro">
+                                {{ trans.customer_name_tag }}
+                            </span>
+                            {% else %}
+                            <small style="color: var(--text-secondary);">未标记</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form method="POST" action="{{ url_for('tag_savings_transaction', transaction_id=trans.id) }}" class="d-inline">
+                                <div class="input-group input-group-sm" style="width: 200px;">
+                                    <input type="text" 
+                                           name="customer_tag" 
+                                           class="form-control" 
+                                           placeholder="客户名..." 
+                                           value="{{ trans.customer_name_tag or '' }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-tag"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Generate Settlement Button -->
+        {% if search_query and transactions %}
+        <div class="mt-4 text-center">
+            <a href="{{ url_for('savings_settlement', customer_name=search_query) }}" class="btn-professional">
+                <i class="bi bi-file-earmark-text"></i> Generate Settlement Report / 生成结算单
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    {% elif search_query %}
+    <div class="professional-card text-center py-5">
+        <i class="bi bi-inbox" style="font-size: 4rem; color: var(--text-secondary); opacity: 0.5;"></i>
+        <p style="color: var(--text-secondary); margin-top: 1rem; font-size: 1.1rem;">
+            No transactions found for "{{ search_query }}" / 未找到相关转账记录
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- Back Button -->
+    <div class="mt-4">
+        <a href="{{ url_for('savings_accounts') }}" class="btn-professional-outline">
+            <i class="bi bi-arrow-left"></i> Back to Accounts / 返回账户列表
+        </a>
+    </div>
+</div>
+{% endblock %}

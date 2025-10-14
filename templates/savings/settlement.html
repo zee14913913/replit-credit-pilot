@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Settlement Report / 结算报告 - {{ settlement.customer_name }}{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="section-header">
+        <h1 class="section-title">
+            <i class="bi bi-file-earmark-text"></i> Settlement Report / 结算报告
+        </h1>
+        <p class="section-subtitle">客户转账记录汇总</p>
+    </div>
+
+    <!-- Settlement Summary Card -->
+    <div class="professional-card mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="row g-4 text-white">
+            <div class="col-md-4">
+                <h5 style="color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; font-size: 0.9rem;">
+                    Customer Name / 客户名字
+                </h5>
+                <h2 style="color: white; margin: 0;">{{ settlement.customer_name }}</h2>
+            </div>
+            <div class="col-md-4">
+                <h5 style="color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; font-size: 0.9rem;">
+                    Total Amount / 总预付金额
+                </h5>
+                <h2 style="color: #ffd700; margin: 0;">RM {{ "{:,.2f}".format(settlement.total_amount) }}</h2>
+            </div>
+            <div class="col-md-4">
+                <h5 style="color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; font-size: 0.9rem;">
+                    Transaction Count / 转账笔数
+                </h5>
+                <h2 style="color: white; margin: 0;">{{ settlement.transaction_count }} 笔</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Details -->
+    <div class="professional-card">
+        <h3 style="color: var(--text-primary); margin-bottom: 1rem;">
+            <i class="bi bi-list-ul"></i> Transaction Details / 交易明细
+        </h3>
+
+        <div class="table-responsive">
+            <table class="table-professional">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Date / 日期</th>
+                        <th>Bank / 银行</th>
+                        <th>Description / 描述</th>
+                        <th>Amount / 金额</th>
+                        <th>Type / 类型</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trans in settlement.transactions %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ trans.transaction_date }}</td>
+                        <td>
+                            <span class="badge-professional badge-secondary-pro">
+                                {{ trans.bank_name }}
+                            </span>
+                        </td>
+                        <td>{{ trans.description }}</td>
+                        <td>
+                            {% if trans.transaction_type == 'debit' %}
+                            <span style="color: #e74c3c; font-weight: 600;">
+                                RM {{ "{:,.2f}".format(trans.amount) }}
+                            </span>
+                            {% else %}
+                            <span style="color: #2ecc71; font-weight: 600;">
+                                RM {{ "{:,.2f}".format(trans.amount) }}
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if trans.transaction_type == 'debit' %}
+                            <span class="badge-professional badge-danger-pro">转出</span>
+                            {% else %}
+                            <span class="badge-professional badge-success-pro">转入</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr style="background: var(--bg-secondary);">
+                        <td colspan="4" style="text-align: right; font-weight: 600; color: var(--text-primary);">
+                            Total Amount to Collect / 应收总额:
+                        </td>
+                        <td colspan="2">
+                            <span style="color: #e74c3c; font-weight: 700; font-size: 1.2rem;">
+                                RM {{ "{:,.2f}".format(settlement.total_amount) }}
+                            </span>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- Generated Info -->
+    <div class="professional-card mt-4" style="background: var(--bg-secondary);">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <small style="color: var(--text-secondary);">Report Generated / 报告生成时间</small>
+                <div style="color: var(--text-primary);">{{ settlement.generated_date }}</div>
+            </div>
+            <div class="col-md-6 text-end">
+                <small style="color: var(--text-secondary);">Status / 状态</small>
+                <div><span class="badge-professional badge-warning-pro">待收款 Pending Collection</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="mt-4">
+        <button onclick="window.print()" class="btn-professional">
+            <i class="bi bi-printer"></i> Print Report / 打印报告
+        </button>
+        <a href="{{ url_for('savings_search') }}" class="btn-professional-outline ms-3">
+            <i class="bi bi-arrow-left"></i> Back to Search / 返回搜索
+        </a>
+    </div>
+</div>
+
+<style>
+@media print {
+    .section-header, .btn-professional, .btn-professional-outline, nav, footer {
+        display: none !important;
+    }
+}
+</style>
+{% endblock %}

@@ -49,6 +49,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {{ 'active' if 'savings' in request.endpoint }}" href="{{ url_for('savings_accounts') }}">
+                        <i class="bi bi-piggy-bank"></i> Savings
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link {{ 'active' if request.endpoint == 'reminders' }}" href="{{ url_for('reminders') }}">
                         {{ t('nav_reminders') }}
                     </a>
