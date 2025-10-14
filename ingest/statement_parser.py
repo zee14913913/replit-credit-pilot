@@ -456,66 +456,116 @@ def parse_ocbc_statement(file_path):
 
 
 def parse_uob_statement(file_path):
-    """UOB - United Overseas Bank (Singapore)"""
+    """UOB - United Overseas Bank (Malaysia/Singapore)"""
     transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "UOB"}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
-                text = "\n".join(p.extract_text() for p in pdf.pages)
-            
-            card_num_match = re.search(r"Card\s+(?:No|Number|Ending)?[\s:]*[*X\d\s-]*(\d{4})", text, re.IGNORECASE)
-            if card_num_match:
-                info["card_last4"] = card_num_match.group(1)
-            
-            # Try format: "Statement Date 13 MAY 25"
-            date_match = re.search(r"Statement\s+Date[\s:]*(\d{1,2}\s+(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)[A-Z]*\s+\d{2,4})", text, re.IGNORECASE)
-            
-            # Fallback: "Statement Date 13-05-25" or "13/05/25"
-            if not date_match:
-                date_match = re.search(r"Statement\s+Date[\s:]*(\d{2}[/-]\d{2}[/-]\d{2,4})", text, re.IGNORECASE)
-            
-            # Last resort: any date pattern
-            if not date_match:
-                date_match = re.search(r"(?:Date|As of)[\s:]*(\d{2}[/-]\d{2}[/-]\d{2,4})", text, re.IGNORECASE)
-            
-            if date_match:
-                date_str = date_match.group(1)
-                try:
-                    from datetime import datetime
-                    # Handle "13 MAY 25" format
-                    if re.match(r"\d{1,2}\s+[A-Z]{3}", date_str, re.IGNORECASE):
-                        parsed_date = datetime.strptime(date_str.upper(), "%d %b %y") if len(date_str.split()[-1]) == 2 else datetime.strptime(date_str.upper(), "%d %B %Y")
-                    else:
-                        # Handle "13-05-25" or "13/05/25" format
-                        date_str = date_str.replace("/", "-")
-                        if len(date_str.split("-")[-1]) == 2:
-                            parsed_date = datetime.strptime(date_str, "%d-%m-%y")
-                        else:
-                            parsed_date = datetime.strptime(date_str, "%d-%m-%Y")
-                    info["statement_date"] = parsed_date.strftime("%Y-%m-%d")
-                except Exception as e:
-                    print(f"⚠️ Date parsing error: {e}, using current date")
-                    from datetime import datetime
-                    info["statement_date"] = datetime.now().strftime("%Y-%m-%d")
-            
-            pattern = r"(\d{2}/\d{2})\s+(.+?)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})"
-            
-            for m in re.finditer(pattern, text):
-                transactions.append({
-                    "date": m.group(1), 
-                    "description": m.group(2).strip(), 
-                    "amount": float(m.group(3).replace(",", ""))
-                })
+                full_text = "\n".join(p.extract_text() for p in pdf.pages)
+                
+                # Extract card number
+                card_patterns = [
+                    r"\*\*(\d{4})-\d{4}-\d{4}-(\d{4})\*\*",  # **4141-7000-0828-3530**
+                    r"Card\s+(?:No|Number|Ending)?[\s:]*[*X\d\s-]*(\d{4})"
+                ]
+                for pattern in card_patterns:
+                    card_match = re.search(pattern, full_text, re.IGNORECASE)
+                    if card_match:
+                        info["card_last4"] = card_match.group(card_match.lastindex)
+                        break
+                
+                # Extract statement date - "Statement Date 13 MAY 25"
+                date_match = re.search(r"Statement\s+Date[\s:]*(\d{1,2}\s+(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)[A-Z]*\s+\d{2,4})", full_text, re.IGNORECASE)
+                if date_match:
+                    date_str = date_match.group(1)
+                    try:
+                        from datetime import datetime
+                        parsed_date = datetime.strptime(date_str.upper().strip(), "%d %b %y") if len(date_str.split()[-1]) == 2 else datetime.strptime(date_str.upper().strip(), "%d %B %Y")
+                        info["statement_date"] = parsed_date.strftime("%Y-%m-%d")
+                    except:
+                        pass
+                
+                # Extract Total Balance Due
+                total_match = re.search(r"Total Balance Due[^\d]+([\d,]+\.\d{2})", full_text, re.IGNORECASE)
+                if total_match:
+                    info["total"] = float(total_match.group(1).replace(",", ""))
+                
+                # Extract transactions using table extraction
+                for page in pdf.pages:
+                    tables = page.extract_tables()
+                    for table in tables:
+                        if table and len(table) > 2:
+                            # Check if this is the transaction table
+                            header_row = " ".join(str(cell) for cell in table[0] if cell).upper()
+                            if "TRANSACTION DATE" in header_row or "TRANSACTION DESCRIPTION" in header_row or "TARIKH TRANSAKSI" in header_row:
+                                # Found transaction table
+                                for row in table[3:]:  # Skip headers
+                                    if row and len(row) >= 2:
+                                        date_cell = str(row[0]) if row[0] else ""
+                                        desc_cell = str(row[1]) if row[1] else ""
+                                        amount_cell = str(row[-1]) if row[-1] else ""
+                                        
+                                        # Parse transactions from combined cell format
+                                        # Format: "07 MAY PAYMENT REC'D WITH THANKS-DUITNOW 1,763.62 CR"
+                                        lines = desc_cell.split('\n')
+                                        for line in lines:
+                                            # Match: DD MMM DESCRIPTION AMOUNT [CR]
+                                            trans_match = re.match(r'(\d{1,2}\s+(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))\s+(.+?)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})(?:\s+CR)?', line, re.IGNORECASE)
+                                            if trans_match:
+                                                trans_date = trans_match.group(1)
+                                                trans_desc = trans_match.group(2).strip()
+                                                trans_amount = abs(float(trans_match.group(3).replace(",", "")))
+                                                
+                                                # CR means credit/repayment (type marker, not negative)
+                                                trans_type = "credit" if 'CR' in line.upper() else "debit"
+                                                
+                                                transactions.append({
+                                                    "date": trans_date,
+                                                    "description": trans_desc,
+                                                    "amount": trans_amount,
+                                                    "type": trans_type
+                                                })
+                
+                # Fallback: text-based extraction if table extraction fails
+                if len(transactions) == 0:
+                    print("⚠️ UOB: Table extraction failed, trying text-based extraction")
+                    # Match pattern: "07 MAY PAYMENT REC'D WITH THANKS-DUITNOW 1,763.62 CR"
+                    # Use greedy match (.+) to capture everything, then get the LAST amount
+                    pattern = r'(\d{1,2}\s+(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))\s+(.+)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})(?:\s+CR)?$'
+                    for match in re.finditer(pattern, full_text, re.IGNORECASE | re.MULTILINE):
+                        trans_date = match.group(1)
+                        trans_desc = match.group(2).strip()
+                        trans_amount = abs(float(match.group(3).replace(",", "")))
+                        
+                        # Filter out non-transaction lines (like headers, totals, due dates)
+                        skip_keywords = ['minimum payment due', 'payment due date', 'statement date', 'credit limit', 'balance due']
+                        if any(kw in trans_desc.lower() for kw in skip_keywords):
+                            continue
+                        
+                        if len(trans_desc) > 5 and not re.match(r'^\d+[\s,\.]*$', trans_desc):
+                            # CR means credit/repayment (type marker, not negative)
+                            trans_type = "credit" if 'CR' in match.group(0).upper() else "debit"
+                            
+                            transactions.append({
+                                "date": trans_date,
+                                "description": trans_desc,
+                                "amount": trans_amount,
+                                "type": trans_type
+                            })
         else:
             df = pd.read_excel(file_path)
             for _, r in df.iterrows():
                 transactions.append({"date": str(r.get("Date", "")), "description": str(r.get("Description", "")), "amount": float(r.get("Amount", 0))})
         
-        info["total"] = sum(t["amount"] for t in transactions)
-        print(f"✅ UOB parsed {len(transactions)} transactions. Card: ****{info['card_last4']}, Date: {info['statement_date']}")
+        if info["total"] == 0.0:
+            info["total"] = sum(t["amount"] for t in transactions)
+        
+        print(f"✅ UOB parsed {len(transactions)} transactions. Card: ****{info['card_last4']}, Date: {info['statement_date']}, Total: RM {info['total']:.2f}")
         return info, transactions
     except Exception as e:
         print(f"❌ Error parsing UOB: {e}")
+        import traceback
+        traceback.print_exc()
         return info, transactions
 
 
