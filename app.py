@@ -104,6 +104,28 @@ def set_language(lang):
         session['language'] = lang
     return redirect(request.referrer or url_for('index'))
 
+@app.route('/static/uploads/<path:filename>')
+def serve_uploaded_file(filename):
+    """Serve uploaded PDF files with correct MIME type"""
+    from flask import send_from_directory, make_response
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    
+    if not os.path.exists(file_path):
+        return "File not found", 404
+    
+    response = make_response(send_from_directory(app.config['UPLOAD_FOLDER'], filename))
+    
+    # Set correct MIME type for PDF
+    if filename.lower().endswith('.pdf'):
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = 'inline; filename=' + filename
+    
+    # Prevent caching
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    
+    return response
 
 @app.route('/')
 def index():
