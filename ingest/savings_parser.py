@@ -246,6 +246,9 @@ def parse_gxbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
             
             # 解析交易记录 - GX Bank格式
             # 格式: Date  Description  Money in (RM)  Money out (RM)  Interest earned (RM)  Closing balance (RM)
+            # 提取年份用于补全交易日期
+            statement_year = info['statement_date'].split()[-1] if info['statement_date'] else '2025'
+            
             i = 0
             while i < len(lines):
                 line = lines[i].strip()
@@ -301,10 +304,11 @@ def parse_gxbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                         
                         j += 1
                     
-                    # 如果找到了金额，创建交易记录
+                    # 如果找到了金额，创建交易记录（附加年份到日期）
                     if money_in or money_out:
+                        full_date = f"{date_str} {statement_year}"  # 添加年份: "1 Jan 2025"
                         transactions.append({
-                            'date': date_str,
+                            'date': full_date,
                             'description': description.strip(),
                             'amount': money_in if money_in else money_out,
                             'type': 'credit' if money_in else 'debit'
