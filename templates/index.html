@@ -72,18 +72,24 @@
 
 <script>
 function deleteCustomer(customerId, customerName) {
-    // 显示确认对话框
-    if (confirm(`⚠️ 警告：删除客户将同时删除以下数据：\n\n` +
-                `• 所有信用卡\n` +
-                `• 所有账单\n` +
-                `• 所有交易记录\n` +
-                `• 所有月度账本\n` +
-                `• 所有供应商发票\n\n` +
+    // 显示确认对话框 - 列出所有11种数据类型
+    if (confirm(`⚠️ 警告：删除客户将同时删除以下所有数据：\n\n` +
+                `• 所有信用卡 (Credit Cards)\n` +
+                `• 所有账单 (Statements)\n` +
+                `• 所有交易记录 (Transactions)\n` +
+                `• 所有月度账本 (Monthly Ledgers)\n` +
+                `• 所有INFINITE账本 (INFINITE Ledgers)\n` +
+                `• 所有供应商发票 (Supplier Invoices)\n` +
+                `• 所有预算设置 (Budgets)\n` +
+                `• 所有分期付款计划 (Instalment Plans)\n` +
+                `• 所有提醒记录 (Reminders)\n` +
+                `• 所有咨询记录 (Consultation Requests)\n` +
+                `• 所有优化建议 (Optimization Proposals)\n\n` +
                 `确定要删除客户 "${customerName}" 吗？\n\n` +
-                `此操作无法撤销！`)) {
+                `⚠️ 此操作无法撤销！`)) {
         
         // 再次确认
-        if (confirm(`最后确认：您确定要永久删除 "${customerName}" 及其所有数据吗？`)) {
+        if (confirm(`🔴 最后确认：您确定要永久删除客户 "${customerName}" 及其所有11种类型的数据吗？\n\n此操作将无法恢复！`)) {
             // 发送删除请求
             fetch(`/customer/${customerId}/delete`, {
                 method: 'POST',
