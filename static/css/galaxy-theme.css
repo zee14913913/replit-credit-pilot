@@ -357,14 +357,14 @@ p {
     color: var(--text-white);
     border-color: var(--glass-border);
     background: rgba(255, 255, 255, 0.1);
-    box-shadow: var(--glow-soft);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
 }
 
 .nav-link.active {
     color: var(--text-white);
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.6);
-    box-shadow: var(--glow-silver);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
 }
 
 /* Language Switcher */
@@ -392,13 +392,13 @@ p {
 .lang-btn:hover {
     background: rgba(255, 255, 255, 0.1);
     color: var(--text-white);
-    box-shadow: var(--glow-soft);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
 }
 
 .lang-btn.active {
     background: rgba(255, 255, 255, 0.15);
     color: var(--text-white);
-    box-shadow: var(--glow-silver);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
 }
 
 /* Theme Toggle - 月亮和太阳有区别 */
