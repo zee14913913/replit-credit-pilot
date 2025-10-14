@@ -257,8 +257,8 @@ def customer_dashboard(customer_id):
                     SELECT SUM(amount) as total_transfers
                     FROM savings_transactions
                     WHERE customer_tag = ? AND DATE(transaction_date) LIKE ?
-                    AND description LIKE '%转账%' OR description LIKE '%TRANSFER%'
-                """, (customer.name, month_start[:7] + '%'))
+                    AND (description LIKE '%转账%' OR description LIKE '%TRANSFER%')
+                """, (customer['name'], month_start[:7] + '%'))
                 transfer_result = cursor.fetchone()
                 infinite_transfers = transfer_result[0] if transfer_result and transfer_result[0] else 0
                 
