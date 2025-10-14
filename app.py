@@ -2529,7 +2529,7 @@ def upload_savings_statement():
                     file.save(file_path)
                     
                     # 解析账单
-                    info, transactions = parse_savings_statement(file_path, bank_name)
+                    info, transactions = parse_savings_statement(file_path, bank_name or '')
                     
                     with get_db() as conn:
                         cursor = conn.cursor()

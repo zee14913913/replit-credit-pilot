@@ -10,7 +10,7 @@ import re
 from datetime import datetime
 from typing import List, Dict, Tuple
 
-def parse_savings_statement(file_path: str, bank_name: str = None) -> Tuple[Dict, List[Dict]]:
+def parse_savings_statement(file_path: str, bank_name: str = '') -> Tuple[Dict, List[Dict]]:
     """
     解析储蓄账户月结单
     
@@ -24,7 +24,7 @@ def parse_savings_statement(file_path: str, bank_name: str = None) -> Tuple[Dict
     
     # 自动检测银行
     if not bank_name:
-        bank_name = detect_bank_from_file(file_path)
+        bank_name = detect_bank_from_file(file_path) or 'Generic'
     
     # 根据银行选择解析器
     bank_parsers = {

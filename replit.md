@@ -31,8 +31,23 @@ The platform features an **elegant, mysterious, high-end Galaxy Universe theme**
 The backend is built with Flask, utilizing SQLite with a context manager pattern for database interactions. Jinja2 handles server-side rendering, and Bootstrap 5 with Bootstrap Icons provides a responsive UI. Plotly.js is integrated for client-side data visualization.
 
 ### Feature Specifications
+
+**Savings Account Tracking System (October 2025):**
+- **Purpose:** Track prepayments made through savings accounts for customer settlement.
+- **Supported Banks:** Maybank (MBB), GX Bank, Hong Leong Bank (HLB), CIMB, UOB, OCBC, Public Bank (PBB), and generic parser.
+- **Data Capture:** Complete transaction recording (date, description, amount) with no transaction omissions.
+- **Search & Settlement:** Search by customer name/keywords in descriptions, generate settlement reports with total prepayment amounts.
+- **Database Tables:** `savings_accounts`, `savings_statements`, `savings_transactions` with indexed search fields.
+- **Features:**
+  - Batch upload of PDF/Excel statements
+  - Auto-detection of bank from file name or content
+  - Customer tagging for transactions
+  - Settlement report generation with printable format
+  - Full transaction history tracking
+
 **Core Features:**
 - **Statement Ingestion:** Supports PDF parsing (with OCR via `pdfplumber`) and Excel, with regex-based transaction extraction and batch upload for 15 major Malaysian banks (Local Commercial, Foreign, and Islamic banks).
+- **Savings Account Tracking System (NEW):** Records all transactions from savings account statements (Maybank, GX Bank, HLB, CIMB, UOB, OCBC, Public Bank) with search-by-customer-name functionality for prepayment settlement.
 - **Transaction Categorization:** Keyword-based system with predefined categories and Malaysia-specific merchant recognition.
 - **Statement Validation (Dual Verification):** Ensures 100% data accuracy.
 - **Revenue-Generating Advisory Services:** AI-powered credit card recommendations, financial optimization engine, success-based fee system (50% profit-sharing), and consultation request system.
