@@ -17,7 +17,11 @@ The platform features an **elegant, mysterious, high-end Galaxy Universe theme**
 - **Color Palette:** Pure black (#000000) background, golden accents for borders/decorations (#D4AF37), silver-pearl text colors (#F5F5F5, #E8E8E8)
 - **Visual Effects:** Animated silver dust sparkle, aurora borealis light waves (25s cycle), frosted glass cards with golden borders, glowing hover effects, dark area silver dust pattern
 - **Typography:** Inter font family with silver-pearl gradient headings (#FFFFFF → #F5F5F5 → #E8E8E8), elegant letter-spacing, and white glow text shadows
-- **Interactive Elements:** Golden glow on hover, shimmer animations, smooth transitions
+- **Interactive Elements:** Silver-white glow on hover for all buttons, shimmer animations, smooth transitions
+  - **Button Glow Effects:** All buttons use silver-white glow (`--glow-silver`) on hover
+  - **Theme Toggle Differentiation:** 
+    - Moon icon (dark theme): Silver-white glow, rotates 20deg on hover
+    - Sun icon (light theme): Golden glow, rotates -20deg on hover
 - **Components:** Navigation with golden shimmer, glass-morphism cards, elegant tables, sophisticated footer
 - **Responsive Design:** Fully responsive with breakpoints at 1200px, 768px, and 480px
 - **Multi-language:** English/Chinese support with theme toggle

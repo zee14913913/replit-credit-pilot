@@ -24,13 +24,14 @@
     --text-silver-dim: #D0D0D0;
     --text-dim: rgba(255, 255, 255, 0.8);
     
-    /* Glow Effects */
-    --glow-gold: 0 0 20px rgba(212, 175, 55, 0.5),
-                 0 0 40px rgba(212, 175, 55, 0.3),
-                 0 0 60px rgba(212, 175, 55, 0.2);
+    /* Glow Effects - 银白发光效果 */
+    --glow-silver: 0 0 20px rgba(255, 255, 255, 0.5),
+                   0 0 40px rgba(255, 255, 255, 0.3),
+                   0 0 60px rgba(255, 255, 255, 0.2);
     --glow-white: 0 0 15px rgba(255, 255, 255, 0.4),
                   0 0 30px rgba(255, 255, 255, 0.2);
-    --glow-soft: 0 0 10px rgba(212, 175, 55, 0.3);
+    --glow-soft: 0 0 10px rgba(255, 255, 255, 0.3);
+    --glow-gold: 0 0 20px rgba(212, 175, 55, 0.5);
     
     /* Borders */
     --border-gold: 2px solid rgba(212, 175, 55, 0.6);
@@ -275,7 +276,7 @@ p {
 }
 
 .nav-brand:hover {
-    filter: drop-shadow(var(--glow-gold));
+    filter: drop-shadow(var(--glow-silver));
 }
 
 .nav-logo {
@@ -361,7 +362,7 @@ p {
     color: var(--text-white);
     background: rgba(212, 175, 55, 0.2);
     border-color: var(--gold-primary);
-    box-shadow: var(--glow-gold);
+    box-shadow: var(--glow-silver);
 }
 
 /* Language Switcher */
@@ -395,10 +396,10 @@ p {
 .lang-btn.active {
     background: rgba(212, 175, 55, 0.3);
     color: var(--text-white);
-    box-shadow: var(--glow-gold);
+    box-shadow: var(--glow-silver);
 }
 
-/* Theme Toggle */
+/* Theme Toggle - 月亮和太阳有区别 */
 .theme-toggle-btn {
     background: rgba(26, 26, 26, 0.6);
     border: 1px solid var(--glass-border);
@@ -408,13 +409,27 @@ p {
     cursor: pointer;
     font-size: 1.2rem;
     transition: all 0.3s ease;
+    position: relative;
 }
 
+/* 月亮模式（默认） - 银白发光 */
 .theme-toggle-btn:hover {
-    background: rgba(212, 175, 55, 0.15);
+    background: rgba(255, 255, 255, 0.1);
     color: var(--text-white);
-    box-shadow: var(--glow-gold);
+    box-shadow: var(--glow-silver);
     transform: rotate(20deg);
+}
+
+/* 太阳模式 - 金色发光（当切换到亮色主题时） */
+.theme-toggle-btn.sun-mode {
+    color: var(--gold-primary);
+}
+
+.theme-toggle-btn.sun-mode:hover {
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--gold-primary);
+    box-shadow: var(--glow-gold);
+    transform: rotate(-20deg);
 }
 
 /* ========================================
@@ -515,7 +530,7 @@ p {
 .professional-card:hover::before,
 .professional-card:hover::after {
     opacity: 1;
-    box-shadow: var(--glow-gold);
+    box-shadow: var(--glow-silver);
 }
 
 /* Card Title Styles */
@@ -551,7 +566,7 @@ p {
 
 .stat-card:hover {
     border-color: var(--gold-primary);
-    box-shadow: var(--glow-gold),
+    box-shadow: var(--glow-silver),
                 0 6px 30px rgba(0, 0, 0, 0.6);
     transform: scale(1.02);
 }
@@ -638,7 +653,7 @@ p {
         rgba(212, 175, 55, 0.5) 100%);
     color: var(--text-white);
     border-color: var(--gold-primary);
-    box-shadow: var(--glow-gold);
+    box-shadow: var(--glow-silver);
     transform: translateY(-2px);
     text-shadow: var(--glow-white);
 }
@@ -1013,7 +1028,7 @@ footer p {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--gold-primary);
-    box-shadow: var(--glow-gold);
+    box-shadow: var(--glow-silver);
 }
 
 /* ========================================
