@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-批量上传HSBC信用卡账单
+批量上传OCBC信用卡账单
 客户：CHEOK JUN YOON
 账单月份：2025年5-9月
 """
@@ -13,23 +13,23 @@ from db.database import get_db
 from ingest.statement_parser import parse_statement_auto
 from validate.categorizer import categorize_transaction
 
-def batch_upload_hsbc():
-    """批量上传HSBC账单"""
+def batch_upload_ocbc():
+    """批量上传OCBC账单"""
     
     # 客户ID
     customer_id = 6  # CHEOK JUN YOON
     
     # 账单文件列表
     files = [
-        'attached_assets/HSBC 13:05:2025 2_1760482789082.pdf',  # 5月
-        'attached_assets/HSBC 14:06:2025 2_1760482817685.pdf',  # 6月
-        'attached_assets/HSBC 13:07:2025 2_1760482796332.pdf',  # 7月
-        'attached_assets/HSBC 13:08:2025 2_1760482803042.pdf',  # 8月
-        'attached_assets/HSBC 13:09:2025 2_1760482809034.pdf',  # 9月
+        'attached_assets/OCBC 13:05:2025_1760482858157.pdf',  # 5月
+        'attached_assets/OCBC 13:06:2025 _1760482858157.pdf', # 6月
+        'attached_assets/OCBC 13:07:2025_1760482858158.pdf',  # 7月
+        'attached_assets/OCBC 13:08:2025_1760482858158.pdf',  # 8月
+        'attached_assets/OCBC 13:09:2025_1760482858158.pdf',  # 9月
     ]
     
     print("=" * 80)
-    print(f"开始批量上传HSBC账单")
+    print(f"开始批量上传OCBC账单")
     print(f"客户ID: {customer_id} (CHEOK JUN YOON)")
     print(f"账单数量: {len(files)}")
     print("=" * 80)
@@ -70,10 +70,10 @@ def batch_upload_hsbc():
                         VALUES (?, ?, ?, ?, ?)
                     ''', (
                         customer_id,
-                        statement_info.get('bank', 'HSBC'),
+                        statement_info.get('bank', 'OCBC'),
                         statement_info.get('card_last4'),
-                        25000.00,  # 默认额度
-                        3  # 默认还款日
+                        30000.00,  # 默认额度
+                        2  # 默认还款日
                     ))
                     card_id = cursor.lastrowid
                 else:
@@ -148,4 +148,4 @@ def batch_upload_hsbc():
     print("=" * 80)
 
 if __name__ == "__main__":
-    batch_upload_hsbc()
+    batch_upload_ocbc()
