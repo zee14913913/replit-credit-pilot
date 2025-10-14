@@ -64,42 +64,38 @@
    ======================================== */
 
 [data-theme="light"] {
-    /* Ice White & Multi-Layer Gray Color Palette - 冰雪白+多层次灰色 */
+    /* Ice White Background - 冰雪白背景 */
     --galaxy-black: #FFFFFF;           /* 纯白背景 */
     --galaxy-deep-black: #FAFAFA;      /* 冰雪白 */
     --galaxy-charcoal: #F5F5F5;        /* 浅灰 */
     
-    /* Accent Colors - 优雅灰色点缀 */
-    --gold-primary: #64748B;           /* 石板灰 */
-    --gold-light: #94A3B8;             /* 浅石板灰 */
-    --gold-dark: #475569;              /* 深石板灰 */
-    --gold-bronze: #64748B;
-    --champagne: #CBD5E1;
+    /* Accent Colors - 灰色点缀 */
+    --gold-primary: #94A3B8;
+    --gold-light: #CBD5E1;
+    --gold-dark: #64748B;
+    --gold-bronze: #94A3B8;
+    --champagne: #E2E8F0;
     
-    /* Text Colors - 深灰到黑色层次 */
-    --text-white: #0F172A;             /* 最深灰（标题） */
-    --text-pearl: #1E293B;             /* 深灰（副标题） */
-    --text-silver: #334155;            /* 中深灰（正文） */
-    --text-silver-dim: #64748B;        /* 中灰（次要文字） */
-    --text-dim: rgba(15, 23, 42, 0.7); /* 半透明深灰 */
+    /* Text Colors - 统一深灰色系 */
+    --text-white: #1E293B;             /* 标题/正文（统一深灰） */
+    --text-pearl: #1E293B;             
+    --text-silver: #1E293B;
+    --text-silver-dim: #64748B;        /* 次要文字（中灰） */
+    --text-dim: rgba(30, 41, 59, 0.7);
     
-    /* Glow Effects - 柔和阴影 */
-    --glow-silver: 0 2px 8px rgba(0, 0, 0, 0.06),
-                   0 4px 16px rgba(0, 0, 0, 0.04),
-                   0 8px 24px rgba(0, 0, 0, 0.02);
-    --glow-white: 0 2px 8px rgba(0, 0, 0, 0.04),
-                  0 4px 12px rgba(0, 0, 0, 0.03);
-    --glow-soft: 0 2px 6px rgba(0, 0, 0, 0.04);
-    --glow-gold: 0 2px 8px rgba(100, 116, 139, 0.12);
+    /* Glow Effects - 柔和灰色阴影（无黄色） */
+    --glow-silver: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --glow-white: 0 2px 6px rgba(0, 0, 0, 0.04);
+    --glow-soft: 0 2px 4px rgba(0, 0, 0, 0.03);
     
-    /* Borders - 多层次灰色边框 */
-    --border-gold: 2px solid rgba(203, 213, 225, 0.9);
-    --border-gold-bright: 2px solid rgba(148, 163, 184, 1);
-    --border-silver: 2px solid rgba(226, 232, 240, 0.9);
-    --border-silver-bright: 2px solid rgba(203, 213, 225, 1);
+    /* Borders - 灰色边框 */
+    --border-gold: 2px solid rgba(226, 232, 240, 0.9);
+    --border-gold-bright: 2px solid rgba(203, 213, 225, 1);
+    --border-silver: 2px solid rgba(241, 245, 249, 0.9);
+    --border-silver-bright: 2px solid rgba(226, 232, 240, 1);
     --border-subtle: 1px solid rgba(241, 245, 249, 0.8);
     
-    /* Glass Effect - 透明白色玻璃 */
+    /* Glass Effect - 白色玻璃 */
     --glass-bg: rgba(255, 255, 255, 0.95);
     --glass-border: rgba(226, 232, 240, 0.8);
 }
