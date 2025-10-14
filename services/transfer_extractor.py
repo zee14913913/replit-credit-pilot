@@ -8,6 +8,40 @@ from typing import List, Dict
 from services.ledger_classifier import LedgerClassifier
 
 
+def parse_transaction_date(date_str: str) -> datetime:
+    """
+    解析交易日期 - 支持多种格式
+    
+    Args:
+        date_str: 日期字符串 (支持 "DD-MM-YYYY" 或 "YYYY-MM-DD")
+    
+    Returns:
+        datetime对象
+    """
+    if not date_str:
+        return None
+    
+    # 尝试 DD-MM-YYYY 格式 (savings_transactions)
+    try:
+        return datetime.strptime(date_str, '%d-%m-%Y')
+    except:
+        pass
+    
+    # 尝试 YYYY-MM-DD 格式 (statements)
+    try:
+        return datetime.strptime(date_str, '%Y-%m-%d')
+    except:
+        pass
+    
+    # 尝试 DD/MM/YYYY 格式
+    try:
+        return datetime.strptime(date_str, '%d/%m/%Y')
+    except:
+        pass
+    
+    return None
+
+
 class TransferExtractor:
     def __init__(self, db_path='db/smart_loan_manager.db'):
         self.db_path = db_path
@@ -83,17 +117,26 @@ class TransferExtractor:
                 )
                 
                 if is_transfer:
+                    # 解析日期并转换为标准格式
+                    parsed_date = parse_transaction_date(txn_date)
+                    if parsed_date:
+                        standard_date = parsed_date.strftime('%Y-%m-%d')
+                        month_start = parsed_date.strftime('%Y-%m-01')
+                    else:
+                        standard_date = txn_date
+                        month_start = txn_date[:7] + '-01'  # fallback
+                    
                     infinite_transfers.append({
                         'transaction_id': txn_id,
-                        'transfer_date': txn_date,
+                        'transfer_date': standard_date,
                         'payer_name': f"{bank_name} (*{account_num[-4:]})",
                         'payee_name': recipient_name,
                         'amount': amount,
                         'description': description,
-                        'month_start': txn_date[:7] + '-01'
+                        'month_start': month_start
                     })
                     
-                    print(f"✅ {txn_date}: {recipient_name} - RM {amount:,.2f}")
+                    print(f"✅ {standard_date}: {recipient_name} - RM {amount:,.2f}")
                     print(f"   描述: {description}")
                     print(f"   账户: {bank_name} (*{account_num[-4:]})")
                     print()
