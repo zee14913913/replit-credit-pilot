@@ -146,14 +146,32 @@ def parse_cimb_statement(file_path):
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
                 text = "\n".join(p.extract_text() for p in pdf.pages)
-            for m in re.findall(r"(\d{1,2}/\d{1,2})\s+([A-Za-z\s]+)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})", text):
-                transactions.append({"date": m[0], "description": m[1].strip(), "amount": float(m[2].replace(",", ""))})
+            # Pattern to detect CR marker
+            pattern = r'(\d{1,2}/\d{1,2})\s+([A-Za-z\s]+?)\s+([\d,]+\.\d{2})\s*(CR)?'
+            for m in re.finditer(pattern, text):
+                amount = abs(float(m.group(3).replace(",", "")))
+                is_credit = m.group(4) == "CR"
+                transactions.append({
+                    "date": m.group(1), 
+                    "description": m.group(2).strip(), 
+                    "amount": amount,
+                    "type": "credit" if is_credit else "debit"
+                })
         else:
             df = pd.read_excel(file_path, sheet_name="Transactions")
             for _, r in df.iterrows():
-                transactions.append({"date": str(r["Date"]), "description": str(r["Description"]), "amount": float(r["Amount (RM)"])})
-        info["total"] = sum(t["amount"] for t in transactions)
-        print(f"✅ CIMB parsed {len(transactions)} transactions.")
+                amt = float(r["Amount (RM)"])
+                transactions.append({
+                    "date": str(r["Date"]), 
+                    "description": str(r["Description"]), 
+                    "amount": abs(amt),
+                    "type": "credit" if amt < 0 else "debit"
+                })
+        # Calculate net total: debits - credits
+        debit_total = sum(t["amount"] for t in transactions if t.get("type") == "debit")
+        credit_total = sum(t["amount"] for t in transactions if t.get("type") == "credit")
+        info["total"] = debit_total - credit_total
+        print(f"✅ CIMB parsed {len(transactions)} transactions. Debits: RM {debit_total:,.2f}, Credits: RM {credit_total:,.2f}, Net: RM {info['total']:,.2f}")
         return info, transactions
     except Exception as e:
         print(f"❌ Error parsing CIMB: {e}")
@@ -168,7 +186,7 @@ def parse_maybank_statement(file_path):
             with pdfplumber.open(file_path) as pdf:
                 text = "\n".join(p.extract_text() for p in pdf.pages)
             
-            pattern = r"(\d{2}/\d{2})\s+\d{2}/\d{2}\s+(.+?)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})(CR)?\s*$"
+            pattern = r"(\d{2}/\d{2})\s+\d{2}/\d{2}\s+(.+?)\s+([\d,]+\.\d{2})\s*(CR)?\s*$"
             
             for line in text.split('\n'):
                 m = re.search(pattern, line)
@@ -182,22 +200,30 @@ def parse_maybank_statement(file_path):
                     description = re.sub(r'\s+:[0-9A-Z/]+\s*$', '', description)
                     description = re.sub(r'\s+[0-9A-Z]+\s+MY\s*$', '', description)
                     
-                    amount = float(amount_str)
-                    if is_credit:
-                        amount = -amount
+                    amount = abs(float(amount_str))
                     
                     transactions.append({
                         "date": date, 
                         "description": description.strip(), 
-                        "amount": amount
+                        "amount": amount,
+                        "type": "credit" if is_credit else "debit"
                     })
         else:
             df = pd.read_excel(file_path, sheet_name="Transactions")
             for _, r in df.iterrows():
-                transactions.append({"date": str(r["Txn Date"]), "description": str(r["Merchant"]), "amount": float(r["Amount (RM)"])})
+                amt = float(r["Amount (RM)"])
+                transactions.append({
+                    "date": str(r["Txn Date"]), 
+                    "description": str(r["Merchant"]), 
+                    "amount": abs(amt),
+                    "type": "credit" if amt < 0 else "debit"
+                })
         
-        info["total"] = sum(t["amount"] for t in transactions)
-        print(f"✅ Maybank parsed {len(transactions)} transactions.")
+        # Calculate net total: debits - credits
+        debit_total = sum(t["amount"] for t in transactions if t.get("type") == "debit")
+        credit_total = sum(t["amount"] for t in transactions if t.get("type") == "credit")
+        info["total"] = debit_total - credit_total
+        print(f"✅ Maybank parsed {len(transactions)} transactions. Debits: RM {debit_total:,.2f}, Credits: RM {credit_total:,.2f}, Net: RM {info['total']:,.2f}")
         return info, transactions
     except Exception as e:
         print(f"❌ Error parsing Maybank: {e}")
@@ -212,7 +238,7 @@ def parse_public_bank_statement(file_path):
             with pdfplumber.open(file_path) as pdf:
                 text = "\n".join(p.extract_text() for p in pdf.pages)
             
-            pattern = r"(\d{2}/\d{2}/\d{2,4})\s+(.+?)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})(CR)?"
+            pattern = r"(\d{2}/\d{2}/\d{2,4})\s+(.+?)\s+([\d,]+\.\d{2})\s*(CR)?"
             
             for m in re.finditer(pattern, text):
                 date = m.group(1)
@@ -220,18 +246,30 @@ def parse_public_bank_statement(file_path):
                 amount_str = m.group(3).replace(",", "")
                 is_credit = m.group(4) == "CR"
                 
-                amount = float(amount_str)
-                if is_credit:
-                    amount = -amount
+                amount = abs(float(amount_str))
                 
-                transactions.append({"date": date, "description": description, "amount": amount})
+                transactions.append({
+                    "date": date, 
+                    "description": description, 
+                    "amount": amount,
+                    "type": "credit" if is_credit else "debit"
+                })
         else:
             df = pd.read_excel(file_path)
             for _, r in df.iterrows():
-                transactions.append({"date": str(r.get("Date", "")), "description": str(r.get("Description", "")), "amount": float(r.get("Amount", 0))})
+                amt = float(r.get("Amount", 0))
+                transactions.append({
+                    "date": str(r.get("Date", "")), 
+                    "description": str(r.get("Description", "")), 
+                    "amount": abs(amt),
+                    "type": "credit" if amt < 0 else "debit"
+                })
         
-        info["total"] = sum(t["amount"] for t in transactions)
-        print(f"✅ Public Bank parsed {len(transactions)} transactions.")
+        # Calculate net total: debits - credits
+        debit_total = sum(t["amount"] for t in transactions if t.get("type") == "debit")
+        credit_total = sum(t["amount"] for t in transactions if t.get("type") == "credit")
+        info["total"] = debit_total - credit_total
+        print(f"✅ Public Bank parsed {len(transactions)} transactions. Debits: RM {debit_total:,.2f}, Credits: RM {credit_total:,.2f}, Net: RM {info['total']:,.2f}")
         return info, transactions
     except Exception as e:
         print(f"❌ Error parsing Public Bank: {e}")
@@ -246,21 +284,33 @@ def parse_rhb_statement(file_path):
             with pdfplumber.open(file_path) as pdf:
                 text = "\n".join(p.extract_text() for p in pdf.pages)
             
-            pattern = r"(\d{2}/\d{2})\s+([A-Z\s\-&.,]+?)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})"
+            pattern = r"(\d{2}/\d{2})\s+([A-Z\s\-&.,]+?)\s+([\d,]+\.\d{2})\s*(CR)?"
             
             for m in re.finditer(pattern, text):
+                amount = abs(float(m.group(3).replace(",", "")))
+                is_credit = m.group(4) == "CR"
                 transactions.append({
                     "date": m.group(1), 
                     "description": m.group(2).strip(), 
-                    "amount": float(m.group(3).replace(",", ""))
+                    "amount": amount,
+                    "type": "credit" if is_credit else "debit"
                 })
         else:
             df = pd.read_excel(file_path)
             for _, r in df.iterrows():
-                transactions.append({"date": str(r.get("Date", "")), "description": str(r.get("Description", "")), "amount": float(r.get("Amount", 0))})
+                amt = float(r.get("Amount", 0))
+                transactions.append({
+                    "date": str(r.get("Date", "")), 
+                    "description": str(r.get("Description", "")), 
+                    "amount": abs(amt),
+                    "type": "credit" if amt < 0 else "debit"
+                })
         
-        info["total"] = sum(t["amount"] for t in transactions)
-        print(f"✅ RHB Bank parsed {len(transactions)} transactions.")
+        # Calculate net total: debits - credits
+        debit_total = sum(t["amount"] for t in transactions if t.get("type") == "debit")
+        credit_total = sum(t["amount"] for t in transactions if t.get("type") == "credit")
+        info["total"] = debit_total - credit_total
+        print(f"✅ RHB Bank parsed {len(transactions)} transactions. Debits: RM {debit_total:,.2f}, Credits: RM {credit_total:,.2f}, Net: RM {info['total']:,.2f}")
         return info, transactions
     except Exception as e:
         print(f"❌ Error parsing RHB: {e}")
@@ -435,31 +485,62 @@ def parse_ambank_statement(file_path):
 
 
 def parse_alliance_statement(file_path):
-    """Alliance Bank"""
+    """Alliance Bank - Detects CR marker for payments vs purchases"""
     transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
-                text = "\n".join(p.extract_text() for p in pdf.pages)
+                full_text = "\n".join(p.extract_text() for p in pdf.pages)
             
-            pattern = r"(\d{2}/\d{2})\s+(.+?)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})"
+            # Pattern to capture optional CR marker at end
+            # Example: "02/08/25 pay on behalf 817.76 CR" -> CR = payment/credit
+            # Example: "29/07/25 AI SMART TECH SHAH ALAM MYS 4,299.00" -> no CR = purchase/debit
+            pattern = r'(\d{2}/\d{2}/\d{2,4}|\d{2}/\d{2})\s+(.+?)\s+([\d,]+\.\d{2})\s*(CR)?$'
             
-            for m in re.finditer(pattern, text):
+            for match in re.finditer(pattern, full_text, re.MULTILINE):
+                trans_date = match.group(1).strip()
+                trans_desc = match.group(2).strip()
+                trans_amount = abs(float(match.group(3).replace(",", "")))
+                trans_cr_marker = match.group(4)
+                
+                # Skip summary/header lines
+                skip_keywords = ['PREVIOUS BALANCE', 'PREVIOUS STATEMENT BALANCE', 'CHARGES THIS MONTH',
+                               'CURRENT BALANCE', 'TOTAL MINIMUM PAYMENT', 'INTEREST ON']
+                if any(kw in trans_desc.upper() for kw in skip_keywords):
+                    continue
+                
+                # Skip if description is too short or just numbers
+                if len(trans_desc) < 3 or re.match(r'^[\d\s,\.\-]+$', trans_desc):
+                    continue
+                
+                # CR marker means credit/payment, no CR means debit/purchase
+                trans_type = "credit" if trans_cr_marker else "debit"
+                
                 transactions.append({
-                    "date": m.group(1), 
-                    "description": m.group(2).strip(), 
-                    "amount": float(m.group(3).replace(",", ""))
+                    "date": trans_date,
+                    "description": trans_desc,
+                    "amount": trans_amount,
+                    "type": trans_type
                 })
         else:
             df = pd.read_excel(file_path)
             for _, r in df.iterrows():
-                transactions.append({"date": str(r.get("Date", "")), "description": str(r.get("Description", "")), "amount": float(r.get("Amount", 0))})
+                transactions.append({
+                    "date": str(r.get("Date", "")), 
+                    "description": str(r.get("Description", "")), 
+                    "amount": float(r.get("Amount", 0)),
+                    "type": "debit"  # Default for Excel imports
+                })
         
-        info["total"] = sum(t["amount"] for t in transactions)
+        if info["total"] == 0.0:
+            info["total"] = sum(t["amount"] for t in transactions)
+        
         print(f"✅ Alliance Bank parsed {len(transactions)} transactions.")
         return info, transactions
     except Exception as e:
         print(f"❌ Error parsing Alliance: {e}")
+        import traceback
+        traceback.print_exc()
         return info, transactions
 
 
@@ -471,21 +552,33 @@ def parse_affin_statement(file_path):
             with pdfplumber.open(file_path) as pdf:
                 text = "\n".join(p.extract_text() for p in pdf.pages)
             
-            pattern = r"(\d{2}/\d{2})\s+(.+?)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})"
+            pattern = r"(\d{2}/\d{2})\s+(.+?)\s+([\d,]+\.\d{2})\s*(CR)?"
             
             for m in re.finditer(pattern, text):
+                amount = abs(float(m.group(3).replace(",", "")))
+                is_credit = m.group(4) == "CR"
                 transactions.append({
                     "date": m.group(1), 
                     "description": m.group(2).strip(), 
-                    "amount": float(m.group(3).replace(",", ""))
+                    "amount": amount,
+                    "type": "credit" if is_credit else "debit"
                 })
         else:
             df = pd.read_excel(file_path)
             for _, r in df.iterrows():
-                transactions.append({"date": str(r.get("Date", "")), "description": str(r.get("Description", "")), "amount": float(r.get("Amount", 0))})
+                amt = float(r.get("Amount", 0))
+                transactions.append({
+                    "date": str(r.get("Date", "")), 
+                    "description": str(r.get("Description", "")), 
+                    "amount": abs(amt),
+                    "type": "credit" if amt < 0 else "debit"
+                })
         
-        info["total"] = sum(t["amount"] for t in transactions)
-        print(f"✅ Affin Bank parsed {len(transactions)} transactions.")
+        # Calculate net total: debits - credits
+        debit_total = sum(t["amount"] for t in transactions if t.get("type") == "debit")
+        credit_total = sum(t["amount"] for t in transactions if t.get("type") == "credit")
+        info["total"] = debit_total - credit_total
+        print(f"✅ Affin Bank parsed {len(transactions)} transactions. Debits: RM {debit_total:,.2f}, Credits: RM {credit_total:,.2f}, Net: RM {info['total']:,.2f}")
         return info, transactions
     except Exception as e:
         print(f"❌ Error parsing Affin: {e}")

@@ -506,17 +506,31 @@ def upload_statement():
                 
                 for trans in transactions:
                     category, confidence = categorize_transaction(trans['description'])
+                    
+                    # 从parser返回的type字段映射到transaction_type
+                    # type='debit' -> transaction_type='purchase' (消费DR)
+                    # type='credit' -> transaction_type='payment' (付款CR)
+                    trans_type = trans.get('type', None)
+                    if trans_type == 'debit':
+                        transaction_type = 'purchase'
+                    elif trans_type == 'credit':
+                        transaction_type = 'payment'
+                    else:
+                        # 兼容旧parser：根据amount判断（负数=付款，正数=消费）
+                        transaction_type = 'payment' if trans['amount'] < 0 else 'purchase'
+                    
                     cursor.execute('''
                         INSERT INTO transactions 
-                        (statement_id, transaction_date, description, amount, category, category_confidence)
-                        VALUES (?, ?, ?, ?, ?, ?)
+                        (statement_id, transaction_date, description, amount, category, category_confidence, transaction_type)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
                     ''', (
                         statement_id,
                         trans['date'],
                         trans['description'],
-                        trans['amount'],
+                        abs(trans['amount']),  # 统一存储为正数
                         category,
-                        confidence
+                        confidence,
+                        transaction_type
                     ))
                 
                 conn.commit()

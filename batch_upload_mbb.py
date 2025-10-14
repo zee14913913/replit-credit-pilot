@@ -142,12 +142,17 @@ def main():
             amount = abs(txn.get('amount', 0))
             description = txn.get('description', '').strip()
             
-            # Determine transaction type based on amount sign
-            # Negative amounts in Maybank statements are credits/payments
-            if txn.get('amount', 0) < 0:
+            # 从parser返回的type字段映射到transaction_type
+            # type='debit' -> transaction_type='purchase' (消费DR)
+            # type='credit' -> transaction_type='payment' (付款CR)
+            trans_type = txn.get('type', None)
+            if trans_type == 'debit':
+                transaction_type = 'purchase'
+            elif trans_type == 'credit':
                 transaction_type = 'payment'
             else:
-                transaction_type = 'purchase'
+                # 兼容旧parser：根据amount判断（负数=付款，正数=消费）
+                transaction_type = 'payment' if txn.get('amount', 0) < 0 else 'purchase'
             
             cursor.execute(
                 """INSERT INTO transactions 
