@@ -60,6 +60,51 @@
 }
 
 /* ========================================
+   LIGHT THEME - 冰雪白+多层次灰色系
+   ======================================== */
+
+[data-theme="light"] {
+    /* Ice White & Multi-Layer Gray Color Palette */
+    --galaxy-black: #FAFAFA;
+    --galaxy-deep-black: #F5F5F5;
+    --galaxy-charcoal: #E8E8E8;
+    
+    /* Accent Colors - 冰蓝灰点缀 */
+    --gold-primary: #6B7280;
+    --gold-light: #9CA3AF;
+    --gold-dark: #4B5563;
+    --gold-bronze: #6B7280;
+    --champagne: #D1D5DB;
+    
+    /* Text Colors - 深灰到黑色 */
+    --text-white: #1F2937;
+    --text-pearl: #374151;
+    --text-silver: #4B5563;
+    --text-silver-dim: #6B7280;
+    --text-dim: rgba(0, 0, 0, 0.7);
+    
+    /* Glow Effects - 柔和灰色阴影 */
+    --glow-silver: 0 2px 8px rgba(0, 0, 0, 0.08),
+                   0 4px 16px rgba(0, 0, 0, 0.06),
+                   0 8px 24px rgba(0, 0, 0, 0.04);
+    --glow-white: 0 2px 8px rgba(0, 0, 0, 0.06),
+                  0 4px 12px rgba(0, 0, 0, 0.04);
+    --glow-soft: 0 2px 6px rgba(0, 0, 0, 0.05);
+    --glow-gold: 0 2px 8px rgba(107, 114, 128, 0.15);
+    
+    /* Borders - 浅灰色边框 */
+    --border-gold: 2px solid rgba(209, 213, 219, 0.8);
+    --border-gold-bright: 2px solid rgba(156, 163, 175, 0.9);
+    --border-silver: 2px solid rgba(229, 231, 235, 0.8);
+    --border-silver-bright: 2px solid rgba(209, 213, 219, 0.9);
+    --border-subtle: 1px solid rgba(229, 231, 235, 0.6);
+    
+    /* Glass Effect - 浅色玻璃效果 */
+    --glass-bg: rgba(255, 255, 255, 0.9);
+    --glass-border: rgba(229, 231, 235, 0.6);
+}
+
+/* ========================================
    BASE STYLES - Pure Black Background
    ======================================== */
 
@@ -138,6 +183,28 @@ body::before {
     }
 }
 
+/* Light Theme Starfield - 柔和的灰色点缀 */
+[data-theme="light"] body::before {
+    background: 
+        radial-gradient(1px 1px at 20% 30%, rgba(156, 163, 175, 0.4), transparent),
+        radial-gradient(1px 1px at 60% 70%, rgba(107, 114, 128, 0.5), transparent),
+        radial-gradient(1px 1px at 50% 50%, rgba(156, 163, 175, 0.3), transparent),
+        radial-gradient(1px 1px at 80% 10%, rgba(107, 114, 128, 0.4), transparent),
+        radial-gradient(1px 1px at 90% 60%, rgba(156, 163, 175, 0.5), transparent),
+        radial-gradient(1px 1px at 33% 85%, rgba(107, 114, 128, 0.3), transparent),
+        radial-gradient(1px 1px at 75% 45%, rgba(156, 163, 175, 0.4), transparent),
+        radial-gradient(1px 1px at 15% 55%, rgba(107, 114, 128, 0.5), transparent),
+        radial-gradient(1px 1px at 45% 15%, rgba(156, 163, 175, 0.3), transparent),
+        radial-gradient(1px 1px at 85% 85%, rgba(107, 114, 128, 0.4), transparent),
+        radial-gradient(1px 1px at 25% 65%, rgba(156, 163, 175, 0.5), transparent),
+        radial-gradient(1px 1px at 65% 35%, rgba(107, 114, 128, 0.3), transparent),
+        radial-gradient(1px 1px at 40% 90%, rgba(156, 163, 175, 0.4), transparent),
+        radial-gradient(1px 1px at 70% 25%, rgba(107, 114, 128, 0.5), transparent),
+        radial-gradient(1px 1px at 10% 40%, rgba(156, 163, 175, 0.3), transparent),
+        radial-gradient(1px 1px at 95% 50%, rgba(107, 114, 128, 0.4), transparent);
+    opacity: 0.15;
+}
+
 /* 北极光效果 - Aurora Borealis */
 body::after {
     content: '';
@@ -177,6 +244,19 @@ body::after {
         transform: rotate(135deg) scale(1.15) translateY(-3%);
         opacity: 0.7;
     }
+}
+
+/* Light Theme Aurora - 冰蓝灰色柔和光晕 */
+[data-theme="light"] body::after {
+    background: 
+        radial-gradient(ellipse at 20% 30%, rgba(229, 231, 235, 0.5) 0%, transparent 35%),
+        radial-gradient(ellipse at 80% 70%, rgba(209, 213, 219, 0.4) 0%, transparent 40%),
+        radial-gradient(ellipse at 40% 60%, rgba(243, 244, 246, 0.6) 0%, transparent 45%),
+        radial-gradient(ellipse at 70% 20%, rgba(229, 231, 235, 0.45) 0%, transparent 38%),
+        radial-gradient(ellipse at 30% 80%, rgba(209, 213, 219, 0.35) 0%, transparent 42%),
+        radial-gradient(ellipse at 60% 40%, rgba(243, 244, 246, 0.55) 0%, transparent 36%);
+    opacity: 0.3;
+    filter: blur(100px);
 }
 
 /* ========================================
@@ -1272,4 +1352,204 @@ footer p {
     .footer-company-name {
         font-size: 1.5rem;
     }
+}
+
+/* ========================================
+   LIGHT THEME STYLE OVERRIDES - 冰雪白主题样式覆盖
+   ======================================== */
+
+/* Navigation - 导航栏 */
+[data-theme="light"] .nav-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .nav-brand,
+[data-theme="light"] .nav-link {
+    color: var(--text-white);
+}
+
+[data-theme="light"] .nav-link:hover {
+    color: var(--text-pearl);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .nav-link.active {
+    color: var(--gold-primary);
+    background: rgba(229, 231, 235, 0.5);
+}
+
+/* Cards - 卡片 */
+[data-theme="light"] .glass-card,
+[data-theme="light"] .galaxy-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .glass-card:hover,
+[data-theme="light"] .galaxy-card:hover {
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Buttons - 按钮 */
+[data-theme="light"] .btn-primary {
+    background: linear-gradient(135deg, #6B7280 0%, #4B5563 100%);
+    color: white;
+    border: 1px solid #4B5563;
+}
+
+[data-theme="light"] .btn-primary:hover {
+    background: linear-gradient(135deg, #4B5563 0%, #374151 100%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .btn-outline {
+    border: 1px solid var(--gold-primary);
+    color: var(--gold-primary);
+    background: transparent;
+}
+
+[data-theme="light"] .btn-outline:hover {
+    background: var(--gold-primary);
+    color: white;
+}
+
+/* Tables - 表格 */
+[data-theme="light"] .galaxy-table {
+    background: white;
+    border: 1px solid var(--border-silver);
+}
+
+[data-theme="light"] .galaxy-table thead {
+    background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
+}
+
+[data-theme="light"] .galaxy-table th {
+    color: var(--text-white);
+    border-bottom: 2px solid var(--border-silver-bright);
+}
+
+[data-theme="light"] .galaxy-table tbody tr {
+    border-bottom: 1px solid rgba(229, 231, 235, 0.6);
+}
+
+[data-theme="light"] .galaxy-table tbody tr:hover {
+    background: rgba(243, 244, 246, 0.5);
+}
+
+/* Forms - 表单 */
+[data-theme="light"] .form-control,
+[data-theme="light"] .form-select {
+    background: white;
+    border: 1px solid var(--border-silver);
+    color: var(--text-white);
+}
+
+[data-theme="light"] .form-control:focus,
+[data-theme="light"] .form-select:focus {
+    border-color: var(--gold-primary);
+    box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.1);
+}
+
+/* Alerts - 警告框 */
+[data-theme="light"] .alert {
+    background: rgba(243, 244, 246, 0.9);
+    border: 1px solid var(--border-silver);
+}
+
+[data-theme="light"] .alert-success {
+    background: rgba(209, 250, 229, 0.9);
+    border-color: rgba(167, 243, 208, 0.8);
+    color: #065f46;
+}
+
+[data-theme="light"] .alert-danger {
+    background: rgba(254, 226, 226, 0.9);
+    border-color: rgba(252, 165, 165, 0.8);
+    color: #991b1b;
+}
+
+[data-theme="light"] .alert-warning {
+    background: rgba(254, 243, 199, 0.9);
+    border-color: rgba(253, 224, 71, 0.8);
+    color: #92400e;
+}
+
+[data-theme="light"] .alert-info {
+    background: rgba(224, 242, 254, 0.9);
+    border-color: rgba(147, 197, 253, 0.8);
+    color: #1e40af;
+}
+
+/* Footer - 页脚 */
+[data-theme="light"] .footer-container {
+    background: linear-gradient(180deg, rgba(249, 250, 251, 0.95) 0%, rgba(243, 244, 246, 0.98) 100%);
+    border-top: 1px solid rgba(229, 231, 235, 0.8);
+}
+
+[data-theme="light"] .footer-company-name {
+    color: var(--text-white);
+}
+
+[data-theme="light"] .footer-link {
+    color: var(--text-silver);
+}
+
+[data-theme="light"] .footer-link:hover {
+    color: var(--gold-primary);
+}
+
+/* Theme Toggle Button - 主题切换按钮 */
+[data-theme="light"] .theme-toggle-btn {
+    background: rgba(243, 244, 246, 0.8);
+    border: 1px solid rgba(229, 231, 235, 0.8);
+    color: var(--gold-primary);
+}
+
+[data-theme="light"] .theme-toggle-btn:hover {
+    background: rgba(229, 231, 235, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Badges - 徽章 */
+[data-theme="light"] .badge {
+    background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%);
+    color: var(--text-white);
+}
+
+[data-theme="light"] .badge-success {
+    background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+    color: #065f46;
+}
+
+[data-theme="light"] .badge-warning {
+    background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+    color: #92400e;
+}
+
+[data-theme="light"] .badge-danger {
+    background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+    color: #991b1b;
+}
+
+/* Typography - 标题文字阴影移除 */
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6 {
+    text-shadow: none;
+    color: var(--text-white);
+}
+
+/* Section Title */
+[data-theme="light"] .section-title {
+    background: linear-gradient(135deg, #1F2937 0%, #4B5563 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
 }
