@@ -243,10 +243,126 @@ def parse_ocbc_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
     return info, transactions
 
 def parse_publicbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
-    """Public Bank储蓄账户解析器"""
-    info, transactions = parse_generic_savings(file_path)
-    info['bank_name'] = 'Public Bank'
-    print(f"✅ Public Bank savings parsed: {len(transactions)} transactions")
+    """Public Bank储蓄账户解析器 - 处理DEBIT/CREDIT列格式"""
+    info = {
+        'bank_name': 'Public Bank',
+        'account_last4': '',
+        'statement_date': '',
+        'total_transactions': 0
+    }
+    
+    transactions = []
+    
+    try:
+        with pdfplumber.open(file_path) as pdf:
+            full_text = ''
+            for page in pdf.pages:
+                full_text += page.extract_text() + '\n'
+            
+            lines = full_text.split('\n')
+            
+            # 提取账号后4位
+            for line in lines:
+                if 'Nombor Akaun' in line or 'Account Number' in line:
+                    match = re.search(r'(\d{10})', line)
+                    if match:
+                        info['account_last4'] = match.group(1)[-4:]
+                
+                # 提取账单日期
+                if 'Tarikh Penyata' in line or 'Statement Date' in line:
+                    match = re.search(r'(\d{2}\s+\w+\s+\d{4})', line)
+                    if match:
+                        info['statement_date'] = match.group(1)
+            
+            # 解析交易记录 - Public Bank格式
+            # 格式: DD/MM Description DebitAmount CreditAmount Balance
+            # 或: DD/MM Description Amount Balance (只有一个金额，在debit或credit列)
+            i = 0
+            current_year = info['statement_date'].split()[-1] if info['statement_date'] else '2025'
+            
+            while i < len(lines):
+                line = lines[i].strip()
+                
+                # 匹配交易行: DD/MM开头
+                trans_match = re.match(r'^(\d{2}/\d{2})\s+(.+)', line)
+                
+                if trans_match:
+                    date_str = trans_match.group(1)
+                    rest = trans_match.group(2).strip()
+                    
+                    # 跳过特殊行
+                    if 'Balance From Last Statement' in rest or 'Balance C/F' in rest or 'Balance B/F' in rest or 'Closing Balance' in rest:
+                        i += 1
+                        continue
+                    
+                    # 解析金额和余额
+                    # 尝试匹配: Description DebitAmount CreditAmount Balance
+                    # 或: Description Amount Balance
+                    parts = rest.rsplit(None, 2)  # 从右边分割出最后2个数字（可能是金额+余额）
+                    
+                    if len(parts) >= 2:
+                        # 检查最后两个部分是否是数字
+                        try:
+                            # 尝试解析为金额格式
+                            last_val = parts[-1].replace(',', '')
+                            second_last_val = parts[-2].replace(',', '')
+                            
+                            balance = float(last_val)
+                            amount = float(second_last_val)
+                            
+                            # 描述是除了最后两个数字的部分
+                            description = ' '.join(parts[:-2]) if len(parts) > 2 else 'Transaction'
+                            
+                            # 收集完整描述（可能跨多行）
+                            full_desc = description
+                            j = i + 1
+                            while j < len(lines) and j < i + 3:
+                                next_line = lines[j].strip()
+                                # 如果下一行不是新交易且不是空行
+                                if next_line and not re.match(r'^\d{2}/\d{2}\s+', next_line) and not next_line.startswith('Balance') and not next_line.startswith('Penyata'):
+                                    # 跳过纯数字行
+                                    if not re.match(r'^[\d,\.]+$', next_line):
+                                        full_desc += ' ' + next_line
+                                else:
+                                    break
+                                j += 1
+                            
+                            # 判断是debit还是credit
+                            # 如果描述中有DR，则是debit；否则检查金额的逻辑
+                            # Public Bank: DEBIT列在左，CREDIT列在右
+                            trans_type = 'credit'  # 默认credit
+                            
+                            # 检查是否是debit交易（转出）
+                            if 'TRSF DR' in full_desc or 'MISC DR' in full_desc or 'DUITNOW TRSF DR' in full_desc or 'TSFR FUND DR' in full_desc:
+                                trans_type = 'debit'
+                            elif 'DEP-' in full_desc or 'TRSF CR' in full_desc or 'DUITNOW TRSF CR' in full_desc:
+                                trans_type = 'credit'
+                            
+                            # 转换日期格式 DD/MM -> DD-MM-YYYY
+                            day, month = date_str.split('/')
+                            formatted_date = f"{day}-{month}-{current_year}"
+                            
+                            if amount > 0:
+                                transactions.append({
+                                    'date': formatted_date,
+                                    'description': full_desc.strip(),
+                                    'amount': amount,
+                                    'type': trans_type
+                                })
+                        
+                        except ValueError:
+                            pass  # 不是金额格式，跳过
+                
+                i += 1
+        
+        info['total_transactions'] = len(transactions)
+        print(f"✅ Public Bank savings parsed: {len(transactions)} transactions from {file_path}")
+        
+    except Exception as e:
+        print(f"❌ Error parsing Public Bank statement: {e}")
+        import traceback
+        traceback.print_exc()
+    
     return info, transactions
 
 def parse_alliance_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
