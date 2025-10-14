@@ -201,7 +201,7 @@ body::before {
     opacity: 0.15;
 }
 
-/* 北极光效果 - Aurora Borealis */
+/* 北极光效果 - Aurora Borealis (银白色+淡金色) */
 body::after {
     content: '';
     position: fixed;
@@ -210,12 +210,12 @@ body::after {
     width: 200%;
     height: 200%;
     background: 
-        radial-gradient(ellipse at 20% 30%, rgba(212, 175, 55, 0.12) 0%, transparent 35%),
+        radial-gradient(ellipse at 20% 30%, rgba(230, 215, 190, 0.12) 0%, transparent 35%),
         radial-gradient(ellipse at 80% 70%, rgba(192, 192, 192, 0.08) 0%, transparent 40%),
-        radial-gradient(ellipse at 40% 60%, rgba(244, 230, 195, 0.10) 0%, transparent 45%),
-        radial-gradient(ellipse at 70% 20%, rgba(201, 169, 97, 0.09) 0%, transparent 38%),
+        radial-gradient(ellipse at 40% 60%, rgba(232, 225, 210, 0.10) 0%, transparent 45%),
+        radial-gradient(ellipse at 70% 20%, rgba(220, 220, 220, 0.09) 0%, transparent 38%),
         radial-gradient(ellipse at 30% 80%, rgba(192, 192, 192, 0.07) 0%, transparent 42%),
-        radial-gradient(ellipse at 60% 40%, rgba(212, 175, 55, 0.11) 0%, transparent 36%);
+        radial-gradient(ellipse at 60% 40%, rgba(230, 215, 190, 0.11) 0%, transparent 36%);
     animation: auroraFlow 25s ease-in-out infinite;
     pointer-events: none;
     z-index: 0;
@@ -311,7 +311,7 @@ p {
     top: 0;
     z-index: 1000;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8),
-                0 0 60px rgba(212, 175, 55, 0.2);
+                0 0 60px rgba(220, 220, 220, 0.2);
 }
 
 /* Golden shimmer effect on nav */
@@ -360,7 +360,7 @@ p {
 .nav-logo {
     height: 140px;
     width: auto;
-    filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.5));
+    filter: drop-shadow(0 0 20px rgba(220, 220, 220, 0.5));
 }
 
 .company-name {
@@ -504,7 +504,7 @@ p {
 }
 
 .theme-toggle-btn.sun-mode:hover {
-    background: rgba(212, 175, 55, 0.15);
+    background: rgba(220, 220, 220, 0.15);
     color: var(--gold-primary);
     box-shadow: var(--glow-gold);
     transform: rotate(-20deg);
@@ -567,7 +567,7 @@ p {
     overflow: hidden;
     transition: all 0.4s ease;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5),
-                inset 0 0 60px rgba(212, 175, 55, 0.05);
+                inset 0 0 60px rgba(220, 220, 220, 0.05);
 }
 
 /* Golden corner accents */
@@ -600,8 +600,8 @@ p {
 .professional-card:hover {
     border-color: var(--gold-primary);
     box-shadow: 0 12px 48px rgba(0, 0, 0, 0.7),
-                0 0 80px rgba(212, 175, 55, 0.3),
-                inset 0 0 80px rgba(212, 175, 55, 0.1);
+                0 0 80px rgba(220, 220, 220, 0.3),
+                inset 0 0 80px rgba(220, 220, 220, 0.1);
     transform: translateY(-4px);
 }
 
@@ -639,7 +639,7 @@ p {
     position: relative;
     transition: all 0.3s ease;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4),
-                inset 0 0 40px rgba(212, 175, 55, 0.05);
+                inset 0 0 40px rgba(220, 220, 220, 0.05);
 }
 
 .stat-card:hover {
@@ -796,8 +796,8 @@ p {
 
 .table-professional thead {
     background: linear-gradient(135deg, 
-        rgba(212, 175, 55, 0.3) 0%,
-        rgba(212, 175, 55, 0.2) 100%);
+        rgba(220, 220, 220, 0.3) 0%,
+        rgba(220, 220, 220, 0.2) 100%);
 }
 
 .table-professional thead th {
@@ -816,8 +816,8 @@ p {
 }
 
 .table-professional tbody tr:hover {
-    background: rgba(212, 175, 55, 0.1);
-    box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.1);
+    background: rgba(220, 220, 220, 0.1);
+    box-shadow: inset 0 0 20px rgba(220, 220, 220, 0.1);
 }
 
 .table-professional tbody td {
@@ -871,7 +871,7 @@ footer,
     position: relative;
     z-index: 1;
     box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.8),
-                0 0 60px rgba(212, 175, 55, 0.2);
+                0 0 60px rgba(220, 220, 220, 0.2);
 }
 
 footer::before,
@@ -921,7 +921,7 @@ footer::before,
     width: 160px;
     height: 160px;
     flex-shrink: 0;
-    filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.6));
+    filter: drop-shadow(0 0 30px rgba(220, 220, 220, 0.6));
 }
 
 .footer-company-name {
@@ -1041,12 +1041,12 @@ footer::before,
 }
 
 .footer-lang-btn:hover {
-    background: rgba(212, 175, 55, 0.15);
+    background: rgba(220, 220, 220, 0.15);
     color: var(--text-white);
 }
 
 .footer-lang-btn.active {
-    background: rgba(212, 175, 55, 0.3);
+    background: rgba(220, 220, 220, 0.3);
     color: var(--text-white);
     box-shadow: var(--glow-soft);
 }
@@ -1079,7 +1079,7 @@ footer p {
 
 .alert-info-pro {
     border-left-color: var(--gold-primary);
-    background: rgba(212, 175, 55, 0.1);
+    background: rgba(220, 220, 220, 0.1);
 }
 
 .alert-warning-pro {
