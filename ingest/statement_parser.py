@@ -319,7 +319,7 @@ def parse_rhb_statement(file_path):
 
 def parse_hong_leong_statement(file_path):
     """Hong Leong Bank (HLB) - Essential Visa Gold"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None, "previous_balance": 0.0}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -340,6 +340,11 @@ def parse_hong_leong_statement(file_path):
                 card_match = re.search(r"(\d{4})\s+(\d{4})\s+(\d{4})\s+(\d{4})", full_text)
                 if card_match:
                     info["card_last4"] = card_match.group(4)
+                
+                # Extract Previous Balance - "PREVIOUS BALANCE FROM LAST STATEMENT 1.91"
+                prev_bal_match = re.search(r"PREVIOUS\s+BALANCE(?:\s+FROM\s+LAST\s+STATEMENT)?[\s:]*([\d,]+\.\d{2})", full_text, re.IGNORECASE)
+                if prev_bal_match:
+                    info["previous_balance"] = float(prev_bal_match.group(1).replace(",", ""))
                 
                 # Extract Total Balance
                 total_match = re.search(r"(?:TOTAL\s+BALANCE|Total\s+Current\s+Balance)[\s:]*([\d,]+\.\d{2})", full_text, re.IGNORECASE)
@@ -403,7 +408,7 @@ def parse_hong_leong_statement(file_path):
 
 def parse_ambank_statement(file_path):
     """AmBank Islamic - Visa Signature"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None, "previous_balance": 0.0}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -425,6 +430,11 @@ def parse_ambank_statement(file_path):
                 card_match = re.search(r"(\d{4})\s+(\d{4})\s+(\d{4})\s+(\d{4})", full_text)
                 if card_match:
                     info["card_last4"] = card_match.group(4)
+                
+                # Extract Previous Balance - "PREVIOUS BALANCE 861.17"
+                prev_bal_match = re.search(r"PREVIOUS\s+BALANCE[\s:]*([\d,]+\.\d{2})", full_text, re.IGNORECASE)
+                if prev_bal_match:
+                    info["previous_balance"] = float(prev_bal_match.group(1).replace(",", ""))
                 
                 # Extract Total Current Balance
                 total_match = re.search(r"Total\s+Current\s+Balance[\s:]*([\d,]+\.\d{2})", full_text, re.IGNORECASE)
@@ -587,7 +597,7 @@ def parse_affin_statement(file_path):
 
 def parse_hsbc_statement(file_path):
     """HSBC Bank Malaysia - Live+ Credit Card"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None, "previous_balance": 0.0}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -613,6 +623,11 @@ def parse_hsbc_statement(file_path):
                 card_match = re.search(r"(\d{4})\s*(\d{4})\s*(\d{4})\s*(\d{4})", full_text)
                 if card_match:
                     info["card_last4"] = card_match.group(4)
+                
+                # Extract Previous Balance - "Your Previous Statement Balance 1,369.86"
+                prev_bal_match = re.search(r"Your\s+Previous\s+Statement\s+Balance[\s:]*([\d,]+\.\d{2})", full_text, re.IGNORECASE)
+                if prev_bal_match:
+                    info["previous_balance"] = float(prev_bal_match.group(1).replace(",", ""))
                 
                 # Extract Statement Balance from table - more precise pattern
                 # Looking for: "4364800001380034 50.00 50.00 0.00 50.00" (card_number balance min_payment overlimit payment_due)
@@ -683,7 +698,7 @@ def parse_hsbc_statement(file_path):
 
 def parse_standard_chartered_statement(file_path):
     """Standard Chartered Bank (SCB) - Malaysia"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None, "previous_balance": 0.0}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -704,6 +719,12 @@ def parse_standard_chartered_statement(file_path):
                 card_match = re.search(r"(\d{4})-\d{2}XX-XXXX-(\d{4})", full_text)
                 if card_match:
                     info["card_last4"] = card_match.group(2)
+                
+                # Extract Previous Balance - "Previous Balance - Payments - Credits + Purchases + Cash Advance + Charges = New Balance"
+                # Format: "0.00 1,250.00 0.00 1,799.36 0.00 0.00 549.36" or "BALANCE FROM PREVIOUS 0.00"
+                prev_bal_match = re.search(r"(?:BALANCE\s+FROM\s+PREVIOUS|Previous\s+Balance)[^\d]+([\d,]+\.\d{2})", full_text, re.IGNORECASE)
+                if prev_bal_match:
+                    info["previous_balance"] = float(prev_bal_match.group(1).replace(",", ""))
                 
                 # Extract New Balance/Total
                 total_match = re.search(r"New Balance[^\d]+([\d,]+\.\d{2})", full_text, re.IGNORECASE)
@@ -757,7 +778,7 @@ def parse_standard_chartered_statement(file_path):
 
 def parse_ocbc_statement(file_path):
     """OCBC Bank (Malaysia) Berhad - GE Mastercard"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None, "previous_balance": 0.0}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -778,6 +799,11 @@ def parse_ocbc_statement(file_path):
                 card_match = re.search(r"(\d{4})-(\d{4})-(\d{4})-(\d{4})", full_text)
                 if card_match:
                     info["card_last4"] = card_match.group(4)
+                
+                # Extract Previous Balance - "Last Statement Balance 487.81"
+                prev_bal_match = re.search(r"Last\s+Statement\s+Balance[\s:]*([\d,]+\.\d{2})", full_text, re.IGNORECASE)
+                if prev_bal_match:
+                    info["previous_balance"] = float(prev_bal_match.group(1).replace(",", ""))
                 
                 # Extract Statement Balance Due
                 total_match = re.search(r"Statement\s+Balance\s+Due[\s:]*([\d,]+\.\d{2})", full_text, re.IGNORECASE)
@@ -840,7 +866,7 @@ def parse_ocbc_statement(file_path):
 
 def parse_uob_statement(file_path):
     """UOB - United Overseas Bank (Malaysia/Singapore)"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "UOB"}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": "UOB", "previous_balance": 0.0}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
@@ -868,10 +894,47 @@ def parse_uob_statement(file_path):
                     except:
                         pass
                 
-                # Extract Total Balance Due
-                total_match = re.search(r"Total Balance Due[^\d]+([\d,]+\.\d{2})", full_text, re.IGNORECASE)
-                if total_match:
-                    info["total"] = float(total_match.group(1).replace(",", ""))
+                # Extract Previous Balance and Total Balance Due from summary table (page 5)
+                # Try table extraction first (more accurate)
+                for page in pdf.pages:
+                    tables = page.extract_tables()
+                    for table in tables:
+                        if table and len(table) > 1:
+                            # Check if this is the summary table
+                            header_text = " ".join(str(cell) for row in table[:4] for cell in row if cell).upper()
+                            if "PREVIOUS BALANCE" in header_text and "TOTAL BALANCE DUE" in header_text:
+                                # Found the summary table! Extract values from data row
+                                for row in table:
+                                    if row and len(row) >= 6:
+                                        # Format: [Previous Balance, Credit/Payment, Debit/Fees, Retail Purchase, Cash Advance, Total Balance Due]
+                                        # Check if this row contains numeric data (not headers)
+                                        first_cell = str(row[0]).strip() if row[0] else ""
+                                        last_cell = str(row[-1]).strip() if row[-1] else ""
+                                        
+                                        # Skip header rows (contain text like "Previous Balance" or "(RM)")
+                                        if not first_cell or "(" in first_cell or any(c.isalpha() for c in first_cell if c not in ['CR', 'cr']):
+                                            continue
+                                        
+                                        # This is a data row - extract values
+                                        try:
+                                            if first_cell and first_cell.replace(',', '').replace('.', '').isdigit():
+                                                info["previous_balance"] = float(first_cell.replace(",", ""))
+                                            if last_cell and last_cell.replace(',', '').replace('.', '').isdigit():
+                                                info["total"] = float(last_cell.replace(",", ""))
+                                            break
+                                        except:
+                                            pass
+                
+                # Fallback: try regex if table extraction failed
+                if info["previous_balance"] == 0.0:
+                    prev_bal_match = re.search(r"Previous\s+Balance[^\d]+([\d,]+\.\d{2})", full_text, re.IGNORECASE)
+                    if prev_bal_match:
+                        info["previous_balance"] = float(prev_bal_match.group(1).replace(",", ""))
+                
+                if info["total"] == 0.0:
+                    total_match = re.search(r"Total Balance Due[^\d]+([\d,]+\.\d{2})", full_text, re.IGNORECASE)
+                    if total_match:
+                        info["total"] = float(total_match.group(1).replace(",", ""))
                 
                 # Extract transactions using table extraction
                 for page in pdf.pages:
