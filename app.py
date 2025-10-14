@@ -2077,7 +2077,7 @@ def view_classification(statement_id):
 
 
 @app.route('/customer/<int:customer_id>/generate_monthly_report')
-def generate_monthly_report(customer_id):
+def generate_monthly_report_route(customer_id):
     """为客户生成月度报告"""
     from services.statement_processor import generate_customer_monthly_report
     from services.customer_folder_manager import setup_customer_folders
