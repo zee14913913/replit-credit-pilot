@@ -149,17 +149,43 @@ def parse_generic_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
             # 尝试识别列名
             date_col = next((col for col in df.columns if 'date' in col.lower()), None)
             desc_col = next((col for col in df.columns if 'desc' in col.lower() or 'particulars' in col.lower()), None)
-            amount_col = next((col for col in df.columns if 'amount' in col.lower() or 'debit' in col.lower() or 'credit' in col.lower()), None)
             
-            if date_col and desc_col and amount_col:
+            # 检查是否有分开的Withdrawal/Deposit列（Maybank格式）
+            withdrawal_col = next((col for col in df.columns if 'withdrawal' in col.lower() or 'debit' in col.lower()), None)
+            deposit_col = next((col for col in df.columns if 'deposit' in col.lower() or 'credit' in col.lower()), None)
+            
+            # 或者单一的amount列
+            amount_col = next((col for col in df.columns if 'amount' in col.lower()), None)
+            
+            if date_col and desc_col:
                 for _, row in df.iterrows():
-                    if pd.notna(row[date_col]) and pd.notna(row[desc_col]) and pd.notna(row[amount_col]):
-                        transactions.append({
-                            'date': str(row[date_col]),
-                            'description': str(row[desc_col]).strip(),
-                            'amount': abs(float(row[amount_col])),
-                            'type': 'debit' if float(row[amount_col]) < 0 else 'credit'
-                        })
+                    if pd.notna(row[date_col]) and pd.notna(row[desc_col]):
+                        # 格式1: 分开的Withdrawal/Deposit列
+                        if withdrawal_col and deposit_col:
+                            # 检查Withdrawal列
+                            if pd.notna(row[withdrawal_col]) and float(row[withdrawal_col]) > 0:
+                                transactions.append({
+                                    'date': str(row[date_col]),
+                                    'description': str(row[desc_col]).strip(),
+                                    'amount': float(row[withdrawal_col]),
+                                    'type': 'debit'
+                                })
+                            # 检查Deposit列
+                            elif pd.notna(row[deposit_col]) and float(row[deposit_col]) > 0:
+                                transactions.append({
+                                    'date': str(row[date_col]),
+                                    'description': str(row[desc_col]).strip(),
+                                    'amount': float(row[deposit_col]),
+                                    'type': 'credit'
+                                })
+                        # 格式2: 单一amount列
+                        elif amount_col and pd.notna(row[amount_col]):
+                            transactions.append({
+                                'date': str(row[date_col]),
+                                'description': str(row[desc_col]).strip(),
+                                'amount': abs(float(row[amount_col])),
+                                'type': 'debit' if float(row[amount_col]) < 0 else 'credit'
+                            })
         
         info['total_transactions'] = len(transactions)
         print(f"✅ Generic parser: {len(transactions)} transactions extracted from {file_path}")
