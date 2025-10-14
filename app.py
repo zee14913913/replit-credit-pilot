@@ -312,31 +312,51 @@ def upload_statement():
                     <p class="mb-2">您上传的HSBC账单是扫描图片格式，系统需要文本格式才能准确提取交易记录。</p>
                     
                     <div class="mt-3">
-                        <p class="mb-2"><strong>💡 简单解决方法（1分钟完成）：</strong></p>
+                        <p class="mb-2"><strong>💡 解决方法很简单（只需1分钟）：</strong></p>
                         
-                        <div class="conversion-step mb-2 p-2 bg-light rounded">
-                            <strong>步骤 1: 为什么需要转换？</strong>
-                            <p class="mb-0 small">HSBC扫描版PDF是图片格式，系统需要文本格式才能准确提取交易记录。</p>
-                        </div>
-                        
-                        <div class="conversion-step mb-2 p-2 bg-light rounded">
-                            <strong>步骤 2: 使用Word转换（推荐）</strong>
-                            <ol class="mb-0 small">
-                                <li>右键点击PDF文件 → 选择"用Word打开"</li>
-                                <li>Word会自动转换（等待几秒）</li>
-                                <li>点击"文件" → "另存为PDF"</li>
-                                <li>将转换后的PDF重新上传到系统</li>
+                        <div class="conversion-step mb-3 p-3 bg-light rounded border">
+                            <strong class="text-primary">方法1: 使用Microsoft Word转换（最简单）</strong>
+                            <ol class="mt-2 mb-0">
+                                <li class="mb-2">
+                                    <strong>找到您下载的HSBC PDF文件</strong><br>
+                                    <small class="text-muted">（通常在"下载"文件夹，文件名如：Statement_xxx.pdf）</small>
+                                </li>
+                                <li class="mb-2">
+                                    <strong>用鼠标右键点击这个PDF文件</strong><br>
+                                    <small class="text-muted">（在文件上按鼠标右键，会弹出菜单）</small>
+                                </li>
+                                <li class="mb-2">
+                                    <strong>选择"打开方式" → "Microsoft Word"</strong><br>
+                                    <small class="text-muted">（如果没看到Word选项，选"选择其他应用"，然后找Word）</small>
+                                </li>
+                                <li class="mb-2">
+                                    <strong>Word会自动将PDF转换成文档</strong><br>
+                                    <small class="text-muted">（会弹出提示，点"确定"，等待5-10秒转换完成）</small>
+                                </li>
+                                <li class="mb-2">
+                                    <strong>在Word中点击"文件" → "另存为"</strong><br>
+                                    <small class="text-muted">（左上角的"文件"菜单）</small>
+                                </li>
+                                <li class="mb-2">
+                                    <strong>选择"PDF"格式保存</strong><br>
+                                    <small class="text-muted">（文件类型选"PDF"，改个文件名如：HSBC_转换后.pdf）</small>
+                                </li>
+                                <li class="mb-0">
+                                    <strong>将新保存的PDF文件重新上传到本系统</strong><br>
+                                    <small class="text-muted">（这个新PDF就可以被系统识别了！）</small>
+                                </li>
                             </ol>
                         </div>
                         
-                        <div class="conversion-step mb-2 p-2 bg-light rounded">
-                            <strong>步骤 3: 或从HSBC网银重新下载</strong>
-                            <p class="mb-0 small">登录HSBC网银 → 选择"可搜索PDF"格式下载账单</p>
+                        <div class="conversion-step mb-2 p-3 bg-light rounded border">
+                            <strong class="text-primary">方法2: 从HSBC网银重新下载</strong>
+                            <p class="mb-1 mt-2">登录HSBC网上银行 → 下载账单时选择"可搜索PDF"或"文本PDF"格式</p>
+                            <small class="text-muted">（这样下载的PDF就可以直接上传使用）</small>
                         </div>
                         
-                        <div class="alert alert-info mt-2 mb-0">
-                            <i class="bi bi-info-circle"></i>
-                            <strong>温馨提示：</strong>转换后的PDF可永久使用，只需转换一次！
+                        <div class="alert alert-info mt-3 mb-0">
+                            <i class="bi bi-lightbulb-fill"></i>
+                            <strong>好消息：</strong>转换后的PDF可以永久使用，以后上传同一张账单就不用再转换了！
                         </div>
                     </div>
                 </div>
