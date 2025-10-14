@@ -301,7 +301,51 @@ def upload_statement():
         file_type = 'pdf' if filename.lower().endswith('.pdf') else 'excel'
         
         # Step 1: Parse statement
-        statement_info, transactions = parse_statement_auto(file_path)
+        try:
+            statement_info, transactions = parse_statement_auto(file_path)
+        except ValueError as e:
+            # Check if this is HSBC scanned PDF
+            if str(e) == "HSBC_SCANNED_PDF":
+                flash('''
+                <div class="alert alert-warning">
+                    <h5><i class="bi bi-exclamation-triangle-fill"></i> 检测到HSBC扫描版PDF账单</h5>
+                    <p class="mb-2">您上传的HSBC账单是扫描图片格式，系统需要文本格式才能准确提取交易记录。</p>
+                    
+                    <div class="mt-3">
+                        <p class="mb-2"><strong>💡 简单解决方法（1分钟完成）：</strong></p>
+                        
+                        <div class="conversion-step mb-2 p-2 bg-light rounded">
+                            <strong>步骤 1: 为什么需要转换？</strong>
+                            <p class="mb-0 small">HSBC扫描版PDF是图片格式，系统需要文本格式才能准确提取交易记录。</p>
+                        </div>
+                        
+                        <div class="conversion-step mb-2 p-2 bg-light rounded">
+                            <strong>步骤 2: 使用Word转换（推荐）</strong>
+                            <ol class="mb-0 small">
+                                <li>右键点击PDF文件 → 选择"用Word打开"</li>
+                                <li>Word会自动转换（等待几秒）</li>
+                                <li>点击"文件" → "另存为PDF"</li>
+                                <li>将转换后的PDF重新上传到系统</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="conversion-step mb-2 p-2 bg-light rounded">
+                            <strong>步骤 3: 或从HSBC网银重新下载</strong>
+                            <p class="mb-0 small">登录HSBC网银 → 选择"可搜索PDF"格式下载账单</p>
+                        </div>
+                        
+                        <div class="alert alert-info mt-2 mb-0">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>温馨提示：</strong>转换后的PDF可永久使用，只需转换一次！
+                        </div>
+                    </div>
+                </div>
+                ''', 'warning')
+                return redirect(request.url)
+            else:
+                # Other parsing errors
+                flash(f'账单解析失败：{str(e)}', 'error')
+                return redirect(request.url)
         
         if not statement_info or not transactions:
             flash('Failed to parse statement', 'error')

@@ -14,6 +14,13 @@ def detect_bank(file_path):
     Covers 95%+ of Malaysian credit card market
     """
     bank = "UNKNOWN"
+    
+    # First check filename for hints
+    filename_upper = os.path.basename(file_path).upper()
+    if "HSBC" in filename_upper:
+        print("✅ Detected HSBC from filename")
+        return "HSBC"
+    
     try:
         ext = os.path.splitext(file_path.lower())[1]
         if ext == ".pdf":
@@ -491,7 +498,12 @@ def parse_hsbc_statement(file_path):
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
-                full_text = "\n".join(p.extract_text() for p in pdf.pages)
+                full_text = "\n".join(p.extract_text() for p in pdf.pages if p.extract_text())
+                
+                # Check if PDF is scanned image (no text layer)
+                if not full_text or len(full_text.strip()) < 100:
+                    # Return special error code for scanned HSBC PDF
+                    raise ValueError("HSBC_SCANNED_PDF")
                 
                 # Extract statement date - "Statement Date 13 May 2025"
                 date_match = re.search(r"Statement\s+Date[\s:]*(\d{1,2}\s+[A-Za-z]{3}\s+\d{4})", full_text, re.IGNORECASE)
@@ -562,6 +574,13 @@ def parse_hsbc_statement(file_path):
         
         print(f"✅ HSBC parsed {len(transactions)} transactions. Card: ****{info.get('card_last4', 'N/A')}, Date: {info.get('statement_date', 'N/A')}")
         return info, transactions
+    except ValueError as e:
+        # Re-raise HSBC_SCANNED_PDF error for user guidance
+        if str(e) == "HSBC_SCANNED_PDF":
+            raise
+        else:
+            print(f"❌ Error parsing HSBC: {e}")
+            return info, transactions
     except Exception as e:
         print(f"❌ Error parsing HSBC: {e}")
         import traceback
