@@ -208,10 +208,118 @@ def parse_maybank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
     return info, transactions
 
 def parse_gxbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
-    """GX Bank储蓄账户解析器"""
-    info, transactions = parse_generic_savings(file_path)
-    info['bank_name'] = 'GX Bank'
-    print(f"✅ GX Bank savings parsed: {len(transactions)} transactions")
+    """GX Bank储蓄账户解析器 - 处理Money in/Money out双列格式"""
+    info = {
+        'bank_name': 'GX Bank',
+        'account_last4': '',
+        'statement_date': '',
+        'total_transactions': 0
+    }
+    
+    transactions = []
+    
+    try:
+        with pdfplumber.open(file_path) as pdf:
+            full_text = ''
+            for page in pdf.pages:
+                full_text += page.extract_text() + '\n'
+            
+            lines = full_text.split('\n')
+            
+            # 提取账号后4位: Account number 8888-01098373-2
+            for line in lines:
+                if 'Account number' in line:
+                    match = re.search(r'(\d{4})-(\d{8})-(\d)', line)
+                    if match:
+                        info['account_last4'] = match.group(1)  # 前4位
+                
+                # 提取账单日期: January 2025, February 2025等
+                month_match = re.search(r'(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})', line)
+                if month_match:
+                    month = month_match.group(1)
+                    year = month_match.group(2)
+                    # 转换为标准格式
+                    month_map = {'January': 'Jan', 'February': 'Feb', 'March': 'Mar', 'April': 'Apr',
+                                'May': 'May', 'June': 'Jun', 'July': 'Jul', 'August': 'Aug',
+                                'September': 'Sep', 'October': 'Oct', 'November': 'Nov', 'December': 'Dec'}
+                    info['statement_date'] = f"{month_map[month]} {year}"
+            
+            # 解析交易记录 - GX Bank格式
+            # 格式: Date  Description  Money in (RM)  Money out (RM)  Interest earned (RM)  Closing balance (RM)
+            i = 0
+            while i < len(lines):
+                line = lines[i].strip()
+                
+                # 匹配交易行: DD MMM开头，例如 "1 Jan", "2 Feb"
+                trans_match = re.match(r'^(\d{1,2}\s+[A-Z][a-z]{2})\s+(.+)', line)
+                
+                if trans_match:
+                    date_str = trans_match.group(1)
+                    rest = trans_match.group(2).strip()
+                    
+                    # 跳过特殊行
+                    if 'Opening balance' in rest or 'Closing balance' in rest:
+                        i += 1
+                        continue
+                    
+                    # 收集完整描述（可能跨多行）
+                    description = rest
+                    j = i + 1
+                    money_in = None
+                    money_out = None
+                    
+                    # 查找后续行直到找到金额
+                    while j < len(lines) and j < i + 5:
+                        next_line = lines[j].strip()
+                        
+                        # 检查是否包含金额（+或-符号，或纯数字）
+                        amount_match = re.search(r'([+-])?([\d,]+\.\d{2})', next_line)
+                        
+                        if amount_match:
+                            sign = amount_match.group(1)
+                            amount_str = amount_match.group(2).replace(',', '')
+                            amount = float(amount_str)
+                            
+                            if sign == '+':
+                                money_in = amount
+                            elif sign == '-':
+                                money_out = amount
+                            else:
+                                # 如果没有符号，检查是否在Money in或Money out列
+                                # 这种情况下我们需要看上下文或列位置
+                                # 简化处理：如果已有description但没金额，这可能是金额
+                                if money_in is None and money_out is None:
+                                    # 检查描述中的关键词判断方向
+                                    if any(word in description.lower() for word in ['transfer from', 'received', 'deposit', 'interest', 'cashback']):
+                                        money_in = amount
+                                    else:
+                                        money_out = amount
+                            break
+                        elif next_line and not re.match(r'^\d{1,2}\s+[A-Z][a-z]{2}', next_line) and 'GX' not in next_line and 'QR' not in next_line:
+                            # 继续收集描述
+                            description += ' ' + next_line
+                        
+                        j += 1
+                    
+                    # 如果找到了金额，创建交易记录
+                    if money_in or money_out:
+                        transactions.append({
+                            'date': date_str,
+                            'description': description.strip(),
+                            'amount': money_in if money_in else money_out,
+                            'type': 'credit' if money_in else 'debit'
+                        })
+                
+                i += 1
+        
+        info['total_transactions'] = len(transactions)
+        print(f"✅ GX Bank savings parsed: {len(transactions)} transactions")
+        
+    except Exception as e:
+        print(f"❌ Error parsing GX Bank statement: {e}")
+        import traceback
+        traceback.print_exc()
+    
     return info, transactions
 
 def parse_hlb_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
