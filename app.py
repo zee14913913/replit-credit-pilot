@@ -256,7 +256,7 @@ def customer_dashboard(customer_id):
                 cursor.execute("""
                     SELECT SUM(amount) as total_transfers
                     FROM savings_transactions
-                    WHERE customer_tag = ? AND DATE(transaction_date) LIKE ?
+                    WHERE customer_name_tag = ? AND DATE(transaction_date) LIKE ?
                     AND (description LIKE '%转账%' OR description LIKE '%TRANSFER%')
                 """, (customer['name'], month_start[:7] + '%'))
                 transfer_result = cursor.fetchone()
