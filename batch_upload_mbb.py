@@ -117,14 +117,24 @@ def main():
         
         # Insert transactions
         transaction_count = 0
+        statement_year = int(statement_date_str[:4])
+        statement_month = int(statement_date_str[5:7])
+        
         for txn in transactions:
             # Parse date
             txn_date = txn.get('date', '')
             if '/' in txn_date and len(txn_date.split('/')) == 2:
                 # Format: DD/MM (need to add year)
                 day, month = txn_date.split('/')
-                # Use the year from statement date
-                year = statement_date_str[:4]
+                txn_month = int(month)
+                
+                # Handle year rollover: if transaction month > statement month, 
+                # it's from the previous year (e.g., Dec transactions on Jan statement)
+                if txn_month > statement_month:
+                    year = statement_year - 1
+                else:
+                    year = statement_year
+                
                 full_date = f"{year}-{month.zfill(2)}-{day.zfill(2)}"
             else:
                 full_date = statement_date_str
