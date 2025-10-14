@@ -2776,6 +2776,24 @@ def savings_settlement(customer_name):
     
     return render_template('savings/settlement.html', settlement=settlement_data)
 
+@app.route('/savings/transaction/<int:transaction_id>/edit', methods=['POST'])
+def edit_savings_transaction(transaction_id):
+    """编辑交易的客户标签和备注"""
+    customer_tag = request.form.get('customer_tag', '').strip()
+    notes = request.form.get('notes', '').strip()
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            UPDATE savings_transactions 
+            SET customer_name_tag = ?, notes = ?
+            WHERE id = ?
+        ''', (customer_tag, notes, transaction_id))
+        conn.commit()
+    
+    flash('✅ 交易信息已更新', 'success')
+    return redirect(request.referrer or url_for('savings_accounts'))
+
 @app.route('/savings/tag/<int:transaction_id>', methods=['POST'])
 def tag_savings_transaction(transaction_id):
     """标记交易的客户名字"""
