@@ -49,10 +49,11 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
   - Automatically extracts statement year and appends to transaction dates for complete date format ("1 Jan 2025")
   - Cross-line description collection and amount direction identification
   - Successfully integrated YEO CHEE WANG GX Bank account *8888 (7 months, 721 transactions, RM 4.58M)
+  - Successfully integrated TAN ZEE LIANG GX Bank account *8388 (17 months, 1,361 transactions, RM 9.73M)
 - **Current Scale:**
-  - 8 accounts total (5 corporate + 2 personal accounts for company transfers)
-  - 80 monthly statements
-  - 5,069 transactions totaling RM 59.17M
+  - 8 accounts total (5 corporate + 3 personal accounts for company transfers)
+  - 90 monthly statements
+  - 5,709 transactions totaling RM 64.31M
   - 100% 1:1 PDF-to-Database accuracy maintained
 
 **Core Features:**
