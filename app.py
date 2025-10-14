@@ -2648,7 +2648,7 @@ def savings_account_detail(account_id):
                 ss.file_path,
                 ss.file_type,
                 ss.total_transactions,
-                ss.uploaded_at,
+                ss.created_at,
                 COUNT(st.id) as transaction_count,
                 SUM(CASE WHEN st.transaction_type = 'debit' THEN st.amount ELSE 0 END) as total_debit,
                 SUM(CASE WHEN st.transaction_type = 'credit' THEN st.amount ELSE 0 END) as total_credit
@@ -2656,7 +2656,7 @@ def savings_account_detail(account_id):
             LEFT JOIN savings_transactions st ON ss.id = st.savings_statement_id
             WHERE ss.savings_account_id = ?
             GROUP BY ss.id
-            ORDER BY ss.statement_date DESC, ss.uploaded_at DESC
+            ORDER BY ss.statement_date DESC, ss.created_at DESC
         ''', (account_id,))
         
         statements = [dict(row) for row in cursor.fetchall()]

@@ -84,7 +84,7 @@
                             </strong>
                         </td>
                         <td style="color: var(--text-secondary);">
-                            {{ statement.uploaded_at[:16] }}
+                            {{ statement.created_at[:16] if statement.created_at else 'N/A' }}
                         </td>
                         <td>
                             <span class="badge-professional badge-info-pro">
