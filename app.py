@@ -214,13 +214,82 @@ def customer_dashboard(customer_id):
         card_dict['coverage_percentage'] = get_month_coverage_percentage(card['id'])
         cards_with_timeline.append(card_dict)
     
+    # 获取月度账本数据（8项计算）
+    from services.monthly_ledger_engine import MonthlyLedgerEngine
+    ledger_engine = MonthlyLedgerEngine()
+    
+    # 获取最新月份的账本汇总
+    monthly_ledgers = []
+    for card in cards:
+        with get_db() as conn:
+            cursor = conn.cursor()
+            # 获取最新月份
+            cursor.execute("""
+                SELECT month_start, statement_id
+                FROM monthly_ledger 
+                WHERE card_id = ? 
+                ORDER BY month_start DESC 
+                LIMIT 1
+            """, (card['id'],))
+            latest_month = cursor.fetchone()
+            
+            if latest_month:
+                month_start, statement_id = latest_month
+                
+                # 获取客户账本数据
+                cursor.execute("""
+                    SELECT previous_balance, customer_spend, customer_payments, rolling_balance
+                    FROM monthly_ledger
+                    WHERE card_id = ? AND month_start = ?
+                """, (card['id'], month_start))
+                customer_ledger = cursor.fetchone()
+                
+                # 获取INFINITE账本数据
+                cursor.execute("""
+                    SELECT previous_balance, infinite_spend, supplier_fee, infinite_payments, rolling_balance
+                    FROM infinite_monthly_ledger
+                    WHERE card_id = ? AND month_start = ?
+                """, (card['id'], month_start))
+                infinite_ledger = cursor.fetchone()
+                
+                # 获取转账记录（第8项）
+                cursor.execute("""
+                    SELECT SUM(amount) as total_transfers
+                    FROM savings_transactions
+                    WHERE customer_tag = ? AND DATE(transaction_date) LIKE ?
+                    AND description LIKE '%转账%' OR description LIKE '%TRANSFER%'
+                """, (customer.name, month_start[:7] + '%'))
+                transfer_result = cursor.fetchone()
+                infinite_transfers = transfer_result[0] if transfer_result and transfer_result[0] else 0
+                
+                if customer_ledger and infinite_ledger:
+                    monthly_ledgers.append({
+                        'card': card,
+                        'month': month_start[:7],  # YYYY-MM格式
+                        'customer': {
+                            'previous_balance': customer_ledger[0],
+                            'total_spend': customer_ledger[1],
+                            'total_payments': customer_ledger[2],
+                            'rolling_balance': customer_ledger[3]
+                        },
+                        'infinite': {
+                            'previous_balance': infinite_ledger[0],
+                            'total_spend': infinite_ledger[1],
+                            'supplier_fee': infinite_ledger[2],
+                            'total_payments': infinite_ledger[3],
+                            'rolling_balance': infinite_ledger[4],
+                            'transfers': infinite_transfers
+                        }
+                    })
+    
     return render_template('customer_dashboard.html', 
                          customer=customer, 
                          cards=cards_with_timeline,
                          spending_summary=spending_summary,
                          total_spending=total_spending,
                          instalment_plans=instalment_plans,
-                         instalment_summary=instalment_summary)
+                         instalment_summary=instalment_summary,
+                         monthly_ledgers=monthly_ledgers)
 
 
 @app.route('/customer/<int:customer_id>/add-card', methods=['GET', 'POST'])
