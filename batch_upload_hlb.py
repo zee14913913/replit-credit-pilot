@@ -145,13 +145,13 @@ def main():
             else:
                 full_date = statement_date_str
             
-            amount = txn.get('amount', 0)
+            amount = abs(txn.get('amount', 0))
             description = txn.get('description', '').strip()
             
-            # Determine transaction type
-            if amount < 0:
+            # Use the 'type' field from parser: "debit" = purchase, "credit" = payment
+            txn_type = txn.get('type', 'debit')
+            if txn_type == 'credit':
                 transaction_type = 'payment'
-                amount = abs(amount)
             else:
                 transaction_type = 'purchase'
             
