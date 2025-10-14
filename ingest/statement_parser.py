@@ -345,31 +345,85 @@ def parse_hong_leong_statement(file_path):
 
 
 def parse_ambank_statement(file_path):
-    """AmBank"""
+    """AmBank Islamic - Visa Signature"""
     transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
-                text = "\n".join(p.extract_text() for p in pdf.pages)
-            
-            pattern = r"(\d{2}/\d{2})\s+(.+?)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})"
-            
-            for m in re.finditer(pattern, text):
-                transactions.append({
-                    "date": m.group(1), 
-                    "description": m.group(2).strip(), 
-                    "amount": float(m.group(3).replace(",", ""))
-                })
+                full_text = "\n".join(p.extract_text() for p in pdf.pages)
+                
+                # Extract statement date - "Statement Date / Tarikh Penyata  28 MAY 25"
+                date_match = re.search(r"Statement\s+Date[^\d]*(\d{1,2}\s+[A-Z]{3}\s+\d{2})", full_text, re.IGNORECASE)
+                if date_match:
+                    try:
+                        from datetime import datetime
+                        date_str = date_match.group(1).strip()
+                        # Handle 2-digit year format
+                        parsed_date = datetime.strptime(date_str, "%d %b %y")
+                        info["statement_date"] = parsed_date.strftime("%Y-%m-%d")
+                    except:
+                        pass
+                
+                # Extract card number - "4031 4947 0045 9902"
+                card_match = re.search(r"(\d{4})\s+(\d{4})\s+(\d{4})\s+(\d{4})", full_text)
+                if card_match:
+                    info["card_last4"] = card_match.group(4)
+                
+                # Extract Total Current Balance
+                total_match = re.search(r"Total\s+Current\s+Balance[\s:]*([\d,]+\.\d{2})", full_text, re.IGNORECASE)
+                if total_match:
+                    info["total"] = float(total_match.group(1).replace(",", ""))
+                
+                # Extract transactions - Pattern: "DD MMM YY DD MMM YY DESCRIPTION AMOUNT[CR]"
+                # Example: "07 MAY 25 07 MAY 25 PAYMENT VIA RPP RECEIVED - THANK YOU,CHEOK JUN YOON,may, 650.00CR"
+                # Example: "26 MAY 25 28 MAY 25 Lazada Topup KUALA LUMPUR MY 2,500.00"
+                # Note: CR has NO space before it (e.g., "650.00CR" not "650.00 CR")
+                
+                pattern = r'(\d{1,2}\s+[A-Z]{3}\s+\d{2})\s+\d{1,2}\s+[A-Z]{3}\s+\d{2}\s+(.+?)\s+([\d,]+\.\d{2})(CR)?$'
+                
+                for match in re.finditer(pattern, full_text, re.MULTILINE):
+                    trans_date = match.group(1).strip()
+                    trans_desc = match.group(2).strip()
+                    trans_amount = abs(float(match.group(3).replace(",", "")))
+                    trans_cr_marker = match.group(4)
+                    
+                    # Skip summary/header lines (but NOT fees like MANAGEMENT FEE or EXCESS LIMIT CHARGE)
+                    skip_keywords = ['PREVIOUS BALANCE', 'SUB TOTAL', 'Total Current Balance', 'End of Transaction',
+                                   'YOUR CARD ACCOUNT', 'Please see overleaf']
+                    if any(kw in trans_desc for kw in skip_keywords):
+                        continue
+                    
+                    # Skip if description is too short or just numbers/codes
+                    if len(trans_desc) < 3 or re.match(r'^[\d\s,\.\-]+$', trans_desc):
+                        continue
+                    
+                    # Skip card account numbers
+                    if re.match(r'^\d{16}$', trans_desc.replace(' ', '')):
+                        continue
+                    
+                    # CR means credit/repayment
+                    trans_type = "credit" if trans_cr_marker else "debit"
+                    
+                    transactions.append({
+                        "date": trans_date,
+                        "description": trans_desc,
+                        "amount": trans_amount,
+                        "type": trans_type
+                    })
         else:
             df = pd.read_excel(file_path)
             for _, r in df.iterrows():
                 transactions.append({"date": str(r.get("Date", "")), "description": str(r.get("Description", "")), "amount": float(r.get("Amount", 0))})
         
-        info["total"] = sum(t["amount"] for t in transactions)
-        print(f"✅ AmBank parsed {len(transactions)} transactions.")
+        if info["total"] == 0.0:
+            info["total"] = sum(t["amount"] for t in transactions)
+        
+        print(f"✅ AmBank Islamic parsed {len(transactions)} transactions. Card: ****{info.get('card_last4', 'N/A')}, Date: {info.get('statement_date', 'N/A')}")
         return info, transactions
     except Exception as e:
         print(f"❌ Error parsing AmBank: {e}")
+        import traceback
+        traceback.print_exc()
         return info, transactions
 
 
