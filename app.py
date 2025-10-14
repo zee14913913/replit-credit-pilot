@@ -308,16 +308,25 @@ def add_credit_card(customer_id):
             bank_name = request.form.get('bank_name')
             card_number_last4 = request.form.get('card_number_last4')
             credit_limit = float(request.form.get('credit_limit', 0))
-            due_date = int(request.form.get('due_date'))
+            due_date_str = request.form.get('due_date')
             
             # 验证必填字段
-            if not all([bank_name, card_number_last4, credit_limit, due_date]):
+            if not all([bank_name, card_number_last4, due_date_str]):
                 flash('请填写所有必填字段', 'error')
                 return redirect(request.url)
             
             # 验证卡号后四位
-            if not card_number_last4.isdigit() or len(card_number_last4) != 4:
+            if not card_number_last4 or not card_number_last4.isdigit() or len(card_number_last4) != 4:
                 flash('卡号后四位必须是4位数字', 'error')
+                return redirect(request.url)
+            
+            # 转换due_date
+            try:
+                due_date = int(due_date_str) if due_date_str else 0
+                if due_date == 0:
+                    raise ValueError("Invalid due date")
+            except (ValueError, TypeError):
+                flash('还款日期必须是数字', 'error')
                 return redirect(request.url)
             
             # 检查是否已存在相同的卡
@@ -554,7 +563,10 @@ def upload_statement():
             print("\n" + "="*80)
             print("🚀 启动智能分类处理流程...")
             print("="*80)
-            processing_result = process_uploaded_statement(customer_id, statement_id, file_path)
+            if statement_id is not None:
+                processing_result = process_uploaded_statement(customer_id, statement_id, file_path)
+            else:
+                raise ValueError("Statement ID is None")
             
             if processing_result['success']:
                 flash(f'🎉 账单处理完成！已分类 {processing_result["step_1_classify"]["total_transactions"]} 笔交易', 'success')
@@ -1968,7 +1980,7 @@ def export_statement_transactions(statement_id, format):
     
     if format == 'excel':
         output = BytesIO()
-        df.to_excel(output, index=False, engine='openpyxl')
+        df.to_excel(output, index=False, engine='openpyxl')  # type: ignore
         output.seek(0)
         return send_file(output, 
                         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
