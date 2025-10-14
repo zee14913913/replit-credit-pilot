@@ -10,12 +10,13 @@
     --galaxy-deep-black: #0a0a0a;
     --galaxy-charcoal: #1a1a1a;
     
-    /* Golden Gradient Palette - 仅用于边框和装饰 */
-    --gold-primary: #D4AF37;
-    --gold-light: #F4E6C3;
-    --gold-dark: #C9A961;
-    --gold-bronze: #CD7F32;
-    --champagne: #F7E7CE;
+    /* Pale Gold & Silver Palette - 淡金色+银色为主 */
+    --gold-primary: #C0C0C0;        /* 银色 */
+    --gold-light: #E8E8E8;          /* 亮银色 */
+    --gold-dark: #A8A8A8;           /* 深银色 */
+    --gold-bronze: #D4C5A9;         /* 淡香槟金 */
+    --champagne: #E6DCC8;           /* 浅香槟色 */
+    --accent-pale-gold: #E6D7BC;    /* 淡金色点缀 */
     
     /* Text Colors - 银白珍珠色系 */
     --text-white: #FFFFFF;
@@ -24,25 +25,24 @@
     --text-silver-dim: #D0D0D0;
     --text-dim: rgba(255, 255, 255, 0.8);
     
-    /* Glow Effects - 银白发光效果 */
+    /* Glow Effects - 纯银白发光（无黄色） */
     --glow-silver: 0 0 20px rgba(255, 255, 255, 0.5),
                    0 0 40px rgba(255, 255, 255, 0.3),
                    0 0 60px rgba(255, 255, 255, 0.2);
     --glow-white: 0 0 15px rgba(255, 255, 255, 0.4),
                   0 0 30px rgba(255, 255, 255, 0.2);
     --glow-soft: 0 0 10px rgba(255, 255, 255, 0.3);
-    --glow-gold: 0 0 20px rgba(212, 175, 55, 0.5);
     
-    /* Borders */
-    --border-gold: 2px solid rgba(212, 175, 55, 0.6);
-    --border-gold-bright: 2px solid rgba(212, 175, 55, 0.9);
+    /* Borders - 银色边框 */
+    --border-gold: 2px solid rgba(192, 192, 192, 0.5);
+    --border-gold-bright: 2px solid rgba(192, 192, 192, 0.8);
     --border-silver: 2px solid rgba(255, 255, 255, 0.4);
     --border-silver-bright: 2px solid rgba(255, 255, 255, 0.6);
     --border-subtle: 1px solid rgba(255, 255, 255, 0.1);
     
     /* Glass Effect */
     --glass-bg: rgba(26, 26, 26, 0.7);
-    --glass-border: rgba(212, 175, 55, 0.3);
+    --glass-border: rgba(192, 192, 192, 0.3);
     
     /* Spacing */
     --space-xs: 0.5rem;
