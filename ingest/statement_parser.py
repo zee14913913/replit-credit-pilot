@@ -398,31 +398,76 @@ def parse_hsbc_statement(file_path):
 
 
 def parse_standard_chartered_statement(file_path):
-    """Standard Chartered - Premium international bank"""
+    """Standard Chartered Bank (SCB) - Malaysia"""
     transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
-                text = "\n".join(p.extract_text() for p in pdf.pages)
-            
-            pattern = r"(\d{2}\s[A-Za-z]{3})\s+(.+?)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})"
-            
-            for m in re.finditer(pattern, text):
-                transactions.append({
-                    "date": m.group(1), 
-                    "description": m.group(2).strip(), 
-                    "amount": float(m.group(3).replace(",", ""))
-                })
+                full_text = "\n".join(p.extract_text() for p in pdf.pages)
+                
+                # Extract statement date - "Statement Date / Tarikh Penyata: 14 May 2025"
+                date_match = re.search(r"Statement\s+Date[^\:]*:\s*(\d{1,2}\s+[A-Za-z]{3}\s+\d{4})", full_text, re.IGNORECASE)
+                if date_match:
+                    try:
+                        from datetime import datetime
+                        date_str = date_match.group(1).strip()
+                        parsed_date = datetime.strptime(date_str, "%d %b %Y")
+                        info["statement_date"] = parsed_date.strftime("%Y-%m-%d")
+                    except:
+                        pass
+                
+                # Extract card number - "5520-40XX-XXXX-1237"
+                card_match = re.search(r"(\d{4})-\d{2}XX-XXXX-(\d{4})", full_text)
+                if card_match:
+                    info["card_last4"] = card_match.group(2)
+                
+                # Extract New Balance/Total
+                total_match = re.search(r"New Balance[^\d]+([\d,]+\.\d{2})", full_text, re.IGNORECASE)
+                if total_match:
+                    info["total"] = float(total_match.group(1).replace(",", ""))
+                
+                # Extract transactions - Pattern: "07 May       DUITNOW PAY-TO-ACCOUNT       1,250.00CR"
+                # Use greedy match to get the last amount on each line
+                pattern = r'(\d{1,2}\s+[A-Za-z]{3})\s+(.+)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})(?:CR)?$'
+                
+                for match in re.finditer(pattern, full_text, re.MULTILINE | re.IGNORECASE):
+                    trans_date = match.group(1).strip()
+                    trans_desc = match.group(2).strip()
+                    trans_amount = abs(float(match.group(3).replace(",", "")))
+                    
+                    # Filter out header/summary lines
+                    skip_keywords = ['previous balance', 'new balance', 'minimum payment', 'payment due', 
+                                   'baki', 'jumlah', 'pembayaran', 'statement', 'total']
+                    if any(kw in trans_desc.lower() for kw in skip_keywords):
+                        continue
+                    
+                    # Skip if description is too short or just numbers
+                    if len(trans_desc) < 5 or re.match(r'^[\d\s,\.]+$', trans_desc):
+                        continue
+                    
+                    # CR means credit/repayment
+                    trans_type = "credit" if 'CR' in match.group(0).upper() else "debit"
+                    
+                    transactions.append({
+                        "date": trans_date,
+                        "description": trans_desc,
+                        "amount": trans_amount,
+                        "type": trans_type
+                    })
         else:
             df = pd.read_excel(file_path)
             for _, r in df.iterrows():
                 transactions.append({"date": str(r.get("Date", "")), "description": str(r.get("Description", "")), "amount": float(r.get("Amount", 0))})
         
-        info["total"] = sum(t["amount"] for t in transactions)
-        print(f"✅ Standard Chartered parsed {len(transactions)} transactions.")
+        if info["total"] == 0.0:
+            info["total"] = sum(t["amount"] for t in transactions)
+        
+        print(f"✅ Standard Chartered parsed {len(transactions)} transactions. Card: ****{info.get('card_last4', 'N/A')}, Date: {info.get('statement_date', 'N/A')}")
         return info, transactions
     except Exception as e:
         print(f"❌ Error parsing Standard Chartered: {e}")
+        import traceback
+        traceback.print_exc()
         return info, transactions
 
 
