@@ -261,31 +261,86 @@ def parse_rhb_statement(file_path):
 
 
 def parse_hong_leong_statement(file_path):
-    """Hong Leong Bank"""
+    """Hong Leong Bank (HLB) - Essential Visa Gold"""
     transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
-                text = "\n".join(p.extract_text() for p in pdf.pages)
-            
-            pattern = r"(\d{2}/\d{2})\s+(.+?)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})"
-            
-            for m in re.finditer(pattern, text):
-                transactions.append({
-                    "date": m.group(1), 
-                    "description": m.group(2).strip(), 
-                    "amount": float(m.group(3).replace(",", ""))
-                })
+                full_text = "\n".join(p.extract_text() for p in pdf.pages)
+                
+                # Extract statement date - "Statement Date\nTarikh Penyata   16 JUN 2025"
+                date_match = re.search(r"Statement\s+Date[^\d]*(\d{1,2}\s+[A-Z]{3}\s+\d{4})", full_text, re.IGNORECASE)
+                if date_match:
+                    try:
+                        from datetime import datetime
+                        date_str = date_match.group(1).strip()
+                        parsed_date = datetime.strptime(date_str, "%d %b %Y")
+                        info["statement_date"] = parsed_date.strftime("%Y-%m-%d")
+                    except:
+                        pass
+                
+                # Extract card number - "4293 2092 0258 3964"
+                card_match = re.search(r"(\d{4})\s+(\d{4})\s+(\d{4})\s+(\d{4})", full_text)
+                if card_match:
+                    info["card_last4"] = card_match.group(4)
+                
+                # Extract Total Balance
+                total_match = re.search(r"(?:TOTAL\s+BALANCE|Total\s+Current\s+Balance)[\s:]*([\d,]+\.\d{2})", full_text, re.IGNORECASE)
+                if total_match:
+                    info["total"] = float(total_match.group(1).replace(",", ""))
+                
+                # Extract transactions - Pattern: "DD MMM DD MMM DESCRIPTION [USD XX.XX] AMOUNT [CR]"
+                # Example: "26 MAY 27 MAY ShopeePay Top Up Kuala Lumpur MYS 2,500.00"
+                # Example: "13 JUN 13 JUN MACHINES-IOI RESORT CITY SELANGOR MY 4,298.00 CR"
+                # Example: "15 JUN 16 JUN OPENAI *CHATGPT SUBSCR OPENAI.COM USA USD 21.60 93.75"
+                
+                # Pattern handles both regular and foreign currency transactions
+                pattern = r'(\d{1,2}\s+[A-Z]{3})\s+\d{1,2}\s+[A-Z]{3}\s+(.+?)\s+(?:USD\s+[\d,]+\.\d{2}\s+)?([\d,]+\.\d{2})\s*(CR)?$'
+                
+                for match in re.finditer(pattern, full_text, re.MULTILINE):
+                    trans_date = match.group(1).strip()
+                    trans_desc = match.group(2).strip()
+                    trans_amount = abs(float(match.group(3).replace(",", "")))
+                    trans_cr_marker = match.group(4)
+                    
+                    # Skip summary/header lines
+                    skip_keywords = ['PREVIOUS BALANCE', 'SUB TOTAL', 'TOTAL BALANCE', 'NEW TRANSACTION',
+                                   'PAYMENT RECEIVED', 'Total Current Balance', 'Credit Limit', 
+                                   'Minimum Payment', 'Payment Due Date']
+                    if any(kw in trans_desc for kw in skip_keywords):
+                        continue
+                    
+                    # Skip if description is too short or just numbers/codes
+                    if len(trans_desc) < 3 or re.match(r'^[\d\s,\.\-]+$', trans_desc):
+                        continue
+                    
+                    # Skip reference numbers (like "03821285163223016950011")
+                    if re.match(r'^\d{20,}$', trans_desc):
+                        continue
+                    
+                    # CR means credit/repayment/rebate
+                    trans_type = "credit" if trans_cr_marker else "debit"
+                    
+                    transactions.append({
+                        "date": trans_date,
+                        "description": trans_desc,
+                        "amount": trans_amount,
+                        "type": trans_type
+                    })
         else:
             df = pd.read_excel(file_path)
             for _, r in df.iterrows():
                 transactions.append({"date": str(r.get("Date", "")), "description": str(r.get("Description", "")), "amount": float(r.get("Amount", 0))})
         
-        info["total"] = sum(t["amount"] for t in transactions)
-        print(f"✅ Hong Leong Bank parsed {len(transactions)} transactions.")
+        if info["total"] == 0.0:
+            info["total"] = sum(t["amount"] for t in transactions)
+        
+        print(f"✅ Hong Leong Bank parsed {len(transactions)} transactions. Card: ****{info.get('card_last4', 'N/A')}, Date: {info.get('statement_date', 'N/A')}")
         return info, transactions
     except Exception as e:
         print(f"❌ Error parsing Hong Leong: {e}")
+        import traceback
+        traceback.print_exc()
         return info, transactions
 
 
