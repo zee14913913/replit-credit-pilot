@@ -35,6 +35,7 @@ def parse_savings_statement(file_path: str, bank_name: str = '') -> Tuple[Dict, 
         'UOB': parse_uob_savings,
         'OCBC': parse_ocbc_savings,
         'Public Bank': parse_publicbank_savings,
+        'Alliance Bank': parse_alliance_savings,
     }
     
     parser = bank_parsers.get(bank_name, parse_generic_savings)
@@ -52,6 +53,7 @@ def detect_bank_from_file(file_path: str) -> str:
         'UOB': ['uob', 'united overseas'],
         'OCBC': ['ocbc'],
         'Public Bank': ['public bank', 'pbb', 'publicbank'],
+        'Alliance Bank': ['alliance bank', 'alliance', 'alliancebank'],
     }
     
     for bank, patterns in bank_patterns.items():
@@ -245,4 +247,122 @@ def parse_publicbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
     info, transactions = parse_generic_savings(file_path)
     info['bank_name'] = 'Public Bank'
     print(f"✅ Public Bank savings parsed: {len(transactions)} transactions")
+    return info, transactions
+
+def parse_alliance_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
+    """Alliance Bank储蓄账户解析器 - 专门处理多行交易格式"""
+    info = {
+        'bank_name': 'Alliance Bank',
+        'account_last4': '',
+        'statement_date': '',
+        'total_transactions': 0
+    }
+    
+    transactions = []
+    
+    try:
+        with pdfplumber.open(file_path) as pdf:
+            full_text = ''
+            for page in pdf.pages:
+                full_text += page.extract_text() + '\n'
+            
+            lines = full_text.split('\n')
+            
+            # 提取账号后4位
+            for line in lines:
+                if 'Account No' in line or 'No. Akaun' in line:
+                    match = re.search(r'(\d{4})\s*$', line)
+                    if match:
+                        info['account_last4'] = match.group(1)
+                
+                # 提取账单日期
+                if 'Statement Date' in line or 'Tarikh Penyata' in line:
+                    match = re.search(r'(\d{2}/\d{2}/\d{4})', line)
+                    if match:
+                        info['statement_date'] = match.group(1)
+            
+            # 解析交易记录 - Alliance Bank格式特殊，每笔交易跨多行
+            i = 0
+            while i < len(lines):
+                line = lines[i].strip()
+                
+                # 匹配交易行：日期 + 交易类型 + 金额
+                # 格式: DDMMYY TransactionType Amount Balance
+                trans_match = re.match(r'^(\d{6})\s+(.+?)\s+([\d,]+\.?\d*)\s+([\d,]+\.\d{2})\s+CR\s*$', line)
+                
+                if trans_match:
+                    date_str = trans_match.group(1)
+                    description = trans_match.group(2).strip()
+                    amount_str = trans_match.group(3).replace(',', '')
+                    
+                    # 转换日期格式 DDMMYY -> DD-MM-20YY
+                    day = date_str[:2]
+                    month = date_str[2:4]
+                    year = '20' + date_str[4:6]
+                    formatted_date = f"{day}-{month}-{year}"
+                    
+                    # 判断是debit还是credit - 需要看下一行是否有金额
+                    # Alliance Bank格式：如果金额在debit列，则是转出；在credit列，则是转入
+                    # 通过检查行中金额位置判断
+                    trans_type = 'credit'  # 默认转入
+                    amount = float(amount_str) if amount_str else 0
+                    
+                    # 收集完整描述（可能跨多行）
+                    full_desc = description
+                    j = i + 1
+                    while j < len(lines) and j < i + 5:
+                        next_line = lines[j].strip()
+                        # 如果下一行不是新交易，且不是空行，加入描述
+                        if next_line and not re.match(r'^\d{6}\s+', next_line) and not next_line.startswith('The items'):
+                            # 跳过纯数字行和特定关键字
+                            if not re.match(r'^[\d,\.]+$', next_line) and next_line not in ['Transfer from ABMB', 'PBB-PBCS AC 3']:
+                                full_desc += ' ' + next_line
+                        else:
+                            break
+                        j += 1
+                    
+                    if amount > 0:
+                        transactions.append({
+                            'date': formatted_date,
+                            'description': full_desc.strip(),
+                            'amount': amount,
+                            'type': trans_type
+                        })
+                
+                # 另一种格式：包含debit和credit两列
+                # 格式: DDMMYY Description DebitAmount CreditAmount Balance
+                trans_match2 = re.match(r'^(\d{6})\s+(.+?)\s+([\d,]+\.?\d*)\s+([\d,]+\.\d{2})\s+CR\s*$', line)
+                if trans_match2:
+                    date_str = trans_match2.group(1)
+                    rest = trans_match2.group(2).strip()
+                    
+                    # 尝试分离描述和金额
+                    parts = rest.rsplit(None, 1)  # 从右边分割最后一个空格
+                    if len(parts) == 2:
+                        description = parts[0]
+                        try:
+                            debit_amount = float(parts[1].replace(',', ''))
+                            trans_type = 'debit'
+                        except:
+                            description = rest
+                            debit_amount = 0
+                            trans_type = 'credit'
+                    else:
+                        description = rest
+                        debit_amount = 0
+                        trans_type = 'credit'
+                
+                i += 1
+        
+        info['total_transactions'] = len(transactions)
+        print(f"✅ Alliance Bank savings parsed: {len(transactions)} transactions from {file_path}")
+        
+    except Exception as e:
+        print(f"❌ Error parsing Alliance Bank statement: {e}")
+        import traceback
+        traceback.print_exc()
+        # 如果专用解析器失败，尝试通用解析器
+        info, transactions = parse_generic_savings(file_path)
+        info['bank_name'] = 'Alliance Bank'
+    
     return info, transactions
