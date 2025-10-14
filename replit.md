@@ -34,7 +34,7 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 
 **Savings Account Tracking System (October 2025):**
 - **Purpose:** Track prepayments made through savings accounts for customer settlement.
-- **Supported Banks:** Maybank (MBB), GX Bank, Hong Leong Bank (HLB), CIMB, UOB, OCBC, Public Bank (PBB), and generic parser.
+- **Supported Banks:** Maybank (MBB), GX Bank, Hong Leong Bank (HLB), CIMB, UOB, OCBC, Public Bank (PBB), Alliance Bank, and generic parser (9 banks total).
 - **Data Capture:** Complete transaction recording (date, description, amount) with no transaction omissions.
 - **Search & Settlement:** Search by customer name/keywords in descriptions, generate settlement reports with total prepayment amounts.
 - **Database Tables:** `savings_accounts`, `savings_statements`, `savings_transactions` with indexed search fields.
@@ -44,6 +44,16 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
   - Customer tagging for transactions
   - Settlement report generation with printable format
   - Full transaction history tracking
+- **GX Bank Specialized Parser (Oct 2025):**
+  - Handles unique "Money in/Money out" dual-column format (different from single-amount parsers)
+  - Automatically extracts statement year and appends to transaction dates for complete date format ("1 Jan 2025")
+  - Cross-line description collection and amount direction identification
+  - Successfully integrated YEO CHEE WANG GX Bank account *8888 (7 months, 721 transactions, RM 4.58M)
+- **Current Scale:**
+  - 8 accounts total (5 corporate + 2 personal accounts for company transfers)
+  - 80 monthly statements
+  - 5,069 transactions totaling RM 59.17M
+  - 100% 1:1 PDF-to-Database accuracy maintained
 
 **Core Features:**
 - **Statement Ingestion:** Supports PDF parsing (with OCR via `pdfplumber`) and Excel, with regex-based transaction extraction and batch upload for 15 major Malaysian banks (Local Commercial, Foreign, and Islamic banks).
