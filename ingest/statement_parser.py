@@ -509,10 +509,18 @@ def parse_hsbc_statement(file_path):
                 if card_match:
                     info["card_last4"] = card_match.group(4)
                 
-                # Extract Statement Balance
-                total_match = re.search(r"(?:Statement\s+Balance|Your\s+statement\s+balance)[\s:]*([\d,]+\.\d{2})", full_text, re.IGNORECASE)
-                if total_match:
-                    info["total"] = float(total_match.group(1).replace(",", ""))
+                # Extract Statement Balance from table - more precise pattern
+                # Looking for: "4364800001380034 50.00 50.00 0.00 50.00" (card_number balance min_payment overlimit payment_due)
+                # The first amount after card number is Statement Balance
+                table_match = re.search(r"(\d{16})\s+([\d,]+\.\d{2})\s+[\d,]+\.\d{2}\s+[\d,]+\.\d{2}\s+([\d,]+\.\d{2})", full_text)
+                if table_match:
+                    # Use Payment Due (4th column) as total - this is what customer needs to pay
+                    info["total"] = float(table_match.group(3).replace(",", ""))
+                else:
+                    # Fallback: try to find "Payment Due (RM)" followed by amount
+                    payment_due_match = re.search(r"Payment\s+Due[^\d]+([\d,]+\.\d{2})", full_text, re.IGNORECASE)
+                    if payment_due_match:
+                        info["total"] = float(payment_due_match.group(1).replace(",", ""))
                 
                 # Extract transactions - Pattern: "DD MMM  DD MMM  DESCRIPTION  AMOUNT [CR]"
                 # Example: "07 MAY 07 MAY PAYMENT - THANK YOU 13,874.21 CR"
