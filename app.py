@@ -2670,6 +2670,7 @@ def savings_account_detail(account_id):
                 st.amount,
                 st.transaction_type,
                 st.customer_name_tag,
+                st.notes,
                 ss.statement_date
             FROM savings_transactions st
             JOIN savings_statements ss ON st.savings_statement_id = ss.id
