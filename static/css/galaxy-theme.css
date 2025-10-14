@@ -506,7 +506,7 @@ p {
 .theme-toggle-btn.sun-mode:hover {
     background: rgba(220, 220, 220, 0.15);
     color: var(--gold-primary);
-    box-shadow: var(--glow-gold);
+    box-shadow: var(--glow-soft);
     transform: rotate(-20deg);
 }
 
