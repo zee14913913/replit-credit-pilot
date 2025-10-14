@@ -2813,12 +2813,14 @@ def tag_savings_transaction(transaction_id):
     return redirect(request.referrer or url_for('savings_search'))
 
 
-start_scheduler()
-
 if __name__ == '__main__':
     # Get environment settings
     flask_env = os.getenv('FLASK_ENV', 'development')
     debug_mode = flask_env != 'production'
     port = int(os.getenv('PORT', 5000))
+    
+    # Only start scheduler in the main process (not in Werkzeug reloader child process)
+    if os.environ.get('WERKZEUG_RUN_MAIN') == 'true' or not debug_mode:
+        start_scheduler()
     
     app.run(host='0.0.0.0', port=port, debug=debug_mode)
