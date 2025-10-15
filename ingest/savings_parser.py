@@ -597,18 +597,33 @@ def parse_gxbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                         
                         j += 1
                     
-                    # 如果找到了金额，创建交易记录（附加年份到日期）
-                    if money_in or money_out:
+                    # 创建临时交易记录（稍后用balance-change算法确定准确的type和amount）
+                    if closing_balance is not None:
                         full_date = f"{date_str} {statement_year}"  # 添加年份: "1 Jan 2025"
                         transactions.append({
                             'date': full_date,
                             'description': description.strip(),
-                            'amount': money_in if money_in else money_out,
-                            'type': 'credit' if money_in else 'debit',
-                            'balance': closing_balance  # 添加closing balance
+                            'balance': closing_balance,
+                            'amount': money_in if money_in else money_out,  # 临时金额
+                            'type': 'credit' if money_in else 'debit'  # 临时类型
                         })
                 
                 i += 1
+            
+            # **Ultra-Robust: 使用Balance-Change算法确定credit/debit和准确金额**
+            if transactions:
+                # 提取期初余额 (Opening balance)
+                prev_balance = None
+                for line in lines:
+                    if 'Opening balance' in line:
+                        balance_match = re.search(r'([\d,]+\.\d{2})', line)
+                        if balance_match:
+                            prev_balance = clean_balance_string(balance_match.group(0))
+                            if prev_balance is not None:
+                                break
+                
+                # 应用通用balance-change算法
+                transactions = apply_balance_change_algorithm(transactions, prev_balance)
         
         info['total_transactions'] = len(transactions)
         print(f"✅ GX Bank savings parsed: {len(transactions)} transactions")
@@ -1154,16 +1169,30 @@ def parse_ocbc_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                         except:
                             formatted_date = date_str
                         
-                        if amount and amount > 0:
-                            transactions.append({
-                                'date': formatted_date,
-                                'description': description.strip(),
-                                'amount': amount,
-                                'type': trans_type,
-                                'balance': balance
-                            })
+                        transactions.append({
+                            'date': formatted_date,
+                            'description': description.strip(),
+                            'amount': amount,  # 临时金额
+                            'type': trans_type,  # 临时类型
+                            'balance': balance
+                        })
                 
                 i += 1
+            
+            # **Ultra-Robust: 使用Balance-Change算法确定credit/debit和准确金额**
+            if transactions:
+                # 提取期初余额
+                prev_balance = None
+                for line in lines:
+                    if 'Balance B/F' in line:
+                        balance_match = re.search(r'([\d,]+\.\d{2})', line)
+                        if balance_match:
+                            prev_balance = clean_balance_string(balance_match.group(0))
+                            if prev_balance is not None:
+                                break
+                
+                # 应用通用balance-change算法
+                transactions = apply_balance_change_algorithm(transactions, prev_balance)
         
         info['total_transactions'] = len(transactions)
         print(f"✅ OCBC savings parsed: {len(transactions)} transactions from {file_path}")
@@ -1276,19 +1305,33 @@ def parse_publicbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                             day, month = date_str.split('/')
                             formatted_date = f"{day}-{month}-{current_year}"
                             
-                            if amount > 0:
-                                transactions.append({
-                                    'date': formatted_date,
-                                    'description': full_desc.strip(),
-                                    'amount': amount,
-                                    'type': trans_type,
-                                    'balance': balance  # 添加balance字段
-                                })
+                            transactions.append({
+                                'date': formatted_date,
+                                'description': full_desc.strip(),
+                                'amount': amount,
+                                'type': trans_type,
+                                'balance': balance  # 添加balance字段
+                            })
                         
                         except ValueError:
                             pass  # 不是金额格式，跳过
                 
                 i += 1
+            
+            # **Ultra-Robust: 使用Balance-Change算法确定credit/debit和准确金额**
+            if transactions:
+                # 提取期初余额
+                prev_balance = None
+                for line in lines:
+                    if 'Balance From Last Statement' in line or 'Balance B/F' in line:
+                        balance_match = re.search(r'([\d,]+\.\d{2})', line)
+                        if balance_match:
+                            prev_balance = clean_balance_string(balance_match.group(0))
+                            if prev_balance is not None:
+                                break
+                
+                # 应用通用balance-change算法
+                transactions = apply_balance_change_algorithm(transactions, prev_balance)
         
         info['total_transactions'] = len(transactions)
         print(f"✅ Public Bank savings parsed: {len(transactions)} transactions from {file_path}")
