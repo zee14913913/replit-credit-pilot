@@ -41,7 +41,7 @@ class MonthlyLedgerEngine:
             
             # 获取所有账单（按月份排序）
             cursor.execute("""
-                SELECT id, statement_date, statement_total
+                SELECT id, statement_date, statement_total, previous_balance
                 FROM statements
                 WHERE card_id = ?
                 ORDER BY statement_date ASC
@@ -57,11 +57,12 @@ class MonthlyLedgerEngine:
             print(f"{'='*80}")
             print(f"共 {len(statements)} 个月的账单\n")
             
-            # 存储上月余额
+            # 存储上月余额和第一个statement标志
             previous_customer_balance = 0
             previous_infinite_balance = 0
+            is_first_statement = True
             
-            for statement_id, statement_date, statement_total in statements:
+            for statement_id, statement_date, statement_total, stmt_prev_balance in statements:
                 month_start = statement_date[:7] + '-01'  # YYYY-MM-01
                 
                 # 检查是否已计算过
@@ -88,6 +89,8 @@ class MonthlyLedgerEngine:
                         result = cursor.fetchone()
                         if result:
                             previous_infinite_balance = result[0]
+                        
+                        is_first_statement = False  # 跳过后不再是第一个
                         continue
                 
                 print(f"📅 处理 {statement_date[:7]} (Statement ID: {statement_id})")
@@ -131,8 +134,37 @@ class MonthlyLedgerEngine:
                             infinite_payments += amount
                 
                 # 计算滚动余额
-                customer_rolling_balance = previous_customer_balance + customer_spend - customer_payments
-                infinite_rolling_balance = previous_infinite_balance + infinite_spend - infinite_payments
+                # 第一个statement: 使用stmt_prev_balance作为起点（如果>0，全部分配给客户）
+                # 后续statement: 使用上月的rolling_balance作为起点，验证stmt_prev_balance
+                
+                if is_first_statement and stmt_prev_balance > 0:
+                    # 第一个statement: 使用PDF中的Previous Balance作为起点
+                    # 假设全部属于客户（第一个月通常还没有INFINITE业务）
+                    previous_customer_balance = stmt_prev_balance
+                    previous_infinite_balance = 0
+                    print(f"  📍 第一个statement，使用Previous Balance: RM {stmt_prev_balance:.2f}（归入客户）")
+                
+                # 计算基于交易的余额
+                calculated_customer_balance = previous_customer_balance + customer_spend - customer_payments
+                calculated_infinite_balance = previous_infinite_balance + infinite_spend - infinite_payments
+                calculated_total = calculated_customer_balance + calculated_infinite_balance
+                
+                # 对于非第一个statement，验证stmt_prev_balance是否匹配上月总余额
+                if not is_first_statement and abs(stmt_prev_balance - (previous_customer_balance + previous_infinite_balance)) > 0.01:
+                    expected_prev = previous_customer_balance + previous_infinite_balance
+                    print(f"  ⚠️ Previous Balance不匹配: PDF={stmt_prev_balance:.2f}, 上月总计={expected_prev:.2f}")
+                
+                # 检查是否与Statement Total匹配，如果不匹配则有未提取的费用/利息
+                missing_fees = statement_total - calculated_total
+                
+                # 如果有差额（费用/利息），归入客户账户
+                if abs(missing_fees) > 0.01:
+                    customer_rolling_balance = calculated_customer_balance + missing_fees
+                    infinite_rolling_balance = calculated_infinite_balance
+                    print(f"  ⚠️ 检测到未提取费用/利息: RM {missing_fees:.2f}（已归入客户账户）")
+                else:
+                    customer_rolling_balance = calculated_customer_balance
+                    infinite_rolling_balance = calculated_infinite_balance
                 
                 # 计算供应商手续费
                 supplier_fee = sum([
@@ -181,6 +213,9 @@ class MonthlyLedgerEngine:
                 # 更新上月余额
                 previous_customer_balance = customer_rolling_balance
                 previous_infinite_balance = infinite_rolling_balance
+                
+                # 标记已处理第一个statement
+                is_first_statement = False
             
             conn.commit()
             print(f"\n✅ Card ID {card_id} 月度账本计算完成！")
