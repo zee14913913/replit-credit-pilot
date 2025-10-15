@@ -8,7 +8,52 @@ import pdfplumber
 import pandas as pd
 import re
 from datetime import datetime
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
+
+def clean_balance_string(value: str) -> Optional[float]:
+    """
+    清理balance字符串，处理多种格式：
+    - 移除货币符号（RM, MYR等）
+    - 移除千位分隔符逗号
+    - 处理括号表示的负数：(1,234.56) → -1234.56
+    - 处理CR/DR后缀
+    - 处理负号
+    """
+    if not value or pd.isna(value):
+        return None
+    
+    # 转为字符串并清理
+    s = str(value).strip().upper()
+    
+    # 跳过无效值
+    if s in ['', 'NAN', 'NULL', 'NONE', '-']:
+        return None
+    
+    # 记录是否是负数
+    is_negative = False
+    
+    # 检查括号格式（表示负数）
+    if s.startswith('(') and s.endswith(')'):
+        is_negative = True
+        s = s[1:-1].strip()  # 移除括号
+    
+    # 检查负号
+    if s.startswith('-'):
+        is_negative = True
+        s = s[1:].strip()
+    
+    # 移除货币符号和CR/DR标记
+    s = s.replace('RM', '').replace('MYR', '').replace('CR', '').replace('DR', '').strip()
+    
+    # 移除千位分隔符
+    s = s.replace(',', '')
+    
+    # 转换为float
+    try:
+        balance = float(s)
+        return -balance if is_negative else balance
+    except ValueError:
+        return None
 
 def parse_savings_statement(file_path: str, bank_name: str = '') -> Tuple[Dict, List[Dict]]:
     """
@@ -105,14 +150,21 @@ def parse_generic_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                 if account_match:
                     info['account_last4'] = account_match.group(1)
                 
-                # 通用交易提取模式 - 日期 + 描述 + 金额
+                # 通用交易提取模式 - 日期 + 描述 + 金额 + 余额（可选）
                 # 支持多种格式: DD/MM/YYYY, DD MMM YYYY, DD-MM-YYYY
+                # Balance支持：正数、负数（带-号）、括号表示负数、带CR/DR后缀
                 transaction_patterns = [
-                    # 格式1: DD/MM/YYYY Description Amount
+                    # 格式1: DD/MM/YYYY Description Amount Balance (支持负数和括号)
+                    r'(\d{1,2}/\d{1,2}/\d{2,4})\s+(.+?)\s+([\-]?[\d,]+\.\d{2})\s+([\-\(]?[\d,]+\.\d{2}\)?(?:\s+[CDR]+)?)\s*$',
+                    # 格式2: DD MMM YYYY Description Amount Balance
+                    r'(\d{1,2}\s+[A-Z]{3}\s+\d{4})\s+(.+?)\s+([\-]?[\d,]+\.\d{2})\s+([\-\(]?[\d,]+\.\d{2}\)?(?:\s+[CDR]+)?)\s*$',
+                    # 格式3: DD-MM-YYYY Description Amount Balance
+                    r'(\d{1,2}-\d{1,2}-\d{2,4})\s+(.+?)\s+([\-]?[\d,]+\.\d{2})\s+([\-\(]?[\d,]+\.\d{2}\)?(?:\s+[CDR]+)?)\s*$',
+                    # 格式4: DD/MM/YYYY Description Amount (无Balance)
                     r'(\d{1,2}/\d{1,2}/\d{2,4})\s+(.+?)\s+([\-]?[\d,]+\.\d{2})\s*$',
-                    # 格式2: DD MMM YYYY Description Amount
+                    # 格式5: DD MMM YYYY Description Amount (无Balance)
                     r'(\d{1,2}\s+[A-Z]{3}\s+\d{4})\s+(.+?)\s+([\-]?[\d,]+\.\d{2})\s*$',
-                    # 格式3: DD-MM-YYYY Description Amount
+                    # 格式6: DD-MM-YYYY Description Amount (无Balance)
                     r'(\d{1,2}-\d{1,2}-\d{2,4})\s+(.+?)\s+([\-]?[\d,]+\.\d{2})\s*$',
                 ]
                 
@@ -121,6 +173,9 @@ def parse_generic_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                         trans_date = match.group(1).strip()
                         trans_desc = match.group(2).strip()
                         trans_amount = match.group(3).strip()
+                        # Balance可能不存在（格式4-6），使用clean_balance_string清理
+                        trans_balance_raw = match.group(4).strip() if match.lastindex >= 4 else None
+                        trans_balance = clean_balance_string(trans_balance_raw) if trans_balance_raw else None
                         
                         # 跳过表头和无效行
                         if any(kw in trans_desc.upper() for kw in ['DATE', 'DESCRIPTION', 'AMOUNT', 'BALANCE', 'TOTAL', 'OPENING', 'CLOSING']):
@@ -131,17 +186,27 @@ def parse_generic_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                             continue
                         
                         try:
-                            amount = float(trans_amount.replace(',', '').replace('-', ''))
+                            # 使用clean_balance_string清理amount（支持负数、千位分隔符等）
+                            amount = clean_balance_string(trans_amount)
+                            if amount is None:
+                                continue
                             
-                            # 判断借贷方向
+                            # trans_balance已经被clean_balance_string处理过，是float或None
+                            balance = trans_balance
+                            
+                            # 判断借贷方向（根据原始字符串）
                             trans_type = 'debit' if '-' in trans_amount or trans_amount.startswith('(') else 'credit'
                             
-                            transactions.append({
+                            trans_dict = {
                                 'date': trans_date,
                                 'description': trans_desc,
-                                'amount': amount,
+                                'amount': abs(amount),  # 存储绝对值
                                 'type': trans_type
-                            })
+                            }
+                            if balance is not None:
+                                trans_dict['balance'] = balance
+                            
+                            transactions.append(trans_dict)
                         except ValueError:
                             continue
         
@@ -159,35 +224,50 @@ def parse_generic_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
             # 或者单一的amount列
             amount_col = next((col for col in df.columns if 'amount' in col.lower()), None)
             
+            # 检查是否有balance列
+            balance_col = next((col for col in df.columns if 'balance' in col.lower()), None)
+            
             if date_col and desc_col:
                 for _, row in df.iterrows():
                     if pd.notna(row[date_col]) and pd.notna(row[desc_col]):
+                        # 提取balance（如果有）- 使用robust清理函数
+                        balance = clean_balance_string(row[balance_col]) if balance_col else None
+                        
                         # 格式1: 分开的Withdrawal/Deposit列
                         if withdrawal_col and deposit_col:
                             # 检查Withdrawal列
                             if pd.notna(row[withdrawal_col]) and float(row[withdrawal_col]) > 0:
-                                transactions.append({
+                                trans_dict = {
                                     'date': str(row[date_col]),
                                     'description': str(row[desc_col]).strip(),
                                     'amount': float(row[withdrawal_col]),
                                     'type': 'debit'
-                                })
+                                }
+                                if balance is not None:
+                                    trans_dict['balance'] = balance
+                                transactions.append(trans_dict)
                             # 检查Deposit列
                             elif pd.notna(row[deposit_col]) and float(row[deposit_col]) > 0:
-                                transactions.append({
+                                trans_dict = {
                                     'date': str(row[date_col]),
                                     'description': str(row[desc_col]).strip(),
                                     'amount': float(row[deposit_col]),
                                     'type': 'credit'
-                                })
+                                }
+                                if balance is not None:
+                                    trans_dict['balance'] = balance
+                                transactions.append(trans_dict)
                         # 格式2: 单一amount列
                         elif amount_col and pd.notna(row[amount_col]):
-                            transactions.append({
+                            trans_dict = {
                                 'date': str(row[date_col]),
                                 'description': str(row[desc_col]).strip(),
                                 'amount': abs(float(row[amount_col])),
                                 'type': 'debit' if float(row[amount_col]) < 0 else 'credit'
-                            })
+                            }
+                            if balance is not None:
+                                trans_dict['balance'] = balance
+                            transactions.append(trans_dict)
         
         info['total_transactions'] = len(transactions)
         print(f"✅ Generic parser: {len(transactions)} transactions extracted from {file_path}")
@@ -270,33 +350,31 @@ def parse_gxbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                     j = i + 1
                     money_in = None
                     money_out = None
+                    closing_balance = None
                     
-                    # 查找后续行直到找到金额
+                    # 查找后续行直到找到金额和余额
+                    # GX Bank格式: Description | Money in | Money out | Interest | Closing balance
                     while j < len(lines) and j < i + 5:
                         next_line = lines[j].strip()
                         
                         # 检查是否包含金额（+或-符号，或纯数字）
-                        amount_match = re.search(r'([+-])?([\d,]+\.\d{2})', next_line)
+                        # 格式：可能有多个金额在同一行（Money in, Money out, Balance）
+                        amounts = re.findall(r'([+-])?([\d,]+\.\d{2})', next_line)
                         
-                        if amount_match:
-                            sign = amount_match.group(1)
-                            amount_str = amount_match.group(2).replace(',', '')
-                            amount = float(amount_str)
-                            
-                            if sign == '+':
-                                money_in = amount
-                            elif sign == '-':
-                                money_out = amount
-                            else:
-                                # 如果没有符号，检查是否在Money in或Money out列
-                                # 这种情况下我们需要看上下文或列位置
-                                # 简化处理：如果已有description但没金额，这可能是金额
-                                if money_in is None and money_out is None:
-                                    # 检查描述中的关键词判断方向
-                                    if any(word in description.lower() for word in ['transfer from', 'received', 'deposit', 'interest', 'cashback']):
-                                        money_in = amount
+                        if amounts:
+                            # 第一个金额可能是money in/out
+                            for idx, (sign, amount_str) in enumerate(amounts):
+                                # 构建完整金额字符串（包括符号）用于清理
+                                full_amount_str = f"{sign or ''}{amount_str}"
+                                amount = clean_balance_string(full_amount_str) or 0
+                                
+                                if idx == 0:  # 第一个金额
+                                    if sign == '+' or (not sign and any(word in description.lower() for word in ['transfer from', 'received', 'deposit', 'interest', 'cashback'])):
+                                        money_in = abs(amount)
                                     else:
-                                        money_out = amount
+                                        money_out = abs(amount)
+                                elif idx == len(amounts) - 1:  # 最后一个金额通常是closing balance
+                                    closing_balance = amount  # 可能是正数或负数
                             break
                         elif next_line and not re.match(r'^\d{1,2}\s+[A-Z][a-z]{2}', next_line) and 'GX' not in next_line and 'QR' not in next_line:
                             # 继续收集描述
@@ -311,7 +389,8 @@ def parse_gxbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                             'date': full_date,
                             'description': description.strip(),
                             'amount': money_in if money_in else money_out,
-                            'type': 'credit' if money_in else 'debit'
+                            'type': 'credit' if money_in else 'debit',
+                            'balance': closing_balance  # 添加closing balance
                         })
                 
                 i += 1
@@ -415,12 +494,9 @@ def parse_publicbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                     if len(parts) >= 2:
                         # 检查最后两个部分是否是数字
                         try:
-                            # 尝试解析为金额格式
-                            last_val = parts[-1].replace(',', '')
-                            second_last_val = parts[-2].replace(',', '')
-                            
-                            balance = float(last_val)
-                            amount = float(second_last_val)
+                            # 使用clean_balance_string清理金额和余额
+                            balance = clean_balance_string(parts[-1])
+                            amount = clean_balance_string(parts[-2]) or 0
                             
                             # 描述是除了最后两个数字的部分
                             description = ' '.join(parts[:-2]) if len(parts) > 2 else 'Transaction'
@@ -460,7 +536,8 @@ def parse_publicbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                                     'date': formatted_date,
                                     'description': full_desc.strip(),
                                     'amount': amount,
-                                    'type': trans_type
+                                    'type': trans_type,
+                                    'balance': balance  # 添加balance字段
                                 })
                         
                         except ValueError:
@@ -529,7 +606,8 @@ def parse_alliance_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                     
                     date_str = match.group(1)
                     description = match.group(2).strip()
-                    amount_str = match.group(3).replace(',', '')
+                    amount_str = match.group(3)
+                    balance_str = match.group(4)  # 提取Balance字段（可能带CR/DR）
                     
                     # 转换日期格式 DDMMYY -> DD-MM-20YY
                     day = date_str[:2]
@@ -537,7 +615,9 @@ def parse_alliance_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                     year = '20' + date_str[4:6]
                     formatted_date = f"{day}-{month}-{year}"
                     
-                    amount = float(amount_str) if amount_str else 0
+                    # 使用clean_balance_string清理amount和balance
+                    amount = clean_balance_string(amount_str) or 0
+                    balance = clean_balance_string(balance_str)
                     
                     # 收集完整描述（可能跨多行）
                     full_desc = description
@@ -558,7 +638,8 @@ def parse_alliance_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                             'date': formatted_date,
                             'description': full_desc.strip(),
                             'amount': amount,
-                            'type': trans_type
+                            'type': trans_type,
+                            'balance': balance  # 添加balance字段
                         })
                 
                 i += 1

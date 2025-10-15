@@ -2797,14 +2797,15 @@ def upload_savings_statement():
                         for trans in transactions:
                             cursor.execute('''
                                 INSERT INTO savings_transactions
-                                (savings_statement_id, transaction_date, description, amount, transaction_type)
-                                VALUES (?, ?, ?, ?, ?)
+                                (savings_statement_id, transaction_date, description, amount, transaction_type, balance)
+                                VALUES (?, ?, ?, ?, ?, ?)
                             ''', (
                                 statement_id,
                                 trans.get('date', ''),
                                 trans.get('description', ''),
                                 trans.get('amount', 0),
-                                trans.get('type', 'debit')
+                                trans.get('type', 'debit'),
+                                trans.get('balance', None)  # 添加balance字段
                             ))
                         
                         conn.commit()
