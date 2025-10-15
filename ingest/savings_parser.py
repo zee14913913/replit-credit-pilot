@@ -686,10 +686,179 @@ def parse_cimb_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
     return info, transactions
 
 def parse_uob_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
-    """UOB储蓄账户解析器"""
-    info, transactions = parse_generic_savings(file_path)
-    info['bank_name'] = 'UOB'
-    print(f"✅ UOB savings parsed: {len(transactions)} transactions")
+    """UOB ONE Account储蓄账户解析器 - 处理DD MMM格式和Withdrawals/Deposits/Balance列"""
+    info = {
+        'bank_name': 'UOB',
+        'account_last4': '',
+        'statement_date': '',
+        'total_transactions': 0
+    }
+    
+    transactions = []
+    
+    try:
+        with pdfplumber.open(file_path) as pdf:
+            full_text = ''
+            for page in pdf.pages:
+                full_text += page.extract_text() + '\n'
+            
+            lines = full_text.split('\n')
+            
+            # 提取账号后4位 (格式: 914-316-184-2)
+            for line in lines:
+                if 'ONE Account' in line:
+                    match = re.search(r'(\d{3})-(\d{3})-(\d{3})-(\d)', line)
+                    if match:
+                        info['account_last4'] = match.group(3) + match.group(4)  # Last 4 digits
+            
+            # 提取账单日期 (格式: 01 Jan 2025 to 31 Jan 2025)
+            for line in lines:
+                if 'Period:' in line or 'Tempoh:' in line:
+                    match = re.search(r'(\d{1,2}\s+\w+\s+\d{4})\s+(?:to|sehingga)\s+(\d{1,2}\s+\w+\s+\d{4})', line)
+                    if match:
+                        info['statement_date'] = match.group(2)  # Ending date
+            
+            # 解析交易记录 - UOB格式
+            # Format: DD MMM  DD MMM  Description  Withdrawals  Deposits  Balance
+            in_transaction_section = False
+            i = 0
+            while i < len(lines):
+                line = lines[i].strip()
+                
+                # 检测交易部分开始
+                if 'Trans Date' in line and 'Value Date' in line and 'Balance' in line:
+                    in_transaction_section = True
+                    i += 1
+                    continue
+                
+                # 检测交易部分结束
+                if in_transaction_section and ('Total' in line or 'Notifikasi Percanggahan' in line):
+                    break
+                
+                if in_transaction_section:
+                    # 匹配交易行: DD MMM DD MMM开头
+                    trans_match = re.match(r'^(\d{1,2}\s+\w+)\s+(\d{1,2}\s+\w+)\s+(.+)', line)
+                    
+                    if trans_match:
+                        trans_date = trans_match.group(1).strip()
+                        value_date = trans_match.group(2).strip()
+                        rest = trans_match.group(3).strip()
+                        
+                        # 收集多行描述
+                        description_lines = []
+                        j = i
+                        
+                        # UOB格式：描述可能跨多行，最后3列是数字
+                        temp_lines = [rest]
+                        k = i + 1
+                        while k < len(lines) and k < i + 10:
+                            next_line = lines[k].strip()
+                            # 如果下一行是新交易或section结束，停止
+                            if (re.match(r'^\d{1,2}\s+\w+\s+\d{1,2}\s+\w+', next_line) or 
+                                'Total' in next_line or 
+                                'Notifikasi' in next_line or
+                                not next_line):
+                                break
+                            temp_lines.append(next_line)
+                            k += 1
+                        
+                        # 合并所有行
+                        combined = ' '.join(temp_lines)
+                        
+                        # 提取所有数字（包括逗号和小数点）
+                        numbers = re.findall(r'([\d,]+\.\d{2})', combined)
+                        
+                        if len(numbers) >= 1:
+                            # 最后一个数字总是Balance
+                            balance_str = numbers[-1]
+                            balance = clean_balance_string(balance_str)
+                            
+                            # 移除balance后提取描述和金额
+                            combined_without_balance = combined.rsplit(balance_str, 1)[0].strip()
+                            
+                            # 再次查找金额
+                            amounts = re.findall(r'([\d,]+\.\d{2})', combined_without_balance)
+                            
+                            # 提取描述（移除所有数字）
+                            description = re.sub(r'[\d,]+\.\d{2}', '', combined_without_balance).strip()
+                            
+                            # 判断类型和金额
+                            if len(amounts) == 0:
+                                # 只有Balance，没有金额变动（如BALANCE B/F）
+                                # 跳过或记录为特殊行
+                                i = k
+                                continue
+                            elif len(amounts) == 1:
+                                # 只有1个金额（Withdrawal或Deposit）
+                                amount = clean_balance_string(amounts[0])
+                                # 根据描述和关键词判断类型
+                                if any(kw in description.upper() for kw in ['DUITNOW/INSTANT TRF', 'TRANSFER', 'ONE BONUS INTEREST', 'INTEREST CREDIT']):
+                                    # 检查是否为存款或取款
+                                    if 'TRANSFER FROM' in description.upper() or 'INTEREST' in description.upper() or 'BONUS' in description.upper():
+                                        trans_type = 'credit'
+                                    else:
+                                        trans_type = 'debit'
+                                elif any(kw in description.upper() for kw in ['CR CARD', 'DR', 'MYDEBIT-DR']):
+                                    trans_type = 'debit'
+                                else:
+                                    trans_type = 'credit'
+                            elif len(amounts) == 2:
+                                # 有2个金额：Withdrawal和Deposit
+                                withdrawal = clean_balance_string(amounts[0])
+                                deposit = clean_balance_string(amounts[1])
+                                
+                                # 根据哪个金额不为0来判断（只有一个会有值）
+                                # UOB格式：Withdrawals在前，Deposits在后
+                                if withdrawal and withdrawal > 0:
+                                    amount = withdrawal
+                                    trans_type = 'debit'
+                                else:
+                                    amount = deposit
+                                    trans_type = 'credit'
+                            else:
+                                # 金额格式不对，跳过
+                                i = k
+                                continue
+                            
+                            # 转换日期格式 DD MMM -> DD-MM-YYYY (需要推断年份)
+                            try:
+                                from datetime import datetime
+                                # 从statement_date获取年份
+                                if info['statement_date']:
+                                    year = info['statement_date'].split()[-1]
+                                    date_with_year = f"{trans_date} {year}"
+                                    date_obj = datetime.strptime(date_with_year, '%d %b %Y')
+                                    formatted_date = date_obj.strftime('%d-%m-%Y')
+                                else:
+                                    formatted_date = trans_date
+                            except:
+                                formatted_date = trans_date
+                            
+                            if amount and amount > 0:
+                                transactions.append({
+                                    'date': formatted_date,
+                                    'description': description.strip(),
+                                    'amount': amount,
+                                    'type': trans_type,
+                                    'balance': balance
+                                })
+                        
+                        i = k
+                        continue
+                
+                i += 1
+        
+        info['total_transactions'] = len(transactions)
+        print(f"✅ UOB savings parsed: {len(transactions)} transactions from {file_path}")
+        
+    except Exception as e:
+        print(f"❌ Error parsing UOB statement: {e}")
+        import traceback
+        traceback.print_exc()
+        # 如果专用解析器失败，尝试通用解析器
+        info, transactions = parse_generic_savings(file_path)
+        info['bank_name'] = 'UOB'
+    
     return info, transactions
 
 def parse_ocbc_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
