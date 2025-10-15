@@ -693,10 +693,156 @@ def parse_uob_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
     return info, transactions
 
 def parse_ocbc_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
-    """OCBC储蓄账户解析器"""
-    info, transactions = parse_generic_savings(file_path)
-    info['bank_name'] = 'OCBC'
-    print(f"✅ OCBC savings parsed: {len(transactions)} transactions")
+    """OCBC储蓄账户解析器 - 处理DD MMM YYYY格式和Withdrawal/Deposit列"""
+    info = {
+        'bank_name': 'OCBC',
+        'account_last4': '',
+        'statement_date': '',
+        'total_transactions': 0
+    }
+    
+    transactions = []
+    
+    try:
+        with pdfplumber.open(file_path) as pdf:
+            full_text = ''
+            for page in pdf.pages:
+                full_text += page.extract_text() + '\n'
+            
+            lines = full_text.split('\n')
+            
+            # 提取账号后4位 (格式: 712-261489-2)
+            for line in lines:
+                if 'Account Number' in line or 'Nombor Akaun' in line:
+                    match = re.search(r'(\d{3})-(\d{6})-(\d)', line)
+                    if match:
+                        info['account_last4'] = match.group(2)[-4:]
+            
+            # 提取账单日期 (格式: 01 APR 2025 TO 30 APR 2025)
+            for line in lines:
+                if 'Statement Date' in line or 'Tarikh Penyata' in line:
+                    match = re.search(r'(\d{1,2}\s+\w+\s+\d{4})\s+TO\s+(\d{1,2}\s+\w+\s+\d{4})', line)
+                    if match:
+                        info['statement_date'] = match.group(2)  # Ending date
+            
+            # 解析交易记录 - OCBC格式
+            # 格式: DD MMM YYYY DESCRIPTION /IB [Withdrawal] [Deposit] Balance
+            i = 0
+            while i < len(lines):
+                line = lines[i].strip()
+                
+                # 匹配交易行: DD MMM YYYY开头
+                trans_match = re.match(r'^(\d{1,2}\s+[A-Z]{3}\s+\d{4})\s+(.+)', line)
+                
+                if trans_match:
+                    date_str = trans_match.group(1)
+                    rest = trans_match.group(2).strip()
+                    
+                    # 跳过特殊行
+                    if 'Balance B/F' in rest or 'Balance C/F' in rest:
+                        i += 1
+                        continue
+                    
+                    # 提取描述和金额
+                    # OCBC格式: DESCRIPTION /IB [Withdrawal] [Deposit] Balance
+                    # 最后1-3个数字：Balance（必有），Deposit（可选），Withdrawal（可选）
+                    
+                    # 找到所有数字（包括逗号和小数点）
+                    numbers = re.findall(r'([\d,]+\.\d{2})', rest)
+                    
+                    if len(numbers) >= 1:
+                        # 最后一个数字总是Balance
+                        balance_str = numbers[-1]
+                        balance = clean_balance_string(balance_str)
+                        
+                        # 移除balance后提取描述和金额
+                        rest_without_balance = rest.rsplit(balance_str, 1)[0].strip()
+                        
+                        # 再次查找金额
+                        amounts = re.findall(r'([\d,]+\.\d{2})', rest_without_balance)
+                        
+                        # 提取描述（移除所有数字）
+                        description = re.sub(r'[\d,]+\.\d{2}', '', rest_without_balance).strip()
+                        
+                        # 收集多行描述（紧跟在交易日期行后面）
+                        j = i + 1
+                        while j < len(lines) and j < i + 5:
+                            next_line = lines[j].strip()
+                            # 如果下一行不是新交易行，加入描述
+                            if next_line and not re.match(r'^\d{1,2}\s+[A-Z]{3}\s+\d{4}\s+', next_line) and not next_line.startswith('TRANSACTION') and not next_line.startswith('SUMMARY'):
+                                # 跳过纯数字行
+                                if not re.match(r'^[\d,\.]+$', next_line):
+                                    description += ' ' + next_line
+                            else:
+                                break
+                            j += 1
+                        
+                        # 判断类型和金额
+                        if len(amounts) == 1:
+                            # 只有1个金额（Withdrawal或Deposit）
+                            amount = clean_balance_string(amounts[0])
+                            # 根据描述判断类型
+                            if any(kw in description.upper() for kw in ['INSTANT TRANSFER', 'CASH', 'WITHDRAWAL', 'GIRO DEBIT']):
+                                # 检查是TO还是FROM来判断方向
+                                if '/IB' in description and 'INSTANT TRANSFER' in description:
+                                    # 需要看下一行描述来判断
+                                    # OCBC格式：收入通常是 "TO A/C"，支出是 "FROM A/C"
+                                    # 但实际上OCBC的Withdrawal和Deposit列是分开的
+                                    # 如果只有一个金额，需要根据context判断
+                                    # 简单规则：如果金额在Withdrawal列位置（倒数第二个），是debit
+                                    trans_type = 'debit' if len(numbers) == 2 else 'credit'
+                                else:
+                                    trans_type = 'debit'
+                            else:
+                                trans_type = 'credit'
+                        elif len(amounts) == 2:
+                            # 有2个金额：一个是Withdrawal，一个是Deposit
+                            # OCBC格式：Withdrawal在前，Deposit在后（在Balance之前）
+                            withdrawal = clean_balance_string(amounts[0])
+                            deposit = clean_balance_string(amounts[1]) if len(amounts) > 1 else 0
+                            
+                            # 根据哪个金额不为0来判断
+                            if withdrawal and withdrawal > 0:
+                                amount = withdrawal
+                                trans_type = 'debit'
+                            else:
+                                amount = deposit
+                                trans_type = 'credit'
+                        else:
+                            # 没有金额或格式不对，跳过
+                            i += 1
+                            continue
+                        
+                        # 转换日期格式 DD MMM YYYY -> DD-MM-YYYY
+                        try:
+                            from datetime import datetime
+                            date_obj = datetime.strptime(date_str, '%d %b %Y')
+                            formatted_date = date_obj.strftime('%d-%m-%Y')
+                        except:
+                            formatted_date = date_str
+                        
+                        if amount and amount > 0:
+                            transactions.append({
+                                'date': formatted_date,
+                                'description': description.strip(),
+                                'amount': amount,
+                                'type': trans_type,
+                                'balance': balance
+                            })
+                
+                i += 1
+        
+        info['total_transactions'] = len(transactions)
+        print(f"✅ OCBC savings parsed: {len(transactions)} transactions from {file_path}")
+        
+    except Exception as e:
+        print(f"❌ Error parsing OCBC statement: {e}")
+        import traceback
+        traceback.print_exc()
+        # 如果专用解析器失败，尝试通用解析器
+        info, transactions = parse_generic_savings(file_path)
+        info['bank_name'] = 'OCBC'
+    
     return info, transactions
 
 def parse_publicbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
