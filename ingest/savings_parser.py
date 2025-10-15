@@ -406,10 +406,132 @@ def parse_gxbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
     return info, transactions
 
 def parse_hlb_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
-    """Hong Leong Bank储蓄账户解析器"""
-    info, transactions = parse_generic_savings(file_path)
-    info['bank_name'] = 'Hong Leong Bank'
-    print(f"✅ HLB savings parsed: {len(transactions)} transactions")
+    """Hong Leong Bank储蓄账户解析器 - 处理Deposit/Withdrawal/Balance列格式"""
+    info = {
+        'bank_name': 'Hong Leong Bank',
+        'account_last4': '',
+        'statement_date': '',
+        'total_transactions': 0
+    }
+    
+    transactions = []
+    
+    try:
+        with pdfplumber.open(file_path) as pdf:
+            full_text = ''
+            for page in pdf.pages:
+                full_text += page.extract_text() + '\n'
+            
+            lines = full_text.split('\n')
+            
+            # 提取账号后4位
+            for line in lines:
+                if 'A/C No' in line or 'No Akaun' in line:
+                    match = re.search(r'(\d{11})', line)
+                    if match:
+                        info['account_last4'] = match.group(1)[-4:]
+                
+                # 提取账单日期
+                if 'Date / Tarikh' in line:
+                    match = re.search(r'(\d{2}-\d{2}-\d{4})', line)
+                    if match:
+                        info['statement_date'] = match.group(1)
+            
+            # 解析交易记录 - HLB格式: Date | Description | Deposit | Withdrawal | Balance
+            # 格式: DD-MM-YYYY Description [Deposit] [Withdrawal] Balance
+            i = 0
+            
+            while i < len(lines):
+                line = lines[i].strip()
+                
+                # 匹配交易行: DD-MM-YYYY开头
+                trans_match = re.match(r'^(\d{2}-\d{2}-\d{4})\s+(.+)', line)
+                
+                if trans_match:
+                    date_str = trans_match.group(1)
+                    rest = trans_match.group(2).strip()
+                    
+                    # 跳过特殊行
+                    if 'Balance from previous statement' in rest.lower() or 'balance c/f' in rest.lower() or 'balance b/f' in rest.lower():
+                        i += 1
+                        continue
+                    
+                    # HLB格式: Description可能很长，后面跟1-3个数字（Deposit, Withdrawal, Balance）
+                    # 从右边提取数字：最后一个总是Balance
+                    numbers = re.findall(r'([\d,]+\.\d{2})', rest)
+                    
+                    if len(numbers) >= 1:
+                        # 最后一个数字是Balance
+                        balance_str = numbers[-1]
+                        balance = clean_balance_string(balance_str)
+                        
+                        # 提取Description（移除所有数字部分）
+                        desc_parts = re.split(r'[\d,]+\.\d{2}', rest)
+                        description = desc_parts[0].strip()
+                        
+                        # 判断是Deposit还是Withdrawal
+                        if len(numbers) == 2:
+                            # 有2个数字：[Deposit/Withdrawal] Balance
+                            amount_str = numbers[0]
+                            amount = clean_balance_string(amount_str)
+                            
+                            # 根据描述判断类型（HLB的存入通常包含Transfer/Deposit/CR等关键词）
+                            trans_type = 'credit' if any(kw in description.upper() for kw in ['TRANSFER AT KLM', 'DEPOSIT', 'CR ADVICE', 'CR ADV']) else 'debit'
+                        elif len(numbers) == 3:
+                            # 有3个数字：Deposit Withdrawal Balance
+                            deposit_str = numbers[0]
+                            withdrawal_str = numbers[1]
+                            
+                            deposit = clean_balance_string(deposit_str) or 0
+                            withdrawal = clean_balance_string(withdrawal_str) or 0
+                            
+                            if deposit > 0:
+                                amount = deposit
+                                trans_type = 'credit'
+                            else:
+                                amount = withdrawal
+                                trans_type = 'debit'
+                        else:
+                            # 只有1个数字（Balance），无法确定金额
+                            i += 1
+                            continue
+                        
+                        # 收集完整描述（可能跨多行）
+                        full_desc = description
+                        j = i + 1
+                        while j < len(lines) and j < i + 5:
+                            next_line = lines[j].strip()
+                            # 如果下一行不是新交易，且不以日期开头，加入描述
+                            if next_line and not re.match(r'^\d{2}-\d{2}-\d{4}\s+', next_line):
+                                # 跳过包含数字的行（可能是金额行）
+                                if not re.match(r'^[\d,\.]+$', next_line) and 'Total Withdrawals' not in next_line:
+                                    full_desc += ' ' + next_line
+                            else:
+                                break
+                            j += 1
+                        
+                        if amount and amount > 0:
+                            transactions.append({
+                                'date': date_str,
+                                'description': full_desc.strip(),
+                                'amount': amount,
+                                'type': trans_type,
+                                'balance': balance
+                            })
+                
+                i += 1
+        
+        info['total_transactions'] = len(transactions)
+        print(f"✅ HLB savings parsed: {len(transactions)} transactions from {file_path}")
+        
+    except Exception as e:
+        print(f"❌ Error parsing HLB statement: {e}")
+        import traceback
+        traceback.print_exc()
+        # 如果专用解析器失败，尝试通用解析器
+        info, transactions = parse_generic_savings(file_path)
+        info['bank_name'] = 'Hong Leong Bank'
+    
     return info, transactions
 
 def parse_cimb_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
