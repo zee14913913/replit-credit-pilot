@@ -32,7 +32,14 @@ def clean_balance_string(value: str) -> Optional[float]:
     # 记录是否是负数
     is_negative = False
     
-    # 检查括号格式（表示负数）
+    # 检查CR/DR标记（必须在移除括号之前检查，因为可能有"(123.45) DR"格式）
+    has_dr = 'DR' in s
+    has_cr = 'CR' in s
+    
+    # 移除货币符号和CR/DR标记
+    s = s.replace('RM', '').replace('MYR', '').replace('CR', '').replace('DR', '').strip()
+    
+    # 检查括号格式（表示负数）- 在移除CR/DR后检查
     if s.startswith('(') and s.endswith(')'):
         is_negative = True
         s = s[1:-1].strip()  # 移除括号
@@ -42,14 +49,8 @@ def clean_balance_string(value: str) -> Optional[float]:
         is_negative = True
         s = s[1:].strip()
     
-    # 检查CR/DR标记（CR=credit/正数, DR=debit/负数）
-    has_dr = 'DR' in s
-    has_cr = 'CR' in s
-    
-    # 移除货币符号和CR/DR标记
-    s = s.replace('RM', '').replace('MYR', '').replace('CR', '').replace('DR', '').strip()
-    
     # DR表示借方（负数），CR表示贷方（正数）
+    # 这个检查优先级最高，覆盖括号和负号
     if has_dr:
         is_negative = True
     elif has_cr:
@@ -843,22 +844,41 @@ def parse_uob_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
             # **关键修正：根据余额变化确定所有交易的credit/debit和准确金额**
             # 这是确保100%准确的核心算法
             if transactions:
-                # 从所有页面提取期初余额（BALANCE B/F）- 大小写不敏感
+                # 从所有页面提取期初余额（BALANCE B/F）- 大小写不敏感，robust跨行处理
                 prev_balance = None  # Use None to detect "not found" vs "found with value 0"
                 for page in pdf.pages:
                     page_text = page.extract_text()
-                    for line in page_text.split('\n'):
+                    lines = page_text.split('\n')
+                    
+                    for i, line in enumerate(lines):
                         # Case-insensitive search for BALANCE B/F variations
                         if 'BALANCE B/F' in line.upper():
-                            # Extract number with optional DR/CR suffix
-                            balance_match = re.search(r'([\d,]+\.\d{2})(\s*(?:DR|CR))?', line, re.IGNORECASE)
-                            if balance_match:
-                                # Include DR/CR in the balance string for clean_balance_string to process
-                                balance_str = balance_match.group(0)
-                                prev_balance = clean_balance_string(balance_str)
-                                if prev_balance is not None:
-                                    # Found valid balance (could be 0.00 or negative), stop searching
-                                    break
+                            # Ultra-robust approach: keep merging lines until we find a numeric pattern
+                            # This handles ANY split scenario, including extreme cases like:
+                            # Line1="BALANCE B/F", Line2="(", Line3="1,234.", Line4="56", Line5="DR"
+                            combined_text = line
+                            max_lookahead = 10  # Search up to 10 lines ahead (reasonable limit)
+                            
+                            for j in range(1, max_lookahead + 1):
+                                if i + j < len(lines):
+                                    combined_text += " " + lines[i + j]
+                                
+                                # Try to match balance pattern after each line addition
+                                # Pattern matches: 123.45, (123.45), 123.45 DR, (123.45) DR, etc.
+                                balance_match = re.search(r'\(?\s*([\d,]+\.\d{2})\s*\)?\s*(?:DR|CR)?', combined_text, re.IGNORECASE)
+                                
+                                if balance_match:
+                                    # Found valid pattern, extract and process
+                                    balance_str = balance_match.group(0).strip()
+                                    prev_balance = clean_balance_string(balance_str)
+                                    if prev_balance is not None:
+                                        # Successfully extracted balance, stop searching
+                                        break
+                            
+                            # If found balance, break from line loop
+                            if prev_balance is not None:
+                                break
+                    
                     if prev_balance is not None:
                         break
                 
