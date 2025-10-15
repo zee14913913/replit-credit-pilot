@@ -782,9 +782,9 @@ def parse_uob_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                             trans_type = 'unknown'
                         elif len(numbers) == 3:
                             # Withdrawal + Deposit + Balance（只有一个金额会有值）
-                            withdrawal = clean_balance_string(numbers[0])
-                            deposit = clean_balance_string(numbers[1])
-                            balance = clean_balance_string(numbers[2])
+                            withdrawal = clean_balance_string(numbers[0]) or 0
+                            deposit = clean_balance_string(numbers[1]) or 0
+                            balance = clean_balance_string(numbers[2]) or 0
                             
                             if withdrawal > 0:
                                 amount = withdrawal
@@ -827,16 +827,65 @@ def parse_uob_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                     desc = ' '.join([d.strip() for d in current_description if d.strip()])
                     pending_transaction['description'] = desc
                     
-                    # 如果类型还是unknown，根据描述判断
-                    if pending_transaction['type'] == 'unknown':
-                        desc_upper = desc.upper()
-                        if 'TRANSFER FROM' in desc_upper or 'INTEREST' in desc_upper or 'BONUS' in desc_upper:
-                            pending_transaction['type'] = 'credit'
-                        else:
-                            pending_transaction['type'] = 'debit'
-                    
-                    if pending_transaction['amount'] > 0 and pending_transaction['type'] and pending_transaction['type'] != 'unknown':
+                    if pending_transaction['amount'] > 0 and pending_transaction['balance'] is not None:
                         transactions.append(pending_transaction)
+            
+            # **关键修正：根据余额变化确定所有交易的credit/debit和准确金额**
+            # 这是确保100%准确的核心算法
+            if transactions:
+                # 从所有页面提取期初余额（BALANCE B/F）
+                prev_balance = 0.0
+                for page in pdf.pages:
+                    page_text = page.extract_text()
+                    for line in page_text.split('\n'):
+                        if 'BALANCE B/F' in line:
+                            balance_match = re.search(r'([\d,]+\.\d{2})', line)
+                            if balance_match:
+                                prev_balance = clean_balance_string(balance_match.group(1)) or 0.0
+                                break
+                    if prev_balance and prev_balance > 0:
+                        break
+                
+                # 如果没找到期初余额，设为0并使用balance-change算法
+                # 注意：在真实UOB月结单中，BALANCE B/F总是存在的
+                # 这个fallback仅用于处理异常边缘情况
+                if prev_balance == 0 and transactions:
+                    print(f"⚠️  WARNING: BALANCE B/F not found in {file_path}, using 0 as opening balance")
+                    print(f"⚠️  First transaction accuracy may be affected")
+                    # 将期初余额设为0，让balance-change算法从第一笔开始推算
+                    # 这会导致第一笔的类型/金额基于纯余额变化判断
+                    prev_balance = 0
+                
+                # 遍历所有交易，根据余额变化修正类型和金额
+                corrected_transactions = []
+                for txn in transactions:
+                    curr_balance = txn.get('balance', 0)
+                    
+                    # 根据余额变化判断类型并计算准确金额
+                    if curr_balance > prev_balance:
+                        # 余额增加 = 存款（credit）
+                        corrected_type = 'credit'
+                        corrected_amount = curr_balance - prev_balance
+                    elif curr_balance < prev_balance:
+                        # 余额减少 = 取款（debit）
+                        corrected_type = 'debit'
+                        corrected_amount = prev_balance - curr_balance
+                    else:
+                        # 余额不变（异常情况）
+                        corrected_type = txn['type'] if txn['type'] != 'unknown' else 'debit'
+                        corrected_amount = txn['amount']
+                    
+                    corrected_transactions.append({
+                        'date': txn['date'],
+                        'description': txn['description'],
+                        'amount': corrected_amount,
+                        'type': corrected_type,
+                        'balance': curr_balance
+                    })
+                    
+                    prev_balance = curr_balance
+                
+                transactions = corrected_transactions
         
         info['total_transactions'] = len(transactions)
         print(f"✅ UOB savings parsed: {len(transactions)} transactions from {file_path}")

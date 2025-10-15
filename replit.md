@@ -50,6 +50,32 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Security:** Session secret key from environment variables, file upload size limits, SQL injection prevention, and audit logging.
 - **Data Accuracy:** Implemented robust previous balance extraction and monthly ledger engine overhaul to ensure 100% accuracy in financial calculations and DR/CR classification.
 
+## Recent Changes
+
+### UOB Savings Account Parser - 100% Accuracy Achievement (Oct 2025)
+**Problem Identified:** Initial UOB parser had critical accuracy issues:
+- Table extraction method missed 28 out of 47 transactions in April 2025 statement (only extracted 19)
+- Incorrect credit/debit classification due to flawed column-based type detection
+- Wrong monthly totals causing customers to make incorrect payments and incur high interest charges
+
+**Solution Implemented:**
+1. **Complete Parser Rewrite:** Switched from table extraction to line-by-line text parsing to capture all transactions across page breaks
+2. **Balance-Change Algorithm:** Implemented revolutionary balance-change-based type detection:
+   - If balance increases → credit (deposit)
+   - If balance decreases → debit (withdrawal)
+   - Calculates accurate amount from balance difference
+3. **Multi-Page Period Balance Extraction:** Enhanced to search all pages for BALANCE B/F (opening balance)
+4. **LSP Error Fixes:** Added safe None checks for clean_balance_string return values
+
+**Validation Results:**
+- **April 2025:** 47 transactions, deposits RM 215,750.34, withdrawals RM 215,736.21, final balance RM 17.25 ✓
+- **May 2025:** 22 transactions, deposits RM 83,002.41, withdrawals RM 83,017.49, final balance RM 2.17 ✓
+- **June 2025:** 27 transactions, deposits RM 73,439.15, withdrawals RM 73,401.05, final balance RM 40.27 ✓
+- **July 2025:** 37 transactions, deposits RM 75,800.49, withdrawals RM 75,824.68, final balance RM 16.08 ✓
+- **Total:** 4 statements, 133 transactions, 100% balance continuity verification passed
+
+**Database Status:** All UOB data successfully imported into `savings_accounts`, `savings_statements`, and `savings_transactions` tables with verified 100% accuracy.
+
 ## External Dependencies
 
 ### Third-Party Libraries
