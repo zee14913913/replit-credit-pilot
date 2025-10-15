@@ -42,8 +42,18 @@ def clean_balance_string(value: str) -> Optional[float]:
         is_negative = True
         s = s[1:].strip()
     
+    # 检查CR/DR标记（CR=credit/正数, DR=debit/负数）
+    has_dr = 'DR' in s
+    has_cr = 'CR' in s
+    
     # 移除货币符号和CR/DR标记
     s = s.replace('RM', '').replace('MYR', '').replace('CR', '').replace('DR', '').strip()
+    
+    # DR表示借方（负数），CR表示贷方（正数）
+    if has_dr:
+        is_negative = True
+    elif has_cr:
+        is_negative = False  # 明确设为正数（覆盖之前的负号检测）
     
     # 移除千位分隔符
     s = s.replace(',', '')
@@ -833,28 +843,37 @@ def parse_uob_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
             # **关键修正：根据余额变化确定所有交易的credit/debit和准确金额**
             # 这是确保100%准确的核心算法
             if transactions:
-                # 从所有页面提取期初余额（BALANCE B/F）
-                prev_balance = 0.0
+                # 从所有页面提取期初余额（BALANCE B/F）- 大小写不敏感
+                prev_balance = None  # Use None to detect "not found" vs "found with value 0"
                 for page in pdf.pages:
                     page_text = page.extract_text()
                     for line in page_text.split('\n'):
-                        if 'BALANCE B/F' in line:
-                            balance_match = re.search(r'([\d,]+\.\d{2})', line)
+                        # Case-insensitive search for BALANCE B/F variations
+                        if 'BALANCE B/F' in line.upper():
+                            # Extract number with optional DR/CR suffix
+                            balance_match = re.search(r'([\d,]+\.\d{2})(\s*(?:DR|CR))?', line, re.IGNORECASE)
                             if balance_match:
-                                prev_balance = clean_balance_string(balance_match.group(1)) or 0.0
-                                break
-                    if prev_balance and prev_balance > 0:
+                                # Include DR/CR in the balance string for clean_balance_string to process
+                                balance_str = balance_match.group(0)
+                                prev_balance = clean_balance_string(balance_str)
+                                if prev_balance is not None:
+                                    # Found valid balance (could be 0.00 or negative), stop searching
+                                    break
+                    if prev_balance is not None:
                         break
                 
-                # 如果没找到期初余额，设为0并使用balance-change算法
-                # 注意：在真实UOB月结单中，BALANCE B/F总是存在的
-                # 这个fallback仅用于处理异常边缘情况
-                if prev_balance == 0 and transactions:
-                    print(f"⚠️  WARNING: BALANCE B/F not found in {file_path}, using 0 as opening balance")
-                    print(f"⚠️  First transaction accuracy may be affected")
-                    # 将期初余额设为0，让balance-change算法从第一笔开始推算
-                    # 这会导致第一笔的类型/金额基于纯余额变化判断
-                    prev_balance = 0
+                # 如果没找到期初余额，抛出异常确保100%准确性
+                # 注意：所有真实UOB月结单都包含BALANCE B/F
+                # 如果遇到缺失情况，需要手动检查PDF是否损坏或格式异常
+                if prev_balance is None and transactions:
+                    error_msg = f"❌ CRITICAL: BALANCE B/F not found in {file_path}"
+                    error_msg += "\n   All valid UOB statements must contain opening balance."
+                    error_msg += "\n   Please check if PDF is corrupted or has unusual format."
+                    raise ValueError(error_msg)
+                
+                # If no transactions but balance is None, set to 0 (empty statement)
+                if prev_balance is None:
+                    prev_balance = 0.0
                 
                 # 遍历所有交易，根据余额变化修正类型和金额
                 corrected_transactions = []
