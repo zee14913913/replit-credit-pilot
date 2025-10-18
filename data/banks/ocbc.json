@@ -1,0 +1,203 @@
+[
+  {
+    "product_id": "OCBC-PERS-PL",
+    "name": "OCBC Personal Loan",
+    "bank": "OCBC Bank Malaysia",
+    "category": "personal",
+    "shariah": "no",
+    "amount_min": 5000,
+    "amount_max": 150000,
+    "rate_display": "Rate not publicly disclosed (contact bank for quote; market range 6.99%–17.99% p.a.)",
+    "tenure_min_months": 12,
+    "tenure_max_months": 60,
+    "income_min": 24000,
+    "age_min": 18,
+    "age_max": 55,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income proof", "Bank statements (if required)"],
+    "approval_days": "1–3 working days",
+    "approval_days_note": "Instant approval available",
+    "special_features": [
+      "No collateral or guarantor required",
+      "No processing fees",
+      "Flexible repayment options"
+    ],
+    "links": [
+      "https://www.ocbc.com.my/personal-banking/loans/personal-consumption",
+      "https://www.ocbc.com.my/personal-banking/loans/overview"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "OCBCI-CASH-FI",
+    "name": "OCBC Al-Amin Cash Financing-i",
+    "bank": "OCBC Al-Amin Bank",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 5000,
+    "amount_max": 150000,
+    "rate_display": "6.99%–17.99% p.a. (as low as 0.71% per month)",
+    "tenure_min_months": 12,
+    "tenure_max_months": 84,
+    "income_min": 60000,
+    "age_min": 30,
+    "age_max": 60,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income proof", "Bank statements"],
+    "approval_days": "1–5 working days",
+    "approval_days_note": "Subject to credit assessment",
+    "special_features": [
+      "Shariah-compliant",
+      "No collateral required",
+      "No processing fees",
+      "No early settlement penalty",
+      "Flat rate basis calculation"
+    ],
+    "links": [
+      "https://www.ocbc.com.my/OCBCAl_Amin/personal-banking-i/financing/cash-financing-i"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "OCBC-HOME-STD",
+    "name": "OCBC Home Loan (Conventional)",
+    "bank": "OCBC Bank Malaysia",
+    "category": "home",
+    "shariah": "no",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "SBR + 1.70% ≈ 4.45% p.a. (indicative: SBR 2.75%)",
+    "reference_rates": "SBR 2.75%, BR 3.58%, BLR 6.51% (effective July 15, 2025)",
+    "financing_ratio": "90% + 5% (MRTA)",
+    "lock_in_3yr": "For loans < RM500K",
+    "lock_in_penalty": "3% early settlement fee during lock-in",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "S&P/Title", "Income & liabilities"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Depends on valuation and legal process",
+    "special_features": [
+      "Tenure up to 35 years or age 70",
+      "Fixed or variable rate options",
+      "Term loan, overdraft, or combination",
+      "Daily rest calculation"
+    ],
+    "links": [
+      "https://www.ocbc.com.my/personal-banking/loans/property/home-loans",
+      "https://www.ocbc.com.my/personal-banking/loans/home-loans.page"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "OCBCI-HOME-Manarat",
+    "name": "OCBC Al-Amin Manarat Home-i",
+    "bank": "OCBC Al-Amin Bank",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "From 3.45% p.a. (BR-based; actual rate varies by package)",
+    "reference_rates": "BR 3.58%, BFR 6.76% (July 2025)",
+    "financing_ratio": "100%",
+    "shariah_contract": "Ijarah Muntahiah bi Al-Tamlik & Musharakah Mutanaqisah",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income proof", "S&P/Title"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Subject to Shariah approval and valuation",
+    "special_features": [
+      "Shariah-compliant (Ijarah & Musharakah)",
+      "Margin of finance up to 100%",
+      "Tenure up to 35 years or age 70",
+      "Three sub-plans: Idaman-i, Impian-i, Warisan-i",
+      "No processing fees",
+      "No early settlement penalty (no lock-in option)",
+      "100% stamp duty waived for refinancing from conventional",
+      "Additional monthly repayments allowed",
+      "Home renovation loans up to 30% of property value",
+      "PIDM protection up to RM250,000"
+    ],
+    "links": [
+      "https://www.ocbc.com.my/OCBCAl_Amin/home-financing-i",
+      "https://www.ocbc.com.my/OCBCAl_Amin/financing-manarat-home-i"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "OCBC-BT-Loan",
+    "name": "OCBC Balance Transfer / Flexible Repayment Cash Loan",
+    "bank": "OCBC Bank Malaysia",
+    "category": "debt_consolidation",
+    "shariah": "no",
+    "amount_min": 1000,
+    "amount_max_note": "Up to 80-90% of credit limit",
+    "rate_display": "Flexi BT: 7.99% p.a. / Fixed: 0.67% per month (8.04% p.a.); Promo: from 1.88% p.a.",
+    "rate_flexi": "7.99% p.a.",
+    "rate_fixed": "8.04% p.a. (0.67% per month)",
+    "rate_promo": "From 1.88% p.a. (new cardholders)",
+    "penalty_rate": "18% p.a. + 1% late charge (RM10–RM100) if minimum payment missed",
+    "tenure_min_months": 6,
+    "tenure_max_months": 60,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 60,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["Existing OCBC credit card / loan", "BT application"],
+    "approval_days": "1–3 working days",
+    "approval_days_note": "Fast approval for existing cardholders",
+    "special_features": [
+      "Two options: Flexi BT (flexible) or Fixed Installment",
+      "No processing fee, no early settlement fee, no upfront fee",
+      "Save up to 60% in interest charges vs normal 18% p.a.",
+      "Min transfer: RM1,000",
+      "Transfer up to 80-90% of available credit line"
+    ],
+    "links": [
+      "https://www.ocbc.com.my/personal-banking/loans/balance-transfer-flexible-repayment-cash-loan",
+      "https://www.ocbc.com.my/personal-banking/cards/balance-transfer",
+      "https://www.ocbc.com.my/personal-banking/cards/flexi-balance-transfer"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "OCBCI-BIZ-FIN",
+    "name": "OCBC Al-Amin Business Financing-i / Equipment & Vehicle",
+    "bank": "OCBC Al-Amin Bank",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Rate not publicly disclosed (Equipment & Vehicle financing; RM100M collateral-free scheme 2025)",
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "company_age_min_months": null,
+    "collateral_required": "Assets or equipment funded (collateral-free scheme available)",
+    "docs_required": ["SSM", "Bank statements", "Vehicle/Equipment invoice"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Subject to Shariah and credit approval",
+    "special_features": [
+      "RM100M collateral-free financing scheme with CGC (launched Aug 2025)",
+      "Equipment & machinery financing",
+      "Commercial vehicle financing",
+      "Shariah-compliant"
+    ],
+    "links": [
+      "https://www.ocbc.com.my/OCBCAl_Amin/financing",
+      "https://www.ocbc.com.my/business"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]

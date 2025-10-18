@@ -1,0 +1,196 @@
+mkdir -p data/banks
+
+cat > data/banks/bankislam_full.json <<'EOF'
+[
+  // =========================
+  // PERSONAL FINANCING-i / CASH LINE-i
+  // =========================
+  {
+    "product_id": "BI-PERS-PfPackage",
+    "name": "Personal Financing-i Package",
+    "bank": "Bank Islam Malaysia Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 10000,
+    "amount_max": 400000,
+    "rate_display": null,
+    "tenure_min_months": 12,
+    "tenure_max_months": 120,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": 60,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income proof (payslips/BE/EPF)", "Bank statements"],
+    "approval_days": 5,
+    "approval_days_note": "比价平台 iMoney 指示审批可在 5 工作日内。 [oai_citation:0‡iMoney](https://www.imoney.my/personal-loan/bank-islam/personal-financing-i-package?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.bankislam.com/personal-banking/financing/personal-financing/personal-financing-i-package/",
+      "https://www.imoney.my/personal-loan/bank-islam/personal-financing-i-package"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "BI-PERS-CashLine-i",
+    "name": "Personal Cash Line-i",
+    "bank": "Bank Islam Malaysia Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": 6,
+    "tenure_max_months": 12,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": 60,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income proof"],
+    "approval_days": null,
+    "approval_days_note": "官网列该产品但未披露完整额度与期限。 [oai_citation:1‡bankislam.com](https://www.bankislam.com/personal-banking/financing/?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.bankislam.com/personal-banking/financing/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // HOME FINANCING-i / REFINANCING
+  // =========================
+  {
+    "product_id": "BI-HOME-Financing-i",
+    "name": "Home Financing-i",
+    "bank": "Bank Islam Malaysia Berhad",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income proof", "S&P/Title", "Valuation (if required)"],
+    "approval_days": null,
+    "approval_days_note": "包括 Baiti Home Financing-i, Wahdah (Refinancing) 等。 [oai_citation:2‡bankislam.com](https://www.bankislam.com/personal-banking/financing/home-financing/?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.bankislam.com/personal-banking/financing/home-financing/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // VEHICLE FINANCING-i
+  // =========================
+  {
+    "product_id": "BI-AUTO-VehicleFinancing-i",
+    "name": "Vehicle Financing-i",
+    "bank": "Bank Islam Malaysia Berhad",
+    "category": "auto",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": 12,
+    "tenure_max_months": 108,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Driving licence", "Income proof", "Vehicle quotation"],
+    "approval_days": null,
+    "approval_days_note": "官网列该类融资为产品类别。 [oai_citation:3‡bankislam.com](https://www.bankislam.com/personal-banking/financing/?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.bankislam.com/personal-banking/financing/",
+      "https://www.bankislam.com/personal-banking/financing/vehicle-financing-i"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // EDUCATION & OTHER FINANCING-i
+  // =========================
+  {
+    "product_id": "BI-EDU-EducationFinancing-i",
+    "name": "Education Financing-i",
+    "bank": "Bank Islam Malaysia Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "income_min": null,
+    "age_min": null,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Acceptance letter/tuition invoice", "Income proof/Bank statements"],
+    "approval_days": null,
+    "approval_days_note": "该类别在产品类别列表中提及。 [oai_citation:4‡bankislam.com](https://www.bankislam.com/personal-banking/financing/?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.bankislam.com/personal-banking/financing/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "BI-ASB-Financing-i",
+    "name": "ASB Financing-i",
+    "bank": "Bank Islam Malaysia Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "income_min": null,
+    "age_min": null,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "ASB account details", "Income proof"],
+    "approval_days": null,
+    "approval_days_note": "产品类别中指出该项。 [oai_citation:5‡bankislam.com](https://www.bankislam.com/personal-banking/financing/?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.bankislam.com/personal-banking/financing/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // BUSINESS / SME FINANCING-i
+  // =========================
+  {
+    "product_id": "BI-BUS-BusinessFinancing-i",
+    "name": "Business Financing-i (Tawarruq)",
+    "bank": "Bank Islam Malaysia Berhad",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "company_age_min_months": null,
+    "ownership_requirement": "Malaysian registered business",
+    "collateral_required": null,
+    "docs_required": ["SSM/Business registration", "Financials/Tax", "Bank statements"],
+    "approval_days": null,
+    "approval_days_note": "官网提供该产品熨斗。 [oai_citation:6‡bankislam.com](https://www.bankislam.com/business-banking/business-financing-products/business-financing-i/?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.bankislam.com/business-banking/business-financing-products/business-financing-i/",
+      "https://www.bankislam.com/business-banking/business-financing-products/"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]
+EOF
+
+echo "✅ data/banks/bankislam_full.json 已创建（Bank Islam 全产品主档）。"
