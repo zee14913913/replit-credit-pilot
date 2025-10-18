@@ -1,0 +1,303 @@
+mkdir -p data/banks
+
+cat > data/banks/ambank_full.json <<'EOF'
+[
+  // =========================
+  // PERSONAL / PERSONAL-i
+  // =========================
+  {
+    "product_id": "AMB-PERS-AMMONEYLINE",
+    "name": "AmMoneyLine (Cash Line / Personal Financing)",
+    "bank": "AmBank",
+    "category": "personal",
+    "shariah": "no",
+    "amount_min": null,
+    "amount_max": 150000,
+    "rate_display": null,
+    "tenure_min_months": 12,
+    "tenure_max_months": 84,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 60,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income proof (payslips/BE/EPF)", "Bank statements (if required)"],
+    "approval_days": null,
+    "approval_days_note": "Bank does not publish fixed SLA",
+    "links": [
+      "https://www.ambank.com.my/loans-financing/personal/personal-financing/ammoneyline"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AMBISB-PERS-PFi",
+    "name": "AmBank Islamic Personal Financing-i",
+    "bank": "AmBank Islamic",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": 200000,
+    "rate_display": null,
+    "tenure_min_months": 12,
+    "tenure_max_months": 120,
+    "income_min": 1500,
+    "age_min": 18,
+    "age_max": 60,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income proof", "Bank statements (if requested)"],
+    "approval_days": null,
+    "approval_days_note": "Not publicly disclosed",
+    "links": [
+      "https://www.ambank.com.my/loans-financing/personal/personal-financing/personal-financing-i"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // DEBT CONSOLIDATION / CARD PROGRAMS
+  // =========================
+  {
+    "product_id": "AMB-CARD-BAL-TRANSFER",
+    "name": "AmBank Credit Card Balance Transfer / Balance Conversion",
+    "bank": "AmBank",
+    "category": "debt_consolidation",
+    "shariah": null,
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": 6,
+    "tenure_max_months": 60,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 65,
+    "citizenship": "MY",
+    "dsr_policy": "Card underwriting applies",
+    "docs_required": ["AmBank Credit Card", "BT/Conversion request via online/branch"],
+    "approval_days": null,
+    "approval_days_note": "Promo/plan dependent; SLA not stated",
+    "links": [
+      "https://www.ambank.com.my/english/credit-cards/credit-card-services"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // HOME / REFINANCE (CONV & ISLAMIC)
+  // =========================
+  {
+    "product_id": "AMB-HOME-CONV",
+    "name": "AmBank Home Loan (Conventional)",
+    "bank": "AmBank",
+    "category": "home",
+    "shariah": "no",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "BR + spread (market-linked)",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": 70,
+    "citizenship": "MY/PR",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income & liabilities docs", "S&P/Title", "Valuation (as required)"],
+    "approval_days": null,
+    "approval_days_note": "Bank does not publish exact SLA",
+    "links": [
+      "https://www.ambank.com.my/loans-financing/personal/home-loan/home-loan"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AMBISB-HOME-PROP-i",
+    "name": "Home / Property Financing-i",
+    "bank": "AmBank Islamic",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Islamic variable profit (ceiling + effective)",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": 70,
+    "citizenship": "MY/PR",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income docs", "S&P/Title", "Valuation (as required)"],
+    "approval_days": null,
+    "approval_days_note": "Not publicly disclosed",
+    "links": [
+      "https://www.ambankgroup.com/products-and-services/islamic/islamic-banking/product-and-services/individual/financing/home---property-financing/home---property-financing-i"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AMB-HOME-REFI",
+    "name": "AmBank Home Refinancing / Cash-out",
+    "bank": "AmBank",
+    "category": "refinance",
+    "shariah": "no",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": 70,
+    "citizenship": "MY/PR",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Existing loan statement", "Valuation report", "Income docs"],
+    "approval_days": null,
+    "approval_days_note": "Varies with valuation/legal; no published SLA",
+    "links": [
+      "https://www.ambank.com.my/loans-financing/personal/home-loan/refinancing"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // AUTO / HIRE PURCHASE
+  // =========================
+  {
+    "product_id": "AMB-AUTO-HP",
+    "name": "AmBank Auto Loan (Hire Purchase)",
+    "bank": "AmBank",
+    "category": "auto",
+    "shariah": "no",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": 12,
+    "tenure_max_months": 108,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": 60,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Driving Licence", "Income proof", "Bank statements"],
+    "approval_days": null,
+    "approval_days_note": "Not publicly disclosed",
+    "links": [
+      "https://www.ambank.com.my/loans-financing/personal/auto-loan/auto-loan"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AMBISB-AUTO-ARIF-HP-i",
+    "name": "Arif Hire Purchase-i (Islamic Auto Financing)",
+    "bank": "AmBank Islamic",
+    "category": "auto",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": 12,
+    "tenure_max_months": 108,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": 60,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income proof", "Bank statements", "Vehicle quotation"],
+    "approval_days": null,
+    "approval_days_note": "Not publicly disclosed",
+    "links": [
+      "https://www.ambankgroup.com/products-and-services/islamic/islamic-banking/product-and-services/individual/financing/auto-financing/arif-hire-purchase-i"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // SME / BUSINESS FINANCING
+  // =========================
+  {
+    "product_id": "AMB-SME-WC",
+    "name": "SME Working Capital Financing (OD/Term Financing)",
+    "bank": "AmBank",
+    "category": "sme",
+    "shariah": "both",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Risk-based pricing",
+    "tenure_min_months": 12,
+    "tenure_max_months": 84,
+    "company_age_min_months": null,
+    "collateral_required": null,
+    "income_min": null,
+    "dsr_policy": null,
+    "docs_required": ["SSM docs", "6–12 months bank statements", "Financial statements & Tax", "Directors PG (as applicable)"],
+    "approval_days": null,
+    "approval_days_note": "No fixed SLA published",
+    "links": [
+      "https://www.ambank.com.my/loans-financing/business"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AMB-SME-BIZPROPERTY",
+    "name": "Commercial/Industrial Property Financing (Biz Property)",
+    "bank": "AmBank",
+    "category": "sme",
+    "shariah": "both",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Property-backed; cash-out possible (subject to credit)",
+    "tenure_min_months": 60,
+    "tenure_max_months": 300,
+    "collateral_required": "Property",
+    "docs_required": ["SSM", "Property docs & Valuation", "Financials/Tax", "Bank statements"],
+    "approval_days": null,
+    "approval_days_note": "Legal & valuation dependent",
+    "links": [
+      "https://www.ambank.com.my/loans-financing/business"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AMB-SME-TRADE",
+    "name": "Trade Financing (LC/TR/BA/TRi/Guarantees)",
+    "bank": "AmBank",
+    "category": "sme",
+    "shariah": "both",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "As per trade product type",
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "collateral_required": null,
+    "docs_required": ["Trade docs (Invoice/BL/LC)", "SSM", "Bank statements", "Financials/Tax"],
+    "approval_days": null,
+    "approval_days_note": "Varies by facility type",
+    "links": [
+      "https://www.ambank.com.my/loans-financing/business"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AMB-SME-GOVT-BNM-CGC",
+    "name": "Government/BNM/CGC/SJPP Schemes via AmBank/AmBank Islamic",
+    "bank": "AmBank",
+    "category": "sme",
+    "shariah": "both",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "As per scheme (BNM/CGC/SJPP etc.)",
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "company_age_min_months": null,
+    "collateral_required": null,
+    "docs_required": ["Scheme eligibility docs", "SSM", "Financials/Tax", "Bank statements"],
+    "approval_days": null,
+    "approval_days_note": "Subject to agency approval",
+    "links": [
+      "https://www.ambank.com.my/loans-financing/business"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]
+EOF
+
+echo "✅ data/banks/ambank_full.json 已创建（AmBank + AmBank Islamic 全产品主档）。"
