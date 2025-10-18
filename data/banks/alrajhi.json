@@ -1,0 +1,278 @@
+[
+  {
+    "product_id": "ALRAJHI-PERS-PersonalFinancing-i",
+    "name": "Personal Financing-i",
+    "bank": "Al Rajhi Bank Malaysia",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 10000,
+    "amount_max": 250000,
+    "rate_display": "5.27%–14.83% p.a. (income-tiered rates)",
+    "rate_tier_1": "5.77%–14.83% p.a. (RM5K-14.9K/month)",
+    "rate_tier_2": "5.61%–13.83% p.a. (RM15K-29.9K/month)",
+    "rate_tier_3": "5.27%–12.70% p.a. (RM30K+/month)",
+    "reference_rates": "SBR 2.75% (effective July 2025), BFR 6.9%",
+    "shariah_contract": "Commodity Murabahah",
+    "tenure_min_months": 12,
+    "tenure_max_months": 96,
+    "income_min": 60000,
+    "age_min": 21,
+    "age_max": 60,
+    "citizenship": "MY",
+    "special_conditions": [
+      "Fixed-income earners only",
+      "Rate depends on credit rating and risk profile"
+    ],
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Latest 3 months payslips/bank statements", "EPF/BE forms"],
+    "approval_days": "2 working days",
+    "approval_days_note": "Funds disbursed within 24 hours of approval",
+    "special_features": [
+      "Up to 9x monthly salary (max RM250K)",
+      "Income-tiered pricing (higher income = lower rate)",
+      "No guarantor required",
+      "Stamp duty: 0.5% (deducted upfront)",
+      "Typical approval: 2 business days",
+      "Fast disbursement: 24 hours after approval",
+      "Use cases: debt consolidation, home improvement, medical, education, holidays",
+      "RM500 cash gift promotion (July 2-31, 2025)"
+    ],
+    "links": [
+      "https://www.alrajhibank.com.my/personal/financing/personal-financing-i",
+      "https://ringgitplus.com/en/personal-loan/Al-Rajhi-Personal-Financing-i.html",
+      "https://www.imoney.my/personal-loan/al-rajhi-bank/personal-financing-i"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "ALRAJHI-PERS-Cashline-i",
+    "name": "Cashline-i",
+    "bank": "Al Rajhi Bank Malaysia",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "From SBR + 6.50%",
+    "reference_rates": "SBR 2.75% (effective July 2025), BFR 6.9%",
+    "shariah_contract": "Tawarruq",
+    "tenure_min_months": 12,
+    "tenure_max_months": 96,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 60,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income proof", "Bank statements"],
+    "approval_days": "3–5 working days",
+    "approval_days_note": "Revolving credit facility",
+    "special_features": [
+      "Revolving credit line",
+      "Flexible working capital",
+      "Tenure up to 8 years"
+    ],
+    "links": [
+      "https://www.alrajhibank.com.my/personal/financing/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "ALRAJHI-HOME-HomeFinancing-i",
+    "name": "Home Financing-i",
+    "bank": "Al Rajhi Bank Malaysia",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": 100000,
+    "amount_max": null,
+    "rate_display": "Variable rate based on IBR; ceiling rate 10% p.a.",
+    "reference_rates": "SBR 2.75% (effective July 2025), IBR varies; ceiling 10%",
+    "indicative_rate": "4.17% p.a. (RM350K, 30 years, no lock-in)",
+    "shariah_contract": "Commodity Murabahah",
+    "financing_ratio": "90% (or 95% with MRTT)",
+    "tenure_min_months": 60,
+    "tenure_max_months": 300,
+    "income_min": 18000,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "special_conditions": [
+      "Fixed-income earners only",
+      "Completed properties only (RM50K+ value)"
+    ],
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Income proof", "S&P/Title", "Valuation report"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Subject to valuation and legal process",
+    "special_features": [
+      "70:30 payment ratio (30% principal, 70% profit)",
+      "Accelerates principal repayment vs conventional loans",
+      "Rate capped at 10% p.a. (protects from IBR volatility)",
+      "Up to 90% financing (95% with MRTT insurance)",
+      "Maximum tenure: 25 years",
+      "No lock-in period (Ibra' granted for early redemption)",
+      "No processing fee",
+      "Min property value: RM100K",
+      "Min monthly income: RM1,500 (one of lowest in Malaysia)"
+    ],
+    "links": [
+      "https://www.alrajhibank.com.my/personal/financing/home-financing-i",
+      "https://ringgitplus.com/en/home-loan/alrajhi-bank-Malaysia-Home-Financing-i.html",
+      "https://www.imoney.my/home-loan/al-rajhi-bank/al-rajhi-bank-home-financingi"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "ALRAJHI-HOME-StructuredHomeFinancing-i",
+    "name": "Structured Home Financing-i",
+    "bank": "Al Rajhi Bank Malaysia",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": 100000,
+    "amount_max": null,
+    "rate_display": "Variable rate based on IBR; ceiling rate 10% p.a.",
+    "reference_rates": "SBR 2.75% (effective July 2025), IBR varies; ceiling 10%",
+    "shariah_contract": "Commodity Murabahah",
+    "financing_ratio": "90% (or 95% with MRTT)",
+    "tenure_min_months": 60,
+    "tenure_max_months": 300,
+    "income_min": 18000,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Income proof", "S&P/Title", "Valuation report"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Structured payment option",
+    "special_features": [
+      "Structured payment options",
+      "High margin of financing",
+      "Rate cap at 10% p.a.",
+      "No lock-in period"
+    ],
+    "links": [
+      "https://ringgitplus.com/en/home-loan/Al-Rajhi-Structured-Home-Financing-i.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "ALRAJHI-BUS-BusinessPremisesFinancing",
+    "name": "Business Premises Financing",
+    "bank": "Al Rajhi Bank Malaysia",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Rate not publicly disclosed (contact bank for quotation)",
+    "reference_rates": "SBR 2.75% (effective July 2025), BFR 6.9%",
+    "shariah_contract": "Commodity Murabahah",
+    "tenure_min_months": 60,
+    "tenure_max_months": 300,
+    "company_age_min_months": null,
+    "ownership_requirement": "Malaysian registered business",
+    "collateral_required": "Property being financed",
+    "docs_required": ["Business registration", "Financial statements", "Property documents", "Valuation report"],
+    "approval_days": "14–21 working days",
+    "approval_days_note": "For commercial property financing",
+    "special_features": [
+      "Islamic financing for commercial property purchase",
+      "Shariah-compliant structure",
+      "Contact bank for specific terms"
+    ],
+    "links": [
+      "https://www.alrajhibank.com.my/page/personal/financing/property-financing/business-premises-financing"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "ALRAJHI-BUS-WorkingCapitalFinance",
+    "name": "Working Capital Finance",
+    "bank": "Al Rajhi Bank Malaysia",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Rate not publicly disclosed (customized based on credit assessment)",
+    "reference_rates": "SBR 2.75% (effective July 2025), BFR 6.9%",
+    "shariah_contract": "Tawarruq/Murabahah",
+    "tenure_min_months": 12,
+    "tenure_max_months": 60,
+    "company_age_min_months": null,
+    "ownership_requirement": "Malaysian registered business",
+    "collateral_required": "As required",
+    "docs_required": ["SSM registration", "Bank statements", "Financial statements", "Business plan"],
+    "approval_days": "14–21 working days",
+    "approval_days_note": "For operational needs",
+    "special_features": [
+      "Shariah-compliant working capital",
+      "Trade finance solutions (LC, LG, Documentary Collection)",
+      "Foreign Exchange services",
+      "Customized to business needs"
+    ],
+    "links": [
+      "https://www.alrajhibank.com.my/business/finance/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "ALRAJHI-BUS-TradeFinancing-i",
+    "name": "Trade Financing-i (Import/Export/Merchant Trade)",
+    "bank": "Al Rajhi Bank Malaysia",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Rate not publicly disclosed (customized based on transaction)",
+    "reference_rates": "SBR 2.75% (effective July 2025), BFR 6.9%",
+    "shariah_contract": "Wakalah/Murabahah",
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "company_age_min_months": null,
+    "ownership_requirement": "Malaysian registered business",
+    "collateral_required": "Documentary credit supporting assets",
+    "docs_required": ["SSM registration", "Trade documents (LC/BA)", "Bank statements"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Varies by facility type",
+    "special_features": [
+      "Letter of Credit (LC)",
+      "Letter of Guarantee (LG)",
+      "Documentary Collection",
+      "Trade Commodity financing",
+      "Foreign Exchange services",
+      "Import/export financing",
+      "Merchant trade support"
+    ],
+    "links": [
+      "https://www.alrajhibank.com.my/business/financing/trade-financing/trade-commodity"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "ALRAJHI-BUS-SyndicationFinancing",
+    "name": "Syndication/Club Deal Financing",
+    "bank": "Al Rajhi Bank Malaysia",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Rate not publicly disclosed (negotiated based on deal size)",
+    "reference_rates": "SBR 2.75% (effective July 2025), BFR 6.9%",
+    "shariah_contract": "Tawarruq/Murabahah",
+    "tenure_min_months": 12,
+    "tenure_max_months": 180,
+    "company_age_min_months": null,
+    "ownership_requirement": "Malaysian/Regional business",
+    "collateral_required": "As required by deal structure",
+    "docs_required": ["Comprehensive financial documents", "Project details", "Credit assessment reports"],
+    "approval_days": "30–60 working days",
+    "approval_days_note": "Large-value financing requiring extensive due diligence",
+    "special_features": [
+      "For large-value financing exceeding Single Customer Limit",
+      "Collaboration with Al Rajhi Bank KSA and partner FIs",
+      "Focus on Malaysia and selective regional opportunities",
+      "Shariah-compliant syndication structure"
+    ],
+    "links": [
+      "https://www.alrajhibank.com.my/page/business/finance/syndication-financing"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]
