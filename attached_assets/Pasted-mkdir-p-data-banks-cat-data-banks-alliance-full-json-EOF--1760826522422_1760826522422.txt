@@ -1,0 +1,137 @@
+mkdir -p data/banks
+
+cat > data/banks/alliance_full.json <<'EOF'
+[
+  // =========================
+  // PERSONAL LOANS / PERSONAL FINANCING-i
+  // =========================
+  {
+    "product_id": "ALLIANCE-CashFirst",
+    "name": "Alliance CashFirst Personal Loan",
+    "bank": "Alliance Bank Malaysia",
+    "category": "personal",
+    "shariah": "no",
+    "amount_min": 5000,
+    "amount_max": 200000,
+    "rate_display": "From 4.99% p.a.",
+    "tenure_min_months": 12,
+    "tenure_max_months": 84,
+    "income_min": 3000,
+    "age_min": 21,
+    "age_max": 60,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Latest 3-6 months payslips", "Latest bank statements"],
+    "approval_days": "2-3 working days",
+    "approval_days_note": "Third-party data指出最快 24 小时内“, 认为为快批产品” [oai_citation:0‡RinggitPlus](https://ringgitplus.com/en/personal-loan/Alliance-Bank-CashFirst-Personal-Loan.html?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.alliancebank.com.my/personal/financing/personal-loan-financing",
+      "https://www.alliancebank.com.my/digital/personal-banking/Apply-for-financing-or-credit-card"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "ALLIANCE-CashVantage-i",
+    "name": "Alliance CashVantage Personal Financing-i",
+    "bank": "Alliance Islamic Bank Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 5000,
+    "amount_max": 200000,
+    "rate_display": "From ~4.99% p.a.",
+    "tenure_min_months": 12,
+    "tenure_max_months": 84,
+    "income_min": 3000,
+    "age_min": 21,
+    "age_max": 60,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income proof", "Bank statements"],
+    "approval_days": "2-3 working days",
+    "approval_days_note": "同上快批产品；未在官方产品页明确，但比价站提供数据“10 分钟初审” [oai_citation:1‡comparehero.my](https://www.comparehero.my/personal-loan/partners/alliance?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.alliancebank.com.my/personal/financing/personal-loan-financing",
+      "https://www.alliancebank.com.my/alliance-islamic-bank-berhad"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // HOME LOANS / MORTGAGE & GREEN PROPERTY
+  // =========================
+  {
+    "product_id": "ALLIANCE-HomeFlexSave",
+    "name": "Alliance FlexSave Home Loan",
+    "bank": "Alliance Bank Malaysia",
+    "category": "home",
+    "shariah": "no",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY/Foreign",
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Income proof", "S&P/Title"],
+    "approval_days": null,
+    "approval_days_note": "官网说明“Up to 35 years or age 70 whichever earlier” [oai_citation:2‡Alliance Bank](https://www.alliancebank.com.my/Personal/Financing/personal-mortgage/alliance-basic-home-loan?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.alliancebank.com.my/personal/financing/personal-mortgage"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "ALLIANCE-GreenMortgage",
+    "name": "Alliance Green Residential Property Financing",
+    "bank": "Alliance Bank Malaysia",
+    "category": "home",
+    "shariah": "no",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Preferential rate for Green-certified properties",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY/Foreign",
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Green Certification (GBI/GreenRE)", "Income proof", "S&P/Title"],
+    "approval_days": null,
+    "approval_days_note": "专案产品；官网提示“preferential rate” [oai_citation:3‡Alliance Bank](https://www.alliancebank.com.my/personal/Financing/personal-mortgage?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.alliancebank.com.my/personal/financing/personal-mortgage"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // SME / BUSINESS FINANCING
+  // =========================
+  {
+    "product_id": "ALLIANCE-SME-BusinessFinancing",
+    "name": "Alliance Bank SME Business Financing",
+    "bank": "Alliance Bank Malaysia",
+    "category": "sme",
+    "shariah": "both",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "company_age_min_months": null,
+    "ownership_requirement": "Malaysian SME",
+    "collateral_required": null,
+    "docs_required": ["SSM/Company registration", "Bank statements", "Financials/Tax"],
+    "approval_days": null,
+    "approval_days_note": "SME入口说明“help start, expand or grow” [oai_citation:4‡Alliance Bank](https://www.alliancebank.com.my/business/SME/Overview?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.alliancebank.com.my/business/SME/Overview"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]
+EOF
+
+echo "✅ data/banks/alliance_full.json 已创建（Alliance Bank & Alliance Islamic 全产品主档）。"
