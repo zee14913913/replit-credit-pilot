@@ -1,0 +1,190 @@
+mkdir -p data/banks
+
+cat > data/banks/rhb_full.json <<'EOF'
+[
+  {
+    "product_id": "RHB-PERS-PF-i",
+    "name": "RHB Personal Financing-i (Private Sector)",
+    "bank": "RHB Bank",
+    "category": "personal",
+    "shariah": "no",
+    "amount_min": null,
+    "amount_max": 150000,
+    "rate_display": "Starting from approx 13.75% p.a. (flat equiv) / variable from ~5.75% p.a.",
+    "tenure_min_months": 12,
+    "tenure_max_months": 84,
+    "income_min": 3000,
+    "age_min": 21,
+    "age_max": 55,
+    "citizenship": "MY",
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["NRIC", "Latest salary slip", "Bank statement 1-month", "EPF/BE if applicable"],
+    "approval_days": "1–2 working days",
+    "approval_days_note": "Instant approval claim; exact SLA not published",
+    "links": [
+      "https://www.rhbgroup.com/personal/loans/personal-financing/index.html",
+      "https://www.imoney.my/personal-loan/rhb/easy-pinjaman-ekspres"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "RHB-PERS-PF-i-CIVIL",
+    "name": "RHB Personal Financing-i (Civil/Govt Sector)",
+    "bank": "RHB Bank",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": 300000,
+    "rate_display": "From ~5.35% p.a. variable / flat ~2.82% p.a.",
+    "tenure_min_months": 12,
+    "tenure_max_months": 120,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["NRIC", "Salary deduction proof", "3–6 months bank statement"],
+    "approval_days": "1–3 working days",
+    "approval_days_note": "Fast approval claim; no official SLA",
+    "links": [
+      "https://www.rhbgroup.com/islamic/financing/personal-financing/personal-financing-i-for-civil-sector/index.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "RHB-PERS-DEBTCONSOL",
+    "name": "RHB Personal Financing-i for Debt Consolidation",
+    "bank": "RHB Bank",
+    "category": "debt_consolidation",
+    "shariah": "no",
+    "amount_min": null,
+    "amount_max": 150000,
+    "rate_display": "From ~13.75% p.a. (flat equiv) / variable ~5.6% p.a.",
+    "tenure_min_months": 12,
+    "tenure_max_months": 84,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 55,
+    "citizenship": "MY",
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["NRIC", "Latest salary slip", "Bank statements"],
+    "approval_days": null,
+    "approval_days_note": "Not publicly specified",
+    "links": [
+      "https://www.rhbgroup.com/personal/loans/personal-financing/index.html",
+      "https://www.rhbgroup.com/merge/article/ease-your-credit-crisis-the-easy-way/index.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "RHB-HOME-MY1FIRST",
+    "name": "RHB My1 First Home Loan",
+    "bank": "RHB Bank",
+    "category": "home",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Variable from ~4.x% p.a.",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "age_min": 18,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["NRIC", "S&P/Booking Receipt", "3–6 months Payslips", "Bank Statements"],
+    "approval_days": null,
+    "approval_days_note": "Not published",
+    "links": [
+      "https://www.rhbgroup.com/personal/home-loan/firsthome-mortgage/index.html",
+      "https://www.rhbgroup.com/islamic/financing/property-financing/equity-my-first-home-financing-i/index.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "RHB-HOME-FULLFLEXI",
+    "name": "RHB My1 Full Flexi Home Loan",
+    "bank": "RHB Bank",
+    "category": "home",
+    "rate_display": "Margin up to 90% + 5% (legal/valuation)",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "age_min": 18,
+    "age_max": 70,
+    "docs_required": ["NRIC", "Property title", "Bank statements"],
+    "approval_days": null,
+    "links": [
+      "https://www.rhbgroup.com/personal/home-loan/my1-full-flexi-home-loan/index.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "RHB-HOME-ISLAMIC",
+    "name": "RHB Islamic Home Financing-i / Equity Home Financing-i",
+    "bank": "RHB Bank",
+    "category": "home",
+    "shariah": "yes",
+    "rate_display": "From ~3.60% p.a.",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "age_min": 18,
+    "age_max": 70,
+    "docs_required": ["NRIC", "Income docs", "Bank statement", "Title deed"],
+    "approval_days": null,
+    "links": [
+      "https://www.imoney.my/home-loan/rhb-islamic-bank/home-financing-i"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "RHB-ASB-FIN",
+    "name": "RHB ASB Financing / Financing-i",
+    "bank": "RHB Bank",
+    "category": "investment",
+    "rate_display": "From ~4.85% p.a.",
+    "tenure_max_months": 480,
+    "citizenship": "MY Bumiputera",
+    "docs_required": ["NRIC", "Application form", "ASNB proof"],
+    "approval_days": "1–3 working days",
+    "links": [
+      "https://www.rhbgroup.com/personal/loans/asnb-financing/index.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "RHB-AUTO-HP-CONV",
+    "name": "RHB Hire Purchase (Conventional Vehicle Financing)",
+    "bank": "RHB Bank",
+    "category": "auto",
+    "rate_display": "Interest ~3.06%–3.18% p.a. (new cars)",
+    "tenure_max_months": 108,
+    "income_min": 2000,
+    "age_min": 18,
+    "age_max": 55,
+    "docs_required": ["NRIC", "Driving licence", "Income proof", "Bank statements"],
+    "approval_days": null,
+    "links": [
+      "https://www.rhbgroup.com/personal/loans/auto-loan/index.html",
+      "https://loanstreet.com.my/car-loan/rhb/hire-purchase-i-fixed-rate"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "RHB-AUTO-HP-I",
+    "name": "RHB Vehicle Financing-i (Islamic Hire Purchase)",
+    "bank": "RHB Bank",
+    "category": "auto",
+    "shariah": "yes",
+    "rate_display": "Profit ~2.8% p.a. (new) / ~2.27% p.a. (EV campaign)",
+    "tenure_max_months": 108,
+    "age_min": 18,
+    "docs_required": ["NRIC", "Income proof", "Bank statements", "Vehicle quotation"],
+    "approval_days": null,
+    "links": [
+      "https://www.rhbgroup.com/islamic/financing/auto-financing/index.html",
+      "https://www.rhbgroup.com/files/islamic/financing/auto-loan/PDS_VFi_VR.pdf"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]
+EOF
+
+echo "✅ data/banks/rhb_full.json 已创建（RHB Bank 完整贷款产品）。"
