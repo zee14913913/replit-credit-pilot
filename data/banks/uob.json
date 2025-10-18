@@ -1,0 +1,256 @@
+[
+  {
+    "product_id": "UOB-PERS-PL",
+    "name": "UOB Personal Loan",
+    "bank": "UOB Malaysia",
+    "category": "personal",
+    "amount_min": 5000,
+    "amount_max": 150000,
+    "rate_display": "3.99%–11.99% p.a. (income-based: RM7K+ gets 9.99%, <RM4K gets 11.99%)",
+    "tenure_min_months": 12,
+    "tenure_max_months": 60,
+    "income_min": 36000,
+    "age_min": 21,
+    "age_max": 55,
+    "citizenship": "MY",
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["NRIC", "Income proof (payslips/BE/EPF)", "Bank statements (if requested)"],
+    "approval_days": "1–7 working days",
+    "approval_days_note": "Up to 7 business days with complete documentation",
+    "special_features": [
+      "No processing fee, no guarantor, no collateral",
+      "Up to RM400 cashback for new applicants",
+      "Existing UOB cardholders get preferential rates (up to 2% lower)",
+      "Priority banking members: up to 15× monthly income (vs 10× standard)",
+      "Early settlement fee: 3% of total or RM300, whichever higher",
+      "Min credit score: 650 (CTOS/CCRIS); 720+ for lowest rates"
+    ],
+    "links": [
+      "https://www.uob.com.my/personal/borrow/personal-loan.page",
+      "https://www.uob.com.my/personal/borrow/index.page",
+      "https://www.uob.com.my/web-resources/personal/pdf/personal/borrow/personal-loan/personal-loan-pds.pdf"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "UOB-CARD-BAL-TRANSFER",
+    "name": "UOB Balance Transfer Instalment",
+    "bank": "UOB Malaysia",
+    "category": "debt_consolidation",
+    "amount_min": 1000,
+    "amount_max": null,
+    "amount_max_note": "Up to 80% of credit limit (bank discretion)",
+    "rate_display": "New cardholders: 6m 0% / 12m 1% upfront; Existing: 6m 3% / 12m 4% upfront; Standard 3.80% p.a. EIR",
+    "tenure_min_months": 6,
+    "tenure_max_months": 60,
+    "docs_required": ["UOB credit card", "BT application via UOB"],
+    "approval_days": "1–3 working days",
+    "approval_days_note": "PDS states min transfer RM1,000; max up to 80% of credit limit. SLA not stated.",
+    "special_features": [
+      "No early termination penalty",
+      "One-time upfront fee structure (not monthly interest)",
+      "After promo period: 18% p.a. standard credit card rate applies",
+      "Min monthly payment: 5% of outstanding or RM50"
+    ],
+    "links": [
+      "https://www.uob.com.my/personal/cards/credit-card-features/balance-transfer.page",
+      "https://www.uob.com.my/web-resources/personal/pdf/personal/cards/credit-card-features/balance-transfer/balance-transfer-eng.pdf",
+      "https://www.uob.com.my/assets/web-resources/personal/pdf/cards/credit-card-features/balance-transfer/bti-eir-pds.pdf"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "UOB-CARD-EASI-PAY",
+    "name": "UOB Easi-Payment / 0% IPP (Transaction Conversion)",
+    "bank": "UOB Malaysia",
+    "category": "debt_consolidation",
+    "rate_display": "Flat 3.99% p.a. options; 0% IPP by merchant/tenure; up to 60–68 months",
+    "tenure_min_months": 12,
+    "tenure_max_months": 60,
+    "docs_required": ["UOB credit card", "Conversion via UOB TMRW"],
+    "approval_days": "3–8 calendar days",
+    "approval_days_note": "Bank FAQ: conversion on non-UOB terminals processed in ~3–8 days; varies by merchant/batch.",
+    "links": [
+      "https://www.uob.com.my/personal/cards/credit-card-features/easi-payment.page",
+      "https://www.uob.com.my/personal/cards/credit-card-features/instalment-payment.page"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "UOB-HOME-IHL",
+    "name": "UOB Intelligent Home Loan (iHL)",
+    "bank": "UOB Malaysia",
+    "category": "home",
+    "rate_display": "SBR + 1.61% ≈ 4.36% p.a. (indicative: SBR 2.75%)",
+    "reference_rates": "SBR 2.75% (effective July 11, 2025; note: UOB website may show 3.00%)",
+    "lock_in_period": "3 years",
+    "early_settlement_penalty": "2% of outstanding balance",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "age_min": null,
+    "age_max": 70,
+    "dsr_policy": "Bank internal",
+    "docs_required": ["NRIC", "Income & liabilities docs", "S&P/Title", "Valuation (as required)"],
+    "approval_days": "5–10 working days",
+    "approval_days_note": "Pre-approval may be faster; legal/valuation steps extend timeline. Official SLA not disclosed.",
+    "special_features": [
+      "Floating rate (SBR-linked)",
+      "Refinancing allowed",
+      "Tenure up to 35 years",
+      "Max financing up to 95% (with MRTA)"
+    ],
+    "links": [
+      "https://www.uob.com.my/personal/borrow/property/i-home-loan.page",
+      "https://www.uob.com.my/online-rates/lending-and-financing-rates.page"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "UOB-HOME-FLEXI",
+    "name": "UOB Flexi Mortgage (Offset-Linked)",
+    "bank": "UOB Malaysia",
+    "category": "home",
+    "rate_display": "Offset-linked floating; tenure up to 35 years / age 70",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "docs_required": ["NRIC", "Income docs", "S&P/Title"],
+    "approval_days": "5–10 working days",
+    "approval_days_note": "Bank highlights flexibility; SLA not published.",
+    "links": [
+      "https://www.uob.com.my/personal/borrow/property/flexi-mortgage.page",
+      "https://www.uob.com.my/online-rates/lending-and-financing-rates.page"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "UOB-HOME-REFI",
+    "name": "UOB Home Refinancing (Conventional)",
+    "bank": "UOB Malaysia",
+    "category": "refinance",
+    "rate_display": "Refinance existing loans to UOB; package-based pricing",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "docs_required": ["NRIC", "Existing loan statement", "Valuation", "Income docs"],
+    "approval_days": "5–10 working days",
+    "approval_days_note": "Dependent on legal & valuation; no fixed SLA online.",
+    "links": [
+      "https://www.uob.com.my/personal/borrow/property/i-home-loan.page"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "UOBI-HOME-PFi",
+    "name": "UOB Home Financing-i",
+    "bank": "UOB Malaysia (Islamic)",
+    "category": "home",
+    "shariah": "yes",
+    "rate_display": "SBRI + 1.61% ≈ 4.36% p.a. (indicative: SBRI 2.75%)",
+    "reference_rates": "SBRI 2.75% (effective July 11, 2025)",
+    "financing_ratio": "95% (inclusive of MRTT)",
+    "shariah_contract": "Tawarruq (Murabahah)",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "age_max": 70,
+    "docs_required": ["NRIC", "Income docs", "S&P/Title"],
+    "approval_days": "5–10 working days",
+    "approval_days_note": "No SLA published; follows Islamic facility process.",
+    "special_features": [
+      "Contracted Profit Rate (ceiling rate protection)",
+      "Effective Profit Rate (variable, SBRI-based)",
+      "Tenure up to 35 years or age 70",
+      "Open prepayment allowed",
+      "100% stamp duty discount for refinancing from conventional to Islamic"
+    ],
+    "links": [
+      "https://www.uob.com.my/islamic/personal/financing-home-financing-i.page",
+      "https://www.uob.com.my/online-rates/lending-and-financing-rates.page"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "UOB-AUTO-HP",
+    "name": "UOB Auto Loan (Hire Purchase)",
+    "bank": "UOB Malaysia",
+    "category": "auto",
+    "rate_display": "Rate not publicly disclosed (contact bank for quote; market range 2.4%–3.5% p.a.)",
+    "tenure_min_months": 12,
+    "tenure_max_months": 108,
+    "income_min": 36000,
+    "age_min": 21,
+    "age_max": 55,
+    "docs_required": ["NRIC/Passport", "Driving Licence", "Income proof", "Bank statements", "Vehicle quotation"],
+    "approval_days": "1–3 working days",
+    "approval_days_note": "Official page not found; third-party reference indicates offering and income requirement.",
+    "special_features": [
+      "U-Drive green financing for electric vehicles",
+      "Exclusive promotions for UOB Privilege Banking customers"
+    ],
+    "links": [
+      "https://www.motorist.my/car-loan-calculator/united-overseas-bank-malaysia-berhad"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "UOB-SME-BIZMONEY",
+    "name": "UOB BizMoney (Unsecured SME Loan)",
+    "bank": "UOB Malaysia",
+    "category": "sme",
+    "amount_min": 100000,
+    "amount_max": 1000000,
+    "rate_display": "From 0.38% per month (≈4.56% p.a. flat rate)",
+    "tenure_min_months": 18,
+    "tenure_max_months": 60,
+    "company_age_min_months": 36,
+    "ownership_requirement": "Malaysian SME",
+    "collateral_required": false,
+    "docs_required": ["SSM", "Bank statements (6 months)", "Financials/Tax", "Directors PG (as applicable)"],
+    "approval_days": "5 working days",
+    "approval_days_note": "Site markets fast response; exact SLA not published. Disbursement: 3-5 business days after document completion.",
+    "special_features": [
+      "Unsecured loan (no collateral)",
+      "Fixed interest rate throughout tenure",
+      "No processing fee or legal fees",
+      "Personal guarantee from shareholders/directors required",
+      "Min 3 years operating history"
+    ],
+    "links": [
+      "https://www.uob.com.my/business/finance/uob-bizmoney.page",
+      "https://www.uob.com.my/business/finance/uob-bizsolution.page"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "UOB-SME-BIZPROPERTY",
+    "name": "UOB BizProperty / Commercial Property Financing",
+    "bank": "UOB Malaysia",
+    "category": "sme",
+    "rate_display": "Property-backed; refinancing options; MoF as per policy",
+    "tenure_min_months": 60,
+    "tenure_max_months": 300,
+    "collateral_required": "Commercial/Industrial property",
+    "docs_required": ["SSM", "Property docs & Valuation", "Financials/Tax", "Bank statements"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Dependent on valuation/legal process.",
+    "links": [
+      "https://www.uob.com.my/business/finance/index.page",
+      "https://www.uob.com.my/business/sme-hub/insights/refinancing-property-loan.page"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "UOB-SME-SJPP/SCHEMES",
+    "name": "UOB Government/Agency Schemes (e.g., SJPP)",
+    "bank": "UOB Malaysia",
+    "category": "sme",
+    "rate_display": "As per scheme terms; guarantees up to ~80% (SJPP reference)",
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "docs_required": ["Scheme eligibility docs", "SSM", "Financials/Tax", "Bank statements"],
+    "approval_days": "7–20 working days",
+    "approval_days_note": "Subject to agency approval and collateral/legal.",
+    "links": [
+      "https://www.uob.com.my/business/sme-hub/insights/get-your-sme-loan-approved.page"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]
