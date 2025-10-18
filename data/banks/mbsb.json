@@ -1,0 +1,337 @@
+[
+  {
+    "product_id": "MBSB-PERS-Mumtaz-i",
+    "name": "MBSB Mumtaz-i (Government & GLC Employees)",
+    "bank": "MBSB Bank Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 5000,
+    "amount_max": 250000,
+    "rate_display": "SBR + 3.05% = 5.80% p.a. (SBR 2.75%) / Flat rate: 3.20% p.a. (3-year tenure)",
+    "reference_rates": "SBR 2.75%, ceiling 15% p.a. (effective July 17, 2025)",
+    "shariah_contract": "Tawarruq",
+    "tenure_min_months": 24,
+    "tenure_max_months": 120,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 60,
+    "citizenship": "MY",
+    "special_conditions": [
+      "Permanent government/GLC employees only",
+      "Minimum 12 months service required"
+    ],
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Latest 3-6 months salary slip/BE form/EPF", "Bank statements (3-6 months)", "Employer confirmation letter"],
+    "approval_days": "3-4 working days",
+    "approval_days_note": "Fast approval for government sector",
+    "special_features": [
+      "No charges on early settlement",
+      "Unsecured (no guarantor required)",
+      "Repayment: Salary deduction (Biro Angkasa/AG) or manual payment",
+      "Ibra' (rebate) provided on early settlement",
+      "Waqqalah fee: RM34"
+    ],
+    "links": [
+      "https://www.mbsbbank.com/consumer-banking/financing/personal-financing-i",
+      "https://ringgitplus.com/en/personal-loan/MBSB-Mumtaz-i.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MBSB-PERS-Afdhal-i",
+    "name": "MBSB Afdhal-i (Contract Government/Premium Customers)",
+    "bank": "MBSB Bank Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 5000,
+    "amount_max": 400000,
+    "rate_display": "Promotional: SBR + 2.60% = 5.35% p.a. / Standard: from 4.5% p.a. (SBR 2.75%)",
+    "reference_rates": "SBR 2.75%, ceiling 15% p.a. (effective July 17, 2025)",
+    "shariah_contract": "Tawarruq",
+    "tenure_min_months": 24,
+    "tenure_max_months": 120,
+    "income_min": 180000,
+    "age_min": 21,
+    "age_max": 60,
+    "citizenship": "MY",
+    "special_conditions": [
+      "Contract government employees",
+      "Premium high-income individuals (min RM15,000/month)",
+      "Selected private sector employees"
+    ],
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Latest 3-6 months salary slip/BE form/EPF", "Bank statements (3-6 months)", "Contract letter (if applicable)"],
+    "approval_days": "3-4 working days",
+    "approval_days_note": "Fast approval for qualified applicants",
+    "special_features": [
+      "No guarantor required",
+      "Processing fee: 1-3% (waived for some campaigns)",
+      "Waqqalah fee: RM34",
+      "Ibra' (rebate) on early settlement"
+    ],
+    "links": [
+      "https://www.mbsbbank.com/consumer-banking/financing/personal-financing-i",
+      "https://www.imoney.my/personal-loan/mbsb/afdhal-i",
+      "https://ringgitplus.com/en/personal-loan/MBSB-Afdhal-i.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MBSB-PERS-PrivateSector-i",
+    "name": "MBSB Private Sector-i (Swasta)",
+    "bank": "MBSB Bank Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 5000,
+    "amount_max": 400000,
+    "rate_display": "SBR + 3.05% = 5.80% p.a. / Promotional: from 2.82% p.a. (SBR 2.75%)",
+    "reference_rates": "SBR 2.75%, ceiling 15% p.a. (effective July 17, 2025)",
+    "shariah_contract": "Tawarruq",
+    "tenure_min_months": 24,
+    "tenure_max_months": 120,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 60,
+    "citizenship": "MY",
+    "special_conditions": [
+      "Permanent employees of listed companies, MNCs, professionals"
+    ],
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Latest 3-6 months salary slip/BE form/EPF", "Bank statements (3-6 months)"],
+    "approval_days": "1 working day",
+    "approval_days_note": "Fast approval for some campaigns",
+    "special_features": [
+      "Promotional campaigns with rates from 2.82% p.a.",
+      "No guarantor required",
+      "Processing fee: 1-3% (waived for some campaigns)",
+      "Waqqalah fee: RM34",
+      "Max financing: RM300K-400K depending on profile"
+    ],
+    "links": [
+      "https://www.mbsbbank.com/consumer-banking/financing/personal-financing-i",
+      "https://www.imoney.my/personal-loan/mbsb/mbsb-private-sector-i",
+      "https://ringgitplus.com/en/personal-loan/MBSB-Private-Sector-i.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MBSB-HOME-PropertyFinancing-i",
+    "name": "Property Financing-i",
+    "bank": "MBSB Bank Berhad",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "SBR + 1.45% ≈ 4.20%–4.45% p.a. (SBR 2.75%)",
+    "reference_rates": "SBR 2.75%, BFR updated (effective July 17, 2025)",
+    "financing_ratio": "90% (individual) / 60% (non-individual) + 5% incidental",
+    "shariah_contract": "Musharakah Mutanaqisah/Tawarruq",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "income_min_first_time": 48000,
+    "age_min": 18,
+    "age_max": 75,
+    "citizenship": "MY",
+    "special_conditions": [
+      "Customers above 55 must apply with joint applicants (spouse/blood relatives: parents, children, siblings)",
+      "First-time buyers: Min monthly income RM4,000 (with joint applicants)",
+      "No existing housing facility with other financial institutions (for first-time buyers)"
+    ],
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "BE/EA Form", "3 months savings/current account statements", "S&P", "Valuation if required"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Subject to valuation and legal process",
+    "special_features": [
+      "Indicative rate: 4.45% p.a. (RM350K, 30 years, no lock-in)",
+      "Lock-in period: 5 years (one of the longest in market)",
+      "Processing fees waived for residential properties",
+      "Individual: Up to 90% of Purchase Price or OMV",
+      "Non-individual: Up to 60% of Purchase Price or OMV",
+      "Additional 5% incidental financing (MRTT, legal fees)",
+      "Tenure up to 35 years or age 75",
+      "Variable rate linked to SBR (OPR adjustments)",
+      "Repayment: Branches, electronic, standing instruction"
+    ],
+    "links": [
+      "https://www.mbsbbank.com/consumer-banking/financing/property-financing-i",
+      "https://www.imoney.my/home-loan/mbsb/property-financing-i"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MBSB-EDU-EducationFinancing-i",
+    "name": "Education Financing-i",
+    "bank": "MBSB Bank Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Variable rate based on SBR (SBR 2.75%); ceiling rate 15% p.a.",
+    "reference_rates": "SBR 2.75%, ceiling 15% p.a. (effective July 17, 2025)",
+    "financing_ratio": "90% of coursework fees + 5% for incidental expenses",
+    "shariah_contract": "Tawarruq",
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "income_min": null,
+    "age_min_non_working": 18,
+    "age_max_non_working": 30,
+    "age_min_working": 18,
+    "age_max_working": 50,
+    "age_min_guarantor": 21,
+    "age_max_guarantor": 55,
+    "citizenship": "MY",
+    "special_conditions": [
+      "Non-working students: 18-30 years old",
+      "Working students: 18-50 years old (employed or business owner)",
+      "Guarantor/Joint applicant: 21-55 years old"
+    ],
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Acceptance letter/tuition invoice", "Bank statements (3-6 months)", "Product Disclosure Sheet", "Application Form"],
+    "approval_days": "7–10 working days",
+    "approval_days_note": "Subject to institution verification",
+    "special_features": [
+      "All paneled, non-paneled, and overseas education institutions",
+      "Up to 90% of coursework program fees",
+      "Additional 5% for incidental expenses",
+      "Variable rate - monthly rest basis",
+      "Maximum rate protection: Capped at 15% p.a.",
+      "7 days prior notice for rate changes",
+      "Working students: Can apply with or without joint applicants"
+    ],
+    "links": [
+      "https://www.mbsbbank.com/consumer-banking/financing/education-financing-i"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MBSB-SME-CorporateFinancing-i",
+    "name": "Corporate / SME Financing-i (Term, Revolving, Cashline)",
+    "bank": "MBSB Bank Berhad",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "BFR + spread (rate not publicly disclosed; linked to SBR 2.75%)",
+    "reference_rates": "SBR 2.75% (effective July 17, 2025)",
+    "shariah_contract": "Tawarruq/Murabahah",
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "company_age_min_months": null,
+    "ownership_requirement": "Malaysian registered business",
+    "collateral_required": "Varies by facility type",
+    "docs_required": ["Company registration", "Bank statements", "Financials/Tax", "Collateral/Guarantee (if any)"],
+    "approval_days": "14–21 working days",
+    "approval_days_note": "Varies by facility type and due diligence",
+    "special_features": [
+      "Term Financing-i (capital expenditure)",
+      "Revolving Credit-i (working capital)",
+      "Cashline-i (flexible credit line)",
+      "Full-fledged Islamic bank",
+      "Shariah-compliant products only"
+    ],
+    "links": [
+      "https://www.mbsbbank.com/business-banking/financing/corporate-financing"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MBSB-SME-M-GGS",
+    "name": "M-Government Guarantee Scheme (M-GGS)",
+    "bank": "MBSB Bank Berhad",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": 20000000,
+    "rate_display": "BFR + spread (rate not publicly disclosed; linked to SBR 2.75%)",
+    "reference_rates": "SBR 2.75% (effective July 17, 2025)",
+    "guarantee_fee": "0.75%",
+    "guarantee_fee_note": "0.75% of guarantee coverage amount",
+    "national_allocation": "RM30 billion",
+    "shariah_contract": "Tawarruq",
+    "tenure_min_months": 12,
+    "tenure_max_months": 120,
+    "company_age_min_months": null,
+    "ownership_requirement": "SMEs & MSCs with annual revenue ≤ RM500 million; majority Malaysian ownership",
+    "collateral_required": "Reduced requirements due to SJPP guarantee",
+    "docs_required": ["SSM/Company registration", "Eligibility for guarantee", "Financials/Tax", "Bank statements"],
+    "approval_days": "14–21 working days",
+    "approval_days_note": "Simplified process with SJPP guarantee",
+    "special_features": [
+      "Partnership with Syarikat Jaminan Pembiayaan Perniagaan Berhad (SJPP)",
+      "Maximum financing: Up to RM20 million per company",
+      "Tenure: Up to 10 years",
+      "Target: SMEs & Mid-Sized Companies (MSCs)",
+      "Annual revenue: ≤ RM500 million",
+      "Facilities: Term Financing-i, Cashline-i, Revolving Credit-i, Trade, Bank Guarantee-i, Contract Financing-i",
+      "Guarantee fee: 0.75% of coverage amount",
+      "National allocation: RM30 billion"
+    ],
+    "links": [
+      "https://www.mbsbbank.com/business-banking/financing/mggs"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MBSB-BUS-EquipmentFinancing-i",
+    "name": "Equipment / Vehicle Financing-i",
+    "bank": "MBSB Bank Berhad",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "BFR + spread (rate not publicly disclosed; linked to SBR 2.75%)",
+    "reference_rates": "SBR 2.75% (effective July 17, 2025)",
+    "shariah_contract": "Ijarah/Murabahah",
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "company_age_min_months": null,
+    "ownership_requirement": "Malaysian registered business",
+    "collateral_required": "Financed asset (machinery/vehicle)",
+    "docs_required": ["Company registration", "Vehicle/Machinery quotation", "Bank statements", "Financials/Tax"],
+    "approval_days": "10–14 working days",
+    "approval_days_note": "For equipment and contract financing",
+    "special_features": [
+      "Equipment Financing-i (AiTAB)",
+      "Contract Financing",
+      "Financed asset serves as collateral",
+      "Shariah-compliant lease or purchase structure"
+    ],
+    "links": [
+      "https://www.mbsbbank.com/business-banking/financing/equipment-financing",
+      "https://www.mbsbbank.com/business-banking/financing/contract-financing"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MBSB-BUS-TradeFinancing-i",
+    "name": "Trade Financing-i (Letter of Credit, Bills for Collection, Bank Guarantee)",
+    "bank": "MBSB Bank Berhad",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Facility-specific rates (LC, Bills, Bank Guarantee; not publicly disclosed)",
+    "shariah_contract": "Wakalah/Murabahah/Tawarruq",
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "company_age_min_months": null,
+    "ownership_requirement": "Malaysian registered import/export business",
+    "collateral_required": "Documentary credit supporting assets",
+    "docs_required": ["Exporter/Importer licence", "Shipping/Trade docs", "Bank statements", "Financials"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Varies by facility type",
+    "special_features": [
+      "Letter of Credit (Import/Export)",
+      "Bills for Collection",
+      "Bank Guarantee",
+      "Trust Receipt",
+      "Shariah-compliant trade finance",
+      "Support for international trade"
+    ],
+    "links": [
+      "https://www.mbsbbank.com/trade-financing-i"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]
