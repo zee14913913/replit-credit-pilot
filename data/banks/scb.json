@@ -1,0 +1,196 @@
+[
+  {
+    "product_id": "SCB-PERS-CashOne",
+    "name": "CashOne Personal Loan",
+    "bank": "Standard Chartered Bank Malaysia",
+    "category": "personal",
+    "shariah": "no",
+    "amount_min": 3000,
+    "amount_max_note": "Up to 4x monthly salary",
+    "rate_display": "From 0.583% per month (≈9% p.a. flat rate); up to 0.88% per month",
+    "tenure_min_months": 12,
+    "tenure_max_months": 60,
+    "income_min": 24000,
+    "age_min": 21,
+    "age_max": 65,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income documents", "Bank statements"],
+    "approval_days": "1–3 working days",
+    "approval_days_note": "Fast approval with complete documentation",
+    "special_features": [
+      "No collateral or guarantor required",
+      "No processing fee",
+      "No early settlement fee",
+      "100% loan disbursement",
+      "Can be linked to credit card limit",
+      "Up to 5 years free annual fees for Platinum Credit Card",
+      "Late payment: 1% per day on outstanding amount"
+    ],
+    "links": [
+      "https://forms.online.standardchartered.com/public_website/malaysia/OnlineSales/personal-loan-form-cas.html",
+      "https://www.sc.com/my/help-centre/personal-loan/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "SCB-HOME-MortgageOne",
+    "name": "MortgageOne™ Home Loan",
+    "bank": "Standard Chartered Bank Malaysia",
+    "category": "home",
+    "shariah": "no",
+    "amount_min": 70000,
+    "amount_max": 20000000,
+    "rate_display": "SBR + spread ≈ 3.9%–4.2% p.a. (SBR 2.75%)",
+    "reference_rates": "SBR 2.75% (July 2025)",
+    "financing_ratio": "90%",
+    "monthly_fee": 10,
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income & liabilities docs", "S&P/Title"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Subject to valuation and legal process",
+    "special_features": [
+      "Full-flexi home loan with offset account",
+      "Cash deposits offset principal daily (up to 70% of loan balance)",
+      "Daily rest calculation",
+      "Tenure 5-35 years or until age 70",
+      "No lock-in period",
+      "Cancellation fee: 0.5% (if you bear costs) or 2.25% (if bank bears costs)",
+      "Utilisation fee: 1% p.a. on unutilised portion if ≤30% utilisation"
+    ],
+    "links": [
+      "https://www.sc.com/my/loans/mortgageone/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "SCB-HOME-GreenMortgage",
+    "name": "Green Mortgage",
+    "bank": "Standard Chartered Bank Malaysia",
+    "category": "home",
+    "shariah": "no",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Preferential rate (lower than standard MortgageOne; exact rate not disclosed; base reference ~2.85% p.a.)",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "special_conditions": [
+      "GBI (Green Building Index) Platinum/Gold certified (valid 6+ months)",
+      "GreenRE Platinum/Gold certified (valid 6+ months)",
+      "BCA Green Mark Platinum/Gold (Singapore standard)"
+    ],
+    "docs_required": ["NRIC", "Green building certification (GBI/GreenRE)", "S&P/Title", "Income docs"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Subject to green certification verification",
+    "special_features": [
+      "Preferential interest/rental rates for green-certified properties",
+      "Certification must be valid for at least 6 months after application"
+    ],
+    "links": [
+      "https://www.sc.com/my/loans/green-mortgage/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "SCB-HOME-Refinance",
+    "name": "Home Loan Refinancing",
+    "bank": "Standard Chartered Bank Malaysia",
+    "category": "refinance",
+    "shariah": "no",
+    "amount_min": 200000,
+    "amount_max": 3500000,
+    "rate_display": "Competitive refinancing rates (Zero Cost campaign available)",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "special_conditions": [
+      "Completed residential properties only",
+      "Locations: Klang Valley, Penang, Johor, Alor Setar, Sungai Petani, Seremban, Nilai",
+      "Bank bears all legal fees, stamp duty, and valuation fees"
+    ],
+    "docs_required": ["NRIC", "Existing loan statement", "Valuation", "Income docs"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Zero Cost campaign available",
+    "links": [
+      "https://www.sc.com/my/loans/mortgage-refinancing/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "SCD-HOME-MyHomeOne-i",
+    "name": "Saadiq My HomeOne-i",
+    "bank": "Standard Chartered Saadiq",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": 70000,
+    "amount_max": 20000000,
+    "rate_display": "Rate not publicly disclosed (contact bank for quote; Musharakah Mutanaqisah-based)",
+    "shariah_contract": "Musharakah Mutanaqisah (Diminishing Partnership)",
+    "monthly_fee": 10,
+    "setup_fee": 200,
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income docs", "S&P/Title"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Subject to Shariah approval",
+    "special_features": [
+      "Fully flexible with integrated Current Account (Mudharabah)",
+      "Rental calculated daily on net outstanding balance",
+      "Deposit/withdraw extra payments anytime",
+      "No lock-in period - settle loan without penalty",
+      "20% stamp duty remission on financing documents",
+      "Earn Mudharabah dividend when deposits exceed financing (1:99 ratio)",
+      "Late penalty: 1% p.a. on outstanding",
+      "Cancellation fee: 2.25% (if bank pays legal) or 0.5%",
+      "PIDM protection up to RM250,000"
+    ],
+    "links": [
+      "https://www.sc.com/my/saadiq/financing/myhomeone-i/",
+      "https://www.imoney.my/home-loan/standard-chartered-saadiq/standard-chartered-saadiq-home-loan"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "SCB-BIZ-InstalLoan",
+    "name": "Business Instalment Loan",
+    "bank": "Standard Chartered Bank Malaysia",
+    "category": "sme",
+    "shariah": "no",
+    "amount_min": 100000,
+    "amount_max": 2000000,
+    "rate_display": "Rate not publicly disclosed (contact bank for quote; likely BR-based)",
+    "tenure_min_months": 12,
+    "tenure_max_months": 84,
+    "company_age_min_months": 36,
+    "ownership_requirement": "51% Malaysian owned",
+    "collateral_required": "Director guarantee (DL/Shareholder guarantee); property optional",
+    "docs_required": ["Company 3 years vintage", "Business financials", "Director age 25-65 at maturity"],
+    "approval_days": "Up to 14 working days",
+    "approval_days_note": "Credit approval within 2 weeks with complete documentation",
+    "special_features": [
+      "Unsecured loan (no collateral required)",
+      "Fixed monthly instalments",
+      "Auto-debit from current account"
+    ],
+    "links": [
+      "https://www.sc.com/my/business-banking/loans-and-working-capital/business-instalment-loan/"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]

@@ -1,0 +1,189 @@
+mkdir -p data/banks
+
+cat > data/banks/affin_full.json <<'EOF'
+[
+  // =========================
+  // PERSONAL / PERSONAL-FINANCING & CASH-LINE
+  // =========================
+  {
+    "product_id": "AFFIN-ISLAMIC-PFinancing-i",
+    "name": "Affin Islamic Personal Financing-i",
+    "bank": "Affin Islamic Bank Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 2500,
+    "amount_max": 250000,
+    "rate_display": "From ~3.50%-5.30% p.a.", 
+    "tenure_min_months": 24,
+    "tenure_max_months": 120,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 58,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income proof / payslips", "Bank statements"], 
+    "approval_days": null,
+    "approval_days_note": "比价平台指出审批快；银行未公开固定天数", 
+    "links": ["https://www.affinalways.com/affin-islamic-personal-financing-i", "https://www.affinalways.com/storage/AffinAlways Collaterals/Personal Collaterals/Loans Islamic/Personal Financing/PersonalFinancing-PDS-ENG.pdf"],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AFFIN-Advance-PL",
+    "name": "Affin Bank Advance (Personal Loan)",
+    "bank": "Affin Bank Berhad",
+    "category": "personal",
+    "shariah": "no",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "income_min": null,
+    "age_min": null,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Income proof", "Bank statements"], 
+    "approval_days": null,
+    "approval_days_note": "PDS available but fields incomplete", 
+    "links": ["https://www.affinalways.com/storage/AffinAlways Collaterals/Personal Collaterals/Loans Conventional/Loans/AFFINAdvance-PDS-ENG.pdf"],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // HOME / HOUSING LOANS & ISLAMIC HOME FINANCING-i
+  // =========================
+  {
+    "product_id": "AFFIN-HOME-HomeFlexiPlus",
+    "name": "Affin Bank Home Flexi Plus",
+    "bank": "Affin Bank Berhad",
+    "category": "home",
+    "shariah": "no",
+    "amount_min": 100000,
+    "amount_max": null,
+    "rate_display": "SBR + 1.55% p.a.", 
+    "tenure_min_months": null,
+    "tenure_max_months": 420,
+    "age_min": 18,
+    "age_max": 70,
+    "citizenship": "MY/Non-resident",
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Income/Bank statements", "S&P/Title"], 
+    "approval_days": null,
+    "approval_days_note": "产品页说明；完整条款需查 PDS", 
+    "links": ["https://www.affinalways.com/affin-home-flexi-plus", "https://www.imoney.my/home-loan/affinbank/housing-loan"],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AFFIN-ISLAMIC-HomeFinancing-i",
+    "name": "Affin Islamic Home Financing-i",
+    "bank": "Affin Islamic Bank Berhad",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": 100000,
+    "amount_max": null,
+    "rate_display": "From ~3.95% p.a.", 
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "age_min": 18,
+    "age_max": 70,
+    "citizenship": "MY/Non-resident",
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Income/Bank statements", "S&P/Title"], 
+    "approval_days": null,
+    "approval_days_note": "比价站指出锁定期3-5年；DB未公开所有字段", 
+    "links": ["https://www.imoney.my/home-loan/affin-islamic/home-financing-i", "https://www.affinalways.com/affin-tawarruq-home-financing-i"],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // VEHICLE LOAN / ISLAMIC VEHICLE FINANCING-i
+  // =========================
+  {
+    "product_id": "AFFIN-ISLAMIC-VehicleFinancing-i",
+    "name": "Affin Islamic Vehicle Financing-i",
+    "bank": "Affin Islamic Bank Berhad",
+    "category": "auto",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": 108,
+    "age_min": 18,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Driving licence", "Income proof", "Vehicle quotation"], 
+    "approval_days": null,
+    "approval_days_note": "产品栏目有说明；详情缺少公开条款", 
+    "links": ["https://www.affinalways.com/affin-islamic-vehicle-financing-i"],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AFFIN-ISLAMIC-ASB-Loan",
+    "name": "Affin Amanah Saham Bumiputera Loan",
+    "bank": "Affin Bank Berhad",
+    "category": "personal",
+    "shariah": "no",
+    "amount_min": 5000,
+    "amount_max": 200000,
+    "rate_display": "SBR + 1.75% or SBR +1.40% depending amount", 
+    "tenure_min_months": 60,
+    "tenure_max_months": 480,
+    "age_min": 18,
+    "age_max": 70,
+    "citizenship": "MY Bumiputera",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "ASB units/Certificate", "Income proof"], 
+    "approval_days": null,
+    "approval_days_note": "比价站资料；银行公布较少细节", 
+    "links": ["https://www.affinalways.com/affin-amanah-saham-bumiputera-loan"],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // SME / BUSINESS FINANCING including GUARANTEE SCHEMES
+  // =========================
+  {
+    "product_id": "AFFIN-ISLAMIC-HTG-i",
+    "name": "Affin Islamic High Tech & Green Facility-i (HTG-i)",
+    "bank": "Affin Islamic Bank Berhad",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": 10000000,
+    "rate_display": "3.50% p.a. (no guarantee) / 5.00% p.a. (with guarantee)", 
+    "tenure_min_months": null,
+    "tenure_max_months": 120,
+    "company_age_min_months": null,
+    "collateral_required": null,
+    "docs_required": ["SSM", "Bank statements", "Financials/Tax", Guarantee documentation"], 
+    "approval_days": null,
+    "approval_days_note": "PDS specifies facility for CAPEX/Working Capital up to RM10m. ([turn0search22])", 
+    "links": ["https://www.affinalways.com/storage/AffinAlways Collaterals/SME Collaterals/Loans _ Financing/High Tech Facility-i National Investment-PDS-ENG.pdf", "https://www.affinalways.com/sme-loans-financing"],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AFFIN-BIZ-Loans",
+    "name": "Affin Bank SME Loans & Financing",
+    "bank": "Affin Bank Berhad",
+    "category": "sme",
+    "shariah": "both",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "company_age_min_months": null,
+    "collateral_required": null,
+    "docs_required": ["SSM", "Bank statements", "Financials/Tax"],
+    "approval_days": null,
+    "approval_days_note": "综合商业贷款入口；细项需查设施", 
+    "links": ["https://www.affinalways.com/sme-loans-financing"],
+    "last_verified": "2025-10-19"
+  }
+]
+EOF
+
+echo "✅ data/banks/affin_full.json 已创建（Affin Bank & Affin Islamic 全产品主档）。"
