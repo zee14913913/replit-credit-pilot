@@ -1,0 +1,256 @@
+[
+  {
+    "product_id": "RHB-PERS-PF-i",
+    "name": "RHB Personal Financing-i (Private Sector)",
+    "bank": "RHB Bank",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 2000,
+    "amount_max": 150000,
+    "rate_display": "7.18%–13.83% p.a. (profit rate)",
+    "tenure_min_months": 12,
+    "tenure_max_months": 84,
+    "income_min": 3000,
+    "age_min": 18,
+    "age_max": 58,
+    "citizenship": "MY",
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["NRIC", "Latest salary slip", "Bank statement 1-month", "EPF/BE if applicable"],
+    "approval_days": "1–2 working days",
+    "approval_days_note": "Instant approval claim; exact SLA not published. Approval as fast as 10 minutes to 24 hours.",
+    "special_features": [
+      "Board Rates with/without Takaful available",
+      "3% rebate with Group Credit Family Takaful coverage",
+      "Additional 3% rebate for Joy@Work customers",
+      "No processing fee"
+    ],
+    "links": [
+      "https://www.rhbgroup.com/personal/loans/personal-financing/index.html",
+      "https://www.imoney.my/personal-loan/rhb/easy-pinjaman-ekspres"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "RHB-PERS-PF-i-CIVIL",
+    "name": "RHB Personal Financing-i (Civil/Govt Sector)",
+    "bank": "RHB Bank",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 2000,
+    "amount_max": 300000,
+    "rate_display": "4.50%–5.75% p.a. (promotional 5.35%–5.50% p.a. with Takaful)",
+    "tenure_min_months": 12,
+    "tenure_max_months": 120,
+    "income_min": 2000,
+    "age_min": 18,
+    "age_max": 58,
+    "citizenship": "MY",
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["NRIC", "Salary deduction proof", "3–6 months bank statement"],
+    "approval_days": "1–3 working days",
+    "approval_days_note": "Fast approval claim; no official SLA",
+    "special_features": [
+      "Automatic salary deduction via Biro Angkasa",
+      "Ceiling profit rate 18% p.a.",
+      "Compulsory Takaful coverage",
+      "No early settlement penalty (1-month notice, Ibra' rebate granted)"
+    ],
+    "links": [
+      "https://www.rhbgroup.com/islamic/financing/personal-financing/personal-financing-i-for-civil-sector/index.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "RHB-PERS-DEBTCONSOL",
+    "name": "RHB Personal Financing-i for Debt Consolidation",
+    "bank": "RHB Bank",
+    "category": "debt_consolidation",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": 150000,
+    "rate_display": "From 7.18%–13.83% p.a. (same as private sector Personal Financing-i)",
+    "tenure_min_months": 12,
+    "tenure_max_months": 84,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 55,
+    "citizenship": "MY",
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["NRIC", "Latest salary slip", "Bank statements"],
+    "approval_days": null,
+    "approval_days_note": "Not publicly specified",
+    "links": [
+      "https://www.rhbgroup.com/personal/loans/personal-financing/index.html",
+      "https://www.rhbgroup.com/merge/article/ease-your-credit-crisis-the-easy-way/index.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "RHB-HOME-MY1FIRST",
+    "name": "RHB My1 First Home Loan",
+    "bank": "RHB Bank",
+    "category": "home",
+    "amount_min": 100000,
+    "amount_max": null,
+    "property_value_max": 500000,
+    "rate_display": "BR + spread ≈ 4.65% p.a. (indicative: BR 3.65% + 1.00%)",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "age_min": 21,
+    "age_max": 40,
+    "income_max_single": 3000,
+    "income_max_household": 5000,
+    "citizenship": "MY",
+    "dsr_policy": "Total debt repayments ≤ 60% of net monthly income",
+    "docs_required": ["NRIC", "S&P/Booking Receipt", "3–6 months Payslips", "Bank Statements"],
+    "approval_days": null,
+    "approval_days_note": "Not published",
+    "special_features": [
+      "Up to 100% financing (no down payment)",
+      "First-time buyer only",
+      "Owner-occupied property",
+      "Property value: RM100,000–RM500,000",
+      "Fire Insurance compulsory, MRTA optional"
+    ],
+    "links": [
+      "https://www.rhbgroup.com/personal/home-loan/firsthome-mortgage/index.html",
+      "https://www.rhbgroup.com/islamic/financing/property-financing/equity-my-first-home-financing-i/index.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "RHB-HOME-FULLFLEXI",
+    "name": "RHB My1 Full Flexi Home Loan",
+    "bank": "RHB Bank",
+    "category": "home",
+    "rate_display": "SBR + 1.75% ≈ 4.50% p.a. (indicative: SBR 2.75%); Margin up to 90% + 5%",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "age_min": 18,
+    "age_max": 70,
+    "financing_ratio": "90% + 5% (legal/valuation)",
+    "docs_required": ["NRIC", "Property title", "Bank statements"],
+    "approval_days": null,
+    "special_features": [
+      "SBR 2.75% p.a. (effective 11 July 2025)",
+      "Standard margin +1.75% above SBR",
+      "Daily rest interest calculation",
+      "Redraw facility available",
+      "3-year lock-in period (2% penalty for early settlement)"
+    ],
+    "links": [
+      "https://www.rhbgroup.com/personal/home-loan/my1-full-flexi-home-loan/index.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "RHB-HOME-ISLAMIC",
+    "name": "RHB Islamic Home Financing-i / Equity Home Financing-i",
+    "bank": "RHB Bank",
+    "category": "home",
+    "shariah": "yes",
+    "rate_display": "SBRI + spread ≈ 4.50% p.a. (indicative: SBRI 2.75% + 1.75%)",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "age_min": 18,
+    "age_max": 70,
+    "financing_ratio": "90% + 10% (entry cost financing)",
+    "docs_required": ["NRIC", "Income docs", "Bank statement", "Title deed"],
+    "approval_days": null,
+    "special_features": [
+      "SBRI 2.75% p.a. (effective 11 July 2025)",
+      "Shariah concepts: Musyarakah Mutanaqisah, Ijarah, Tawarruq",
+      "Up to 99.99% financing for first-time buyers under special schemes",
+      "3-year lock-in period (up to 2% early settlement penalty)",
+      "Redraw facility available (semi-flexi/full-flexi packages)"
+    ],
+    "links": [
+      "https://www.imoney.my/home-loan/rhb-islamic-bank/home-financing-i"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "RHB-ASB-FIN",
+    "name": "RHB ASB Financing / Financing-i",
+    "bank": "RHB Bank",
+    "category": "investment",
+    "amount_min": 20000,
+    "amount_max": 200000,
+    "rate_display": "From ~4.30% p.a. (variable, rate not publicly disclosed)",
+    "tenure_max_months": 480,
+    "age_min": 18,
+    "age_max": 60,
+    "citizenship": "MY Bumiputera",
+    "financing_ratio": "100% (or 105% if including Takaful)",
+    "docs_required": ["NRIC", "Application form", "ASNB proof"],
+    "approval_days": "1–3 working days",
+    "special_features": [
+      "Maximum tenure: 40 years or until age 70",
+      "Monthly payment from as low as RM105/month",
+      "2-year lock-in period",
+      "Rates tiered by financing amount (better rates for higher amounts)",
+      "Typically 0.5% lower rate with Takaful coverage"
+    ],
+    "links": [
+      "https://www.rhbgroup.com/personal/loans/asnb-financing/index.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "RHB-AUTO-HP-CONV",
+    "name": "RHB Hire Purchase (Conventional Vehicle Financing)",
+    "bank": "RHB Bank",
+    "category": "auto",
+    "rate_display": "2.27%–3.18% p.a. (new cars, includes green financing from 2.27%)",
+    "rate_standard": "SBRI + 1.19% = 3.94% p.a. (standard)",
+    "rate_green": "From 2.27% p.a. (hybrid/PHEV/EV green financing)",
+    "tenure_max_months": 108,
+    "income_min": 2000,
+    "age_min": 18,
+    "age_max": null,
+    "age_max_note": "No upper age limit, but guarantor required if above 60",
+    "financing_ratio": "90%",
+    "docs_required": ["NRIC", "Driving licence", "Income proof", "Bank statements"],
+    "approval_days": null,
+    "special_features": [
+      "Special Green Financing Package for hybrid/PHEV/EV",
+      "Volvo Car Finance: 2.00% fixed p.a. (SBRI + 0.76%)",
+      "Reducing Balance Method (post-Oct 2025 HP Amendment Bill)",
+      "Late payment: 1% p.a. on outstanding installment"
+    ],
+    "links": [
+      "https://www.rhbgroup.com/personal/loans/auto-loan/index.html",
+      "https://loanstreet.com.my/car-loan/rhb/hire-purchase-i-fixed-rate"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "RHB-AUTO-HP-I",
+    "name": "RHB Vehicle Financing-i (Islamic Hire Purchase)",
+    "bank": "RHB Bank",
+    "category": "auto",
+    "shariah": "yes",
+    "rate_display": "SBRI + 1.19% ≈ 3.94% p.a. (standard) / SBRI + 0.94% ≈ 2.10% p.a. (green financing)",
+    "rate_standard": "SBRI + 1.19% = 3.94% p.a.",
+    "rate_green": "SBRI + 0.94% = 2.10% p.a. (hybrid/PHEV/EV)",
+    "tenure_max_months": 108,
+    "age_min": 18,
+    "income_min": 24000,
+    "financing_ratio": "90%",
+    "docs_required": ["NRIC", "Income proof", "Bank statements", "Vehicle quotation"],
+    "approval_days": null,
+    "special_features": [
+      "SBRI 2.75% (effective 11 July 2025)",
+      "Flexi Redraw: Make excess payments + withdraw when needed",
+      "No early settlement exit fees",
+      "Green Financing for new hybrid/PHEV/EV",
+      "Reducing Balance Method",
+      "Guarantor required if below 21 or above 60"
+    ],
+    "links": [
+      "https://www.rhbgroup.com/islamic/financing/auto-financing/index.html",
+      "https://www.rhbgroup.com/files/islamic/financing/auto-loan/PDS_VFi_VR.pdf"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]
