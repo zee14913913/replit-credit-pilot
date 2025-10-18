@@ -35,6 +35,7 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Automated Monthly Report System:** Auto-generates and sends comprehensive galaxy-themed PDF reports per customer monthly, including detailed transactions, category summaries, optimization proposals, DSR calculation, and a profit-sharing service workflow.
 - **Statement Comparison View:** Displays raw PDF alongside categorized reports for validation.
 - **12-Month Timeline View:** Visual calendar grid for each credit card showing statement coverage, amounts, transaction counts, and verification status across a rolling 12-month window.
+- **Intelligent Loan Matcher System:** CTOS report parsing, DSR calculation, and smart loan product matching. Automatically extracts monthly commitments from CTOS PDFs, calculates debt service ratio, and matches clients with eligible loan products from a comprehensive banking database (Maybank, Public Bank, CIMB). Includes Galaxy-themed UI with detailed eligibility breakdown and ineligibility reasons.
 
 **AI Advanced Analytics System:**
 - **Financial Health Scoring System:** 0-100 score with optimization suggestions.
@@ -51,6 +52,47 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Data Accuracy:** Implemented robust previous balance extraction and monthly ledger engine overhaul to ensure 100% accuracy in financial calculations and DR/CR classification.
 
 ## Recent Changes
+
+### Intelligent Loan Matcher System (Oct 2025)
+**New Feature:** Comprehensive loan product matching system with CTOS integration and DSR calculation.
+
+**System Components:**
+1. **CTOS Parser Module** (`modules/parsers/ctos_parser.py`)
+   - Automatic extraction of monthly commitments from CTOS PDF reports
+   - Multi-pattern regex matching for flexible data extraction
+   - Fallback to pdfplumber when PyPDF2 unavailable
+   - Error handling with clear status messages
+
+2. **DSR Calculator** (`modules/dsr.py`)
+   - Precise debt service ratio calculation
+   - Formula: (Total Monthly Commitment / Monthly Income) × 100
+   - Returns None for invalid income values
+
+3. **Smart Matcher Engine** (`modules/matcher.py`)
+   - Rule-based loan product matching
+   - Multi-criteria validation: citizenship, age, income, DSR, company age
+   - Special product rules (HouzKEY, Home 2gether, SME loans)
+   - Intelligent sorting by approval speed and loan amount
+
+4. **Banking Product Database** (`data/banks/`)
+   - Maybank: Personal loans, HouzKEY, Home 2gether
+   - Public Bank: Personal & home loans
+   - CIMB: Personal loans & SME financing
+   - JSON-based extensible product library
+
+**User Interface:**
+- `/loan-matcher` - Galaxy-themed input form with CTOS upload
+- `/loan-matcher/analyze` - Results page with eligible/ineligible product breakdown
+- Integrated into main navigation with calculator icon
+- Manual override option for CTOS data
+
+**Key Features:**
+- ✅ Automatic CTOS parsing with multiple pattern recognition
+- ✅ Real-time DSR calculation with color-coded status
+- ✅ Comprehensive eligibility checking with detailed rejection reasons
+- ✅ Product sorting by speed rank and maximum amount
+- ✅ Audit logging for compliance tracking
+- ✅ Responsive Galaxy-themed design
 
 ### Multi-Bank Savings Parser Upgrade - Universal Balance-Change Algorithm (Oct 2025)
 **Problem Scope:** Expanded beyond UOB to ALL Malaysian banks - 400+ PDF statements across 7 banks required 100% accuracy guarantee with zero tolerance for credit/debit classification errors.

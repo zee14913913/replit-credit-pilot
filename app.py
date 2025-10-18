@@ -3041,6 +3041,81 @@ def tag_savings_transaction(transaction_id):
     return redirect(request.referrer or url_for('savings_search'))
 
 
+# ============================================================================
+# LOAN MATCHER SYSTEM - 智能贷款产品匹配系统
+# ============================================================================
+
+@app.route('/loan-matcher')
+def loan_matcher():
+    """贷款产品匹配系统 - 表单页面"""
+    return render_template('loan_matcher.html')
+
+@app.route('/loan-matcher/analyze', methods=['POST'])
+def loan_matcher_analyze():
+    """分析客户资料并匹配贷款产品"""
+    from modules.parsers.ctos_parser import extract_commitment_from_ctos
+    from modules.dsr import calculate_dsr
+    from modules.matcher import load_all_products, match_loans
+    
+    # 获取表单数据
+    client_name = request.form.get('client_name', '').strip()
+    citizenship = request.form.get('citizenship', 'MY')
+    age = int(request.form.get('age', 0) or 0)
+    monthly_income = float(request.form.get('monthly_income', 0) or 0)
+    
+    # 处理CTOS上传
+    total_commitment = 0.0
+    ctos_notes = "未上传CTOS报告"
+    
+    ctos_file = request.files.get('ctos_file')
+    if ctos_file and ctos_file.filename:
+        # 保存文件
+        filename = f"ctos_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{ctos_file.filename}"
+        save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        ctos_file.save(save_path)
+        
+        # 解析CTOS
+        total_commitment, ctos_notes = extract_commitment_from_ctos(save_path)
+    
+    # 人工覆盖（如果提供）
+    manual_commitment = request.form.get('manual_commitment', '').strip()
+    if manual_commitment:
+        total_commitment = float(manual_commitment)
+        ctos_notes = "✅ 人工输入数据"
+    
+    # 计算DSR
+    dsr = calculate_dsr(total_commitment, monthly_income)
+    
+    # 构建客户资料
+    client = {
+        'citizenship': citizenship,
+        'age': age,
+        'income': monthly_income,
+        'dsr': dsr
+    }
+    
+    # 加载产品库并匹配
+    products = load_all_products('data/banks')
+    eligible, ineligible = match_loans(client, products)
+    
+    # 记录审计日志
+    log_audit(
+        action='LOAN_MATCHER_ANALYSIS',
+        details=f'客户: {client_name}, DSR: {dsr}%, 符合产品: {len(eligible)}个',
+        user_id=session.get('user_id', 0)
+    )
+    
+    return render_template(
+        'loan_matcher_result.html',
+        client_name=client_name,
+        dsr=dsr,
+        total_commitment=total_commitment,
+        ctos_notes=ctos_notes,
+        eligible=eligible,
+        ineligible=ineligible
+    )
+
+
 if __name__ == '__main__':
     # Get environment settings
     flask_env = os.getenv('FLASK_ENV', 'development')

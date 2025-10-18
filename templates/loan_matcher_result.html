@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}匹配结果 - {{ client_name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- 页面标题 -->
+            <div class="text-center mb-5">
+                <h1 class="galaxy-gradient-text mb-3">
+                    <i class="bi bi-check-circle-fill me-2"></i>贷款产品匹配结果
+                </h1>
+            </div>
+
+            <!-- 客户摘要卡片 -->
+            <div class="galaxy-card mb-4">
+                <div class="card-body">
+                    <h5 class="galaxy-gradient-text mb-4">
+                        <i class="bi bi-person-badge me-2"></i>客户摘要
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="text-silver-pearl small">客户姓名</div>
+                            <div class="text-white fw-bold fs-5">{{ client_name }}</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-silver-pearl small">月度负债</div>
+                            <div class="text-warning fw-bold fs-5">RM {{ '%.2f' | format(total_commitment) }}</div>
+                            <small class="text-silver-pearl">{{ ctos_notes }}</small>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-silver-pearl small">DSR比率</div>
+                            <div class="{% if dsr and dsr > 70 %}text-danger{% elif dsr and dsr > 50 %}text-warning{% else %}text-success{% endif %} fw-bold fs-5">
+                                {% if dsr %}{{ dsr }}%{% else %}N/A{% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-silver-pearl small">匹配状态</div>
+                            <div class="text-golden fw-bold fs-5">
+                                <i class="bi bi-check-circle-fill me-1"></i>已完成
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 符合条件的产品 -->
+            <div class="galaxy-card mb-4">
+                <div class="card-body">
+                    <h5 class="galaxy-gradient-text mb-4">
+                        <i class="bi bi-award-fill me-2"></i>✅ 符合条件的贷款产品
+                        <span class="badge bg-success ms-2">{{ eligible|length }}个</span>
+                    </h5>
+                    
+                    {% if eligible %}
+                        <div class="row g-3">
+                            {% for item in eligible %}
+                            {% set p = item.product %}
+                            <div class="col-md-6">
+                                <div class="border border-success border-opacity-50 rounded p-3 h-100" style="background: rgba(25, 135, 84, 0.1);">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="text-white mb-0">
+                                            <i class="bi bi-bank text-success me-2"></i>{{ p.name }}
+                                        </h6>
+                                        {% if p.speed_rank == 1 %}
+                                        <span class="badge bg-success">快速审批</span>
+                                        {% elif p.speed_rank == 2 %}
+                                        <span class="badge bg-info">标准审批</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="small text-silver-pearl mb-2">
+                                        <i class="bi bi-building me-1"></i>{{ p.bank }}
+                                    </div>
+                                    <div class="row g-2 small">
+                                        <div class="col-6">
+                                            <span class="text-silver-pearl">额度范围:</span>
+                                            <div class="text-white">RM {{ '{:,}'.format(p.amount_min) }} - {{ '{:,}'.format(p.amount_max) }}</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <span class="text-silver-pearl">利率:</span>
+                                            <div class="text-white">{{ p.rate_display }}</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <span class="text-silver-pearl">期限:</span>
+                                            <div class="text-white">{{ p.tenure_min_months }} - {{ p.tenure_max_months }}个月</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <span class="text-silver-pearl">DSR要求:</span>
+                                            <div class="text-success">≤ {{ p.get('dsr_max', 70) }}%</div>
+                                        </div>
+                                    </div>
+                                    {% if p.description %}
+                                    <div class="mt-2 pt-2 border-top border-secondary">
+                                        <small class="text-silver-pearl">
+                                            <i class="bi bi-info-circle me-1"></i>{{ p.description }}
+                                        </small>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            很抱歉，当前没有符合条件的贷款产品。请查看下方不符合原因。
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 不符合条件的产品 -->
+            {% if ineligible %}
+            <div class="galaxy-card mb-4">
+                <div class="card-body">
+                    <h5 class="galaxy-gradient-text mb-4">
+                        <i class="bi bi-x-circle-fill me-2"></i>⚠️ 不符合条件的产品
+                        <span class="badge bg-warning text-dark ms-2">{{ ineligible|length }}个</span>
+                    </h5>
+                    
+                    <div class="accordion accordion-flush" id="ineligibleAccordion">
+                        {% for item in ineligible %}
+                        {% set p = item.product %}
+                        <div class="accordion-item bg-transparent border-bottom border-secondary">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-white" type="button" 
+                                        data-bs-toggle="collapse" data-bs-target="#ineligible{{ loop.index }}">
+                                    <i class="bi bi-bank text-warning me-2"></i>
+                                    {{ p.name }} ({{ p.bank }})
+                                    <span class="badge bg-danger ms-2">{{ item.reasons|length }}个不符项</span>
+                                </button>
+                            </h2>
+                            <div id="ineligible{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#ineligibleAccordion">
+                                <div class="accordion-body">
+                                    <h6 class="text-warning mb-3">
+                                        <i class="bi bi-exclamation-triangle me-2"></i>不符合原因：
+                                    </h6>
+                                    <ul class="list-unstyled">
+                                        {% for reason in item.reasons %}
+                                        <li class="mb-2">
+                                            <i class="bi bi-x-circle text-danger me-2"></i>
+                                            <span class="text-silver-pearl">{{ reason }}</span>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- 操作按钮 -->
+            <div class="text-center">
+                <a href="{{ url_for('loan_matcher') }}" class="btn btn-outline-light me-2">
+                    <i class="bi bi-arrow-left me-2"></i>返回匹配页面
+                </a>
+                <a href="{{ url_for('index') }}" class="btn btn-outline-light">
+                    <i class="bi bi-house-fill me-2"></i>返回主页
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

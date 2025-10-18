@@ -1,0 +1,193 @@
+# === 1️⃣ 创建项目环境 ===
+# 若是新 Repl，请确保当前目录为空。
+# 初始化虚拟环境（Replit 会自动使用 .venv）
+python3 -m venv .venv
+source .venv/bin/activate
+
+# === 2️⃣ 安装依赖包 ===
+echo "Flask==3.0.0
+PyPDF2==3.0.1
+pandas==2.2.2" > requirements.txt
+pip install -r requirements.txt
+
+# === 3️⃣ 创建目录结构 ===
+mkdir -p modules/parsers data/banks templates uploads
+
+# === 4️⃣ 写入 DSR 计算模块 ===
+cat > modules/dsr.py <<'EOF'
+def calculate_dsr(total_commitment, monthly_income):
+    if monthly_income <= 0:
+        return None
+    return round((total_commitment / monthly_income) * 100, 2)
+EOF
+
+# === 5️⃣ 写入匹配逻辑 ===
+cat > modules/matcher.py <<'EOF'
+import json, os
+
+def load_all_products(folder):
+    products = []
+    for fn in os.listdir(folder):
+        if fn.endswith('.json'):
+            with open(os.path.join(folder, fn), 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                products.extend(data)
+    return products
+
+def pass_basic(value, minv):
+    return (minv is None) or (value is None) or (value >= minv)
+
+def pass_max(value, maxv):
+    return (maxv is None) or (value is None) or (value <= maxv)
+
+def match_loans(client, products):
+    eligible, ineligible = [], []
+    for p in products:
+        reasons = []
+        if p.get("citizenship") == "MY" and client.get("citizenship") != "MY":
+            reasons.append("仅限马来西亚公民")
+        if not pass_basic(client.get("age"), p.get("age_min")): reasons.append("年龄不足")
+        if not pass_max(client.get("age"), p.get("age_max")): reasons.append("年龄超限")
+        if not pass_basic(client.get("income"), p.get("income_min")): reasons.append("收入低于门槛")
+
+        if p.get("category") in ["sme", "biz"]:
+            if not pass_basic(client.get("company_age_months"), p.get("company_age_min_months")):
+                reasons.append("企业成立不足")
+            if p.get("biz_turnover_cap") and client.get("annual_turnover") and client["annual_turnover"] > p["biz_turnover_cap"]:
+                reasons.append("年营收超出该产品线上上限")
+
+        if p.get("product_id") == "MBB-HOME-HOUZKEY":
+            if client.get("existing_home_financing_count", 0) > 1:
+                reasons.append("现有房贷超过1笔，不符合HouzKEY")
+        if p.get("product_id") == "MBB-HOME-2GETHER":
+            cond = (client.get("child_age",0) >= 21 and client.get("child_age",0) <= 31
+                    and client.get("child_employed") and client.get("child_first_home"))
+            if not cond:
+                reasons.append("不符合Home 2gether子女条件")
+
+        dsr_max = p.get("dsr_max", 70)
+        if client.get("dsr") is not None and client["dsr"] > dsr_max:
+            reasons.append(f"DSR超限（>{dsr_max}%）")
+
+        if reasons:
+            ineligible.append({"product": p, "reasons": reasons})
+        else:
+            eligible.append({"product": p})
+    def score(item):
+        p = item["product"]
+        speed = p.get("speed_rank", 3)
+        cap = (p.get("amount_max") or 0)
+        return (- (100-speed), cap)
+    eligible.sort(key=score, reverse=True)
+    return eligible, ineligible
+EOF
+
+# === 6️⃣ 写入 CTOS 解析模块 ===
+cat > modules/parsers/ctos_parser.py <<'EOF'
+import re
+from PyPDF2 import PdfReader
+
+def extract_commitment_from_ctos(pdf_path):
+    try:
+        reader = PdfReader(pdf_path)
+        text = ""
+        for page in reader.pages:
+            text += page.extract_text() or ""
+        patterns = [
+            r"Total\s*Monthly\s*(Commitment|Installment)\s*[:：]?\s*RM?\s*([\d,]+\.?\d*)",
+            r"Monthly\s*Commitment\s*[:：]?\s*RM?\s*([\d,]+\.?\d*)",
+            r"Total\s*Commitments\s*[:：]?\s*RM?\s*([\d,]+\.?\d*)"
+        ]
+        for pat in patterns:
+            m = re.search(pat, text, flags=re.IGNORECASE)
+            if m:
+                amt = m.groups()[-1]
+                amt = float(amt.replace(",", ""))
+                return amt, "CTOS解析成功"
+        return 0.0, "未在CTOS中找到commitment字段，已默认0，请人工覆盖"
+    except Exception as e:
+        return 0.0, f"CTOS解析异常：{e}"
+EOF
+
+# === 7️⃣ 写入 Maybank 规则库 ===
+cat > data/banks/maybank.json <<'EOF'
+[{"product_id":"MBB-PERS-PL-STD","name":"Maybank Personal Loan / Personal Financing-i","bank":"Maybank","category":"personal","shariah":"both","citizenship":"MY","amount_min":5000,"amount_max":150000,"tenure_min_months":12,"tenure_max_months":84,"rate_display":"Effective ~11.53%–14.68% p.a.","income_min":3500,"age_min":21,"age_max":60,"collateral_required":false,"channel":["MAE_app","M2U_web"],"speed_rank":2,"dsr_max":70}]
+EOF
+
+# === 8️⃣ 写入模板文件 ===
+cat > templates/index.html <<'EOF'
+<!doctype html>
+<html><head><meta charset="utf-8"/><title>Loan Matcher</title></head>
+<body>
+<h2>客户资料上传 & 匹配</h2>
+<form action="/analyze" method="post" enctype="multipart/form-data">
+姓名 <input name="client_name" required>
+国籍 <select name="citizenship"><option value="MY">MY</option><option value="OTH">OTH</option></select>
+年龄 <input name="age" type="number" required><br/>
+月收入(RM) <input name="monthly_income" type="number" step="0.01" required><br/>
+上传CTOS报告 <input type="file" name="ctos_file" accept="application/pdf"><br/>
+人工覆盖月负债 <input name="manual_commitment" type="number" step="0.01"><br/>
+<button type="submit">开始分析</button>
+</form>
+</body></html>
+EOF
+
+cat > templates/result.html <<'EOF'
+<!doctype html>
+<html><head><meta charset="utf-8"/><title>结果</title></head>
+<body>
+<h2>分析结果</h2>
+<p>客户：{{ client_name }}</p>
+<p>月负债：RM {{ '%.2f' % total_commitment }}（{{ ctos_notes }}）</p>
+<p>DSR：{{ dsr }}%</p>
+<h3>✅ 可申请产品</h3>
+<ol>{% for e in eligible %}<li>{{ e.product.name }}</li>{% endfor %}</ol>
+<h3>⚠️ 不符合产品</h3>
+<ul>{% for r in ineligible %}<li>{{ r.product.name }}: {{ ", ".join(r.reasons) }}</li>{% endfor %}</ul>
+<a href="/">返回</a>
+</body></html>
+EOF
+
+# === 9️⃣ 写入主程序 ===
+cat > app.py <<'EOF'
+from flask import Flask, render_template, request
+from modules.parsers.ctos_parser import extract_commitment_from_ctos
+from modules.dsr import calculate_dsr
+from modules.matcher import load_all_products, match_loans
+import os
+
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = 'uploads'
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+PRODUCTS = load_all_products('data/banks')
+
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('index.html')
+
+@app.route('/analyze', methods=['POST'])
+def analyze():
+    client_name = request.form.get('client_name')
+    citizenship = request.form.get('citizenship','MY')
+    age = int(request.form.get('age','0') or 0)
+    monthly_income = float(request.form.get('monthly_income','0') or 0)
+    ctos_file = request.files.get('ctos_file')
+    total_commitment, ctos_notes = 0.0, "未上传CTOS"
+    if ctos_file and ctos_file.filename:
+        save_path = os.path.join(app.config['UPLOAD_FOLDER'], ctos_file.filename)
+        ctos_file.save(save_path)
+        total_commitment, ctos_notes = extract_commitment_from_ctos(save_path)
+    manual = request.form.get('manual_commitment')
+    if manual:
+        total_commitment = float(manual); ctos_notes += "（人工覆盖）"
+    dsr = calculate_dsr(total_commitment, monthly_income)
+    client = {"citizenship":citizenship,"age":age,"income":monthly_income,"dsr":dsr}
+    eligible,ineligible = match_loans(client,PRODUCTS)
+    return render_template('result.html',client_name=client_name,dsr=dsr,total_commitment=total_commitment,ctos_notes=ctos_notes,eligible=eligible,ineligible=ineligible)
+
+if __name__=='__main__':
+    app.run(host='0.0.0.0',port=8080)
+EOF
+
+# === 🔟 启动服务 ===
+python app.py
