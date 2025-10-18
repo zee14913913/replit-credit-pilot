@@ -365,6 +365,11 @@ def parse_generic_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                                     trans_dict['balance'] = balance
                                 transactions.append(trans_dict)
         
+        # **应用Balance-Change算法（如果有balance字段）**
+        if transactions and any('balance' in t for t in transactions):
+            # Generic解析器通常无法提取opening balance，使用None让算法自动处理
+            transactions = apply_balance_change_algorithm(transactions, None)
+        
         info['total_transactions'] = len(transactions)
         print(f"✅ Generic parser: {len(transactions)} transactions extracted from {file_path}")
         
@@ -971,36 +976,8 @@ def parse_uob_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                 if prev_balance is None:
                     prev_balance = 0.0
                 
-                # 遍历所有交易，根据余额变化修正类型和金额
-                corrected_transactions = []
-                for txn in transactions:
-                    curr_balance = txn.get('balance', 0)
-                    
-                    # 根据余额变化判断类型并计算准确金额
-                    if curr_balance > prev_balance:
-                        # 余额增加 = 存款（credit）
-                        corrected_type = 'credit'
-                        corrected_amount = curr_balance - prev_balance
-                    elif curr_balance < prev_balance:
-                        # 余额减少 = 取款（debit）
-                        corrected_type = 'debit'
-                        corrected_amount = prev_balance - curr_balance
-                    else:
-                        # 余额不变（异常情况）
-                        corrected_type = txn['type'] if txn['type'] != 'unknown' else 'debit'
-                        corrected_amount = txn['amount']
-                    
-                    corrected_transactions.append({
-                        'date': txn['date'],
-                        'description': txn['description'],
-                        'amount': corrected_amount,
-                        'type': corrected_type,
-                        'balance': curr_balance
-                    })
-                    
-                    prev_balance = curr_balance
-                
-                transactions = corrected_transactions
+                # 调用通用balance-change算法
+                transactions = apply_balance_change_algorithm(transactions, prev_balance)
         
         info['total_transactions'] = len(transactions)
         print(f"✅ UOB savings parsed: {len(transactions)} transactions from {file_path}")
@@ -1407,6 +1384,21 @@ def parse_alliance_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                             })
                 
                 i += 1
+            
+            # **应用Balance-Change算法验证CR/DR标记的准确性**
+            if transactions:
+                # 提取期初余额
+                prev_balance = None
+                for line in lines:
+                    if 'PREVIOUS BALANCE' in line.upper() or 'BALANCE B/F' in line.upper():
+                        balance_match = re.search(r'([\d,]+\.\d{2})', line)
+                        if balance_match:
+                            prev_balance = clean_balance_string(balance_match.group(0))
+                            if prev_balance is not None:
+                                break
+                
+                # 调用通用balance-change算法（用于验证和修正）
+                transactions = apply_balance_change_algorithm(transactions, prev_balance)
         
         info['total_transactions'] = len(transactions)
         print(f"✅ Alliance Bank savings parsed: {len(transactions)} transactions from {file_path}")
