@@ -97,6 +97,18 @@
                                         </small>
                                     </div>
                                     {% endif %}
+                                    {% if p.get('docs_required') %}
+                                    <div class="mt-2 pt-2 border-top border-secondary">
+                                        <small class="text-silver-pearl">
+                                            <i class="bi bi-file-text me-1"></i><strong>所需文档:</strong>
+                                            <div class="ms-3 mt-1">
+                                                {% for doc in p.docs_required %}
+                                                <span class="badge bg-secondary me-1 mb-1">{{ doc }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </small>
+                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
                             {% endfor %}

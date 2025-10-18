@@ -1,6 +1,6 @@
 [
   {
-    "product_id": "MBB-PERS-PL-STD",
+    "product_id": "MBB-PERSONAL-LOAN",
     "name": "Maybank Personal Loan / Personal Financing-i",
     "bank": "Maybank",
     "category": "personal",
@@ -10,15 +10,17 @@
     "amount_max": 150000,
     "tenure_min_months": 12,
     "tenure_max_months": 84,
-    "rate_display": "Effective ~11.53%–14.68% p.a.",
+    "rate_display": "Effective 11.5%–14.6% p.a.",
     "income_min": 3500,
     "age_min": 21,
     "age_max": 60,
     "collateral_required": false,
-    "channel": ["MAE_app", "M2U_web"],
+    "channel": ["MAE App", "M2U Web"],
     "speed_rank": 2,
     "dsr_max": 70,
-    "description": "无抵押个人贷款，快速审批，支持常规和伊斯兰融资"
+    "docs_required": ["NRIC", "Payslip (latest 3 months)", "EA Form/EPF Statement", "Address proof"],
+    "description": "无抵押个人贷款，快速审批，支持常规和伊斯兰融资",
+    "sources": ["https://www.maybank2u.com.my/personal-loan-listing"]
   },
   {
     "product_id": "MBB-HOME-HOUZKEY",
@@ -36,9 +38,10 @@
     "age_min": 21,
     "age_max": 65,
     "collateral_required": true,
-    "channel": ["branch", "M2U_web"],
+    "channel": ["branch", "M2U Web"],
     "speed_rank": 3,
     "dsr_max": 70,
+    "docs_required": ["NRIC", "Payslip (3 months)", "EA Form", "SPA/Booking receipt", "Valuation report"],
     "description": "首次购房者专属房贷，现有房贷不超过1笔"
   },
   {
@@ -60,6 +63,31 @@
     "channel": ["branch"],
     "speed_rank": 3,
     "dsr_max": 70,
+    "docs_required": ["Parent & Child NRIC", "Joint payslips", "EA Form", "SPA", "Birth certificate (proof of relationship)"],
     "description": "父母与子女联名购房，子女需21-31岁、有工作、首次购房"
+  },
+  {
+    "product_id": "MBB-SME-CLEAN",
+    "name": "Maybank SME Clean Loan / CMTF-i",
+    "bank": "Maybank",
+    "category": "sme",
+    "shariah": "both",
+    "citizenship": "MY",
+    "amount_min": 10000,
+    "amount_max": 1500000,
+    "tenure_min_months": 12,
+    "tenure_max_months": 84,
+    "rate_display": "From Base Rate + 2.0% p.a.",
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 70,
+    "dsr_max": 70,
+    "company_age_min_months": 12,
+    "collateral_required": false,
+    "channel": ["Online", "Branch"],
+    "speed_rank": 3,
+    "docs_required": ["SSM Certificate", "6-12 months Bank Statements", "Latest Financial Statements", "Directors' NRIC"],
+    "description": "中小企业无抵押融资，企业需营运至少12个月",
+    "sources": ["https://www.maybank2u.com.my/sme-clean-loan-financing"]
   }
 ]
