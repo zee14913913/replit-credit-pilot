@@ -1,0 +1,237 @@
+[
+  {
+    "product_id": "AGRO-PERS-AgroCash-i",
+    "name": "AgroCash-i",
+    "bank": "Agrobank",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 5000,
+    "amount_max": 200000,
+    "rate_display": "From 6.17% p.a. (BR + spread structure)",
+    "rate_structure": "BR + 4.72% (<RM3K) / BR + 4.46% (RM3K-5K) / BR + 4.35% (>RM5K) monthly rest",
+    "reference_rates": "SBR 2.75%, BR 3.35%, BFR 6.50% (effective July 14, 2025)",
+    "shariah_contract": "Bai' Al-Inah",
+    "tenure_min_months": 36,
+    "tenure_max_months": 120,
+    "income_min": 12000,
+    "age_min": 18,
+    "age_max": 60,
+    "citizenship": "MY",
+    "special_conditions": [
+      "Government & GLC employees",
+      "Priority for agricultural sector workers"
+    ],
+    "dsr_policy": "≤ 70% (including housing financing)",
+    "docs_required": ["NRIC", "Salary slip / Bank statement", "EPF/BE form"],
+    "approval_days": "3 working days",
+    "approval_days_note": "Subject to complete documentation",
+    "special_features": [
+      "Rate varies by loan amount (tiered pricing)",
+      "Monthly rest calculation",
+      "CCRIS rating affects final rate (MIA-2 or better gets preferential rates)",
+      "Up to 10 years tenure",
+      "Max deduction: 70% including housing"
+    ],
+    "links": [
+      "https://www.agrobank.com.my/product/agrocash/",
+      "https://www.imoney.my/personal-loan/agrobank/agrocash-i-bai-al-inah",
+      "https://ringgitplus.com/en/personal-loan/Agrobank-AgroCash-i.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AGRO-PERS-ArRahnu",
+    "name": "Ar-Rahnu Financing (Gold-Pledge)",
+    "bank": "Agrobank",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 100,
+    "amount_max": null,
+    "rate_display": "Storage fee: 0.75% per month (9% p.a.)",
+    "shariah_contract": "Ar-Rahnu (Islamic pawn broking)",
+    "financing_ratio": "Based on gold value (typically 70%-80%)",
+    "tenure_min_months": 1,
+    "tenure_max_months": 6,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Gold coin/wafer/initialed certificate"],
+    "approval_days": "Instant",
+    "approval_days_note": "Same-day cash conversion",
+    "special_features": [
+      "Convert gold to cash quickly",
+      "No credit check required",
+      "Storage fee: 0.75% per month",
+      "Redemption anytime within tenure",
+      "Accepted gold: coins, wafers, certificates"
+    ],
+    "links": [
+      "https://www.agrobank.com.my/product/ar-rahnu/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AGRO-BUS-KreditMikro",
+    "name": "Kredit Mikro",
+    "bank": "Agrobank",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": 5000,
+    "amount_max": 50000,
+    "rate_display": "Rate not publicly disclosed (risk-based pricing)",
+    "rate_display_note": "15% p.a. ceiling rate; actual rate determined after credit assessment",
+    "reference_rates": "SBR 2.75%, BFR 6.50% (effective July 14, 2025)",
+    "shariah_contract": "Tawarruq",
+    "tenure_min_months": 12,
+    "tenure_max_months": 60,
+    "company_age_min_months": 6,
+    "ownership_requirement": "Malaysian micro-enterprise (sales turnover max RM300K)",
+    "collateral_required": "None (uncollateralized)",
+    "docs_required": ["SSM registration", "6 months bank statements", "Guarantee"],
+    "approval_days": "5–7 working days",
+    "approval_days_note": "Fast approval for micro enterprises",
+    "special_features": [
+      "Uncollateralized micro financing",
+      "For micro-enterprises (max RM300K turnover)",
+      "No collateral required",
+      "Risk-based pricing",
+      "Min company age: 6 months"
+    ],
+    "links": [
+      "https://www.agrobank.com.my/product/kredit-mikro/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AGRO-BUS-TermFinancing-i",
+    "name": "Term Financing-i",
+    "bank": "Agrobank",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "BFR + spread (rate not publicly disclosed; customized based on credit assessment)",
+    "reference_rates": "BFR 6.50% (effective July 14, 2025)",
+    "rate_display_note": "Special programs: BFR + 0% for creditworthy customers; 1% retention discount available",
+    "shariah_contract": "Murabahah/Tawarruq",
+    "financing_ratio": "70%-90%",
+    "tenure_min_months": 12,
+    "tenure_max_months": 180,
+    "company_age_min_months": null,
+    "ownership_requirement": "Malaysian citizens/companies in agriculture/agro-based sectors",
+    "collateral_required": "As required",
+    "docs_required": ["Project/business plan", "Bank statements", "Asset purchase docs"],
+    "approval_days": "14–21 working days",
+    "approval_days_note": "Subject to credit assessment and project evaluation",
+    "special_features": [
+      "For fixed capital, machinery, land development, agro-based projects",
+      "Financing margin: 70-90% of project cost",
+      "Tenure up to 15 years",
+      "Special rates for retention customers (BFR + 0% available)",
+      "1% discount for existing creditworthy customers",
+      "Fixed or variable rate options"
+    ],
+    "links": [
+      "https://www.agrobank.com.my/product/term-financing-i/",
+      "https://ringgitplus.com/en/business-loan/Agrobank-Term-Financing-i.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AGRO-BUS-MAEF-i",
+    "name": "Machinery & Equipment Financing-i (MAEF-i)",
+    "bank": "Agrobank",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "BFR + spread (rate not publicly disclosed)",
+    "reference_rates": "BFR 6.50% (effective July 14, 2025)",
+    "shariah_contract": "Ijarah/Murabahah",
+    "tenure_min_months": 12,
+    "tenure_max_months": 120,
+    "company_age_min_months": null,
+    "ownership_requirement": "Malaysian agricultural/agro-based businesses",
+    "collateral_required": "Machinery/Equipment financed",
+    "docs_required": ["Quotation of equipment", "Bank statements", "Business plan"],
+    "approval_days": "14–21 working days",
+    "approval_days_note": "For machinery and equipment financing",
+    "special_features": [
+      "For purchasing machinery and equipment",
+      "Financed asset serves as collateral",
+      "Tenure up to 10 years",
+      "Shariah-compliant lease or purchase structure"
+    ],
+    "links": [
+      "https://www.agrobank.com.my/product/machinery-equipment-financing-i-maef-i/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AGRO-BUS-CashLine-i",
+    "name": "Agro Cash Line-i",
+    "bank": "Agrobank",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "BFR + spread; ceiling: BFR + 4% p.a. or 10% p.a., whichever is higher",
+    "reference_rates": "BFR 6.50% (effective July 14, 2025)",
+    "rate_effective_ceiling": "10.5% p.a. (BFR 6.50% + 4%)",
+    "shariah_contract": "Tawarruq",
+    "tenure_min_months": 6,
+    "tenure_max_months": 120,
+    "company_age_min_months": null,
+    "ownership_requirement": "Malaysian registered business",
+    "collateral_required": "As required",
+    "docs_required": ["Bank statements", "Business license"],
+    "approval_days": "10–14 working days",
+    "approval_days_note": "Revolving credit facility",
+    "special_features": [
+      "Revolving credit facility (overdraft)",
+      "Flexible working capital",
+      "Min tenure: 6 months, Max: 10 years",
+      "Rate ceiling: BFR + 4% or 10%, whichever higher"
+    ],
+    "links": [
+      "https://www.agrobank.com.my/product/agro-cash-line-i/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "AGRO-BUS-SALF-i",
+    "name": "Strategic Alliance Financing-i (SALF-i)",
+    "bank": "Agrobank",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "BFR -1% to BFR +2% ≈ 5.50%–8.50% p.a. (BFR 6.50%)",
+    "reference_rates": "BFR 6.50% (effective July 14, 2025)",
+    "shariah_contract": "Tawarruq",
+    "financing_ratio": "100%",
+    "tenure_min_months": 12,
+    "tenure_max_months": 180,
+    "company_age_min_months": null,
+    "ownership_requirement": "Projects initiated by state/federal agencies",
+    "collateral_required": "As required by project",
+    "docs_required": ["Project documents", "Government agency letter"],
+    "approval_days": "21–30 working days",
+    "approval_days_note": "For government-initiated projects",
+    "special_features": [
+      "For development projects by State/Federal Government",
+      "Up to 100% project financing",
+      "Maximum tenure: 15 years",
+      "Preferential rate range: BFR -1% to BFR +2%",
+      "Monthly installment payment",
+      "Shariah-compliant (Tawarruq)"
+    ],
+    "links": [
+      "https://www.agrobank.com.my/product/strategic-alliance-financing-i-salf-i/",
+      "https://www.scribd.com/document/736877231/Agrobank-Strategic-Alliance-Financing-SALF-i-Product-Disclosure-Sheet"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]

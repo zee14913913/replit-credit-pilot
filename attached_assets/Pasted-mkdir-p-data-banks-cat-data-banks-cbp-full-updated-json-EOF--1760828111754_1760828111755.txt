@@ -1,0 +1,150 @@
+mkdir -p data/banks
+
+cat > data/banks/cbp_full_updated.json <<'EOF'
+[
+  // =========================
+  // PERSONAL FINANCING-i Al-Yasser
+  {
+    "product_id": "CBP-PERS-PersonalFinancing-i Al-Yasser",
+    "name": "Personal Financing-i Al-Yasser",
+    "bank": "Co-opbank Pertama",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 5000,
+    "amount_max": 400000,
+    "rate_display": "从 ~3.45% 起（1-3年）；约 3.75% 起（4-10年）", 
+    "tenure_min_months": 12,
+    "tenure_max_months": 120,
+    "income_min": 2000,
+    "age_min": 18,
+    "age_max": 58,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Latest 3 months payslips", "Latest 3 months bank statements", "Employer confirmation letter", "Redemption letter (if debt consolidation)"],
+    "approval_days": "3 working days",
+    "approval_days_note": "比价平台 iMoney 指出最快 3 个工作日。([turn0search6])",
+    "links": ["https://www.cbp.com.my/ms/produk/pembiayaan-peribadi", "https://www.imoney.my/personal-loan/co-opbank-pertama/personal-financing-i-al-yasser"],
+    "last_verified": "2025-10-19"
+  },
+  // =========================
+  // HOME FINANCING-i Al-Amali
+  {
+    "product_id": "CBP-HOME-HomeFinancing-i Al-Amali",
+    "name": "Home Financing-i Al-Amali",
+    "bank": "Co-opbank Pertama",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": 10000000,
+    "rate_display": "从 ~2.9% 起", 
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Income proof (salary slips/BE/EPF)", "S&P document", "Valuation report"],
+    "approval_days": null,
+    "approval_days_note": "比价平台列出最高融资额 RM10 百万，最长 35 年。([turn0search27])",
+    "links": ["https://www.imoney.my/home-loan/co-opbank-pertama/cbp-home-financing-i-al-amali", "https://www.cbp.com.my/ms/produk/pembiayaan-perumahan"],
+    "last_verified": "2025-10-19"
+  },
+  // =========================
+  // AR-RAHNU GOLD PLEDGE
+  {
+    "product_id": "CBP-PERS-Ar-Rahnu",
+    "name": "Ar-Rahnu Financing (Gold Pledge)",
+    "bank": "Co-opbank Pertama",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "income_min": null,
+    "age_min": null,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Gold coin/wafer/certificate"],
+    "approval_days": null,
+    "approval_days_note": "报道指出 CBP 有提供 Ar-Rahnu 金押融资。([turn0search12])",
+    "links": ["https://www.cbp.com.my/produk/ar-rahnu"],
+    "last_verified": "2025-10-19"
+  },
+  // =========================
+  // VEHICLE FINANCING-i (新增类别)
+  {
+    "product_id": "CBP-AUTO-VehicleFinancing-i",
+    "name": "Vehicle Financing-i",
+    "bank": "Co-opbank Pertama",
+    "category": "auto",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Driving licence", "Income proof/bank statements", "Vehicle quotation"],
+    "approval_days": null,
+    "approval_days_note": "暂未找到官方条款页面，仅论坛/比价平台暗示 CBP 提供车贷产品。信息需补齐。",
+    "links": [],
+    "last_verified": "2025-10-19"
+  },
+  // =========================
+  // EDUCATION FINANCING-i (新增类别)
+  {
+    "product_id": "CBP-EDU-EducationFinancing-i",
+    "name": "Education Financing-i",
+    "bank": "Co-opbank Pertama",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "income_min": null,
+    "age_min": null,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Tuition invoice/Offer letter", "Bank statements"],
+    "approval_days": null,
+    "approval_days_note": "暂无公开产品页面，仅奖学助贷资讯显示 CBP 提供学生融资/奖学金相关服务。需进一步验证。",
+    "links": [],
+    "last_verified": "2025-10-19"
+  },
+  // =========================
+  // SME / SMALL BUSINESS FINANCING
+  {
+    "product_id": "CBP-BUS-SmallBusinessFinancing",
+    "name": "Small Business Financing",
+    "bank": "Co-opbank Pertama",
+    "category": "sme",
+    "shariah": "both",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "company_age_min_months": null,
+    "ownership_requirement": null,
+    "collateral_required": null,
+    "docs_required": ["Business registration", "Bank statements", "Financials"],
+    "approval_days": null,
+    "approval_days_note": "新闻提及 CBP 提供小型企业融资。([turn0search25])",
+    "links": ["https://www.cbp.com.my/produk/small-business-financing"],
+    "last_verified": "2025-10-19"
+  }
+]
+EOF
+
+echo "✅ data/banks/cbp_full_updated.json 已创建（CBP 更新版含车辆+教育融资）。"
