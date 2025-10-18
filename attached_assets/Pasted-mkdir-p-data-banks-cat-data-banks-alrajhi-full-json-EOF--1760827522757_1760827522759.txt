@@ -1,0 +1,83 @@
+mkdir -p data/banks
+
+cat > data/banks/alrajhi_full.json <<'EOF'
+[
+  // =========================
+  // PERSONAL FINANCING-i
+  // =========================
+  {
+    "product_id": "ALRAJHI-PERS-PersonalFinancing-i",
+    "name": "Personal Financing-i",
+    "bank": "Al Rajhi Bank Malaysia",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 10000,
+    "amount_max": 250000,
+    "rate_display": "From ~5.27% p.a.", 
+    "tenure_min_months": 12,
+    "tenure_max_months": 96,
+    "income_min": 5000,
+    "age_min": 25,
+    "age_max": 60,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Latest 3 months payslips/bank statements", "EPF/BE forms"], 
+    "approval_days": "Within 24 hours (for some cases)", 
+    "approval_days_note": "比价站资料指出最快 24 小时内审批。 [oai_citation:0‡RinggitPlus](https://ringgitplus.com/en/personal-loan/Al-Rajhi-Personal-Financing-i.html?utm_source=chatgpt.com)", 
+    "links": ["https://www.alrajhibank.com.my/personal/financing/personal-financing-i", "https://www.imoney.my/personal-loan/al-rajhi-bank/personal-financing-i"], 
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // HOME FINANCING-i / HOME LOAN
+  // =========================
+  {
+    "product_id": "ALRAJHI-HOME-HomeFinancing-i",
+    "name": "Home Financing-i",
+    "bank": "Al Rajhi Bank Malaysia",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Income proof", "S&P/Title", "Valuation report"], 
+    "approval_days": null,
+    "approval_days_note": "官网及报告中提到「Home Financing product restarted」但公开条款不详。 [oai_citation:1‡مصرف الراجحي](https://www.alrajhibank.com.sa/ir24/business_in_perspective/international_network/alrajhi_bank__malaysia.html?utm_source=chatgpt.com)", 
+    "links": ["https://www.alrajhibank.com.my/personal/financing/home-financing-i", "https://www.mifc.com/-/al-rajhi-bank"], 
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // TRADE / BUSINESS FINANCING-i
+  // =========================
+  {
+    "product_id": "ALRAJHI-BUS-TradeFinancing-i",
+    "name": "Trade Financing-i – Import / Export / Merchant Trade",
+    "bank": "Al Rajhi Bank Malaysia",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "company_age_min_months": null,
+    "ownership_requirement": "Malaysian registered business",
+    "collateral_required": null,
+    "docs_required": ["SSM registration", "Trade documents (LC/BA)", "Bank statements"], 
+    "approval_days": null,
+    "approval_days_note": "官网产品栏目「Trade Commodity」指出银行提供定制化进出口/商户贸易融资。 [oai_citation:2‡阿拉吉银行](https://www.alrajhibank.com.my/business/financing/trade-financing/trade-commodity?utm_source=chatgpt.com)", 
+    "links": ["https://www.alrajhibank.com.my/business/financing/trade-financing/trade-commodity"], 
+    "last_verified": "2025-10-19"
+  }
+]
+EOF
+
+echo "✅ data/banks/alrajhi_full.json 已创建（Al Rajhi Bank Malaysia 全产品主档）。"
