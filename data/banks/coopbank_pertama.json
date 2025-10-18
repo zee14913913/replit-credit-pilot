@@ -1,0 +1,185 @@
+[
+  {
+    "product_id": "CBP-PERS-PersonalFinancing-i-AlYasser",
+    "name": "Personal Financing-i Al-Yasser",
+    "bank": "Co-opbank Pertama",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 5000,
+    "amount_max": 400000,
+    "rate_display": "From 2.95% p.a. (with Takaful) / +1% if without Takaful",
+    "reference_rates": "SBR 2.75% (estimated, CBP rates not publicly disclosed)",
+    "shariah_contract": "Tawarruq",
+    "tenure_min_months": 12,
+    "tenure_max_months": 120,
+    "income_min": 24000,
+    "age_min": 18,
+    "age_max": 58,
+    "citizenship": "MY",
+    "special_conditions": [
+      "Civil servants, statutory bodies, GLCs with permanent positions",
+      "Minimum 3 months service required",
+      "Military personnel excluded",
+      "Retirement age: 60 years"
+    ],
+    "dsr_policy": "Salary deduction ≤60% (flexible)",
+    "docs_required": ["NRIC", "Latest 3 months payslips", "Latest 3 months bank statements", "Employer confirmation letter", "EA/EPF statements", "Redemption letter (if debt consolidation)"],
+    "approval_days": "3 working days",
+    "approval_days_note": "Fast approval for government sector",
+    "special_features": [
+      "Up to 98% payout (minus 2 months initial payment)",
+      "Instant withdrawal facility",
+      "BPA salary deduction (ANGKASA) or other methods",
+      "Early settlement: rebate at bank's discretion (non-BPA methods)",
+      "No collateral required",
+      "Rate with Takaful: 2.95% p.a.",
+      "Rate without Takaful: +1% on Effective Profit Rate (KKE)",
+      "Tenure: Up to 10 years or until retirement age 60",
+      "Target: Government employees, statutory bodies, GLCs"
+    ],
+    "links": [
+      "https://www.cbp.com.my/en/product/personal-financing-i/personal-financing-i-al-yaseer",
+      "https://www.imoney.my/personal-loan/co-opbank-pertama/personal-financing-i-al-yasser"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CBP-HOME-HomeFinancing-i-AlAmali",
+    "name": "Home Financing-i Al-Amali",
+    "bank": "Co-opbank Pertama",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": 10000000,
+    "rate_display": "As low as 2.9% p.a.",
+    "reference_rates": "SBR 2.75% (estimated, CBP rates not publicly disclosed)",
+    "shariah_contract": "Murabahah Tawarruq",
+    "financing_ratio": "Up to 90%",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": 70,
+    "citizenship": "MY",
+    "special_conditions": [
+      "Malaysian citizens (employed or self-employed)",
+      "Not bankrupt",
+      "No AKPK record",
+      "Good credit record (CTOS & CCRIS)",
+      "Joint applications allowed (max 2 applicants with close family ties)"
+    ],
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Income proof (salary slips/BE/EPF)", "S&P document", "Valuation report"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Subject to valuation and legal process",
+    "special_features": [
+      "Progressive Payment: Pay actual monthly profit only during construction (24-36 months for strata-titled properties)",
+      "Fire insurance mandatory",
+      "MRTT (Mortgage Reducing Term Takaful) - contribution based on age and financing amount",
+      "Payment methods: BPA, Salary Deduction, Standing Instruction, PDC, Cash",
+      "Max financing: Up to RM10 million",
+      "Tenure: Up to 35 years or age 70",
+      "Shariah-compliant (Murabahah Tawarruq)"
+    ],
+    "links": [
+      "https://www.cbp.com.my/en/product/personal-financing-i/financing-i-al-amali",
+      "https://www.imoney.my/home-loan/co-opbank-pertama/cbp-home-financing-i-al-amali"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CBP-PERS-ArRahnu",
+    "name": "Ar-Rahnu Financing (Gold Pledge)",
+    "bank": "Co-opbank Pertama",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 100,
+    "amount_max": null,
+    "rate_display": "Storage fee not publicly disclosed (contact bank)",
+    "shariah_contract": "Ar-Rahnu (Islamic pawn broking)",
+    "financing_ratio": "Based on gold value (typically 70%-80%)",
+    "tenure_min_months": 1,
+    "tenure_max_months": 6,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Gold coin/wafer/certificate"],
+    "approval_days": "Instant",
+    "approval_days_note": "Same-day cash conversion",
+    "special_features": [
+      "Convert gold to cash quickly",
+      "No credit check required",
+      "Redemption anytime within tenure",
+      "Accepted gold: coins, wafers, certificates",
+      "Shariah-compliant Islamic pawn broking"
+    ],
+    "links": [
+      "https://www.cbp.com.my/produk/ar-rahnu"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CBP-AUTO-VehicleFinancing-i",
+    "name": "Vehicle Financing-i",
+    "bank": "Co-opbank Pertama",
+    "category": "auto",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Rate not publicly disclosed (Auto Financing Department exists; contact bank)",
+    "reference_rates": "SBR 2.75% (estimated, CBP rates not publicly disclosed)",
+    "shariah_contract": "Islamic hire purchase (expected)",
+    "tenure_min_months": 12,
+    "tenure_max_months": 108,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": 65,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Driving licence", "Income proof/bank statements", "Vehicle quotation"],
+    "approval_days": "5–7 working days",
+    "approval_days_note": "Auto Financing Department confirmed to exist; product details not publicly advertised",
+    "special_features": [
+      "Auto Financing Department exists (Head: Ridwan Rosli)",
+      "Expected Shariah-compliant structure",
+      "For government & private sector employees",
+      "Product details not publicly advertised - contact bank for rates and terms"
+    ],
+    "links": [
+      "https://www.cbp.com.my"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CBP-BUS-SmallBusinessFinancing",
+    "name": "Small Business Financing",
+    "bank": "Co-opbank Pertama",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Rate not publicly disclosed (contact bank)",
+    "reference_rates": "SBR 2.75% (estimated, CBP rates not publicly disclosed)",
+    "shariah_contract": "Tawarruq/Murabahah (expected)",
+    "tenure_min_months": 12,
+    "tenure_max_months": 120,
+    "company_age_min_months": null,
+    "ownership_requirement": "Malaysian registered business; cooperative members priority",
+    "collateral_required": "As required",
+    "docs_required": ["Business registration", "Bank statements", "Financials"],
+    "approval_days": "14–21 working days",
+    "approval_days_note": "For small businesses and cooperatives",
+    "special_features": [
+      "For small businesses and cooperatives",
+      "Shariah-compliant financing",
+      "Priority for cooperative members",
+      "Product details not publicly advertised - contact bank for terms"
+    ],
+    "links": [
+      "https://www.cbp.com.my/produk/small-business-financing"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]
