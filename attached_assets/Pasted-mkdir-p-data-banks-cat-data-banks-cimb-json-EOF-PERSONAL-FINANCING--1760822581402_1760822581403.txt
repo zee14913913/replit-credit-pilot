@@ -1,0 +1,370 @@
+mkdir -p data/banks
+
+cat > data/banks/cimb.json <<'EOF'
+[
+  // ===== PERSONAL FINANCING =====
+  {
+    "product_id": "CIMB-PERS-CASHPLUS",
+    "name": "CIMB Cash Plus Personal Loan",
+    "bank": "CIMB",
+    "category": "personal",
+    "amount_min": 2000,
+    "amount_max": 100000,
+    "rate_display": "Flat 4.38%–19.88% p.a. (EIR ~8.08%–31.42%)",
+    "tenure_min_months": 24,
+    "tenure_max_months": 60,
+    "income_min": 2000,
+    "age_min": 21,
+    "age_max": 58,
+    "citizenship": "MY",
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["NRIC", "Employment proof (≥6 months)", "Income docs as requested"],
+    "approval_days": "0–2 working days",
+    "approval_days_note": "Instant disbursement stated; bank does not disclose exact SLA. Using internal operational benchmark.",
+    "links": [
+      "https://www.cimb.com.my/en/personal/day-to-day-banking/financing/personal-financing/cash-plus-personal-loan.html",
+      "https://apply.cimb.com.my/forms/cpl/",
+      "https://www.cimb.com.my/content/dam/cimb/personal/documents/loan-financing/personal-loan/cashplus/CIMB_CashPlusPersonalLoan_Disclaimer.pdf",
+      "https://www.cimb.com.my/en/personal/life-goals/planning-for-my-future/personal-loan-faq.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CIMB-PERS-EZI",
+    "name": "CIMB e-Zi Tunai Personal Loan (Digital Financing)",
+    "bank": "CIMB",
+    "category": "personal",
+    "amount_min": 100,
+    "amount_max": 100000,
+    "rate_display": "Flat 6.88%–24% p.a. (EIR up to 41.70% depends on tenure)",
+    "tenure_min_months": 0, 
+    "tenure_max_months": 84,
+    "income_min": 1400,
+    "age_min": 21,
+    "age_max": 60,
+    "citizenship": "MY",
+    "special_conditions": ["Touch ‘n Go eWallet user", "≥3 months employment or business"],
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["EPF (2 years with ≥13 months contribution) OR payslip/Form BE (as per employment type)", "Business proof for self-employed"],
+    "approval_days": "0–1 working day",
+    "approval_days_note": "Instant disbursement option advertised; exact SLA not disclosed. Internal benchmark used.",
+    "links": [
+      "https://www.cimb.com.my/en/personal/day-to-day-banking/financing/personal-financing/e-zi-cash-personal-financing.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CIMB-PERS-AWAM-I",
+    "name": "CIMB Pembiayaan Peribadi Awam-i (Govt Employees)",
+    "bank": "CIMB",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 5000,
+    "amount_max": 200000,
+    "rate_display": "Flat from 3.50% p.a.",
+    "tenure_min_months": 12,
+    "tenure_max_months": 120,
+    "income_min": 1400,
+    "age_min": 21,
+    "age_max": 59,
+    "citizenship": "MY",
+    "special_conditions": ["Government/GLC/statutory bodies", "Salary deduction via ANGKASA"],
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["NRIC", "Payslip", "Tax Form BE (if applicable)"],
+    "approval_days": "2–5 working days",
+    "approval_days_note": "No SLA disclosed; benchmarked for payroll-deduction channel.",
+    "links": [
+      "https://www.cimb.com.my/en/personal/day-to-day-banking/financing/personal-financing/pembiayaan-peribadi-awam-i.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // ===== DEBT CONSOLIDATION VIA CARDS FACILITIES =====
+  {
+    "product_id": "CIMB-CARD-BAL-TRANSFER",
+    "name": "CIMB Credit Card Balance Transfer",
+    "bank": "CIMB",
+    "category": "debt_consolidation",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Promo-based balance transfer (save up to ~67% vs interest)",
+    "tenure_min_months": 6,
+    "tenure_max_months": 36,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 65,
+    "citizenship": "MY",
+    "dsr_policy": "N/A for BT (card underwriting applies)",
+    "docs_required": ["CIMB credit card", "Balance transfer request"],
+    "approval_days": "1–3 working days",
+    "approval_days_note": "No official SLA; internal card ops benchmark.",
+    "links": [
+      "https://www.cimb.com.my/en/personal/day-to-day-banking/cards/credit-card/balance-transfer.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CIMB-CARD-BAL-CONVERSION",
+    "name": "CIMB Credit Card Balance Conversion/Balance Conversion-i",
+    "bank": "CIMB",
+    "category": "debt_consolidation",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Lower rate/payable facility charges vs revolving",
+    "tenure_min_months": 6,
+    "tenure_max_months": 60,
+    "docs_required": ["CIMB credit card", "Conversion request"],
+    "approval_days": "0–2 working days",
+    "approval_days_note": "No official SLA; internal card ops benchmark.",
+    "links": [
+      "https://www.cimb.com.my/en/personal/day-to-day-banking/cards/credit-card/balance-conversion.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // ===== PROPERTY / HOME FINANCING (INCL. REFINANCE) =====
+  {
+    "product_id": "CIMB-HOME-HOMELOAN",
+    "name": "CIMB HomeLoan (Conventional)",
+    "bank": "CIMB",
+    "category": "home",
+    "amount_min": 15000,
+    "amount_max": null,
+    "rate_display": "BR + spread (competitive); MoF up to 95% incl. fees",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "age_min": 18,
+    "age_max": 70,
+    "citizenship": "MY/PR",
+    "dsr_policy": "Bank internal",
+    "docs_required": ["NRIC", "Income & liabilities docs", "S&P/Title", "Valuation (as required)"],
+    "approval_days": "3–7 working days (pre-approval may be instant)",
+    "approval_days_note": "Site mentions instant approval; legal/valuation follow-ups not SLA-published.",
+    "links": [
+      "https://www.cimb.com.my/en/personal/day-to-day-banking/financing/property-financing/homeloan.html",
+      "https://www.cimb.com.my/en/personal/day-to-day-banking/financing/property-financing.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CIMB-HOME-HOMEFLEXI",
+    "name": "CIMB HomeFlexi (Conventional)",
+    "bank": "CIMB",
+    "category": "home",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "BR + spread; redraw/extra payment flexibility",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "age_min": 18,
+    "age_max": 70,
+    "docs_required": ["NRIC", "Income docs", "S&P/Title"],
+    "approval_days": "3–7 working days",
+    "links": [
+      "https://www.cimb.com.my/en/personal/day-to-day-banking/financing/property-financing/home-flexi.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CIMB-HOME-FLEXI-I",
+    "name": "CIMB Flexi Home Financing-i (Islamic Full Flexi)",
+    "bank": "CIMB",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Profit from ~4.35% p.a. (market listing); full flexi structure",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "age_min": 18,
+    "age_max": 70,
+    "docs_required": ["NRIC", "Income docs", "S&P/Title"],
+    "approval_days": "3–7 working days",
+    "links": [
+      "https://www.cimb.com.my/en/personal/day-to-day-banking/financing/property-financing/flexi-home-financing-i.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CIMB-HOME-VARIABLE-I",
+    "name": "CIMB Variable Home Financing-i",
+    "bank": "CIMB",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Islamic variable rate; MoF up to 95% (incl. fees cap 5%)",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "approval_days": "3–7 working days",
+    "links": [
+      "https://www.cimbpreferred.com.my/en/preferred-experience/banking-solutions/financing/variable-home-financing-i.html",
+      "https://www.cimb.com.my/en/personal/day-to-day-banking/financing/property-financing.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CIMB-HOME-PR1MA",
+    "name": "CIMB PR1MA Home Financing",
+    "bank": "CIMB",
+    "category": "home",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Up to 100% +5% (GMTA/Legal/Valuation fees)",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "approval_days": "5–10 working days",
+    "links": [
+      "https://www.cimb.com.my/en/personal/day-to-day-banking/financing/packages/pr1ma-home-financing.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CIMB-HOME-ZMC-REFI",
+    "name": "CIMB Zero Moving Cost (Home Refinancing)",
+    "bank": "CIMB",
+    "category": "refinance",
+    "rate_display": "Refinance package with legal/valuation fee waivers (cap/terms apply)",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "approval_days": "5–10 working days",
+    "links": [
+      "https://www.cimb.com.my/en/personal/day-to-day-banking/financing/packages/zero-moving-cost.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CIMB-HOME-GREEN",
+    "name": "Preferential Rates for Green Homes",
+    "bank": "CIMB",
+    "category": "home",
+    "rate_display": "Preferential GBI-linked rates",
+    "approval_days": "3–7 working days",
+    "links": [
+      "https://www.cimb.com.my/en/personal/day-to-day-banking/financing/property-financing.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // ===== AUTO / VEHICLE =====
+  {
+    "product_id": "CIMB-AUTO-HP",
+    "name": "CIMB Hire Purchase (Conventional)",
+    "bank": "CIMB",
+    "category": "auto",
+    "rate_display": "Fixed/variable; MoF up to 90%; tenure up to 9 years",
+    "tenure_max_months": 108,
+    "docs_required": ["NRIC/Passport", "Driving Licence", "3 months payslips or income proof", "3/6 months bank statements", "EPF/Tax statement"],
+    "approval_days": "1–3 working days",
+    "links": [
+      "https://www.cimb.com.my/en/personal/day-to-day-banking/financing/auto-financing/hire-purchase.html",
+      "https://www.cimb.com.my/en/personal/day-to-day-banking/financing/auto-financing.html",
+      "https://www.cimb.com.my/en/personal/help-support/rates-charges/interest-rates-charges/fees-charges/car-loans.html",
+      "https://www.cimb.com.my/en/personal/help-support/calculators/auto-financing-monthly-instalment-calculator.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CIMB-AUTO-HP-I",
+    "name": "CIMB Islamic Hire Purchase-i",
+    "bank": "CIMB",
+    "category": "auto",
+    "shariah": "yes",
+    "rate_display": "Competitive profit rate; MoF up to 90%; fast approval",
+    "tenure_max_months": 108,
+    "approval_days": "1–3 working days",
+    "links": [
+      "https://www.cimb.com.my/en/personal/day-to-day-banking/financing/auto-financing/hire-purchase-i.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // ===== SME FINANCING =====
+  {
+    "product_id": "CIMB-SME-QUICKBIZ",
+    "name": "CIMB SME Quick Biz Financing (Unsecured)",
+    "bank": "CIMB",
+    "category": "sme",
+    "amount_min": null,
+    "amount_max": 5000000,
+    "rate_display": "Risk-based pricing (unsecured)",
+    "tenure_min_months": 12,
+    "tenure_max_months": 84,
+    "company_age_min_months": 36,
+    "ownership_requirement": "Malaysian-owned SME",
+    "collateral_required": false,
+    "docs_required": ["SSM", "Financial statements/Tax", "6–12 months bank statements", "Directors PG (as applicable)"],
+    "approval_days": "3–7 working days",
+    "approval_days_note": "No SLA disclosed; benchmarked from SME unsecured processing.",
+    "links": [
+      "https://www.cimb.com.my/en/business/business-solutions/financing/sme-financing/sme-quick-biz-financing.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CIMB-SME-BIZPROPERTY",
+    "name": "CIMB SME Biz Property Financing / Financing-i",
+    "bank": "CIMB",
+    "category": "sme",
+    "rate_display": "Property + working capital leverage; margin up to ~150%",
+    "tenure_max_months": 300,
+    "collateral_required": "Property",
+    "approval_days": "7–14 working days",
+    "links": [
+      "https://www.cimb.com.my/en/business/business-solutions/financing/sme-financing/sme-biz-property-financing.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CIMB-SME-GOVT-BNM",
+    "name": "CIMB Government/BNM Schemes for SMEs",
+    "bank": "CIMB",
+    "category": "sme",
+    "rate_display": "As per scheme (SJPP/BNM etc.)",
+    "approval_days": "7–20 working days",
+    "approval_days_note": "Dependent on agency approval and collateral/legal docs.",
+    "links": [
+      "https://www.cimb.com.my/en/business/business-solutions/financing/sme-financing.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CIMB-SME-GEN-WC",
+    "name": "CIMB General Working Capital Financing",
+    "bank": "CIMB",
+    "category": "sme",
+    "rate_display": "RBP; secured/unsecured variants",
+    "approval_days": "5–10 working days",
+    "links": [
+      "https://www.cimb.com.my/en/business/business-solutions/financing/sme-financing.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CIMB-SME-EQUIP",
+    "name": "CIMB Equipment Financing",
+    "bank": "CIMB",
+    "category": "sme",
+    "rate_display": "Asset-backed; margin/tenure per asset class",
+    "approval_days": "5–10 working days",
+    "links": [
+      "https://www.cimb.com.my/en/business/business-solutions/financing/sme-financing.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "CIMB-SME-TRADE",
+    "name": "CIMB Trade Financing (Import/Export/Guarantees)",
+    "bank": "CIMB",
+    "category": "sme",
+    "rate_display": "As per trade product (LC/TR/BA/Trust Receipt/Guarantees)",
+    "approval_days": "3–10 working days",
+    "links": [
+      "https://www.cimb.com.my/en/business/business-solutions/financing/sme-financing.html"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]
+EOF
+
+echo "✅ data/banks/cimb.json 已创建（CIMB 全产品已写入）。"
