@@ -1,0 +1,109 @@
+mkdir -p data/banks
+
+cat > data/banks/cbp_full.json <<'EOF'
+[
+  // =========================
+  // PERSONAL FINANCING-i AL-YASSER (公务员/雇员)
+  // =========================
+  {
+    "product_id": "CBP-PERS-PersonalFinancing-i Al-Yasser",
+    "name": "Personal Financing-i Al-Yasser",
+    "bank": "Co-opbank Pertama",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 5000,
+    "amount_max": 400000,
+    "rate_display": "从 ~3.45% p.a. 起（1-3 年）；约 3.75% 起（4-10 年）", 
+    "tenure_min_months": 12,
+    "tenure_max_months": 120,
+    "income_min": 2000,
+    "age_min": 18,
+    "age_max": 58,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Latest 3 months payslips", "Latest 3 months bank statements", "Employer confirmation letter", "Redemption letter (if debt consolidation)"],
+    "approval_days": "3 working days",
+    "approval_days_note": "比价平台（iMoney）显示最快 3 个工作日内审批。 [oai_citation:0‡iMoney](https://www.imoney.my/personal-loan/co-opbank-pertama/personal-financing-i-al-yasser?utm_source=chatgpt.com)",
+    "links": ["https://www.cbp.com.my/ms/produk/pembiayaan-peribadi", "https://www.imoney.my/personal-loan/co-opbank-pertama/personal-financing-i-al-yasser"],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // HOME FINANCING-i AL-AMALI
+  // =========================
+  {
+    "product_id": "CBP-HOME-HomeFinancing-i Al-Amali",
+    "name": "Home Financing-i Al-Amali",
+    "bank": "Co-opbank Pertama",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": 10000000,
+    "rate_display": "从 ~3.75% p.a. 起", 
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Income proof (salary slips/BE/EPF)", "S&P document", "Valuation report"],
+    "approval_days": null,
+    "approval_days_note": "比价资料注明最高融资额至 RM10 million、最长至 35 年。 [oai_citation:1‡Co-opbank Pertama](https://cbp-tot.primuscore.com/en/product/personal-financing-i/home-financing-i-al-amali?utm_source=chatgpt.com)",
+    "links": ["https://cbp-tot.primuscore.com/en/product/personal-financing-i/home-financing-i-al-amali", "https://www.imoney.my/home-loan/co-opbank-pertama/cbp-home-financing-i-al-amali"],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // AR-RAHNU / GOLD PLEDGE FINANCING
+  // =========================
+  {
+    "product_id": "CBP-PERS-Ar-Rahnu",
+    "name": "Ar-Rahnu Financing (Gold Pledge)",
+    "bank": "Co-opbank Pertama",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "income_min": null,
+    "age_min": null,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Gold coin/wafer/certificate"], 
+    "approval_days": null,
+    "approval_days_note": "研究型资料指出 CBP 有提供 Ar-Rahnu 金押融资。 [oai_citation:2‡BERNAMA](https://bernama.com/en/news.php?id=2160026&utm_source=chatgpt.com)",
+    "links": ["https://www.cbp.com.my/"], 
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // SMALL BUSINESS / SME FINANCING
+  // =========================
+  {
+    "product_id": "CBP-BUS-SME-SmallBusinessFinancing",
+    "name": "Small Business Financing",
+    "bank": "Co-opbank Pertama",
+    "category": "sme",
+    "shariah": "both",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "company_age_min_months": null,
+    "ownership_requirement": null,
+    "collateral_required": null,
+    "docs_required": ["Business registration", "Bank statements", "Financials"], 
+    "approval_days": null,
+    "approval_days_note": "在新闻中提及 CBP 提供 Hire Purchase、Small Business Financing 等产品。 [oai_citation:3‡Asian Business Review](https://asianbusinessreview.com/co-written-partner/event-news/co-opbank-pertama-bags-malaysia-technology-excellence-awards-digital-platform-project?utm_source=chatgpt.com)",
+    "links": ["https://www.cbp.com.my/"], 
+    "last_verified": "2025-10-19"
+  }
+]
+EOF
+
+echo "✅ data/banks/cbp_full.json 已创建（Co-opbank Pertama 全产品主档）。"

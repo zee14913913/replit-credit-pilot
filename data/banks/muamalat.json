@@ -1,0 +1,498 @@
+[
+  {
+    "product_id": "MUAMALAT-PERS-PersonalFinancing-i",
+    "name": "Personal Financing-i (Cash-i SMART)",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 10000,
+    "amount_max": 250000,
+    "rate_display": "6.99%–10.99% p.a. / EPR: 12.89%–18.08% p.a.",
+    "shariah_contract": "Tawarruq (Wa'd Mulzim + Murabahah + Wakalah)",
+    "tenure_min_months": 24,
+    "tenure_max_months": 84,
+    "income_min": 24000,
+    "age_min": 21,
+    "age_max": 60,
+    "citizenship": "MY",
+    "special_conditions": [
+      "Permanent employees only (corporate, government, PLCs, MNCs, private companies)"
+    ],
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Latest 3 months payslips", "Bank statements", "EPF/Tax BE form"],
+    "approval_days": "3–5 working days",
+    "approval_days_note": "Fast approval via Bank Muamalat Mobile Application Platform (MAP)",
+    "special_features": [
+      "Zero processing fees",
+      "No hidden charges",
+      "No collateral/guarantor required",
+      "Optional Takaful insurance",
+      "Online application via MAP"
+    ],
+    "links": [
+      "https://www.muamalat.com.my/financing/personal/personal-financing/cash-i-smart/",
+      "https://www.muamalat.com.my/financing/personal/personal-financing/personal-financing-i/",
+      "https://www.comparehero.my/personal-loan/partners/bank-muamalat"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MUAMALAT-HOME-SMARTMortgageHOME",
+    "name": "SMART Mortgage HOME",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": 100000,
+    "amount_max": 1000000,
+    "rate_display": "Variable rate based on IBR; ceiling rate 10.5% p.a.",
+    "reference_rates": "SBR 2.75% (effective July 14, 2025); ceiling 10.5% p.a.",
+    "financing_ratio": "90% + 10% MCRE",
+    "shariah_contract": "Tawarruq/Murabahah",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Income proof (3 months payslips, 6 months bank statements)", "EPF statements", "S&P Agreement", "Valuation Report"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Subject to valuation and legal process",
+    "special_features": [
+      "No lock-in period - refinance anytime without penalty",
+      "Up to 90% property financing + 10% MCRE (legal, valuation, insurance, stamp duty)",
+      "Tenure: Up to 35 years or age 70",
+      "Variable rate linked to IBR",
+      "Rate protection: Ceiling rate 10.5% p.a.",
+      "MRTT/MLTT Takaful required (can use own provider)",
+      "Zero moving costs with 10% MCRE"
+    ],
+    "links": [
+      "https://www.muamalat.com.my/financing/personal/mortgage/home-financing/smart-mortgage-home/",
+      "https://ringgitplus.com/en/home-loan/Bank-Muamalat-Home-Financing-i.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MUAMALAT-HOME-SMARTMortgageFLEXI",
+    "name": "SMART Mortgage FLEXI",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": 100000,
+    "amount_max": null,
+    "rate_display": "Variable rate based on IBR; ceiling rate 10.5% p.a.",
+    "reference_rates": "SBR 2.75% (effective July 14, 2025); ceiling 10.5% p.a.",
+    "financing_ratio": "90% + 5% MCRE",
+    "shariah_contract": "Tawarruq/Murabahah",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Income proof", "S&P Agreement", "Valuation Report"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Flexi facility with redraw option",
+    "special_features": [
+      "Make extra payments to reduce principal",
+      "Redraw excess payments anytime",
+      "Reduce tenure from 35 to 28 years with extra payments",
+      "Up to 90% property financing + 5% MCRE",
+      "No lock-in period",
+      "Variable rate with 10.5% ceiling protection"
+    ],
+    "links": [
+      "https://www.muamalat.com.my/financing/personal/mortgage/home-financing/smart-mortgage-flexi/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MUAMALAT-HOME-SMARTMortgageSJKP",
+    "name": "SMART Mortgage SJKP (First-Time Homebuyers)",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": 100000,
+    "amount_max": 500000,
+    "rate_display": "Variable rate based on IBR; ceiling rate 10.5% p.a.",
+    "reference_rates": "SBR 2.75% (effective July 14, 2025); ceiling 10.5% p.a.",
+    "financing_ratio": "110%",
+    "shariah_contract": "Tawarruq/Murabahah",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "special_conditions": [
+      "First-time homebuyers only",
+      "Property value up to RM500,000"
+    ],
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Income proof", "S&P Agreement", "Valuation Report"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "For first-time homebuyers",
+    "special_features": [
+      "Up to 110% financing margin",
+      "Includes MRTT/MLTT, legal fees, valuation fees",
+      "No lock-in period",
+      "Tenure up to 35 years or age 70",
+      "Variable rate with 10.5% ceiling protection"
+    ],
+    "links": [
+      "https://www.muamalat.com.my/financing/personal/mortgage/home-financing/smart-mortgage-sjkp/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MUAMALAT-HOME-SJKPMadani",
+    "name": "SJKP Madani (First-Time Homebuyers Enhanced)",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": 100000,
+    "amount_max": 360000,
+    "rate_display": "Variable rate based on IBR; ceiling rate 10.5% p.a.",
+    "reference_rates": "SBR 2.75% (effective July 14, 2025); ceiling 10.5% p.a.",
+    "financing_ratio": "120%",
+    "shariah_contract": "Tawarruq/Murabahah",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "special_conditions": [
+      "First-time homebuyers only",
+      "Property value up to RM360,000"
+    ],
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Income proof", "S&P Agreement", "Valuation Report"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "Enhanced first-time homebuyer program",
+    "special_features": [
+      "Up to 120% financing margin",
+      "Covers renovation, furniture, fittings",
+      "Includes legal fees, MRTT/MLTT, valuation",
+      "No lock-in period",
+      "Tenure up to 35 years or age 70"
+    ],
+    "links": [
+      "https://www.muamalat.com.my/financing/personal/mortgage/home-financing/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MUAMALAT-HOME-SJKPSUPER",
+    "name": "SJKP SUPER (Step-Up Profit Rate)",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": 100000,
+    "amount_max": 500000,
+    "rate_display": "Variable step-up rate (lower first 5 years); ceiling rate 10.5% p.a.",
+    "reference_rates": "SBR 2.75% (effective July 14, 2025); ceiling 10.5% p.a.",
+    "financing_ratio": "110%",
+    "shariah_contract": "Tawarruq/Murabahah",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "special_conditions": [
+      "First-time homebuyers only",
+      "Launched 2025"
+    ],
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Income proof", "S&P Agreement", "Valuation Report"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "New 2025 product with step-up rates",
+    "special_features": [
+      "Lower instalments for first 5 years",
+      "Profit-only payments during construction phase",
+      "Step-up rate structure for affordability",
+      "Up to 110% financing",
+      "First bank in Malaysia to launch SJKP step-up rate",
+      "No lock-in period"
+    ],
+    "links": [
+      "https://ringgitplus.com/en/blog/sponsored/bank-muamalat-becomes-first-bank-to-launch-step-up-profit-rate-super-for-sjkp-home-financing.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MUAMALAT-HOME-Refinancing-i",
+    "name": "Home Refinancing-i (Cash-out / Redemption)",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "refinance",
+    "shariah": "yes",
+    "amount_min": 50000,
+    "amount_max": null,
+    "rate_display": "Variable rate based on IBR; ceiling rate 10.5% p.a.",
+    "reference_rates": "SBR 2.75%, IBR varies (effective July 14, 2025); ceiling 10.5% p.a.",
+    "shariah_contract": "Tawarruq/Murabahah",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Existing loan statement", "Property documents", "Income proof"],
+    "approval_days": "7–14 working days",
+    "approval_days_note": "For refinancing existing properties",
+    "special_features": [
+      "Refinance existing home loans",
+      "Cash-out for personal use",
+      "No lock-in period",
+      "Variable rate with ceiling protection"
+    ],
+    "links": [
+      "https://www.muamalat.com.my/financing/personal/mortgage/home-financing/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MUAMALAT-AUTO-VehicleFinancing-i",
+    "name": "Vehicle Financing-i (AITAB)",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "auto",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Flat rate (not publicly disclosed; contact bank for current rates)",
+    "rate_display_note": "Auto-Grad Scheme: 2.95% p.a. (flat) for fresh graduates",
+    "shariah_contract": "Al-Ijarah Thumma Al-Bai' (AITAB)",
+    "financing_ratio": "90%",
+    "tenure_min_months": 12,
+    "tenure_max_months": 108,
+    "income_min": 27600,
+    "income_min_new_national": 27600,
+    "income_min_non_national": 30000,
+    "income_min_recond": 60000,
+    "age_min": 18,
+    "age_max": 70,
+    "citizenship": "MY/Foreign",
+    "dsr_policy": null,
+    "docs_required": ["MyKad/Passport", "Driving licence", "Latest 3 months salary slips", "Latest 3 months bank statements"],
+    "approval_days": "3–5 working days",
+    "approval_days_note": "Fast approval for vehicle financing",
+    "special_features": [
+      "Up to 90% financing (standard) / 100% (special schemes)",
+      "Tenure up to 9 years",
+      "Flat rate structure",
+      "Mandatory Takaful Islamic insurance",
+      "No early settlement penalty; profit rebate (Ibra') available",
+      "Age: 18-65 years (max 70 at maturity)",
+      "Min income: RM2,300 (new national) / RM2,500 (non-national/used) / RM5,000 (recond)"
+    ],
+    "links": [
+      "https://www.muamalat.com.my/financing/personal/auto/muamalat-vehicle-financing-i-aitab/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MUAMALAT-AUTO-AutoGrad",
+    "name": "Auto-Grad Scheme (Fresh Graduates)",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "auto",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "2.95% p.a. (flat rate)",
+    "shariah_contract": "Al-Ijarah Thumma Al-Bai' (AITAB)",
+    "financing_ratio": "100%",
+    "tenure_min_months": 12,
+    "tenure_max_months": 60,
+    "income_min": 18000,
+    "age_min": 18,
+    "age_max": 35,
+    "citizenship": "MY",
+    "special_conditions": [
+      "Diploma/degree holders within 5 years of graduation"
+    ],
+    "dsr_policy": null,
+    "docs_required": ["MyKad", "Driving licence", "Graduation certificate", "Latest 3 months salary slips", "Latest 3 months bank statements"],
+    "approval_days": "3–5 working days",
+    "approval_days_note": "Special scheme for fresh graduates",
+    "special_features": [
+      "Fixed 2.95% p.a. flat rate",
+      "100% financing available",
+      "5-year tenure",
+      "Min income: RM1,500/month",
+      "For graduates within 5 years of graduation",
+      "~RM573.75/month per RM30,000 financed"
+    ],
+    "links": [
+      "https://ringgitplus.com/en/car-loan/Bank-Muamalat-Auto-Grad-Scheme.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MUAMALAT-AUTO-StepUpAuto-i",
+    "name": "Step-Up Auto Financing-i",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "auto",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Competitive flat rate (not publicly disclosed)",
+    "shariah_contract": "Al-Ijarah Thumma Al-Bai' (AITAB)",
+    "financing_ratio": "100%",
+    "tenure_min_months": 36,
+    "tenure_max_months": 108,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": 70,
+    "citizenship": "MY",
+    "special_conditions": [
+      "Available for Proton/Mitsubishi via EON network"
+    ],
+    "dsr_policy": null,
+    "docs_required": ["MyKad", "Driving licence", "Income proof"],
+    "approval_days": "3–5 working days",
+    "approval_days_note": "Step-up payment structure",
+    "special_features": [
+      "Up to 33% lower instalments for first 3 years",
+      "Then step up to standard rate",
+      "Guaranteed buyback option after 3 years (with myTukar)",
+      "Available via EON network for Proton/Mitsubishi",
+      "Up to 100% financing"
+    ],
+    "links": [
+      "https://www.muamalat.com.my/financing/personal/auto/muamalat-step-up-auto-financing-i/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MUAMALAT-AUTO-GovernmentScheme",
+    "name": "Government Scheme (Vehicle Financing for Govt Staff)",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "auto",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Competitive rates (not publicly disclosed)",
+    "shariah_contract": "Al-Ijarah Thumma Al-Bai' (AITAB)",
+    "financing_ratio": "100%",
+    "tenure_min_months": 12,
+    "tenure_max_months": 108,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": 70,
+    "citizenship": "MY",
+    "special_conditions": [
+      "Government servants only"
+    ],
+    "dsr_policy": null,
+    "docs_required": ["MyKad", "Driving licence", "Latest 3 months salary slips", "Government employment confirmation"],
+    "approval_days": "3–5 working days",
+    "approval_days_note": "Exclusive for government servants",
+    "special_features": [
+      "Up to 100% financing",
+      "Competitive rates for government staff",
+      "Tenure up to 9 years"
+    ],
+    "links": [
+      "https://www.muamalat.com.my/financing/personal/auto/muamalat-government-scheme/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MUAMALAT-EDU-EducationFinancing-i",
+    "name": "Education Financing-i",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Rate not publicly disclosed (contact bank for quotation)",
+    "shariah_contract": "Tawarruq",
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Offer letter from institution", "Income proof"],
+    "approval_days": "5–7 working days",
+    "approval_days_note": "Product listed but no public PDS available",
+    "special_features": [
+      "For higher education financing",
+      "Shariah-compliant",
+      "Contact bank for current rates and terms"
+    ],
+    "links": [
+      "https://www.muamalat.com.my/financing/personal/personal-financing/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MUAMALAT-SME-BusinessFinancing-i",
+    "name": "SME / Business Financing-i (Working Capital & Term Facility)",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": 10000000,
+    "rate_display": "BFR + 2% ≈ 8.56% p.a. (BFR 6.56% + 2% spread)",
+    "reference_rates": "SBR 2.75%, BR 3.56%, BFR 6.56% (effective July 14, 2025)",
+    "shariah_contract": "Tawarruq",
+    "tenure_min_months": 12,
+    "tenure_max_months": 120,
+    "company_age_min_months": 12,
+    "ownership_requirement": "≥ 51% Malaysian ownership (for >RM5M shareholders' funds)",
+    "collateral_required": "As required by facility type",
+    "docs_required": ["SSM registration", "Bank statements (6 months)", "Financials + Tax returns", "Collateral (if any)"],
+    "approval_days": "14–21 working days",
+    "approval_days_note": "Varies by facility type and due diligence",
+    "special_features": [
+      "Vendor Financing: BFR + 2% average (up to 80% of contract/invoice value)",
+      "Bank Negara Funds: Up to RM10M (51% Malaysian ownership, max RM5M shareholders' funds)",
+      "SJUM (MARA Guarantee): Up to RM2M, 7 years tenure (Bumiputera SMEs)",
+      "Commercial Property Financing (CPF): For acquiring/refinancing commercial properties",
+      "Working capital, term financing, trade facilities",
+      "No upfront fees for Bank Negara schemes"
+    ],
+    "links": [
+      "https://www.muamalat.com.my/financing/business/sme-financing/bank-negara-funds-smes/",
+      "https://www.muamalat.com.my/financing/business/sme-financing/vendor-financing-program-contract-financing-sme/",
+      "https://www.muamalat.com.my/financing/business/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MUAMALAT-SME-MicroFinancing-i",
+    "name": "Muamalat Micro Financing-i",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": 10000,
+    "amount_max": 50000,
+    "rate_display": "From 4.00% p.a.",
+    "reference_rates": "SBR 2.75% (effective July 14, 2025)",
+    "shariah_contract": "Tawarruq",
+    "tenure_min_months": 12,
+    "tenure_max_months": 60,
+    "company_age_min_months": 6,
+    "ownership_requirement": "Registered micro-enterprise in Malaysia",
+    "collateral_required": "None",
+    "docs_required": ["SSM certificate", "6 months bank statements", "IC of owners"],
+    "approval_days": "5 working days",
+    "approval_days_note": "Fast approval for micro enterprises",
+    "special_features": [
+      "Collateral-free micro financing",
+      "Fast approval (within 5 working days)",
+      "For micro-enterprises",
+      "Min company age: 6 months"
+    ],
+    "links": [
+      "https://www.muamalat.com.my/financing/business/sme-financing/"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]
