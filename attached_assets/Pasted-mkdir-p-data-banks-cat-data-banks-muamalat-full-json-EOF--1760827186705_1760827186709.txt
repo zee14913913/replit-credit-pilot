@@ -1,0 +1,194 @@
+mkdir -p data/banks
+
+cat > data/banks/muamalat_full.json <<'EOF'
+[
+  // =========================
+  // PERSONAL FINANCING-i
+  // =========================
+  {
+    "product_id": "MUAMALAT-PERS-PersonalFinancing-i",
+    "name": "Personal Financing-i (Tawarruq)",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 5000,
+    "amount_max": 400000,
+    "rate_display": "4.99% – 7.50% p.a. (flat equivalent)",
+    "tenure_min_months": 12,
+    "tenure_max_months": 120,
+    "income_min": 2000,
+    "age_min": 21,
+    "age_max": 60,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Latest 3 months payslips", "Bank statements", "EPF/Tax BE form"],
+    "approval_days": "3 – 5 working days",
+    "approval_days_note": "参考 RinggitPlus 与 iMoney 说明，审批通常 3-5 个工作日 内完成",
+    "links": [
+      "https://www.muamalat.com.my/personal-banking/financing/personal-financing-i/",
+      "https://www.imoney.my/personal-loan/bank-muamalat/personal-financing-i"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // HOME FINANCING-i
+  // =========================
+  {
+    "product_id": "MUAMALAT-HOME-HomeFinancing-i",
+    "name": "Home Financing-i (Tawarruq / Murabahah)",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": 100000,
+    "amount_max": null,
+    "rate_display": "Indicative 4.25% p.a. (tenure up to 35 years)",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "Income proof", "S&P Agreement", "Valuation Report"],
+    "approval_days": null,
+    "approval_days_note": "官网未披露固定 SLA ；比价网站指出 ≤7 个工作日内放款",
+    "links": [
+      "https://www.muamalat.com.my/personal-banking/financing/home-financing-i/",
+      "https://ringgitplus.com/en/home-loan/Bank-Muamalat-Home-Financing-i.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MUAMALAT-HOME-Refinancing-i",
+    "name": "Home Refinancing-i (Cash-out / Redemption Loan)",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": 50000,
+    "amount_max": null,
+    "rate_display": "SBR + 1.50% p.a. indicative",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Existing loan statement", "Property documents", "Income proof"],
+    "approval_days": null,
+    "approval_days_note": "产品类别列于 ‘Home Financing Package’ 中，适用于再融资用途",
+    "links": [
+      "https://www.muamalat.com.my/personal-banking/financing/home-financing-i/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // VEHICLE FINANCING-i
+  // =========================
+  {
+    "product_id": "MUAMALAT-AUTO-VehicleFinancing-i",
+    "name": "Vehicle / Hire Purchase Financing-i (AITAB)",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "auto",
+    "shariah": "yes",
+    "amount_min": 20000,
+    "amount_max": null,
+    "rate_display": "From 3.00% flat p.a.",
+    "tenure_min_months": 12,
+    "tenure_max_months": 108,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": 65,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Driving Licence", "Income proof", "Vehicle quotation"],
+    "approval_days": "3-5 working days",
+    "approval_days_note": "常规审批时间 3-5 天，适用于新车 / 二手车",
+    "links": [
+      "https://www.muamalat.com.my/personal-banking/financing/vehicle-financing-i/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // EDUCATION / ASB FINANCING-i
+  // =========================
+  {
+    "product_id": "MUAMALAT-EDU-EducationFinancing-i",
+    "name": "Education Financing-i",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Offer letter from institution", "Income proof"],
+    "approval_days": null,
+    "approval_days_note": "产品栏位列出；暂无完整 PDS 可公开",
+    "links": [
+      "https://www.muamalat.com.my/personal-banking/financing/education-financing-i/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // SME / BUSINESS FINANCING-i
+  // =========================
+  {
+    "product_id": "MUAMALAT-SME-BusinessFinancing-i",
+    "name": "SME / Business Financing-i (Working Capital & Term Facility)",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": 10000000,
+    "rate_display": "Indicative 3.75% – 5.50% p.a.",
+    "tenure_min_months": 12,
+    "tenure_max_months": 120,
+    "company_age_min_months": 12,
+    "ownership_requirement": "≥ 51% Malaysian ownership",
+    "collateral_required": "As required (by facility type)",
+    "docs_required": ["SSM registration", "Bank statements (6 months)", "Financials + Tax returns", "Collateral (if any)"],
+    "approval_days": null,
+    "approval_days_note": "适用于 working capital、asset purchase 及 trade 用途",
+    "links": [
+      "https://www.muamalat.com.my/business-banking/financing/business-financing/",
+      "https://www.muamalat.com.my/business-banking/financing/sme-financing-i/"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MUAMALAT-SME-MicroFinancing-i",
+    "name": "Muamalat Micro Financing-i",
+    "bank": "Bank Muamalat Malaysia Berhad",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": 10000,
+    "amount_max": 50000,
+    "rate_display": "From 4.00% p.a.",
+    "tenure_min_months": 12,
+    "tenure_max_months": 60,
+    "company_age_min_months": 6,
+    "ownership_requirement": "Registered micro-enterprise in Malaysia",
+    "collateral_required": "None",
+    "docs_required": ["SSM certificate", "6 months bank statements", "IC of owners"],
+    "approval_days": "Within 5 working days (upon complete docs)",
+    "approval_days_note": "银行官方说明 ‘快速审批’ 计划下适用",
+    "links": [
+      "https://www.muamalat.com.my/business-banking/financing/sme-financing-i/"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]
+EOF
+
+echo "✅ data/banks/muamalat_full.json 已创建（Bank Muamalat 全产品主档）。"

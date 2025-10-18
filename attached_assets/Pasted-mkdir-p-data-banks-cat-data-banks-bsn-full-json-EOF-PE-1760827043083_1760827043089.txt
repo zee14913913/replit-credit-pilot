@@ -1,0 +1,153 @@
+mkdir -p data/banks
+
+cat > data/banks/bsn_full.json <<'EOF'
+[
+  // =========================
+  // PERSONAL LOANS – MYRINGGIT SERIES
+  // =========================
+  {
+    "product_id": "BSN-PERS-MyRinggitPublic",
+    "name": "BSN MyRinggit (Public Sector / Tawarruq)",
+    "bank": "Bank Simpanan Nasional (BSN)",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 5000,
+    "amount_max": 400000,
+    "rate_display": "From ~4.60% p.a.",
+    "tenure_min_months": 12,
+    "tenure_max_months": 120,
+    "income_min": 1500,
+    "age_min": 18,
+    "age_max": 60,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Latest 2 months payslips", "Employer confirmation letter", "BSN GIRO/i account"],
+    "approval_days": "Up to 5 working days",
+    "approval_days_note": "iMoney 条款注明最多5工作日。 [oai_citation:0‡iMoney](https://www.imoney.my/personal-loan/bsn/myringgit-i-public-sector?utm_source=chatgpt.com)",
+    "links": ["https://www.bsn.com.my/page/loans", "https://www.imoney.my/personal-loan/bsn/myringgit-i-public-sector"],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "BSN-PERS-MyRinggitEksekutif1",
+    "name": "BSN MyRinggit (Eksekutif-1)",
+    "bank": "Bank Simpanan Nasional (BSN)",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": 200000,
+    "rate_display": "6.00%-8.50% p.a.",
+    "tenure_min_months": 24,
+    "tenure_max_months": 120,
+    "income_min": 3000,
+    "age_min": 21,
+    "age_max": 60,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Latest 3 months payslips", "Latest EPF Statement", "Employer confirmation"],
+    "approval_days": null,
+    "approval_days_note": "比价平台列出范围 6.00-8.50%。 [oai_citation:1‡iMoney](https://www.imoney.my/personal-loan/bsn/myringgit-i-eksekutif-1?utm_source=chatgpt.com)",
+    "links": ["https://www.imoney.my/personal-loan/bsn/myringgit-i-eksekutif-1"],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // HOME LOANS / PROPERTY FINANCING
+  // =========================
+  {
+    "product_id": "BSN-HOME-MyHomeResidential",
+    "name": "BSN MyHome (Residential Property)",
+    "bank": "Bank Simpanan Nasional (BSN)",
+    "category": "home",
+    "shariah": "no",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": 24000,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Latest 3 months bank statements", "EPF Statement", "S&P / Property documents"],
+    "approval_days": null,
+    "approval_days_note": "比价平台引用“可至95%融资、年限至35年或至70岁”。 [oai_citation:2‡RinggitPlus](https://ringgitplus.com/en/home-loan/BSN-MyHome.html?utm_source=chatgpt.com)",
+    "links": ["https://www.bsn.com.my/page/bsn-myhome-residential"],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "BSN-HOME-MyHomePlus",
+    "name": "BSN MyHomePlus (Refinancing / Top-Up)",
+    "bank": "Bank Simpanan Nasional (BSN)",
+    "category": "home",
+    "shariah": "no",
+    "amount_min": 50000,
+    "amount_max": null,
+    "rate_display": "SBR + 1.65% / SBR +1.80% etc.",
+    "tenure_min_months": 60,
+    "tenure_max_months": null,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Loan statement of existing BSN MyHome", "Supporting docs for purpose"],
+    "approval_days": null,
+    "approval_days_note": "活动说明、利率段落声明。 [oai_citation:3‡BSN Malaysia](https://www.bsn.com.my/PersonalBanking/Loans/bsn-myhomeplus?lang=en&utm_source=chatgpt.com)",
+    "links": ["https://www.bsn.com.my/PersonalBanking/Loans/bsn-myhomeplus?lang=en"],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // VEHICLE / AUTO FINANCING
+  // =========================
+  {
+    "product_id": "BSN-AUTO-MyAuto",
+    "name": "BSN MyAuto / MyAuto-i (Hire Purchase)",
+    "bank": "Bank Simpanan Nasional (BSN)",
+    "category": "auto",
+    "shariah": "both",
+    "amount_min": 20000,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": 36,
+    "tenure_max_months": 108,
+    "income_min": 24000,
+    "age_min": 18,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Driving Licence", "Income proof", "Vehicle quotation"],
+    "approval_days": null,
+    "approval_days_note": "资料指出最低RM20k、至90% OTR；适用于MyAuto-i。 [oai_citation:4‡Motorist.my](https://www.motorist.my/car-loan-calculator/bank-simpanan-nasional-bsn?utm_source=chatgpt.com)",
+    "links": ["https://www.bsn.com.my/page/loans"],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // BUSINESS / SME FINANCING
+  // =========================
+  {
+    "product_id": "BSN-BUS-Microplus",
+    "name": "BSN Microplus (Micro & Small Enterprise Loan)",
+    "bank": "Bank Simpanan Nasional (BSN)",
+    "category": "sme",
+    "shariah": "no",
+    "amount_min": 50000,
+    "amount_max": 250000,
+    "rate_display": null,
+    "tenure_min_months": 12,
+    "tenure_max_months": 84,
+    "company_age_min_months": null,
+    "ownership_requirement": "Malaysian registered micro/small business",
+    "collateral_required": null,
+    "docs_required": ["SSM registration", "Business bank statements", "Financials"],
+    "approval_days": "5-7 working days",
+    "approval_days_note": "比价站资料；银行未明确公开。 [oai_citation:5‡iMoney](https://www.imoney.my/business-loan/bsn/bsn-microplus-loan?utm_source=chatgpt.com)",
+    "links": ["https://www.imoney.my/business-loan/bsn/bsn-microplus-loan"],
+    "last_verified": "2025-10-19"
+  }
+]
+EOF
+
+echo "✅ data/banks/bsn_full.json 已创建（BSN 全产品主档）。"
