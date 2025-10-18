@@ -1,0 +1,155 @@
+mkdir -p data/banks
+
+cat > data/banks/publicbank.json <<'EOF'
+[
+  {
+    "product_id": "PBB-PERS-BAE-AG-PFin-i",
+    "name": "Public Bank BAE AG Personal Financing-i (Government/GLC)",
+    "bank": "Public Bank Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": 5000,
+    "amount_max": 150000,
+    "rate_display": "From ~3.99% p.a.",
+    "tenure_min_months": 24,
+    "tenure_max_months": 120,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["NRIC", "Employment proof", "Income docs"],
+    "approval_days": null,
+    "approval_days_note": "Not publicly disclosed",
+    "links": [
+      "https://apply.pbebank.com/bae-ag-personal-financing-i",
+      "https://www.ringgitplus.com/en/personal-loan/Public-Bank-BAE-AG-Personal-Financing-i.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "PBB-PERS-GenPersonalLoan",
+    "name": "Public Bank General Personal Loan",
+    "bank": "Public Bank Berhad",
+    "category": "personal",
+    "shariah": "no",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["NRIC", "Income proof", "Bank statement"],
+    "approval_days": null,
+    "approval_days_note": "To be confirmed via bank or internal PDS",
+    "links": [
+      "https://www.comparehero.my/personal-loan/partners/public-bank"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "PBB-HOME-5HOMEPLAN",
+    "name": "Public Bank 5 HOME Plan",
+    "bank": "Public Bank Berhad",
+    "category": "home",
+    "shariah": "no",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "From ~4.22% p.a.",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["NRIC", "S&P/Booking Receipt", "Title Deed", "3–6 months Payslips", "Bank Statements"],
+    "approval_days": null,
+    "approval_days_note": "Bank website does not publish exact SLA",
+    "links": [
+      "https://www.ringgitplus.com/en/home-loan/Public-Bank-5-Home-Plan.html",
+      "https://www.pbebank.com/en/loans/home-loan/5-HOME-Plan.aspx"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "PBB-HOME-MOREPLAN",
+    "name": "Public Bank MORE Plan (Refinancing / Additional Funds)",
+    "bank": "Public Bank Berhad",
+    "category": "refinance",
+    "shariah": "no",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": 70,
+    "citizenship": "MY",
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["NRIC", "Property Title / Offer", "Income docs", "Bank Statements"],
+    "approval_days": null,
+    "approval_days_note": "Refinance product; SLA not publicly specified",
+    "links": [
+      "https://www.pbebank.com/en/loans/home-loan/",
+      "https://www.ringgitplus.com/en/home-loan/Public-Bank-MORE-Plan.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "PBB-HOME-EQUITY-FIN-i",
+    "name": "Public Bank Home Equity Financing-i",
+    "bank": "Public Bank Berhad",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "From ~4.52% p.a.",
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "income_min": null,
+    "age_min": null,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["Application form", "NRIC", "Latest 3-6 months salary slips or vouchers or EA/EPF as applicable", "Bank statements"],
+    "approval_days": null,
+    "approval_days_note": "Equity/refinance product; SLA not publicly specified",
+    "links": [
+      "https://www.ringgitplus.com/en/home-loan/Public-Bank-Home-Equity-Financing-i.html"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "PBB-AUTO-HP",
+    "name": "Public Bank Hire Purchase Facility",
+    "bank": "Public Bank Berhad",
+    "category": "auto",
+    "shariah": "no",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": 108,
+    "income_min": null,
+    "age_min": null,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": "Bank internal risk-based",
+    "docs_required": ["PDS Hire Purchase Public Bank", "NRIC", "Driving License", "Income/Business proof"],
+    "approval_days": null,
+    "approval_days_note": "Refer to PDS; SLA not publicly disclosed",
+    "links": [
+      "https://www.pbebank.com/media/rwhlqjit/pds-hp-pbb-en.pdf"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]
+EOF
+
+echo "✅ data/banks/publicbank.json 已创建（Public Bank 简版产品已录入）。"
