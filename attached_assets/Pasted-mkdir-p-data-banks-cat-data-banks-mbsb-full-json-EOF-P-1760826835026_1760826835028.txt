@@ -1,0 +1,192 @@
+mkdir -p data/banks
+
+cat > data/banks/mbsb_full.json <<'EOF'
+[
+  // =========================
+  // PERSONAL FINANCING-i
+  // =========================
+  {
+    "product_id": "MBSB-PERS-PersonalFinancing-i",
+    "name": "Personal Financing-i",
+    "bank": "MBSB Bank Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": 400000,
+    "rate_display": null,
+    "tenure_min_months": 24,
+    "tenure_max_months": 120,
+    "income_min": null,
+    "age_min": 21,
+    "age_max": 60,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Latest 3-6 months salary slip / BE form / EPF", "Bank statements (3-6 months)"] ,
+    "approval_days": "1 working day (for some campaign)", 
+    "approval_days_note": "比价平台指出某版本审批 1 工作日。 [oai_citation:0‡iMoney](https://www.imoney.my/personal-loan/mbsb/mbsb-private-sector-i?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.mbsbbank.com/consumer-banking/financing/personal-financing-i",
+      "https://www.imoney.my/personal-loan/mbsb/mbsb-private-sector-i"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // PROPERTY / HOME FINANCING-i (住宅／商业物业)
+  // =========================
+  {
+    "product_id": "MBSB-HOME-PropertyFinancing-i",
+    "name": "Property Financing-i",
+    "bank": "MBSB Bank Berhad",
+    "category": "home",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": "Indicative 4.45% for RM350k /30yrs.  [oai_citation:1‡MBSB Bank](https://www.mbsbbank.com/consumer-banking/financing/property-financing-i?utm_source=chatgpt.com)",
+    "tenure_min_months": 60,
+    "tenure_max_months": 420,
+    "income_min": null,
+    "age_min": 18,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC/Passport", "BE/EA Form", "3 months savings/current account statements", "S&P", "Valuation if required"],
+    "approval_days": null,
+    "approval_days_note": "官网未公布明确审批天数.",
+    "links": [
+      "https://www.mbsbbank.com/consumer-banking/financing/property-financing-i"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // EDUCATION FINANCING-i
+  // =========================
+  {
+    "product_id": "MBSB-EDU-EducationFinancing-i",
+    "name": "Education Financing-i",
+    "bank": "MBSB Bank Berhad",
+    "category": "personal",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "income_min": null,
+    "age_min": null,
+    "age_max": null,
+    "citizenship": "MY",
+    "dsr_policy": null,
+    "docs_required": ["NRIC", "Acceptance letter/tuition invoice", "Latest bank statements"],
+    "approval_days": null,
+    "approval_days_note": "官网列，但未详公开条款.  [oai_citation:2‡MBSB Bank](https://www.mbsbbank.com/consumer-banking/financing/education-financing-i?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.mbsbbank.com/consumer-banking/financing/education-financing-i"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // BUSINESS / CORPORATE FINANCING-i / SME
+  // =========================
+  {
+    "product_id": "MBSB-SME-CorporateFinancing-i",
+    "name": "Corporate / SME Financing-i (Term, Revolving, Cashline)",
+    "bank": "MBSB Bank Berhad",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "company_age_min_months": null,
+    "ownership_requirement": null,
+    "collateral_required": null,
+    "docs_required": ["Company registration", "Bank statements", "Financials/Tax", Collateral/Guarantee (if any)"],
+    "approval_days": null,
+    "approval_days_note": "包括 Term Financing-i, Revolving Credit-i, Cashline-i.  [oai_citation:3‡MBSB Bank](https://www.mbsbbank.com/business-banking/financing/corporate-financing?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.mbsbbank.com/business-banking/financing/corporate-financing",
+      "https://www.mbsbbank.com/business-banking/financing/mggs"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  {
+    "product_id": "MBSB-SME-M-GovernmentGuarantee-Scheme",
+    "name": "M-Government Guarantee Scheme (M-GGS)",
+    "bank": "MBSB Bank Berhad",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": 10000000,
+    "rate_display": "From 3.75% p.a. - guarantee coverage up to ~80%.  [oai_citation:4‡MBSB Bank](https://www.mbsbbank.com/business-banking/financing/mggs?utm_source=chatgpt.com)",
+    "tenure_min_months": 12,
+    "tenure_max_months": 120,
+    "company_age_min_months": null,
+    "ownership_requirement": null,
+    "collateral_required": "None (for eligible guarantee-backed facility)",
+    "docs_required": ["SSM/Company registration", "Eligibility for guarantee", "Financials/Tax", "Bank statements"],
+    "approval_days": null,
+    "approval_days_note": "Simplified process indicated; official SLA not provided.",
+    "links": [
+      "https://www.mbsbbank.com/business-banking/financing/mggs"
+    ],
+    "last_verified": "2025-10-19"
+  },
+
+  // =========================
+  // EQUIPMENT & CONTRACT FINANCING-i
+  // =========================
+  {
+    "product_id": "MBSB-BUS-EquipmentFinancing-i",
+    "name": "Equipment / Vehicle Financing-i",
+    "bank": "MBSB Bank Berhad",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "company_age_min_months": null,
+    "collateral_required": "Financed asset (machinery/vehicle)",
+    "docs_required": ["Company registration", "Vehicle/Machinery quotation", "Bank statements", "Financials/Tax"],
+    "approval_days": null,
+    "approval_days_note": "包括 Equipment Financing-i (AiTAB) & Contract Financing.  [oai_citation:5‡MBSB Bank](https://www.mbsbbank.com/business-banking/financing/equipment-financing?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.mbsbbank.com/business-banking/financing/equipment-financing",
+      "https://www.mbsbbank.com/business-banking/financing/contract-financing"
+    ],
+    "last_verified": "2025-10-19"
+  },
+  
+  // =========================
+  // TRADE & TRADE-FINANCING-i
+  // =========================
+  {
+    "product_id": "MBSB-BUS-TradeFinancing-i",
+    "name": "Trade Financing-i (Letter of Credit, Bills for Collection, Bank Guarantee)",
+    "bank": "MBSB Bank Berhad",
+    "category": "sme",
+    "shariah": "yes",
+    "amount_min": null,
+    "amount_max": null,
+    "rate_display": null,
+    "tenure_min_months": null,
+    "tenure_max_months": null,
+    "company_age_min_months": null,
+    "collateral_required": "Documentary credit supporting assets",
+    "docs_required": ["Exporter/Importer licence", "Shipping/Trade docs", Bank statements", Financials"],
+    "approval_days": null,
+    "approval_days_note": "官网详列多种 facility types; SLA unspecified.  [oai_citation:6‡MBSB Bank](https://www.mbsbbank.com/trade-financing-i?utm_source=chatgpt.com)",
+    "links": [
+      "https://www.mbsbbank.com/trade-financing-i"
+    ],
+    "last_verified": "2025-10-19"
+  }
+]
+EOF
+
+echo "✅ data/banks/mbsb_full.json 已创建（MBSB Bank 全产品主档）。"
