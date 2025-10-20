@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}信用卡优化系统{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- 页面标题 -->
+            <div class="text-center mb-5">
+                <h1 class="galaxy-gradient-text mb-3">
+                    <i class="bi bi-credit-card-2-front-fill me-2"></i>信用卡智能优化系统
+                </h1>
+                <p class="text-silver-pearl fs-5">
+                    AI分析消费模式 · 推荐最优信用卡 · 最大化返现收益
+                </p>
+            </div>
+
+            <!-- 功能说明卡片 -->
+            <div class="galaxy-card mb-4">
+                <div class="card-body">
+                    <h5 class="galaxy-gradient-text mb-3">
+                        <i class="bi bi-stars me-2"></i>系统功能
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-graph-up text-golden fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="text-white mb-1">消费模式分析</h6>
+                                    <small class="text-silver-pearl">AI智能分析6个月消费数据</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-search text-golden fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="text-white mb-1">智能推荐引擎</h6>
+                                    <small class="text-silver-pearl">156张信用卡智能匹配</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-coin text-golden fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="text-white mb-1">收益计算</h6>
+                                    <small class="text-silver-pearl">精确计算返现和福利价值</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-clipboard-data text-golden fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="text-white mb-1">对比报告</h6>
+                                    <small class="text-silver-pearl">当前 vs 优化方案对比</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 客户选择 -->
+            <div class="galaxy-card">
+                <div class="card-body">
+                    <h5 class="galaxy-gradient-text mb-4">
+                        <i class="bi bi-person-badge-fill me-2"></i>选择客户
+                    </h5>
+                    
+                    {% if customers %}
+                        <div class="row g-3">
+                            {% for customer in customers %}
+                            <div class="col-md-4">
+                                <a href="{{ url_for('credit_card_optimizer_report', customer_id=customer.id) }}" 
+                                   class="card galaxy-card h-100 text-decoration-none hover-glow">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="avatar-circle me-3">
+                                                <i class="bi bi-person-fill"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="text-white mb-0">{{ customer.name }}</h6>
+                                                <small class="text-silver-pearl">{{ customer.email }}</small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="text-silver-pearl">
+                                                <i class="bi bi-arrow-right-circle me-2"></i>生成优化报告
+                                            </span>
+                                            <i class="bi bi-chevron-right text-golden"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            暂无客户数据。请先添加客户。
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.avatar-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(192,192,192,0.1) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFD700;
+    font-size: 24px;
+}
+
+.hover-glow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(212,175,55,0.3);
+    transition: all 0.3s ease;
+}
+</style>
+{% endblock %}

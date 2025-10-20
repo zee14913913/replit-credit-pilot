@@ -55,6 +55,11 @@ from services.dashboard_metrics import get_customer_monthly_metrics, get_all_car
 # Business Plan AI Service
 from services.business_plan_ai import generate_business_plan
 
+# Credit Card Recommendation Services
+from modules.recommendations.card_recommendation_engine import CardRecommendationEngine
+from modules.recommendations.comparison_report_generator import ComparisonReportGenerator
+from modules.recommendations.benefit_calculator import BenefitCalculator
+
 # Initialize services
 export_service = ExportService()
 search_service = SearchService()
@@ -65,6 +70,9 @@ tag_service = TagService()
 statement_organizer = StatementOrganizer()
 optimization_service = OptimizationProposal()
 monthly_report_scheduler = MonthlyReportScheduler()
+card_recommender = CardRecommendationEngine()
+comparison_reporter = ComparisonReportGenerator()
+benefit_calculator = BenefitCalculator()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SESSION_SECRET', 'dev-secret-key-change-in-production')
@@ -3100,9 +3108,9 @@ def loan_matcher_analyze():
     
     # 记录审计日志
     log_audit(
-        action='LOAN_MATCHER_ANALYSIS',
-        details=f'客户: {client_name}, DSR: {dsr}%, 符合产品: {len(eligible)}个',
-        user_id=session.get('user_id', 0)
+        user_id=session.get('user_id', 0),
+        action_type='LOAN_MATCHER_ANALYSIS',
+        description=f'客户: {client_name}, DSR: {dsr}%, 符合产品: {len(eligible)}个'
     )
     
     return render_template(
@@ -3114,6 +3122,53 @@ def loan_matcher_analyze():
         eligible=eligible,
         ineligible=ineligible
     )
+
+
+# ============================================================================
+# CREDIT CARD OPTIMIZER - 信用卡优化推荐系统
+# ============================================================================
+
+@app.route('/credit-card-optimizer')
+def credit_card_optimizer():
+    """信用卡优化系统 - 主页面"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT id, name, email FROM customers ORDER BY name')
+        customers = [dict(row) for row in cursor.fetchall()]
+    
+    return render_template('credit_card_optimizer.html', customers=customers)
+
+@app.route('/credit-card-optimizer/report/<int:customer_id>')
+def credit_card_optimizer_report(customer_id):
+    """生成并显示客户信用卡优化报告"""
+    try:
+        report = comparison_reporter.generate_comparison_report(customer_id)
+        
+        if 'error' in report:
+            flash(f'❌ {report["error"]}', 'error')
+            return redirect(url_for('credit_card_optimizer'))
+        
+        log_audit(
+            user_id=session.get('user_id', 0),
+            action_type='CREDIT_CARD_OPTIMIZATION',
+            description=f'客户: {report["customer"]["name"]}, 年度节省: RM {report["comparison"]["annual_savings"]:.2f}'
+        )
+        
+        return render_template('credit_card_optimizer_report.html', report=report)
+    
+    except Exception as e:
+        flash(f'❌ 生成报告失败: {str(e)}', 'error')
+        return redirect(url_for('credit_card_optimizer'))
+
+@app.route('/credit-card-optimizer/download/<int:customer_id>')
+def download_credit_card_report(customer_id):
+    """下载HTML格式的信用卡优化报告"""
+    try:
+        filepath = comparison_reporter.save_report(customer_id)
+        return send_file(filepath, as_attachment=True, download_name=os.path.basename(filepath))
+    except Exception as e:
+        flash(f'❌ 下载失败: {str(e)}', 'error')
+        return redirect(url_for('credit_card_optimizer'))
 
 
 if __name__ == '__main__':
