@@ -141,7 +141,7 @@
         <div class="professional-card" style="text-align: center; padding: 3rem 2rem;">
             <h4 style="margin-bottom: 1rem; color: var(--text-primary);">{{ t('need_consultation') }}</h4>
             <p style="color: var(--text-secondary); margin-bottom: 2rem;">{{ t('consultation_text') }}</p>
-            <form method="POST" action="{{ url_for('request_consultation', customer_id=customer.id) }}" class="row g-3 justify-content-center">
+            <form method="POST" action="{{ url_for('request_consultation', customer_id=customer.id) }}" class="row g-4 justify-content-center">
                 <div class="col-md-6">
                     <select name="request_type" class="form-control-professional" required>
                         <option value="">{{ t('select_type') }}</option>
