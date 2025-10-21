@@ -128,7 +128,7 @@
                 <h5 style="color: var(--accent-primary); margin-bottom: 1.5rem; font-weight: 600;">
                     <i class="bi bi-person-circle"></i> 客户账本 / Customer Ledger
                 </h5>
-                <div class="row g-3">
+                <div class="row g-4">
                     <div class="col-md-3 col-sm-6">
                         <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px; border: 1px solid rgba(212,175,55,0.2);">
                             <small style="color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">
@@ -187,7 +187,7 @@
                 <h5 style="color: var(--accent-secondary); margin-bottom: 1.5rem; font-weight: 600;">
                     <i class="bi bi-building"></i> INFINITE 账本 / INFINITE Ledger
                 </h5>
-                <div class="row g-3">
+                <div class="row g-4">
                     <div class="col-md-2 col-sm-6">
                         <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px; border: 1px solid rgba(139,92,246,0.2);">
                             <small style="color: var(--text-secondary); display: block; margin-bottom: 0.5rem; font-size: 0.85rem;">
@@ -315,7 +315,7 @@
                 </div>
             </div>
         </div>
-        <div class="row g-3">
+        <div class="row g-4">
             {% for plan in instalment_plans %}
             <div class="col-md-6">
                 <div class="professional-card">
@@ -327,7 +327,7 @@
                         <span class="badge-professional badge-primary-pro">{{ plan.status }}</span>
                     </div>
                     <div class="divider-professional"></div>
-                    <div class="row g-2 mt-3">
+                    <div class="row g-4 mt-3">
                         <div class="col-6">
                             <small style="color: var(--text-secondary);">Monthly Payment / 月供</small>
                             <div style="color: var(--text-primary); font-weight: 600;">RM {{ "{:,.2f}".format(plan.monthly_payment) }}</div>
@@ -360,7 +360,7 @@
     <!-- Quick Actions -->
     <div class="mb-5">
         <h3 class="mb-4" style="color: var(--text-primary);">{{ t('quick_actions') }}</h3>
-        <div class="row g-3">
+        <div class="row g-4">
             <div class="col-md-3">
                 <a href="{{ url_for('search_transactions', customer_id=customer.id) }}" class="btn-professional-outline w-100 py-3 text-center" style="text-decoration: none;">
                     <div>{{ t('search_filter') }}</div>
