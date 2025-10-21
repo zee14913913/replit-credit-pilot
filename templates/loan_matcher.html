@@ -28,7 +28,7 @@
                     </div>
                     
                     <!-- 内容区域 -->
-                    <div class="row g-3">
+                    <div class="row g-4">
                         <div class="col-md-4">
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-file-earmark-pdf text-golden fs-4 me-3"></i>
@@ -73,7 +73,7 @@
                     
                     <!-- 内容区域 -->
                     <form action="{{ url_for('loan_matcher_analyze') }}" method="post" enctype="multipart/form-data">
-                        <div class="row g-4">
+                        <div class="row g-5">
                             <!-- 基本信息 -->
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
@@ -108,7 +108,7 @@
                             </div>
 
                             <!-- CTOS上传 -->
-                            <div class="col-12">
+                            <div class="col-12 mt-4">
                                 <div class="border border-golden border-opacity-25 rounded p-4" style="background: rgba(212, 175, 55, 0.05);">
                                     <label class="form-label text-golden fw-bold">
                                         <i class="bi bi-cloud-upload-fill me-2"></i>上传CTOS报告（可选）
@@ -144,7 +144,7 @@
                             </div>
 
                             <!-- 提交按钮 - 增大且更显眼 -->
-                            <div class="col-12 text-center pt-4">
+                            <div class="col-12 text-center pt-5 mt-4">
                                 <button type="submit" class="btn btn-lg px-5 py-3 galaxy-shimmer white-glow-btn" style="font-size: 1.2rem; box-shadow: 0 0 30px rgba(229, 228, 226, 0.3);">
                                     <i class="bi bi-lightning-charge-fill me-2"></i>
                                     开始智能匹配分析
@@ -231,6 +231,21 @@
 
 .galaxy-input:-ms-input-placeholder {
     color: #9CA3AF !important;
+}
+
+/* 表单字段内部间距优化 */
+.form-label {
+    margin-bottom: 0.75rem;
+}
+
+.galaxy-input {
+    margin-bottom: 0.5rem;
+}
+
+/* 小提示文字上边距 */
+small.text-silver-pearl {
+    margin-top: 0.5rem;
+    display: block;
 }
 </style>
 {% endblock %}
