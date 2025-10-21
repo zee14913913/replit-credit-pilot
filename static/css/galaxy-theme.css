@@ -358,7 +358,7 @@ p {
 }
 
 .nav-logo {
-    height: 140px;
+    height: 180px;
     width: auto;
     filter: drop-shadow(0 0 20px rgba(220, 220, 220, 0.5));
 }
@@ -1266,7 +1266,7 @@ footer p {
 
 @media (max-width: 1200px) {
     .nav-logo {
-        height: 100px;
+        height: 140px;
     }
     
     .footer-logo {
@@ -1290,7 +1290,7 @@ footer p {
     }
     
     .nav-logo {
-        height: 80px;
+        height: 110px;
     }
     
     .company-name {
