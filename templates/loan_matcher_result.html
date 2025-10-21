@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container-fluid py-4">
     <div class="row justify-content-center">
-        <div class="col-lg-10">
+        <div class="col-lg-11">
             <!-- 页面标题 -->
             <div class="text-center mb-5">
                 <h1 class="galaxy-gradient-text mb-3">
@@ -54,175 +54,128 @@
                     </h5>
                     
                     {% if eligible %}
-                        <!-- 按类型分组的标签导航 -->
+                        <!-- 圆形类别按钮 -->
                         {% if eligible_by_type|length > 1 %}
-                        <ul class="nav nav-pills mb-4" id="eligibleTabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="all-eligible-tab" data-bs-toggle="pill" 
-                                        data-bs-target="#all-eligible" type="button" role="tab">
-                                    <i class="bi bi-grid-fill me-1"></i>全部 ({{ eligible|length }})
+                        <div class="mb-5">
+                            <div class="d-flex justify-content-center align-items-center flex-wrap" style="gap: 2rem;">
+                                <!-- 全部按钮 -->
+                                <button class="category-circle-btn active" data-category="all" onclick="filterCategory('all')">
+                                    <div class="icon">
+                                        <i class="bi bi-grid-fill"></i>
+                                    </div>
+                                    <div class="label">全部</div>
+                                    <div class="count">{{ eligible|length }}</div>
                                 </button>
-                            </li>
-                            {% for category, items in eligible_by_type.items() %}
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="eligible-{{ category }}-tab" data-bs-toggle="pill" 
-                                        data-bs-target="#eligible-{{ category }}" type="button" role="tab">
-                                    <i class="bi {{ category_icons.get(category, 'bi-tag') }} me-1"></i>
-                                    {{ category_names.get(category, category) }} ({{ items|length }})
+                                
+                                <!-- 各类型按钮 -->
+                                {% for category, items in eligible_by_type.items() %}
+                                <button class="category-circle-btn" data-category="{{ category }}" onclick="filterCategory('{{ category }}')">
+                                    <div class="icon">
+                                        <i class="bi {{ category_icons.get(category, 'bi-tag') }}"></i>
+                                    </div>
+                                    <div class="label">{{ category_names.get(category, category) }}</div>
+                                    <div class="count">{{ items|length }}</div>
                                 </button>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                        
-                        <div class="tab-content" id="eligibleTabContent">
-                            <!-- 全部产品标签页 -->
-                            <div class="tab-pane fade show active" id="all-eligible" role="tabpanel">
+                                {% endfor %}
+                            </div>
+                        </div>
                         {% endif %}
-                        <div class="row g-3">
+                        
+                        <!-- 产品网格展示 -->
+                        <div id="productsGrid" class="row g-4">
                             {% for item in eligible %}
                             {% set p = item.product %}
-                            <div class="col-md-6">
-                                <div class="border border-success border-opacity-50 rounded p-3 h-100" style="background: rgba(25, 135, 84, 0.1);">
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <h6 class="text-white mb-0">
-                                            <i class="bi bi-bank text-success me-2"></i>{{ p.name }}
-                                        </h6>
-                                        {% if p.speed_rank == 1 %}
-                                        <span class="badge bg-success">快速审批</span>
-                                        {% elif p.speed_rank == 2 %}
-                                        <span class="badge bg-info">标准审批</span>
-                                        {% endif %}
-                                    </div>
-                                    <div class="small text-silver-pearl mb-2">
-                                        <i class="bi bi-building me-1"></i>{{ p.bank }}
-                                    </div>
-                                    <div class="row g-2 small">
-                                        <div class="col-6">
-                                            <span class="text-silver-pearl">额度范围:</span>
-                                            <div class="text-white">
-                                                {% if p.amount_min and p.amount_max %}
-                                                RM {{ '{:,}'.format(p.amount_min) }} - {{ '{:,}'.format(p.amount_max) }}
-                                                {% else %}
-                                                按申请而定
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <span class="text-silver-pearl">利率:</span>
-                                            <div class="text-white">{{ p.rate_display if p.rate_display else '待定' }}</div>
-                                        </div>
-                                        <div class="col-6">
-                                            <span class="text-silver-pearl">期限:</span>
-                                            <div class="text-white">
-                                                {% if p.tenure_min_months and p.tenure_max_months %}
-                                                {{ p.tenure_min_months }} - {{ p.tenure_max_months }}个月
-                                                {% else %}
-                                                灵活期限
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <span class="text-silver-pearl">DSR要求:</span>
-                                            <div class="text-success">≤ {{ p.get('dsr_max', 70) }}%</div>
-                                        </div>
-                                    </div>
-                                    {% if p.description %}
-                                    <div class="mt-2 pt-2 border-top border-secondary">
-                                        <small class="text-silver-pearl">
-                                            <i class="bi bi-info-circle me-1"></i>{{ p.description }}
-                                        </small>
-                                    </div>
-                                    {% endif %}
-                                    {% if p.get('docs_required') %}
-                                    <div class="mt-2 pt-2 border-top border-secondary">
-                                        <small class="text-silver-pearl">
-                                            <i class="bi bi-file-text me-1"></i><strong>所需文档:</strong>
-                                            <div class="ms-3 mt-1">
-                                                {% for doc in p.docs_required %}
-                                                <span class="badge bg-secondary me-1 mb-1">{{ doc }}</span>
-                                                {% endfor %}
-                                            </div>
-                                        </small>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        
-                        {% if eligible_by_type|length > 1 %}
-                            </div>
-                            
-                            <!-- 各类型产品标签页 -->
-                            {% for category, items in eligible_by_type.items() %}
-                            <div class="tab-pane fade" id="eligible-{{ category }}" role="tabpanel">
-                                <div class="alert alert-info mb-3">
-                                    <i class="bi {{ category_icons.get(category, 'bi-tag') }} me-2"></i>
-                                    <strong>{{ category_names.get(category, category) }}</strong> - 共找到 {{ items|length }} 个符合条件的产品
-                                </div>
-                                <div class="row g-3">
-                                    {% for item in items %}
-                                    {% set p = item.product %}
-                                    <div class="col-md-6">
-                                        <div class="border border-success border-opacity-50 rounded p-3 h-100" style="background: rgba(25, 135, 84, 0.1);">
-                                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                                <h6 class="text-white mb-0">
-                                                    <i class="bi bi-bank text-success me-2"></i>{{ p.name }}
-                                                </h6>
-                                                {% if p.speed_rank == 1 %}
-                                                <span class="badge bg-success">快速审批</span>
-                                                {% elif p.speed_rank == 2 %}
-                                                <span class="badge bg-info">标准审批</span>
-                                                {% endif %}
-                                            </div>
-                                            <div class="small text-silver-pearl mb-2">
-                                                <i class="bi bi-building me-1"></i>{{ p.bank }}
-                                            </div>
-                                            <div class="row g-2 small">
-                                                <div class="col-6">
-                                                    <span class="text-silver-pearl">额度范围:</span>
-                                                    <div class="text-white">
-                                                        {% if p.amount_min and p.amount_max %}
-                                                        RM {{ '{:,}'.format(p.amount_min) }} - {{ '{:,}'.format(p.amount_max) }}
-                                                        {% else %}
-                                                        按申请而定
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <span class="text-silver-pearl">利率:</span>
-                                                    <div class="text-white">{{ p.rate_display if p.rate_display else '待定' }}</div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <span class="text-silver-pearl">期限:</span>
-                                                    <div class="text-white">
-                                                        {% if p.tenure_min_months and p.tenure_max_months %}
-                                                        {{ p.tenure_min_months }} - {{ p.tenure_max_months }}个月
-                                                        {% else %}
-                                                        灵活期限
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <span class="text-silver-pearl">DSR要求:</span>
-                                                    <div class="text-success">≤ {{ p.get('dsr_max', 70) }}%</div>
-                                                </div>
-                                            </div>
-                                            {% if p.description %}
-                                            <div class="mt-2 pt-2 border-top border-secondary">
-                                                <small class="text-silver-pearl">
-                                                    <i class="bi bi-info-circle me-1"></i>{{ p.description }}
-                                                </small>
-                                            </div>
+                            <div class="col-xl-4 col-lg-6 product-card" data-category="{{ p.get('category', 'other') }}">
+                                <div class="loan-product-card h-100">
+                                    <!-- 卡片头部 -->
+                                    <div class="card-header-custom">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <h6 class="card-title-custom mb-0">
+                                                <i class="bi bi-bank text-golden me-2"></i>{{ p.name }}
+                                            </h6>
+                                            {% if p.speed_rank == 1 %}
+                                            <span class="badge bg-success">快速</span>
+                                            {% elif p.speed_rank == 2 %}
+                                            <span class="badge bg-info">标准</span>
                                             {% endif %}
                                         </div>
+                                        <div class="bank-name">
+                                            <i class="bi bi-building me-1"></i>{{ p.bank }}
+                                        </div>
                                     </div>
-                                    {% endfor %}
+                                    
+                                    <!-- 卡片内容 -->
+                                    <div class="card-content-custom">
+                                        <div class="info-grid">
+                                            <div class="info-item">
+                                                <div class="info-label">
+                                                    <i class="bi bi-cash-stack me-1"></i>额度范围
+                                                </div>
+                                                <div class="info-value">
+                                                    {% if p.amount_min and p.amount_max %}
+                                                    RM {{ '{:,}'.format(p.amount_min) }}<br>- {{ '{:,}'.format(p.amount_max) }}
+                                                    {% else %}
+                                                    按申请而定
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="info-item">
+                                                <div class="info-label">
+                                                    <i class="bi bi-percent me-1"></i>利率
+                                                </div>
+                                                <div class="info-value text-golden">
+                                                    {{ p.rate_display if p.rate_display else '待定' }}
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="info-item">
+                                                <div class="info-label">
+                                                    <i class="bi bi-calendar-range me-1"></i>期限
+                                                </div>
+                                                <div class="info-value">
+                                                    {% if p.tenure_min_months and p.tenure_max_months %}
+                                                    {{ p.tenure_min_months }}-{{ p.tenure_max_months }}个月
+                                                    {% else %}
+                                                    灵活期限
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="info-item">
+                                                <div class="info-label">
+                                                    <i class="bi bi-graph-up me-1"></i>DSR要求
+                                                </div>
+                                                <div class="info-value text-success">
+                                                    ≤ {{ p.get('dsr_max', 70) }}%
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        {% if p.description %}
+                                        <div class="description-box">
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            <span>{{ p.description }}</span>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        {% if p.get('docs_required') %}
+                                        <div class="docs-box">
+                                            <div class="docs-label">
+                                                <i class="bi bi-file-text me-1"></i>所需文档:
+                                            </div>
+                                            <div class="docs-tags">
+                                                {% for doc in p.docs_required %}
+                                                <span class="doc-tag">{{ doc }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
                             {% endfor %}
                         </div>
-                        {% endif %}
                         
                     {% else %}
                         <div class="alert alert-warning">
@@ -277,7 +230,7 @@
             {% endif %}
 
             <!-- 操作按钮 -->
-            <div class="text-center">
+            <div class="text-center mb-5">
                 <a href="{{ url_for('loan_matcher') }}" class="btn btn-outline-light me-2">
                     <i class="bi bi-arrow-left me-2"></i>返回匹配页面
                 </a>
@@ -288,4 +241,218 @@
         </div>
     </div>
 </div>
+
+<style>
+/* 圆形类别按钮样式 */
+.category-circle-btn {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(30, 30, 30, 0.6));
+    color: #e8e6e3;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+
+.category-circle-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    border-color: rgba(212, 175, 55, 0.8);
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(30, 30, 30, 0.8));
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+}
+
+.category-circle-btn.active {
+    border-color: #d4af37;
+    border-width: 3px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(40, 40, 40, 0.8));
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+}
+
+.category-circle-btn .icon {
+    font-size: 2rem;
+    color: #d4af37;
+}
+
+.category-circle-btn .label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.category-circle-btn .count {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #d4af37;
+}
+
+/* 产品卡片样式 */
+.loan-product-card {
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(40, 40, 40, 0.9));
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.loan-product-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(212, 175, 55, 0.5);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+}
+
+.card-header-custom {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(50, 50, 50, 0.3));
+    padding: 1rem;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.card-title-custom {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.bank-name {
+    color: #d4af37;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+.card-content-custom {
+    padding: 1.25rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.info-item {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.info-label {
+    font-size: 0.75rem;
+    color: #e8e6e3;
+    margin-bottom: 0.4rem;
+    opacity: 0.8;
+}
+
+.info-value {
+    font-size: 0.9rem;
+    color: #fff;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.description-box {
+    background: rgba(212, 175, 55, 0.05);
+    border-left: 3px solid rgba(212, 175, 55, 0.5);
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: #e8e6e3;
+    border-radius: 4px;
+}
+
+.docs-box {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.docs-label {
+    font-size: 0.8rem;
+    color: #d4af37;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.docs-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.doc-tag {
+    background: rgba(212, 175, 55, 0.2);
+    color: #fff;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .category-circle-btn {
+        width: 110px;
+        height: 110px;
+    }
+    
+    .category-circle-btn .icon {
+        font-size: 1.5rem;
+    }
+    
+    .category-circle-btn .label {
+        font-size: 0.8rem;
+    }
+    
+    .category-circle-btn .count {
+        font-size: 1rem;
+    }
+}
+</style>
+
+<script>
+function filterCategory(category) {
+    // 更新按钮状态
+    document.querySelectorAll('.category-circle-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-category="${category}"]`).classList.add('active');
+    
+    // 过滤产品卡片
+    const cards = document.querySelectorAll('.product-card');
+    cards.forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+            card.style.display = 'block';
+            // 添加动画效果
+            card.style.animation = 'fadeIn 0.3s ease-in';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+// 添加淡入动画
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+`;
+document.head.appendChild(style);
+</script>
 {% endblock %}
