@@ -2837,6 +2837,8 @@ def upload_savings_statement():
 @app.route('/savings/accounts')
 def savings_accounts():
     """查看所有储蓄账户和账单"""
+    import re
+    
     with get_db() as conn:
         cursor = conn.cursor()
         
@@ -2858,8 +2860,88 @@ def savings_accounts():
         ''')
         
         accounts = [dict(row) for row in cursor.fetchall()]
+        
+        # 提取所有转账交易中的收款人信息（按收款人+收款银行分组）
+        cursor.execute('''
+            SELECT st.description, st.amount, st.transaction_date, sa.bank_name as source_bank
+            FROM savings_transactions st
+            JOIN savings_statements ss ON st.savings_statement_id = ss.id
+            JOIN savings_accounts sa ON ss.savings_account_id = sa.id
+            WHERE st.transaction_type = 'debit' 
+                AND (st.description LIKE '%Transfer%' OR st.description LIKE '%转账%' OR st.description LIKE '%Pay%')
+            ORDER BY st.transaction_date
+        ''')
+        
+        all_transfers = cursor.fetchall()
+        
+        # 按收款人+收款银行分组
+        recipient_groups = {}
+        
+        for trans in all_transfers:
+            desc = trans['description']
+            amount = trans['amount']
+            source_bank = trans['source_bank']
+            
+            # 提取收款人名字和银行
+            recipient_name = None
+            recipient_bank = None
+            
+            # 提取银行代码（MBK/MBB = Maybank, GXS = GX Bank, OCBC, UOB等）
+            if 'MBK' in desc.upper() or 'MBB' in desc.upper():
+                recipient_bank = 'Maybank'
+            elif 'GXS' in desc.upper() or 'GX BANK' in desc.upper():
+                recipient_bank = 'GX Bank'
+            elif 'OCBC' in desc.upper():
+                recipient_bank = 'OCBC'
+            elif 'UOB' in desc.upper():
+                recipient_bank = 'UOB'
+            elif 'CIMB' in desc.upper():
+                recipient_bank = 'CIMB'
+            elif 'HLB' in desc.upper() or 'HONG LEONG' in desc.upper():
+                recipient_bank = 'Hong Leong Bank'
+            elif 'PUBLIC' in desc.upper():
+                recipient_bank = 'Public Bank'
+            
+            # 提取收款人名字（通常在银行代码后面）
+            # 示例: "Transfer MBK YEO CHEE WANG" or "Pay MBB TEO YOK CHU"
+            patterns = [
+                r'(?:Transfer|Pay|Payment)\s+(?:MBK|MBB|GXS|OCBC|UOB|CIMB|HLB)\s+([A-Z][A-Za-z\s]+?)(?:\s+\d|\s*$|\.\.\.)',
+                r'(?:Transfer|Pay|Payment)\s+([A-Z][A-Za-z\s]+?)(?:\s+\d|\s*$|\.\.\.)'
+            ]
+            
+            for pattern in patterns:
+                match = re.search(pattern, desc, re.IGNORECASE)
+                if match:
+                    recipient_name = match.group(1).strip().upper()
+                    # 移除常见后缀
+                    recipient_name = re.sub(r'\s+(SILAAM|BPERHATI|SILAAMBIL).*$', '', recipient_name)
+                    break
+            
+            if recipient_name and recipient_bank:
+                key = f"{recipient_name}_{recipient_bank}"
+                
+                if key not in recipient_groups:
+                    recipient_groups[key] = {
+                        'recipient_name': recipient_name,
+                        'recipient_bank': recipient_bank,
+                        'source_bank': source_bank,
+                        'total_amount': 0,
+                        'transaction_count': 0,
+                        'transactions': []
+                    }
+                
+                recipient_groups[key]['total_amount'] += amount
+                recipient_groups[key]['transaction_count'] += 1
+                recipient_groups[key]['transactions'].append({
+                    'date': trans['transaction_date'],
+                    'amount': amount,
+                    'description': desc
+                })
+        
+        # 转换为列表并按总金额排序
+        recipients = sorted(recipient_groups.values(), key=lambda x: x['total_amount'], reverse=True)
     
-    return render_template('savings/accounts.html', accounts=accounts)
+    return render_template('savings/accounts.html', accounts=accounts, recipients=recipients)
 
 @app.route('/savings/account/<int:account_id>')
 def savings_account_detail(account_id):
