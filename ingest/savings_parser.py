@@ -571,70 +571,69 @@ def parse_gxbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                         i += 1
                         continue
                     
-                    # 收集完整描述（可能跨多行）
-                    description = rest
-                    j = i + 1
+                    # GX Bank格式: DD MMM Description +/-Amount Balance (都在同一行或跨行)
+                    # 先检查当前行是否已有金额
+                    amounts_in_line = re.findall(r'([+-])?([\d,]+\.\d{2})', rest)
+                    
                     money_in = None
                     money_out = None
-                    closing_balance = None
+                    description = rest
                     
-                    # 查找后续行直到找到金额和余额
-                    # GX Bank格式: Description | Money in | Money out | Interest | Closing balance
-                    while j < len(lines) and j < i + 5:
-                        next_line = lines[j].strip()
+                    if amounts_in_line:
+                        # 金额在同一行: "YEO CHEE WANG +50.00 54.73"
+                        # 第一个金额 = Money in/out, 最后一个 = Closing balance
                         
-                        # 检查是否包含金额（+或-符号，或纯数字）
-                        # 格式：可能有多个金额在同一行（Money in, Money out, Balance）
-                        amounts = re.findall(r'([+-])?([\d,]+\.\d{2})', next_line)
+                        # 提取描述（移除所有金额）
+                        desc_parts = re.split(r'[+-]?[\d,]+\.\d{2}', rest)
+                        description = desc_parts[0].strip()
                         
-                        if amounts:
-                            # 第一个金额可能是money in/out
-                            for idx, (sign, amount_str) in enumerate(amounts):
-                                # 构建完整金额字符串（包括符号）用于清理
+                        # 处理金额
+                        for idx, (sign, amount_str) in enumerate(amounts_in_line):
+                            if idx == 0:  # 第一个金额 = Money in/out
                                 full_amount_str = f"{sign or ''}{amount_str}"
                                 amount = clean_balance_string(full_amount_str) or 0
                                 
-                                if idx == 0:  # 第一个金额
-                                    if sign == '+' or (not sign and any(word in description.lower() for word in ['transfer from', 'received', 'deposit', 'interest', 'cashback'])):
+                                if sign == '+':
+                                    money_in = abs(amount)
+                                elif sign == '-':
+                                    money_out = abs(amount)
+                                else:
+                                    # 没有符号，检查是否是Interest（总是credit）
+                                    if 'Interest' in description:
                                         money_in = abs(amount)
-                                    else:
-                                        money_out = abs(amount)
-                                elif idx == len(amounts) - 1:  # 最后一个金额通常是closing balance
-                                    closing_balance = amount  # 可能是正数或负数
-                            break
-                        elif next_line and not re.match(r'^\d{1,2}\s+[A-Z][a-z]{2}', next_line) and 'GX' not in next_line and 'QR' not in next_line:
-                            # 继续收集描述
-                            description += ' ' + next_line
+                                    # 否则跳过（可能是closing balance）
+                            # 最后一个是closing balance，我们不需要它
+                    
+                    # 收集后续描述行（时间、地点等）
+                    j = i + 1
+                    while j < len(lines) and j < i + 5:
+                        next_line = lines[j].strip()
                         
+                        # 如果下一行不是新交易（不以日期开头），且没有金额，则是描述延续
+                        if not re.match(r'^\d{1,2}\s+[A-Z][a-z]{2}', next_line):
+                            # 检查是否包含金额
+                            if not re.search(r'[\d,]+\.\d{2}', next_line):
+                                description += ' ' + next_line
+                            else:
+                                break
+                        else:
+                            break
                         j += 1
                     
-                    # 创建临时交易记录（稍后用balance-change算法确定准确的type和amount）
-                    if closing_balance is not None:
-                        full_date = f"{date_str} {statement_year}"  # 添加年份: "1 Jan 2025"
+                    # 只添加有明确金额的交易
+                    if money_in or money_out:
+                        full_date = f"{date_str} {statement_year}"
                         transactions.append({
                             'date': full_date,
                             'description': description.strip(),
-                            'balance': closing_balance,
-                            'amount': money_in if money_in else money_out,  # 临时金额
-                            'type': 'credit' if money_in else 'debit'  # 临时类型
+                            'amount': money_in if money_in else money_out,
+                            'type': 'credit' if money_in else 'debit'
                         })
                 
                 i += 1
             
-            # **Ultra-Robust: 使用Balance-Change算法确定credit/debit和准确金额**
-            if transactions:
-                # 提取期初余额 (Opening balance)
-                prev_balance = None
-                for line in lines:
-                    if 'Opening balance' in line:
-                        balance_match = re.search(r'([\d,]+\.\d{2})', line)
-                        if balance_match:
-                            prev_balance = clean_balance_string(balance_match.group(0))
-                            if prev_balance is not None:
-                                break
-                
-                # 应用通用balance-change算法
-                transactions = apply_balance_change_algorithm(transactions, prev_balance)
+            # GX Bank PDF明确提供Money in/out列，不需要balance-change算法
+            # transactions已包含正确的金额和类型
         
         info['total_transactions'] = len(transactions)
         print(f"✅ GX Bank savings parsed: {len(transactions)} transactions")
