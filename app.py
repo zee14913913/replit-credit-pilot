@@ -3070,6 +3070,11 @@ def loan_matcher_analyze():
     citizenship = request.form.get('citizenship', 'MY')
     age = int(request.form.get('age', 0) or 0)
     monthly_income = float(request.form.get('monthly_income', 0) or 0)
+    company_age = request.form.get('company_age', '').strip()
+    company_age = int(company_age) if company_age else None
+    
+    # 获取选择的贷款类型
+    selected_types = request.form.getlist('loan_types')
     
     # 处理CTOS上传
     total_commitment = 0.0
@@ -3099,11 +3104,17 @@ def loan_matcher_analyze():
         'citizenship': citizenship,
         'age': age,
         'income': monthly_income,
-        'dsr': dsr
+        'dsr': dsr,
+        'company_age': company_age
     }
     
     # 加载产品库并匹配
     products = load_all_products('data/banks')
+    
+    # 如果选择了贷款类型，进行过滤
+    if selected_types:
+        products = [p for p in products if p.get('category') in selected_types]
+    
     eligible, ineligible = match_loans(client, products)
     
     # 记录审计日志
@@ -3113,6 +3124,45 @@ def loan_matcher_analyze():
         description=f'客户: {client_name}, DSR: {dsr}%, 符合产品: {len(eligible)}个'
     )
     
+    # 按类型分组（用于结果页面展示）
+    from collections import defaultdict
+    
+    eligible_by_type = defaultdict(list)
+    for item in eligible:
+        category = item['product'].get('category', 'other')
+        eligible_by_type[category].append(item)
+    
+    ineligible_by_type = defaultdict(list)
+    for item in ineligible:
+        category = item['product'].get('category', 'other')
+        ineligible_by_type[category].append(item)
+    
+    # 类型名称映射
+    category_names = {
+        'personal': '个人贷款 (Personal Loan)',
+        'home': '房屋贷款 (Mortgage Loan)',
+        'auto': '汽车贷款 (Car Loan)',
+        'sme': '企业贷款 (SME/Business Loan)',
+        'refinance': '再融资 (Refinance)',
+        'debt_consolidation': '债务整合 (Debt Consolidation)',
+        'home_reno': '房屋装修贷款 (Home Renovation)',
+        'investment': '投资贷款 (Investment)',
+        'other': '其他贷款'
+    }
+    
+    # 类型图标映射
+    category_icons = {
+        'personal': 'bi-person-check',
+        'home': 'bi-house-door',
+        'auto': 'bi-car-front',
+        'sme': 'bi-building',
+        'refinance': 'bi-arrow-repeat',
+        'debt_consolidation': 'bi-wallet2',
+        'home_reno': 'bi-hammer',
+        'investment': 'bi-graph-up-arrow',
+        'other': 'bi-tag'
+    }
+    
     return render_template(
         'loan_matcher_result.html',
         client_name=client_name,
@@ -3120,7 +3170,12 @@ def loan_matcher_analyze():
         total_commitment=total_commitment,
         ctos_notes=ctos_notes,
         eligible=eligible,
-        ineligible=ineligible
+        ineligible=ineligible,
+        eligible_by_type=dict(eligible_by_type),
+        ineligible_by_type=dict(ineligible_by_type),
+        category_names=category_names,
+        category_icons=category_icons,
+        selected_types=selected_types
     )
 
 
