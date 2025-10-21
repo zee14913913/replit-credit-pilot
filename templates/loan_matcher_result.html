@@ -45,21 +45,22 @@
                 </div>
             </div>
 
-            <!-- 符合条件的产品 -->
-            <div class="galaxy-card mb-4">
+            <!-- 第一层面：贷款类别选择 -->
+            <div class="galaxy-card mb-5">
                 <div class="card-body">
-                    <h5 class="galaxy-gradient-text mb-4">
-                        <i class="bi bi-award-fill me-2"></i>✅ 符合条件的贷款产品
-                        <span class="badge bg-success ms-2">{{ eligible|length }}个</span>
+                    <h5 class="galaxy-gradient-text mb-3 text-center">
+                        <i class="bi bi-award-fill me-2"></i>选择贷款类别
                     </h5>
+                    <p class="text-silver-pearl text-center mb-4">
+                        共找到 <span class="text-golden fw-bold">{{ eligible|length }}</span> 个符合条件的贷款产品，请选择感兴趣的类别进行对比
+                    </p>
                     
                     {% if eligible %}
                         <!-- 圆形类别按钮 -->
-                        {% if eligible_by_type|length > 1 %}
-                        <div class="mb-5">
+                        <div class="mb-3">
                             <div class="d-flex justify-content-center align-items-center flex-wrap" style="gap: 3rem; row-gap: 2.5rem;">
                                 <!-- 全部按钮 -->
-                                <button class="category-circle-btn active" data-category="all" onclick="filterCategory('all')">
+                                <button class="category-circle-btn" data-category="all" data-count="{{ eligible|length }}" onclick="selectCategory({{ 'all'|tojson }}, {{ '全部贷款'|tojson }}, {{ eligible|length }})">
                                     <div class="icon">
                                         <i class="bi bi-grid-fill"></i>
                                     </div>
@@ -69,7 +70,7 @@
                                 
                                 <!-- 各类型按钮 -->
                                 {% for category, items in eligible_by_type.items() %}
-                                <button class="category-circle-btn" data-category="{{ category }}" onclick="filterCategory('{{ category }}')">
+                                <button class="category-circle-btn" data-category="{{ category }}" data-count="{{ items|length }}" onclick="selectCategory({{ category|tojson }}, {{ category_names.get(category, category)|tojson }}, {{ items|length }})">
                                     <div class="icon">
                                         <i class="bi {{ category_icons.get(category, 'bi-tag') }}"></i>
                                     </div>
@@ -79,10 +80,27 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        {% endif %}
                         
-                        <!-- 产品网格展示 - 加大间距 -->
-                        <div id="productsGrid" class="row" style="gap: 2.5rem; row-gap: 2.5rem;">
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            很抱歉，当前没有符合条件的贷款产品。请查看下方不符合原因。
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 第二层面：产品详细列表（默认隐藏） -->
+            {% if eligible %}
+            <div id="productsSection" class="galaxy-card mb-4" style="display: none;">
+                <div class="card-body">
+                    <h5 class="galaxy-gradient-text mb-4">
+                        <i class="bi bi-list-check me-2"></i><span id="selectedCategoryTitle">贷款产品</span>
+                        <span class="badge bg-success ms-2" id="selectedCategoryCount">0</span>
+                    </h5>
+                    
+                    <!-- 产品网格展示 - 加大间距 -->
+                    <div id="productsGrid" class="row" style="gap: 2.5rem; row-gap: 2.5rem;">
                             {% for item in eligible %}
                             {% set p = item.product %}
                             <div class="col-xl-4 col-lg-6 col-md-6 product-card" data-category="{{ p.get('category', 'other') }}" style="margin-bottom: 0;">
@@ -176,15 +194,9 @@
                             </div>
                             {% endfor %}
                         </div>
-                        
-                    {% else %}
-                        <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                            很抱歉，当前没有符合条件的贷款产品。请查看下方不符合原因。
-                        </div>
-                    {% endif %}
                 </div>
             </div>
+            {% endif %}
 
             <!-- 不符合条件的产品 -->
             {% if ineligible %}
@@ -451,32 +463,69 @@
 </style>
 
 <script>
-function filterCategory(category) {
+function selectCategory(category, categoryName, count) {
     // 更新按钮状态
     document.querySelectorAll('.category-circle-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     document.querySelector(`[data-category="${category}"]`).classList.add('active');
     
+    // 显示产品区域
+    const productsSection = document.getElementById('productsSection');
+    productsSection.style.display = 'block';
+    
+    // 更新标题和数量
+    document.getElementById('selectedCategoryTitle').textContent = categoryName;
+    document.getElementById('selectedCategoryCount').textContent = count + '个';
+    
     // 过滤产品卡片
     const cards = document.querySelectorAll('.product-card');
     cards.forEach(card => {
         if (category === 'all' || card.dataset.category === category) {
             card.style.display = 'block';
-            // 添加动画效果
-            card.style.animation = 'fadeIn 0.3s ease-in';
+            // 重置并添加淡入动画（确保每次切换都有动画）
+            card.style.animation = 'none';
+            card.offsetHeight; // 强制重绘
+            card.style.animation = 'fadeInSlide 0.4s ease-out';
         } else {
             card.style.display = 'none';
         }
     });
+    
+    // 平滑滚动到产品区域
+    setTimeout(() => {
+        productsSection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+        });
+    }, 100);
 }
 
-// 添加淡入动画
+// 添加淡入滑动动画
 const style = document.createElement('style');
 style.textContent = `
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+    @keyframes fadeInSlide {
+        from { 
+            opacity: 0; 
+            transform: translateY(20px); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+    }
+    
+    #productsSection {
+        animation: fadeInSection 0.3s ease-out;
+    }
+    
+    @keyframes fadeInSection {
+        from { 
+            opacity: 0; 
+        }
+        to { 
+            opacity: 1; 
+        }
     }
 `;
 document.head.appendChild(style);
