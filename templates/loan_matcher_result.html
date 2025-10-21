@@ -198,49 +198,6 @@
             </div>
             {% endif %}
 
-            <!-- 不符合条件的产品 -->
-            {% if ineligible %}
-            <div class="galaxy-card mb-4">
-                <div class="card-body">
-                    <h5 class="galaxy-gradient-text mb-4">
-                        <i class="bi bi-x-circle-fill me-2"></i>⚠️ 不符合条件的产品
-                        <span class="badge bg-warning text-dark ms-2">{{ ineligible|length }}个</span>
-                    </h5>
-                    
-                    <div class="accordion accordion-flush" id="ineligibleAccordion">
-                        {% for item in ineligible %}
-                        {% set p = item.product %}
-                        <div class="accordion-item bg-transparent border-bottom border-secondary">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed bg-transparent text-white" type="button" 
-                                        data-bs-toggle="collapse" data-bs-target="#ineligible{{ loop.index }}">
-                                    <i class="bi bi-bank text-warning me-2"></i>
-                                    {{ p.name }} ({{ p.bank }})
-                                    <span class="badge bg-danger ms-2">{{ item.reasons|length }}个不符项</span>
-                                </button>
-                            </h2>
-                            <div id="ineligible{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#ineligibleAccordion">
-                                <div class="accordion-body">
-                                    <h6 class="text-warning mb-3">
-                                        <i class="bi bi-exclamation-triangle me-2"></i>不符合原因：
-                                    </h6>
-                                    <ul class="list-unstyled">
-                                        {% for reason in item.reasons %}
-                                        <li class="mb-2">
-                                            <i class="bi bi-x-circle text-danger me-2"></i>
-                                            <span class="text-silver-pearl">{{ reason }}</span>
-                                        </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-
             <!-- 操作按钮 -->
             <div class="text-center mb-5">
                 <a href="{{ url_for('loan_matcher') }}" class="btn btn-outline-light me-2">
