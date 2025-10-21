@@ -3073,9 +3073,6 @@ def loan_matcher_analyze():
     company_age = request.form.get('company_age', '').strip()
     company_age = int(company_age) if company_age else None
     
-    # 获取选择的贷款类型
-    selected_types = request.form.getlist('loan_types')
-    
     # 处理CTOS上传
     total_commitment = 0.0
     ctos_notes = "未上传CTOS报告"
@@ -3108,13 +3105,8 @@ def loan_matcher_analyze():
         'company_age': company_age
     }
     
-    # 加载产品库并匹配
+    # 加载产品库并匹配（显示所有类型）
     products = load_all_products('data/banks')
-    
-    # 如果选择了贷款类型，进行过滤
-    if selected_types:
-        products = [p for p in products if p.get('category') in selected_types]
-    
     eligible, ineligible = match_loans(client, products)
     
     # 记录审计日志
@@ -3174,8 +3166,7 @@ def loan_matcher_analyze():
         eligible_by_type=dict(eligible_by_type),
         ineligible_by_type=dict(ineligible_by_type),
         category_names=category_names,
-        category_icons=category_icons,
-        selected_types=selected_types
+        category_icons=category_icons
     )
 
 
