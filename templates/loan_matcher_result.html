@@ -75,15 +75,27 @@
                                     <div class="row g-2 small">
                                         <div class="col-6">
                                             <span class="text-silver-pearl">额度范围:</span>
-                                            <div class="text-white">RM {{ '{:,}'.format(p.amount_min) }} - {{ '{:,}'.format(p.amount_max) }}</div>
+                                            <div class="text-white">
+                                                {% if p.amount_min and p.amount_max %}
+                                                RM {{ '{:,}'.format(p.amount_min) }} - {{ '{:,}'.format(p.amount_max) }}
+                                                {% else %}
+                                                按申请而定
+                                                {% endif %}
+                                            </div>
                                         </div>
                                         <div class="col-6">
                                             <span class="text-silver-pearl">利率:</span>
-                                            <div class="text-white">{{ p.rate_display }}</div>
+                                            <div class="text-white">{{ p.rate_display if p.rate_display else '待定' }}</div>
                                         </div>
                                         <div class="col-6">
                                             <span class="text-silver-pearl">期限:</span>
-                                            <div class="text-white">{{ p.tenure_min_months }} - {{ p.tenure_max_months }}个月</div>
+                                            <div class="text-white">
+                                                {% if p.tenure_min_months and p.tenure_max_months %}
+                                                {{ p.tenure_min_months }} - {{ p.tenure_max_months }}个月
+                                                {% else %}
+                                                灵活期限
+                                                {% endif %}
+                                            </div>
                                         </div>
                                         <div class="col-6">
                                             <span class="text-silver-pearl">DSR要求:</span>
