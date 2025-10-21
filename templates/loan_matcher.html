@@ -102,8 +102,8 @@
                                     <label class="form-label text-golden fw-bold">
                                         <i class="bi bi-cloud-upload-fill me-2"></i>上传CTOS报告（可选）
                                     </label>
-                                    <input type="file" name="ctos_file" class="form-control galaxy-input" accept="application/pdf">
-                                    <small class="text-silver-pearl d-block mt-2">
+                                    <input type="file" name="ctos_file" class="form-control galaxy-input mb-3" accept="application/pdf">
+                                    <small class="text-silver-pearl d-block">
                                         <i class="bi bi-info-circle me-1"></i>
                                         系统将自动提取月度负债数据。如未上传，请在下方手动输入。
                                     </small>
@@ -111,22 +111,39 @@
                             </div>
 
                             <!-- 手动覆盖 -->
-                            <div class="col-md-6">
+                            <div class="col-12">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-pencil-square me-2"></i>月度负债总额 (RM) - 人工覆盖
+                                    <i class="bi bi-pencil-square me-2"></i>月度负债总额 (RM) - 人工覆盖（可选）
                                 </label>
                                 <input type="number" name="manual_commitment" class="form-control galaxy-input" step="0.01" min="0" placeholder="留空则使用CTOS解析结果">
                                 <small class="text-silver-pearl">
                                     若CTOS解析不准确，可在此手动输入正确值
                                 </small>
                             </div>
+                            
+                            <!-- 公司年龄 (用于SME贷款) -->
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-building me-2"></i>公司运营年限（可选，用于SME贷款）
+                                </label>
+                                <input type="number" name="company_age" class="form-control galaxy-input" min="0" placeholder="例如: 3">
+                                <small class="text-silver-pearl">
+                                    仅在申请SME贷款时需要填写
+                                </small>
+                            </div>
 
-                            <!-- 提交按钮 -->
-                            <div class="col-12 text-center pt-3">
-                                <button type="submit" class="btn btn-lg px-5 galaxy-shimmer">
+                            <!-- 提交按钮 - 增大且更显眼 -->
+                            <div class="col-12 text-center pt-4">
+                                <button type="submit" class="btn btn-lg px-5 py-3 galaxy-shimmer" style="font-size: 1.2rem; box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);">
                                     <i class="bi bi-lightning-charge-fill me-2"></i>
-                                    开始智能匹配
+                                    开始智能匹配分析
                                 </button>
+                                <div class="mt-3">
+                                    <small class="text-silver-pearl">
+                                        <i class="bi bi-shield-check me-1"></i>
+                                        填写完所有必填信息后，点击上方按钮开始分析
+                                    </small>
+                                </div>
                             </div>
                         </div>
                     </form>
