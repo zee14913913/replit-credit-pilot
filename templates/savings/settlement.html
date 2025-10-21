@@ -35,12 +35,119 @@
         </div>
     </div>
 
+    <!-- Monthly Summary -->
+    {% if settlement.monthly_summary %}
+    <div class="professional-card mb-4">
+        <h3 style="color: var(--text-primary); margin-bottom: 1.5rem;">
+            <i class="bi bi-calendar3"></i> Monthly Summary / 月度汇总
+        </h3>
+
+        <div class="row g-4">
+            {% for month_data in settlement.monthly_summary %}
+            <div class="col-md-6 col-lg-4">
+                <div class="professional-card" style="background: linear-gradient(135deg, rgba(230, 230, 230, 0.1) 0%, rgba(200, 200, 200, 0.05) 100%); border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 style="color: var(--text-primary); margin: 0; font-size: 1.1rem;">
+                            📅 {{ month_data.month }}
+                        </h4>
+                        <span class="badge-professional badge-info-pro">
+                            {{ month_data.transaction_count }} 笔
+                        </span>
+                    </div>
+                    <div style="padding: 1rem; background: var(--bg-secondary); border-radius: 8px; text-align: center;">
+                        <small style="color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Monthly Total / 月度总额</small>
+                        <h3 style="color: #e74c3c; margin: 0; font-weight: 700;">
+                            RM {{ "{:,.2f}".format(month_data.total_amount) }}
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Transaction Details -->
     <div class="professional-card">
         <h3 style="color: var(--text-primary); margin-bottom: 1rem;">
             <i class="bi bi-list-ul"></i> Transaction Details / 交易明细
         </h3>
 
+        {% if settlement.monthly_summary %}
+        <!-- Group by Month -->
+        {% for month_data in settlement.monthly_summary %}
+        <div class="mb-4">
+            <div style="background: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 style="color: var(--text-primary); margin: 0; font-size: 1rem;">
+                        📅 {{ month_data.month }}
+                    </h4>
+                    <span style="color: #e74c3c; font-weight: 600;">
+                        RM {{ "{:,.2f}".format(month_data.total_amount) }} ({{ month_data.transaction_count }} 笔)
+                    </span>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table-professional">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th>Date / 日期</th>
+                            <th>Description / 描述</th>
+                            <th>Amount / 金额</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trans in month_data.transactions %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ trans.transaction_date }}</td>
+                            <td>{{ trans.description }}</td>
+                            <td>
+                                <span style="color: #e74c3c; font-weight: 600;">
+                                    RM {{ "{:,.2f}".format(trans.amount) }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr style="background: var(--bg-secondary);">
+                            <td colspan="3" style="text-align: right; font-weight: 600; color: var(--text-primary);">
+                                Month Subtotal / 月度小计:
+                            </td>
+                            <td>
+                                <span style="color: #e74c3c; font-weight: 700;">
+                                    RM {{ "{:,.2f}".format(month_data.total_amount) }}
+                                </span>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Grand Total -->
+        <div style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); padding: 1.5rem; border-radius: 12px; margin-top: 2rem;">
+            <div class="row g-3 text-white align-items-center">
+                <div class="col-md-8">
+                    <h3 style="color: white; margin: 0; font-size: 1.3rem;">
+                        💰 Grand Total / 总计应收金额
+                    </h3>
+                    <small style="color: rgba(255,255,255,0.8);">共 {{ settlement.transaction_count }} 笔转账</small>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <h2 style="color: #ffd700; margin: 0; font-weight: 700; font-size: 2rem;">
+                        RM {{ "{:,.2f}".format(settlement.total_amount) }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        {% else %}
+        <!-- Fallback: Show all transactions without grouping -->
         <div class="table-responsive">
             <table class="table-professional">
                 <thead>
@@ -50,11 +157,10 @@
                         <th>Bank / 银行</th>
                         <th>Description / 描述</th>
                         <th>Amount / 金额</th>
-                        <th>Type / 类型</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for trans in settlement.transactions %}
+                    {% for trans in settlement.all_transactions %}
                     <tr>
                         <td>{{ loop.index }}</td>
                         <td>{{ trans.transaction_date }}</td>
@@ -65,22 +171,9 @@
                         </td>
                         <td>{{ trans.description }}</td>
                         <td>
-                            {% if trans.transaction_type == 'debit' %}
                             <span style="color: #e74c3c; font-weight: 600;">
                                 RM {{ "{:,.2f}".format(trans.amount) }}
                             </span>
-                            {% else %}
-                            <span style="color: #2ecc71; font-weight: 600;">
-                                RM {{ "{:,.2f}".format(trans.amount) }}
-                            </span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if trans.transaction_type == 'debit' %}
-                            <span class="badge-professional badge-danger-pro">转出</span>
-                            {% else %}
-                            <span class="badge-professional badge-success-pro">转入</span>
-                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
@@ -90,7 +183,7 @@
                         <td colspan="4" style="text-align: right; font-weight: 600; color: var(--text-primary);">
                             Total Amount to Collect / 应收总额:
                         </td>
-                        <td colspan="2">
+                        <td>
                             <span style="color: #e74c3c; font-weight: 700; font-size: 1.2rem;">
                                 RM {{ "{:,.2f}".format(settlement.total_amount) }}
                             </span>
@@ -99,6 +192,7 @@
                 </tfoot>
             </table>
         </div>
+        {% endif %}
     </div>
 
     <!-- Generated Info -->
@@ -120,8 +214,11 @@
         <button onclick="window.print()" class="btn-professional">
             <i class="bi bi-printer"></i> Print Report / 打印报告
         </button>
-        <a href="{{ url_for('savings_search') }}" class="btn-professional-outline ms-3">
-            <i class="bi bi-arrow-left"></i> Back to Search / 返回搜索
+        <a href="{{ url_for('savings_accounts') }}" class="btn-professional-outline ms-3">
+            <i class="bi bi-arrow-left"></i> Back to Accounts / 返回账户列表
+        </a>
+        <a href="{{ url_for('savings_search') }}?q={{ settlement.customer_name }}" class="btn-professional-outline ms-3">
+            <i class="bi bi-search"></i> Search More / 搜索更多
         </a>
     </div>
 </div>

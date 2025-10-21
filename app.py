@@ -3058,7 +3058,7 @@ def savings_search():
 
 @app.route('/savings/settlement/<customer_name>')
 def savings_settlement(customer_name):
-    """生成客户结算报告"""
+    """生成客户结算报告 - 按月分组显示"""
     with get_db() as conn:
         cursor = conn.cursor()
         
@@ -3072,7 +3072,8 @@ def savings_settlement(customer_name):
                 st.transaction_type,
                 sa.bank_name,
                 sa.account_number_last4,
-                ss.statement_date
+                ss.statement_date,
+                sa.account_holder_name
             FROM savings_transactions st
             JOIN savings_statements ss ON st.savings_statement_id = ss.id
             JOIN savings_accounts sa ON ss.savings_account_id = sa.id
@@ -3082,14 +3083,83 @@ def savings_settlement(customer_name):
         
         transactions = [dict(row) for row in cursor.fetchall()]
         
+        # 只统计debit（转出）交易
+        debit_transactions = [t for t in transactions if t['transaction_type'] == 'debit']
+        
+        # 按月分组 - 统一转换为 YYYY-MM 格式
+        from collections import defaultdict
+        from datetime import datetime
+        
+        month_map = {
+            'jan': '01', 'feb': '02', 'mar': '03', 'apr': '04',
+            'may': '05', 'jun': '06', 'jul': '07', 'aug': '08',
+            'sep': '09', 'oct': '10', 'nov': '11', 'dec': '12'
+        }
+        
+        monthly_groups = defaultdict(list)
+        
+        for trans in debit_transactions:
+            # 提取月份 (格式: DD-MM-YYYY 或 DD MMM YYYY)
+            date_str = trans['transaction_date']
+            try:
+                month_key = None
+                month_display = None
+                
+                if '-' in date_str:
+                    # DD-MM-YYYY 格式
+                    parts = date_str.split('-')
+                    if len(parts) == 3:
+                        month_num = parts[1]  # MM
+                        year = parts[2]  # YYYY
+                        month_key = f"{year}-{month_num}"  # YYYY-MM
+                        # 转换为 MMM YYYY 显示格式
+                        month_names = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                        month_display = f"{month_names[int(month_num)]} {year}"
+                elif ' ' in date_str:
+                    # DD MMM YYYY 格式
+                    parts = date_str.split()
+                    if len(parts) >= 3:
+                        month_abbr = parts[1].lower()[:3]  # 取前3个字符
+                        year = parts[2]  # YYYY
+                        month_num = month_map.get(month_abbr, '00')
+                        month_key = f"{year}-{month_num}"  # YYYY-MM
+                        month_display = f"{parts[1]} {year}"  # MMM YYYY
+                
+                if not month_key:
+                    month_key = 'Unknown'
+                    month_display = 'Unknown'
+                    
+            except:
+                month_key = 'Unknown'
+                month_display = 'Unknown'
+            
+            monthly_groups[month_key].append({
+                **trans,
+                'month_display': month_display
+            })
+        
+        # 计算每月总额
+        monthly_summary = []
+        for month_key in sorted(monthly_groups.keys()):
+            month_transactions = monthly_groups[month_key]
+            month_total = sum(t['amount'] for t in month_transactions)
+            monthly_summary.append({
+                'month': month_transactions[0]['month_display'] if month_transactions else month_key,
+                'transaction_count': len(month_transactions),
+                'total_amount': month_total,
+                'transactions': month_transactions
+            })
+        
         # 计算总额
-        total_amount = sum(t['amount'] for t in transactions if t['transaction_type'] == 'debit')
+        total_amount = sum(t['amount'] for t in debit_transactions)
         
         settlement_data = {
             'customer_name': customer_name,
             'total_amount': total_amount,
-            'transaction_count': len(transactions),
-            'transactions': transactions,
+            'transaction_count': len(debit_transactions),
+            'monthly_summary': monthly_summary,
+            'all_transactions': debit_transactions,
             'generated_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
     
