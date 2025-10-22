@@ -45,7 +45,7 @@
                     <h6 class="text-secondary">{{ t('gz_revenue') }}</h6>
                     <h2 class="text-info">RM {{ "{:,.2f}".format(overview.gz_total_revenue) }}</h2>
                     <small class="text-muted">
-                        Advisory: RM {{ "{:,.2f}".format(overview.gz_revenue_advisory) }} |
+                        {{ t('advisory') }}: RM {{ "{:,.2f}".format(overview.gz_revenue_advisory) }} |
                         {{ t('supplier') }}: RM {{ "{:,.2f}".format(overview.gz_revenue_supplier) }}
                     </small>
                 </div>

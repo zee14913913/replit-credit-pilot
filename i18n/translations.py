@@ -537,6 +537,8 @@ TRANSLATIONS = {
         'fee_paid': 'Fee Paid',
         'paid': 'Paid',
         'no_fee_calculations_yet': 'No fee calculations yet - Waiting for service completion',
+        'n_a': 'N/A',
+        'advisory': 'Advisory',
     },
     'zh': {
         # Navigation
@@ -1071,6 +1073,8 @@ TRANSLATIONS = {
         'fee_paid': '费用支付',
         'paid': '已支付',
         'no_fee_calculations_yet': '还没有费用计算 - 等待服务完成',
+        'n_a': '不适用',
+        'advisory': '咨询',
     }
 }
 

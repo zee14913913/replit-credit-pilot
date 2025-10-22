@@ -170,7 +170,7 @@
                                             {{ consult.status }}
                                         </span>
                                     </td>
-                                    <td>{{ consult.consultation_outcome or 'N/A' }}</td>
+                                    <td>{{ consult.consultation_outcome or t('n_a') }}</td>
                                     <td>{{ consult.created_at }}</td>
                                 </tr>
                                 {% endfor %}
