@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+
+{% block title %}Customers & Credit Cards - Admin{% endblock %}
+
+{% block content %}
+<div class="container-professional">
+    <div class="section-header mb-4">
+        <h1 class="section-title">👥 客户与信用卡管理</h1>
+        <p class="section-description">查看所有客户及其信用卡详细信息</p>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary mt-3">
+            <i class="bi bi-arrow-left"></i> 返回Admin Dashboard
+        </a>
+    </div>
+
+    {% if customers_with_cards %}
+        {% for item in customers_with_cards %}
+        <div class="customer-card-container mb-5">
+            <!-- Customer Header -->
+            <div class="customer-header">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h3 class="customer-name">
+                            <i class="bi bi-person-circle"></i> {{ item.customer.customer_name }}
+                        </h3>
+                        <div class="customer-details">
+                            <span class="detail-item">
+                                <i class="bi bi-envelope"></i> {{ item.customer.email or 'N/A' }}
+                            </span>
+                            <span class="detail-item">
+                                <i class="bi bi-telephone"></i> {{ item.customer.phone or 'N/A' }}
+                            </span>
+                            <span class="detail-item">
+                                <i class="bi bi-cash-stack"></i> RM {{ "{:,.2f}".format(item.customer.monthly_income) if item.customer.monthly_income else 'N/A' }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="customer-stats">
+                            <div class="stat-badge">
+                                <span class="stat-number">{{ item.customer.total_cards }}</span>
+                                <span class="stat-label">信用卡</span>
+                            </div>
+                            <div class="stat-badge">
+                                <span class="stat-number">{{ item.customer.total_statements }}</span>
+                                <span class="stat-label">账单数</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Credit Cards List -->
+            {% if item.cards %}
+            <div class="cards-grid">
+                {% for card in item.cards %}
+                <div class="credit-card-item">
+                    <div class="card-header-section">
+                        <div class="card-type">
+                            <i class="bi bi-credit-card-2-front"></i>
+                            {{ card.card_type }}
+                        </div>
+                        <div class="card-number">
+                            <span class="card-number-label">卡号:</span>
+                            <span class="card-number-value">**** **** **** {{ card.card_number_last4 }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-details-grid">
+                        <div class="detail-row">
+                            <span class="detail-label">银行:</span>
+                            <span class="detail-value">{{ card.bank_name }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">信用额度:</span>
+                            <span class="detail-value">
+                                {% if card.credit_limit %}
+                                RM {{ "{:,.2f}".format(card.credit_limit) }}
+                                {% else %}
+                                N/A
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">年费:</span>
+                            <span class="detail-value">
+                                {% if card.annual_fee %}
+                                RM {{ "{:,.2f}".format(card.annual_fee) }}
+                                {% else %}
+                                免年费
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">账单数量:</span>
+                            <span class="detail-value">{{ card.statement_count or 0 }} 份</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">最后账单:</span>
+                            <span class="detail-value">{{ card.last_statement_date or 'N/A' }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">总消费:</span>
+                            <span class="detail-value spending-amount">
+                                {% if card.total_spending %}
+                                RM {{ "{:,.2f}".format(card.total_spending) }}
+                                {% else %}
+                                RM 0.00
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-actions">
+                        <a href="{{ url_for('customer_dashboard', customer_id=item.customer.customer_id) }}" 
+                           class="btn-action">
+                            <i class="bi bi-eye"></i> 查看详情
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-cards-message">
+                <i class="bi bi-credit-card-2-front"></i>
+                <p>该客户还没有添加信用卡</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="content-card text-center py-5">
+        <i class="bi bi-inbox" style="font-size: 3rem; color: #666;"></i>
+        <h3 class="mt-3">暂无客户数据</h3>
+        <p class="text-muted">系统中还没有客户记录</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.customer-card-container {
+    background: linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
+    border: 1px solid rgba(192, 192, 192, 0.2);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.customer-header {
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(40, 40, 40, 0.95) 100%);
+    border-bottom: 2px solid rgba(192, 192, 192, 0.2);
+    padding: 2rem;
+}
+
+.customer-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #FFFFFF 0%, rgba(192, 192, 192, 0.9) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+}
+
+.customer-name i {
+    background: linear-gradient(135deg, #FFFFFF 0%, rgba(192, 192, 192, 0.9) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.customer-details {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.detail-item {
+    color: #A1A1AA;
+    font-size: 0.9rem;
+}
+
+.detail-item i {
+    margin-right: 0.5rem;
+    color: #C0C0C0;
+}
+
+.customer-stats {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: flex-end;
+}
+
+.stat-badge {
+    text-align: center;
+    padding: 0.75rem 1.5rem;
+    background: rgba(192, 192, 192, 0.1);
+    border: 1px solid rgba(192, 192, 192, 0.2);
+    border-radius: 8px;
+}
+
+.stat-number {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #FFFFFF;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.75rem;
+    color: #A1A1AA;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    padding: 2rem;
+}
+
+.credit-card-item {
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.6) 0%, rgba(40, 40, 40, 0.6) 100%);
+    border: 1px solid rgba(192, 192, 192, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.credit-card-item:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 16px rgba(192, 192, 192, 0.2);
+    transform: translateY(-2px);
+}
+
+.card-header-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(192, 192, 192, 0.15);
+}
+
+.card-type {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #FFFFFF;
+    margin-bottom: 0.75rem;
+}
+
+.card-type i {
+    color: #C0C0C0;
+    margin-right: 0.5rem;
+}
+
+.card-number {
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+}
+
+.card-number-label {
+    color: #A1A1AA;
+    margin-right: 0.5rem;
+}
+
+.card-number-value {
+    color: #FFFFFF;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+}
+
+.card-details-grid {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.detail-label {
+    color: #A1A1AA;
+    font-size: 0.9rem;
+}
+
+.detail-value {
+    color: #E5E5E5;
+    font-weight: 500;
+    text-align: right;
+}
+
+.spending-amount {
+    color: #4ADE80;
+    font-weight: 600;
+}
+
+.card-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-action {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background: rgba(192, 192, 192, 0.1);
+    border: 1px solid rgba(192, 192, 192, 0.3);
+    border-radius: 8px;
+    color: #FFFFFF;
+    text-decoration: none;
+    text-align: center;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-action:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #FFFFFF;
+    box-shadow: 0 0 12px rgba(192, 192, 192, 0.3);
+}
+
+.btn-action i {
+    margin-right: 0.5rem;
+}
+
+.no-cards-message {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #A1A1AA;
+}
+
+.no-cards-message i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .cards-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .customer-stats {
+        justify-content: center;
+        margin-top: 1.5rem;
+    }
+    
+    .customer-details {
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}

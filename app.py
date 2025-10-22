@@ -1531,6 +1531,67 @@ def admin_logout():
     flash('Admin logged out successfully', 'success')
     return redirect(url_for('index'))
 
+@app.route('/admin/customers-cards')
+def admin_customers_cards():
+    """Admin page showing all customers and their credit cards"""
+    if not session.get('is_admin'):
+        flash('Please login as admin first', 'warning')
+        return redirect(url_for('admin_login'))
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # Get all customers with their credit cards
+        cursor.execute("""
+            SELECT 
+                c.id as customer_id,
+                c.name as customer_name,
+                c.email,
+                c.phone,
+                c.monthly_income,
+                COUNT(DISTINCT cc.id) as total_cards,
+                COUNT(DISTINCT s.id) as total_statements,
+                SUM(CASE WHEN s.statement_date >= date('now', 'start of month') THEN 1 ELSE 0 END) as current_month_statements
+            FROM customers c
+            LEFT JOIN credit_cards cc ON c.id = cc.customer_id
+            LEFT JOIN statements s ON cc.id = s.card_id
+            GROUP BY c.id
+            ORDER BY c.name
+        """)
+        customers_summary = [dict(row) for row in cursor.fetchall()]
+        
+        # Get detailed card information for each customer
+        customers_with_cards = []
+        for customer in customers_summary:
+            cursor.execute("""
+                SELECT 
+                    cc.id as card_id,
+                    cc.card_type,
+                    cc.card_number_last4,
+                    cc.bank_name,
+                    cc.credit_limit,
+                    cc.annual_fee,
+                    COUNT(DISTINCT s.id) as statement_count,
+                    MAX(s.statement_date) as last_statement_date,
+                    SUM(t.amount) as total_spending
+                FROM credit_cards cc
+                LEFT JOIN statements s ON cc.id = s.card_id
+                LEFT JOIN transactions t ON s.id = t.statement_id
+                WHERE cc.customer_id = ?
+                GROUP BY cc.id
+                ORDER BY cc.card_type
+            """, (customer['customer_id'],))
+            
+            cards = [dict(row) for row in cursor.fetchall()]
+            
+            customers_with_cards.append({
+                'customer': customer,
+                'cards': cards
+            })
+    
+    return render_template('admin_customers_cards.html', 
+                         customers_with_cards=customers_with_cards)
+
 # ==================== END ADMIN AUTHENTICATION ====================
 
 # ==================== NOTIFICATION SERVICES ====================
