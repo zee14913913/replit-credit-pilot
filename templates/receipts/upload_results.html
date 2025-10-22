@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}上传结果 - Upload Results{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <h1 class="galaxy-heading mb-4">
+                <i class="bi bi-check-circle"></i> 上传结果
+            </h1>
+            
+            <div class="glass-panel p-4">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>文件名</th>
+                                <th>状态</th>
+                                <th>置信度</th>
+                                <th>说明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in results %}
+                            <tr>
+                                <td>{{ result.filename }}</td>
+                                <td>
+                                    {% if result.status == 'auto_matched' %}
+                                    <span class="badge bg-success">自动匹配</span>
+                                    {% elif result.status in ['no_match', 'multiple_matches'] %}
+                                    <span class="badge bg-warning">需手动匹配</span>
+                                    {% elif result.status == 'ocr_failed' %}
+                                    <span class="badge bg-danger">识别失败</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">错误</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if result.confidence %}
+                                    {{ "%.0f"|format(result.confidence * 100) }}%
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td>{{ result.message }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="{{ url_for('receipts_pending') }}" class="btn btn-warning">
+                        <i class="bi bi-exclamation-triangle"></i> 查看待匹配收据
+                    </a>
+                    <a href="{{ url_for('receipts_upload') }}" class="btn btn-primary">
+                        <i class="bi bi-upload"></i> 继续上传
+                    </a>
+                    <a href="{{ url_for('receipts_home') }}" class="btn btn-secondary">
+                        <i class="bi bi-house"></i> 返回主页
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
