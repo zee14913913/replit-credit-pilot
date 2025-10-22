@@ -11,8 +11,8 @@
 
     <div class="professional-card">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 style="color: var(--text-primary); margin: 0;">Upcoming Payments</h3>
-            <span class="badge-professional badge-primary-pro">{{ reminders|length }} Pending</span>
+            <h3 style="color: var(--text-primary); margin: 0;">{{ t('upcoming_payments') }}</h3>
+            <span class="badge-professional badge-primary-pro">{{ reminders|length }} {{ t('pending') }}</span>
         </div>
         
         {% if reminders %}
@@ -50,8 +50,8 @@
         </div>
         {% else %}
         <div class="text-center py-5">
-            <h4 class="mt-4 mb-3" style="color: var(--text-primary);">All Caught Up!</h4>
-            <p style="color: var(--text-secondary);">No pending payment reminders at the moment.</p>
+            <h4 class="mt-4 mb-3" style="color: var(--text-primary);">{{ t('all_caught_up') }}</h4>
+            <p style="color: var(--text-secondary);">{{ t('no_pending_reminders') }}</p>
         </div>
         {% endif %}
     </div>

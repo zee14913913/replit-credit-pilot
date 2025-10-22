@@ -12,27 +12,27 @@
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="professional-card">
-                <h3 style="color: var(--text-primary); margin-bottom: 2rem;">Statement Upload Form</h3>
+                <h3 style="color: var(--text-primary); margin-bottom: 2rem;">{{ t('statement_upload_form') }}</h3>
                 
                 <form method="POST" enctype="multipart/form-data">
                     <div class="mb-4">
                         <label class="form-label" style="color: var(--text-primary); font-weight: 600;">
-                            Select Credit Card
+                            {{ t('select_credit_card') }}
                         </label>
                         <select name="card_id" class="form-control-professional" required>
-                            <option value="" selected disabled>Choose a credit card...</option>
+                            <option value="" selected disabled>{{ t('choose_credit_card') }}</option>
                             {% for card in cards %}
                             <option value="{{ card.id }}">
                                 {{ card.customer_name }} - {{ card.bank_name }} ****{{ card.card_number_last4 }}
                             </option>
                             {% endfor %}
                         </select>
-                        <small style="color: var(--text-tertiary); margin-top: 0.5rem; display: block;">Select the card associated with this statement</small>
+                        <small style="color: var(--text-tertiary); margin-top: 0.5rem; display: block;">{{ t('select_card_help') }}</small>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label" style="color: var(--text-primary); font-weight: 600;">
-                            Statement File
+                            {{ t('statement_file') }}
                         </label>
                         <input type="file" name="statement_file" class="form-control-professional" accept=".pdf,.xlsx,.xls" required>
                         <small style="color: var(--text-tertiary); margin-top: 0.5rem; display: block;">

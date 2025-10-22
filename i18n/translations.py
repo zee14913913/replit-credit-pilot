@@ -328,6 +328,27 @@ TRANSLATIONS = {
         'as_per_application': 'As per application',
         'fast': 'Fast',
         'standard': 'Standard',
+        
+        # Upload Statement
+        'statement_upload_form': 'Statement Upload Form',
+        'select_credit_card': 'Select Credit Card',
+        'choose_credit_card': 'Choose a credit card...',
+        'select_card_help': 'Select the card associated with this statement',
+        'statement_file': 'Statement File',
+        'batch_upload_statements': 'Batch Upload Statements',
+        
+        # Reminders
+        'upcoming_payments': 'Upcoming Payments',
+        'all_caught_up': 'All Caught Up!',
+        'no_pending_reminders': 'No pending payment reminders at the moment.',
+        'pending': 'PENDING',
+        
+        # Receipts
+        'pending_receipts': 'Pending Receipts',
+        'view_pending_receipts': 'View Pending Receipts',
+        'pending_match': 'Pending',
+        'select_card': 'Select Card',
+        'select_card_placeholder': '-- Select Card --',
     },
     'zh': {
         # Navigation
@@ -653,6 +674,27 @@ TRANSLATIONS = {
         'as_per_application': '按申请而定',
         'fast': '快速',
         'standard': '标准',
+        
+        # Upload Statement
+        'statement_upload_form': '账单上传表单',
+        'select_credit_card': '选择信用卡',
+        'choose_credit_card': '选择信用卡...',
+        'select_card_help': '选择与此账单关联的信用卡',
+        'statement_file': '账单文件',
+        'batch_upload_statements': '批量上传账单',
+        
+        # Reminders
+        'upcoming_payments': '待支付账单',
+        'all_caught_up': '全部已处理！',
+        'no_pending_reminders': '暂无待处理的支付提醒。',
+        'pending': '待处理',
+        
+        # Receipts
+        'pending_receipts': '待匹配收据',
+        'view_pending_receipts': '查看待匹配收据',
+        'pending_match': '待匹配',
+        'select_card': '选择信用卡',
+        'select_card_placeholder': '-- 选择信用卡 --',
     }
 }
 
