@@ -785,31 +785,31 @@ p {
    BOOTSTRAP BUTTON OVERRIDES - 高级色按钮
    ======================================== */
 
-/* Primary Button - 浓烈桃红色（Vivid Hot Pink） */
+/* Primary Button - Barbie正宗桃红色（Barbie Hot Pink） */
 .btn-primary {
-    background: linear-gradient(135deg, #E91450 0%, #C21856 100%) !important;
-    color: #f0f0f0 !important;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    font-weight: 600;
+    background: linear-gradient(135deg, #FF1493 0%, #FF69B4 100%) !important;
+    color: #FFFFFF !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    border: 2px solid #FF1493 !important;
+    font-weight: 700;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(233, 20, 80, 0.4);
+    box-shadow: 0 5px 15px rgba(255, 20, 147, 0.6);
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #FF1744 0%, #E91450 100%) !important;
-    color: #ffffff !important;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
-    border-color: rgba(255, 255, 255, 0.5) !important;
-    box-shadow: 0 6px 16px rgba(233, 20, 80, 0.55);
-    transform: translateY(-2px);
+    background: linear-gradient(135deg, #FF69B4 0%, #FFB6D9 100%) !important;
+    color: #FFFFFF !important;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+    border-color: #FF69B4 !important;
+    box-shadow: 0 8px 20px rgba(255, 20, 147, 0.8);
+    transform: translateY(-3px);
 }
 
 .btn-primary:active,
 .btn-primary:focus {
-    background: linear-gradient(135deg, #C21856 0%, #AD1457 100%) !important;
-    color: #f0f0f0 !important;
-    box-shadow: 0 2px 8px rgba(233, 20, 80, 0.5) !important;
+    background: linear-gradient(135deg, #FF1493 0%, #C71585 100%) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 3px 10px rgba(255, 20, 147, 0.7) !important;
 }
 
 /* Warning Button - 高级暗紫罗兰（Premium Dark Violet） */
