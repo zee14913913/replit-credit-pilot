@@ -6,21 +6,21 @@
 <div class="fade-in">
     <div class="section-header">
         <h1 class="section-title">
-            <i class="bi bi-person-circle"></i> {{ customer.name }}
+            {{ customer.name }}
         </h1>
         <p class="section-subtitle">{{ customer.code }}</p>
     </div>
 
     <div class="mb-4">
-        <a href="{{ url_for('credit_card_ledger') }}" class="btn-professional-outline">
-            <i class="bi bi-arrow-left"></i> {{ t('back_to_all_customers') }}
+        <a href="{{ url_for('credit_card_ledger') }}" class="btn-professional-outline" style="border-color: #FF1493; color: #FF1493; padding: 0.75rem 1.5rem; font-size: 1.1rem;">
+            {{ t('back_to_all_customers') }}
         </a>
     </div>
 
     {% for year_data in years_data %}
     <div class="professional-card mb-4">
-        <h2 class="section-title mb-4" style="color: #87CEEB;">
-            <i class="bi bi-calendar"></i> {{ customer.code }}_{{ year_data.year }}
+        <h2 class="section-title mb-4" style="color: #FF1493; font-size: 1.8rem;">
+            {{ customer.code }}_{{ year_data.year }}
         </h2>
         
         <div class="row g-3">
@@ -55,16 +55,16 @@
 }
 
 .month-cell.active {
-    background: linear-gradient(135deg, rgba(135, 206, 235, 0.2) 0%, rgba(135, 206, 235, 0.05) 100%);
-    border: 2px solid #87CEEB;
+    background: linear-gradient(135deg, rgba(255, 20, 147, 0.2) 0%, rgba(147, 112, 219, 0.05) 100%);
+    border: 2px solid #FF1493;
     cursor: pointer;
 }
 
 .month-cell.active:hover {
-    background: linear-gradient(135deg, rgba(135, 206, 235, 0.3) 0%, rgba(135, 206, 235, 0.1) 100%);
-    border-color: #FFD700;
+    background: linear-gradient(135deg, rgba(255, 20, 147, 0.3) 0%, rgba(147, 112, 219, 0.1) 100%);
+    border-color: #9370DB;
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(135, 206, 235, 0.4);
+    box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4);
 }
 
 .month-cell.inactive {
@@ -81,21 +81,21 @@
 }
 
 .month-cell.active .month-name {
-    color: #87CEEB;
+    color: #FF1493;
 }
 
 .month-badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;
-    background: #87CEEB;
-    color: #000;
+    background: linear-gradient(135deg, #FF1493 0%, #9370DB 100%);
+    color: #FFF;
     border-radius: 12px;
     font-size: 0.85rem;
     font-weight: 600;
 }
 
 .month-cell.active:hover .month-badge {
-    background: #FFD700;
+    background: linear-gradient(135deg, #9370DB 0%, #FF1493 100%);
 }
 </style>
 {% endblock %}
