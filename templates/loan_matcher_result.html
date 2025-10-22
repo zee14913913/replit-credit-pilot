@@ -1,76 +1,76 @@
 {% extends "base.html" %}
 
-{% block title %}匹配结果 - {{ client_name }}{% endblock %}
+{% block title %}{{ t('matching_results') }} - {{ client_name }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-4">
     <div class="row justify-content-center">
         <div class="col-lg-11">
-            <!-- 页面标题 -->
+            <!-- Page Header -->
             <div class="text-center mb-5">
                 <h1 class="galaxy-gradient-text mb-3">
-                    <i class="bi bi-check-circle-fill me-2"></i>贷款产品匹配结果
+                    <i class="bi bi-check-circle-fill me-2"></i>{{ t('matching_results') }}
                 </h1>
             </div>
 
-            <!-- 客户摘要卡片 -->
+            <!-- Customer Summary Card -->
             <div class="galaxy-card" style="margin-bottom: 5rem;">
                 <div class="card-body">
                     <h5 class="galaxy-gradient-text mb-4">
-                        <i class="bi bi-person-badge me-2"></i>客户摘要
+                        <i class="bi bi-person-badge me-2"></i>{{ t('customer_summary') }}
                     </h5>
                     <div class="row g-4">
                         <div class="col-md-3">
-                            <div class="text-silver-pearl small">客户姓名</div>
+                            <div class="text-silver-pearl small">{{ t('customer_name') }}</div>
                             <div class="text-white fw-bold fs-5">{{ client_name }}</div>
                         </div>
                         <div class="col-md-3">
-                            <div class="text-silver-pearl small mb-2">月度负债</div>
+                            <div class="text-silver-pearl small mb-2">{{ t('monthly_commitment') }}</div>
                             <div class="text-white fw-bold fs-5 mb-2">RM {{ '%.2f' | format(total_commitment) }}</div>
-                            <div class="ctos-status-indicator {% if '成功' in ctos_notes %}ctos-success{% elif '警告' in ctos_notes or '未' in ctos_notes %}ctos-warning{% else %}ctos-error{% endif %}">
+                            <div class="ctos-status-indicator {% if '成功' in ctos_notes or 'Success' in ctos_notes %}ctos-success{% elif '警告' in ctos_notes or '未' in ctos_notes or 'Warning' in ctos_notes or 'Not' in ctos_notes %}ctos-warning{% else %}ctos-error{% endif %}">
                                 {{ ctos_notes }}
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="text-silver-pearl small">DSR比率</div>
+                            <div class="text-silver-pearl small">{{ t('dsr_ratio') }}</div>
                             <div class="{% if dsr and dsr > 70 %}text-danger{% elif dsr and dsr > 50 %}text-warning{% else %}text-success{% endif %} fw-bold fs-5">
                                 {% if dsr %}{{ dsr }}%{% else %}N/A{% endif %}
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="text-silver-pearl small">匹配状态</div>
+                            <div class="text-silver-pearl small">{{ t('matching_status') }}</div>
                             <div class="text-golden fw-bold fs-5">
-                                <i class="bi bi-check-circle-fill me-1"></i>已完成
+                                <i class="bi bi-check-circle-fill me-1"></i>{{ t('completed') }}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 第一层面：贷款类别选择 -->
+            <!-- First Level: Category Selection -->
             <div class="galaxy-card" style="margin-bottom: 5rem;">
                 <div class="card-body">
                     <h5 class="galaxy-gradient-text mb-3 text-center">
-                        <i class="bi bi-award-fill me-2"></i>选择贷款类别
+                        <i class="bi bi-award-fill me-2"></i>{{ t('select_loan_category') }}
                     </h5>
                     <p class="text-silver-pearl text-center mb-4">
-                        共找到 <span class="text-golden fw-bold">{{ eligible|length }}</span> 个符合条件的贷款产品，请选择感兴趣的类别进行对比
+                        <span class="text-golden fw-bold">{{ eligible|length }}</span> {{ t('eligible_products_found') }}
                     </p>
                     
                     {% if eligible %}
-                        <!-- 圆形类别按钮 -->
+                        <!-- Circle Category Buttons -->
                         <div class="mb-3">
                             <div class="d-flex justify-content-center align-items-center flex-wrap" style="gap: 3rem; row-gap: 2.5rem;">
-                                <!-- 全部按钮 -->
-                                <button class="category-circle-btn" data-category="all" data-category-name="全部贷款" data-count="{{ eligible|length }}">
+                                <!-- All Button -->
+                                <button class="category-circle-btn" data-category="all" data-category-name="{{ t('all_loans') }}" data-count="{{ eligible|length }}">
                                     <div class="icon">
                                         <i class="bi bi-grid-fill"></i>
                                     </div>
-                                    <div class="label">全部</div>
+                                    <div class="label">{{ t('all_loans') }}</div>
                                     <div class="count">{{ eligible|length }}</div>
                                 </button>
                                 
-                                <!-- 各类型按钮 -->
+                                <!-- Category Buttons -->
                                 {% for category, items in eligible_by_type.items() %}
                                 <button class="category-circle-btn" data-category="{{ category }}" data-category-name="{{ category_names.get(category, category) }}" data-count="{{ items|length }}">
                                     <div class="icon">
@@ -86,37 +86,37 @@
                     {% else %}
                         <div class="alert alert-warning">
                             <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                            很抱歉，当前没有符合条件的贷款产品。请查看下方不符合原因。
+                            Sorry, no loan products match the criteria at this time.
                         </div>
                     {% endif %}
                 </div>
             </div>
 
-            <!-- 第二层面：产品详细列表（默认隐藏） -->
+            <!-- Second Level: Product List (Hidden by Default) -->
             {% if eligible %}
             <div id="productsSection" class="galaxy-card" style="display: none; margin-bottom: 5rem;">
                 <div class="card-body">
                     <h5 class="galaxy-gradient-text mb-4">
-                        <i class="bi bi-list-check me-2"></i><span id="selectedCategoryTitle">贷款产品</span>
+                        <i class="bi bi-list-check me-2"></i><span id="selectedCategoryTitle">{{ t('loan_products') }}</span>
                         <span class="badge bg-success ms-2" id="selectedCategoryCount">0</span>
                     </h5>
                     
-                    <!-- 产品网格展示 - 加大间距 -->
+                    <!-- Products Grid -->
                     <div id="productsGrid" class="row" style="gap: 2.5rem; row-gap: 2.5rem;">
                             {% for item in eligible %}
                             {% set p = item.product %}
                             <div class="col-xl-4 col-lg-6 col-md-6 product-card" data-category="{{ p.get('category', 'other') }}" style="margin-bottom: 0;">
                                 <div class="loan-product-card h-100">
-                                    <!-- 卡片头部 -->
+                                    <!-- Card Header -->
                                     <div class="card-header-custom">
                                         <div class="d-flex justify-content-between align-items-start">
                                             <h6 class="card-title-custom mb-0">
                                                 <i class="bi bi-bank text-golden me-2"></i>{{ p.name }}
                                             </h6>
                                             {% if p.speed_rank == 1 %}
-                                            <span class="badge bg-success">快速</span>
+                                            <span class="badge bg-success">{{ t('fast') }}</span>
                                             {% elif p.speed_rank == 2 %}
-                                            <span class="badge bg-info">标准</span>
+                                            <span class="badge bg-info">{{ t('standard') }}</span>
                                             {% endif %}
                                         </div>
                                         <div class="bank-name">
@@ -124,47 +124,47 @@
                                         </div>
                                     </div>
                                     
-                                    <!-- 卡片内容 -->
+                                    <!-- Card Content -->
                                     <div class="card-content-custom">
                                         <div class="info-grid">
                                             <div class="info-item">
                                                 <div class="info-label">
-                                                    <i class="bi bi-cash-stack me-1"></i>额度范围
+                                                    <i class="bi bi-cash-stack me-1"></i>{{ t('amount_range') }}
                                                 </div>
                                                 <div class="info-value">
                                                     {% if p.amount_min and p.amount_max %}
                                                     RM {{ '{:,}'.format(p.amount_min) }}<br>- {{ '{:,}'.format(p.amount_max) }}
                                                     {% else %}
-                                                    按申请而定
+                                                    {{ t('as_per_application') }}
                                                     {% endif %}
                                                 </div>
                                             </div>
                                             
                                             <div class="info-item">
                                                 <div class="info-label">
-                                                    <i class="bi bi-percent me-1"></i>利率
+                                                    <i class="bi bi-percent me-1"></i>{{ t('interest_rate') }}
                                                 </div>
                                                 <div class="info-value text-golden">
-                                                    {{ p.rate_display if p.rate_display else '待定' }}
+                                                    {{ p.rate_display if p.rate_display else t('tbd') }}
                                                 </div>
                                             </div>
                                             
                                             <div class="info-item">
                                                 <div class="info-label">
-                                                    <i class="bi bi-calendar-range me-1"></i>期限
+                                                    <i class="bi bi-calendar-range me-1"></i>{{ t('tenure') }}
                                                 </div>
                                                 <div class="info-value">
                                                     {% if p.tenure_min_months and p.tenure_max_months %}
-                                                    {{ p.tenure_min_months }}-{{ p.tenure_max_months }}个月
+                                                    {{ p.tenure_min_months }}-{{ p.tenure_max_months }} {{ t('months') }}
                                                     {% else %}
-                                                    灵活期限
+                                                    {{ t('flexible_tenure') }}
                                                     {% endif %}
                                                 </div>
                                             </div>
                                             
                                             <div class="info-item">
                                                 <div class="info-label">
-                                                    <i class="bi bi-graph-up me-1"></i>DSR要求
+                                                    <i class="bi bi-graph-up me-1"></i>{{ t('dsr_requirement') }}
                                                 </div>
                                                 <div class="info-value text-success">
                                                     ≤ {{ p.get('dsr_max', 70) }}%
@@ -182,7 +182,7 @@
                                         {% if p.get('docs_required') %}
                                         <div class="docs-box">
                                             <div class="docs-label">
-                                                <i class="bi bi-file-text me-1"></i>所需文档:
+                                                <i class="bi bi-file-text me-1"></i>{{ t('docs_required') }}:
                                             </div>
                                             <div class="docs-tags">
                                                 {% for doc in p.docs_required %}
@@ -200,13 +200,13 @@
             </div>
             {% endif %}
 
-            <!-- 操作按钮 -->
+            <!-- Action Buttons -->
             <div class="text-center mb-5">
                 <a href="{{ url_for('loan_matcher') }}" class="btn btn-outline-light me-2">
-                    <i class="bi bi-arrow-left me-2"></i>返回匹配页面
+                    <i class="bi bi-arrow-left me-2"></i>{{ t('back_to_matcher') }}
                 </a>
                 <a href="{{ url_for('index') }}" class="btn btn-outline-light">
-                    <i class="bi bi-house-fill me-2"></i>返回主页
+                    <i class="bi bi-house-fill me-2"></i>{{ t('back_to_home') }}
                 </a>
             </div>
         </div>
@@ -214,7 +214,7 @@
 </div>
 
 <style>
-/* CTOS 解析状态指示器 - 高级感设计 */
+/* CTOS Parse Status Indicator */
 .ctos-status-indicator {
     font-size: 0.75rem;
     padding: 0.4rem 0.8rem;
@@ -228,7 +228,7 @@
     display: inline-block;
 }
 
-/* 成功状态 - 浅白金色渐变 */
+/* Success State */
 .ctos-success {
     border-color: rgba(229, 228, 226, 0.7);
     color: #E5E4E2;
@@ -236,7 +236,7 @@
     box-shadow: 0 2px 8px rgba(229, 228, 226, 0.2);
 }
 
-/* 警告状态 - 银色 */
+/* Warning State */
 .ctos-warning {
     border-color: rgba(232, 230, 227, 0.4);
     color: #e8e6e3;
@@ -244,7 +244,7 @@
     box-shadow: 0 2px 8px rgba(232, 230, 227, 0.1);
 }
 
-/* 失败状态 - 白色 */
+/* Error State */
 .ctos-error {
     border-color: rgba(255, 255, 255, 0.5);
     color: #ffffff;
@@ -252,7 +252,7 @@
     box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
 }
 
-/* 圆形类别按钮样式 - 更大尺寸 */
+/* Circle Category Button */
 .category-circle-btn {
     width: 200px;
     height: 200px;
@@ -303,7 +303,7 @@
     color: #d4af37;
 }
 
-/* 产品卡片样式 - 四方形设计 */
+/* Product Card - Square Design */
 .loan-product-card {
     background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(40, 40, 40, 0.95));
     border: 2px solid rgba(212, 175, 55, 0.3);
@@ -414,7 +414,7 @@
     border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
-/* 响应式调整 */
+/* Responsive */
 @media (max-width: 992px) {
     .category-circle-btn {
         width: 160px;
@@ -461,7 +461,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // 添加淡入滑动动画样式
+    // Add fade-in slide animation styles
     const style = document.createElement('style');
     style.textContent = `
         @keyframes fadeInSlide {
@@ -490,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(style);
     
-    // 为所有类别按钮添加点击事件监听器
+    // Add click event listeners to category buttons
     const categoryButtons = document.querySelectorAll('.category-circle-btn');
     categoryButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -504,9 +504,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function selectCategory(category, categoryName, count) {
-    console.log('选择类别:', category, categoryName, count); // 调试日志
+    console.log('Selected category:', category, categoryName, count);
     
-    // 更新按钮状态
+    // Update button states
     document.querySelectorAll('.category-circle-btn').forEach(btn => {
         btn.classList.remove('active');
     });
@@ -515,37 +515,37 @@ function selectCategory(category, categoryName, count) {
         activeButton.classList.add('active');
     }
     
-    // 显示产品区域
+    // Show products section
     const productsSection = document.getElementById('productsSection');
     if (productsSection) {
         productsSection.style.display = 'block';
     }
     
-    // 更新标题和数量
+    // Update title and count
     const titleElement = document.getElementById('selectedCategoryTitle');
     const countElement = document.getElementById('selectedCategoryCount');
     if (titleElement) titleElement.textContent = categoryName;
-    if (countElement) countElement.textContent = count + '个';
+    if (countElement) countElement.textContent = count;
     
-    // 过滤产品卡片
+    // Filter product cards
     const cards = document.querySelectorAll('.product-card');
     let visibleCount = 0;
     cards.forEach(card => {
         if (category === 'all' || card.dataset.category === category) {
             card.style.display = 'block';
             visibleCount++;
-            // 重置并添加淡入动画（确保每次切换都有动画）
+            // Reset and add fade-in animation
             card.style.animation = 'none';
-            card.offsetHeight; // 强制重绘
+            card.offsetHeight; // Force reflow
             card.style.animation = 'fadeInSlide 0.4s ease-out';
         } else {
             card.style.display = 'none';
         }
     });
     
-    console.log('显示了', visibleCount, '个产品'); // 调试日志
+    console.log('Displaying', visibleCount, 'products');
     
-    // 平滑滚动到产品区域
+    // Smooth scroll to products section
     setTimeout(() => {
         if (productsSection) {
             productsSection.scrollIntoView({ 
