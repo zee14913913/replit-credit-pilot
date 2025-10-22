@@ -386,15 +386,16 @@ def upload_statement():
             flash('Please provide card and file', 'error')
             return redirect(request.url)
         
-        filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(file_path)
+        # 临时保存文件用于解析
+        temp_filename = f"temp_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
+        temp_file_path = os.path.join(app.config['UPLOAD_FOLDER'], temp_filename)
+        file.save(temp_file_path)
         
-        file_type = 'pdf' if filename.lower().endswith('.pdf') else 'excel'
+        file_type = 'pdf' if temp_filename.lower().endswith('.pdf') else 'excel'
         
         # Step 1: Parse statement
         try:
-            statement_info, transactions = parse_statement_auto(file_path)
+            statement_info, transactions = parse_statement_auto(temp_file_path)
         except ValueError as e:
             # Check if this is HSBC scanned PDF
             if str(e) == "HSBC_SCANNED_PDF":
@@ -467,7 +468,7 @@ def upload_statement():
         pdf_text = ""
         if file_type == 'pdf':
             try:
-                with pdfplumber.open(file_path) as pdf:
+                with pdfplumber.open(temp_file_path) as pdf:
                     pdf_text = "\n".join(p.extract_text() for p in pdf.pages)
             except:
                 pass
@@ -502,8 +503,53 @@ def upload_statement():
         # Ensure statement_date is never None
         stmt_date = statement_info.get('statement_date') or datetime.now().strftime('%Y-%m-%d')
         
+        # 🔥 强制性文件组织系统：获取客户和信用卡信息
         with get_db() as conn:
             cursor = conn.cursor()
+            
+            # 获取信用卡和客户信息
+            cursor.execute('''
+                SELECT cc.bank_name, cc.card_number_last4, c.name as customer_name
+                FROM credit_cards cc
+                JOIN customers c ON cc.customer_id = c.id
+                WHERE cc.id = ?
+            ''', (card_id,))
+            
+            card_row = cursor.fetchone()
+            if not card_row:
+                flash('❌ 信用卡不存在', 'error')
+                os.remove(temp_file_path)  # 清理临时文件
+                return redirect(request.url)
+            
+            card_info = dict(card_row)
+            
+            # 使用StatementOrganizer强制性组织文件
+            from services.statement_organizer import StatementOrganizer
+            organizer = StatementOrganizer()
+            
+            try:
+                organize_result = organizer.organize_statement(
+                    temp_file_path,
+                    card_info['customer_name'],
+                    stmt_date,
+                    {
+                        'bank_name': card_info['bank_name'],
+                        'last_4_digits': card_info['card_number_last4']
+                    }
+                )
+                
+                # 使用组织后的文件路径
+                organized_file_path = organize_result['archived_path']
+                
+                # 删除临时文件
+                os.remove(temp_file_path)
+                
+                print(f"✅ 文件已组织到: {organized_file_path}")
+                
+            except Exception as e:
+                print(f"⚠️ 文件组织失败，使用临时路径: {str(e)}")
+                organized_file_path = temp_file_path
+            
             try:
                 cursor.execute('''
                     INSERT INTO statements 
@@ -514,7 +560,7 @@ def upload_statement():
                     card_id,
                     stmt_date,
                     statement_info['total'],
-                    file_path,
+                    organized_file_path,
                     file_type,
                     final_confidence,
                     auto_confirmed,
