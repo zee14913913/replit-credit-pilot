@@ -34,6 +34,8 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **12-Month Timeline View:** Visual calendar grid for each credit card showing statement coverage, amounts, transaction counts, and verification status across a rolling 12-month window.
 - **Intelligent Loan Matcher System:** CTOS report parsing, DSR calculation, and smart loan product matching. Automatically extracts monthly commitments from CTOS PDFs, calculates debt service ratio, and matches clients with eligible loan products from a comprehensive banking database.
 - **Receipt Management System:** OCR-powered receipt upload system supporting JPG/PNG images. Features automatic card number, date, amount, and merchant name extraction using pytesseract. Intelligent matching engine auto-matches receipts to customers and credit cards based on card_last4, transaction date (±3 days), and amount (±1%). Receipts are organized by customer/card number with auto-filing. Supports batch upload, manual matching for failed auto-matches, and provides reconciliation, reimbursement tracking, and audit capabilities. Independent database table (receipts) keeps receipt data separate from credit card and savings systems.
+- **OWNER vs INFINITE Classification System:** Advanced dual-classification system for credit card transactions with 1% supplier fee tracking. Classifies expenses into OWNER (customer personal spending) vs INFINITE (7 configurable supplier merchants with 1% fee), and payments into OWNER (customer payments) vs INFINITE (third-party payer payments). Features first-statement baseline initialization (Previous Balance = 100% OWNER debt), supplier configuration management, customer alias support, and monthly ledger tracking. Implements independent statement-level reconciliation ensuring each bank's monthly statement is recorded separately without aggregation.
+- **Credit Card Ledger (3-Layer Navigation):** Professional hierarchical navigation system for OWNER vs INFINITE analysis. Layer 1: Customer List (displays all customers with full names and auto-generated codes like CCC_ALL for CHANG CHOON CHOW). Layer 2: Year-Month Timeline Grid (CCC_ALL_2024/2025 format with 12-month calendar showing statement availability). Layer 3: Monthly Statement Report (comprehensive analysis including client summary, accounts overview, transaction details per card, monthly summary with OWNER/INFINITE totals, and reconciliation verification). Each layer provides complete bilingual (EN/中文) support.
 
 **AI Advanced Analytics System:**
 - **Financial Health Scoring System:** 0-100 score with optimization suggestions.
@@ -44,10 +46,10 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Advanced Analytics Dashboard:** Integrates analytical features with dynamic charts and real-time warnings.
 
 ### System Design Choices
-- **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, authentication, and advisory services.
-- **Design Patterns:** Repository Pattern for database abstraction, Template Inheritance for UI consistency, and Context Manager Pattern for database connection handling.
+- **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, authentication, advisory services, supplier_config, customer_aliases, account_baselines, and monthly_ledger.
+- **Design Patterns:** Repository Pattern for database abstraction, Template Inheritance for UI consistency, Context Manager Pattern for database connection handling, and Service Layer Pattern for OWNER/INFINITE classification logic.
 - **Security:** Session secret key from environment variables, file upload size limits, SQL injection prevention, and audit logging.
-- **Data Accuracy:** Implemented robust previous balance extraction and monthly ledger engine overhaul to ensure 100% accuracy in financial calculations and DR/CR classification, including a universal balance-change algorithm for all bank statements.
+- **Data Accuracy:** Implemented robust previous balance extraction and monthly ledger engine overhaul to ensure 100% accuracy in financial calculations and DR/CR classification, including a universal balance-change algorithm for all bank statements. Independent statement-level reconciliation guarantees each monthly statement is tracked separately without data aggregation.
 
 ## External Dependencies
 
