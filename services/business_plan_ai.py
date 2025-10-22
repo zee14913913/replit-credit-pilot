@@ -152,6 +152,8 @@ def generate_business_plan(customer_id: int) -> dict:
         
         # 8. 解析AI响应
         ai_response = response.choices[0].message.content
+        if not ai_response:
+            return {'success': False, 'error': 'AI未返回有效响应'}
         plan_data = json.loads(ai_response)
         
         # 9. 保存到数据库
