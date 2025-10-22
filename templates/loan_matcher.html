@@ -1,40 +1,40 @@
 {% extends "base.html" %}
 
-{% block title %}智能贷款匹配系统{% endblock %}
+{% block title %}Smart Loan Matcher / 智能贷款匹配系统{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-4">
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            <!-- 页面标题 -->
+            <!-- Page Header -->
             <div class="text-center mb-5">
                 <h1 class="galaxy-gradient-text mb-3">
-                    <i class="bi bi-calculator-fill me-2"></i>智能贷款产品匹配系统
+                    <i class="bi bi-calculator-fill me-2"></i>Smart Loan Matcher System / 智能贷款产品匹配系统
                 </h1>
                 <p class="text-silver-pearl fs-5">
-                    上传CTOS报告 · 自动计算DSR · 智能匹配最优贷款产品
+                    Upload CTOS Report · Auto-calculate DSR · Match Best Loan Products
                 </p>
             </div>
 
-            <!-- 功能说明卡片 -->
+            <!-- Features Card -->
             <div class="galaxy-card mb-5">
                 <div class="card-body">
-                    <!-- 标题区域 -->
+                    <!-- Section Header -->
                     <div class="section-header mb-5">
                         <h5 class="galaxy-gradient-text mb-3">
-                            <i class="bi bi-info-circle-fill me-2"></i>系统功能
+                            <i class="bi bi-info-circle-fill me-2"></i>System Features / 系统功能
                         </h5>
                         <div class="title-divider"></div>
                     </div>
                     
-                    <!-- 内容区域 -->
+                    <!-- Content Area -->
                     <div class="row g-4">
                         <div class="col-md-4">
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-file-earmark-pdf text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1">CTOS智能解析</h6>
-                                    <small class="text-silver-pearl">自动提取月度负债数据</small>
+                                    <h6 class="text-white mb-1">CTOS Smart Parsing</h6>
+                                    <small class="text-silver-pearl">Auto-extract monthly commitment data</small>
                                 </div>
                             </div>
                         </div>
@@ -42,8 +42,8 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-graph-up-arrow text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1">DSR精准计算</h6>
-                                    <small class="text-silver-pearl">债务偿还比率实时计算</small>
+                                    <h6 class="text-white mb-1">DSR Accurate Calculation</h6>
+                                    <small class="text-silver-pearl">Real-time debt service ratio calculation</small>
                                 </div>
                             </div>
                         </div>
@@ -51,8 +51,8 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-bank text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1">智能产品匹配</h6>
-                                    <small class="text-silver-pearl">自动筛选符合条件的贷款</small>
+                                    <h6 class="text-white mb-1">Smart Product Matching</h6>
+                                    <small class="text-silver-pearl">Auto-filter eligible loans</small>
                                 </div>
                             </div>
                         </div>
@@ -60,99 +60,99 @@
                 </div>
             </div>
 
-            <!-- 客户资料表单 -->
+            <!-- Customer Information Form -->
             <div class="galaxy-card">
                 <div class="card-body">
-                    <!-- 标题区域 -->
+                    <!-- Section Header -->
                     <div class="section-header mb-5">
                         <h5 class="galaxy-gradient-text mb-3">
-                            <i class="bi bi-person-badge-fill me-2"></i>客户资料
+                            <i class="bi bi-person-badge-fill me-2"></i>Customer Information / 客户资料
                         </h5>
                         <div class="title-divider"></div>
                     </div>
                     
-                    <!-- 内容区域 -->
+                    <!-- Form Content -->
                     <form action="{{ url_for('loan_matcher_analyze') }}" method="post" enctype="multipart/form-data">
                         <div class="row g-5">
-                            <!-- 基本信息 -->
+                            <!-- Basic Information -->
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-person-fill me-2"></i>客户姓名
+                                    <i class="bi bi-person-fill me-2"></i>Customer Name / 客户姓名
                                 </label>
-                                <input type="text" name="client_name" class="form-control galaxy-input" required placeholder="请输入客户姓名">
+                                <input type="text" name="client_name" class="form-control galaxy-input" required placeholder="Enter customer name">
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-flag-fill me-2"></i>国籍
+                                    <i class="bi bi-flag-fill me-2"></i>Citizenship / 国籍
                                 </label>
                                 <select name="citizenship" class="form-select galaxy-input">
-                                    <option value="MY">马来西亚公民 (Malaysian)</option>
-                                    <option value="PR">永久居民 (PR)</option>
-                                    <option value="OTH">外籍人士 (Foreigner)</option>
+                                    <option value="MY">Malaysian / 马来西亚公民</option>
+                                    <option value="PR">Permanent Resident / 永久居民</option>
+                                    <option value="OTH">Foreigner / 外籍人士</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-calendar-check me-2"></i>年龄
+                                    <i class="bi bi-calendar-check me-2"></i>Age / 年龄
                                 </label>
                                 <input type="number" name="age" class="form-control galaxy-input" required min="18" max="100" placeholder="18-100">
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-cash-stack me-2"></i>月收入 (RM)
+                                    <i class="bi bi-cash-stack me-2"></i>Monthly Income (RM) / 月收入
                                 </label>
-                                <input type="number" name="monthly_income" class="form-control galaxy-input" required step="0.01" min="0" placeholder="例如: 5000.00">
+                                <input type="number" name="monthly_income" class="form-control galaxy-input" required step="0.01" min="0" placeholder="e.g., 5000.00">
                             </div>
 
-                            <!-- CTOS上传 -->
+                            <!-- CTOS Upload -->
                             <div class="col-12 mt-4">
                                 <div class="border border-golden border-opacity-25 rounded p-4" style="background: rgba(212, 175, 55, 0.05);">
                                     <label class="form-label text-golden fw-bold">
-                                        <i class="bi bi-cloud-upload-fill me-2"></i>上传CTOS报告（可选）
+                                        <i class="bi bi-cloud-upload-fill me-2"></i>Upload CTOS Report (Optional) / 上传CTOS报告
                                     </label>
                                     <input type="file" name="ctos_file" class="form-control galaxy-input mb-3" accept="application/pdf">
                                     <small class="text-silver-pearl d-block">
                                         <i class="bi bi-info-circle me-1"></i>
-                                        系统将自动提取月度负债数据。如未上传，请在下方手动输入。
+                                        System will auto-extract monthly commitment data. If not uploaded, please enter manually below.
                                     </small>
                                 </div>
                             </div>
 
-                            <!-- 手动覆盖 -->
+                            <!-- Manual Override -->
                             <div class="col-12">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-pencil-square me-2"></i>月度负债总额 (RM) - 人工覆盖（可选）
+                                    <i class="bi bi-pencil-square me-2"></i>Monthly Commitment (RM) - Manual Override (Optional) / 月度负债总额
                                 </label>
-                                <input type="number" name="manual_commitment" class="form-control galaxy-input" step="0.01" min="0" placeholder="留空则使用CTOS解析结果">
+                                <input type="number" name="manual_commitment" class="form-control galaxy-input" step="0.01" min="0" placeholder="Leave blank to use CTOS parsed result">
                                 <small class="text-silver-pearl">
-                                    若CTOS解析不准确，可在此手动输入正确值
+                                    If CTOS parsing is inaccurate, manually enter the correct value here
                                 </small>
                             </div>
                             
-                            <!-- 公司年龄 (用于SME贷款) -->
+                            <!-- Company Age (for SME Loans) -->
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-building me-2"></i>公司运营年限（可选，用于SME贷款）
+                                    <i class="bi bi-building me-2"></i>Company Operating Years (Optional, for SME loans) / 公司运营年限
                                 </label>
-                                <input type="number" name="company_age" class="form-control galaxy-input" min="0" placeholder="例如: 3">
+                                <input type="number" name="company_age" class="form-control galaxy-input" min="0" placeholder="e.g., 3">
                                 <small class="text-silver-pearl">
-                                    仅在申请SME贷款时需要填写
+                                    Only required when applying for SME loans
                                 </small>
                             </div>
 
-                            <!-- 提交按钮 - 增大且更显眼 -->
+                            <!-- Submit Button -->
                             <div class="col-12 text-center pt-5 mt-4">
                                 <button type="submit" class="btn btn-lg px-5 py-3 galaxy-shimmer white-glow-btn" style="font-size: 1.2rem; box-shadow: 0 0 30px rgba(229, 228, 226, 0.3);">
                                     <i class="bi bi-lightning-charge-fill me-2"></i>
-                                    开始智能匹配分析
+                                    Start Smart Matching Analysis / 开始智能匹配分析
                                 </button>
                                 <div class="mt-3">
                                     <small class="text-silver-pearl">
                                         <i class="bi bi-shield-check me-1"></i>
-                                        填写完所有必填信息后，点击上方按钮开始分析
+                                        Complete all required fields, then click above to start analysis
                                     </small>
                                 </div>
                             </div>
@@ -161,10 +161,10 @@
                 </div>
             </div>
 
-            <!-- 返回按钮 -->
+            <!-- Back Button -->
             <div class="text-center mt-4">
                 <a href="{{ url_for('index') }}" class="btn btn-outline-light">
-                    <i class="bi bi-arrow-left me-2"></i>返回主页
+                    <i class="bi bi-arrow-left me-2"></i>Back to Home / 返回主页
                 </a>
             </div>
         </div>
@@ -172,13 +172,13 @@
 </div>
 
 <style>
-/* 段落标题区域 */
+/* Section Header */
 .section-header {
     position: relative;
     padding-bottom: 1.5rem;
 }
 
-/* 优雅的装饰分割线 */
+/* Elegant Divider */
 .title-divider {
     height: 2px;
     background: linear-gradient(90deg, 
@@ -194,7 +194,7 @@
     margin: 1rem 0;
 }
 
-/* 装饰线中心点缀 */
+/* Divider Center Decoration */
 .title-divider::after {
     content: '◆';
     position: absolute;
@@ -208,14 +208,14 @@
     letter-spacing: 0.5rem;
 }
 
-/* 按钮文字白色微发光效果 */
+/* Button White Glow Effect */
 .white-glow-btn {
     color: #ffffff !important;
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.6),
                  0 0 12px rgba(255, 255, 255, 0.3);
 }
 
-/* Placeholder 浅灰色 */
+/* Placeholder Light Gray */
 .galaxy-input::placeholder {
     color: #9CA3AF !important;
     opacity: 1;
@@ -233,7 +233,7 @@
     color: #9CA3AF !important;
 }
 
-/* 表单字段内部间距优化 */
+/* Form Field Spacing Optimization */
 .form-label {
     margin-bottom: 0.75rem;
 }
@@ -242,7 +242,7 @@
     margin-bottom: 0.5rem;
 }
 
-/* 小提示文字上边距 */
+/* Small Help Text Top Margin */
 small.text-silver-pearl {
     margin-top: 0.5rem;
     display: block;
