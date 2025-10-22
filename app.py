@@ -390,22 +390,19 @@ def add_credit_card(customer_id):
                 flash('还款日期必须是数字', 'error')
                 return redirect(request.url)
             
-            # 检查是否已存在相同的卡
-            cursor.execute('''
-                SELECT id FROM credit_cards 
-                WHERE customer_id = ? AND bank_name = ? AND card_number_last4 = ?
-            ''', (customer_id, bank_name, card_number_last4))
+            # ✅ 强制性唯一性检查（大小写无关，去除空格）
+            card_id, is_new = UniquenessValidator.get_or_create_credit_card(
+                customer_id, bank_name, card_number_last4, credit_limit
+            )
             
-            if cursor.fetchone():
-                flash(f'该信用卡已存在：{bank_name} ****{card_number_last4}', 'error')
+            if not is_new:
+                flash(f'⚠️ 该信用卡已存在：{bank_name} ****{card_number_last4}（卡ID: {card_id}）', 'error')
                 return redirect(request.url)
             
-            # 插入新信用卡
+            # 更新due_date（get_or_create不包含此字段）
             cursor.execute('''
-                INSERT INTO credit_cards 
-                (customer_id, bank_name, card_number_last4, credit_limit, due_date)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (customer_id, bank_name, card_number_last4, credit_limit, due_date))
+                UPDATE credit_cards SET due_date = ? WHERE id = ?
+            ''', (due_date, card_id))
             
             conn.commit()
             
