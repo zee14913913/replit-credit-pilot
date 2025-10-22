@@ -814,29 +814,29 @@ p {
 
 /* Warning Button - 高级暗紫罗兰（Premium Dark Violet） */
 .btn-warning {
-    background: linear-gradient(135deg, #2B1B3D 0%, #1A0F2E 100%) !important;
+    background: linear-gradient(135deg, #3A2A4E 0%, #2A1E3E 100%) !important;
     color: #f0f0f0 !important;
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
     border: 1px solid rgba(139, 92, 168, 0.4) !important;
     font-weight: 600;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(43, 27, 61, 0.4);
+    box-shadow: 0 4px 10px rgba(58, 42, 78, 0.4);
 }
 
 .btn-warning:hover {
-    background: linear-gradient(135deg, #3E2C55 0%, #2B1B3D 100%) !important;
+    background: linear-gradient(135deg, #4D3B67 0%, #3A2A4E 100%) !important;
     color: #ffffff !important;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
     border-color: rgba(139, 92, 168, 0.6) !important;
-    box-shadow: 0 6px 16px rgba(62, 44, 85, 0.55);
+    box-shadow: 0 6px 16px rgba(77, 59, 103, 0.55);
     transform: translateY(-2px);
 }
 
 .btn-warning:active,
 .btn-warning:focus {
-    background: linear-gradient(135deg, #1A0F2E 0%, #0D0716 100%) !important;
+    background: linear-gradient(135deg, #2A1E3E 0%, #1A0F2E 100%) !important;
     color: #f0f0f0 !important;
-    box-shadow: 0 2px 8px rgba(43, 27, 61, 0.5) !important;
+    box-shadow: 0 2px 8px rgba(58, 42, 78, 0.5) !important;
 }
 
 /* ========================================
