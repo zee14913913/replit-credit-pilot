@@ -785,31 +785,31 @@ p {
    BOOTSTRAP BUTTON OVERRIDES - 高级色按钮
    ======================================== */
 
-/* Primary Button - 浓烈深桃红色（Deep Vivid Pink） */
+/* Primary Button - 鲜艳桃花色 #FF007F */
 .btn-primary {
-    background: linear-gradient(135deg, #E91E63 0%, #D81B60 100%) !important;
+    background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%) !important;
     color: #FFFFFF !important;
     text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
-    border: 2px solid #E91E63 !important;
+    border: 2px solid #FF007F !important;
     font-weight: 700;
     transition: all 0.3s ease;
-    box-shadow: 0 6px 20px rgba(233, 30, 99, 0.7);
+    box-shadow: 0 6px 20px rgba(255, 0, 127, 0.7);
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #F50057 0%, #E91E63 100%) !important;
+    background: linear-gradient(135deg, #FF1A8C 0%, #FF007F 100%) !important;
     color: #FFFFFF !important;
     text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
-    border-color: #F50057 !important;
-    box-shadow: 0 10px 30px rgba(245, 0, 87, 0.9);
+    border-color: #FF1A8C !important;
+    box-shadow: 0 10px 30px rgba(255, 0, 127, 0.9);
     transform: translateY(-3px);
 }
 
 .btn-primary:active,
 .btn-primary:focus {
-    background: linear-gradient(135deg, #D81B60 0%, #AD1457 100%) !important;
+    background: linear-gradient(135deg, #E6007A 0%, #CC006B 100%) !important;
     color: #FFFFFF !important;
-    box-shadow: 0 4px 15px rgba(216, 27, 96, 0.8) !important;
+    box-shadow: 0 4px 15px rgba(230, 0, 122, 0.8) !important;
 }
 
 /* Warning Button - 高级暗紫罗兰（Premium Dark Violet） */
