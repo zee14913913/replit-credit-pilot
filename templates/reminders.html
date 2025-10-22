@@ -6,7 +6,7 @@
 <div class="fade-in">
     <div class="section-header">
         <h1 class="section-title">{{ t('nav_reminders') }}</h1>
-        <p class="section-subtitle">Track and manage upcoming credit card payment due dates</p>
+        <p class="section-subtitle">{{ t('reminders_subtitle') }}</p>
     </div>
 
     <div class="professional-card">
@@ -20,12 +20,12 @@
             <table class="table-professional">
                 <thead>
                     <tr>
-                        <th>Customer</th>
-                        <th>Bank</th>
-                        <th>Card</th>
-                        <th>Due Date</th>
-                        <th>Amount</th>
-                        <th>Action</th>
+                        <th>{{ t('customer') }}</th>
+                        <th>{{ t('bank') }}</th>
+                        <th>{{ t('card') }}</th>
+                        <th>{{ t('due_date') }}</th>
+                        <th>{{ t('amount') }}</th>
+                        <th>{{ t('action') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,7 +40,7 @@
                         <td class="fw-bold" style="color: var(--text-primary);">RM {{ "{:,.2f}".format(reminder.amount_due) }}</td>
                         <td>
                             <form method="POST" action="{{ url_for('mark_paid_route', reminder_id=reminder.id) }}" style="display:inline;">
-                                <button class="btn-professional">Mark Paid</button>
+                                <button class="btn-professional">{{ t('mark_paid') }}</button>
                             </form>
                         </td>
                     </tr>
@@ -58,7 +58,7 @@
 
     {% if reminders %}
     <div class="alert-professional alert-info-pro mt-4">
-        <strong>Pro Tip:</strong> Mark payments as paid after settling to keep your reminder list clean and organized.
+        <strong>{{ t('pro_tip') }}</strong> {{ t('mark_paid_tip') }}
     </div>
     {% endif %}
 </div>

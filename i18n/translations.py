@@ -362,10 +362,18 @@ TRANSLATIONS = {
         'batch_upload_statements': 'Batch Upload Statements',
         
         # Reminders
+        'reminders_subtitle': 'Track and manage upcoming credit card payment due dates',
         'upcoming_payments': 'Upcoming Payments',
         'all_caught_up': 'All Caught Up!',
         'no_pending_reminders': 'No pending payment reminders at the moment.',
         'pending': 'PENDING',
+        'bank': 'Bank',
+        'card': 'Card',
+        'due_date': 'Due Date',
+        'action': 'Action',
+        'mark_paid': 'Mark Paid',
+        'pro_tip': 'Pro Tip:',
+        'mark_paid_tip': 'Mark payments as paid after settling to keep your reminder list clean and organized.',
         
         # Receipts
         'receipt_management_system': 'Receipt Management System',
@@ -774,10 +782,18 @@ TRANSLATIONS = {
         'batch_upload_statements': '批量上传账单',
         
         # Reminders
+        'reminders_subtitle': '追踪和管理即将到期的信用卡还款日期',
         'upcoming_payments': '待支付账单',
         'all_caught_up': '全部已处理！',
         'no_pending_reminders': '暂无待处理的支付提醒。',
         'pending': '待处理',
+        'bank': '银行',
+        'card': '卡号',
+        'due_date': '到期日',
+        'action': '操作',
+        'mark_paid': '标记已付',
+        'pro_tip': '小贴士：',
+        'mark_paid_tip': '结算后将付款标记为已付，保持您的提醒列表整洁有序。',
         
         # Receipts
         'receipt_management_system': '收据管理系统',
