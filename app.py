@@ -120,7 +120,7 @@ def set_language(lang):
 
 @app.route('/view_statement_file/<int:statement_id>')
 def view_statement_file(statement_id):
-    """查看账单原始文件（支持新组织结构）"""
+    """查看账单原始文件（支持新组织结构 + 向后兼容旧路径）"""
     from flask import send_file, make_response
     
     with get_db() as conn:
@@ -135,7 +135,23 @@ def view_statement_file(statement_id):
         
         # 检查文件是否存在
         if not os.path.exists(file_path):
-            return f"文件未找到: {file_path}", 404
+            # 向后兼容：如果新路径不存在，尝试从attached_assets读取
+            if file_path.startswith('static/uploads/'):
+                # 尝试旧的attached_assets路径
+                old_path = file_path.replace('static/uploads/', 'attached_assets/', 1)
+                # 尝试从文件名中提取
+                import re
+                filename_match = re.search(r'/([^/]+\.pdf)$', file_path)
+                if filename_match:
+                    # 查找attached_assets中的文件
+                    for root, dirs, files in os.walk('attached_assets'):
+                        if filename_match.group(1) in files:
+                            file_path = os.path.join(root, filename_match.group(1))
+                            break
+            
+            # 最后检查
+            if not os.path.exists(file_path):
+                return f"文件未找到: {row['file_path']}", 404
         
         # 发送文件
         response = make_response(send_file(file_path, mimetype='application/pdf'))
