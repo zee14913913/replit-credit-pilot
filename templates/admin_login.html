@@ -1,115 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login - INFINITE GZ SDN BHD</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/professional.css') }}?v=1760155696885" id="professional-css">
-    <script>
-        (function() {
-            var cssLink = document.getElementById('professional-css');
-            if (cssLink) {
-                var href = cssLink.href.split('?')[0];
-                cssLink.href = href + '?v=' + Date.now();
-            }
-        })();
-    </script>
-    <style>
-        body {
-            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .admin-login-card {
-            background: rgba(26, 26, 26, 0.95);
-            border: 1px solid rgba(192, 192, 192, 0.2);
-            border-radius: 12px;
-            padding: 3rem;
-            width: 100%;
-            max-width: 420px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }
-        .admin-login-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #FFFFFF 0%, rgba(192, 192, 192, 0.9) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        .form-control {
-            background: rgba(15, 15, 15, 0.8);
-            border: 1px solid rgba(192, 192, 192, 0.3);
-            color: #E5E5E5;
-            padding: 0.75rem 1rem;
-            margin-bottom: 1.25rem;
-        }
-        .form-control:focus {
-            background: rgba(15, 15, 15, 0.9);
-            border-color: rgba(192, 192, 192, 0.6);
-            color: #FFFFFF;
-            box-shadow: 0 0 0 0.2rem rgba(192, 192, 192, 0.15);
-        }
-        .btn-admin-login {
-            background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%);
-            color: #3D3020;
-            font-weight: 900;
-            padding: 0.75rem;
-            border: 2px solid rgba(0,0,0,0.1);
-            border-radius: 6px;
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-        .btn-admin-login:hover {
-            background: linear-gradient(135deg, #FFFFFF 0%, #E5E5E5 100%);
-            color: #2C2416;
-            transform: translateY(-1px);
-        }
-        .lock-icon {
-            font-size: 3rem;
-            text-align: center;
-            margin-bottom: 1rem;
-            color: rgba(192, 192, 192, 0.6);
-        }
-    </style>
-</head>
-<body>
-    <div class="admin-login-card">
-        <div class="lock-icon">🔐</div>
-        <h2 class="admin-login-title">Admin Login</h2>
+{% extends "base.html" %}
+
+{% block title %}{{ t('admin_login') }} - {{ t('company_name') }}{% endblock %}
+
+{% block content %}
+<div class="fade-in" style="max-width: 420px; margin: 0 auto; padding-top: 5rem; padding-bottom: 4rem;">
+    <div class="professional-card" style="padding: 3rem;">
+        <div class="text-center mb-4">
+            <div style="font-size: 3rem; margin-bottom: 1rem; filter: drop-shadow(0 0 10px rgba(192,192,192,0.3));">🔐</div>
+            <h2 style="font-size: 1.8rem; font-weight: 700; background: linear-gradient(135deg, #FFFFFF 0%, rgba(192, 192, 192, 0.9) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0;">
+                {{ t('admin_login') }}
+            </h2>
+        </div>
         
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                    <div class="alert-professional alert-{{ 'danger' if category == 'error' else category }}-pro mb-3" style="animation: slideDown 0.3s ease;">
                         {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
         
         <form method="POST" action="{{ url_for('admin_login') }}">
-            <input type="email" name="email" class="form-control" placeholder="Admin Email" required>
-            <input type="password" name="password" class="form-control" placeholder="Password" required>
-            <button type="submit" class="btn-admin-login">Login to Admin Panel</button>
+            <div style="margin-bottom: 1.5rem;">
+                <input 
+                    type="email" 
+                    name="email" 
+                    class="form-control-professional" 
+                    placeholder="{{ t('admin_email') }}" 
+                    required
+                    style="padding: 1rem 1.25rem; font-size: 1.1rem;">
+            </div>
+            <div style="margin-bottom: 2rem;">
+                <input 
+                    type="password" 
+                    name="password" 
+                    class="form-control-professional" 
+                    placeholder="{{ t('password') }}" 
+                    required
+                    style="padding: 1rem 1.25rem; font-size: 1.1rem;">
+            </div>
+            <button 
+                type="submit" 
+                class="btn-white-glow w-100" 
+                style="padding: 1rem; font-size: 1.2rem; font-weight: 700;">
+                {{ t('login_to_admin_panel') }}
+            </button>
         </form>
         
-        <div class="text-center mt-3">
-            <a href="{{ url_for('index') }}" style="color: rgba(192, 192, 192, 0.7); text-decoration: none; font-size: 0.9rem;">
-                ← Back to Home
+        <div class="text-center mt-4">
+            <a href="{{ url_for('index') }}" style="color: rgba(192, 192, 192, 0.7); text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;" 
+               onmouseover="this.style.color='#E0E0E0'" 
+               onmouseout="this.style.color='rgba(192, 192, 192, 0.7)'">
+                ← {{ t('back_to_home') }}
             </a>
         </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+</div>
+
+<style>
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+{% endblock %}
