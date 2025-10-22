@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ customer.name }} - {{ t('cc_ledger_title') }}{% endblock %}
+{% block title %}{{ customer.name }} - Credit Card Ledger{% endblock %}
 
 {% block content %}
 <div class="fade-in">
@@ -9,20 +9,20 @@
         <h1 class="section-title">
             <i class="bi bi-journal-text"></i> {{ customer.name }}
         </h1>
-        <p class="section-subtitle">{{ t('cc_ledger_analysis') }}</p>
+        <p class="section-subtitle">OWNER vs INFINITE Ledger Analysis</p>
     </div>
 
     <!-- Navigation Buttons -->
     <div class="mb-4">
         <a href="{{ url_for('credit_card_ledger') }}" class="btn-professional-outline">
-            <i class="bi bi-arrow-left"></i> {{ t('back_to_all_customers') }}
+            <i class="bi bi-arrow-left"></i> Back to All Customers
         </a>
     </div>
 
     <!-- 区域 1: 客户总览 (Customer Overview) -->
     <div class="professional-card mb-4">
         <h2 class="section-title mb-4">
-            <i class="bi bi-person-badge"></i> {{ t('customer_overview') }}
+            <i class="bi bi-person-badge"></i> Customer Overview
         </h2>
         <div class="row g-4">
             <div class="col-md-3">
@@ -31,7 +31,7 @@
                     <div style="font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.5rem;">
                         {{ cards|length }}
                     </div>
-                    <small style="color: var(--text-secondary);">{{ t('credit_cards') }}</small>
+                    <small style="color: var(--text-secondary);">Credit Cards</small>
                 </div>
             </div>
             <div class="col-md-3">
@@ -44,7 +44,7 @@
                         {% endfor %}
                         {{ total_statements.count }}
                     </div>
-                    <small style="color: var(--text-secondary);">{{ t('total_statements') }}</small>
+                    <small style="color: var(--text-secondary);">Total Statements</small>
                 </div>
             </div>
             <div class="col-md-3">
@@ -53,16 +53,16 @@
                     <div style="font-size: 2rem; font-weight: 700; color: #87CEEB; margin-top: 0.5rem;">
                         {{ recent_transactions|length }}
                     </div>
-                    <small style="color: var(--text-secondary);">{{ t('recent_transactions') }}</small>
+                    <small style="color: var(--text-secondary);">Recent Transactions</small>
                 </div>
             </div>
             <div class="col-md-3">
                 <div style="text-align: center; padding: 1.5rem; background: rgba(192, 192, 192, 0.05); border-radius: 8px;">
                     <i class="bi bi-shield-check" style="font-size: 2.5rem; color: #90EE90;"></i>
                     <div style="font-size: 1.5rem; font-weight: 700; color: #90EE90; margin-top: 0.5rem;">
-                        {{ t('active') }}
+                        Active
                     </div>
-                    <small style="color: var(--text-secondary);">{{ t('account_status') }}</small>
+                    <small style="color: var(--text-secondary);">Account Status</small>
                 </div>
             </div>
         </div>
@@ -71,7 +71,7 @@
     <!-- 区域 2: 信用卡列表 (Credit Cards List) -->
     <div class="professional-card mb-4">
         <h2 class="section-title mb-4">
-            <i class="bi bi-credit-card-2-back"></i> {{ t('credit_cards_baselines') }}
+            <i class="bi bi-credit-card-2-back"></i> Credit Cards & Baselines
         </h2>
         <div class="row g-4">
             {% for card in cards %}
@@ -89,7 +89,7 @@
                     <!-- Baseline Information -->
                     {% if card.baseline %}
                     <div class="mb-3">
-                        <small style="color: var(--text-secondary);">{{ t('first_statement_baseline') }}</small>
+                        <small style="color: var(--text-secondary);">First Statement Baseline:</small>
                         <div class="row g-2 mt-2">
                             <div class="col-6">
                                 <div style="padding: 0.5rem; background: rgba(192, 192, 192, 0.05); border-radius: 4px;">
@@ -108,7 +108,7 @@
                     {% else %}
                     <div style="padding: 0.75rem; background: rgba(255, 165, 0, 0.1); border-radius: 4px; border: 1px solid rgba(255, 165, 0, 0.3);">
                         <i class="bi bi-exclamation-triangle" style="color: #FFA500;"></i>
-                        <small style="color: #FFA500;"> {{ t('no_baseline_set') }}</small>
+                        <small style="color: #FFA500;"> No baseline set - process first statement to initialize</small>
                     </div>
                     {% endif %}
 
@@ -140,7 +140,7 @@
     <!-- 区域 3: OWNER vs INFINITE 汇总 (Summary) -->
     <div class="professional-card mb-4">
         <h2 class="section-title mb-4">
-            <i class="bi bi-pie-chart"></i> {{ t('owner_vs_infinite_summary') }}
+            <i class="bi bi-pie-chart"></i> OWNER vs INFINITE Summary
         </h2>
         <div class="row g-4">
             {% for card in cards %}
@@ -214,7 +214,7 @@
     <!-- 区域 4: 最近交易 (Recent Transactions) -->
     <div class="professional-card mb-4">
         <h2 class="section-title mb-4">
-            <i class="bi bi-clock-history"></i> {{ t('recent_100_transactions') }}
+            <i class="bi bi-clock-history"></i> Recent Transactions (Latest 100)
         </h2>
         
         {% if recent_transactions %}
@@ -222,13 +222,13 @@
             <table class="table-professional">
                 <thead>
                     <tr>
-                        <th>{{ t('date') }}</th>
-                        <th>{{ t('bank') }}</th>
-                        <th>{{ t('description') }}</th>
-                        <th>{{ t('amount') }}</th>
-                        <th>{{ t('type') }}</th>
-                        <th>{{ t('category') }}</th>
-                        <th>{{ t('details') }}</th>
+                        <th>Date</th>
+                        <th>Bank</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                        <th>Category</th>
+                        <th>Details</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -289,7 +289,7 @@
         {% else %}
         <div class="text-center" style="padding: 2rem; color: var(--text-secondary);">
             <i class="bi bi-inbox" style="font-size: 3rem;"></i>
-            <p class="mt-3">{{ t('no_transactions_found') }}</p>
+            <p class="mt-3">No transactions found</p>
         </div>
         {% endif %}
     </div>
@@ -297,7 +297,7 @@
     <!-- 区域 5: 账单列表 (Statements List) -->
     <div class="professional-card mb-4">
         <h2 class="section-title mb-4">
-            <i class="bi bi-file-earmark-text"></i> {{ t('all_statements') }}
+            <i class="bi bi-file-earmark-text"></i> All Statements
         </h2>
         
         {% for card in cards %}
@@ -309,10 +309,10 @@
                 <table class="table-professional">
                     <thead>
                         <tr>
-                            <th>{{ t('statement_date') }}</th>
-                            <th>{{ t('previous_balance') }}</th>
-                            <th>{{ t('statement_total') }}</th>
-                            <th>{{ t('actions') }}</th>
+                            <th>Statement Date</th>
+                            <th>Previous Balance</th>
+                            <th>Statement Total</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -323,7 +323,7 @@
                             <td style="color: #87CEEB; font-weight: 600;">RM {{ "{:,.2f}".format(stmt.statement_total) }}</td>
                             <td>
                                 <a href="{{ url_for('view_statement_file', statement_id=stmt.id) }}" class="btn-professional-outline" style="padding: 0.25rem 0.75rem; font-size: 0.85rem;" target="_blank">
-                                    <i class="bi bi-eye"></i> {{ t('view_pdf') }}
+                                    <i class="bi bi-eye"></i> View PDF
                                 </a>
                             </td>
                         </tr>
