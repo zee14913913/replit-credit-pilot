@@ -2935,13 +2935,13 @@ def upload_savings_statement():
             
             for file in files:
                 if file and file.filename:
-                    # 保存文件
-                    filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
-                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                    file.save(file_path)
+                    # 临时保存文件用于解析
+                    temp_filename = f"temp_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
+                    temp_file_path = os.path.join(app.config['UPLOAD_FOLDER'], temp_filename)
+                    file.save(temp_file_path)
                     
                     # 解析账单
-                    info, transactions = parse_savings_statement(file_path, bank_name or '')
+                    info, transactions = parse_savings_statement(temp_file_path, bank_name or '')
                     
                     with get_db() as conn:
                         cursor = conn.cursor()
@@ -2963,6 +2963,42 @@ def upload_savings_statement():
                         else:
                             savings_account_id = account['id']
                         
+                        # 🔥 强制性文件组织：获取客户名称
+                        cursor.execute('''
+                            SELECT c.name as customer_name
+                            FROM savings_accounts sa
+                            JOIN customers c ON sa.customer_id = c.id
+                            WHERE sa.id = ?
+                        ''', (savings_account_id,))
+                        
+                        customer_row = cursor.fetchone()
+                        customer_name = customer_row['customer_name'] if customer_row else 'Unknown_Customer'
+                        
+                        # 使用StatementOrganizer组织文件
+                        from services.statement_organizer import StatementOrganizer
+                        organizer = StatementOrganizer()
+                        
+                        stmt_date = info.get('statement_date', datetime.now().strftime('%Y-%m-%d'))
+                        
+                        try:
+                            organize_result = organizer.organize_statement(
+                                temp_file_path,
+                                customer_name,
+                                stmt_date,
+                                {
+                                    'bank_name': info['bank_name'] + '_Savings',
+                                    'last_4_digits': info.get('account_last4', '0000')
+                                }
+                            )
+                            
+                            organized_file_path = organize_result['archived_path']
+                            os.remove(temp_file_path)  # 删除临时文件
+                            print(f"✅ 储蓄账户文件已组织到: {organized_file_path}")
+                            
+                        except Exception as e:
+                            print(f"⚠️ 储蓄账户文件组织失败，使用临时路径: {str(e)}")
+                            organized_file_path = temp_file_path
+                        
                         # 创建账单记录
                         cursor.execute('''
                             INSERT INTO savings_statements 
@@ -2970,9 +3006,9 @@ def upload_savings_statement():
                             VALUES (?, ?, ?, ?, ?, 1)
                         ''', (
                             savings_account_id,
-                            info.get('statement_date', datetime.now().strftime('%Y-%m-%d')),
-                            f"static/uploads/{filename}",
-                            'pdf' if file_path.endswith('.pdf') else 'excel',
+                            stmt_date,
+                            organized_file_path,
+                            'pdf' if temp_filename.endswith('.pdf') else 'excel',
                             len(transactions)
                         ))
                         
