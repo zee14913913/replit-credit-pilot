@@ -60,6 +60,10 @@ from modules.recommendations.card_recommendation_engine import CardRecommendatio
 from modules.recommendations.comparison_report_generator import ComparisonReportGenerator
 from modules.recommendations.benefit_calculator import BenefitCalculator
 
+# Receipt Management Services
+from ingest.receipt_parser import ReceiptParser
+from services.receipt_matcher import ReceiptMatcher
+
 # Initialize services
 export_service = ExportService()
 search_service = SearchService()
@@ -73,6 +77,8 @@ monthly_report_scheduler = MonthlyReportScheduler()
 card_recommender = CardRecommendationEngine()
 comparison_reporter = ComparisonReportGenerator()
 benefit_calculator = BenefitCalculator()
+receipt_parser = ReceiptParser()
+receipt_matcher = ReceiptMatcher()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SESSION_SECRET', 'dev-secret-key-change-in-production')
@@ -3367,6 +3373,305 @@ def download_credit_card_report(customer_id):
     except Exception as e:
         flash(f'❌ 下载失败: {str(e)}', 'error')
         return redirect(url_for('credit_card_optimizer'))
+
+
+# ============================================================================
+# RECEIPT MANAGEMENT - 收据管理系统
+# ============================================================================
+
+@app.route('/receipts')
+def receipts_home():
+    """收据管理主页"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取所有收据统计
+        cursor.execute("""
+            SELECT 
+                COUNT(*) as total,
+                SUM(CASE WHEN match_status = 'auto_matched' THEN 1 ELSE 0 END) as auto_matched,
+                SUM(CASE WHEN match_status = 'manual_matched' THEN 1 ELSE 0 END) as manual_matched,
+                SUM(CASE WHEN match_status = 'pending' THEN 1 ELSE 0 END) as pending
+            FROM receipts
+        """)
+        stats = dict(cursor.fetchone())
+        
+        # 获取最近上传的收据
+        cursor.execute("""
+            SELECT 
+                r.id,
+                r.receipt_type,
+                r.original_filename,
+                r.transaction_date,
+                r.amount,
+                r.merchant_name,
+                r.card_last4,
+                r.match_status,
+                r.match_confidence,
+                r.created_at,
+                c.name as customer_name,
+                cc.card_type
+            FROM receipts r
+            LEFT JOIN customers c ON r.customer_id = c.id
+            LEFT JOIN credit_cards cc ON r.card_id = cc.id
+            ORDER BY r.created_at DESC
+            LIMIT 50
+        """)
+        recent_receipts = [dict(row) for row in cursor.fetchall()]
+    
+    return render_template('receipts/home.html', stats=stats, recent_receipts=recent_receipts)
+
+@app.route('/receipts/upload', methods=['GET', 'POST'])
+def receipts_upload():
+    """上传收据"""
+    if request.method == 'GET':
+        # 获取所有客户用于手动选择
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT id, name FROM customers ORDER BY name')
+            customers = [dict(row) for row in cursor.fetchall()]
+        return render_template('receipts/upload.html', customers=customers)
+    
+    # POST - 处理上传
+    receipt_type = request.form.get('receipt_type', 'merchant_swipe')
+    files = request.files.getlist('receipt_files')
+    
+    if not files or files[0].filename == '':
+        flash('❌ 请选择至少一个收据图片', 'error')
+        return redirect(url_for('receipts_upload'))
+    
+    results = []
+    
+    for file in files:
+        if file and allowed_image_file(file.filename):
+            try:
+                # 保存文件
+                filename = secure_filename(file.filename)
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                unique_filename = f"{timestamp}_{filename}"
+                
+                # 先临时保存
+                temp_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+                file.save(temp_path)
+                
+                # OCR解析
+                parse_result = receipt_parser.parse_image(temp_path, receipt_type)
+                
+                if not parse_result['success']:
+                    results.append({
+                        'filename': filename,
+                        'status': 'ocr_failed',
+                        'message': 'OCR识别失败，请手动输入信息'
+                    })
+                    os.remove(temp_path)  # 删除临时文件
+                    continue
+                
+                # 智能匹配
+                match_result = receipt_matcher.match_receipt(parse_result)
+                
+                # 确定最终存储路径
+                if match_result['status'] == 'auto_matched':
+                    customer_id = match_result['customer_id']
+                    card_last4 = parse_result['card_last4']
+                    
+                    # 创建目录：static/uploads/receipts/{customer_id}/{card_last4}/
+                    receipt_dir = os.path.join(
+                        app.config['UPLOAD_FOLDER'], 
+                        'receipts',
+                        str(customer_id),
+                        card_last4
+                    )
+                    os.makedirs(receipt_dir, exist_ok=True)
+                    
+                    final_path = os.path.join(receipt_dir, unique_filename)
+                    os.rename(temp_path, final_path)
+                    file_path = f"receipts/{customer_id}/{card_last4}/{unique_filename}"
+                else:
+                    # 未匹配的收据放在pending目录
+                    pending_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'receipts', 'pending')
+                    os.makedirs(pending_dir, exist_ok=True)
+                    
+                    final_path = os.path.join(pending_dir, unique_filename)
+                    os.rename(temp_path, final_path)
+                    file_path = f"receipts/pending/{unique_filename}"
+                
+                # 保存到数据库
+                with get_db() as conn:
+                    cursor = conn.cursor()
+                    cursor.execute("""
+                        INSERT INTO receipts (
+                            customer_id, card_id, receipt_type, file_path, original_filename,
+                            transaction_date, amount, merchant_name, card_last4,
+                            matched_transaction_id, match_status, match_confidence, ocr_text
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        match_result.get('customer_id'),
+                        match_result.get('card_id'),
+                        receipt_type,
+                        file_path,
+                        filename,
+                        parse_result.get('transaction_date'),
+                        parse_result.get('amount'),
+                        parse_result.get('merchant_name'),
+                        parse_result.get('card_last4'),
+                        match_result.get('matched_transaction_id'),
+                        match_result['status'],
+                        match_result['confidence'],
+                        parse_result.get('ocr_text')
+                    ))
+                    conn.commit()
+                    receipt_id = cursor.lastrowid
+                
+                results.append({
+                    'filename': filename,
+                    'status': match_result['status'],
+                    'receipt_id': receipt_id,
+                    'confidence': match_result['confidence'],
+                    'message': f"{'✅ 自动匹配成功' if match_result['status'] == 'auto_matched' else '⚠️ 需要手动匹配'}"
+                })
+                
+            except Exception as e:
+                results.append({
+                    'filename': filename,
+                    'status': 'error',
+                    'message': f'处理失败: {str(e)}'
+                })
+    
+    # 显示结果
+    auto_matched = sum(1 for r in results if r['status'] == 'auto_matched')
+    need_manual = sum(1 for r in results if r['status'] in ['no_match', 'multiple_matches'])
+    
+    flash(f'✅ 上传完成！自动匹配: {auto_matched}个，需手动匹配: {need_manual}个', 'success')
+    
+    return render_template('receipts/upload_results.html', results=results)
+
+@app.route('/receipts/pending')
+def receipts_pending():
+    """待匹配的收据列表"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT 
+                id, receipt_type, original_filename, file_path,
+                transaction_date, amount, merchant_name, card_last4,
+                match_status, ocr_text, created_at
+            FROM receipts
+            WHERE match_status IN ('pending', 'no_match', 'multiple_matches')
+            ORDER BY created_at DESC
+        """)
+        pending_receipts = [dict(row) for row in cursor.fetchall()]
+        
+        # 获取所有客户和卡
+        cursor.execute('SELECT id, name FROM customers ORDER BY name')
+        customers = [dict(row) for row in cursor.fetchall()]
+    
+    return render_template('receipts/pending.html', 
+                         pending_receipts=pending_receipts,
+                         customers=customers)
+
+@app.route('/receipts/manual-match/<int:receipt_id>', methods=['POST'])
+def receipts_manual_match(receipt_id):
+    """手动匹配收据"""
+    customer_id = request.form.get('customer_id', type=int)
+    card_id = request.form.get('card_id', type=int)
+    
+    if not customer_id or not card_id:
+        return jsonify({'success': False, 'message': '请选择客户和信用卡'})
+    
+    success = receipt_matcher.manual_match(receipt_id, customer_id, card_id)
+    
+    if success:
+        # 移动文件到正确的目录
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT file_path, card_last4 FROM receipts WHERE id = ?', (receipt_id,))
+            row = cursor.fetchone()
+            
+            if row:
+                old_path = os.path.join('static/uploads', row['file_path'])
+                card_last4 = row['card_last4']
+                
+                new_dir = os.path.join(
+                    app.config['UPLOAD_FOLDER'],
+                    'receipts',
+                    str(customer_id),
+                    card_last4
+                )
+                os.makedirs(new_dir, exist_ok=True)
+                
+                filename = os.path.basename(old_path)
+                new_path = os.path.join(new_dir, filename)
+                new_file_path = f"receipts/{customer_id}/{card_last4}/{filename}"
+                
+                if os.path.exists(old_path):
+                    os.rename(old_path, new_path)
+                    
+                    # 更新数据库中的文件路径
+                    cursor.execute('UPDATE receipts SET file_path = ? WHERE id = ?', 
+                                 (new_file_path, receipt_id))
+                    conn.commit()
+        
+        return jsonify({'success': True, 'message': '✅ 匹配成功'})
+    else:
+        return jsonify({'success': False, 'message': '❌ 匹配失败'})
+
+@app.route('/receipts/customer/<int:customer_id>')
+def receipts_by_customer(customer_id):
+    """查看客户的所有收据"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取客户信息
+        cursor.execute('SELECT name FROM customers WHERE id = ?', (customer_id,))
+        customer = cursor.fetchone()
+        
+        if not customer:
+            flash('❌ 客户不存在', 'error')
+            return redirect(url_for('receipts_home'))
+        
+        # 获取该客户的所有收据，按卡号分组
+        cursor.execute("""
+            SELECT 
+                r.id, r.receipt_type, r.file_path, r.original_filename,
+                r.transaction_date, r.amount, r.merchant_name, r.card_last4,
+                r.match_status, r.created_at,
+                cc.card_type, cc.bank_name
+            FROM receipts r
+            LEFT JOIN credit_cards cc ON r.card_id = cc.id
+            WHERE r.customer_id = ?
+            ORDER BY r.card_last4, r.transaction_date DESC
+        """, (customer_id,))
+        receipts = [dict(row) for row in cursor.fetchall()]
+        
+        # 按卡号分组
+        receipts_by_card = {}
+        for receipt in receipts:
+            card_key = f"{receipt['card_last4']} - {receipt['card_type']}" if receipt['card_type'] else receipt['card_last4']
+            if card_key not in receipts_by_card:
+                receipts_by_card[card_key] = []
+            receipts_by_card[card_key].append(receipt)
+    
+    return render_template('receipts/customer_receipts.html',
+                         customer=dict(customer),
+                         customer_id=customer_id,
+                         receipts_by_card=receipts_by_card)
+
+@app.route('/api/customer/<int:customer_id>/cards')
+def api_get_customer_cards(customer_id):
+    """API: 获取客户的所有信用卡"""
+    cards = receipt_matcher.get_customer_cards(customer_id)
+    return jsonify(cards)
+
+def allowed_image_file(filename):
+    """检查文件是否为允许的图片格式"""
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def secure_filename(filename):
+    """安全的文件名"""
+    import re
+    filename = re.sub(r'[^\w\s.-]', '', filename)
+    return filename
 
 
 if __name__ == '__main__':

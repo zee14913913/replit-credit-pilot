@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}收据管理系统 - Receipt Management{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="galaxy-heading mb-4">
+                <i class="bi bi-receipt"></i> 收据管理系统
+            </h1>
+            
+            <div class="glass-panel p-4 mb-4">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <h3 class="text-silver">{{ stats.total or 0 }}</h3>
+                            <p class="text-muted">总收据数</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <h3 class="text-success">{{ stats.auto_matched or 0 }}</h3>
+                            <p class="text-muted">自动匹配</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <h3 class="text-info">{{ stats.manual_matched or 0 }}</h3>
+                            <p class="text-muted">手动匹配</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <h3 class="text-warning">{{ stats.pending or 0 }}</h3>
+                            <p class="text-muted">待匹配</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <a href="{{ url_for('receipts_upload') }}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-cloud-upload"></i> 上传收据
+                </a>
+                <a href="{{ url_for('receipts_pending') }}" class="btn btn-warning btn-lg ms-2">
+                    <i class="bi bi-exclamation-triangle"></i> 待匹配收据 ({{ stats.pending or 0 }})
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="glass-panel p-4">
+        <h3 class="text-silver mb-3">最近上传的收据</h3>
+        
+        {% if recent_receipts %}
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr>
+                        <th>文件名</th>
+                        <th>类型</th>
+                        <th>客户</th>
+                        <th>卡号</th>
+                        <th>日期</th>
+                        <th>金额</th>
+                        <th>状态</th>
+                        <th>上传时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for receipt in recent_receipts %}
+                    <tr>
+                        <td>{{ receipt.original_filename }}</td>
+                        <td>
+                            {% if receipt.receipt_type == 'merchant_swipe' %}
+                            <span class="badge bg-info">商家刷卡</span>
+                            {% else %}
+                            <span class="badge bg-success">还款凭证</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ receipt.customer_name or '-' }}</td>
+                        <td>****{{ receipt.card_last4 or '?' }}</td>
+                        <td>{{ receipt.transaction_date or '-' }}</td>
+                        <td>RM {{ "%.2f"|format(receipt.amount or 0) }}</td>
+                        <td>
+                            {% if receipt.match_status == 'auto_matched' %}
+                            <span class="badge bg-success">自动匹配</span>
+                            {% elif receipt.match_status == 'manual_matched' %}
+                            <span class="badge bg-info">手动匹配</span>
+                            {% else %}
+                            <span class="badge bg-warning">待匹配</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ receipt.created_at }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted text-center py-5">
+            <i class="bi bi-inbox" style="font-size: 3rem;"></i><br>
+            还没有上传任何收据
+        </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
