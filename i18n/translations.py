@@ -299,7 +299,7 @@ TRANSLATIONS = {
         'view_pdf': 'View PDF',
         'view_detailed_ledger': 'View Detailed Ledger',
         'no_customers_with_data': 'No customers with credit card data found.',
-        'upload_credit_card_statement': 'Upload Credit Card Statement',
+        'upload_credit_card_statement': 'Upload CC Statement',
         'no_transactions_found': 'No transactions found',
         
         # Savings Accounts
@@ -881,7 +881,7 @@ TRANSLATIONS = {
         'view_pdf': '查看PDF',
         'view_detailed_ledger': '查看详细账本',
         'no_customers_with_data': '未找到有信用卡数据的客户。',
-        'upload_credit_card_statement': '上传信用卡账单',
+        'upload_credit_card_statement': '上传CC账单',
         'no_transactions_found': '未找到交易记录',
         'card_number': '卡号',
         'statement_date': '账单日期',
