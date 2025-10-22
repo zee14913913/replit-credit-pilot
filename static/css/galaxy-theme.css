@@ -793,7 +793,7 @@ p {
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
     font-weight: 600;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(255, 23, 68, 0.6);
+    box-shadow: 0 4px 10px rgba(255, 23, 68, 0.4);
 }
 
 .btn-primary:hover {
@@ -801,7 +801,7 @@ p {
     color: #ffffff !important;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
     border-color: rgba(255, 255, 255, 0.5) !important;
-    box-shadow: 0 6px 20px rgba(255, 23, 68, 0.8);
+    box-shadow: 0 6px 16px rgba(255, 23, 68, 0.55);
     transform: translateY(-2px);
 }
 
@@ -809,7 +809,7 @@ p {
 .btn-primary:focus {
     background: linear-gradient(135deg, #D81B60 0%, #C2185B 100%) !important;
     color: #f0f0f0 !important;
-    box-shadow: 0 2px 8px rgba(255, 23, 68, 0.7) !important;
+    box-shadow: 0 2px 8px rgba(255, 23, 68, 0.5) !important;
 }
 
 /* Warning Button - 高级暗紫罗兰（Premium Dark Violet） */
@@ -820,7 +820,7 @@ p {
     border: 1px solid rgba(139, 92, 168, 0.4) !important;
     font-weight: 600;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(43, 27, 61, 0.6);
+    box-shadow: 0 4px 10px rgba(43, 27, 61, 0.4);
 }
 
 .btn-warning:hover {
@@ -828,7 +828,7 @@ p {
     color: #ffffff !important;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
     border-color: rgba(139, 92, 168, 0.6) !important;
-    box-shadow: 0 6px 20px rgba(62, 44, 85, 0.8);
+    box-shadow: 0 6px 16px rgba(62, 44, 85, 0.55);
     transform: translateY(-2px);
 }
 
@@ -836,7 +836,7 @@ p {
 .btn-warning:focus {
     background: linear-gradient(135deg, #1A0F2E 0%, #0D0716 100%) !important;
     color: #f0f0f0 !important;
-    box-shadow: 0 2px 8px rgba(43, 27, 61, 0.7) !important;
+    box-shadow: 0 2px 8px rgba(43, 27, 61, 0.5) !important;
 }
 
 /* ========================================
