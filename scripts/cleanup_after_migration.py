@@ -200,7 +200,23 @@ def retry_failed_savings():
             
             # 解析日期
             stmt_date = stmt['statement_date']
-            year, month = stmt_date.split('-')[0:2]
+            
+            # 处理不同的日期格式
+            from datetime import datetime
+            try:
+                # 尝试标准格式 YYYY-MM-DD
+                if '-' in stmt_date and len(stmt_date.split('-')[0]) == 4:
+                    year, month = stmt_date.split('-')[0:2]
+                else:
+                    # 尝试其他格式 "30 Apr 2025"
+                    date_obj = datetime.strptime(stmt_date, '%d %b %Y')
+                    year = str(date_obj.year)
+                    month = f"{date_obj.month:02d}"
+                    stmt_date = date_obj.strftime('%Y-%m-%d')  # 标准化日期
+            except:
+                print(f"⚠️  无法解析日期: {stmt_date}")
+                error_count += 1
+                continue
             
             # 构建新路径
             safe_customer = re.sub(r'[^\w\s-]', '', stmt['customer_name']).strip().replace(' ', '_')
