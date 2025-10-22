@@ -11,6 +11,59 @@
         <p class="section-subtitle">{{ t('cc_ledger_subtitle') }}</p>
     </div>
 
+    <!-- 上传信用卡账单区域 -->
+    <div class="professional-card mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 style="color: var(--text-primary); margin: 0;">
+                {{ t('upload_credit_card_statement') }}
+            </h3>
+            <button class="btn-professional" onclick="toggleUploadForm()" style="background: #FF007F;">
+                <span id="upload-toggle-text">{{ t('show_upload_form') }}</span>
+            </button>
+        </div>
+        
+        <div id="upload-form-section" style="display: none;">
+            <div class="divider-professional mb-4"></div>
+            <form method="POST" action="{{ url_for('credit_card_ledger') }}" enctype="multipart/form-data">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" style="color: var(--text-primary); font-weight: 600;">
+                            {{ t('select_credit_card') }}
+                        </label>
+                        <select name="card_id" class="form-control-professional" required>
+                            <option value="" selected disabled>{{ t('choose_credit_card') }}</option>
+                            {% for card in all_cards %}
+                            <option value="{{ card.id }}">
+                                {{ card.customer_name }} - {{ card.bank_name }} ****{{ card.card_number_last4 }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label" style="color: var(--text-primary); font-weight: 600;">
+                            {{ t('statement_file') }}
+                        </label>
+                        <div class="custom-file-upload">
+                            <input type="file" name="statement_file" id="statement_file" class="file-input-hidden" accept=".pdf,.xlsx,.xls" required>
+                            <button type="button" class="btn-professional-outline" onclick="document.getElementById('statement_file').click()">
+                                {{ t('choose_file') }}
+                            </button>
+                            <span id="file-name" style="color: var(--text-secondary); margin-left: 1rem;">{{ t('no_file_chosen') }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn-professional" style="background: linear-gradient(135deg, #FF007F 0%, #330066 100%);">
+                        {{ t('upload_parse_statement') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 客户列表 -->
     {% if customers %}
     <div class="professional-card">
         <h2 class="section-title mb-4">
@@ -53,9 +106,6 @@
     {% else %}
     <div class="professional-card text-center" style="padding: 3rem;">
         <p style="color: var(--text-secondary); margin-top: 1rem;">{{ t('no_customers_with_data') }}</p>
-        <a href="{{ url_for('upload_statement') }}" class="btn-professional mt-3" style="background: linear-gradient(135deg, #FF007F 0%, #330066 100%);">
-            {{ t('upload_credit_card_statement') }}
-        </a>
     </div>
     {% endif %}
 </div>
@@ -193,6 +243,16 @@
     transform: translateX(5px);
 }
 
+/* 上传表单样式 */
+.file-input-hidden {
+    display: none;
+}
+
+.custom-file-upload {
+    display: flex;
+    align-items: center;
+}
+
 /* 响应式优化 */
 @media (max-width: 768px) {
     .customer-code {
@@ -209,4 +269,31 @@
     }
 }
 </style>
+
+<script>
+// Toggle upload form visibility
+function toggleUploadForm() {
+    const formSection = document.getElementById('upload-form-section');
+    const toggleText = document.getElementById('upload-toggle-text');
+    
+    if (formSection.style.display === 'none') {
+        formSection.style.display = 'block';
+        toggleText.textContent = '{{ t("hide_upload_form") }}';
+    } else {
+        formSection.style.display = 'none';
+        toggleText.textContent = '{{ t("show_upload_form") }}';
+    }
+}
+
+// Update file name display when file is selected
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('statement_file');
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : '{{ t("no_file_chosen") }}';
+            document.getElementById('file-name').textContent = fileName;
+        });
+    }
+});
+</script>
 {% endblock %}

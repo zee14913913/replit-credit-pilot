@@ -3323,11 +3323,221 @@ def loan_matcher_analyze():
 # CREDIT CARD LEDGER - 信用卡账本系统 (OWNER vs INFINITE)
 # ============================================================================
 
-@app.route('/credit-card/ledger')
+@app.route('/credit-card/ledger', methods=['GET', 'POST'])
 def credit_card_ledger():
-    """第一层：客户列表 - 显示所有有信用卡账单的客户"""
+    """第一层：客户列表 - 显示所有有信用卡账单的客户 + 上传功能"""
     from utils.name_utils import get_customer_code
     
+    # POST: 处理上传
+    if request.method == 'POST':
+        # 重用 upload_statement 的逻辑
+        card_id = request.form.get('card_id')
+        file = request.files.get('statement_file')
+        
+        if not card_id or not file:
+            flash('Please provide card and file', 'error')
+            return redirect(url_for('credit_card_ledger'))
+        
+        # 临时保存文件用于解析
+        temp_filename = f"temp_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
+        temp_file_path = os.path.join(app.config['UPLOAD_FOLDER'], temp_filename)
+        file.save(temp_file_path)
+        
+        file_type = 'pdf' if temp_filename.lower().endswith('.pdf') else 'excel'
+        
+        # Step 1: Parse statement
+        try:
+            statement_info, transactions = parse_statement_auto(temp_file_path)
+        except ValueError as e:
+            if str(e) == "HSBC_SCANNED_PDF":
+                flash('检测到HSBC扫描版PDF账单，请使用Microsoft Word转换后重新上传', 'warning')
+                os.remove(temp_file_path)
+                return redirect(url_for('credit_card_ledger'))
+            else:
+                flash(f'账单解析失败：{str(e)}', 'error')
+                os.remove(temp_file_path)
+                return redirect(url_for('credit_card_ledger'))
+        
+        if not statement_info or not transactions:
+            flash('Failed to parse statement', 'error')
+            os.remove(temp_file_path)
+            return redirect(url_for('credit_card_ledger'))
+        
+        # Step 2: Dual Validation
+        pdf_text = ""
+        if file_type == 'pdf':
+            try:
+                with pdfplumber.open(temp_file_path) as pdf:
+                    pdf_text = "\n".join(p.extract_text() for p in pdf.pages)
+            except:
+                pass
+        
+        dual_validation = validate_transactions(transactions, pdf_text) if pdf_text else None
+        validation_result = validate_statement(statement_info['total'], transactions)
+        
+        # Combine validation scores
+        final_confidence = validation_result['confidence']
+        if dual_validation:
+            final_confidence = (final_confidence + dual_validation.confidence_score) / 2
+        
+        # Determine auto-confirm
+        auto_confirmed = 0
+        validation_status = "pending"
+        if dual_validation:
+            if dual_validation.get_status() == "PASSED" and final_confidence >= 95:
+                auto_confirmed = 1
+                validation_status = "auto_approved"
+            elif dual_validation.get_status() == "FAILED":
+                validation_status = "requires_review"
+        
+        stmt_date = statement_info.get('statement_date') or datetime.now().strftime('%Y-%m-%d')
+        
+        # 文件组织和数据库插入
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                SELECT cc.bank_name, cc.card_number_last4, c.name as customer_name, c.id as customer_id
+                FROM credit_cards cc
+                JOIN customers c ON cc.customer_id = c.id
+                WHERE cc.id = ?
+            ''', (card_id,))
+            
+            card_row = cursor.fetchone()
+            if not card_row:
+                flash('❌ 信用卡不存在', 'error')
+                os.remove(temp_file_path)
+                return redirect(url_for('credit_card_ledger'))
+            
+            card_info = dict(card_row)
+            customer_id = card_info['customer_id']
+            
+            # 使用StatementOrganizer组织文件
+            from services.statement_organizer import StatementOrganizer
+            organizer = StatementOrganizer()
+            
+            try:
+                organize_result = organizer.organize_statement(
+                    temp_file_path,
+                    card_info['customer_name'],
+                    stmt_date,
+                    {
+                        'bank_name': card_info['bank_name'],
+                        'last_4_digits': card_info['card_number_last4']
+                    },
+                    category=StatementOrganizer.CATEGORY_CREDIT_CARD
+                )
+                organized_file_path = organize_result['archived_path']
+                os.remove(temp_file_path)
+            except Exception as e:
+                print(f"⚠️ 文件组织失败: {str(e)}")
+                organized_file_path = temp_file_path
+            
+            # 重复检查
+            validation_check = UniquenessValidator.validate_statement_upload(card_id, stmt_date)
+            
+            try:
+                if validation_check['action'] == 'update':
+                    cursor.execute('''
+                        UPDATE statements 
+                        SET statement_total = ?, file_path = ?, file_type = ?, 
+                            validation_score = ?, is_confirmed = ?, inconsistencies = ?,
+                            due_date = ?, due_amount = ?, minimum_payment = ?
+                        WHERE id = ?
+                    ''', (
+                        statement_info['total'],
+                        organized_file_path,
+                        file_type,
+                        final_confidence,
+                        auto_confirmed,
+                        json.dumps({
+                            'old_validation': validation_result['inconsistencies'],
+                            'dual_validation_status': dual_validation.get_status() if dual_validation else 'N/A',
+                            'dual_validation_errors': dual_validation.errors if dual_validation else [],
+                            'dual_validation_warnings': dual_validation.warnings if dual_validation else []
+                        }),
+                        statement_info.get('due_date'),
+                        statement_info.get('due_amount'),
+                        statement_info.get('minimum_payment'),
+                        validation_check['existing_statement_id']
+                    ))
+                    statement_id = validation_check['existing_statement_id']
+                    cursor.execute('DELETE FROM transactions WHERE statement_id = ?', (statement_id,))
+                    flash(f'ℹ️  {validation_check["reason"]}', 'info')
+                else:
+                    cursor.execute('''
+                        INSERT INTO statements 
+                        (card_id, statement_date, statement_total, file_path, file_type, 
+                         validation_score, is_confirmed, inconsistencies, due_date, due_amount, minimum_payment)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ''', (
+                        card_id,
+                        stmt_date,
+                        statement_info['total'],
+                        organized_file_path,
+                        file_type,
+                        final_confidence,
+                        auto_confirmed,
+                        json.dumps({
+                            'old_validation': validation_result['inconsistencies'],
+                            'dual_validation_status': dual_validation.get_status() if dual_validation else 'N/A',
+                            'dual_validation_errors': dual_validation.errors if dual_validation else [],
+                            'dual_validation_warnings': dual_validation.warnings if dual_validation else []
+                        }),
+                        statement_info.get('due_date'),
+                        statement_info.get('due_amount'),
+                        statement_info.get('minimum_payment')
+                    ))
+                    statement_id = cursor.lastrowid
+                
+                for trans in transactions:
+                    category, confidence = categorize_transaction(trans['description'])
+                    trans_type = trans.get('type', None)
+                    if trans_type == 'debit':
+                        transaction_type = 'purchase'
+                    elif trans_type == 'credit':
+                        transaction_type = 'payment'
+                    else:
+                        transaction_type = 'payment' if trans['amount'] < 0 else 'purchase'
+                    
+                    cursor.execute('''
+                        INSERT INTO transactions 
+                        (statement_id, transaction_date, description, amount, category, category_confidence, transaction_type)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                    ''', (
+                        statement_id,
+                        trans['date'],
+                        trans['description'],
+                        abs(trans['amount']),
+                        category,
+                        confidence,
+                        transaction_type
+                    ))
+                
+                conn.commit()
+                log_audit(None, 'UPLOAD_STATEMENT', 'statement', statement_id, 
+                         f"Uploaded from CC Ledger: {file_type} statement with {len(transactions)} transactions")
+                
+            except Exception as e:
+                conn.rollback()
+                flash(f'数据库错误：{str(e)}', 'error')
+                return redirect(url_for('credit_card_ledger'))
+        
+        # 自动触发处理流程
+        from services.statement_processor import process_uploaded_statement
+        try:
+            if statement_id is not None:
+                processing_result = process_uploaded_statement(customer_id, statement_id, organized_file_path)
+                if processing_result['success']:
+                    flash(f'🎉 账单上传成功！已分类 {processing_result["step_1_classify"]["total_transactions"]} 笔交易', 'success')
+        except Exception as e:
+            flash(f'⚠️ 账单已上传，但自动分类失败：{str(e)}', 'warning')
+        
+        # 成功后重定向回 CC Ledger
+        flash(f'✅ Statement uploaded successfully!', 'success')
+        return redirect(url_for('credit_card_ledger'))
+    
+    # GET: 显示页面
     with get_db() as conn:
         cursor = conn.cursor()
         
@@ -3349,8 +3559,17 @@ def credit_card_ledger():
             customer = dict(row)
             customer['code'] = get_customer_code(customer['name'])
             customers.append(customer)
+        
+        # 获取所有信用卡供上传表单使用
+        all_customers = get_all_customers()
+        all_cards = []
+        for customer in all_customers:
+            cards = get_customer_cards(customer['id'])
+            for card in cards:
+                card['customer_name'] = customer['name']
+                all_cards.append(card)
     
-    return render_template('credit_card/ledger_index.html', customers=customers)
+    return render_template('credit_card/ledger_index.html', customers=customers, all_cards=all_cards)
 
 
 @app.route('/credit-card/ledger/<int:customer_id>/timeline')
