@@ -701,7 +701,7 @@ def upload_statement():
             print("🚀 启动智能分类处理流程...")
             print("="*80)
             if statement_id is not None:
-                processing_result = process_uploaded_statement(customer_id, statement_id, file_path)
+                processing_result = process_uploaded_statement(customer_id, statement_id, organized_file_path)
             else:
                 raise ValueError("Statement ID is None")
             
