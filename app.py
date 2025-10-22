@@ -1572,6 +1572,7 @@ def admin_customers_cards():
                     cc.credit_limit,
                     cc.interest_rate,
                     cc.cashback_rate,
+                    cc.due_date,
                     COUNT(DISTINCT s.id) as statement_count,
                     MAX(s.statement_date) as last_statement_date,
                     SUM(t.amount) as total_spending
@@ -1584,6 +1585,62 @@ def admin_customers_cards():
             """, (customer['customer_id'],))
             
             cards = [dict(row) for row in cursor.fetchall()]
+            
+            # Add billing cycle and instalment info for each card
+            for card in cards:
+                # Calculate 50-day billing cycle
+                if card['last_statement_date'] and card['due_date']:
+                    from datetime import datetime, timedelta
+                    try:
+                        stmt_date = datetime.strptime(card['last_statement_date'], '%Y-%m-%d')
+                        # Calculate cycle: statement date to due date (typically 20-25 days)
+                        # Then add grace period to make approximately 50 days
+                        due_day = card['due_date']
+                        # Estimate due date by adding ~20 days to statement date
+                        estimated_due = stmt_date + timedelta(days=20)
+                        # Cycle end is due date + grace period (typically 20-25 days)
+                        cycle_end = estimated_due + timedelta(days=30)
+                        card['billing_cycle_start'] = stmt_date.strftime('%Y-%m-%d')
+                        card['billing_cycle_end'] = cycle_end.strftime('%Y-%m-%d')
+                    except:
+                        card['billing_cycle_start'] = None
+                        card['billing_cycle_end'] = None
+                else:
+                    card['billing_cycle_start'] = None
+                    card['billing_cycle_end'] = None
+                
+                # Get instalment plans for this card
+                cursor.execute("""
+                    SELECT 
+                        ip.id,
+                        ip.instalment_type,
+                        ip.product_name,
+                        ip.merchant_name,
+                        ip.principal_amount,
+                        ip.tenure_months,
+                        ip.monthly_payment,
+                        ip.start_date,
+                        ip.end_date,
+                        ip.status,
+                        COUNT(ipr.id) as paid_count,
+                        SUM(CASE WHEN ipr.status = 'paid' THEN ipr.principal_portion ELSE 0 END) as paid_principal
+                    FROM instalment_plans ip
+                    LEFT JOIN instalment_payment_records ipr ON ip.id = ipr.plan_id AND ipr.status = 'paid'
+                    WHERE ip.card_id = ? AND ip.status != 'completed'
+                    GROUP BY ip.id
+                    ORDER BY ip.start_date DESC
+                """, (card['card_id'],))
+                
+                instalments = []
+                for inst in cursor.fetchall():
+                    inst_dict = dict(inst)
+                    # Calculate remaining balance
+                    inst_dict['remaining_balance'] = inst_dict['principal_amount'] - (inst_dict['paid_principal'] or 0)
+                    # Format tenure display (e.g., "05/24" means 5 paid out of 24 total)
+                    inst_dict['tenure_display'] = f"{inst_dict['paid_count']:02d}/{inst_dict['tenure_months']:02d}"
+                    instalments.append(inst_dict)
+                
+                card['instalments'] = instalments
             
             customers_with_cards.append({
                 'customer': customer,
