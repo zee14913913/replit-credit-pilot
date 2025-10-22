@@ -1791,26 +1791,10 @@ def resolve_anomaly_route(anomaly_id):
 
 # ==================== END ADVANCED ANALYTICS ====================
 
-def auto_fetch_daily_news():
-    """每日自动获取新闻任务"""
-    try:
-        print(f"Auto-fetching news at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        news_items = fetch_news_from_web()
-        
-        from news.auto_news_fetcher import save_pending_news
-        count = save_pending_news(news_items)
-        
-        print(f"Successfully fetched {count} news items for review")
-    except Exception as e:
-        print(f"Error auto-fetching news: {e}")
-
 def run_scheduler():
     # 提醒任务
     schedule.every().day.at("09:00").do(check_and_send_reminders)
     schedule.every(6).hours.do(check_and_send_reminders)
-    
-    # 新闻获取任务 - 每天早上8点自动获取
-    schedule.every().day.at("08:00").do(auto_fetch_daily_news)
     
     # ============================================================
     # 月度报表自动化系统 - 30号生成，1号发送
@@ -3450,10 +3434,10 @@ def receipts_upload():
     results = []
     
     for file in files:
+        filename = secure_filename(file.filename) if file.filename else 'unknown'
         if file and allowed_image_file(file.filename):
             try:
                 # 保存文件
-                filename = secure_filename(file.filename)
                 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
                 unique_filename = f"{timestamp}_{filename}"
                 
