@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}{{ customer.name }} - {{ t('timeline') }}{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="section-header">
+        <h1 class="section-title">
+            <i class="bi bi-person-circle"></i> {{ customer.name }}
+        </h1>
+        <p class="section-subtitle">{{ customer.code }}</p>
+    </div>
+
+    <div class="mb-4">
+        <a href="{{ url_for('credit_card_ledger') }}" class="btn-professional-outline">
+            <i class="bi bi-arrow-left"></i> {{ t('back_to_all_customers') }}
+        </a>
+    </div>
+
+    {% for year_data in years_data %}
+    <div class="professional-card mb-4">
+        <h2 class="section-title mb-4" style="color: #87CEEB;">
+            <i class="bi bi-calendar"></i> {{ customer.code }}_{{ year_data.year }}
+        </h2>
+        
+        <div class="row g-3">
+            {% for month in year_data.months %}
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                {% if month.has_statements %}
+                <a href="{{ url_for('credit_card_ledger_monthly', customer_id=customer.id, year=year_data.year, month=month.number|string|zfill(2)) }}" style="text-decoration: none;">
+                    <div class="month-cell active">
+                        <div class="month-name">{{ month.name }}</div>
+                        <div class="month-badge">{{ month.statements|length }}</div>
+                    </div>
+                </a>
+                {% else %}
+                <div class="month-cell inactive">
+                    <div class="month-name">{{ month.name }}</div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+.month-cell {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.month-cell.active {
+    background: linear-gradient(135deg, rgba(135, 206, 235, 0.2) 0%, rgba(135, 206, 235, 0.05) 100%);
+    border: 2px solid #87CEEB;
+    cursor: pointer;
+}
+
+.month-cell.active:hover {
+    background: linear-gradient(135deg, rgba(135, 206, 235, 0.3) 0%, rgba(135, 206, 235, 0.1) 100%);
+    border-color: #FFD700;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(135, 206, 235, 0.4);
+}
+
+.month-cell.inactive {
+    background: rgba(128, 128, 128, 0.05);
+    border: 2px solid rgba(128, 128, 128, 0.2);
+    opacity: 0.5;
+}
+
+.month-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.month-cell.active .month-name {
+    color: #87CEEB;
+}
+
+.month-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #87CEEB;
+    color: #000;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.month-cell.active:hover .month-badge {
+    background: #FFD700;
+}
+</style>
+{% endblock %}

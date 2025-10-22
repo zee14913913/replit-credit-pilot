@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+{% block title %}{{ customer.name }} - {{ period_display }}{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- Header -->
+    <div class="section-header">
+        <h1 class="section-title">
+            <i class="bi bi-file-earmark-text"></i> Credit Card Statement Report
+        </h1>
+        <p class="section-subtitle">
+            {{ t('customer') }}: {{ customer.name }} | {{ t('period') }}: {{ period_display }}
+        </p>
+    </div>
+
+    <!-- Navigation -->
+    <div class="mb-4">
+        <a href="{{ url_for('credit_card_ledger_timeline', customer_id=customer.id) }}" class="btn-professional-outline">
+            <i class="bi bi-arrow-left"></i> {{ t('back_to_timeline') }}
+        </a>
+    </div>
+
+    <!-- I. 客户摘要 (Client Summary) -->
+    <div class="professional-card mb-4">
+        <h2 class="section-title mb-4">
+            <i class="bi bi-person-badge"></i> I. {{ t('client_summary') }}
+        </h2>
+        
+        <div class="table-responsive">
+            <table class="table-professional">
+                <tbody>
+                    <tr>
+                        <td style="color: var(--text-secondary); width: 30%;">{{ t('customer_name') }}</td>
+                        <td style="color: var(--text-primary); font-weight: 600;">{{ customer.name }}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-secondary);">{{ t('report_code') }}</td>
+                        <td style="color: #87CEEB; font-weight: 600;">{{ customer.code }}_{{ year }}{{ month }}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-secondary);">{{ t('period') }}</td>
+                        <td style="color: var(--text-primary); font-weight: 600;">{{ period_display }}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-secondary);">{{ t('total_accounts') }}</td>
+                        <td style="color: #87CEEB; font-weight: 600;">{{ statements|length }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- II. 银行账户总览 (Accounts Overview) -->
+    <div class="professional-card mb-4">
+        <h2 class="section-title mb-4">
+            <i class="bi bi-credit-card-2-back"></i> II. {{ t('accounts_overview') }}
+        </h2>
+        
+        <div class="table-responsive">
+            <table class="table-professional">
+                <thead>
+                    <tr>
+                        <th>{{ t('bank') }}</th>
+                        <th>{{ t('card_number') }}</th>
+                        <th>{{ t('account_type') }}</th>
+                        <th>{{ t('previous_balance') }}</th>
+                        <th>{{ t('current_balance') }}</th>
+                        <th>{{ t('transactions') }}</th>
+                        <th>{{ t('actions') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stmt in statements %}
+                    <tr>
+                        <td style="color: var(--text-primary); font-weight: 600;">{{ stmt.bank_name }}</td>
+                        <td style="color: var(--text-secondary);">****{{ stmt.card_number_last4 }}</td>
+                        <td style="color: var(--text-secondary);">{{ t('main_card') }}</td>
+                        <td style="color: {% if stmt.previous_balance < 0 %}#90EE90{% else %}#FFA500{% endif %}; font-weight: 600;">
+                            RM {{ "{:,.2f}".format(stmt.previous_balance) }}
+                        </td>
+                        <td style="color: {% if stmt.statement_total < 0 %}#90EE90{% else %}#87CEEB{% endif %}; font-weight: 600;">
+                            RM {{ "{:,.2f}".format(stmt.statement_total) }}
+                        </td>
+                        <td style="color: var(--text-secondary);">{{ stmt.txn_count }}</td>
+                        <td>
+                            <a href="{{ url_for('view_statement_file', statement_id=stmt.id) }}" 
+                               class="btn-professional-outline" 
+                               style="padding: 0.25rem 0.75rem; font-size: 0.85rem;" 
+                               target="_blank">
+                                <i class="bi bi-file-pdf"></i> PDF
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- III. 各账户交易明细 (Transaction Details) -->
+    <div class="professional-card mb-4">
+        <h2 class="section-title mb-4">
+            <i class="bi bi-list-ul"></i> III. {{ t('transaction_details') }}
+        </h2>
+        
+        {% for stmt in statements %}
+        <div class="mb-4">
+            <h4 style="color: #87CEEB; margin-bottom: 1rem;">
+                {{ stmt.bank_name }} ****{{ stmt.card_number_last4 }}
+            </h4>
+            
+            <div class="table-responsive">
+                <table class="table-professional">
+                    <thead>
+                        <tr>
+                            <th>{{ t('date') }}</th>
+                            <th>{{ t('description') }}</th>
+                            <th>{{ t('amount') }} (RM)</th>
+                            <th>{{ t('category') }}</th>
+                            <th>{{ t('notes') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 上期结余 -->
+                        <tr style="background: rgba(135, 206, 235, 0.05);">
+                            <td style="color: var(--text-secondary);">-</td>
+                            <td style="color: var(--text-primary); font-weight: 600;">{{ t('previous_balance') }}</td>
+                            <td style="color: {% if stmt.previous_balance < 0 %}#90EE90{% else %}#FFA500{% endif %}; font-weight: 700;">
+                                {{ "{:,.2f}".format(stmt.previous_balance) }}
+                            </td>
+                            <td style="color: var(--text-secondary);">{{ t('baseline') }}</td>
+                            <td style="color: var(--text-secondary);">{{ t('included_in_owner_debt') }}</td>
+                        </tr>
+                        
+                        <!-- 交易明细 -->
+                        {% for txn in stmt.transactions %}
+                        <tr>
+                            <td style="color: var(--text-secondary);">{{ txn.transaction_date }}</td>
+                            <td style="color: var(--text-primary);">{{ txn.description }}</td>
+                            <td style="font-weight: 600; color: {% if txn.amount > 0 %}#87CEEB{% else %}#90EE90{% endif %};">
+                                {{ "{:,.2f}".format(txn.amount|abs) }}{% if txn.amount < 0 %} CR{% endif %}
+                            </td>
+                            <td>
+                                {% if txn.category == 'owner_expense' %}
+                                <span style="color: #87CEEB;">Owner</span>
+                                {% elif txn.category == 'infinite_expense' %}
+                                <span style="color: #FFD700;">INFINITE</span>
+                                {% elif txn.category == 'owner_payment' %}
+                                <span style="color: #90EE90;">Owner {{ t('payment') }}</span>
+                                {% elif txn.category == 'infinite_payment' %}
+                                <span style="color: #90EE90;">INFINITE {{ t('payment') }}</span>
+                                {% endif %}
+                            </td>
+                            <td style="color: var(--text-secondary); font-size: 0.85rem;">
+                                {% if txn.transaction_type == 'payment' %}
+                                {{ t('customer_payment') }}
+                                {% elif txn.is_supplier %}
+                                {{ t('supplier') }}: {{ txn.supplier_name }}
+                                {% else %}
+                                {{ t('non_supplier') }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 账户汇总 -->
+            <div style="margin-top: 1rem; padding: 1rem; background: rgba(192, 192, 192, 0.05); border-radius: 8px;">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <div style="text-align: center;">
+                            <small style="color: var(--text-secondary);">Owner {{ t('expenses') }}</small>
+                            <div style="color: #87CEEB; font-weight: 700; font-size: 1.2rem;">RM {{ "{:,.2f}".format(stmt.owner_expenses) }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div style="text-align: center;">
+                            <small style="color: var(--text-secondary);">Owner {{ t('payments') }}</small>
+                            <div style="color: #90EE90; font-weight: 700; font-size: 1.2rem;">RM {{ "{:,.2f}".format(stmt.owner_payments) }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div style="text-align: center;">
+                            <small style="color: var(--text-secondary);">INFINITE {{ t('expenses') }}</small>
+                            <div style="color: #FFD700; font-weight: 700; font-size: 1.2rem;">RM {{ "{:,.2f}".format(stmt.infinite_expenses) }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div style="text-align: center;">
+                            <small style="color: var(--text-secondary);">{{ t('supplier_fees') }}</small>
+                            <div style="color: #DAA520; font-weight: 700; font-size: 1.2rem;">RM {{ "{:,.2f}".format(stmt.supplier_fees) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- IV. 月度汇总 (Monthly Summary) -->
+    <div class="professional-card mb-4">
+        <h2 class="section-title mb-4">
+            <i class="bi bi-pie-chart"></i> IV. {{ t('monthly_summary') }}
+        </h2>
+        
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div style="padding: 2rem; background: linear-gradient(135deg, rgba(135, 206, 235, 0.1) 0%, rgba(135, 206, 235, 0.02) 100%); border-radius: 12px; border: 1px solid rgba(135, 206, 235, 0.3);">
+                    <h3 style="color: #87CEEB; text-align: center; margin-bottom: 1.5rem;">
+                        <i class="bi bi-person-fill"></i> OWNER
+                    </h3>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span style="color: var(--text-secondary);">{{ t('total_expenses') }}</span>
+                            <span style="color: #87CEEB; font-weight: 700; font-size: 1.3rem;">RM {{ "{:,.2f}".format(monthly_summary.owner_expenses) }}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="d-flex justify-content-between">
+                            <span style="color: var(--text-secondary);">{{ t('total_payments') }}</span>
+                            <span style="color: #90EE90; font-weight: 700; font-size: 1.3rem;">RM {{ "{:,.2f}".format(monthly_summary.owner_payments) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div style="padding: 2rem; background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.02) 100%); border-radius: 12px; border: 1px solid rgba(218, 165, 32, 0.3);">
+                    <h3 style="color: #FFD700; text-align: center; margin-bottom: 1.5rem;">
+                        <i class="bi bi-infinity"></i> INFINITE
+                    </h3>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span style="color: var(--text-secondary);">{{ t('total_expenses') }}</span>
+                            <span style="color: #FFD700; font-weight: 700; font-size: 1.3rem;">RM {{ "{:,.2f}".format(monthly_summary.infinite_expenses) }}</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span style="color: var(--text-secondary);">{{ t('total_payments') }}</span>
+                            <span style="color: #90EE90; font-weight: 700; font-size: 1.3rem;">RM {{ "{:,.2f}".format(monthly_summary.infinite_payments) }}</span>
+                        </div>
+                    </div>
+                    <div style="border-top: 1px solid rgba(218, 165, 32, 0.3); padding-top: 0.75rem;">
+                        <div class="d-flex justify-content-between">
+                            <span style="color: var(--text-secondary);">{{ t('supplier_fees') }} (1%)</span>
+                            <span style="color: #DAA520; font-weight: 700; font-size: 1.3rem;">RM {{ "{:,.2f}".format(monthly_summary.supplier_fees) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- V. 对账验证 (Reconciliation Check) -->
+    <div class="professional-card mb-4">
+        <h2 class="section-title mb-4">
+            <i class="bi bi-check-circle"></i> V. {{ t('reconciliation_check') }}
+        </h2>
+        
+        <div class="table-responsive">
+            <table class="table-professional">
+                <thead>
+                    <tr>
+                        <th>{{ t('check_item') }}</th>
+                        <th>{{ t('system_result') }}</th>
+                        <th>{{ t('status') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color: var(--text-secondary);">{{ t('total_accounts') }}</td>
+                        <td style="color: var(--text-primary); font-weight: 600;">{{ statements|length }}</td>
+                        <td><span class="badge-professional badge-success-pro">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-secondary);">{{ t('total_transactions') }}</td>
+                        <td style="color: var(--text-primary); font-weight: 600;">{{ monthly_summary.total_txn_count }}</td>
+                        <td><span class="badge-professional badge-success-pro">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-secondary);">Owner {{ t('total_expenses') }}</td>
+                        <td style="color: #87CEEB; font-weight: 700;">RM {{ "{:,.2f}".format(monthly_summary.owner_expenses) }}</td>
+                        <td><span class="badge-professional badge-success-pro">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-secondary);">INFINITE {{ t('total_expenses') }}</td>
+                        <td style="color: #FFD700; font-weight: 700;">RM {{ "{:,.2f}".format(monthly_summary.infinite_expenses) }}</td>
+                        <td><span class="badge-professional badge-success-pro">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-secondary);">{{ t('total_previous_balance') }}</td>
+                        <td style="color: var(--text-secondary); font-weight: 600;">RM {{ "{:,.2f}".format(monthly_summary.total_previous_balance) }}</td>
+                        <td><span class="badge-professional badge-success-pro">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-secondary);">{{ t('total_current_balance') }}</td>
+                        <td style="color: var(--text-primary); font-weight: 700;">RM {{ "{:,.2f}".format(monthly_summary.total_statement_total) }}</td>
+                        <td><span class="badge-professional badge-success-pro">✓</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

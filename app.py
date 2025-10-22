@@ -3325,75 +3325,223 @@ def loan_matcher_analyze():
 
 @app.route('/credit-card/ledger')
 def credit_card_ledger():
-    """信用卡账本主页 - 按账单（statement）级别显示，每个账单独立汇总"""
-    from services.owner_infinite_classifier import OwnerInfiniteClassifier
-    
-    classifier = OwnerInfiniteClassifier()
+    """第一层：客户列表 - 显示所有有信用卡账单的客户"""
+    from utils.name_utils import get_customer_code
     
     with get_db() as conn:
         cursor = conn.cursor()
         
-        # 获取所有账单，按客户分组
+        # 获取所有有信用卡账单的客户
         cursor.execute('''
-            SELECT 
-                c.id as customer_id,
-                c.name as customer_name,
-                cc.id as card_id,
-                cc.bank_name,
-                cc.card_number_last4,
-                s.id as statement_id,
-                s.statement_date,
-                s.statement_total,
-                s.previous_balance,
-                COUNT(t.id) as transaction_count
+            SELECT DISTINCT
+                c.id,
+                c.name,
+                COUNT(DISTINCT s.id) as statement_count
             FROM customers c
             JOIN credit_cards cc ON c.id = cc.customer_id
             JOIN statements s ON cc.id = s.card_id
-            LEFT JOIN transactions t ON s.id = t.statement_id
-            GROUP BY s.id
-            ORDER BY c.name, s.statement_date DESC
+            GROUP BY c.id
+            ORDER BY c.name
         ''')
         
-        # 按客户分组组织账单
-        customers_dict = {}
+        customers = []
         for row in cursor.fetchall():
-            statement = dict(row)
-            customer_id = statement['customer_id']
-            statement_id = statement['statement_id']
+            customer = dict(row)
+            customer['code'] = get_customer_code(customer['name'])
+            customers.append(customer)
+    
+    return render_template('credit_card/ledger_index.html', customers=customers)
+
+
+@app.route('/credit-card/ledger/<int:customer_id>/timeline')
+def credit_card_ledger_timeline(customer_id):
+    """第二层：年月网格 - 显示客户所有账单的年月分布"""
+    from utils.name_utils import get_customer_code
+    from datetime import datetime
+    from collections import defaultdict
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取客户信息
+        cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+        customer_row = cursor.fetchone()
+        if not customer_row:
+            flash('客户不存在', 'error')
+            return redirect(url_for('credit_card_ledger'))
+        
+        customer = dict(customer_row)
+        customer['code'] = get_customer_code(customer['name'])
+        
+        # 获取该客户所有账单的年月
+        cursor.execute('''
+            SELECT DISTINCT
+                s.id,
+                s.statement_date,
+                strftime('%Y', s.statement_date) as year,
+                strftime('%m', s.statement_date) as month
+            FROM statements s
+            JOIN credit_cards cc ON s.card_id = cc.id
+            WHERE cc.customer_id = ?
+            ORDER BY s.statement_date DESC
+        ''', (customer_id,))
+        
+        statements = cursor.fetchall()
+        
+        # 按年月组织账单
+        statements_by_year_month = defaultdict(lambda: defaultdict(list))
+        years = set()
+        
+        for stmt in statements:
+            year = stmt['year']
+            month = int(stmt['month'])
+            years.add(year)
+            statements_by_year_month[year][month].append({
+                'id': stmt['id'],
+                'statement_date': stmt['statement_date']
+            })
+        
+        # 生成年度数据（按降序排列）
+        years_data = []
+        for year in sorted(years, reverse=True):
+            months_data = []
+            for month in range(1, 13):
+                month_info = {
+                    'number': month,
+                    'name': datetime(2000, month, 1).strftime('%b'),
+                    'has_statements': month in statements_by_year_month[year],
+                    'statements': statements_by_year_month[year][month] if month in statements_by_year_month[year] else []
+                }
+                months_data.append(month_info)
             
-            # 获取该账单的OWNER和INFINITE汇总
+            years_data.append({
+                'year': year,
+                'months': months_data
+            })
+    
+    return render_template('credit_card/ledger_timeline.html', 
+                          customer=customer,
+                          years_data=years_data)
+
+
+@app.route('/credit-card/ledger/<int:customer_id>/<year>/<month>')
+def credit_card_ledger_monthly(customer_id, year, month):
+    """第三层：月度详情 - 显示该客户该月所有账单的完整分析"""
+    from utils.name_utils import get_customer_code
+    from datetime import datetime
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取客户信息
+        cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+        customer_row = cursor.fetchone()
+        if not customer_row:
+            flash('客户不存在', 'error')
+            return redirect(url_for('credit_card_ledger'))
+        
+        customer = dict(customer_row)
+        customer['code'] = get_customer_code(customer['name'])
+        
+        # 获取该月所有账单
+        cursor.execute('''
+            SELECT 
+                s.id,
+                s.statement_date,
+                s.statement_total,
+                s.previous_balance,
+                cc.bank_name,
+                cc.card_number_last4,
+                cc.id as card_id
+            FROM statements s
+            JOIN credit_cards cc ON s.card_id = cc.id
+            WHERE cc.customer_id = ?
+              AND strftime('%Y', s.statement_date) = ?
+              AND strftime('%m', s.statement_date) = ?
+            ORDER BY cc.bank_name, cc.card_number_last4
+        ''', (customer_id, year, month))
+        
+        statements = [dict(row) for row in cursor.fetchall()]
+        
+        if not statements:
+            flash('该月没有账单', 'warning')
+            return redirect(url_for('credit_card_ledger_timeline', customer_id=customer_id))
+        
+        # 获取所有账单的ID列表
+        statement_ids = [s['id'] for s in statements]
+        statement_ids_str = ','.join('?' * len(statement_ids))
+        
+        # 为每个账单获取交易和分类汇总
+        for stmt in statements:
+            # 获取该账单的所有交易
+            cursor.execute(f'''
+                SELECT *
+                FROM transactions
+                WHERE statement_id = ?
+                ORDER BY transaction_date
+            ''', (stmt['id'],))
+            stmt['transactions'] = [dict(row) for row in cursor.fetchall()]
+            
+            # 获取该账单的OWNER/INFINITE汇总
             cursor.execute('''
                 SELECT 
                     SUM(CASE WHEN category = 'owner_expense' THEN ABS(amount) ELSE 0 END) as owner_expenses,
                     SUM(CASE WHEN category = 'infinite_expense' THEN ABS(amount) ELSE 0 END) as infinite_expenses,
                     SUM(CASE WHEN category = 'owner_payment' THEN ABS(amount) ELSE 0 END) as owner_payments,
                     SUM(CASE WHEN category = 'infinite_payment' THEN ABS(amount) ELSE 0 END) as infinite_payments,
-                    SUM(CASE WHEN is_supplier = 1 THEN supplier_fee ELSE 0 END) as supplier_fees
+                    SUM(CASE WHEN is_supplier = 1 THEN supplier_fee ELSE 0 END) as supplier_fees,
+                    COUNT(*) as txn_count
                 FROM transactions
                 WHERE statement_id = ?
-            ''', (statement_id,))
+            ''', (stmt['id'],))
             
             totals = cursor.fetchone()
-            statement.update({
+            stmt.update({
                 'owner_expenses': totals['owner_expenses'] or 0,
                 'infinite_expenses': totals['infinite_expenses'] or 0,
                 'owner_payments': totals['owner_payments'] or 0,
                 'infinite_payments': totals['infinite_payments'] or 0,
-                'supplier_fees': totals['supplier_fees'] or 0
+                'supplier_fees': totals['supplier_fees'] or 0,
+                'txn_count': totals['txn_count'] or 0
             })
-            
-            # 按客户组织
-            if customer_id not in customers_dict:
-                customers_dict[customer_id] = {
-                    'id': customer_id,
-                    'name': statement['customer_name'],
-                    'statements': []
-                }
-            customers_dict[customer_id]['statements'].append(statement)
         
-        customers = list(customers_dict.values())
+        # 计算月度总汇总（所有账单合并）
+        monthly_summary = {
+            'owner_expenses': sum(s['owner_expenses'] for s in statements),
+            'infinite_expenses': sum(s['infinite_expenses'] for s in statements),
+            'owner_payments': sum(s['owner_payments'] for s in statements),
+            'infinite_payments': sum(s['infinite_payments'] for s in statements),
+            'supplier_fees': sum(s['supplier_fees'] for s in statements),
+            'total_previous_balance': sum(s['previous_balance'] for s in statements),
+            'total_statement_total': sum(s['statement_total'] for s in statements),
+            'total_txn_count': sum(s['txn_count'] for s in statements),
+        }
+        
+        # 获取基线信息（用于累计汇总）
+        card_ids = list(set([s['card_id'] for s in statements]))
+        baselines = {}
+        for card_id in card_ids:
+            cursor.execute('''
+                SELECT previous_balance, owner_baseline, infinite_baseline
+                FROM account_baselines
+                WHERE card_id = ?
+            ''', (card_id,))
+            baseline = cursor.fetchone()
+            if baseline:
+                baselines[card_id] = dict(baseline)
+        
+        # 格式化日期显示
+        month_name = datetime.strptime(f"{year}-{month}-01", "%Y-%m-%d").strftime("%B")
+        period_display = f"{month_name} {year}"
     
-    return render_template('credit_card/ledger_index.html', customers=customers)
+    return render_template('credit_card/ledger_monthly.html',
+                          customer=customer,
+                          year=year,
+                          month=month,
+                          period_display=period_display,
+                          statements=statements,
+                          monthly_summary=monthly_summary,
+                          baselines=baselines)
 
 
 @app.route('/credit-card/ledger/statement/<int:statement_id>')
