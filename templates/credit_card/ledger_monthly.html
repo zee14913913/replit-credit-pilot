@@ -86,7 +86,7 @@
                         <td>
                             <a href="{{ url_for('view_statement_file', statement_id=stmt.id) }}" 
                                class="btn-professional-outline" 
-                               style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: #9370DB; color: #9370DB;" 
+                               style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: #330066; color: #330066;" 
                                target="_blank">
                                 PDF
                             </a>
@@ -126,7 +126,7 @@
                         <tr style="background: rgba(255, 20, 147, 0.05);">
                             <td style="color: var(--text-secondary);">-</td>
                             <td style="color: var(--text-primary); font-weight: 600;">{{ t('previous_balance') }}</td>
-                            <td style="color: {% if stmt.previous_balance < 0 %}#90EE90{% else %}#9370DB{% endif %}; font-weight: 700;">
+                            <td style="color: {% if stmt.previous_balance < 0 %}#90EE90{% else %}#330066{% endif %}; font-weight: 700;">
                                 {{ "{:,.2f}".format(stmt.previous_balance) }}
                             </td>
                             <td style="color: var(--text-secondary);">{{ t('baseline') }}</td>
@@ -145,7 +145,7 @@
                                 {% if txn.category == 'owner_expense' %}
                                 <span style="color: #FF1493;">Owner</span>
                                 {% elif txn.category == 'infinite_expense' %}
-                                <span style="color: #9370DB;">INFINITE</span>
+                                <span style="color: #330066;">INFINITE</span>
                                 {% elif txn.category == 'owner_payment' %}
                                 <span style="color: #90EE90;">Owner {{ t('payment') }}</span>
                                 {% elif txn.category == 'infinite_payment' %}
@@ -185,7 +185,7 @@
                     <div class="col-md-3">
                         <div style="text-align: center;">
                             <small style="color: var(--text-secondary);">INFINITE {{ t('expenses') }}</small>
-                            <div style="color: #9370DB; font-weight: 700; font-size: 1.2rem;">RM {{ "{:,.2f}".format(stmt.infinite_expenses) }}</div>
+                            <div style="color: #330066; font-weight: 700; font-size: 1.2rem;">RM {{ "{:,.2f}".format(stmt.infinite_expenses) }}</div>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -229,13 +229,13 @@
             
             <div class="col-md-6">
                 <div style="padding: 2rem; background: linear-gradient(135deg, rgba(147, 112, 219, 0.1) 0%, rgba(147, 112, 219, 0.02) 100%); border-radius: 12px; border: 1px solid rgba(147, 112, 219, 0.3);">
-                    <h3 style="color: #9370DB; text-align: center; margin-bottom: 1.5rem;">
+                    <h3 style="color: #330066; text-align: center; margin-bottom: 1.5rem;">
                         INFINITE
                     </h3>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between">
                             <span style="color: var(--text-secondary);">{{ t('total_expenses') }}</span>
-                            <span style="color: #9370DB; font-weight: 700; font-size: 1.3rem;">RM {{ "{:,.2f}".format(monthly_summary.infinite_expenses) }}</span>
+                            <span style="color: #330066; font-weight: 700; font-size: 1.3rem;">RM {{ "{:,.2f}".format(monthly_summary.infinite_expenses) }}</span>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -288,7 +288,7 @@
                     </tr>
                     <tr>
                         <td style="color: var(--text-secondary);">INFINITE {{ t('total_expenses') }}</td>
-                        <td style="color: #9370DB; font-weight: 700;">RM {{ "{:,.2f}".format(monthly_summary.infinite_expenses) }}</td>
+                        <td style="color: #330066; font-weight: 700;">RM {{ "{:,.2f}".format(monthly_summary.infinite_expenses) }}</td>
                         <td><span class="badge-professional badge-success-pro">✓</span></td>
                     </tr>
                     <tr>
