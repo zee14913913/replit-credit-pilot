@@ -58,14 +58,14 @@
         
         <div class="alert-professional alert-success-pro mb-3">
             <i class="bi bi-stars"></i> 
-            <strong>Your professional financial reports are ready!</strong><br>
-            Download your comprehensive galaxy-themed monthly reports with complete analysis and optimization suggestions.
+            <strong>{{ t['monthly_reports_ready'] }}</strong><br>
+            {{ t['comprehensive_reports_desc'] }}
         </div>
         
         <div class="d-grid gap-2">
             <a href="{{ url_for('generate_enhanced_report', customer_id=customer.id) }}" 
                class="btn-white-glow" target="_blank">
-                <i class="bi bi-file-earmark-arrow-down"></i> Download Latest Monthly Report (PDF)
+                <i class="bi bi-file-earmark-arrow-down"></i> {{ t['download_latest_report'] }}
             </a>
         </div>
     </div>

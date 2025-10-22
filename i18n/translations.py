@@ -84,6 +84,9 @@ TRANSLATIONS = {
         'actions': 'Actions',
         'confirmed': 'Confirmed',
         'pending': 'Pending',
+        'monthly_reports_ready': 'Your professional financial reports are ready!',
+        'comprehensive_reports_desc': 'Download your comprehensive galaxy-themed monthly reports with complete analysis and optimization suggestions.',
+        'download_latest_report': 'Download Latest Monthly Report (PDF)',
         
         # Dashboard
         'dashboard_title': 'Customer Dashboard',
@@ -504,6 +507,9 @@ TRANSLATIONS = {
         'actions': '操作',
         'confirmed': '已确认',
         'pending': '待确认',
+        'monthly_reports_ready': '您的专业财务报告已准备就绪！',
+        'comprehensive_reports_desc': '下载包含完整分析和优化建议的星河主题月度综合报告。',
+        'download_latest_report': '下载最新月度报告 (PDF)',
         
         # Dashboard
         'dashboard_title': '客户仪表板',
