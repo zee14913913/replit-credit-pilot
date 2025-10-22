@@ -81,12 +81,22 @@
                             </span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">年费:</span>
+                            <span class="detail-label">利率:</span>
                             <span class="detail-value">
-                                {% if card.annual_fee %}
-                                RM {{ "{:,.2f}".format(card.annual_fee) }}
+                                {% if card.interest_rate %}
+                                {{ "{:.2f}".format(card.interest_rate) }}%
                                 {% else %}
-                                免年费
+                                N/A
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">返现率:</span>
+                            <span class="detail-value">
+                                {% if card.cashback_rate %}
+                                {{ "{:.2f}".format(card.cashback_rate) }}%
+                                {% else %}
+                                N/A
                                 {% endif %}
                             </span>
                         </div>

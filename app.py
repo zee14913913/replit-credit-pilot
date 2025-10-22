@@ -1570,7 +1570,8 @@ def admin_customers_cards():
                     cc.card_number_last4,
                     cc.bank_name,
                     cc.credit_limit,
-                    cc.annual_fee,
+                    cc.interest_rate,
+                    cc.cashback_rate,
                     COUNT(DISTINCT s.id) as statement_count,
                     MAX(s.statement_date) as last_statement_date,
                     SUM(t.amount) as total_spending
