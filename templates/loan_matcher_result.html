@@ -62,7 +62,7 @@
                         <div class="mb-3">
                             <div class="d-flex justify-content-center align-items-center flex-wrap" style="gap: 3rem; row-gap: 2.5rem;">
                                 <!-- 全部按钮 -->
-                                <button class="category-circle-btn" data-category="all" data-count="{{ eligible|length }}" onclick="selectCategory({{ 'all'|tojson }}, {{ '全部贷款'|tojson }}, {{ eligible|length }})">
+                                <button class="category-circle-btn" data-category="all" data-category-name="全部贷款" data-count="{{ eligible|length }}">
                                     <div class="icon">
                                         <i class="bi bi-grid-fill"></i>
                                     </div>
@@ -72,7 +72,7 @@
                                 
                                 <!-- 各类型按钮 -->
                                 {% for category, items in eligible_by_type.items() %}
-                                <button class="category-circle-btn" data-category="{{ category }}" data-count="{{ items|length }}" onclick="selectCategory({{ category|tojson }}, {{ category_names.get(category, category)|tojson }}, {{ items|length }})">
+                                <button class="category-circle-btn" data-category="{{ category }}" data-category-name="{{ category_names.get(category, category) }}" data-count="{{ items|length }}">
                                     <div class="icon">
                                         <i class="bi {{ category_icons.get(category, 'bi-tag') }}"></i>
                                     </div>
@@ -460,26 +460,80 @@
 </style>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 添加淡入滑动动画样式
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeInSlide {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        #productsSection {
+            animation: fadeInSection 0.3s ease-out;
+        }
+        
+        @keyframes fadeInSection {
+            from { 
+                opacity: 0; 
+            }
+            to { 
+                opacity: 1; 
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // 为所有类别按钮添加点击事件监听器
+    const categoryButtons = document.querySelectorAll('.category-circle-btn');
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const category = this.dataset.category;
+            const categoryName = this.dataset.categoryName;
+            const count = this.dataset.count;
+            
+            selectCategory(category, categoryName, count);
+        });
+    });
+});
+
 function selectCategory(category, categoryName, count) {
+    console.log('选择类别:', category, categoryName, count); // 调试日志
+    
     // 更新按钮状态
     document.querySelectorAll('.category-circle-btn').forEach(btn => {
         btn.classList.remove('active');
     });
-    document.querySelector(`[data-category="${category}"]`).classList.add('active');
+    const activeButton = document.querySelector(`[data-category="${category}"]`);
+    if (activeButton) {
+        activeButton.classList.add('active');
+    }
     
     // 显示产品区域
     const productsSection = document.getElementById('productsSection');
-    productsSection.style.display = 'block';
+    if (productsSection) {
+        productsSection.style.display = 'block';
+    }
     
     // 更新标题和数量
-    document.getElementById('selectedCategoryTitle').textContent = categoryName;
-    document.getElementById('selectedCategoryCount').textContent = count + '个';
+    const titleElement = document.getElementById('selectedCategoryTitle');
+    const countElement = document.getElementById('selectedCategoryCount');
+    if (titleElement) titleElement.textContent = categoryName;
+    if (countElement) countElement.textContent = count + '个';
     
     // 过滤产品卡片
     const cards = document.querySelectorAll('.product-card');
+    let visibleCount = 0;
     cards.forEach(card => {
         if (category === 'all' || card.dataset.category === category) {
             card.style.display = 'block';
+            visibleCount++;
             // 重置并添加淡入动画（确保每次切换都有动画）
             card.style.animation = 'none';
             card.offsetHeight; // 强制重绘
@@ -489,42 +543,17 @@ function selectCategory(category, categoryName, count) {
         }
     });
     
+    console.log('显示了', visibleCount, '个产品'); // 调试日志
+    
     // 平滑滚动到产品区域
     setTimeout(() => {
-        productsSection.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start' 
-        });
+        if (productsSection) {
+            productsSection.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
     }, 100);
 }
-
-// 添加淡入滑动动画
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes fadeInSlide {
-        from { 
-            opacity: 0; 
-            transform: translateY(20px); 
-        }
-        to { 
-            opacity: 1; 
-            transform: translateY(0); 
-        }
-    }
-    
-    #productsSection {
-        animation: fadeInSection 0.3s ease-out;
-    }
-    
-    @keyframes fadeInSection {
-        from { 
-            opacity: 0; 
-        }
-        to { 
-            opacity: 1; 
-        }
-    }
-`;
-document.head.appendChild(style);
 </script>
 {% endblock %}
