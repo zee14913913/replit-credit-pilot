@@ -1578,7 +1578,7 @@ def admin_customers_cards():
                     cc.due_date,
                     COUNT(DISTINCT s.id) as statement_count,
                     MAX(s.statement_date) as last_statement_date,
-                    SUM(t.amount) as total_spending,
+                    SUM(CASE WHEN t.transaction_type = 'purchase' THEN t.amount ELSE 0 END) as total_spending,
                     (SELECT due_amount FROM statements WHERE card_id = cc.id ORDER BY statement_date DESC LIMIT 1) as latest_due_amount,
                     (SELECT due_date FROM statements WHERE card_id = cc.id ORDER BY statement_date DESC LIMIT 1) as latest_due_date,
                     (SELECT COALESCE(SUM(due_amount - COALESCE(paid_amount, 0)), 0) FROM statements WHERE card_id = cc.id AND payment_status != 'paid') as total_outstanding
@@ -2071,14 +2071,14 @@ def statement_comparison(statement_id):
         transactions = [dict(row) for row in cursor.fetchall()]
         
         # Calculate summary
-        total_debit = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'debit')
-        total_credit = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'credit')
+        total_debit = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'purchase')
+        total_credit = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'payment')
         supplier_fees = sum(t.get('supplier_fee', 0) for t in transactions if t.get('supplier_fee'))
         
         # Category breakdown
         categories = {}
         for t in transactions:
-            if t['transaction_type'] == 'debit':
+            if t['transaction_type'] == 'purchase':
                 cat = t.get('category', 'Uncategorized')
                 categories[cat] = categories.get(cat, 0) + abs(t['amount'])
         
