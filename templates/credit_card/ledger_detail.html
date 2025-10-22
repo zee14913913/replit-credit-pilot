@@ -1,229 +1,221 @@
 {% extends "base.html" %}
 
-{% block title %}{{ customer.name }} - {{ t('cc_ledger_title') }}{% endblock %}
+{% block title %}{{ statement.customer_name }} - {{ statement.bank_name }} - {{ statement.statement_date }}{% endblock %}
 
 {% block content %}
 <div class="fade-in">
     <!-- Header -->
     <div class="section-header">
         <h1 class="section-title">
-            <i class="bi bi-journal-text"></i> {{ customer.name }}
+            <i class="bi bi-journal-text"></i> {{ statement.customer_name }}
         </h1>
-        <p class="section-subtitle">{{ t('cc_ledger_analysis') }}</p>
+        <p class="section-subtitle">
+            {{ statement.bank_name }} ****{{ statement.card_number_last4 }} - {{ t('statement_date') }}: {{ statement.statement_date }}
+        </p>
     </div>
 
-    <!-- Navigation Buttons -->
+    <!-- Navigation -->
     <div class="mb-4">
         <a href="{{ url_for('credit_card_ledger') }}" class="btn-professional-outline">
             <i class="bi bi-arrow-left"></i> {{ t('back_to_all_customers') }}
         </a>
+        <a href="{{ url_for('view_statement_file', statement_id=statement.statement_id) }}" 
+           class="btn-professional-outline ms-2" 
+           target="_blank">
+            <i class="bi bi-file-pdf"></i> {{ t('view_pdf') }}
+        </a>
     </div>
 
-    <!-- 区域 1: 客户总览 (Customer Overview) -->
+    <!-- 区域 1: 账单总览 -->
     <div class="professional-card mb-4">
         <h2 class="section-title mb-4">
-            <i class="bi bi-person-badge"></i> {{ t('customer_overview') }}
+            <i class="bi bi-receipt"></i> {{ t('statement') }} {{ t('customer_overview') }}
         </h2>
+        
         <div class="row g-4">
             <div class="col-md-3">
                 <div style="text-align: center; padding: 1.5rem; background: rgba(192, 192, 192, 0.05); border-radius: 8px;">
-                    <i class="bi bi-credit-card-2-front" style="font-size: 2.5rem; color: #C0C0C0;"></i>
-                    <div style="font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.5rem;">
-                        {{ cards|length }}
+                    <i class="bi bi-calendar-event" style="font-size: 2.5rem; color: #C0C0C0;"></i>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-top: 0.5rem;">
+                        {{ statement.statement_date }}
                     </div>
-                    <small style="color: var(--text-secondary);">{{ t('credit_cards') }}</small>
+                    <small style="color: var(--text-secondary);">{{ t('statement_date') }}</small>
                 </div>
             </div>
+            
             <div class="col-md-3">
                 <div style="text-align: center; padding: 1.5rem; background: rgba(192, 192, 192, 0.05); border-radius: 8px;">
-                    <i class="bi bi-file-earmark-text" style="font-size: 2.5rem; color: #C0C0C0;"></i>
-                    <div style="font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.5rem;">
-                        {% set total_statements = namespace(count=0) %}
-                        {% for card in cards %}
-                            {% set total_statements.count = total_statements.count + card.statements|length %}
-                        {% endfor %}
-                        {{ total_statements.count }}
+                    <i class="bi bi-cash-stack" style="font-size: 2.5rem; color: #87CEEB;"></i>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #87CEEB; margin-top: 0.5rem;">
+                        RM {{ "{:,.2f}".format(statement.statement_total) }}
                     </div>
-                    <small style="color: var(--text-secondary);">{{ t('total_statements') }}</small>
+                    <small style="color: var(--text-secondary);">{{ t('statement_total') }}</small>
                 </div>
             </div>
+            
             <div class="col-md-3">
                 <div style="text-align: center; padding: 1.5rem; background: rgba(192, 192, 192, 0.05); border-radius: 8px;">
-                    <i class="bi bi-list-ul" style="font-size: 2.5rem; color: #87CEEB;"></i>
-                    <div style="font-size: 2rem; font-weight: 700; color: #87CEEB; margin-top: 0.5rem;">
-                        {{ recent_transactions|length }}
+                    <i class="bi bi-arrow-up-circle" style="font-size: 2.5rem; color: var(--text-secondary);"></i>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-secondary); margin-top: 0.5rem;">
+                        RM {{ "{:,.2f}".format(statement.previous_balance) }}
                     </div>
-                    <small style="color: var(--text-secondary);">{{ t('recent_transactions') }}</small>
+                    <small style="color: var(--text-secondary);">{{ t('previous_balance') }}</small>
                 </div>
             </div>
+            
             <div class="col-md-3">
                 <div style="text-align: center; padding: 1.5rem; background: rgba(192, 192, 192, 0.05); border-radius: 8px;">
-                    <i class="bi bi-shield-check" style="font-size: 2.5rem; color: #90EE90;"></i>
+                    <i class="bi bi-list-ul" style="font-size: 2.5rem; color: #90EE90;"></i>
                     <div style="font-size: 1.5rem; font-weight: 700; color: #90EE90; margin-top: 0.5rem;">
-                        {{ t('active') }}
+                        {{ statement.transaction_count }}
                     </div>
-                    <small style="color: var(--text-secondary);">{{ t('account_status') }}</small>
+                    <small style="color: var(--text-secondary);">{{ t('transactions') }}</small>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 区域 2: 信用卡列表 (Credit Cards List) -->
+    <!-- 区域 2: 基线信息 -->
+    {% if statement.baseline %}
     <div class="professional-card mb-4">
         <h2 class="section-title mb-4">
-            <i class="bi bi-credit-card-2-back"></i> {{ t('credit_cards_baselines') }}
+            <i class="bi bi-flag"></i> {{ t('first_statement_baseline') }}
         </h2>
-        <div class="row g-4">
-            {% for card in cards %}
-            <div class="col-md-6">
-                <div style="padding: 1.5rem; background: linear-gradient(135deg, rgba(192, 192, 192, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%); border-radius: 8px; border: 1px solid rgba(192, 192, 192, 0.1);">
-                    <h4 style="color: var(--text-primary); margin-bottom: 1rem;">
-                        <i class="bi bi-bank"></i> {{ card.bank_name }}
-                    </h4>
-                    <p style="color: var(--text-secondary); font-family: monospace; font-size: 1.1rem;">
-                        **** **** **** {{ card.card_number_last4 }}
-                    </p>
-
-                    <div class="divider-professional my-3"></div>
-
-                    <!-- Baseline Information -->
-                    {% if card.baseline %}
-                    <div class="mb-3">
-                        <small style="color: var(--text-secondary);">{{ t('first_statement_baseline') }}</small>
-                        <div class="row g-2 mt-2">
-                            <div class="col-6">
-                                <div style="padding: 0.5rem; background: rgba(192, 192, 192, 0.05); border-radius: 4px;">
-                                    <small style="color: #C0C0C0;">OWNER</small>
-                                    <div style="color: #87CEEB; font-weight: 600;">RM {{ "{:,.2f}".format(card.baseline.owner_baseline) }}</div>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div style="padding: 0.5rem; background: rgba(218, 165, 32, 0.05); border-radius: 4px;">
-                                    <small style="color: #DAA520;">INFINITE</small>
-                                    <div style="color: #FFD700; font-weight: 600;">RM {{ "{:,.2f}".format(card.baseline.infinite_baseline) }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div style="padding: 0.75rem; background: rgba(255, 165, 0, 0.1); border-radius: 4px; border: 1px solid rgba(255, 165, 0, 0.3);">
-                        <i class="bi bi-exclamation-triangle" style="color: #FFA500;"></i>
-                        <small style="color: #FFA500;"> {{ t('no_baseline_set') }}</small>
-                    </div>
-                    {% endif %}
-
-                    <div class="divider-professional my-3"></div>
-
-                    <!-- Card Totals -->
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <small style="color: var(--text-secondary);">Statements</small>
-                            <div style="color: var(--text-primary); font-weight: 600;">{{ card.statements|length }}</div>
-                        </div>
-                        <div class="col-6">
-                            <small style="color: var(--text-secondary);">Credit Limit</small>
-                            <div style="color: var(--text-primary); font-weight: 600;">
-                                {% if card.credit_limit %}
-                                    RM {{ "{:,.2f}".format(card.credit_limit) }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </div>
-                        </div>
+        
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div style="padding: 1rem; background: rgba(192, 192, 192, 0.05); border-radius: 8px; border: 1px solid rgba(192, 192, 192, 0.1);">
+                    <small style="color: var(--text-secondary);">{{ t('previous_balance') }}</small>
+                    <div style="font-size: 1.5rem; font-weight: 600; color: var(--text-primary); margin-top: 0.5rem;">
+                        RM {{ "{:,.2f}".format(statement.baseline.previous_balance) }}
                     </div>
                 </div>
             </div>
-            {% endfor %}
+            <div class="col-md-4">
+                <div style="padding: 1rem; background: rgba(192, 192, 192, 0.05); border-radius: 8px; border: 1px solid rgba(192, 192, 192, 0.1);">
+                    <small style="color: #C0C0C0;">{{ t('owner') }} Baseline</small>
+                    <div style="font-size: 1.5rem; font-weight: 600; color: #87CEEB; margin-top: 0.5rem;">
+                        RM {{ "{:,.2f}".format(statement.baseline.owner_baseline) }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div style="padding: 1rem; background: rgba(218, 165, 32, 0.05); border-radius: 8px; border: 1px solid rgba(218, 165, 32, 0.2);">
+                    <small style="color: #DAA520;">{{ t('infinite') }} Baseline</small>
+                    <div style="font-size: 1.5rem; font-weight: 600; color: #FFD700; margin-top: 0.5rem;">
+                        RM {{ "{:,.2f}".format(statement.baseline.infinite_baseline) }}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+    {% endif %}
 
-    <!-- 区域 3: OWNER vs INFINITE 汇总 (Summary) -->
+    <!-- 区域 3: OWNER vs INFINITE 汇总 -->
     <div class="professional-card mb-4">
         <h2 class="section-title mb-4">
             <i class="bi bi-pie-chart"></i> {{ t('owner_vs_infinite_summary') }}
         </h2>
+        
         <div class="row g-4">
-            {% for card in cards %}
+            <!-- OWNER Column -->
             <div class="col-md-6">
-                <div style="padding: 1.5rem; background: rgba(0, 0, 0, 0.3); border-radius: 8px; border: 1px solid rgba(192, 192, 192, 0.1);">
-                    <h5 style="color: var(--text-primary); margin-bottom: 1.5rem;">
-                        {{ card.bank_name }} ****{{ card.card_number_last4 }}
-                    </h5>
-
-                    <div class="row g-3">
-                        <!-- OWNER Column -->
-                        <div class="col-6">
-                            <div style="padding: 1rem; background: linear-gradient(135deg, rgba(192, 192, 192, 0.1) 0%, rgba(135, 206, 235, 0.05) 100%); border-radius: 6px;">
-                                <div style="color: #C0C0C0; font-size: 0.9rem; margin-bottom: 0.75rem;">
-                                    <i class="bi bi-person-fill"></i> OWNER
-                                </div>
-                                <div style="color: #87CEEB; font-weight: 700; font-size: 1.3rem;">
-                                    RM {{ "{:,.2f}".format(card.owner_expenses) }}
-                                </div>
-                                <small style="color: var(--text-secondary);">Expenses</small>
-
-                                <div class="mt-2 pt-2" style="border-top: 1px solid rgba(192, 192, 192, 0.1);">
-                                    <div style="color: #90EE90; font-weight: 600;">
-                                        -RM {{ "{:,.2f}".format(card.owner_payments) }}
-                                    </div>
-                                    <small style="color: var(--text-secondary);">Payments</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- INFINITE Column -->
-                        <div class="col-6">
-                            <div style="padding: 1rem; background: linear-gradient(135deg, rgba(218, 165, 32, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%); border-radius: 6px;">
-                                <div style="color: #DAA520; font-size: 0.9rem; margin-bottom: 0.75rem;">
-                                    <i class="bi bi-infinity"></i> INFINITE
-                                </div>
-                                <div style="color: #FFD700; font-weight: 700; font-size: 1.3rem;">
-                                    RM {{ "{:,.2f}".format(card.infinite_expenses) }}
-                                </div>
-                                <small style="color: var(--text-secondary);">Supplier</small>
-
-                                <div class="mt-2 pt-2" style="border-top: 1px solid rgba(218, 165, 32, 0.1);">
-                                    <div style="color: #90EE90; font-weight: 600;">
-                                        -RM {{ "{:,.2f}".format(card.infinite_payments) }}
-                                    </div>
-                                    <small style="color: var(--text-secondary);">3rd Party</small>
-                                </div>
-                            </div>
+                <div style="padding: 2rem; background: linear-gradient(135deg, rgba(192, 192, 192, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%); border-radius: 12px; border: 1px solid rgba(192, 192, 192, 0.2); height: 100%;">
+                    <div class="text-center mb-4">
+                        <h3 style="color: #C0C0C0; font-size: 1.5rem;">
+                            <i class="bi bi-person-fill"></i> {{ t('owner') }}
+                        </h3>
+                    </div>
+                    
+                    <!-- OWNER Expenses -->
+                    <div class="mb-3" style="padding: 1rem; background: rgba(135, 206, 235, 0.1); border-radius: 8px;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span style="color: var(--text-secondary);">
+                                <i class="bi bi-cart"></i> {{ t('expenses') }}
+                            </span>
+                            <span style="color: #87CEEB; font-size: 1.5rem; font-weight: 700;">
+                                RM {{ "{:,.2f}".format(statement.owner_expenses) }}
+                            </span>
                         </div>
                     </div>
-
-                    <!-- Supplier Fees -->
-                    {% if card.total_supplier_fees > 0 %}
-                    <div class="mt-3" style="padding: 0.75rem; background: rgba(255, 215, 0, 0.08); border-radius: 4px; border: 1px solid rgba(218, 165, 32, 0.2);">
+                    
+                    <!-- OWNER Payments -->
+                    <div style="padding: 1rem; background: rgba(144, 238, 144, 0.1); border-radius: 8px;">
                         <div class="d-flex justify-content-between align-items-center">
-                            <span style="color: var(--text-secondary); font-size: 0.85rem;">
-                                <i class="bi bi-percent"></i> Supplier Fees (1%)
+                            <span style="color: var(--text-secondary);">
+                                <i class="bi bi-wallet2"></i> {{ t('payments') }}
                             </span>
-                            <span style="color: #DAA520; font-weight: 600;">
-                                RM {{ "{:,.2f}".format(card.total_supplier_fees) }}
+                            <span style="color: #90EE90; font-size: 1.5rem; font-weight: 700;">
+                                -RM {{ "{:,.2f}".format(statement.owner_payments) }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- INFINITE Column -->
+            <div class="col-md-6">
+                <div style="padding: 2rem; background: linear-gradient(135deg, rgba(218, 165, 32, 0.05) 0%, rgba(255, 215, 0, 0.02) 100%); border-radius: 12px; border: 1px solid rgba(218, 165, 32, 0.3); height: 100%;">
+                    <div class="text-center mb-4">
+                        <h3 style="color: #DAA520; font-size: 1.5rem;">
+                            <i class="bi bi-infinity"></i> {{ t('infinite') }}
+                        </h3>
+                    </div>
+                    
+                    <!-- INFINITE Expenses -->
+                    <div class="mb-3" style="padding: 1rem; background: rgba(255, 215, 0, 0.1); border-radius: 8px;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span style="color: var(--text-secondary);">
+                                <i class="bi bi-cart"></i> {{ t('supplier_expenses') }}
+                            </span>
+                            <span style="color: #FFD700; font-size: 1.5rem; font-weight: 700;">
+                                RM {{ "{:,.2f}".format(statement.infinite_expenses) }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- INFINITE Payments -->
+                    <div class="mb-3" style="padding: 1rem; background: rgba(144, 238, 144, 0.1); border-radius: 8px;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span style="color: var(--text-secondary);">
+                                <i class="bi bi-wallet2"></i> {{ t('third_party_payments') }}
+                            </span>
+                            <span style="color: #90EE90; font-size: 1.5rem; font-weight: 700;">
+                                -RM {{ "{:,.2f}".format(statement.infinite_payments) }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Supplier Fees -->
+                    {% if statement.supplier_fees > 0 %}
+                    <div style="padding: 1rem; background: rgba(218, 165, 32, 0.15); border-radius: 8px; border: 1px solid rgba(218, 165, 32, 0.3);">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span style="color: var(--text-secondary);">
+                                <i class="bi bi-percent"></i> {{ t('supplier_fees') }}
+                            </span>
+                            <span style="color: #DAA520; font-size: 1.5rem; font-weight: 700;">
+                                RM {{ "{:,.2f}".format(statement.supplier_fees) }}
                             </span>
                         </div>
                     </div>
                     {% endif %}
                 </div>
             </div>
-            {% endfor %}
         </div>
     </div>
 
-    <!-- 区域 4: 最近交易 (Recent Transactions) -->
+    <!-- 区域 4: 交易明细表 -->
     <div class="professional-card mb-4">
         <h2 class="section-title mb-4">
-            <i class="bi bi-clock-history"></i> {{ t('recent_100_transactions') }}
+            <i class="bi bi-list-check"></i> {{ t('transaction') }} {{ t('details') }}
         </h2>
         
-        {% if recent_transactions %}
+        {% if transactions %}
         <div class="table-responsive">
             <table class="table-professional">
                 <thead>
                     <tr>
                         <th>{{ t('date') }}</th>
-                        <th>{{ t('bank') }}</th>
                         <th>{{ t('description') }}</th>
                         <th>{{ t('amount') }}</th>
                         <th>{{ t('type') }}</th>
@@ -232,53 +224,38 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for txn in recent_transactions %}
+                    {% for txn in transactions %}
                     <tr>
                         <td style="color: var(--text-secondary);">{{ txn.transaction_date }}</td>
-                        <td>
-                            <small style="color: var(--text-secondary);">{{ txn.bank_name }}</small><br>
-                            <small style="color: var(--text-secondary); font-family: monospace;">****{{ txn.card_number_last4 }}</small>
-                        </td>
-                        <td style="max-width: 300px;">{{ txn.description }}</td>
-                        <td>
-                            {% if txn.transaction_type == 'credit' %}
-                                <span style="color: #90EE90; font-weight: 600;">-RM {{ "{:,.2f}".format(txn.amount|abs) }}</span>
-                            {% else %}
-                                <span style="color: #87CEEB; font-weight: 600;">RM {{ "{:,.2f}".format(txn.amount|abs) }}</span>
-                            {% endif %}
+                        <td style="color: var(--text-primary);">{{ txn.description }}</td>
+                        <td style="font-weight: 600; {% if txn.amount > 0 %}color: #87CEEB;{% else %}color: #90EE90;{% endif %}">
+                            RM {{ "{:,.2f}".format(txn.amount|abs) }}
                         </td>
                         <td>
-                            {% if txn.transaction_type == 'credit' %}
-                                <span class="badge-professional badge-success-pro">Payment</span>
+                            {% if txn.transaction_type == 'payment' %}
+                            <span class="badge-professional badge-success-pro">{{ t('payment') }}</span>
                             {% else %}
-                                <span class="badge-professional badge-info-pro">Expense</span>
+                            <span class="badge-professional badge-info-pro">{{ t('expense') }}</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if txn.category == 'owner_expense' %}
-                                <span style="color: #87CEEB;"><i class="bi bi-person-fill"></i> OWNER</span>
+                            <span style="color: #87CEEB;"><i class="bi bi-person-fill"></i> OWNER</span>
                             {% elif txn.category == 'infinite_expense' %}
-                                <span style="color: #FFD700;"><i class="bi bi-infinity"></i> INFINITE</span>
+                            <span style="color: #FFD700;"><i class="bi bi-infinity"></i> INFINITE</span>
                             {% elif txn.category == 'owner_payment' %}
-                                <span style="color: #90EE90;"><i class="bi bi-person-check"></i> OWNER PAY</span>
+                            <span style="color: #90EE90;"><i class="bi bi-person-fill"></i> {{ t('owner_pay') }}</span>
                             {% elif txn.category == 'infinite_payment' %}
-                                <span style="color: #DAA520;"><i class="bi bi-people"></i> 3RD PARTY</span>
-                            {% else %}
-                                <span style="color: var(--text-secondary);">{{ txn.category or 'N/A' }}</span>
+                            <span style="color: #90EE90;"><i class="bi bi-infinity"></i> {{ t('third_party') }}</span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td style="color: var(--text-secondary); font-size: 0.85rem;">
                             {% if txn.is_supplier %}
-                                <small style="color: #DAA520;">
-                                    <i class="bi bi-shop"></i> {{ txn.supplier_name }}<br>
-                                    Fee: RM {{ "{:.2f}".format(txn.supplier_fee) }}
-                                </small>
-                            {% elif txn.payer_name %}
-                                <small style="color: var(--text-secondary);">
-                                    <i class="bi bi-person"></i> {{ txn.payer_name }}
-                                </small>
-                            {% else %}
-                                <small style="color: var(--text-secondary);">-</small>
+                            <div><i class="bi bi-building"></i> {{ txn.supplier_name }}</div>
+                            <div style="color: #DAA520;"><i class="bi bi-percent"></i> {{ t('fee') }}: RM {{ "{:,.2f}".format(txn.supplier_fee) }}</div>
+                            {% endif %}
+                            {% if txn.payer_name %}
+                            <div><i class="bi bi-person-badge"></i> Payer: {{ txn.payer_name }}</div>
                             {% endif %}
                         </td>
                     </tr>
@@ -292,47 +269,6 @@
             <p class="mt-3">{{ t('no_transactions_found') }}</p>
         </div>
         {% endif %}
-    </div>
-
-    <!-- 区域 5: 账单列表 (Statements List) -->
-    <div class="professional-card mb-4">
-        <h2 class="section-title mb-4">
-            <i class="bi bi-file-earmark-text"></i> {{ t('all_statements') }}
-        </h2>
-        
-        {% for card in cards %}
-            {% if card.statements %}
-            <h5 style="color: var(--text-primary); margin-top: 1.5rem; margin-bottom: 1rem;">
-                {{ card.bank_name }} ****{{ card.card_number_last4 }}
-            </h5>
-            <div class="table-responsive">
-                <table class="table-professional">
-                    <thead>
-                        <tr>
-                            <th>{{ t('statement_date') }}</th>
-                            <th>{{ t('previous_balance') }}</th>
-                            <th>{{ t('statement_total') }}</th>
-                            <th>{{ t('actions') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for stmt in card.statements %}
-                        <tr>
-                            <td style="color: var(--text-primary); font-weight: 600;">{{ stmt.statement_date }}</td>
-                            <td style="color: var(--text-secondary);">RM {{ "{:,.2f}".format(stmt.previous_balance) }}</td>
-                            <td style="color: #87CEEB; font-weight: 600;">RM {{ "{:,.2f}".format(stmt.statement_total) }}</td>
-                            <td>
-                                <a href="{{ url_for('view_statement_file', statement_id=stmt.id) }}" class="btn-professional-outline" style="padding: 0.25rem 0.75rem; font-size: 0.85rem;" target="_blank">
-                                    <i class="bi bi-eye"></i> {{ t('view_pdf') }}
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% endif %}
-        {% endfor %}
     </div>
 </div>
 {% endblock %}

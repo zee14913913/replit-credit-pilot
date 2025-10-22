@@ -881,6 +881,13 @@ TRANSLATIONS = {
         'no_customers_with_data': '未找到有信用卡数据的客户。',
         'upload_credit_card_statement': '上传信用卡账单',
         'no_transactions_found': '未找到交易记录',
+        'card_number': '卡号',
+        'statement_date': '账单日期',
+        'actions': '操作',
+        'amount': '金额',
+        'transactions': '交易',
+        'statement': '账单',
+        'transaction': '交易',
         
         # Savings Accounts
         'savings_accounts': '储蓄账户',
