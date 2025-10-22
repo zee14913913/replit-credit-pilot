@@ -3646,9 +3646,10 @@ def credit_card_ledger_timeline(customer_id):
 
 @app.route('/credit-card/ledger/<int:customer_id>/<year>/<month>')
 def credit_card_ledger_monthly(customer_id, year, month):
-    """第三层：月度详情 - 显示该客户该月所有账单的完整分析"""
+    """第三层：月度详情 - 按银行分组显示该客户该月所有账单的完整分析"""
     from utils.name_utils import get_customer_code
     from datetime import datetime
+    from collections import defaultdict
     
     with get_db() as conn:
         cursor = conn.cursor()
@@ -3681,18 +3682,19 @@ def credit_card_ledger_monthly(customer_id, year, month):
             ORDER BY cc.bank_name, cc.card_number_last4
         ''', (customer_id, year, month))
         
-        statements = [dict(row) for row in cursor.fetchall()]
+        all_statements = [dict(row) for row in cursor.fetchall()]
         
-        if not statements:
+        if not all_statements:
             flash('该月没有账单', 'warning')
             return redirect(url_for('credit_card_ledger_timeline', customer_id=customer_id))
         
-        # 获取所有账单的ID列表
-        statement_ids = [s['id'] for s in statements]
-        statement_ids_str = ','.join('?' * len(statement_ids))
+        # 🔥 按银行分组账单
+        banks_data = defaultdict(list)
+        for stmt in all_statements:
+            banks_data[stmt['bank_name']].append(stmt)
         
         # 为每个账单获取交易和分类汇总
-        for stmt in statements:
+        for stmt in all_statements:
             # 获取该账单的所有交易
             cursor.execute(f'''
                 SELECT *
@@ -3743,33 +3745,23 @@ def credit_card_ledger_monthly(customer_id, year, month):
             infinite_ledger = cursor.fetchone()
             stmt['infinite_cumulative_balance'] = infinite_ledger['rolling_balance'] if infinite_ledger else 0
         
-        # 计算月度总汇总（所有账单合并）
-        monthly_summary = {
-            'owner_expenses': sum(s['owner_expenses'] for s in statements),
-            'infinite_expenses': sum(s['infinite_expenses'] for s in statements),
-            'owner_payments': sum(s['owner_payments'] for s in statements),
-            'infinite_payments': sum(s['infinite_payments'] for s in statements),
-            'supplier_fees': sum(s['supplier_fees'] for s in statements),
-            'total_previous_balance': sum(s['previous_balance'] for s in statements),
-            'total_statement_total': sum(s['statement_total'] for s in statements),
-            'total_txn_count': sum(s['txn_count'] for s in statements),
-            # 🔥 月度汇总：该月所有卡的累计余额加总
-            'owner_cumulative_balance': sum(s['owner_cumulative_balance'] for s in statements),
-            'infinite_cumulative_balance': sum(s['infinite_cumulative_balance'] for s in statements),
-        }
-        
-        # 获取基线信息（用于累计汇总）
-        card_ids = list(set([s['card_id'] for s in statements]))
-        baselines = {}
-        for card_id in card_ids:
-            cursor.execute('''
-                SELECT previous_balance, owner_baseline, infinite_baseline
-                FROM account_baselines
-                WHERE card_id = ?
-            ''', (card_id,))
-            baseline = cursor.fetchone()
-            if baseline:
-                baselines[card_id] = dict(baseline)
+        # 🔥 为每个银行计算月度汇总
+        bank_summaries = {}
+        for bank_name, bank_statements in banks_data.items():
+            bank_summaries[bank_name] = {
+                'statements': bank_statements,
+                'owner_expenses': sum(s['owner_expenses'] for s in bank_statements),
+                'infinite_expenses': sum(s['infinite_expenses'] for s in bank_statements),
+                'owner_payments': sum(s['owner_payments'] for s in bank_statements),
+                'infinite_payments': sum(s['infinite_payments'] for s in bank_statements),
+                'supplier_fees': sum(s['supplier_fees'] for s in bank_statements),
+                'total_previous_balance': sum(s['previous_balance'] for s in bank_statements),
+                'total_statement_total': sum(s['statement_total'] for s in bank_statements),
+                'total_txn_count': sum(s['txn_count'] for s in bank_statements),
+                # 🔥 该银行所有卡的累计余额加总
+                'owner_cumulative_balance': sum(s['owner_cumulative_balance'] for s in bank_statements),
+                'infinite_cumulative_balance': sum(s['infinite_cumulative_balance'] for s in bank_statements),
+            }
         
         # 格式化日期显示
         month_name = datetime.strptime(f"{year}-{month}-01", "%Y-%m-%d").strftime("%B")
@@ -3780,9 +3772,7 @@ def credit_card_ledger_monthly(customer_id, year, month):
                           year=year,
                           month=month,
                           period_display=period_display,
-                          statements=statements,
-                          monthly_summary=monthly_summary,
-                          baselines=baselines)
+                          bank_summaries=bank_summaries)
 
 
 @app.route('/credit-card/ledger/statement/<int:statement_id>')
