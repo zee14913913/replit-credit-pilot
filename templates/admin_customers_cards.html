@@ -169,6 +169,10 @@
                     {% endif %}
                     
                     <div class="card-actions">
+                        <a href="{{ url_for('add_instalment', card_id=card.card_id) }}" 
+                           class="btn-action btn-add-instalment">
+                            <i class="bi bi-calendar-plus"></i> 添加分期
+                        </a>
                         <a href="{{ url_for('customer_dashboard', customer_id=item.customer.customer_id) }}" 
                            class="btn-action">
                             <i class="bi bi-eye"></i> 查看详情
@@ -381,6 +385,17 @@
 
 .btn-action i {
     margin-right: 0.5rem;
+}
+
+.btn-add-instalment {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(96, 165, 250, 0.2) 100%);
+    border-color: rgba(96, 165, 250, 0.4);
+}
+
+.btn-add-instalment:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(96, 165, 250, 0.3) 100%);
+    border-color: rgba(96, 165, 250, 0.6);
+    box-shadow: 0 0 16px rgba(96, 165, 250, 0.4);
 }
 
 .no-cards-message {

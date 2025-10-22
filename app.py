@@ -3781,6 +3781,166 @@ def api_get_customer_cards(customer_id):
     cards = receipt_matcher.get_customer_cards(customer_id)
     return jsonify(cards)
 
+# ==================== INSTALMENT MANAGEMENT ====================
+
+@app.route('/instalments/add/<int:card_id>', methods=['GET', 'POST'])
+def add_instalment(card_id):
+    """添加分期计划（手动录入）"""
+    if request.method == 'GET':
+        with get_db() as conn:
+            cursor = conn.cursor()
+            # 获取信用卡信息
+            cursor.execute("""
+                SELECT cc.*, c.name as customer_name
+                FROM credit_cards cc
+                JOIN customers c ON cc.customer_id = c.id
+                WHERE cc.id = ?
+            """, (card_id,))
+            card = cursor.fetchone()
+            
+            if not card:
+                flash('❌ 信用卡不存在', 'error')
+                return redirect(url_for('admin_customers_cards'))
+            
+            card_dict = dict(card)
+        
+        return render_template('instalments/add.html', card=card_dict)
+    
+    # POST - 保存分期计划
+    try:
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # 获取客户ID
+            cursor.execute('SELECT customer_id FROM credit_cards WHERE id = ?', (card_id,))
+            card = cursor.fetchone()
+            if not card:
+                flash('❌ 信用卡不存在', 'error')
+                return redirect(url_for('admin_customers_cards'))
+            
+            customer_id = card['customer_id']
+            
+            # 获取表单数据
+            instalment_type = request.form.get('instalment_type')
+            product_name = request.form.get('product_name')
+            merchant_name = request.form.get('merchant_name', '')
+            principal_amount = float(request.form.get('principal_amount'))
+            interest_rate = float(request.form.get('interest_rate', 0))
+            tenure_months = int(request.form.get('tenure_months'))
+            start_date = request.form.get('start_date')
+            
+            # 计算每月还款和总金额
+            total_interest = principal_amount * (interest_rate / 100) * (tenure_months / 12)
+            total_amount = principal_amount + total_interest
+            monthly_payment = total_amount / tenure_months
+            
+            # 计算结束日期
+            from datetime import datetime, timedelta
+            start_dt = datetime.strptime(start_date, '%Y-%m-%d')
+            end_dt = start_dt + timedelta(days=tenure_months * 30)
+            end_date = end_dt.strftime('%Y-%m-%d')
+            
+            # 插入分期计划
+            cursor.execute("""
+                INSERT INTO instalment_plans (
+                    customer_id, card_id, instalment_type, product_name, merchant_name,
+                    principal_amount, interest_rate, tenure_months, monthly_payment,
+                    total_amount, total_interest, start_date, end_date, status, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', datetime('now'))
+            """, (customer_id, card_id, instalment_type, product_name, merchant_name,
+                  principal_amount, interest_rate, tenure_months, monthly_payment,
+                  total_amount, total_interest, start_date, end_date))
+            
+            plan_id = cursor.lastrowid
+            
+            # 创建每月还款记录
+            for i in range(1, tenure_months + 1):
+                payment_date = (start_dt + timedelta(days=i * 30)).strftime('%Y-%m-%d')
+                
+                # 计算本金和利息部分
+                remaining_months = tenure_months - i + 1
+                interest_portion = (principal_amount * (interest_rate / 100) / 12) if interest_rate > 0 else 0
+                principal_portion = monthly_payment - interest_portion
+                remaining_balance = principal_amount - (principal_portion * i)
+                
+                cursor.execute("""
+                    INSERT INTO instalment_payment_records (
+                        plan_id, payment_number, scheduled_date, scheduled_amount,
+                        status, principal_portion, interest_portion, remaining_balance,
+                        created_at
+                    ) VALUES (?, ?, ?, ?, 'pending', ?, ?, ?, datetime('now'))
+                """, (plan_id, i, payment_date, monthly_payment, principal_portion, 
+                      interest_portion, max(0, remaining_balance)))
+            
+            conn.commit()
+            flash('✅ 分期计划添加成功！', 'success')
+            return redirect(url_for('admin_customers_cards'))
+            
+    except Exception as e:
+        flash(f'❌ 添加失败：{str(e)}', 'error')
+        return redirect(url_for('add_instalment', card_id=card_id))
+
+@app.route('/instalments/update-payment/<int:payment_id>', methods=['POST'])
+def update_instalment_payment(payment_id):
+    """标记分期付款为已支付"""
+    try:
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                UPDATE instalment_payment_records
+                SET status = 'paid',
+                    actual_date = date('now'),
+                    actual_amount = scheduled_amount,
+                    paid_at = datetime('now')
+                WHERE id = ?
+            """, (payment_id,))
+            
+            conn.commit()
+            return jsonify({'success': True, 'message': '✅ 已标记为已支付'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'❌ 更新失败：{str(e)}'})
+
+@app.route('/instalments/view/<int:plan_id>')
+def view_instalment(plan_id):
+    """查看分期计划详情"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取分期计划
+        cursor.execute("""
+            SELECT ip.*, c.name as customer_name, cc.card_type, cc.card_number_last4, cc.bank_name
+            FROM instalment_plans ip
+            JOIN customers c ON ip.customer_id = c.id
+            JOIN credit_cards cc ON ip.card_id = cc.id
+            WHERE ip.id = ?
+        """, (plan_id,))
+        plan = cursor.fetchone()
+        
+        if not plan:
+            flash('❌ 分期计划不存在', 'error')
+            return redirect(url_for('admin_customers_cards'))
+        
+        # 获取还款记录
+        cursor.execute("""
+            SELECT * FROM instalment_payment_records
+            WHERE plan_id = ?
+            ORDER BY payment_number
+        """, (plan_id,))
+        payments = [dict(row) for row in cursor.fetchall()]
+        
+        plan_dict = dict(plan)
+        
+        # 计算统计数据
+        paid_count = sum(1 for p in payments if p['status'] == 'paid')
+        total_paid = sum(p['actual_amount'] or 0 for p in payments if p['status'] == 'paid')
+        
+        plan_dict['paid_count'] = paid_count
+        plan_dict['total_paid'] = total_paid
+        plan_dict['tenure_display'] = f"{paid_count:02d}/{plan_dict['tenure_months']:02d}"
+    
+    return render_template('instalments/view.html', plan=plan_dict, payments=payments)
+
 def allowed_image_file(filename):
     """检查文件是否为允许的图片格式"""
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff'}
