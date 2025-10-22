@@ -474,6 +474,12 @@ TRANSLATIONS = {
         'actual_savings_achieved': 'Actual savings achieved',
         'overdrawn_high_dsr': 'Overdrawn/High DSR',
         'total': 'total',
+        'total_outstanding': 'Total Outstanding',
+        'available_credit': 'Available Credit',
+        'view_details': 'View Details',
+        'no_credit_cards_yet': 'This customer has not added any credit cards yet',
+        'no_customer_data': 'No Customer Data',
+        'no_customer_records': 'No customer records in the system yet',
     },
     'zh': {
         # Navigation
@@ -945,6 +951,12 @@ TRANSLATIONS = {
         'actual_savings_achieved': '实际节省金额',
         'overdrawn_high_dsr': '透支/高DSR',
         'total': '总计',
+        'total_outstanding': '当前总欠款',
+        'available_credit': '可用额度',
+        'view_details': '查看详情',
+        'no_credit_cards_yet': '该客户还没有添加信用卡',
+        'no_customer_data': '暂无客户数据',
+        'no_customer_records': '系统中还没有客户记录',
     }
 }
 

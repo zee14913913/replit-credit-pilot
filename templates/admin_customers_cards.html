@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Customers & Credit Cards - Admin{% endblock %}
+{% block title %}{{ t('customers_credit_cards_management') }} - {{ t('company_name') }}{% endblock %}
 
 {% block content %}
 <div class="container-professional">
     <div class="section-header mb-4">
-        <h1 class="section-title">👥 客户与信用卡管理</h1>
-        <p class="section-description">查看所有客户及其信用卡详细信息</p>
+        <h1 class="section-title">👥 {{ t('customers_credit_cards_management') }}</h1>
+        <p class="section-description">{{ t('view_all_customers_cards') }}</p>
         <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary mt-3">
-            <i class="bi bi-arrow-left"></i> 返回Admin Dashboard
+            <i class="bi bi-arrow-left"></i> {{ t('back_to_admin_dashboard') }}
         </a>
     </div>
 
@@ -38,11 +38,11 @@
                         <div class="customer-stats">
                             <div class="stat-badge">
                                 <span class="stat-number">{{ item.customer.total_cards }}</span>
-                                <span class="stat-label">信用卡</span>
+                                <span class="stat-label">{{ t('credit_cards') }}</span>
                             </div>
                             <div class="stat-badge">
                                 <span class="stat-number">{{ item.customer.total_statements }}</span>
-                                <span class="stat-label">账单数</span>
+                                <span class="stat-label">{{ t('statements_count') }}</span>
                             </div>
                         </div>
                     </div>
@@ -60,18 +60,18 @@
                             {{ card.card_type }}
                         </div>
                         <div class="card-number">
-                            <span class="card-number-label">卡号:</span>
+                            <span class="card-number-label">{{ t('card_number_label') }}:</span>
                             <span class="card-number-value">**** **** **** {{ card.card_number_last4 }}</span>
                         </div>
                     </div>
                     
                     <div class="card-details-grid">
                         <div class="detail-row">
-                            <span class="detail-label">银行:</span>
+                            <span class="detail-label">{{ t('bank') }}:</span>
                             <span class="detail-value">{{ card.bank_name }}</span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">信用额度:</span>
+                            <span class="detail-label">{{ t('credit_limit') }}:</span>
                             <span class="detail-value">
                                 {% if card.credit_limit %}
                                 RM {{ "{:,.2f}".format(card.credit_limit) }}
@@ -81,7 +81,7 @@
                             </span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">利率:</span>
+                            <span class="detail-label">{{ t('interest_rate') }}:</span>
                             <span class="detail-value">
                                 {% if card.interest_rate %}
                                 {{ "{:.2f}".format(card.interest_rate) }}%
@@ -91,7 +91,7 @@
                             </span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">返现率:</span>
+                            <span class="detail-label">{{ t('cashback_rate') }}:</span>
                             <span class="detail-value">
                                 {% if card.cashback_rate %}
                                 {{ "{:.2f}".format(card.cashback_rate) }}%
@@ -101,16 +101,16 @@
                             </span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">账单数量:</span>
-                            <span class="detail-value">{{ card.statement_count or 0 }} 份</span>
+                            <span class="detail-label">{{ t('statement_count') }}:</span>
+                            <span class="detail-value">{{ card.statement_count or 0 }}</span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">最后账单:</span>
+                            <span class="detail-label">{{ t('last_statement') }}:</span>
                             <span class="detail-value">{{ card.last_statement_date or 'N/A' }}</span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">累计消费（历史）:</span>
-                            <span class="detail-value spending-amount" title="所有账单的累计消费总额">
+                            <span class="detail-label">{{ t('total_spending_history') }}:</span>
+                            <span class="detail-value spending-amount" title="{{ t('actual_savings_achieved') }}">
                                 {% if card.total_spending %}
                                 RM {{ "{:,.2f}".format(card.total_spending) }}
                                 {% else %}
@@ -119,10 +119,10 @@
                             </span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">50天账期:</span>
+                            <span class="detail-label">{{ t('billing_cycle_50days') }}:</span>
                             <span class="detail-value">
                                 {% if card.billing_cycle_start and card.billing_cycle_end %}
-                                <span class="billing-cycle">{{ card.billing_cycle_start }} 至 {{ card.billing_cycle_end }}</span>
+                                <span class="billing-cycle">{{ card.billing_cycle_start }} - {{ card.billing_cycle_end }}</span>
                                 {% else %}
                                 N/A
                                 {% endif %}
@@ -130,21 +130,21 @@
                         </div>
                         {% if card.latest_due_amount %}
                         <div class="detail-row">
-                            <span class="detail-label">本月应付:</span>
+                            <span class="detail-label">{{ t('amount') }}:</span>
                             <span class="detail-value due-amount">RM {{ "{:,.2f}".format(card.latest_due_amount) }}</span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">到期日:</span>
+                            <span class="detail-label">{{ t('due_date') }}:</span>
                             <span class="detail-value">{{ card.latest_due_date }}</span>
                         </div>
                         {% endif %}
                         <div class="detail-row">
-                            <span class="detail-label">当前总欠款:</span>
-                            <span class="detail-value outstanding-amount" title="所有未付清账单的应付金额">RM {{ "{:,.2f}".format(card.total_outstanding or 0) }}</span>
+                            <span class="detail-label">{{ t('total_outstanding') }}:</span>
+                            <span class="detail-value outstanding-amount" title="{{ t('total_outstanding') }}">RM {{ "{:,.2f}".format(card.total_outstanding or 0) }}</span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">可用额度:</span>
-                            <span class="detail-value available-credit" title="信用额度 - 当前欠款">
+                            <span class="detail-label">{{ t('available_credit') }}:</span>
+                            <span class="detail-value available-credit" title="{{ t('available_credit') }}">
                                 {% if card.credit_limit %}
                                 RM {{ "{:,.2f}".format(card.credit_limit - (card.total_outstanding or 0)) }}
                                 {% else %}
@@ -157,7 +157,7 @@
                     <div class="card-actions">
                         <a href="{{ url_for('customer_dashboard', customer_id=item.customer.customer_id) }}" 
                            class="btn-action">
-                            <i class="bi bi-eye"></i> 查看详情
+                            <i class="bi bi-eye"></i> {{ t('view_details') }}
                         </a>
                     </div>
                 </div>
@@ -166,7 +166,7 @@
             {% else %}
             <div class="no-cards-message">
                 <i class="bi bi-credit-card-2-front"></i>
-                <p>该客户还没有添加信用卡</p>
+                <p>{{ t('no_credit_cards_yet') }}</p>
             </div>
             {% endif %}
         </div>
@@ -174,8 +174,8 @@
     {% else %}
     <div class="content-card text-center py-5">
         <i class="bi bi-inbox" style="font-size: 3rem; color: #666;"></i>
-        <h3 class="mt-3">暂无客户数据</h3>
-        <p class="text-muted">系统中还没有客户记录</p>
+        <h3 class="mt-3">{{ t('no_customer_data') }}</h3>
+        <p class="text-muted">{{ t('no_customer_records') }}</p>
     </div>
     {% endif %}
 </div>
