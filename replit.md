@@ -36,6 +36,7 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Statement Comparison View:** Displays raw PDF alongside categorized reports for validation.
 - **12-Month Timeline View:** Visual calendar grid for each credit card showing statement coverage, amounts, transaction counts, and verification status across a rolling 12-month window.
 - **Intelligent Loan Matcher System:** CTOS report parsing, DSR calculation, and smart loan product matching. Automatically extracts monthly commitments from CTOS PDFs, calculates debt service ratio, and matches clients with eligible loan products from a comprehensive banking database.
+- **Receipt Management System:** OCR-powered receipt upload system supporting JPG/PNG images. Features automatic card number, date, amount, and merchant name extraction using pytesseract. Intelligent matching engine auto-matches receipts to customers and credit cards based on card_last4, transaction date (±3 days), and amount (±1%). Receipts are organized by customer/card number with auto-filing. Supports batch upload, manual matching for failed auto-matches, and provides reconciliation, reimbursement tracking, and audit capabilities. Independent database table (receipts) keeps receipt data separate from credit card and savings systems.
 
 **AI Advanced Analytics System:**
 - **Financial Health Scoring System:** 0-100 score with optimization suggestions.
@@ -56,6 +57,7 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 ### Third-Party Libraries
 - **Core Framework**: `flask`
 - **PDF Processing**: `pdfplumber`, `reportlab`
+- **OCR**: `pytesseract`, `Pillow`
 - **Data Processing**: `pandas`, `schedule`
 - **HTTP Requests**: `requests`
 - **Visualization**: `plotly.js` (CDN)
@@ -68,4 +70,8 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **SQLite**: File-based relational database (`db/smart_loan_manager.db`), with WAL mode and centralized connection management.
 
 ### File Storage
-- **Local File System**: `static/uploads` for uploaded statements and generated PDF reports.
+- **Local File System**: 
+  - `static/uploads/statements` for credit card and savings statements
+  - `static/uploads/receipts/{customer_id}/{card_last4}/` for matched receipts
+  - `static/uploads/receipts/pending/` for unmatched receipts
+  - `static/uploads/reports` for generated PDF reports
