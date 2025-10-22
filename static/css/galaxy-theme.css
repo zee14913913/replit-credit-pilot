@@ -782,6 +782,64 @@ p {
 }
 
 /* ========================================
+   BOOTSTRAP BUTTON OVERRIDES - 高级色按钮
+   ======================================== */
+
+/* Primary Button - 鲜红色（Crimson Red） */
+.btn-primary {
+    background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%) !important;
+    color: #f0f0f0 !important;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(233, 30, 99, 0.4);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #F44336 0%, #E91E63 100%) !important;
+    color: #ffffff !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    box-shadow: 0 6px 20px rgba(233, 30, 99, 0.6);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active,
+.btn-primary:focus {
+    background: linear-gradient(135deg, #C2185B 0%, #AD1457 100%) !important;
+    color: #f0f0f0 !important;
+    box-shadow: 0 2px 8px rgba(233, 30, 99, 0.5) !important;
+}
+
+/* Warning Button - 暗紫罗兰（Dark Violet） */
+.btn-warning {
+    background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%) !important;
+    color: #f0f0f0 !important;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(156, 39, 176, 0.4);
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #AB47BC 0%, #9C27B0 100%) !important;
+    color: #ffffff !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    box-shadow: 0 6px 20px rgba(156, 39, 176, 0.6);
+    transform: translateY(-2px);
+}
+
+.btn-warning:active,
+.btn-warning:focus {
+    background: linear-gradient(135deg, #7B1FA2 0%, #6A1B9A 100%) !important;
+    color: #f0f0f0 !important;
+    box-shadow: 0 2px 8px rgba(156, 39, 176, 0.5) !important;
+}
+
+/* ========================================
    TABLES - Elegant Data Display
    ======================================== */
 
