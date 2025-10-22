@@ -3737,6 +3737,35 @@ def credit_card_ledger_monthly(customer_id, year, month):
             'total_txn_count': sum(s['txn_count'] for s in statements),
         }
         
+        # 🔥 新增：获取Owner和INFINITE的累计余额（从monthly_ledger表）
+        owner_cumulative_balance = 0
+        infinite_cumulative_balance = 0
+        
+        for stmt in statements:
+            # 获取Owner累计余额
+            cursor.execute('''
+                SELECT rolling_balance 
+                FROM monthly_ledger 
+                WHERE statement_id = ?
+            ''', (stmt['id'],))
+            owner_ledger = cursor.fetchone()
+            if owner_ledger:
+                owner_cumulative_balance += owner_ledger['rolling_balance']
+            
+            # 获取INFINITE累计余额
+            cursor.execute('''
+                SELECT rolling_balance 
+                FROM infinite_monthly_ledger 
+                WHERE statement_id = ?
+            ''', (stmt['id'],))
+            infinite_ledger = cursor.fetchone()
+            if infinite_ledger:
+                infinite_cumulative_balance += infinite_ledger['rolling_balance']
+        
+        # 添加到monthly_summary
+        monthly_summary['owner_cumulative_balance'] = owner_cumulative_balance
+        monthly_summary['infinite_cumulative_balance'] = infinite_cumulative_balance
+        
         # 获取基线信息（用于累计汇总）
         card_ids = list(set([s['card_id'] for s in statements]))
         baselines = {}
