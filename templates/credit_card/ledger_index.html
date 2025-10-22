@@ -19,7 +19,7 @@
         
         <div class="row g-4">
             {% for customer in customers %}
-            <div class="col-md-6 col-lg-4">
+            <div class="col-md-12 col-lg-6">
                 <a href="{{ url_for('credit_card_ledger_timeline', customer_id=customer.id) }}" style="text-decoration: none;">
                     <div class="customer-card">
                         <!-- 顶部装饰条 -->
@@ -94,20 +94,20 @@
 
 /* 客户代码区域 */
 .customer-code-section {
-    padding: 2rem 2rem 1.5rem;
+    padding: 1.5rem 2rem 1rem;
     text-align: center;
     background: linear-gradient(180deg, rgba(255, 0, 127, 0.08) 0%, transparent 100%);
 }
 
 .customer-code {
     display: inline-block;
-    padding: 1rem 2rem;
+    padding: 0.7rem 1.5rem;
     background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%);
     color: #FFFFFF;
-    font-size: 1.4rem;
-    font-weight: 800;
-    letter-spacing: 2px;
-    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    border-radius: 10px;
     border: 2px solid #FF007F;
     transition: all 0.3s ease;
 }
@@ -119,16 +119,16 @@
 
 /* 客户信息区域 */
 .customer-info {
-    padding: 1.5rem 2rem;
+    padding: 1.2rem 2rem;
     flex-grow: 1;
     text-align: center;
 }
 
 .customer-name {
     color: #FFFFFF;
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin-bottom: 1.2rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
     line-height: 1.4;
 }
 
@@ -137,7 +137,7 @@
     align-items: baseline;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.8rem 1.2rem;
+    padding: 0.6rem 1rem;
     background: rgba(51, 0, 102, 0.2);
     border-radius: 8px;
     border: 1px solid rgba(51, 0, 102, 0.4);
@@ -145,13 +145,13 @@
 
 .count-number {
     color: #FF007F;
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     font-weight: 700;
 }
 
 .count-label {
     color: #999;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     font-weight: 500;
 }
 
@@ -159,11 +159,12 @@
 .card-action {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 1.2rem 2rem;
+    justify-content: center;
+    padding: 1rem 2rem;
     background: linear-gradient(90deg, rgba(255, 0, 127, 0.1) 0%, rgba(51, 0, 102, 0.1) 100%);
     border-top: 1px solid rgba(255, 0, 127, 0.2);
     transition: all 0.3s ease;
+    gap: 0.8rem;
 }
 
 .customer-card:hover .card-action {
@@ -173,14 +174,14 @@
 
 .action-text {
     color: #FFFFFF;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
     letter-spacing: 0.5px;
 }
 
 .action-arrow {
     color: #FF007F;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 700;
     transition: transform 0.3s ease;
 }
@@ -192,16 +193,16 @@
 /* 响应式优化 */
 @media (max-width: 768px) {
     .customer-code {
-        font-size: 1.2rem;
-        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        padding: 0.6rem 1.2rem;
     }
     
     .customer-name {
-        font-size: 1.1rem;
+        font-size: 0.95rem;
     }
     
     .count-number {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
     }
 }
 </style>
