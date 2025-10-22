@@ -496,11 +496,60 @@ def parse_ambank_statement(file_path):
 
 def parse_alliance_statement(file_path):
     """Alliance Bank - Detects CR marker for payments vs purchases"""
-    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None}
+    transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None, "due_date": None, "due_amount": None, "minimum_payment": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
                 full_text = "\n".join(p.extract_text() for p in pdf.pages)
+            
+            # Extract due date
+            due_date_patterns = [
+                r'Payment\s+Due\s+Date[\s:]*(\d{1,2}\s+[A-Za-z]{3,}\s+\d{4})',
+                r'Due\s+Date[\s:]*(\d{1,2}\s+[A-Za-z]{3,}\s+\d{4})',
+                r'Pay\s+by[\s:]*(\d{1,2}\s+[A-Za-z]{3,}\s+\d{4})',
+                r'Payment\s+Due[\s:]*(\d{1,2}/\d{1,2}/\d{2,4})',
+            ]
+            for pattern in due_date_patterns:
+                match = re.search(pattern, full_text, re.IGNORECASE)
+                if match:
+                    try:
+                        date_str = match.group(1).strip()
+                        if '/' in date_str:
+                            parsed_date = datetime.strptime(date_str, "%d/%m/%Y")
+                        else:
+                            parsed_date = datetime.strptime(date_str, "%d %b %Y")
+                        info["due_date"] = parsed_date.strftime("%Y-%m-%d")
+                        break
+                    except:
+                        pass
+            
+            # Extract due amount and minimum payment
+            due_amount_patterns = [
+                r'Total\s+Amount\s+Due[\s:]*RM[\s]*([\d,]+\.\d{2})',
+                r'Amount\s+Due[\s:]*RM[\s]*([\d,]+\.\d{2})',
+                r'Total\s+Payment[\s:]*RM[\s]*([\d,]+\.\d{2})',
+            ]
+            for pattern in due_amount_patterns:
+                match = re.search(pattern, full_text, re.IGNORECASE)
+                if match:
+                    try:
+                        info["due_amount"] = float(match.group(1).replace(",", ""))
+                        break
+                    except:
+                        pass
+            
+            min_payment_patterns = [
+                r'Minimum\s+Payment[\s:]*RM[\s]*([\d,]+\.\d{2})',
+                r'Min\s+Payment[\s:]*RM[\s]*([\d,]+\.\d{2})',
+            ]
+            for pattern in min_payment_patterns:
+                match = re.search(pattern, full_text, re.IGNORECASE)
+                if match:
+                    try:
+                        info["minimum_payment"] = float(match.group(1).replace(",", ""))
+                        break
+                    except:
+                        pass
             
             # Pattern to capture optional CR marker at end
             # Example: "02/08/25 pay on behalf 817.76 CR" -> CR = payment/credit

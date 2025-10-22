@@ -508,8 +508,8 @@ def upload_statement():
                 cursor.execute('''
                     INSERT INTO statements 
                     (card_id, statement_date, statement_total, file_path, file_type, 
-                     validation_score, is_confirmed, inconsistencies)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                     validation_score, is_confirmed, inconsistencies, due_date, due_amount, minimum_payment)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (
                     card_id,
                     stmt_date,
@@ -523,7 +523,10 @@ def upload_statement():
                         'dual_validation_status': dual_validation.get_status() if dual_validation else 'N/A',
                         'dual_validation_errors': dual_validation.errors if dual_validation else [],
                         'dual_validation_warnings': dual_validation.warnings if dual_validation else []
-                    })
+                    }),
+                    statement_info.get('due_date'),
+                    statement_info.get('due_amount'),
+                    statement_info.get('minimum_payment')
                 ))
                 statement_id = cursor.lastrowid
                 
