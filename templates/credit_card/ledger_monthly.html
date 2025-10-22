@@ -195,6 +195,24 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- 🔥 该卡的累计余额 -->
+                <div style="border-top: 2px solid rgba(255, 20, 147, 0.3); margin-top: 1rem; padding-top: 1rem;">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div style="text-align: center; padding: 1rem; background: rgba(255, 20, 147, 0.05); border-radius: 8px;">
+                                <small style="color: #FF1493; font-weight: 600;">Owner 累计余额</small>
+                                <div style="color: #FF1493; font-weight: 900; font-size: 1.4rem;">RM {{ "{:,.2f}".format(stmt.owner_cumulative_balance) }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div style="text-align: center; padding: 1rem; background: rgba(51, 0, 102, 0.05); border-radius: 8px;">
+                                <small style="color: #330066; font-weight: 600;">INFINITE 累计余额</small>
+                                <div style="color: #330066; font-weight: 900; font-size: 1.4rem;">RM {{ "{:,.2f}".format(stmt.infinite_cumulative_balance) }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         {% endfor %}

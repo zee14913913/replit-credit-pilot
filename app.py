@@ -3724,6 +3724,24 @@ def credit_card_ledger_monthly(customer_id, year, month):
                 'supplier_fees': totals['supplier_fees'] or 0,
                 'txn_count': totals['txn_count'] or 0
             })
+            
+            # 🔥 获取该卡的Owner累计余额
+            cursor.execute('''
+                SELECT rolling_balance 
+                FROM monthly_ledger 
+                WHERE statement_id = ?
+            ''', (stmt['id'],))
+            owner_ledger = cursor.fetchone()
+            stmt['owner_cumulative_balance'] = owner_ledger['rolling_balance'] if owner_ledger else 0
+            
+            # 🔥 获取该卡的INFINITE累计余额
+            cursor.execute('''
+                SELECT rolling_balance 
+                FROM infinite_monthly_ledger 
+                WHERE statement_id = ?
+            ''', (stmt['id'],))
+            infinite_ledger = cursor.fetchone()
+            stmt['infinite_cumulative_balance'] = infinite_ledger['rolling_balance'] if infinite_ledger else 0
         
         # 计算月度总汇总（所有账单合并）
         monthly_summary = {
@@ -3735,36 +3753,10 @@ def credit_card_ledger_monthly(customer_id, year, month):
             'total_previous_balance': sum(s['previous_balance'] for s in statements),
             'total_statement_total': sum(s['statement_total'] for s in statements),
             'total_txn_count': sum(s['txn_count'] for s in statements),
+            # 🔥 月度汇总：该月所有卡的累计余额加总
+            'owner_cumulative_balance': sum(s['owner_cumulative_balance'] for s in statements),
+            'infinite_cumulative_balance': sum(s['infinite_cumulative_balance'] for s in statements),
         }
-        
-        # 🔥 新增：获取Owner和INFINITE的累计余额（从monthly_ledger表）
-        owner_cumulative_balance = 0
-        infinite_cumulative_balance = 0
-        
-        for stmt in statements:
-            # 获取Owner累计余额
-            cursor.execute('''
-                SELECT rolling_balance 
-                FROM monthly_ledger 
-                WHERE statement_id = ?
-            ''', (stmt['id'],))
-            owner_ledger = cursor.fetchone()
-            if owner_ledger:
-                owner_cumulative_balance += owner_ledger['rolling_balance']
-            
-            # 获取INFINITE累计余额
-            cursor.execute('''
-                SELECT rolling_balance 
-                FROM infinite_monthly_ledger 
-                WHERE statement_id = ?
-            ''', (stmt['id'],))
-            infinite_ledger = cursor.fetchone()
-            if infinite_ledger:
-                infinite_cumulative_balance += infinite_ledger['rolling_balance']
-        
-        # 添加到monthly_summary
-        monthly_summary['owner_cumulative_balance'] = owner_cumulative_balance
-        monthly_summary['infinite_cumulative_balance'] = infinite_cumulative_balance
         
         # 获取基线信息（用于累计汇总）
         card_ids = list(set([s['card_id'] for s in statements]))
