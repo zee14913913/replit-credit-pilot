@@ -12,7 +12,7 @@
                 <p class="section-subtitle">{{ t('dashboard_subtitle') }}</p>
             </div>
             <a href="{{ url_for('add_customer_page') }}" class="btn-white-glow">
-                <i class="bi bi-person-plus"></i> Add Customer
+                <i class="bi bi-person-plus"></i> {{ t('add_customer') }}
             </a>
         </div>
     </div>
@@ -53,7 +53,7 @@
                         <button onclick="deleteCustomer({{ customer.id }}, '{{ customer.name }}')" 
                                 class="btn-professional-outline" 
                                 style="color: #dc3545; border-color: #dc3545;">
-                            <i class="bi bi-trash"></i> 删除客户
+                            <i class="bi bi-trash"></i> {{ t('delete_customer') }}
                         </button>
                     </div>
                 </div>
@@ -62,8 +62,8 @@
         {% else %}
             <div class="col-12">
                 <div class="alert-professional alert-info-pro">
-                    <h5>No Customers Found</h5>
-                    <p class="mb-0">Please add customers to the system to get started.</p>
+                    <h5>{{ t('no_customers_found') }}</h5>
+                    <p class="mb-0">{{ t('add_customers_to_start') }}</p>
                 </div>
             </div>
         {% endif %}
@@ -71,23 +71,45 @@
 </div>
 
 <script>
+// Translations for JavaScript
+const translations = {
+    deleteWarning: `{{ t('delete_warning') }}`,
+    deleteConfirmQuestion: `{{ t('delete_confirm_question') }}`,
+    deleteCannotUndo: `{{ t('delete_cannot_undo') }}`,
+    deleteFinalConfirm: `{{ t('delete_final_confirm') }}`,
+    deleteNoRecovery: `{{ t('delete_no_recovery') }}`,
+    deleteSuccess: `{{ t('delete_success') }}`,
+    deleteFailed: `{{ t('delete_failed') }}`,
+    creditCards: `{{ t('credit_cards') }}`,
+    statements: `{{ t('statements') }}`,
+    transactions: `{{ t('transactions') }}`,
+    monthlyLedgers: `{{ t('monthly_ledgers') }}`,
+    infiniteLedgers: `{{ t('infinite_ledgers') }}`,
+    reminders: `{{ t('reminders') }}`,
+    consultationRequests: `{{ t('consultation_requests') }}`,
+    optimizationProposals: `{{ t('optimization_proposals') }}`
+};
+
 function deleteCustomer(customerId, customerName) {
-    // 显示确认对话框 - 列出所有11种数据类型
-    if (confirm(`⚠️ 警告：删除客户将同时删除以下所有数据：\n\n` +
-                `• 所有信用卡 (Credit Cards)\n` +
-                `• 所有账单 (Statements)\n` +
-                `• 所有交易记录 (Transactions)\n` +
-                `• 所有月度账本 (Monthly Ledgers)\n` +
-                `• 所有INFINITE账本 (INFINITE Ledgers)\n` +
-                `• 所有提醒记录 (Reminders)\n` +
-                `• 所有咨询记录 (Consultation Requests)\n` +
-                `• 所有优化建议 (Optimization Proposals)\n\n` +
-                `确定要删除客户 "${customerName}" 吗？\n\n` +
-                `⚠️ 此操作无法撤销！`)) {
+    // First confirmation dialog
+    const confirmMsg1 = `⚠️ ${translations.deleteWarning}\n\n` +
+                       `• ${translations.creditCards}\n` +
+                       `• ${translations.statements}\n` +
+                       `• ${translations.transactions}\n` +
+                       `• ${translations.monthlyLedgers}\n` +
+                       `• ${translations.infiniteLedgers}\n` +
+                       `• ${translations.reminders}\n` +
+                       `• ${translations.consultationRequests}\n` +
+                       `• ${translations.optimizationProposals}\n\n` +
+                       translations.deleteConfirmQuestion.replace('{name}', customerName) + `\n\n` +
+                       `⚠️ ${translations.deleteCannotUndo}`;
+    
+    if (confirm(confirmMsg1)) {
+        // Final confirmation
+        const confirmMsg2 = `🔴 ${translations.deleteFinalConfirm.replace('{name}', customerName)}\n\n${translations.deleteNoRecovery}`;
         
-        // 再次确认
-        if (confirm(`🔴 最后确认：您确定要永久删除客户 "${customerName}" 及其所有11种类型的数据吗？\n\n此操作将无法恢复！`)) {
-            // 发送删除请求
+        if (confirm(confirmMsg2)) {
+            // Send delete request
             fetch(`/customer/${customerId}/delete`, {
                 method: 'POST',
                 headers: {
@@ -97,14 +119,14 @@ function deleteCustomer(customerId, customerName) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('✅ 客户已成功删除');
+                    alert(`✅ ${translations.deleteSuccess}`);
                     window.location.reload();
                 } else {
-                    alert('❌ 删除失败：' + (data.error || '未知错误'));
+                    alert(`❌ ${translations.deleteFailed}: ` + (data.error || 'Unknown error'));
                 }
             })
             .catch(error => {
-                alert('❌ 删除失败：' + error);
+                alert(`❌ ${translations.deleteFailed}: ` + error);
             });
         }
     }

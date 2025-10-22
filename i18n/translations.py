@@ -159,10 +159,33 @@ TRANSLATIONS = {
         'submit_request': 'Submit Consultation Request',
         
         # Buttons
+        'add_customer': 'Add Customer',
+        'delete_customer': 'Delete Customer',
         'view_dashboard': 'View Dashboard',
         'upload_statement': 'Upload Statement',
         'view_analytics': 'View Analytics',
         'generate_report': 'Generate Financial Report',
+        
+        # Dashboard Messages
+        'no_customers_found': 'No Customers Found',
+        'add_customers_to_start': 'Please add customers to the system to get started.',
+        
+        # Delete Confirmation
+        'delete_warning': 'Warning: Deleting this customer will also delete all of the following data:',
+        'delete_confirm_question': 'Are you sure you want to delete customer "{name}"?',
+        'delete_cannot_undo': 'This action cannot be undone!',
+        'delete_final_confirm': 'Final Confirmation: Are you sure you want to permanently delete customer "{name}" and all 11 types of data?',
+        'delete_no_recovery': 'This action cannot be recovered!',
+        'delete_success': 'Customer successfully deleted',
+        'delete_failed': 'Deletion failed',
+        'credit_cards': 'Credit Cards',
+        'statements': 'Statements',
+        'transactions': 'Transactions',
+        'monthly_ledgers': 'Monthly Ledgers',
+        'infinite_ledgers': 'INFINITE Ledgers',
+        'reminders': 'Reminders',
+        'consultation_requests': 'Consultation Requests',
+        'optimization_proposals': 'Optimization Proposals',
         
         # Messages
         'consultation_submitted': 'Consultation request submitted! Our financial advisor will contact you soon.',
@@ -461,10 +484,33 @@ TRANSLATIONS = {
         'submit_request': '提交咨询请求',
         
         # Buttons
+        'add_customer': '添加客户',
+        'delete_customer': '删除客户',
         'view_dashboard': '查看仪表板',
         'upload_statement': '上传账单',
         'view_analytics': '查看分析',
         'generate_report': '生成财务报告',
+        
+        # Dashboard Messages
+        'no_customers_found': '未找到客户',
+        'add_customers_to_start': '请添加客户到系统以开始使用。',
+        
+        # Delete Confirmation
+        'delete_warning': '警告：删除客户将同时删除以下所有数据：',
+        'delete_confirm_question': '确定要删除客户 "{name}" 吗？',
+        'delete_cannot_undo': '此操作无法撤销！',
+        'delete_final_confirm': '最后确认：您确定要永久删除客户 "{name}" 及其所有11种类型的数据吗？',
+        'delete_no_recovery': '此操作将无法恢复！',
+        'delete_success': '客户已成功删除',
+        'delete_failed': '删除失败',
+        'credit_cards': '所有信用卡',
+        'statements': '所有账单',
+        'transactions': '所有交易记录',
+        'monthly_ledgers': '所有月度账本',
+        'infinite_ledgers': '所有INFINITE账本',
+        'reminders': '所有提醒记录',
+        'consultation_requests': '所有咨询记录',
+        'optimization_proposals': '所有优化建议',
         
         # Messages
         'consultation_submitted': '咨询请求已提交！我们的财务顾问将尽快与您联系。',
