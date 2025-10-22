@@ -3320,6 +3320,167 @@ def loan_matcher_analyze():
 
 
 # ============================================================================
+# CREDIT CARD LEDGER - 信用卡账本系统 (OWNER vs INFINITE)
+# ============================================================================
+
+@app.route('/credit-card/ledger')
+def credit_card_ledger():
+    """信用卡账本主页 - 显示所有客户的OWNER vs INFINITE账本汇总"""
+    from services.owner_infinite_classifier import OwnerInfiniteClassifier
+    
+    classifier = OwnerInfiniteClassifier()
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取所有客户及其信用卡统计
+        cursor.execute('''
+            SELECT 
+                c.id,
+                c.name,
+                COUNT(DISTINCT cc.id) as card_count,
+                COUNT(DISTINCT s.id) as statement_count,
+                COUNT(t.id) as total_transactions
+            FROM customers c
+            LEFT JOIN credit_cards cc ON c.id = cc.customer_id
+            LEFT JOIN statements s ON cc.id = s.card_id
+            LEFT JOIN transactions t ON s.id = t.statement_id
+            GROUP BY c.id
+            HAVING card_count > 0
+            ORDER BY c.name
+        ''')
+        
+        customers = []
+        for row in cursor.fetchall():
+            customer_data = dict(row)
+            customer_id = customer_data['id']
+            
+            # 获取该客户的OWNER和INFINITE汇总
+            cursor.execute('''
+                SELECT 
+                    SUM(CASE WHEN category = 'owner_expense' THEN ABS(amount) ELSE 0 END) as owner_expenses,
+                    SUM(CASE WHEN category = 'infinite_expense' THEN ABS(amount) ELSE 0 END) as infinite_expenses,
+                    SUM(CASE WHEN category = 'owner_payment' THEN ABS(amount) ELSE 0 END) as owner_payments,
+                    SUM(CASE WHEN category = 'infinite_payment' THEN ABS(amount) ELSE 0 END) as infinite_payments,
+                    SUM(CASE WHEN is_supplier = 1 THEN supplier_fee ELSE 0 END) as total_supplier_fees
+                FROM transactions t
+                JOIN statements s ON t.statement_id = s.id
+                JOIN credit_cards cc ON s.card_id = cc.id
+                WHERE cc.customer_id = ?
+            ''', (customer_id,))
+            
+            totals = cursor.fetchone()
+            customer_data.update({
+                'owner_expenses': totals['owner_expenses'] or 0,
+                'infinite_expenses': totals['infinite_expenses'] or 0,
+                'owner_payments': totals['owner_payments'] or 0,
+                'infinite_payments': totals['infinite_payments'] or 0,
+                'total_supplier_fees': totals['total_supplier_fees'] or 0
+            })
+            
+            customers.append(customer_data)
+    
+    return render_template('credit_card/ledger_index.html', customers=customers)
+
+
+@app.route('/credit-card/ledger/<int:customer_id>')
+def credit_card_ledger_detail(customer_id):
+    """客户信用卡账本详情页 - 显示10个区域的详细分析"""
+    from services.owner_infinite_classifier import OwnerInfiniteClassifier
+    
+    classifier = OwnerInfiniteClassifier()
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取客户信息
+        cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+        customer = dict(cursor.fetchone())
+        
+        # 获取该客户的所有信用卡
+        cursor.execute('''
+            SELECT id, bank_name, card_number_last4, credit_limit
+            FROM credit_cards
+            WHERE customer_id = ?
+            ORDER BY bank_name, card_number_last4
+        ''', (customer_id,))
+        
+        cards = [dict(row) for row in cursor.fetchall()]
+        
+        # 为每张卡获取账单和分类汇总
+        for card in cards:
+            card_id = card['id']
+            
+            # 获取该卡的所有账单
+            cursor.execute('''
+                SELECT id, statement_date, statement_total, previous_balance
+                FROM statements
+                WHERE card_id = ?
+                ORDER BY statement_date DESC
+            ''', (card_id,))
+            
+            card['statements'] = [dict(row) for row in cursor.fetchall()]
+            
+            # 获取该卡的OWNER/INFINITE汇总
+            cursor.execute('''
+                SELECT 
+                    SUM(CASE WHEN category = 'owner_expense' THEN ABS(amount) ELSE 0 END) as owner_expenses,
+                    SUM(CASE WHEN category = 'infinite_expense' THEN ABS(amount) ELSE 0 END) as infinite_expenses,
+                    SUM(CASE WHEN category = 'owner_payment' THEN ABS(amount) ELSE 0 END) as owner_payments,
+                    SUM(CASE WHEN category = 'infinite_payment' THEN ABS(amount) ELSE 0 END) as infinite_payments,
+                    SUM(CASE WHEN is_supplier = 1 THEN supplier_fee ELSE 0 END) as total_supplier_fees
+                FROM transactions t
+                JOIN statements s ON t.statement_id = s.id
+                WHERE s.card_id = ?
+            ''', (card_id,))
+            
+            totals = cursor.fetchone()
+            card.update({
+                'owner_expenses': totals['owner_expenses'] or 0,
+                'infinite_expenses': totals['infinite_expenses'] or 0,
+                'owner_payments': totals['owner_payments'] or 0,
+                'infinite_payments': totals['infinite_payments'] or 0,
+                'total_supplier_fees': totals['total_supplier_fees'] or 0
+            })
+            
+            # 获取基线信息
+            cursor.execute('''
+                SELECT previous_balance, owner_baseline, infinite_baseline
+                FROM account_baselines
+                WHERE card_id = ?
+            ''', (card_id,))
+            
+            baseline = cursor.fetchone()
+            if baseline:
+                card['baseline'] = dict(baseline)
+            else:
+                card['baseline'] = None
+        
+        # 获取客户所有交易（按类别分组）
+        cursor.execute('''
+            SELECT 
+                t.id, t.transaction_date, t.description, t.amount, 
+                t.transaction_type, t.category, t.is_supplier, 
+                t.supplier_name, t.supplier_fee, t.payer_name,
+                s.statement_date, s.id as statement_id,
+                cc.bank_name, cc.card_number_last4
+            FROM transactions t
+            JOIN statements s ON t.statement_id = s.id
+            JOIN credit_cards cc ON s.card_id = cc.id
+            WHERE cc.customer_id = ?
+            ORDER BY t.transaction_date DESC
+            LIMIT 100
+        ''', (customer_id,))
+        
+        recent_transactions = [dict(row) for row in cursor.fetchall()]
+    
+    return render_template('credit_card/ledger_detail.html', 
+                          customer=customer, 
+                          cards=cards,
+                          recent_transactions=recent_transactions)
+
+
+# ============================================================================
 # CREDIT CARD OPTIMIZER - 信用卡优化推荐系统
 # ============================================================================
 
