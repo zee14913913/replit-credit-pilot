@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Client Detail - {{ client.customer.name }} - INFINITE GZ{% endblock %}
+{% block title %}{{ t('client_detail') }} - {{ client.customer.name }} - {{ t('company_name') }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid mt-4">
@@ -8,7 +8,7 @@
     <div class="row mb-3">
         <div class="col-12">
             <a href="/admin/portfolio" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Back to Portfolio
+                <i class="bi bi-arrow-left"></i> {{ t('back_to_portfolio') }}
             </a>
         </div>
     </div>
@@ -20,11 +20,11 @@
             <p class="text-secondary">
                 <i class="bi bi-envelope"></i> {{ client.customer.email }} |
                 <i class="bi bi-telephone"></i> {{ client.customer.phone }} |
-                <i class="bi bi-cash"></i> Monthly Income: RM {{ "{:,.2f}".format(client.customer.monthly_income or 0) }}
+                <i class="bi bi-cash"></i> {{ t('monthly_income') }}: RM {{ "{:,.2f}".format(client.customer.monthly_income or 0) }}
             </p>
         </div>
         <div class="col-md-4 text-end">
-            <h3 class="text-muted">Client ID: {{ client.customer.id }}</h3>
+            <h3 class="text-muted">{{ t('client_id') }}: {{ client.customer.id }}</h3>
         </div>
     </div>
 
@@ -33,7 +33,7 @@
         <div class="col-md-3">
             <div class="card shadow-sm border-success">
                 <div class="card-body">
-                    <h6 class="text-secondary">Total Savings</h6>
+                    <h6 class="text-secondary">{{ t('total_savings') }}</h6>
                     <h3 class="text-success">RM {{ "{:,.2f}".format(client.metrics.total_savings) }}</h3>
                 </div>
             </div>
@@ -41,7 +41,7 @@
         <div class="col-md-3">
             <div class="card shadow-sm border-info">
                 <div class="card-body">
-                    <h6 class="text-secondary">GZ Revenue (50%)</h6>
+                    <h6 class="text-secondary">{{ t('gz_revenue_50') }}</h6>
                     <h3 class="text-info">RM {{ "{:,.2f}".format(client.metrics.gz_revenue) }}</h3>
                 </div>
             </div>
@@ -49,7 +49,7 @@
         <div class="col-md-3">
             <div class="card shadow-sm border-primary">
                 <div class="card-body">
-                    <h6 class="text-secondary">Client Keeps (50%)</h6>
+                    <h6 class="text-secondary">{{ t('client_keeps_50') }}</h6>
                     <h3 class="text-primary">RM {{ "{:,.2f}".format(client.metrics.customer_keeps) }}</h3>
                 </div>
             </div>
@@ -57,7 +57,7 @@
         <div class="col-md-3">
             <div class="card shadow-sm border-{{ 'danger' if client.metrics.dsr > 70 else ('warning' if client.metrics.dsr > 50 else 'success') }}">
                 <div class="card-body">
-                    <h6 class="text-secondary">DSR</h6>
+                    <h6 class="text-secondary">{{ t('dsr') }}</h6>
                     <h3 class="text-{{ 'danger' if client.metrics.dsr > 70 else ('warning' if client.metrics.dsr > 50 else 'success') }}">
                         {{ "{:.1f}".format(client.metrics.dsr) }}%
                     </h3>
@@ -72,7 +72,7 @@
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header">
-                    <h5><i class="bi bi-credit-card"></i> Credit Cards</h5>
+                    <h5><i class="bi bi-credit-card"></i> {{ t('credit_cards') }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -89,8 +89,8 @@
                                         </div>
                                     </div>
                                     <p class="mb-0">
-                                        Balance: RM {{ "{:,.2f}".format(card.current_balance) }} / 
-                                        Limit: RM {{ "{:,.2f}".format(card.credit_limit) }}
+                                        {{ t('balance') }}: RM {{ "{:,.2f}".format(card.current_balance) }} / 
+                                        {{ t('limit') }}: RM {{ "{:,.2f}".format(card.credit_limit) }}
                                     </p>
                                 </div>
                             </div>
@@ -108,21 +108,21 @@
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header">
-                    <h5><i class="bi bi-diagram-3"></i> Advisory Workflow Status</h5>
+                    <h5><i class="bi bi-diagram-3"></i> {{ t('advisory_workflow_status') }}</h5>
                 </div>
                 <div class="card-body">
                     <!-- Proposals -->
-                    <h6 class="text-primary">1. Optimization Proposals</h6>
+                    <h6 class="text-primary">1. {{ t('optimization_proposals') }}</h6>
                     {% if client.workflow.proposals %}
                     <div class="table-responsive mb-4">
                         <table class="table table-sm">
                             <thead>
                                 <tr>
-                                    <th>Type</th>
-                                    <th>Details</th>
-                                    <th>Expected Savings</th>
-                                    <th>Status</th>
-                                    <th>Created</th>
+                                    <th>{{ t('type') }}</th>
+                                    <th>{{ t('details') }}</th>
+                                    <th>{{ t('expected_savings') }}</th>
+                                    <th>{{ t('status') }}</th>
+                                    <th>{{ t('created') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -143,21 +143,21 @@
                         </table>
                     </div>
                     {% else %}
-                    <p class="text-muted">No proposals yet</p>
+                    <p class="text-muted">{{ t('no_proposals_yet') }}</p>
                     {% endif %}
 
                     <!-- Consultations -->
-                    <h6 class="text-info">2. Consultation Requests</h6>
+                    <h6 class="text-info">2. {{ t('consultation_requests') }}</h6>
                     {% if client.workflow.consultations %}
                     <div class="table-responsive mb-4">
                         <table class="table table-sm">
                             <thead>
                                 <tr>
-                                    <th>Service Type</th>
-                                    <th>Preferred Time</th>
-                                    <th>Status</th>
-                                    <th>Outcome</th>
-                                    <th>Created</th>
+                                    <th>{{ t('service_type') }}</th>
+                                    <th>{{ t('preferred_time') }}</th>
+                                    <th>{{ t('status') }}</th>
+                                    <th>{{ t('outcome') }}</th>
+                                    <th>{{ t('created') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -178,21 +178,21 @@
                         </table>
                     </div>
                     {% else %}
-                    <p class="text-muted">No consultations yet</p>
+                    <p class="text-muted">{{ t('no_consultations_yet') }}</p>
                     {% endif %}
 
                     <!-- Contracts -->
-                    <h6 class="text-success">3. Service Contracts</h6>
+                    <h6 class="text-success">3. {{ t('service_contracts') }}</h6>
                     {% if client.workflow.contracts %}
                     <div class="table-responsive mb-4">
                         <table class="table table-sm">
                             <thead>
                                 <tr>
-                                    <th>Services</th>
-                                    <th>Expected Savings</th>
-                                    <th>Fee Rate</th>
-                                    <th>Status</th>
-                                    <th>Created</th>
+                                    <th>{{ t('services') }}</th>
+                                    <th>{{ t('expected_savings') }}</th>
+                                    <th>{{ t('fee_rate') }}</th>
+                                    <th>{{ t('status') }}</th>
+                                    <th>{{ t('created') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -213,21 +213,21 @@
                         </table>
                     </div>
                     {% else %}
-                    <p class="text-muted">No contracts yet</p>
+                    <p class="text-muted">{{ t('no_contracts_yet') }}</p>
                     {% endif %}
 
                     <!-- Payment on Behalf -->
-                    <h6 class="text-warning">4. Payment on Behalf Records</h6>
+                    <h6 class="text-warning">4. {{ t('payment_on_behalf_records') }}</h6>
                     {% if client.workflow.payments %}
                     <div class="table-responsive mb-4">
                         <table class="table table-sm">
                             <thead>
                                 <tr>
-                                    <th>Payment Type</th>
-                                    <th>Amount</th>
-                                    <th>Recipient</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
+                                    <th>{{ t('payment_type') }}</th>
+                                    <th>{{ t('amount') }}</th>
+                                    <th>{{ t('recipient') }}</th>
+                                    <th>{{ t('date') }}</th>
+                                    <th>{{ t('status') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -248,22 +248,22 @@
                         </table>
                     </div>
                     {% else %}
-                    <p class="text-muted">No payment-on-behalf records yet</p>
+                    <p class="text-muted">{{ t('no_payment_records_yet') }}</p>
                     {% endif %}
 
                     <!-- Fee Calculations -->
-                    <h6 class="text-danger">5. Success Fee Calculations (50/50 Split)</h6>
+                    <h6 class="text-danger">5. {{ t('success_fee_calculations') }}</h6>
                     {% if client.workflow.fee_calculations %}
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Service Period</th>
-                                    <th>Actual Savings</th>
-                                    <th>Client Keeps (50%)</th>
-                                    <th>GZ Fee (50%)</th>
-                                    <th>Fee Paid</th>
-                                    <th>Date</th>
+                                    <th>{{ t('service_period') }}</th>
+                                    <th>{{ t('actual_savings') }}</th>
+                                    <th>{{ t('client_keeps_50') }}</th>
+                                    <th>{{ t('gz_fee_50') }}</th>
+                                    <th>{{ t('fee_paid') }}</th>
+                                    <th>{{ t('date') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -275,9 +275,9 @@
                                     <td class="text-info"><strong>RM {{ "{:,.2f}".format(fee.our_fee_50_percent or 0) }}</strong></td>
                                     <td>
                                         {% if fee.fee_paid %}
-                                            <span class="badge bg-success"><i class="bi bi-check-circle"></i> Paid</span>
+                                            <span class="badge bg-success"><i class="bi bi-check-circle"></i> {{ t('paid') }}</span>
                                         {% else %}
-                                            <span class="badge bg-warning">Pending</span>
+                                            <span class="badge bg-warning">{{ t('pending') }}</span>
                                         {% endif %}
                                     </td>
                                     <td>{{ fee.calculation_date }}</td>
@@ -287,7 +287,7 @@
                         </table>
                     </div>
                     {% else %}
-                    <p class="text-muted">No fee calculations yet - Waiting for service completion</p>
+                    <p class="text-muted">{{ t('no_fee_calculations_yet') }}</p>
                     {% endif %}
 
                 </div>
