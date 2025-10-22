@@ -262,11 +262,6 @@ def customer_dashboard(customer_id):
     
     spending_summary = get_spending_summary(all_transactions) if all_transactions else {}
     
-    from validate.instalment_tracker import InstalmentTracker
-    tracker = InstalmentTracker()
-    instalment_plans = tracker.get_customer_instalment_plans(customer_id)
-    instalment_summary = tracker.get_instalment_summary(customer_id)
-    
     from services.card_timeline import get_card_12month_timeline, get_month_coverage_percentage
     cards_with_timeline = []
     for card in cards:
@@ -348,8 +343,6 @@ def customer_dashboard(customer_id):
                          cards=cards_with_timeline,
                          spending_summary=spending_summary,
                          total_spending=total_spending,
-                         instalment_plans=instalment_plans,
-                         instalment_summary=instalment_summary,
                          monthly_ledgers=monthly_ledgers)
 
 
@@ -1537,7 +1530,7 @@ def admin_customers_cards():
             
             cards = [dict(row) for row in cursor.fetchall()]
             
-            # Add billing cycle and instalment info for each card
+            # Add billing cycle for each card
             for card in cards:
                 # Calculate 50-day billing cycle
                 if card['last_statement_date'] and card['due_date']:
@@ -1559,39 +1552,6 @@ def admin_customers_cards():
                 else:
                     card['billing_cycle_start'] = None
                     card['billing_cycle_end'] = None
-                
-                # Get instalment plans for this card
-                cursor.execute("""
-                    SELECT 
-                        ip.id,
-                        ip.instalment_type,
-                        ip.product_name,
-                        ip.merchant_name,
-                        ip.principal_amount,
-                        ip.tenure_months,
-                        ip.monthly_payment,
-                        ip.start_date,
-                        ip.end_date,
-                        ip.status,
-                        COUNT(ipr.id) as paid_count,
-                        SUM(CASE WHEN ipr.status = 'paid' THEN ipr.principal_portion ELSE 0 END) as paid_principal
-                    FROM instalment_plans ip
-                    LEFT JOIN instalment_payment_records ipr ON ip.id = ipr.plan_id AND ipr.status = 'paid'
-                    WHERE ip.card_id = ? AND ip.status != 'completed'
-                    GROUP BY ip.id
-                    ORDER BY ip.start_date DESC
-                """, (card['card_id'],))
-                
-                instalments = []
-                for inst in cursor.fetchall():
-                    inst_dict = dict(inst)
-                    # Calculate remaining balance
-                    inst_dict['remaining_balance'] = inst_dict['principal_amount'] - (inst_dict['paid_principal'] or 0)
-                    # Format tenure display (e.g., "05/24" means 5 paid out of 24 total)
-                    inst_dict['tenure_display'] = f"{inst_dict['paid_count']:02d}/{inst_dict['tenure_months']:02d}"
-                    instalments.append(inst_dict)
-                
-                card['instalments'] = instalments
             
             customers_with_cards.append({
                 'customer': customer,
@@ -2456,22 +2416,16 @@ def delete_customer(customer_id):
             # 6. 删除信用卡
             cursor.execute('DELETE FROM credit_cards WHERE customer_id = ?', (customer_id,))
             
-            # 7. 删除预算
-            cursor.execute('DELETE FROM budgets WHERE customer_id = ?', (customer_id,))
-            
-            # 8. 删除分期付款计划
-            cursor.execute('DELETE FROM instalment_plans WHERE customer_id = ?', (customer_id,))
-            
-            # 9. 删除提醒
+            # 7. 删除提醒
             cursor.execute('DELETE FROM reminders WHERE customer_id = ?', (customer_id,))
             
-            # 10. 删除咨询记录
+            # 8. 删除咨询记录
             cursor.execute('DELETE FROM consultation_requests WHERE customer_id = ?', (customer_id,))
             
-            # 11. 删除优化建议
+            # 9. 删除优化建议
             cursor.execute('DELETE FROM optimization_proposals WHERE customer_id = ?', (customer_id,))
             
-            # 12. 最后删除客户本身
+            # 10. 最后删除客户本身
             cursor.execute('DELETE FROM customers WHERE id = ?', (customer_id,))
             
             conn.commit()

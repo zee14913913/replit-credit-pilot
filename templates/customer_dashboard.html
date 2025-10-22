@@ -293,22 +293,17 @@
     <div class="mb-5">
         <h3 class="mb-4" style="color: var(--text-primary);">{{ t('quick_actions') }}</h3>
         <div class="row g-4">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <a href="{{ url_for('search_transactions', customer_id=customer.id) }}" class="btn-professional-outline w-100 py-3 text-center" style="text-decoration: none;">
                     <div>{{ t('search_filter') }}</div>
                 </a>
             </div>
-            <div class="col-md-3">
-                <a href="{{ url_for('budget_management', customer_id=customer.id) }}" class="btn-professional-outline w-100 py-3 text-center" style="text-decoration: none;">
-                    <div>{{ t('budget_manager') }}</div>
-                </a>
-            </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <a href="{{ url_for('batch_upload', customer_id=customer.id) }}" class="btn-professional-outline w-100 py-3 text-center" style="text-decoration: none;">
                     <div>{{ t('batch_upload') }}</div>
                 </a>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <a href="{{ url_for('export_transactions', customer_id=customer.id, format='excel') }}" class="btn-professional-outline w-100 py-3 text-center" style="text-decoration: none;">
                     <div>{{ t('export_data') }}</div>
                 </a>
