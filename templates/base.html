@@ -46,17 +46,17 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if 'savings' in request.endpoint }}" href="{{ url_for('savings_accounts') }}">
-                        Savings
+                        {{ t('nav_savings') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if 'loan_matcher' in request.endpoint }}" href="{{ url_for('loan_matcher') }}">
-                        Loan Matcher
+                        {{ t('nav_loan_matcher') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if 'receipts' in request.endpoint }}" href="{{ url_for('receipts_home') }}">
-                        Receipts
+                        {{ t('nav_receipts') }}
                     </a>
                 </li>
                 <li class="nav-item">

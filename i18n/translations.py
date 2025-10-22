@@ -8,6 +8,9 @@ TRANSLATIONS = {
         # Navigation
         'nav_dashboard': 'Dashboard',
         'nav_upload': 'Upload',
+        'nav_savings': 'Savings',
+        'nav_loan_matcher': 'Loan Matcher',
+        'nav_receipts': 'Receipts',
         'nav_reminders': 'Reminders',
         'nav_news': 'News',
         'nav_admin_news': 'News Management',
@@ -307,6 +310,9 @@ TRANSLATIONS = {
         # Navigation
         'nav_dashboard': '仪表板',
         'nav_upload': '上传',
+        'nav_savings': '储蓄账户',
+        'nav_loan_matcher': '贷款匹配',
+        'nav_receipts': '收据管理',
         'nav_reminders': '提醒',
         'nav_news': '资讯',
         'nav_admin_news': '新闻管理',
