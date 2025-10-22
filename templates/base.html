@@ -174,109 +174,194 @@
         </div>
     </footer>
 
-    <!-- 用户使用指南弹窗 -->
+    <!-- User Guide Modal / 用户使用指南弹窗 -->
     <div class="modal fade" id="userGuideModal" tabindex="-1" aria-labelledby="userGuideModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(30, 30, 30, 0.95)); border: 2px solid rgba(229, 228, 226, 0.3);">
                 <div class="modal-header" style="border-bottom: 1px solid rgba(229, 228, 226, 0.2);">
                     <h5 class="modal-title galaxy-gradient-text" id="userGuideModalLabel">
-                        <i class="bi bi-info-circle-fill me-2"></i>欢迎使用智能信贷与贷款管理系统
+                        <i class="bi bi-info-circle-fill me-2"></i>Welcome to Smart Credit & Loan Manager / 欢迎使用智能信贷与贷款管理系统
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" style="color: #e8e6e3;">
                     <div class="mb-4">
-                        <h6 class="text-silver-pearl mb-3"><i class="bi bi-rocket-takeoff me-2"></i>快速开始指南</h6>
+                        <h6 class="text-silver-pearl mb-3">
+                            <i class="bi bi-rocket-takeoff me-2"></i>Quick Start Guide / 快速开始指南
+                        </h6>
                         
-                        <!-- 管理员功能 -->
+                        <!-- Admin Features / 管理员功能 -->
                         <div class="guide-section mb-4">
-                            <h6 class="text-golden"><i class="bi bi-shield-check me-2"></i>管理员功能</h6>
-                            <ol class="guide-list">
-                                <li><strong>登录系统：</strong>点击右上角"Admin" → 使用管理员邮箱和密码登录</li>
-                                <li><strong>上传信用卡账单：</strong>导航栏点击"Upload" → 选择客户 → 上传PDF账单（支持15家马来西亚银行）</li>
-                                <li><strong>上传储蓄账单：</strong>点击"Savings" → 上传储蓄账户账单（支持7家银行）</li>
-                                <li><strong>客户管理：</strong>Admin Dashboard → 查看所有客户、信用卡和交易数据</li>
-                                <li><strong>生成月度报表：</strong>客户详情页 → 点击"生成月度报表"</li>
+                            <h6 class="text-golden">
+                                <i class="bi bi-shield-check me-2"></i>Admin Features / 管理员功能
+                            </h6>
+                            <ol class="guide-list bilingual-list">
+                                <li>
+                                    <strong>Login System / 登录系统:</strong>
+                                    <div class="en">Click "Admin" in top right → Use admin email and password</div>
+                                    <div class="cn">点击右上角"Admin" → 使用管理员邮箱和密码登录</div>
+                                </li>
+                                <li>
+                                    <strong>Upload Credit Card Statements / 上传信用卡账单:</strong>
+                                    <div class="en">Navigation bar → "Upload" → Select customer → Upload PDF (15 Malaysian banks supported)</div>
+                                    <div class="cn">导航栏点击"Upload" → 选择客户 → 上传PDF账单（支持15家马来西亚银行）</div>
+                                </li>
+                                <li>
+                                    <strong>Upload Savings Statements / 上传储蓄账单:</strong>
+                                    <div class="en">Click "Savings" → Upload savings account statements (7 banks supported)</div>
+                                    <div class="cn">点击"Savings" → 上传储蓄账户账单（支持7家银行）</div>
+                                </li>
+                                <li>
+                                    <strong>Customer Management / 客户管理:</strong>
+                                    <div class="en">Admin Dashboard → View all customers, credit cards, and transaction data</div>
+                                    <div class="cn">Admin Dashboard → 查看所有客户、信用卡和交易数据</div>
+                                </li>
+                                <li>
+                                    <strong>Generate Monthly Reports / 生成月度报表:</strong>
+                                    <div class="en">Customer details page → Click "Generate Monthly Report"</div>
+                                    <div class="cn">客户详情页 → 点击"生成月度报表"</div>
+                                </li>
                             </ol>
                         </div>
                         
-                        <!-- 核心功能 -->
+                        <!-- Core Features / 核心功能 -->
                         <div class="guide-section mb-4">
-                            <h6 class="text-golden"><i class="bi bi-stars me-2"></i>7大核心功能</h6>
+                            <h6 class="text-golden">
+                                <i class="bi bi-stars me-2"></i>7 Core Features / 7大核心功能
+                            </h6>
                             <div class="feature-grid">
                                 <div class="feature-item">
                                     <i class="bi bi-credit-card text-silver-pearl"></i>
-                                    <strong>信用卡追踪</strong>
-                                    <small>自动解析账单、分类交易</small>
+                                    <strong>Credit Card Tracking</strong>
+                                    <strong class="cn-text">信用卡追踪</strong>
+                                    <small>Auto-parse statements & categorize</small>
+                                    <small class="cn-text">自动解析账单、分类交易</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-piggy-bank text-silver-pearl"></i>
-                                    <strong>储蓄账户管理</strong>
-                                    <small>追踪存款、提前还款查询</small>
+                                    <strong>Savings Account</strong>
+                                    <strong class="cn-text">储蓄账户管理</strong>
+                                    <small>Track deposits & prepayments</small>
+                                    <small class="cn-text">追踪存款、提前还款查询</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-receipt text-silver-pearl"></i>
-                                    <strong>收据管理</strong>
-                                    <small>OCR识别、自动匹配交易</small>
+                                    <strong>Receipt Management</strong>
+                                    <strong class="cn-text">收据管理</strong>
+                                    <small>OCR & auto-matching</small>
+                                    <small class="cn-text">OCR识别、自动匹配交易</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-calculator text-silver-pearl"></i>
-                                    <strong>智能贷款匹配</strong>
-                                    <small>CTOS分析、DSR计算</small>
+                                    <strong>Smart Loan Matcher</strong>
+                                    <strong class="cn-text">智能贷款匹配</strong>
+                                    <small>CTOS analysis & DSR calculation</small>
+                                    <small class="cn-text">CTOS分析、DSR计算</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-graph-up text-silver-pearl"></i>
-                                    <strong>AI高级分析</strong>
-                                    <small>财务健康评分、智能建议</small>
+                                    <strong>AI Advanced Analytics</strong>
+                                    <strong class="cn-text">AI高级分析</strong>
+                                    <small>Health scoring & recommendations</small>
+                                    <small class="cn-text">财务健康评分、智能建议</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-file-earmark-text text-silver-pearl"></i>
-                                    <strong>自动月报</strong>
-                                    <small>每月自动生成PDF报告</small>
+                                    <strong>Automated Reports</strong>
+                                    <strong class="cn-text">自动月报</strong>
+                                    <small>Auto-generate monthly PDFs</small>
+                                    <small class="cn-text">每月自动生成PDF报告</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-bell text-silver-pearl"></i>
-                                    <strong>付款提醒</strong>
-                                    <small>邮件/短信提醒</small>
+                                    <strong>Payment Reminders</strong>
+                                    <strong class="cn-text">付款提醒</strong>
+                                    <small>Email & SMS notifications</small>
+                                    <small class="cn-text">邮件/短信提醒</small>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- 客户端功能 -->
+                        <!-- Customer Features / 客户端功能 -->
                         <div class="guide-section mb-4">
-                            <h6 class="text-golden"><i class="bi bi-person-circle me-2"></i>客户端功能</h6>
-                            <ol class="guide-list">
-                                <li><strong>客户登录：</strong>点击"Login" → 使用管理员提供的客户邮箱登录</li>
-                                <li><strong>查看账单：</strong>客户Portal → 查看所有信用卡和交易记录</li>
-                                <li><strong>查看月报：</strong>客户Dashboard → 下载PDF月度报告</li>
-                                <li><strong>申请贷款：</strong>点击"Loan Matcher" → 上传CTOS报告查看匹配产品</li>
+                            <h6 class="text-golden">
+                                <i class="bi bi-person-circle me-2"></i>Customer Features / 客户端功能
+                            </h6>
+                            <ol class="guide-list bilingual-list">
+                                <li>
+                                    <strong>Customer Login / 客户登录:</strong>
+                                    <div class="en">Click "Login" → Use customer email provided by admin</div>
+                                    <div class="cn">点击"Login" → 使用管理员提供的客户邮箱登录</div>
+                                </li>
+                                <li>
+                                    <strong>View Statements / 查看账单:</strong>
+                                    <div class="en">Customer Portal → View all credit cards and transaction records</div>
+                                    <div class="cn">客户Portal → 查看所有信用卡和交易记录</div>
+                                </li>
+                                <li>
+                                    <strong>View Reports / 查看月报:</strong>
+                                    <div class="en">Customer Dashboard → Download PDF monthly reports</div>
+                                    <div class="cn">客户Dashboard → 下载PDF月度报告</div>
+                                </li>
+                                <li>
+                                    <strong>Apply for Loans / 申请贷款:</strong>
+                                    <div class="en">Click "Loan Matcher" → Upload CTOS report to view matched products</div>
+                                    <div class="cn">点击"Loan Matcher" → 上传CTOS报告查看匹配产品</div>
+                                </li>
                             </ol>
                         </div>
                         
-                        <!-- 技巧与提示 -->
+                        <!-- Tips & Tricks / 技巧与提示 -->
                         <div class="guide-section">
-                            <h6 class="text-golden"><i class="bi bi-lightbulb me-2"></i>使用技巧</h6>
-                            <ul class="guide-list">
-                                <li><i class="bi bi-check-circle text-success"></i> 支持批量上传多个账单文件</li>
-                                <li><i class="bi bi-check-circle text-success"></i> 系统会自动按月份组织文件</li>
-                                <li><i class="bi bi-check-circle text-success"></i> 12个月时间轴可视化账单覆盖情况</li>
-                                <li><i class="bi bi-check-circle text-success"></i> 收据自动匹配到对应的信用卡交易</li>
-                                <li><i class="bi bi-check-circle text-success"></i> 所有数据保证100%准确性验证</li>
+                            <h6 class="text-golden">
+                                <i class="bi bi-lightbulb me-2"></i>Tips & Tricks / 使用技巧
+                            </h6>
+                            <ul class="guide-list bilingual-list">
+                                <li>
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    <span class="en">Batch upload multiple statement files</span>
+                                    <span class="cn">支持批量上传多个账单文件</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    <span class="en">Auto-organize files by month</span>
+                                    <span class="cn">系统会自动按月份组织文件</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    <span class="en">12-month timeline visualization</span>
+                                    <span class="cn">12个月时间轴可视化账单覆盖情况</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    <span class="en">Auto-match receipts to transactions</span>
+                                    <span class="cn">收据自动匹配到对应的信用卡交易</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    <span class="en">100% data accuracy guaranteed</span>
+                                    <span class="cn">所有数据保证100%准确性验证</span>
+                                </li>
                             </ul>
                         </div>
                     </div>
                     
                     <div class="alert" style="background: rgba(229, 228, 226, 0.1); border: 1px solid rgba(229, 228, 226, 0.3); color: #e8e6e3;">
                         <i class="bi bi-info-circle me-2"></i>
-                        <strong>需要帮助？</strong> 如有任何问题，请联系系统管理员或查看详细文档。
+                        <strong>Need Help? / 需要帮助？</strong> 
+                        <span class="en">Contact system administrator or consult documentation.</span>
+                        <span class="cn">如有任何问题，请联系系统管理员或查看详细文档。</span>
                     </div>
                 </div>
                 <div class="modal-footer" style="border-top: 1px solid rgba(229, 228, 226, 0.2);">
                     <label class="text-silver-pearl me-auto" style="font-size: 0.9rem;">
                         <input type="checkbox" id="dontShowAgain" class="me-2">
-                        不再显示此指南
+                        <span class="en">Don't show this again</span>
+                        <span class="cn">不再显示此指南</span>
                     </label>
-                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">知道了</button>
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+                        <span class="en">Got it</span> / <span class="cn">知道了</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -296,12 +381,43 @@
     }
     
     .guide-list li {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    /* Bilingual List Styling */
+    .bilingual-list .en {
+        color: #e8e6e3;
+        margin-left: 0.5rem;
+        font-size: 0.95rem;
+    }
+    
+    .bilingual-list .cn {
+        color: rgba(229, 228, 226, 0.8);
+        margin-left: 0.5rem;
+        font-size: 0.9rem;
+        font-style: italic;
+    }
+    
+    .bilingual-list .en,
+    .bilingual-list .cn {
+        display: block;
+        padding-left: 1rem;
+        line-height: 1.6;
+    }
+    
+    /* Inline bilingual text */
+    span.en {
+        color: #fff;
+    }
+    
+    span.cn {
+        color: rgba(229, 228, 226, 0.85);
+        margin-left: 0.3rem;
     }
     
     .feature-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 1rem;
         margin-top: 1rem;
     }
@@ -312,6 +428,13 @@
         border-radius: 8px;
         border: 1px solid rgba(229, 228, 226, 0.2);
         text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-item:hover {
+        border-color: rgba(229, 228, 226, 0.5);
+        background: rgba(0, 0, 0, 0.4);
+        transform: translateY(-2px);
     }
     
     .feature-item i {
@@ -323,13 +446,41 @@
     .feature-item strong {
         display: block;
         color: #fff;
-        margin-bottom: 0.3rem;
+        margin-bottom: 0.2rem;
+        font-size: 0.95rem;
+    }
+    
+    .feature-item strong.cn-text {
+        color: rgba(229, 228, 226, 0.85);
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
     }
     
     .feature-item small {
         display: block;
         color: #e8e6e3;
         font-size: 0.85rem;
+        line-height: 1.4;
+    }
+    
+    .feature-item small.cn-text {
+        color: rgba(229, 228, 226, 0.7);
+        font-size: 0.8rem;
+    }
+    
+    /* Modal size adjustment for bilingual content */
+    .modal-xl {
+        max-width: 900px;
+    }
+    
+    @media (max-width: 768px) {
+        .feature-grid {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        }
+        
+        .modal-xl {
+            max-width: 95%;
+        }
     }
     </style>
 
