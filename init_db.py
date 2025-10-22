@@ -129,19 +129,6 @@ def init_database():
         )
     ''')
     
-    # Budgets table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS budgets (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            customer_id INTEGER NOT NULL,
-            category TEXT NOT NULL,
-            monthly_limit REAL NOT NULL,
-            month TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (customer_id) REFERENCES customers(id)
-        )
-    ''')
-    
     # Reminders table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS reminders (
@@ -162,21 +149,6 @@ def init_database():
             rate_value REAL NOT NULL,
             effective_date TEXT NOT NULL,
             last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
-    # Banking news table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS banking_news (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            content TEXT NOT NULL,
-            category TEXT NOT NULL,
-            source_url TEXT,
-            published_date TEXT,
-            is_approved INTEGER DEFAULT 0,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE(title, published_date)
         )
     ''')
     
