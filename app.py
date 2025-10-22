@@ -30,6 +30,7 @@ from db.tag_service import TagService
 # Statement organizer and optimization
 from services.statement_organizer import StatementOrganizer
 from services.optimization_proposal import OptimizationProposal
+from services.uniqueness_validator import UniquenessValidator
 
 # Monthly report automation
 from services.monthly_report_scheduler import MonthlyReportScheduler
@@ -596,31 +597,67 @@ def upload_statement():
                 print(f"⚠️ 文件组织失败，使用临时路径: {str(e)}")
                 organized_file_path = temp_file_path
             
+            # ✅ 强制性重复检查
+            validation_check = UniquenessValidator.validate_statement_upload(card_id, stmt_date)
+            
             try:
-                cursor.execute('''
-                    INSERT INTO statements 
-                    (card_id, statement_date, statement_total, file_path, file_type, 
-                     validation_score, is_confirmed, inconsistencies, due_date, due_amount, minimum_payment)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ''', (
-                    card_id,
-                    stmt_date,
-                    statement_info['total'],
-                    organized_file_path,
-                    file_type,
-                    final_confidence,
-                    auto_confirmed,
-                    json.dumps({
-                        'old_validation': validation_result['inconsistencies'],
-                        'dual_validation_status': dual_validation.get_status() if dual_validation else 'N/A',
-                        'dual_validation_errors': dual_validation.errors if dual_validation else [],
-                        'dual_validation_warnings': dual_validation.warnings if dual_validation else []
-                    }),
-                    statement_info.get('due_date'),
-                    statement_info.get('due_amount'),
-                    statement_info.get('minimum_payment')
-                ))
-                statement_id = cursor.lastrowid
+                if validation_check['action'] == 'update':
+                    # 更新现有账单而不是创建新的
+                    print(f"ℹ️  检测到重复账单，更新现有记录 ID: {validation_check['existing_statement_id']}")
+                    cursor.execute('''
+                        UPDATE statements 
+                        SET statement_total = ?, file_path = ?, file_type = ?, 
+                            validation_score = ?, is_confirmed = ?, inconsistencies = ?,
+                            due_date = ?, due_amount = ?, minimum_payment = ?
+                        WHERE id = ?
+                    ''', (
+                        statement_info['total'],
+                        organized_file_path,
+                        file_type,
+                        final_confidence,
+                        auto_confirmed,
+                        json.dumps({
+                            'old_validation': validation_result['inconsistencies'],
+                            'dual_validation_status': dual_validation.get_status() if dual_validation else 'N/A',
+                            'dual_validation_errors': dual_validation.errors if dual_validation else [],
+                            'dual_validation_warnings': dual_validation.warnings if dual_validation else []
+                        }),
+                        statement_info.get('due_date'),
+                        statement_info.get('due_amount'),
+                        statement_info.get('minimum_payment'),
+                        validation_check['existing_statement_id']
+                    ))
+                    statement_id = validation_check['existing_statement_id']
+                    
+                    # 删除旧交易记录
+                    cursor.execute('DELETE FROM transactions WHERE statement_id = ?', (statement_id,))
+                    flash(f'ℹ️  {validation_check["reason"]}', 'info')
+                else:
+                    # 创建新账单
+                    cursor.execute('''
+                        INSERT INTO statements 
+                        (card_id, statement_date, statement_total, file_path, file_type, 
+                         validation_score, is_confirmed, inconsistencies, due_date, due_amount, minimum_payment)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ''', (
+                        card_id,
+                        stmt_date,
+                        statement_info['total'],
+                        organized_file_path,
+                        file_type,
+                        final_confidence,
+                        auto_confirmed,
+                        json.dumps({
+                            'old_validation': validation_result['inconsistencies'],
+                            'dual_validation_status': dual_validation.get_status() if dual_validation else 'N/A',
+                            'dual_validation_errors': dual_validation.errors if dual_validation else [],
+                            'dual_validation_warnings': dual_validation.warnings if dual_validation else []
+                        }),
+                        statement_info.get('due_date'),
+                        statement_info.get('due_amount'),
+                        statement_info.get('minimum_payment')
+                    ))
+                    statement_id = cursor.lastrowid
                 
                 for trans in transactions:
                     category, confidence = categorize_transaction(trans['description'])
