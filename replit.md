@@ -70,13 +70,19 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **SQLite**: File-based relational database (`db/smart_loan_manager.db`), with WAL mode and centralized connection management.
 
 ### File Storage
-- **Local File System with Automatic Organization**: 
-  - **Mandatory organized structure** using `StatementOrganizer` service:
-    - `static/uploads/{customer_name}/{year}-{month}/statements/` for credit card statements
-    - `static/uploads/{customer_name}/{year}-{month}/statements/` for savings account statements
+- **Local File System with 4-Level Hierarchical Organization**: 
+  - **Mandatory organized structure** using `StatementOrganizer` service with category/bank separation:
+    - **Credit Cards**: `static/uploads/{customer_name}/credit_cards/{bank_name}/{YYYY-MM}/`
+    - **Savings Accounts**: `static/uploads/{customer_name}/savings/{bank_name}/{YYYY-MM}/`
     - File naming: `{BankName}_{Last4Digits}_{YYYY-MM-DD}.pdf`
-  - `static/uploads/receipts/{customer_id}/{card_last4}/` for matched receipts
-  - `static/uploads/receipts/pending/` for unmatched receipts
-  - `static/uploads/{customer_name}/{year}-{month}/reports/` for generated PDF reports
-  - **All file uploads are automatically organized by customer name and statement month**
+  - **Receipts**: 
+    - Matched: `static/uploads/receipts/{customer_id}/{card_last4}/`
+    - Unmatched: `static/uploads/receipts/pending/`
+  - **All file uploads are automatically organized by customer → category → bank → month**
   - **File paths are stored in database and served via `/view_statement_file/<statement_id>` route**
+  
+  **Organization Benefits:**
+  - Easy browsing: Navigate by customer → view categories (credit cards vs savings) → select bank → pick month
+  - Clear separation: Credit card and savings statements never mix
+  - Bank isolation: Each bank's statements stored independently
+  - Scalability: Structure supports unlimited customers, banks, and months

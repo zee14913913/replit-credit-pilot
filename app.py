@@ -368,7 +368,7 @@ def add_credit_card(customer_id):
         if request.method == 'POST':
             bank_name = request.form.get('bank_name')
             card_number_last4 = request.form.get('card_number_last4')
-            credit_limit = float(request.form.get('credit_limit', 0))
+            credit_limit = int(float(request.form.get('credit_limit', 0)))
             due_date_str = request.form.get('due_date')
             
             # 验证必填字段
