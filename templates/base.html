@@ -40,11 +40,6 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ 'active' if request.endpoint == 'upload_statement' }}" href="{{ url_for('upload_statement') }}">
-                        {{ t('nav_upload') }}
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link {{ 'active' if 'credit_card_ledger' in request.endpoint }}" href="{{ url_for('credit_card_ledger') }}">
                         {{ t('nav_cc_ledger') }}
                     </a>
@@ -145,7 +140,7 @@
                 <div class="footer-column">
                     <h4 class="footer-heading">{{ t('footer_credit_card') }}</h4>
                     <ul class="footer-menu">
-                        <li><a href="{{ url_for('upload_statement') }}" class="footer-link">{{ t('footer_upload') }}</a></li>
+                        <li><a href="{{ url_for('credit_card_ledger') }}" class="footer-link">{{ t('footer_upload') }}</a></li>
                         <li><a href="{{ url_for('reminders') }}" class="footer-link">{{ t('nav_reminders') }}</a></li>
                         <li><a href="{{ url_for('index') }}" class="footer-link">{{ t('footer_monthly_summary') }}</a></li>
                     </ul>
@@ -208,8 +203,8 @@
                                 </li>
                                 <li>
                                     <strong>Upload Credit Card Statements / 上传信用卡账单:</strong>
-                                    <div class="en">Navigation bar → "Upload" → Select customer → Upload PDF (15 Malaysian banks supported)</div>
-                                    <div class="cn">导航栏点击"Upload" → 选择客户 → 上传PDF账单（支持15家马来西亚银行）</div>
+                                    <div class="en">Navigation bar → "CC Ledger" → Click "Show Upload Form" → Select card → Upload PDF (15 Malaysian banks supported)</div>
+                                    <div class="cn">导航栏点击"CC Ledger" → 点击"显示上传表单" → 选择信用卡 → 上传PDF账单（支持15家马来西亚银行）</div>
                                 </li>
                                 <li>
                                     <strong>Upload Savings Statements / 上传储蓄账单:</strong>

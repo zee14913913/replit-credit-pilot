@@ -413,8 +413,9 @@ def add_credit_card(customer_id):
                           customer=customer,
                           existing_cards=existing_cards)
 
-@app.route('/upload_statement', methods=['GET', 'POST'])
-def upload_statement():
+# 已废弃：上传功能已整合到 CC Ledger 页面 (/credit-card/ledger)
+# @app.route('/upload_statement', methods=['GET', 'POST'])
+def upload_statement_deprecated():
     if request.method == 'POST':
         card_id = request.form.get('card_id')
         file = request.files.get('statement_file')

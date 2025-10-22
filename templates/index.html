@@ -38,7 +38,7 @@
                         <a href="{{ url_for('customer_dashboard', customer_id=customer.id) }}" class="btn-professional">
                             {{ t('view_dashboard') }}
                         </a>
-                        <a href="{{ url_for('upload_statement') }}?customer_id={{ customer.id }}" class="btn-professional-outline">
+                        <a href="{{ url_for('credit_card_ledger') }}" class="btn-professional-outline">
                             {{ t('upload_statement') }}
                         </a>
                         <a href="{{ url_for('analytics', customer_id=customer.id) }}" class="btn-professional-outline">
