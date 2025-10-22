@@ -78,11 +78,11 @@
                 <li class="nav-item">
                     {% if session.get('is_admin') %}
                     <a class="nav-link {{ 'active' if request.endpoint == 'admin_dashboard' }}" href="{{ url_for('admin_dashboard') }}">
-                        Admin
+                        {{ t('nav_admin') }}
                     </a>
                     {% else %}
                     <a class="nav-link {{ 'active' if request.endpoint == 'admin_login' }}" href="{{ url_for('admin_login') }}">
-                        Admin
+                        {{ t('nav_admin') }}
                     </a>
                     {% endif %}
                 </li>
@@ -138,38 +138,38 @@
             <div class="footer-columns">
                 <!-- Left Column: Credit Card -->
                 <div class="footer-column">
-                    <h4 class="footer-heading">Credit Card</h4>
+                    <h4 class="footer-heading">{{ t('footer_credit_card') }}</h4>
                     <ul class="footer-menu">
-                        <li><a href="{{ url_for('upload_statement') }}" class="footer-link">Upload</a></li>
-                        <li><a href="{{ url_for('reminders') }}" class="footer-link">Reminders</a></li>
-                        <li><a href="{{ url_for('index') }}" class="footer-link">Monthly Summary</a></li>
+                        <li><a href="{{ url_for('upload_statement') }}" class="footer-link">{{ t('footer_upload') }}</a></li>
+                        <li><a href="{{ url_for('reminders') }}" class="footer-link">{{ t('nav_reminders') }}</a></li>
+                        <li><a href="{{ url_for('index') }}" class="footer-link">{{ t('footer_monthly_summary') }}</a></li>
                     </ul>
                 </div>
                 
                 <!-- Center Column: Customers -->
                 <div class="footer-column">
-                    <h4 class="footer-heading">Customers</h4>
+                    <h4 class="footer-heading">{{ t('footer_customers') }}</h4>
                     <ul class="footer-menu">
-                        <li><a href="{{ url_for('customer_register') }}" class="footer-link">Register</a></li>
-                        <li><a href="{{ url_for('customer_login') }}" class="footer-link">Login</a></li>
-                        <li><a href="{{ url_for('customer_portal') }}" class="footer-link">Dashboard</a></li>
+                        <li><a href="{{ url_for('customer_register') }}" class="footer-link">{{ t('register') }}</a></li>
+                        <li><a href="{{ url_for('customer_login') }}" class="footer-link">{{ t('login') }}</a></li>
+                        <li><a href="{{ url_for('customer_portal') }}" class="footer-link">{{ t('nav_dashboard') }}</a></li>
                     </ul>
                 </div>
                 
                 <!-- Right Column: Services -->
                 <div class="footer-column">
-                    <h4 class="footer-heading">Services</h4>
+                    <h4 class="footer-heading">{{ t('footer_services') }}</h4>
                     <ul class="footer-menu">
-                        <li><a href="{{ url_for('loan_matcher') }}" class="footer-link">Loans</a></li>
-                        <li><a href="{{ url_for('customer_authorization') }}" class="footer-link">Business</a></li>
-                        <li><a href="{{ url_for('customer_authorization') }}" class="footer-link">Agreements</a></li>
+                        <li><a href="{{ url_for('loan_matcher') }}" class="footer-link">{{ t('footer_loans') }}</a></li>
+                        <li><a href="{{ url_for('customer_authorization') }}" class="footer-link">{{ t('footer_business') }}</a></li>
+                        <li><a href="{{ url_for('customer_authorization') }}" class="footer-link">{{ t('footer_agreements') }}</a></li>
                     </ul>
                 </div>
             </div>
             
             <!-- Bottom: Copyright -->
             <div class="footer-bottom">
-                <p class="footer-copyright">&copy; 2025 INFINITE GZ SDN BHD. All Rights Reserved</p>
+                <p class="footer-copyright">&copy; 2025 INFINITE GZ SDN BHD. {{ t('all_rights_reserved') }}</p>
             </div>
         </div>
     </footer>

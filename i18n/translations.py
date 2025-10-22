@@ -13,6 +13,7 @@ TRANSLATIONS = {
         'nav_receipts': 'Receipts',
         'nav_reminders': 'Reminders',
         'nav_news': 'News',
+        'nav_admin': 'Admin',
         'nav_admin_news': 'News Management',
         'nav_advisory': 'Financial Advisory',
         'nav_analytics': 'Analytics',
@@ -192,7 +193,15 @@ TRANSLATIONS = {
         'remember_policy': 'Remember: We only charge fees when we create value for you. If there are no benefits, we charge NOTHING!',
         
         # Footer
-        'all_rights_reserved': 'All rights reserved.',
+        'footer_credit_card': 'Credit Card',
+        'footer_customers': 'Customers',
+        'footer_services': 'Services',
+        'footer_upload': 'Upload',
+        'footer_monthly_summary': 'Monthly Summary',
+        'footer_loans': 'Loans',
+        'footer_business': 'Business',
+        'footer_agreements': 'Agreements',
+        'all_rights_reserved': 'All Rights Reserved',
         'powered_by': 'Powered by',
         
         # Customer Authorization Agreement
@@ -359,6 +368,7 @@ TRANSLATIONS = {
         'nav_receipts': '收据管理',
         'nav_reminders': '提醒',
         'nav_news': '资讯',
+        'nav_admin': '管理员',
         'nav_admin_news': '新闻管理',
         'nav_advisory': '财务咨询',
         'nav_analytics': '分析',
@@ -538,7 +548,15 @@ TRANSLATIONS = {
         'remember_policy': '记住：只有当我们为您节省或赚取收益后，我们才收取费用（50%收益分成）。如果没有为您创造任何价值，我们不收取任何费用！',
         
         # Footer
-        'all_rights_reserved': '版权所有。',
+        'footer_credit_card': '信用卡',
+        'footer_customers': '客户',
+        'footer_services': '服务',
+        'footer_upload': '上传',
+        'footer_monthly_summary': '月度汇总',
+        'footer_loans': '贷款',
+        'footer_business': '业务',
+        'footer_agreements': '协议',
+        'all_rights_reserved': '版权所有',
         'powered_by': '技术支持',
         
         # Customer Authorization Agreement
