@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}收据管理系统 - Receipt Management{% endblock %}
+{% block title %}{{ t('receipt_management_system') }}{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="galaxy-heading mb-4">
-                <i class="bi bi-receipt"></i> 收据管理系统
+                <i class="bi bi-receipt"></i> {{ t('receipt_management_system') }}
             </h1>
             
             <div class="glass-panel p-4 mb-4">
@@ -15,25 +15,25 @@
                     <div class="col-md-3">
                         <div class="metric-card">
                             <h3 class="text-silver">{{ stats.total or 0 }}</h3>
-                            <p class="text-muted">总收据数</p>
+                            <p class="text-muted">{{ t('total_receipts') }}</p>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="metric-card">
                             <h3 class="text-success">{{ stats.auto_matched or 0 }}</h3>
-                            <p class="text-muted">自动匹配</p>
+                            <p class="text-muted">{{ t('auto_matched') }}</p>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="metric-card">
                             <h3 class="text-info">{{ stats.manual_matched or 0 }}</h3>
-                            <p class="text-muted">手动匹配</p>
+                            <p class="text-muted">{{ t('manual_matched') }}</p>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="metric-card">
                             <h3 class="text-warning">{{ stats.pending or 0 }}</h3>
-                            <p class="text-muted">待匹配</p>
+                            <p class="text-muted">{{ t('pending_receipts') }}</p>
                         </div>
                     </div>
                 </div>
@@ -41,31 +41,31 @@
             
             <div class="mb-4">
                 <a href="{{ url_for('receipts_upload') }}" class="btn btn-primary btn-lg">
-                    <i class="bi bi-cloud-upload"></i> 上传收据
+                    <i class="bi bi-cloud-upload"></i> {{ t('upload_receipt') }}
                 </a>
                 <a href="{{ url_for('receipts_pending') }}" class="btn btn-warning btn-lg ms-2">
-                    <i class="bi bi-exclamation-triangle"></i> 待匹配收据 ({{ stats.pending or 0 }})
+                    <i class="bi bi-exclamation-triangle"></i> {{ t('pending_receipts') }} ({{ stats.pending or 0 }})
                 </a>
             </div>
         </div>
     </div>
     
     <div class="glass-panel p-4">
-        <h3 class="text-silver mb-3">最近上传的收据</h3>
+        <h3 class="text-silver mb-3">{{ t('recent_receipts') }}</h3>
         
         {% if recent_receipts %}
         <div class="table-responsive">
             <table class="table table-dark table-hover">
                 <thead>
                     <tr>
-                        <th>文件名</th>
-                        <th>类型</th>
-                        <th>客户</th>
-                        <th>卡号</th>
-                        <th>日期</th>
-                        <th>金额</th>
-                        <th>状态</th>
-                        <th>上传时间</th>
+                        <th>{{ t('filename') }}</th>
+                        <th>{{ t('receipt_type') }}</th>
+                        <th>{{ t('customer') }}</th>
+                        <th>{{ t('card_number') }}</th>
+                        <th>{{ t('transaction_date') }}</th>
+                        <th>{{ t('amount') }}</th>
+                        <th>{{ t('status') }}</th>
+                        <th>{{ t('upload_time') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,9 +74,9 @@
                         <td>{{ receipt.original_filename }}</td>
                         <td>
                             {% if receipt.receipt_type == 'merchant_swipe' %}
-                            <span class="badge bg-info">商家刷卡</span>
+                            <span class="badge bg-info">{{ t('merchant_swipe') }}</span>
                             {% else %}
-                            <span class="badge bg-success">还款凭证</span>
+                            <span class="badge bg-success">{{ t('payment_proof') }}</span>
                             {% endif %}
                         </td>
                         <td>{{ receipt.customer_name or '-' }}</td>
@@ -85,11 +85,11 @@
                         <td>RM {{ "%.2f"|format(receipt.amount or 0) }}</td>
                         <td>
                             {% if receipt.match_status == 'auto_matched' %}
-                            <span class="badge bg-success">自动匹配</span>
+                            <span class="badge bg-success">{{ t('auto_matched') }}</span>
                             {% elif receipt.match_status == 'manual_matched' %}
-                            <span class="badge bg-info">手动匹配</span>
+                            <span class="badge bg-info">{{ t('manual_matched') }}</span>
                             {% else %}
-                            <span class="badge bg-warning">待匹配</span>
+                            <span class="badge bg-warning">{{ t('pending_match') }}</span>
                             {% endif %}
                         </td>
                         <td>{{ receipt.created_at }}</td>
@@ -99,9 +99,9 @@
             </table>
         </div>
         {% else %}
-        <p class="text-muted text-center py-5">
+        <p class="text-center py-5" style="color: #f0f0f0; text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);">
             <i class="bi bi-inbox" style="font-size: 3rem;"></i><br>
-            还没有上传任何收据
+            {{ t('no_receipts_uploaded') }}
         </p>
         {% endif %}
     </div>

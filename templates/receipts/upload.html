@@ -1,53 +1,53 @@
 {% extends "base.html" %}
 
-{% block title %}上传收据 - Upload Receipts{% endblock %}
+{% block title %}{{ t('upload_receipt') }}{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-8 offset-md-2">
             <h1 class="galaxy-heading mb-4">
-                <i class="bi bi-cloud-upload"></i> 上传收据
+                <i class="bi bi-cloud-upload"></i> {{ t('upload_receipt') }}
             </h1>
             
             <div class="glass-panel p-4">
                 <form action="{{ url_for('receipts_upload') }}" method="POST" enctype="multipart/form-data">
                     <div class="mb-4">
-                        <label class="form-label text-silver">收据类型</label>
+                        <label class="form-label text-silver">{{ t('receipt_type') }}</label>
                         <select name="receipt_type" class="form-select bg-dark text-white" required>
-                            <option value="merchant_swipe">商家刷卡收据</option>
-                            <option value="payment">信用卡还款凭证</option>
+                            <option value="merchant_swipe">{{ t('merchant_swipe_receipt') }}</option>
+                            <option value="payment">{{ t('credit_card_payment') }}</option>
                         </select>
                         <small class="form-text text-muted">
-                            商家刷卡收据用于核对消费，还款凭证用于核对付款记录
+                            {{ t('receipt_type_help') }}
                         </small>
                     </div>
                     
                     <div class="mb-4">
-                        <label class="form-label text-silver">选择收据图片（支持批量上传）</label>
+                        <label class="form-label text-silver">{{ t('select_receipt_images') }}</label>
                         <input type="file" name="receipt_files" class="form-control bg-dark text-white" 
                                accept="image/*" multiple required>
                         <small class="form-text text-muted">
-                            支持格式：JPG, PNG, GIF, BMP, TIFF | 支持同时选择多个文件
+                            {{ t('supported_formats_receipt') }}
                         </small>
                     </div>
                     
                     <div class="alert alert-info">
-                        <h6><i class="bi bi-info-circle"></i> 智能识别说明</h6>
+                        <h6><i class="bi bi-info-circle"></i> {{ t('smart_recognition_info') }}</h6>
                         <ul class="mb-0">
-                            <li>系统将自动识别收据中的卡号后4位、日期、金额和商家名称</li>
-                            <li>自动匹配到对应的客户和信用卡</li>
-                            <li>如果无法自动匹配，您可以手动指定</li>
-                            <li>收据将按客户和卡号自动分类存储</li>
+                            <li>{{ t('ocr_will_extract') }}</li>
+                            <li>{{ t('auto_match_customer') }}</li>
+                            <li>{{ t('manual_match_option') }}</li>
+                            <li>{{ t('auto_file_by_customer') }}</li>
                         </ul>
                     </div>
                     
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-upload"></i> 开始上传
+                            <i class="bi bi-upload"></i> {{ t('start_upload') }}
                         </button>
                         <a href="{{ url_for('receipts_home') }}" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i> 返回
+                            <i class="bi bi-arrow-left"></i> {{ t('back') }}
                         </a>
                     </div>
                 </form>

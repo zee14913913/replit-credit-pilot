@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container mt-5">
     <h1 class="galaxy-heading mb-4">
-        <i class="bi bi-exclamation-triangle"></i> 待匹配收据
+        <i class="bi bi-exclamation-triangle"></i> {{ t('pending_receipts') }}
     </h1>
     
     {% if pending_receipts %}
@@ -14,51 +14,51 @@
         <div class="card bg-dark text-white mb-3">
             <div class="card-header">
                 <h5>{{ receipt.original_filename }}</h5>
-                <small class="text-muted">上传时间: {{ receipt.created_at }}</small>
+                <small class="text-muted">{{ t('upload_date') }}: {{ receipt.created_at }}</small>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
                         {% if receipt.file_path %}
                         <img src="{{ url_for('static', filename='uploads/' + receipt.file_path) }}" 
-                             class="img-fluid rounded" alt="收据图片">
+                             class="img-fluid rounded" alt="{{ t('receipt_image') }}">
                         {% endif %}
                     </div>
                     <div class="col-md-8">
-                        <h6 class="text-silver">OCR识别结果</h6>
+                        <h6 class="text-silver">{{ t('ocr_results') }}</h6>
                         <ul class="list-unstyled">
-                            <li><strong>卡号后4位:</strong> ****{{ receipt.card_last4 or '未识别' }}</li>
-                            <li><strong>交易日期:</strong> {{ receipt.transaction_date or '未识别' }}</li>
-                            <li><strong>金额:</strong> RM {{ "%.2f"|format(receipt.amount or 0) if receipt.amount else '未识别' }}</li>
-                            <li><strong>商家:</strong> {{ receipt.merchant_name or '未识别' }}</li>
+                            <li><strong>{{ t('card_last4') }}:</strong> ****{{ receipt.card_last4 or t('not_recognized') }}</li>
+                            <li><strong>{{ t('transaction_date') }}:</strong> {{ receipt.transaction_date or t('not_recognized') }}</li>
+                            <li><strong>{{ t('amount') }}:</strong> RM {{ "%.2f"|format(receipt.amount or 0) if receipt.amount else t('not_recognized') }}</li>
+                            <li><strong>{{ t('merchant') }}:</strong> {{ receipt.merchant_name or t('not_recognized') }}</li>
                         </ul>
                         
                         <hr>
                         
-                        <h6 class="text-silver">手动匹配</h6>
+                        <h6 class="text-silver">{{ t('manual_match') }}</h6>
                         <form id="match-form-{{ receipt.id }}">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label class="form-label">选择客户</label>
+                                    <label class="form-label">{{ t('select_customer') }}</label>
                                     <select class="form-select bg-dark text-white customer-select" 
                                             data-receipt-id="{{ receipt.id }}" required>
-                                        <option value="">-- 选择客户 --</option>
+                                        <option value="">{{ t('select_customer_placeholder') }}</option>
                                         {% for customer in customers %}
                                         <option value="{{ customer.id }}">{{ customer.name }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">选择信用卡</label>
+                                    <label class="form-label">{{ t('select_credit_card') }}</label>
                                     <select class="form-select bg-dark text-white card-select" 
                                             id="card-select-{{ receipt.id }}" required>
-                                        <option value="">-- 先选择客户 --</option>
+                                        <option value="">{{ t('select_customer_first') }}</option>
                                     </select>
                                 </div>
                             </div>
                             <button type="button" class="btn btn-success mt-3 match-btn" 
                                     data-receipt-id="{{ receipt.id }}">
-                                <i class="bi bi-check-circle"></i> 确认匹配
+                                <i class="bi bi-check-circle"></i> {{ t('confirm_match') }}
                             </button>
                         </form>
                     </div>
@@ -70,10 +70,10 @@
     {% else %}
     <div class="glass-panel p-5 text-center">
         <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
-        <h3 class="mt-3 text-silver">太棒了！</h3>
-        <p class="text-muted">所有收据都已成功匹配</p>
+        <h3 class="mt-3 text-silver">{{ t('all_receipts_matched') }}</h3>
+        <p class="text-muted">{{ t('all_matched_message') }}</p>
         <a href="{{ url_for('receipts_home') }}" class="btn btn-primary mt-3">
-            <i class="bi bi-house"></i> 返回主页
+            <i class="bi bi-house"></i> {{ t('back_to_home') }}
         </a>
     </div>
     {% endif %}
@@ -88,14 +88,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const cardSelect = document.getElementById(`card-select-${receiptId}`);
             
             if (!customerId) {
-                cardSelect.innerHTML = '<option value="">-- 先选择客户 --</option>';
+                cardSelect.innerHTML = '<option value="">{{ t('select_customer_first') }}</option>';
                 return;
             }
             
             fetch(`/api/customer/${customerId}/cards`)
                 .then(response => response.json())
                 .then(cards => {
-                    cardSelect.innerHTML = '<option value="">-- 选择信用卡 --</option>';
+                    cardSelect.innerHTML = '<option value="">{{ t('select_card_placeholder') }}</option>';
                     cards.forEach(card => {
                         const option = document.createElement('option');
                         option.value = card.card_id;
