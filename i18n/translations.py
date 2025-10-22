@@ -339,11 +339,23 @@ TRANSLATIONS = {
         'standard': 'Standard',
         
         # Upload Statement
+        'upload_subtitle': 'Upload PDF or Excel statements for automatic parsing and verification',
         'statement_upload_form': 'Statement Upload Form',
         'select_credit_card': 'Select Credit Card',
         'choose_credit_card': 'Choose a credit card...',
         'select_card_help': 'Select the card associated with this statement',
         'statement_file': 'Statement File',
+        'supported_formats': 'Supported formats: PDF, Excel (.xlsx, .xls) | Max size: 16MB',
+        'dual_verification_system': 'Dual Verification System:',
+        'dual_verification_desc': 'Your statement will be automatically parsed and cross-verified against official PDF totals to ensure 100% accuracy.',
+        'upload_parse_statement': 'Upload & Parse Statement',
+        'back_to_dashboard': 'Back to Dashboard',
+        'accurate_100': '100% Accurate',
+        'dual_verification': 'Dual verification',
+        'instant_ocr': 'Instant OCR',
+        'scanned_pdf_support': 'Scanned PDF support',
+        'auto_categorize': 'Auto Categorize',
+        'smart_classification': 'Smart classification',
         'batch_upload_statements': 'Batch Upload Statements',
         
         # Reminders
@@ -694,11 +706,23 @@ TRANSLATIONS = {
         'standard': '标准',
         
         # Upload Statement
+        'upload_subtitle': '上传PDF或Excel账单，系统将自动解析并验证',
         'statement_upload_form': '账单上传表单',
         'select_credit_card': '选择信用卡',
         'choose_credit_card': '选择信用卡...',
         'select_card_help': '选择与此账单关联的信用卡',
         'statement_file': '账单文件',
+        'supported_formats': '支持格式：PDF、Excel (.xlsx, .xls) | 最大尺寸：16MB',
+        'dual_verification_system': '双重验证系统：',
+        'dual_verification_desc': '您的账单将自动解析，并与官方PDF总额进行交叉验证，确保100%准确性。',
+        'upload_parse_statement': '上传并解析账单',
+        'back_to_dashboard': '返回仪表板',
+        'accurate_100': '100%准确',
+        'dual_verification': '双重验证',
+        'instant_ocr': '即时OCR',
+        'scanned_pdf_support': '支持扫描PDF',
+        'auto_categorize': '自动分类',
+        'smart_classification': '智能分类',
         'batch_upload_statements': '批量上传账单',
         
         # Reminders
