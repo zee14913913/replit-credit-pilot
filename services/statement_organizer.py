@@ -1,11 +1,20 @@
 """
 Statement Organizer Service
-按Statement Date智能分月归档系统
+智能文件分类归档系统
 
-核心逻辑：
-- 以Statement Date为分月标准（不是Due Date）
-- 自动创建客户文件夹结构：客户名/年月/信用卡账单
-- 每月30号自动统计生成优化方案
+新层级结构：
+客户名/
+  ├── credit_cards/      (信用卡类别)
+  │   ├── Maybank/      (银行1)
+  │   │   ├── 2024-11/  (月份1)
+  │   │   └── 2024-12/  (月份2)
+  │   └── CIMB/         (银行2)
+  │       └── 2025-01/
+  └── savings/          (储蓄/来往账户类别)
+      ├── GX_Bank/
+      │   └── 2024-12/
+      └── Maybank/
+          └── 2025-01/
 """
 
 import os
@@ -16,7 +25,11 @@ import re
 
 
 class StatementOrganizer:
-    """智能账单归档管理器"""
+    """智能账单归档管理器 - 按客户/类别/银行/月份四级分类"""
+    
+    # 账单类别常量
+    CATEGORY_CREDIT_CARD = 'credit_cards'
+    CATEGORY_SAVINGS = 'savings'
     
     def __init__(self, base_upload_folder='static/uploads'):
         self.base_folder = base_upload_folder
@@ -60,55 +73,57 @@ class StatementOrganizer:
         
         return statement_date.year, statement_date.month
     
-    def create_customer_folder_structure(self, customer_name, year, month):
+    def sanitize_name(self, name):
+        """清理名称，移除特殊字符"""
+        return re.sub(r'[^\w\s-]', '', name).strip().replace(' ', '_')
+    
+    def create_folder_structure(self, customer_name, category, bank_name, year, month):
         """
-        创建客户文件夹结构
+        创建四级文件夹结构
         
         结构：
         uploads/
         └── {customer_name}/
-            └── {year}-{month:02d}/
-                ├── statements/     (原始账单文件)
-                ├── transactions/   (提取的交易数据)
-                └── reports/        (生成的报告)
+            ├── credit_cards/
+            │   └── {bank_name}/
+            │       └── {year}-{month:02d}/
+            └── savings/
+                └── {bank_name}/
+                    └── {year}-{month:02d}/
         
         Args:
             customer_name: 客户名称
+            category: 类别 ('credit_cards' 或 'savings')
+            bank_name: 银行名称
             year: 年份
             month: 月份
             
         Returns:
-            dict: 包含所有文件夹路径的字典
+            str: 完整的文件夹路径
         """
-        # 清理客户名称（移除特殊字符）
-        safe_customer_name = re.sub(r'[^\w\s-]', '', customer_name).strip().replace(' ', '_')
+        # 清理名称
+        safe_customer_name = self.sanitize_name(customer_name)
+        safe_bank_name = self.sanitize_name(bank_name)
         
-        # 主文件夹路径
+        # 构建路径：客户/类别/银行/月份
         month_folder = f"{year}-{month:02d}"
-        base_path = Path(self.base_folder) / safe_customer_name / month_folder
+        folder_path = Path(self.base_folder) / safe_customer_name / category / safe_bank_name / month_folder
         
-        # 创建子文件夹
-        folders = {
-            'base': str(base_path),
-            'statements': str(base_path / 'statements'),
-            'transactions': str(base_path / 'transactions'),
-            'reports': str(base_path / 'reports')
-        }
+        # 创建文件夹
+        os.makedirs(folder_path, exist_ok=True)
         
-        for folder in folders.values():
-            os.makedirs(folder, exist_ok=True)
-        
-        return folders
+        return str(folder_path)
     
-    def organize_statement(self, file_path, customer_name, statement_date, card_info):
+    def organize_statement(self, file_path, customer_name, statement_date, card_info, category=CATEGORY_CREDIT_CARD):
         """
-        归档账单文件到正确的月份文件夹
+        归档账单文件到正确的层级文件夹
         
         Args:
             file_path: 上传的文件路径
             customer_name: 客户名称
             statement_date: 账单日期（string or datetime）
-            card_info: 信用卡信息 (dict with bank_name, last_4_digits)
+            card_info: 信用卡/储蓄账户信息 (dict with bank_name, last_4_digits)
+            category: 类别 ('credit_cards' 或 'savings')
             
         Returns:
             dict: 归档后的文件路径信息
@@ -121,16 +136,21 @@ class StatementOrganizer:
         
         year, month = self.get_statement_month_year(stmt_date)
         
+        # 获取银行名称
+        bank_name = card_info.get('bank_name', 'UNKNOWN_BANK')
+        
         # 创建文件夹结构
-        folders = self.create_customer_folder_structure(customer_name, year, month)
+        folder_path = self.create_folder_structure(
+            customer_name, category, bank_name, year, month
+        )
         
         # 生成新文件名：BankName_Last4Digits_YYYY-MM-DD.pdf
         file_extension = os.path.splitext(file_path)[1]
-        safe_bank_name = re.sub(r'[^\w\s-]', '', card_info.get('bank_name', 'BANK')).replace(' ', '_')
+        safe_bank_name = self.sanitize_name(bank_name)
         new_filename = f"{safe_bank_name}_{card_info.get('last_4_digits', '0000')}_{stmt_date.strftime('%Y-%m-%d')}{file_extension}"
         
         # 目标路径
-        destination = os.path.join(folders['statements'], new_filename)
+        destination = os.path.join(folder_path, new_filename)
         
         # 复制文件到归档位置
         shutil.copy2(file_path, destination)
@@ -138,27 +158,32 @@ class StatementOrganizer:
         return {
             'original_path': file_path,
             'archived_path': destination,
+            'category': category,
+            'bank_name': bank_name,
             'year': year,
             'month': month,
-            'month_folder': folders['base'],
-            'folders': folders
+            'folder_path': folder_path
         }
     
-    def get_monthly_statements(self, customer_name, year, month):
+    def get_monthly_statements(self, customer_name, category, bank_name, year, month):
         """
-        获取指定客户指定月份的所有账单
+        获取指定客户/类别/银行/月份的所有账单
         
         Args:
             customer_name: 客户名称
+            category: 类别 ('credit_cards' 或 'savings')
+            bank_name: 银行名称
             year: 年份
             month: 月份
             
         Returns:
             list: 账单文件路径列表
         """
-        safe_customer_name = re.sub(r'[^\w\s-]', '', customer_name).strip().replace(' ', '_')
+        safe_customer_name = self.sanitize_name(customer_name)
+        safe_bank_name = self.sanitize_name(bank_name)
         month_folder = f"{year}-{month:02d}"
-        statements_folder = Path(self.base_folder) / safe_customer_name / month_folder / 'statements'
+        
+        statements_folder = Path(self.base_folder) / safe_customer_name / category / safe_bank_name / month_folder
         
         if not statements_folder.exists():
             return []
@@ -175,61 +200,51 @@ class StatementOrganizer:
         
         return statements
     
-    def should_generate_monthly_report(self, customer_name, year, month):
+    def get_customer_all_statements(self, customer_name):
         """
-        检查是否应该生成月度报告
-        
-        规则：每月30号自动生成
+        获取客户所有账单（信用卡+储蓄）
         
         Args:
             customer_name: 客户名称
-            year: 年份
-            month: 月份
             
         Returns:
-            bool: True if should generate report
+            dict: 包含信用卡和储蓄账户的所有账单
         """
-        today = datetime.now()
+        safe_customer_name = self.sanitize_name(customer_name)
+        customer_folder = Path(self.base_folder) / safe_customer_name
         
-        # 检查是否是30号或月末
-        if today.day >= 30:
-            # 检查指定月份的报告是否已存在
-            safe_customer_name = re.sub(r'[^\w\s-]', '', customer_name).strip().replace(' ', '_')
-            month_folder = f"{year}-{month:02d}"
-            reports_folder = Path(self.base_folder) / safe_customer_name / month_folder / 'reports'
-            
-            if reports_folder.exists():
-                # 检查是否已有月度报告
-                report_files = list(reports_folder.glob('monthly_report_*.pdf'))
-                if not report_files:
-                    return True
-        
-        return False
-    
-    def get_customer_monthly_summary(self, customer_name, year, month):
-        """
-        获取客户指定月份的汇总数据
-        用于生成优化方案对比
-        
-        Args:
-            customer_name: 客户名称
-            year: 年份
-            month: 月份
-            
-        Returns:
-            dict: 月度汇总数据
-        """
-        statements = self.get_monthly_statements(customer_name, year, month)
-        
-        return {
-            'customer_name': customer_name,
-            'year': year,
-            'month': month,
-            'total_statements': len(statements),
-            'statements': statements,
-            'period': f"{year}-{month:02d}",
-            'ready_for_report': len(statements) > 0
+        result = {
+            'credit_cards': {},
+            'savings': {}
         }
+        
+        if not customer_folder.exists():
+            return result
+        
+        # 遍历两大类别
+        for category in [self.CATEGORY_CREDIT_CARD, self.CATEGORY_SAVINGS]:
+            category_folder = customer_folder / category
+            if not category_folder.exists():
+                continue
+            
+            # 遍历银行
+            for bank_folder in category_folder.iterdir():
+                if not bank_folder.is_dir():
+                    continue
+                
+                bank_name = bank_folder.name
+                result[category][bank_name] = {}
+                
+                # 遍历月份
+                for month_folder in bank_folder.iterdir():
+                    if not month_folder.is_dir():
+                        continue
+                    
+                    month_key = month_folder.name  # 例如 "2024-11"
+                    files = [f.name for f in month_folder.iterdir() if f.is_file()]
+                    result[category][bank_name][month_key] = files
+        
+        return result
     
     def calculate_due_date(self, statement_date, days_offset=21):
         """
@@ -253,13 +268,24 @@ class StatementOrganizer:
 if __name__ == "__main__":
     organizer = StatementOrganizer()
     
-    # 示例：归档一个账单
-    # statement_date = "28/10/2025"
+    # 示例：归档一个信用卡账单
     # card_info = {'bank_name': 'Maybank', 'last_4_digits': '1234'}
     # result = organizer.organize_statement(
     #     'uploads/temp_file.pdf',
-    #     'cheok jun yoon',
-    #     statement_date,
-    #     card_info
+    #     'Chang',
+    #     '2025-01-28',
+    #     card_info,
+    #     category=StatementOrganizer.CATEGORY_CREDIT_CARD
     # )
-    # print(f"归档完成：{result}")
+    # print(f"✅ 信用卡账单归档完成：{result['archived_path']}")
+    
+    # 示例：归档一个储蓄账户账单
+    # savings_info = {'bank_name': 'GX Bank', 'last_4_digits': '5678'}
+    # result = organizer.organize_statement(
+    #     'uploads/temp_file.pdf',
+    #     'Chang',
+    #     '2024-12-31',
+    #     savings_info,
+    #     category=StatementOrganizer.CATEGORY_SAVINGS
+    # )
+    # print(f"✅ 储蓄账单归档完成：{result['archived_path']}")

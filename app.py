@@ -579,7 +579,8 @@ def upload_statement():
                     {
                         'bank_name': card_info['bank_name'],
                         'last_4_digits': card_info['card_number_last4']
-                    }
+                    },
+                    category=StatementOrganizer.CATEGORY_CREDIT_CARD
                 )
                 
                 # 使用组织后的文件路径
@@ -3066,9 +3067,10 @@ def upload_savings_statement():
                                 customer_name,
                                 stmt_date,
                                 {
-                                    'bank_name': info['bank_name'] + '_Savings',
+                                    'bank_name': info['bank_name'],
                                     'last_4_digits': info.get('account_last4', '0000')
-                                }
+                                },
+                                category=StatementOrganizer.CATEGORY_SAVINGS
                             )
                             
                             organized_file_path = organize_result['archived_path']
