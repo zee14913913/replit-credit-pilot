@@ -74,8 +74,16 @@ class StatementOrganizer:
         return statement_date.year, statement_date.month
     
     def sanitize_name(self, name):
-        """清理名称，移除特殊字符"""
-        return re.sub(r'[^\w\s-]', '', name).strip().replace(' ', '_')
+        """
+        清理名称，移除特殊字符并标准化大小写
+        银行名称统一使用首字母大写格式（Title Case）
+        """
+        # 清理特殊字符
+        clean_name = re.sub(r'[^\w\s-]', '', name).strip()
+        # 标准化大小写：每个单词首字母大写
+        clean_name = clean_name.title()
+        # 替换空格为下划线
+        return clean_name.replace(' ', '_')
     
     def create_folder_structure(self, customer_name, category, bank_name, year, month):
         """
