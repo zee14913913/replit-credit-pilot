@@ -27,7 +27,7 @@
             {% for month in year_data.months %}
             <div class="col-6 col-sm-4 col-md-3 col-lg-2">
                 {% if month.has_statements %}
-                <a href="{{ url_for('credit_card_ledger_monthly', customer_id=customer.id, year=year_data.year, month=month.number|string|zfill(2)) }}" style="text-decoration: none;">
+                <a href="{{ url_for('credit_card_ledger_monthly', customer_id=customer.id, year=year_data.year, month="%02d"|format(month.number)) }}" style="text-decoration: none;">
                     <div class="month-cell active">
                         <div class="month-name">{{ month.name }}</div>
                         <div class="month-badge">{{ month.statements|length }}</div>
