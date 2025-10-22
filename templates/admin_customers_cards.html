@@ -128,6 +128,30 @@
                                 {% endif %}
                             </span>
                         </div>
+                        {% if card.latest_due_amount %}
+                        <div class="detail-row">
+                            <span class="detail-label">本月应付:</span>
+                            <span class="detail-value due-amount">RM {{ "{:,.2f}".format(card.latest_due_amount) }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">到期日:</span>
+                            <span class="detail-value">{{ card.latest_due_date }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="detail-row">
+                            <span class="detail-label">总欠款:</span>
+                            <span class="detail-value outstanding-amount">RM {{ "{:,.2f}".format(card.total_outstanding or 0) }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">可用额度:</span>
+                            <span class="detail-value available-credit">
+                                {% if card.credit_limit %}
+                                RM {{ "{:,.2f}".format(card.credit_limit - (card.total_outstanding or 0)) }}
+                                {% else %}
+                                N/A
+                                {% endif %}
+                            </span>
+                        </div>
                     </div>
                     
                     <!-- Instalment Plans Section -->
@@ -495,6 +519,23 @@
 .balance-amount {
     color: #F59E0B;
     font-weight: 600;
+}
+
+.due-amount {
+    color: #EF4444;
+    font-weight: 600;
+}
+
+.outstanding-amount {
+    color: #F59E0B;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.available-credit {
+    color: #10B981;
+    font-weight: 700;
+    font-size: 1.1rem;
 }
 
 @media (max-width: 768px) {

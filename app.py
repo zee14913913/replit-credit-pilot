@@ -1578,7 +1578,10 @@ def admin_customers_cards():
                     cc.due_date,
                     COUNT(DISTINCT s.id) as statement_count,
                     MAX(s.statement_date) as last_statement_date,
-                    SUM(t.amount) as total_spending
+                    SUM(t.amount) as total_spending,
+                    (SELECT due_amount FROM statements WHERE card_id = cc.id ORDER BY statement_date DESC LIMIT 1) as latest_due_amount,
+                    (SELECT due_date FROM statements WHERE card_id = cc.id ORDER BY statement_date DESC LIMIT 1) as latest_due_date,
+                    (SELECT COALESCE(SUM(due_amount - COALESCE(paid_amount, 0)), 0) FROM statements WHERE card_id = cc.id AND payment_status != 'paid') as total_outstanding
                 FROM credit_cards cc
                 LEFT JOIN statements s ON cc.id = s.card_id
                 LEFT JOIN transactions t ON s.id = t.statement_id
