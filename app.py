@@ -15,7 +15,7 @@ from validate.categorizer import categorize_transaction, validate_statement, get
 from validate.transaction_validator import validate_transactions, generate_validation_report
 from validate.reminder_service import check_and_send_reminders, create_reminder, get_pending_reminders, mark_as_paid
 from loan.dsr_calculator import calculate_dsr, calculate_max_loan_amount, simulate_loan_scenarios
-from news.bnm_api import get_latest_rates, save_bnm_rates, add_banking_news, get_all_banking_news
+# Removed: News management feature deleted
 from report.pdf_generator import generate_monthly_report
 import pdfplumber
 
@@ -23,7 +23,7 @@ import pdfplumber
 from export.export_service import ExportService
 from search.search_service import SearchService
 from batch.batch_service import BatchService
-from budget.budget_service import BudgetService
+# Removed: Budget management feature deleted
 from email_service.email_sender import EmailService
 from db.tag_service import TagService
 
@@ -69,7 +69,7 @@ from services.receipt_matcher import ReceiptMatcher
 export_service = ExportService()
 search_service = SearchService()
 batch_service = BatchService()
-budget_service = BudgetService()
+# Removed: budget_service initialization (feature deleted)
 email_service = EmailService()
 tag_service = TagService()
 statement_organizer = StatementOrganizer()
@@ -853,138 +853,6 @@ def loan_evaluation(customer_id):
                          scenarios=scenarios,
                          current_repayments=current_repayments)
 
-@app.route('/banking_news')
-def banking_news():
-    rates = get_latest_rates()
-    news_items = get_all_banking_news()
-    return render_template('banking_news.html', rates=rates, news_items=news_items)
-
-@app.route('/add_news', methods=['POST'])
-def add_news():
-    bank_name = request.form.get('bank_name')
-    news_type = request.form.get('news_type')
-    title = request.form.get('title')
-    content = request.form.get('content')
-    effective_date = request.form.get('effective_date')
-    
-    if bank_name and title and content:
-        news_id = add_banking_news(bank_name, news_type, title, content, effective_date)
-        log_audit(None, 'ADD_NEWS', 'banking_news', news_id, f'Added news: {title}')
-        flash('Banking news added successfully', 'success')
-    else:
-        flash('Missing required fields', 'error')
-    
-    return redirect(url_for('banking_news'))
-
-@app.route('/refresh_bnm_rates')
-def refresh_rates():
-    rates = save_bnm_rates()
-    flash(f'BNM rates updated: OPR={rates["opr"]["rate_value"]}%, SBR={rates["sbr"]["rate_value"]}%', 'success')
-    return redirect(url_for('banking_news'))
-
-# Admin news management routes
-@app.route('/admin/news')
-def admin_news():
-    """管理员新闻审核页面"""
-    from news.auto_news_fetcher import get_pending_news
-    
-    pending_news = get_pending_news()
-    
-    # 统计数据
-    with get_db() as conn:
-        cursor = conn.cursor()
-        
-        # 今日已发布数量
-        today = datetime.now().strftime('%Y-%m-%d')
-        cursor.execute('''
-            SELECT COUNT(*) as count FROM banking_news 
-            WHERE DATE(created_at) = ?
-        ''', (today,))
-        approved_today = cursor.fetchone()['count']
-        
-        # 总新闻数
-        cursor.execute('SELECT COUNT(*) as count FROM banking_news')
-        total_news = cursor.fetchone()['count']
-    
-    return render_template('admin_news.html', 
-                         pending_news=pending_news,
-                         pending_count=len(pending_news),
-                         approved_today=approved_today,
-                         total_news=total_news)
-
-@app.route('/admin/news/approve/<int:news_id>', methods=['POST'])
-def approve_news(news_id):
-    """审核通过并发布新闻"""
-    from news.auto_news_fetcher import approve_news as approve_fn
-    
-    try:
-        approve_fn(news_id)
-        return jsonify({'success': True})
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
-
-@app.route('/admin/news/reject/<int:news_id>', methods=['POST'])
-def reject_news(news_id):
-    """拒绝新闻"""
-    from news.auto_news_fetcher import reject_news as reject_fn
-    
-    try:
-        reject_fn(news_id)
-        return jsonify({'success': True})
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
-
-@app.route('/admin/news/fetch', methods=['POST'])
-def fetch_latest_news():
-    """手动触发获取最新新闻"""
-    try:
-        # 从web搜索获取最新新闻
-        news_items = fetch_news_from_web()
-        
-        from news.auto_news_fetcher import save_pending_news
-        count = save_pending_news(news_items)
-        
-        return jsonify({'success': True, 'count': count})
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
-
-def fetch_news_from_web():
-    """
-    从网络搜索获取新闻
-    
-    注意：这些新闻内容来自真实的2025年马来西亚银行公告和促销活动，
-    通过web_search工具获取并整理。在生产环境中，可以替换为：
-    - RSS feed订阅
-    - 银行官方API
-    - 新闻聚合API (NewsAPI, Google News等)
-    """
-    from news.news_parser import extract_all_news
-    
-    # 基于真实2025年马来西亚银行搜索结果的新闻数据
-    search_results = [
-        {
-            'text': '''
-            Hong Leong WISE信用卡提供高达15%返现在餐饮、杂货、药房、汽油和电子钱包消费。
-            HSBC Live+信用卡在餐饮、娱乐和购物享有5%返现。
-            UOB信用卡推荐计划，推荐朋友可获高达RM11,100返现。
-            CIMB Cash Plus个人贷款年利率4.38%-19.88%，零手续费。
-            UOB个人贷款利率3.99%起，无需抵押。
-            Maybank自2025年3月31日起取消提前还款费用，每月还款低至RM102.78。
-            马来西亚央行OPR从3.00%降至2.75%，定存利率最高达5.50%。
-            CIMB eFixed Deposit-i通过FPX在线存款可享高达3.45%年利率。
-            Hong Leong Bank eFD月度促销，10月特别利率。
-            RHB Bancassurance FD年利率高达10.88%。
-            2025年预算案拨款RM40 billion用于中小企业融资。
-            Maybank SME Clean Loan在线申请高达RM250,000，分行申请高达RM1.5 million。
-            SME Bank Business Accelerator计划高达RM1 million融资。
-            CIMB SME BusinessCard提供无限现金返还。
-            '''
-        }
-    ]
-    
-    news_items = extract_all_news(search_results)
-    return news_items
-
 @app.route('/generate_report/<int:customer_id>')
 def generate_report(customer_id):
     with get_db() as conn:
@@ -1108,56 +976,6 @@ def search_transactions(customer_id):
     return render_template('search.html', customer=customer, transactions=results, 
                           suggestions=suggestions, saved_filters=saved_filters, 
                           current_query=query, current_filters=filters)
-
-@app.route('/budget/<int:customer_id>', methods=['GET', 'POST'])
-def budget_management(customer_id):
-    """Budget management page"""
-    if request.method == 'POST':
-        category = request.form.get('category')
-        
-        if not category:
-            flash('Category is required', 'error')
-            return redirect(url_for('budget_management', customer_id=customer_id))
-        
-        try:
-            monthly_limit = float(request.form.get('monthly_limit', 0))
-            alert_threshold = float(request.form.get('alert_threshold', 80))
-            
-            if monthly_limit <= 0:
-                flash('Budget limit must be greater than 0', 'error')
-                return redirect(url_for('budget_management', customer_id=customer_id))
-                
-            if not 0 < alert_threshold <= 100:
-                flash('Alert threshold must be between 1 and 100', 'error')
-                return redirect(url_for('budget_management', customer_id=customer_id))
-            
-            budget_service.create_budget(customer_id, category, monthly_limit, alert_threshold)
-            flash('Budget created successfully', 'success')
-            return redirect(url_for('budget_management', customer_id=customer_id))
-            
-        except ValueError:
-            flash('Invalid input: Please enter valid numbers', 'error')
-            return redirect(url_for('budget_management', customer_id=customer_id))
-    
-    budgets = budget_service.get_budget_status(customer_id)
-    recommendations = budget_service.get_budget_recommendations(customer_id)
-    alerts = budget_service.get_budget_alerts(customer_id)
-    
-    with get_db() as conn:
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
-        customer_row = cursor.fetchone()
-        customer = dict(customer_row) if customer_row else None
-    
-    return render_template('budget.html', customer=customer, budgets=budgets,
-                          recommendations=recommendations, alerts=alerts)
-
-@app.route('/budget/delete/<int:budget_id>/<int:customer_id>', methods=['POST'])
-def delete_budget(budget_id, customer_id):
-    """Delete a budget"""
-    budget_service.delete_budget(budget_id, customer_id)
-    flash('Budget deleted', 'success')
-    return redirect(url_for('budget_management', customer_id=customer_id))
 
 @app.route('/batch/upload/<int:customer_id>', methods=['GET', 'POST'])
 def batch_upload(customer_id):
@@ -2115,60 +1933,6 @@ def start_scheduler():
                 return
     
     print("Failed to acquire scheduler lock after retries")
-
-# Instalment Detail Route
-@app.route('/instalment/<int:plan_id>')
-def instalment_detail(plan_id):
-    """分期付款详情页面：显示完整的付款时间表和余额追踪"""
-    from validate.instalment_tracker import InstalmentTracker
-    
-    tracker = InstalmentTracker()
-    
-    with get_db() as conn:
-        cursor = conn.cursor()
-        
-        # Get plan info
-        cursor.execute('''
-            SELECT ip.*, cc.bank_name, cc.card_number_last4, cc.customer_id,
-                   COUNT(ipr.id) as total_payments,
-                   SUM(CASE WHEN ipr.status = 'paid' THEN 1 ELSE 0 END) as paid_payments
-            FROM instalment_plans ip
-            LEFT JOIN credit_cards cc ON ip.card_id = cc.id
-            LEFT JOIN instalment_payment_records ipr ON ip.id = ipr.plan_id
-            WHERE ip.id = ?
-            GROUP BY ip.id
-        ''', (plan_id,))
-        
-        plan = dict(cursor.fetchone())
-        customer_id = plan['customer_id']
-    
-    # Get payment schedule
-    payment_schedule = tracker.get_plan_payment_schedule(plan_id)
-    
-    # Calculate current balance (last unpaid payment's remaining balance)
-    current_balance = 0
-    for payment in payment_schedule:
-        if payment['status'] == 'pending':
-            # 找到第一个pending的付款，它的上一期的remaining_balance就是当前余额
-            prev_payment_num = payment['payment_number'] - 1
-            if prev_payment_num > 0:
-                for p in payment_schedule:
-                    if p['payment_number'] == prev_payment_num:
-                        current_balance = p['remaining_balance']
-                        break
-            else:
-                current_balance = plan['principal_amount']
-            break
-    
-    # 如果所有都已支付，余额为0
-    if all(p['status'] == 'paid' for p in payment_schedule):
-        current_balance = 0
-    
-    return render_template('instalment_detail.html',
-                         plan=plan,
-                         payment_schedule=payment_schedule,
-                         current_balance=current_balance,
-                         customer_id=customer_id)
 
 # Statement Comparison Route
 @app.route('/statement/<int:statement_id>/comparison')
@@ -3950,166 +3714,6 @@ def api_get_customer_cards(customer_id):
     """API: 获取客户的所有信用卡"""
     cards = receipt_matcher.get_customer_cards(customer_id)
     return jsonify(cards)
-
-# ==================== INSTALMENT MANAGEMENT ====================
-
-@app.route('/instalments/add/<int:card_id>', methods=['GET', 'POST'])
-def add_instalment(card_id):
-    """添加分期计划（手动录入）"""
-    if request.method == 'GET':
-        with get_db() as conn:
-            cursor = conn.cursor()
-            # 获取信用卡信息
-            cursor.execute("""
-                SELECT cc.*, c.name as customer_name
-                FROM credit_cards cc
-                JOIN customers c ON cc.customer_id = c.id
-                WHERE cc.id = ?
-            """, (card_id,))
-            card = cursor.fetchone()
-            
-            if not card:
-                flash('❌ 信用卡不存在', 'error')
-                return redirect(url_for('admin_customers_cards'))
-            
-            card_dict = dict(card)
-        
-        return render_template('instalments/add.html', card=card_dict)
-    
-    # POST - 保存分期计划
-    try:
-        with get_db() as conn:
-            cursor = conn.cursor()
-            
-            # 获取客户ID
-            cursor.execute('SELECT customer_id FROM credit_cards WHERE id = ?', (card_id,))
-            card = cursor.fetchone()
-            if not card:
-                flash('❌ 信用卡不存在', 'error')
-                return redirect(url_for('admin_customers_cards'))
-            
-            customer_id = card['customer_id']
-            
-            # 获取表单数据
-            instalment_type = request.form.get('instalment_type')
-            product_name = request.form.get('product_name')
-            merchant_name = request.form.get('merchant_name', '')
-            principal_amount = float(request.form.get('principal_amount'))
-            interest_rate = float(request.form.get('interest_rate', 0))
-            tenure_months = int(request.form.get('tenure_months'))
-            start_date = request.form.get('start_date')
-            
-            # 计算每月还款和总金额
-            total_interest = principal_amount * (interest_rate / 100) * (tenure_months / 12)
-            total_amount = principal_amount + total_interest
-            monthly_payment = total_amount / tenure_months
-            
-            # 计算结束日期
-            from datetime import datetime, timedelta
-            start_dt = datetime.strptime(start_date, '%Y-%m-%d')
-            end_dt = start_dt + timedelta(days=tenure_months * 30)
-            end_date = end_dt.strftime('%Y-%m-%d')
-            
-            # 插入分期计划
-            cursor.execute("""
-                INSERT INTO instalment_plans (
-                    customer_id, card_id, instalment_type, product_name, merchant_name,
-                    principal_amount, interest_rate, tenure_months, monthly_payment,
-                    total_amount, total_interest, start_date, end_date, status, created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', datetime('now'))
-            """, (customer_id, card_id, instalment_type, product_name, merchant_name,
-                  principal_amount, interest_rate, tenure_months, monthly_payment,
-                  total_amount, total_interest, start_date, end_date))
-            
-            plan_id = cursor.lastrowid
-            
-            # 创建每月还款记录
-            for i in range(1, tenure_months + 1):
-                payment_date = (start_dt + timedelta(days=i * 30)).strftime('%Y-%m-%d')
-                
-                # 计算本金和利息部分
-                remaining_months = tenure_months - i + 1
-                interest_portion = (principal_amount * (interest_rate / 100) / 12) if interest_rate > 0 else 0
-                principal_portion = monthly_payment - interest_portion
-                remaining_balance = principal_amount - (principal_portion * i)
-                
-                cursor.execute("""
-                    INSERT INTO instalment_payment_records (
-                        plan_id, payment_number, scheduled_date, scheduled_amount,
-                        status, principal_portion, interest_portion, remaining_balance,
-                        created_at
-                    ) VALUES (?, ?, ?, ?, 'pending', ?, ?, ?, datetime('now'))
-                """, (plan_id, i, payment_date, monthly_payment, principal_portion, 
-                      interest_portion, max(0, remaining_balance)))
-            
-            conn.commit()
-            flash('✅ 分期计划添加成功！', 'success')
-            return redirect(url_for('admin_customers_cards'))
-            
-    except Exception as e:
-        flash(f'❌ 添加失败：{str(e)}', 'error')
-        return redirect(url_for('add_instalment', card_id=card_id))
-
-@app.route('/instalments/update-payment/<int:payment_id>', methods=['POST'])
-def update_instalment_payment(payment_id):
-    """标记分期付款为已支付"""
-    try:
-        with get_db() as conn:
-            cursor = conn.cursor()
-            
-            cursor.execute("""
-                UPDATE instalment_payment_records
-                SET status = 'paid',
-                    actual_date = date('now'),
-                    actual_amount = scheduled_amount,
-                    paid_at = datetime('now')
-                WHERE id = ?
-            """, (payment_id,))
-            
-            conn.commit()
-            return jsonify({'success': True, 'message': '✅ 已标记为已支付'})
-    except Exception as e:
-        return jsonify({'success': False, 'message': f'❌ 更新失败：{str(e)}'})
-
-@app.route('/instalments/view/<int:plan_id>')
-def view_instalment(plan_id):
-    """查看分期计划详情"""
-    with get_db() as conn:
-        cursor = conn.cursor()
-        
-        # 获取分期计划
-        cursor.execute("""
-            SELECT ip.*, c.name as customer_name, cc.card_type, cc.card_number_last4, cc.bank_name
-            FROM instalment_plans ip
-            JOIN customers c ON ip.customer_id = c.id
-            JOIN credit_cards cc ON ip.card_id = cc.id
-            WHERE ip.id = ?
-        """, (plan_id,))
-        plan = cursor.fetchone()
-        
-        if not plan:
-            flash('❌ 分期计划不存在', 'error')
-            return redirect(url_for('admin_customers_cards'))
-        
-        # 获取还款记录
-        cursor.execute("""
-            SELECT * FROM instalment_payment_records
-            WHERE plan_id = ?
-            ORDER BY payment_number
-        """, (plan_id,))
-        payments = [dict(row) for row in cursor.fetchall()]
-        
-        plan_dict = dict(plan)
-        
-        # 计算统计数据
-        paid_count = sum(1 for p in payments if p['status'] == 'paid')
-        total_paid = sum(p['actual_amount'] or 0 for p in payments if p['status'] == 'paid')
-        
-        plan_dict['paid_count'] = paid_count
-        plan_dict['total_paid'] = total_paid
-        plan_dict['tenure_display'] = f"{paid_count:02d}/{plan_dict['tenure_months']:02d}"
-    
-    return render_template('instalments/view.html', plan=plan_dict, payments=payments)
 
 def allowed_image_file(filename):
     """检查文件是否为允许的图片格式"""

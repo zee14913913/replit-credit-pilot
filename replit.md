@@ -1,7 +1,7 @@
 # Smart Credit & Loan Manager
 
 ## Overview
-The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. Its core purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, budget management, and intelligent automation, guaranteeing 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization suggestions (debt consolidation, balance transfers, loan refinancing), and a success-based fee model. The business vision includes expanding into exclusive mortgage interest discounts and SME financing.
+The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. Its core purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation, guaranteeing 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization suggestions (debt consolidation, balance transfers, loan refinancing), and a success-based fee model. The business vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -23,14 +23,11 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Transaction Categorization:** Keyword-based system with predefined categories and Malaysia-specific merchant recognition.
 - **Statement Validation (Dual Verification):** Ensures 100% data accuracy.
 - **Revenue-Generating Advisory Services:** AI-powered credit card recommendations, financial optimization engine, success-based fee system, and consultation request system.
-- **Budget Management:** Category-based monthly budgets, real-time tracking, and smart alerts.
 - **Data Export & Reporting:** Professional Excel/CSV export and PDF report generation (using ReportLab).
 - **Batch Operations:** Multi-file upload and batch job management.
 - **Reminder System:** Scheduled payment reminders via email.
 - **Authentication & Authorization:** Secure login/registration with SHA-256 hashing and token-based session management.
 - **Customer Authorization Agreement:** Bilingual service agreement.
-- **Automated News Management System:** Curated 2025 Malaysia banking news with admin approval and deduplication.
-- **Instalment Tracking System:** Records instalment plans, generates payment schedules, and tracks remaining balances.
 - **Statement Organization System:** Organizes statements by `statement_date` with automatic monthly folder structure.
 - **Automated Monthly Report System:** Auto-generates and sends comprehensive galaxy-themed PDF reports per customer monthly, including detailed transactions, category summaries, optimization proposals, DSR calculation, and a profit-sharing service workflow.
 - **Statement Comparison View:** Displays raw PDF alongside categorized reports for validation.
