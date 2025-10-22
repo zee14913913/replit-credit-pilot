@@ -181,7 +181,14 @@ class OwnerInfiniteClassifier:
         # 提取付款人名称（尝试从描述中解析）
         payer_name = self._extract_payer_name(description)
         
-        # 所有其他付款人 → INFINITE Payment
+        # 如果无法提取有效付款人（payer_name == None）→ OWNER Payment
+        if payer_name is None:
+            return {
+                'payment_type': 'owner',
+                'payer_name': None
+            }
+        
+        # 有明确的第三方付款人 → INFINITE Payment
         return {
             'payment_type': 'infinite',
             'payer_name': payer_name
@@ -191,23 +198,37 @@ class OwnerInfiniteClassifier:
         """尝试从描述中提取付款人名称"""
         import re
         
-        # 常见格式: "PAYMENT THANK YOU - IB", "PAYMENT FROM XXX", etc.
-        # 对于无法提取的情况，返回 "Third Party"
+        # 常见格式: "PAYMENT FROM XXX", "PAYMENT BY YYY", etc.
+        # 如果无法提取有效付款人名称，返回 None（视为付款人为空）
+        
+        # 需要过滤的无效关键词（这些不是真正的付款人）
+        INVALID_PAYER_KEYWORDS = [
+            'thank', 'you', 'ib', 'online', 'atm', 'bank', 'received',
+            'auto', 'autopay', 'giro', 'fpx', 'duitnow', 'transfer',
+            'payment', 'bayaran', 'terima', 'cash', 'cheque'
+        ]
+        
         patterns = [
             r'FROM\s+([A-Z][A-Z\s]+)',
             r'BY\s+([A-Z][A-Z\s]+)',
-            r'PAYMENT\s+([A-Z][A-Z\s]+)',
+            r'PAY(?:MENT)?\s+BY\s+([A-Z][A-Z\s]+)',
         ]
         
         for pattern in patterns:
             match = re.search(pattern, description, re.IGNORECASE)
             if match:
                 payer = match.group(1).strip()
-                # 过滤掉常见关键词
-                if payer.upper() not in ['THANK', 'YOU', 'IB', 'ONLINE', 'ATM', 'BANK']:
+                # 过滤掉无效关键词
+                payer_clean = payer.upper().replace('-', ' ').strip()
+                
+                # 检查是否为无效付款人
+                is_invalid = any(keyword.upper() in payer_clean for keyword in INVALID_PAYER_KEYWORDS)
+                
+                if not is_invalid and len(payer_clean) > 3:
                     return payer
         
-        return 'Third Party'
+        # 无法提取有效付款人 → 返回None（视为付款人为空 = OWNER Payment）
+        return None
     
     def classify_transaction(self, 
                            transaction_id: int,
