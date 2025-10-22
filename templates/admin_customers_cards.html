@@ -139,11 +139,11 @@
                         </div>
                         {% endif %}
                         <div class="detail-row">
-                            <span class="detail-label">💳 当前总欠款:</span>
+                            <span class="detail-label">当前总欠款:</span>
                             <span class="detail-value outstanding-amount" title="所有未付清账单的应付金额">RM {{ "{:,.2f}".format(card.total_outstanding or 0) }}</span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">✅ 可用额度:</span>
+                            <span class="detail-label">可用额度:</span>
                             <span class="detail-value available-credit" title="信用额度 - 当前欠款">
                                 {% if card.credit_limit %}
                                 RM {{ "{:,.2f}".format(card.credit_limit - (card.total_outstanding or 0)) }}
@@ -522,18 +522,18 @@
 }
 
 .due-amount {
-    color: #EF4444;
+    color: #E5E4E2;
     font-weight: 600;
 }
 
 .outstanding-amount {
-    color: #F59E0B;
+    color: #E5E4E2;
     font-weight: 700;
     font-size: 1.1rem;
 }
 
 .available-credit {
-    color: #10B981;
+    color: #F5F5F5;
     font-weight: 700;
     font-size: 1.1rem;
 }

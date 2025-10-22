@@ -70,8 +70,13 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **SQLite**: File-based relational database (`db/smart_loan_manager.db`), with WAL mode and centralized connection management.
 
 ### File Storage
-- **Local File System**: 
-  - `static/uploads/statements` for credit card and savings statements
+- **Local File System with Automatic Organization**: 
+  - **Mandatory organized structure** using `StatementOrganizer` service:
+    - `static/uploads/{customer_name}/{year}-{month}/statements/` for credit card statements
+    - `static/uploads/{customer_name}/{year}-{month}/statements/` for savings account statements
+    - File naming: `{BankName}_{Last4Digits}_{YYYY-MM-DD}.pdf`
   - `static/uploads/receipts/{customer_id}/{card_last4}/` for matched receipts
   - `static/uploads/receipts/pending/` for unmatched receipts
-  - `static/uploads/reports` for generated PDF reports
+  - `static/uploads/{customer_name}/{year}-{month}/reports/` for generated PDF reports
+  - **All file uploads are automatically organized by customer name and statement month**
+  - **File paths are stored in database and served via `/view_statement_file/<statement_id>` route**

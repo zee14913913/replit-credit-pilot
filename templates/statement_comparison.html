@@ -44,7 +44,7 @@
                 <div class="divider-professional" style="flex-shrink: 0;"></div>
                 <div style="flex: 1; overflow: hidden; margin-top: 1rem;">
                     {% if statement.file_type == 'pdf' %}
-                    <iframe src="/{{ statement.file_path }}" 
+                    <iframe src="{{ url_for('view_statement_file', statement_id=statement.id) }}" 
                             style="width: 100%; height: 100%; border: 1px solid var(--border-color); border-radius: 8px;">
                     </iframe>
                     {% else %}

@@ -118,9 +118,39 @@ def set_language(lang):
         session['language'] = lang
     return redirect(request.referrer or url_for('index'))
 
+@app.route('/view_statement_file/<int:statement_id>')
+def view_statement_file(statement_id):
+    """查看账单原始文件（支持新组织结构）"""
+    from flask import send_file, make_response
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT file_path FROM statements WHERE id = ?', (statement_id,))
+        row = cursor.fetchone()
+        
+        if not row or not row['file_path']:
+            return "文件不存在", 404
+        
+        file_path = row['file_path']
+        
+        # 检查文件是否存在
+        if not os.path.exists(file_path):
+            return f"文件未找到: {file_path}", 404
+        
+        # 发送文件
+        response = make_response(send_file(file_path, mimetype='application/pdf'))
+        
+        # 设置响应头
+        response.headers['Content-Disposition'] = 'inline'
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        
+        return response
+
 @app.route('/static/uploads/<path:filename>')
 def serve_uploaded_file(filename):
-    """Serve uploaded PDF files with correct MIME type"""
+    """Serve uploaded PDF files with correct MIME type (legacy support)"""
     from flask import send_from_directory, make_response
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     
