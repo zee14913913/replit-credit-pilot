@@ -154,49 +154,7 @@
                         </div>
                     </div>
                     
-                    <!-- Instalment Plans Section -->
-                    {% if card.instalments %}
-                    <div class="instalments-section">
-                        <div class="instalments-header">
-                            <i class="bi bi-calendar-check"></i> 分期付款计划
-                        </div>
-                        {% for inst in card.instalments %}
-                        <div class="instalment-item">
-                            <div class="instalment-type-badge">{{ inst.instalment_type or 'Shopping Instalment' }}</div>
-                            <div class="instalment-details">
-                                <div class="instalment-row">
-                                    <span class="instalment-label">产品:</span>
-                                    <span class="instalment-value">{{ inst.product_name }}</span>
-                                </div>
-                                {% if inst.merchant_name %}
-                                <div class="instalment-row">
-                                    <span class="instalment-label">商家:</span>
-                                    <span class="instalment-value">{{ inst.merchant_name }}</span>
-                                </div>
-                                {% endif %}
-                                <div class="instalment-row">
-                                    <span class="instalment-label">期数:</span>
-                                    <span class="instalment-value tenure-badge">{{ inst.tenure_display }}</span>
-                                </div>
-                                <div class="instalment-row">
-                                    <span class="instalment-label">剩余余额:</span>
-                                    <span class="instalment-value balance-amount">RM {{ "{:,.2f}".format(inst.remaining_balance) }}</span>
-                                </div>
-                                <div class="instalment-row">
-                                    <span class="instalment-label">每月还款:</span>
-                                    <span class="instalment-value">RM {{ "{:,.2f}".format(inst.monthly_payment) }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                    
                     <div class="card-actions">
-                        <a href="{{ url_for('add_instalment', card_id=card.card_id) }}" 
-                           class="btn-action btn-add-instalment">
-                            <i class="bi bi-calendar-plus"></i> 添加分期
-                        </a>
                         <a href="{{ url_for('customer_dashboard', customer_id=item.customer.customer_id) }}" 
                            class="btn-action">
                             <i class="bi bi-eye"></i> 查看详情
@@ -411,17 +369,6 @@
     margin-right: 0.5rem;
 }
 
-.btn-add-instalment {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(96, 165, 250, 0.2) 100%);
-    border-color: rgba(96, 165, 250, 0.4);
-}
-
-.btn-add-instalment:hover {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(96, 165, 250, 0.3) 100%);
-    border-color: rgba(96, 165, 250, 0.6);
-    box-shadow: 0 0 16px rgba(96, 165, 250, 0.4);
-}
-
 .no-cards-message {
     text-align: center;
     padding: 3rem 2rem;
@@ -439,86 +386,6 @@
     color: #9CA3AF;
     font-size: 0.85rem;
     font-family: 'Courier New', monospace;
-}
-
-/* Instalment Plans Section */
-.instalments-section {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(192, 192, 192, 0.15);
-}
-
-.instalments-header {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #E5E5E5;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.instalments-header i {
-    color: #60A5FA;
-}
-
-.instalment-item {
-    background: rgba(30, 30, 30, 0.5);
-    border: 1px solid rgba(192, 192, 192, 0.15);
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 0.75rem;
-}
-
-.instalment-type-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%);
-    border: 1px solid rgba(96, 165, 250, 0.4);
-    border-radius: 20px;
-    color: #93C5FD;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.75rem;
-}
-
-.instalment-details {
-    display: grid;
-    gap: 0.5rem;
-}
-
-.instalment-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.35rem 0;
-}
-
-.instalment-label {
-    color: #9CA3AF;
-    font-size: 0.85rem;
-}
-
-.instalment-value {
-    color: #E5E5E5;
-    font-weight: 500;
-    text-align: right;
-}
-
-.tenure-badge {
-    background: rgba(192, 192, 192, 0.15);
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    font-family: 'Courier New', monospace;
-    font-weight: 600;
-    color: #FFFFFF;
-}
-
-.balance-amount {
-    color: #F59E0B;
-    font-weight: 600;
 }
 
 .due-amount {
