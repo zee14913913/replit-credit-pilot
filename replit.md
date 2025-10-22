@@ -40,7 +40,7 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Cash Flow Prediction Engine:** AI-powered 3/6/12-month cash flow forecast.
 - **Customer Tier System:** Silver, Gold, Platinum tiers with intelligent upgrade system.
 - **AI Anomaly Detection System:** Real-time monitoring for unusual spending patterns.
-- **Personalized Recommendation Engine:** Offers credit card, discount, instalment, and points usage recommendations.
+- **Personalized Recommendation Engine:** Offers credit card, discount, and points usage recommendations.
 - **Advanced Analytics Dashboard:** Integrates analytical features with dynamic charts and real-time warnings.
 
 ### System Design Choices
