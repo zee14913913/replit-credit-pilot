@@ -1548,12 +1548,66 @@ def admin_dashboard():
         # Get active cards count
         cursor.execute("SELECT COUNT(*) FROM credit_cards")
         active_cards = cursor.fetchone()[0]
+        
+        # Get all credit card statements with OWNER/INFINITE breakdown
+        cursor.execute("""
+            SELECT 
+                s.id as statement_id,
+                s.statement_date,
+                cu.id as customer_id,
+                cu.name as customer_name,
+                cc.bank_name,
+                s.due_date,
+                s.statement_total as due_total,
+                COALESCE(SUM(CASE WHEN t.category = 'owner_expense' THEN ABS(t.amount) ELSE 0 END), 0) as owner_expenses,
+                COALESCE(SUM(CASE WHEN t.category = 'owner_payment' THEN ABS(t.amount) ELSE 0 END), 0) as owner_payments,
+                COALESCE(SUM(CASE WHEN t.category = 'infinite_expense' THEN ABS(t.amount) ELSE 0 END), 0) as infinite_expenses,
+                COALESCE(SUM(CASE WHEN t.category = 'infinite_payment' THEN ABS(t.amount) ELSE 0 END), 0) as infinite_payments
+            FROM statements s
+            JOIN credit_cards cc ON s.card_id = cc.id
+            JOIN customers cu ON cc.customer_id = cu.id
+            LEFT JOIN transactions t ON s.id = t.statement_id
+            GROUP BY s.id, s.statement_date, cu.id, cu.name, cc.bank_name, s.due_date, s.statement_total
+            ORDER BY s.statement_date DESC
+            LIMIT 50
+        """)
+        cc_statements = [dict(row) for row in cursor.fetchall()]
+        
+        # Calculate OWNER and INFINITE outstanding balances for each statement
+        for stmt in cc_statements:
+            stmt['owner_os_bal'] = stmt['owner_expenses'] - stmt['owner_payments']
+            stmt['infinite_os_bal'] = stmt['infinite_expenses'] - stmt['infinite_payments']
+        
+        # Get all savings account statements
+        cursor.execute("""
+            SELECT 
+                ss.id as statement_id,
+                ss.statement_date,
+                cu.id as customer_id,
+                cu.name as customer_name,
+                sa.bank_name,
+                COALESCE(SUM(CASE WHEN st.transaction_type = 'credit' THEN ABS(st.amount) ELSE 0 END), 0) as monthly_credit,
+                COALESCE(SUM(CASE WHEN st.transaction_type = 'debit' THEN ABS(st.amount) ELSE 0 END), 0) as monthly_debit,
+                MAX(st.balance) as closing_bal,
+                COALESCE(SUM(CASE WHEN st.description LIKE '%PAYMENT%' OR st.description LIKE '%FPX%' THEN ABS(st.amount) ELSE 0 END), 0) as cc_sum_payment,
+                COALESCE(SUM(CASE WHEN st.transaction_type = 'debit' AND (st.description LIKE '%TRANSFER%' OR st.description LIKE '%IBG%' OR st.description LIKE '%GIRO%') THEN ABS(st.amount) ELSE 0 END), 0) as total_transfer
+            FROM savings_statements ss
+            JOIN savings_accounts sa ON ss.savings_account_id = sa.id
+            JOIN customers cu ON sa.customer_id = cu.id
+            LEFT JOIN savings_transactions st ON ss.id = st.savings_statement_id
+            GROUP BY ss.id, ss.statement_date, cu.id, cu.name, sa.bank_name
+            ORDER BY ss.statement_date DESC
+            LIMIT 50
+        """)
+        sa_statements = [dict(row) for row in cursor.fetchall()]
     
     return render_template('admin_dashboard.html', 
                          customers=customers,
                          statement_count=statement_count,
                          txn_count=txn_count,
-                         active_cards=active_cards)
+                         active_cards=active_cards,
+                         cc_statements=cc_statements,
+                         sa_statements=sa_statements)
 
 @app.route('/admin-logout')
 def admin_logout():
