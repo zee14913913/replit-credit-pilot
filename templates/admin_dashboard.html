@@ -44,31 +44,31 @@
     <!-- Financial Statistics -->
     <div class="row g-4 mb-5">
         <div class="col-md-3">
-            <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 192, 203, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FFB6C1;">
-                <div class="stat-value" style="color: #FFB6C1;">RM {{ "{:,.0f}".format(total_owner_expenses) }}</div>
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
+                <div class="stat-value" style="color: #FF007F;">RM {{ "{:,.0f}".format(total_owner_expenses) }}</div>
                 <div class="stat-label">💳 Own's Expenses</div>
-                <div class="stat-corner" style="background: #FFB6C1;"></div>
+                <div class="stat-corner" style="background: #FF007F;"></div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FFD700;">
-                <div class="stat-value" style="color: #FFD700;">RM {{ "{:,.0f}".format(total_gz_expenses) }}</div>
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
+                <div class="stat-value" style="color: #322446;">RM {{ "{:,.0f}".format(total_gz_expenses) }}</div>
                 <div class="stat-label">🏢 GZ's Expenses</div>
-                <div class="stat-corner" style="background: #FFD700;"></div>
+                <div class="stat-corner" style="background: #322446;"></div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card" style="background: linear-gradient(135deg, rgba(144, 238, 144, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #90EE90;">
-                <div class="stat-value" style="color: #90EE90;">RM {{ "{:,.2f}".format(total_gz_revenue) }}</div>
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
+                <div class="stat-value" style="color: #FF007F;">RM {{ "{:,.2f}".format(total_gz_revenue) }}</div>
                 <div class="stat-label">💰 GZ's Revenue (1%)</div>
-                <div class="stat-corner" style="background: #90EE90;"></div>
+                <div class="stat-corner" style="background: #FF007F;"></div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card" style="background: linear-gradient(135deg, rgba(157, 78, 221, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #9D4EDD;">
-                <div class="stat-value" style="color: #9D4EDD;">{{ unique_banks }}</div>
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
+                <div class="stat-value" style="color: #322446;">{{ unique_banks }}</div>
                 <div class="stat-label">🏦 Partner Banks</div>
-                <div class="stat-corner" style="background: #9D4EDD;"></div>
+                <div class="stat-corner" style="background: #322446;"></div>
             </div>
         </div>
     </div>
@@ -126,18 +126,18 @@
                                     <tr class="hover-glow-row">
                                         <td style="font-weight: 600; color: #FF007F;">{{ stmt['statement_date'][:7] }}</td>
                                         <td style="font-weight: 600;">{{ stmt['customer_name'] }}</td>
-                                        <td style="font-weight: 600; color: #FFD700;">{{ stmt['bank_abbr'] }}</td>
-                                        <td style="font-weight: 600; color: #87CEEB;">****{{ stmt['card_number_last4'] }}</td>
+                                        <td style="font-weight: 600; color: #FF007F;">{{ stmt['bank_abbr'] }}</td>
+                                        <td style="font-weight: 600; color: #322446;">****{{ stmt['card_number_last4'] }}</td>
                                         <td>{{ stmt['due_date'] if stmt['due_date'] else '-' }}</td>
                                         <td style="font-weight: 600;">RM {{ "{:,.2f}".format(stmt['due_total']) }}</td>
-                                        <td style="color: #FFB6C1;">RM {{ "{:,.2f}".format(stmt['owner_expenses']) }}</td>
-                                        <td style="color: #90EE90;">RM {{ "{:,.2f}".format(stmt['owner_payments']) }}</td>
-                                        <td style="color: #FFB6C1;">RM {{ "{:,.2f}".format(stmt['infinite_expenses']) }}</td>
-                                        <td style="color: #90EE90;">RM {{ "{:,.2f}".format(stmt['infinite_payments']) }}</td>
-                                        <td style="font-weight: 700; color: {% if stmt['owner_os_bal'] > 0 %}#FF6B6B{% else %}#4ECDC4{% endif %};">
+                                        <td style="color: #FF007F;">RM {{ "{:,.2f}".format(stmt['owner_expenses']) }}</td>
+                                        <td style="color: #322446;">RM {{ "{:,.2f}".format(stmt['owner_payments']) }}</td>
+                                        <td style="color: #FF007F;">RM {{ "{:,.2f}".format(stmt['infinite_expenses']) }}</td>
+                                        <td style="color: #322446;">RM {{ "{:,.2f}".format(stmt['infinite_payments']) }}</td>
+                                        <td style="font-weight: 700; color: #FF007F;">
                                             RM {{ "{:,.2f}".format(stmt['owner_os_bal']) }}
                                         </td>
-                                        <td style="font-weight: 700; color: {% if stmt['infinite_os_bal'] > 0 %}#FF6B6B{% else %}#4ECDC4{% endif %};">
+                                        <td style="font-weight: 700; color: #FF007F;">
                                             RM {{ "{:,.2f}".format(stmt['infinite_os_bal']) }}
                                         </td>
                                         <td style="text-align: center;">
@@ -171,16 +171,16 @@
     <!-- Bank Account Statements Card -->
     <div class="row g-4 mb-5">
         <div class="col-12">
-            <div class="statement-card" style="border: 2px solid #9D4EDD;">
-                <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(157, 78, 221, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #9D4EDD;">
-                    <h3 class="card-title-custom" style="color: #9D4EDD; font-weight: 700; margin: 0; padding: 1.5rem;">
+            <div class="statement-card" style="border: 2px solid #322446;">
+                <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #322446;">
+                    <h3 class="card-title-custom" style="color: #322446; font-weight: 700; margin: 0; padding: 1.5rem;">
                         <i class="bi bi-bank"></i> {{ t('bank_account_statements') }}
                     </h3>
                 </div>
                 <div class="card-body-custom" style="padding: 0;">
                     <div class="table-responsive">
                         <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto; font-size: 0.95rem;">
-                            <thead style="background: rgba(157, 78, 221, 0.1); border-bottom: 2px solid #9D4EDD;">
+                            <thead style="background: rgba(50, 36, 70, 0.3); border-bottom: 2px solid #322446;">
                                 <tr>
                                     <th>{{ t('month_of_statement') }}</th>
                                     <th>{{ t('name') }}</th>
@@ -197,20 +197,20 @@
                                 {% if sa_statements %}
                                     {% for stmt in sa_statements %}
                                     <tr class="hover-glow-row">
-                                        <td style="font-weight: 600; color: #9D4EDD;">{{ stmt['statement_date'][:7] }}</td>
+                                        <td style="font-weight: 600; color: #322446;">{{ stmt['statement_date'][:7] }}</td>
                                         <td style="font-weight: 600;">{{ stmt['customer_name'] }}</td>
-                                        <td style="font-weight: 600; color: #FFD700;">{{ stmt['bank_abbr'] }}</td>
-                                        <td style="color: #90EE90;">RM {{ "{:,.2f}".format(stmt['monthly_credit']) }}</td>
-                                        <td style="color: #FFB6C1;">RM {{ "{:,.2f}".format(stmt['monthly_debit']) }}</td>
+                                        <td style="font-weight: 600; color: #FF007F;">{{ stmt['bank_abbr'] }}</td>
+                                        <td style="color: #FF007F;">RM {{ "{:,.2f}".format(stmt['monthly_credit']) }}</td>
+                                        <td style="color: #322446;">RM {{ "{:,.2f}".format(stmt['monthly_debit']) }}</td>
                                         <td style="font-weight: 600;">RM {{ "{:,.2f}".format(stmt['closing_bal'] if stmt['closing_bal'] else 0) }}</td>
-                                        <td style="color: #FFD700;">RM {{ "{:,.2f}".format(stmt['cc_sum_payment']) }}</td>
-                                        <td style="color: #87CEEB;">RM {{ "{:,.2f}".format(stmt['total_transfer']) }}</td>
+                                        <td style="color: #FF007F;">RM {{ "{:,.2f}".format(stmt['cc_sum_payment']) }}</td>
+                                        <td style="color: #322446;">RM {{ "{:,.2f}".format(stmt['total_transfer']) }}</td>
                                         <td style="text-align: center;">
                                             <a href="{{ url_for('savings_verify_statement', statement_id=stmt['statement_id']) }}" 
                                                class="btn btn-sm btn-view-details"
                                                style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
-                                                      border: 2px solid #9D4EDD; 
-                                                      color: #9D4EDD;
+                                                      border: 2px solid #322446; 
+                                                      color: #322446;
                                                       font-weight: 600;
                                                       padding: 0.25rem 0.75rem;">
                                                 {{ t('view_details') }}

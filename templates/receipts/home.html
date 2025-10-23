@@ -53,13 +53,13 @@
     <!-- Supplier Invoices Table -->
     <div class="row g-4 mb-5">
         <div class="col-12">
-            <div class="statement-card" style="border: 2px solid #FFD700;">
-                <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #FFD700;">
+            <div class="statement-card" style="border: 2px solid #322446;">
+                <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #322446;">
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
-                        <h3 class="card-title-custom" style="color: #FFD700; font-weight: 700; margin: 0;">
+                        <h3 class="card-title-custom" style="color: #322446; font-weight: 700; margin: 0;">
                             <i class="bi bi-file-earmark-text"></i> Supplier Invoices (供应商发票)
                         </h3>
-                        <button id="exportSupplierTable" class="btn btn-sm" style="background: #FFD700; color: #000; border: none; font-weight: 600;">
+                        <button id="exportSupplierTable" class="btn btn-sm" style="background: #322446; color: #fff; border: none; font-weight: 600;">
                             <i class="bi bi-download"></i> Export Excel
                         </button>
                     </div>
@@ -67,7 +67,7 @@
                 <div class="card-body-custom" style="padding: 0;">
                     <div class="table-responsive">
                         <table id="supplierInvoicesTable" class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto; font-size: 0.95rem;">
-                            <thead style="background: rgba(255, 215, 0, 0.1); border-bottom: 2px solid #FFD700;">
+                            <thead style="background: rgba(50, 36, 70, 0.3); border-bottom: 2px solid #322446;">
                                 <tr>
                                     <th>Date</th>
                                     <th>Description</th>
@@ -82,19 +82,19 @@
                                 {% if supplier_invoices %}
                                     {% for invoice in supplier_invoices %}
                                     <tr class="hover-glow-row">
-                                        <td style="font-weight: 600; color: #FFD700;">{{ invoice['date'] }}</td>
+                                        <td style="font-weight: 600; color: #322446;">{{ invoice['date'] }}</td>
                                         <td style="font-weight: 600;">{{ invoice['description'] }}</td>
-                                        <td style="font-weight: 600; color: #90EE90;">RM {{ "{:,.2f}".format(invoice['amount']) }}</td>
+                                        <td style="font-weight: 600; color: #FF007F;">RM {{ "{:,.2f}".format(invoice['amount']) }}</td>
                                         <td>{{ invoice['from_customer'] }}</td>
-                                        <td style="color: #87CEEB;">{{ invoice['remarks'] }}</td>
-                                        <td style="color: #FFB6C1;">RM {{ "{:,.2f}".format(invoice['supplier_fee']) }}</td>
+                                        <td style="color: #322446;">{{ invoice['remarks'] }}</td>
+                                        <td style="color: #FF007F;">RM {{ "{:,.2f}".format(invoice['supplier_fee']) }}</td>
                                         <td style="text-align: center;">
                                             {% if invoice['pdf_path'] %}
                                             <a href="/{{ invoice['pdf_path'] }}" target="_blank" 
                                                class="btn btn-sm btn-view-details"
                                                style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
-                                                      border: 2px solid #FFD700; 
-                                                      color: #FFD700;
+                                                      border: 2px solid #322446; 
+                                                      color: #322446;
                                                       font-weight: 600;
                                                       padding: 0.25rem 0.75rem;">
                                                 <i class="bi bi-file-pdf"></i> View Invoice
@@ -153,9 +153,9 @@
                                     <tr class="hover-glow-row">
                                         <td style="font-weight: 600; color: #FF007F;">{{ receipt['date'] }}</td>
                                         <td style="font-weight: 600;">{{ receipt['description'] }}</td>
-                                        <td style="font-weight: 600; color: #90EE90;">RM {{ "{:,.2f}".format(receipt['amount']) }}</td>
+                                        <td style="font-weight: 600; color: #FF007F;">RM {{ "{:,.2f}".format(receipt['amount']) }}</td>
                                         <td>{{ receipt['from_customer'] }}</td>
-                                        <td style="color: #87CEEB;">{{ receipt['remarks'] }}</td>
+                                        <td style="color: #322446;">{{ receipt['remarks'] }}</td>
                                         <td style="text-align: center;">
                                             {% if receipt['receipt_file_path'] %}
                                             <a href="/{{ receipt['receipt_file_path'] }}" target="_blank" 
