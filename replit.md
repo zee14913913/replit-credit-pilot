@@ -50,6 +50,13 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Design Patterns:** Repository Pattern for database abstraction, Template Inheritance for UI consistency, Context Manager Pattern for database connection handling, and Service Layer Pattern for OWNER/INFINITE classification logic.
 - **Security:** Session secret key from environment variables, file upload size limits, SQL injection prevention, and audit logging.
 - **Data Accuracy:** Implemented robust previous balance extraction and monthly ledger engine overhaul to ensure 100% accuracy in financial calculations and DR/CR classification, including a universal balance-change algorithm for all bank statements. Independent statement-level reconciliation guarantees each monthly statement is tracked separately without data aggregation.
+- **🚨 CRITICAL RULE - Monthly Statement Aggregation:** When a single PDF contains multiple credit cards from the same bank (e.g., Hong Leong Bank cards 2033 and 4170), the system MUST aggregate them into ONE statement per month with:
+  - `statement.previous_balance` = SUM of all cards' previous balances
+  - `statement.total` = SUM of all cards' current balances
+  - ALL transactions from all cards stored under the same statement_id
+  - Each transaction MUST have `card_last4` field to identify which card it belongs to
+  - Display format: Monthly summary shows aggregated totals, with transaction details grouped by card number
+  - This ensures monthly reports show "all cards from same bank in same month" as ONE consolidated view, not separate statements per card.
 
 ## External Dependencies
 
