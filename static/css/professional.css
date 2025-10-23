@@ -835,27 +835,45 @@ a.btn-white-glow:hover,
     border-radius: var(--radius-md);
     border-left: 3px solid;
     margin-bottom: var(--space-md);
-    background: var(--bg-secondary);
+    background: #322446;
+    color: #FFFFFF;
+    text-shadow: 0 0 8px rgba(255,255,255,0.3);
+    box-shadow: 0 0 15px rgba(50,36,70,0.3);
 }
 
 .alert-success-pro {
-    border-color: var(--success);
-    color: var(--text-primary);
+    border-color: #FF007F;
+    background: #322446;
+    color: #FFFFFF;
+    text-shadow: 0 0 8px rgba(255,255,255,0.3);
 }
 
 .alert-info-pro {
-    border-color: var(--accent-primary);
-    color: var(--text-primary);
+    border-color: #FF007F;
+    background: #322446;
+    color: #FFFFFF;
+    text-shadow: 0 0 8px rgba(255,255,255,0.3);
 }
 
 .alert-warning-pro {
-    border-color: var(--warning);
-    color: var(--text-primary);
+    border-color: #FF007F;
+    background: #322446;
+    color: #FFFFFF;
+    text-shadow: 0 0 8px rgba(255,255,255,0.3);
 }
 
 .alert-error-pro {
-    border-color: var(--error);
-    color: var(--text-primary);
+    border-color: #FF007F;
+    background: #322446;
+    color: #FFFFFF;
+    text-shadow: 0 0 8px rgba(255,255,255,0.3);
+}
+
+.alert-danger-pro {
+    border-color: #FF007F;
+    background: #322446;
+    color: #FFFFFF;
+    text-shadow: 0 0 8px rgba(255,255,255,0.3);
 }
 
 /* ========================================
