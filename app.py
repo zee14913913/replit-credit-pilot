@@ -3656,6 +3656,9 @@ def credit_card_ledger_monthly(customer_id, year, month):
     from datetime import datetime
     from collections import defaultdict
     
+    # 🔥 获取可选的银行筛选参数
+    bank_name = request.args.get('bank_name')
+    
     with get_db() as conn:
         cursor = conn.cursor()
         
@@ -3669,23 +3672,44 @@ def credit_card_ledger_monthly(customer_id, year, month):
         customer = dict(customer_row)
         customer['code'] = get_customer_code(customer['name'])
         
-        # 获取该月所有账单
-        cursor.execute('''
-            SELECT 
-                s.id,
-                s.statement_date,
-                s.statement_total,
-                s.previous_balance,
-                cc.bank_name,
-                cc.card_number_last4,
-                cc.id as card_id
-            FROM statements s
-            JOIN credit_cards cc ON s.card_id = cc.id
-            WHERE cc.customer_id = ?
-              AND strftime('%Y', s.statement_date) = ?
-              AND strftime('%m', s.statement_date) = ?
-            ORDER BY cc.bank_name, cc.card_number_last4
-        ''', (customer_id, year, month))
+        # 🔥 获取该月账单（可能按银行筛选）
+        if bank_name:
+            # 按银行筛选
+            cursor.execute('''
+                SELECT 
+                    s.id,
+                    s.statement_date,
+                    s.statement_total,
+                    s.previous_balance,
+                    cc.bank_name,
+                    cc.card_number_last4,
+                    cc.id as card_id
+                FROM statements s
+                JOIN credit_cards cc ON s.card_id = cc.id
+                WHERE cc.customer_id = ?
+                  AND strftime('%Y', s.statement_date) = ?
+                  AND strftime('%m', s.statement_date) = ?
+                  AND cc.bank_name = ?
+                ORDER BY cc.bank_name, cc.card_number_last4
+            ''', (customer_id, year, month, bank_name))
+        else:
+            # 所有银行
+            cursor.execute('''
+                SELECT 
+                    s.id,
+                    s.statement_date,
+                    s.statement_total,
+                    s.previous_balance,
+                    cc.bank_name,
+                    cc.card_number_last4,
+                    cc.id as card_id
+                FROM statements s
+                JOIN credit_cards cc ON s.card_id = cc.id
+                WHERE cc.customer_id = ?
+                  AND strftime('%Y', s.statement_date) = ?
+                  AND strftime('%m', s.statement_date) = ?
+                ORDER BY cc.bank_name, cc.card_number_last4
+            ''', (customer_id, year, month))
         
         all_statements = [dict(row) for row in cursor.fetchall()]
         
@@ -3777,7 +3801,8 @@ def credit_card_ledger_monthly(customer_id, year, month):
                           year=year,
                           month=month,
                           period_display=period_display,
-                          bank_summaries=bank_summaries)
+                          bank_summaries=bank_summaries,
+                          selected_bank=bank_name)  # 🔥 传递选中的银行
 
 
 @app.route('/credit-card/ledger/statement/<int:statement_id>')
