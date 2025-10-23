@@ -27,12 +27,30 @@
             {% for month in year_data.months %}
             <div class="col-6 col-sm-4 col-md-3 col-lg-2">
                 {% if month.has_statements %}
-                <a href="{{ url_for('credit_card_ledger_monthly', customer_id=customer.id, year=year_data.year, month="%02d"|format(month.number)) }}" style="text-decoration: none;">
-                    <div class="month-cell active">
-                        <div class="month-name">{{ month.name }}</div>
-                        <div class="month-badge">{{ month.statements|length }}</div>
+                <div class="month-cell active">
+                    <div class="month-name">{{ month.name }}</div>
+                    <div class="month-badge">{{ month.statements|length }}</div>
+                    
+                    <!-- 🔥 银行列表 -->
+                    {% if month.banks %}
+                    <div class="banks-list mt-2">
+                        {% for bank in month.banks %}
+                        <a href="{{ url_for('credit_card_ledger_monthly', customer_id=customer.id, year=year_data.year, month="%02d"|format(month.number), bank_name=bank) }}" 
+                           class="bank-link">
+                            {{ bank }}
+                        </a>
+                        {% endfor %}
+                        
+                        <!-- View All 链接 -->
+                        {% if month.banks|length > 1 %}
+                        <a href="{{ url_for('credit_card_ledger_monthly', customer_id=customer.id, year=year_data.year, month="%02d"|format(month.number)) }}" 
+                           class="bank-link view-all">
+                            View All
+                        </a>
+                        {% endif %}
                     </div>
-                </a>
+                    {% endif %}
+                </div>
                 {% else %}
                 <div class="month-cell inactive">
                     <div class="month-name">{{ month.name }}</div>
@@ -96,6 +114,48 @@
 
 .month-cell.active:hover .month-badge {
     background: linear-gradient(135deg, #330066 0%, #FF1493 100%);
+}
+
+.banks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 20, 147, 0.2);
+}
+
+.bank-link {
+    display: block;
+    padding: 0.4rem 0.6rem;
+    background: rgba(255, 20, 147, 0.1);
+    color: #FF1493;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 20, 147, 0.3);
+}
+
+.bank-link:hover {
+    background: rgba(255, 20, 147, 0.2);
+    color: #330066;
+    border-color: #330066;
+    transform: translateX(3px);
+}
+
+.bank-link.view-all {
+    background: rgba(51, 0, 102, 0.1);
+    color: #330066;
+    border-color: rgba(51, 0, 102, 0.3);
+    font-style: italic;
+}
+
+.bank-link.view-all:hover {
+    background: rgba(51, 0, 102, 0.2);
+    color: #FF1493;
+    border-color: #FF1493;
 }
 </style>
 {% endblock %}
