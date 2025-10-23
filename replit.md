@@ -99,9 +99,13 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 
 - **文件迁移工具**: `migrate_file_storage.py`
   - 从旧结构迁移到新统一架构
-  - 支持预览（--dry-run）、测试（--test）、全量迁移（--migrate）
+  - 支持预览（--dry-run）、测试（--test）、全量迁移（--migrate --yes）
   - 自动备份、验证、报告生成
-  - **状态**: 架构已就绪，迁移待执行
+  - **状态**: ✅ 迁移已完成（2025-10-23）
+    - 成功迁移79个文件到新架构
+    - 数据库备份: `db/backup_before_migration_20251023_190630.db`
+    - 旧文件备份: `static/backup_migration_old_folders_20251023_1931/`
+    - 迁移报告: `migration_report_20251023_190630.json`
 
 - **核心特性**:
   - ✅ **完全客户隔离**: 每个客户独立文件夹
