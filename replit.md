@@ -79,7 +79,7 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Local File System with Customer-Code-Based Isolation**: 
   - **Mandatory organized structure** using `StatementOrganizer` service with complete customer isolation:
     - **Base Structure**: `static/uploads/customers/{customer_code}/`
-    - **Customer Code Format**: `Be_rich_{INITIALS}_{SEQ}` (例如: Be_rich_CCC_01 for CHANG CHOON CHOW)
+    - **Customer Code Format**: `Be_rich_{INITIALS}` (例如: Be_rich_CCC for CHANG CHOON CHOW)
     - **Credit Cards**: `{customer_code}/credit_cards/{bank_name}/{YYYY-MM}/`
     - **Savings Accounts**: `{customer_code}/savings/{bank_name}/{YYYY-MM}/`
     - **Receipts**: `{customer_code}/receipts/{card_last4}/`
@@ -91,7 +91,7 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
   **Organization Benefits:**
   - **Complete Customer Isolation**: Each customer has their own folder with meaningful code
   - **Human-Readable**: Customer codes are meaningful (initials-based) not just numbers
-  - **Easy Backup**: Backup single customer by copying their folder (e.g., Be_rich_CCC_01)
+  - **Easy Backup**: Backup single customer by copying their folder (e.g., Be_rich_CCC)
   - **Scalability**: Supports thousands of customers without root directory clutter
   - **Security**: Customer data physically separated on filesystem
   - **Easy Navigation**: customer_code → category (credit_cards/savings/receipts) → bank → month

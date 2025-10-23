@@ -221,36 +221,14 @@ def add_customer():
                 flash(f'Customer with email {email} already exists', 'error')
                 return redirect(url_for('index'))
             
-            # 自动生成customer_code
+            # 自动生成customer_code（简化版，无序号）
             def generate_customer_code(name):
-                """生成客户代码：Be_rich_{首字母缩写}_{序号}"""
+                """生成客户代码：Be_rich_{首字母缩写}"""
                 words = name.upper().split()
                 initials = ''.join([word[0] for word in words if word])
-                return initials
+                return f"Be_rich_{initials}"
             
-            initials = generate_customer_code(name)
-            
-            # 查找相同缩写的最大序号
-            cursor.execute("""
-                SELECT customer_code FROM customers 
-                WHERE customer_code LIKE ?
-                ORDER BY customer_code DESC
-                LIMIT 1
-            """, (f"Be_rich_{initials}_%",))
-            
-            existing = cursor.fetchone()
-            if existing:
-                # 提取序号并递增
-                last_code = existing['customer_code']
-                try:
-                    last_seq = int(last_code.split('_')[-1])
-                    seq_num = last_seq + 1
-                except:
-                    seq_num = 1
-            else:
-                seq_num = 1
-            
-            customer_code = f"Be_rich_{initials}_{seq_num:02d}"
+            customer_code = generate_customer_code(name)
             
             # Insert new customer with customer_code
             cursor.execute("""
