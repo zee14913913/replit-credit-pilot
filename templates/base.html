@@ -40,21 +40,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link nav-link-pink-glow {{ 'active' if 'credit_card_ledger' in request.endpoint }}" 
-                       href="{{ url_for('credit_card_ledger') }}"
-                       style="
-                           background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%) !important;
-                           color: #FFFFFF !important;
-                           font-weight: 700 !important;
-                           border: 2px solid #FF007F !important;
-                           border-radius: 8px !important;
-                           padding: 0.6rem 1.2rem !important;
-                           text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.6) !important;
-                           box-shadow: 0 0 15px rgba(255, 0, 127, 0.4) !important;
-                           transition: all 0.3s ease !important;
-                       "
-                       onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 0 25px rgba(255, 0, 127, 0.6)'; this.style.textShadow='0 0 15px rgba(255,255,255,1), 0 0 30px rgba(255,255,255,0.8)';"
-                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 15px rgba(255, 0, 127, 0.4)'; this.style.textShadow='0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.6)';">
+                    <a class="nav-link {{ 'active' if 'credit_card_ledger' in request.endpoint }}" 
+                       href="{{ url_for('credit_card_ledger') }}">
                         {{ t('nav_cc_ledger') }}
                     </a>
                 </li>
