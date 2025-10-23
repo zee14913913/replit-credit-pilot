@@ -76,21 +76,23 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **SQLite**: File-based relational database (`db/smart_loan_manager.db`), with WAL mode and centralized connection management.
 
 ### File Storage
-- **Local File System with Customer-ID-Based Isolation**: 
+- **Local File System with Customer-Code-Based Isolation**: 
   - **Mandatory organized structure** using `StatementOrganizer` service with complete customer isolation:
-    - **Base Structure**: `static/uploads/customers/customer_{id}/`
-    - **Credit Cards**: `customer_{id}/credit_cards/{bank_name}/{YYYY-MM}/`
-    - **Savings Accounts**: `customer_{id}/savings/{bank_name}/{YYYY-MM}/`
-    - **Receipts**: `customer_{id}/receipts/{card_last4}/`
+    - **Base Structure**: `static/uploads/customers/{customer_code}/`
+    - **Customer Code Format**: `Be_rich_{INITIALS}_{SEQ}` (例如: Be_rich_CCC_01 for CHANG CHOON CHOW)
+    - **Credit Cards**: `{customer_code}/credit_cards/{bank_name}/{YYYY-MM}/`
+    - **Savings Accounts**: `{customer_code}/savings/{bank_name}/{YYYY-MM}/`
+    - **Receipts**: `{customer_code}/receipts/{card_last4}/`
     - File naming: `{BankName}_{Last4Digits}_{YYYY-MM-DD}.pdf`
   - **Pending Receipts**: `static/uploads/pending_receipts/`
-  - **All file uploads are automatically organized by customer_id → category → bank → month**
+  - **All file uploads are automatically organized by customer_code → category → bank → month**
   - **File paths are stored in database and served via `/view_statement_file/<statement_id>` route**
   
   **Organization Benefits:**
-  - **Complete Customer Isolation**: Each customer has their own folder identified by ID
-  - **Avoid Name Conflicts**: Uses customer_id instead of name (no special character issues)
-  - **Easy Backup**: Backup single customer by copying their folder
+  - **Complete Customer Isolation**: Each customer has their own folder with meaningful code
+  - **Human-Readable**: Customer codes are meaningful (initials-based) not just numbers
+  - **Easy Backup**: Backup single customer by copying their folder (e.g., Be_rich_CCC_01)
   - **Scalability**: Supports thousands of customers without root directory clutter
   - **Security**: Customer data physically separated on filesystem
-  - **Easy Navigation**: customer_id → category (credit_cards/savings/receipts) → bank → month
+  - **Easy Navigation**: customer_code → category (credit_cards/savings/receipts) → bank → month
+  - **Professional**: Code format maintains brand identity (Be_rich prefix)

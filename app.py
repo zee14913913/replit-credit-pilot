@@ -546,9 +546,9 @@ def upload_statement_deprecated():
         with get_db() as conn:
             cursor = conn.cursor()
             
-            # 获取信用卡和客户信息（包含customer_id用于文件组织）
+            # 获取信用卡和客户信息（包含customer_code用于文件组织）
             cursor.execute('''
-                SELECT cc.bank_name, cc.card_number_last4, c.name as customer_name, c.id as customer_id
+                SELECT cc.bank_name, cc.card_number_last4, c.name as customer_name, c.customer_code
                 FROM credit_cards cc
                 JOIN customers c ON cc.customer_id = c.id
                 WHERE cc.id = ?
@@ -562,14 +562,14 @@ def upload_statement_deprecated():
             
             card_info = dict(card_row)
             
-            # 使用StatementOrganizer强制性组织文件（按客户ID）
+            # 使用StatementOrganizer强制性组织文件（按客户代码）
             from services.statement_organizer import StatementOrganizer
             organizer = StatementOrganizer()
             
             try:
                 organize_result = organizer.organize_statement(
                     temp_file_path,
-                    card_info['customer_id'],
+                    card_info['customer_code'],
                     card_info['customer_name'],
                     stmt_date,
                     {
@@ -2676,9 +2676,9 @@ def upload_savings_statement():
                         else:
                             savings_account_id = account['id']
                         
-                        # 🔥 强制性文件组织：获取客户信息（包含customer_id）
+                        # 🔥 强制性文件组织：获取客户信息（包含customer_code）
                         cursor.execute('''
-                            SELECT c.name as customer_name, c.id as customer_id
+                            SELECT c.name as customer_name, c.customer_code
                             FROM savings_accounts sa
                             JOIN customers c ON sa.customer_id = c.id
                             WHERE sa.id = ?
@@ -2687,12 +2687,12 @@ def upload_savings_statement():
                         customer_row = cursor.fetchone()
                         if customer_row:
                             customer_name = customer_row['customer_name']
-                            customer_id_for_files = customer_row['customer_id']
+                            customer_code_for_files = customer_row['customer_code']
                         else:
                             customer_name = 'Unknown_Customer'
-                            customer_id_for_files = customer_id or 0
+                            customer_code_for_files = 'Be_rich_UNKNOWN_00'
                         
-                        # 使用StatementOrganizer组织文件（按客户ID）
+                        # 使用StatementOrganizer组织文件（按客户代码）
                         from services.statement_organizer import StatementOrganizer
                         organizer = StatementOrganizer()
                         
@@ -2701,7 +2701,7 @@ def upload_savings_statement():
                         try:
                             organize_result = organizer.organize_statement(
                                 temp_file_path,
-                                customer_id_for_files,
+                                customer_code_for_files,
                                 customer_name,
                                 stmt_date,
                                 {
@@ -3337,7 +3337,7 @@ def credit_card_ledger():
             cursor = conn.cursor()
             
             cursor.execute('''
-                SELECT cc.bank_name, cc.card_number_last4, c.name as customer_name, c.id as customer_id
+                SELECT cc.bank_name, cc.card_number_last4, c.name as customer_name, c.id as customer_id, c.customer_code
                 FROM credit_cards cc
                 JOIN customers c ON cc.customer_id = c.id
                 WHERE cc.id = ?
@@ -3352,14 +3352,14 @@ def credit_card_ledger():
             card_info = dict(card_row)
             customer_id = card_info['customer_id']
             
-            # 使用StatementOrganizer组织文件（按客户ID）
+            # 使用StatementOrganizer组织文件（按客户代码）
             from services.statement_organizer import StatementOrganizer
             organizer = StatementOrganizer()
             
             try:
                 organize_result = organizer.organize_statement(
                     temp_file_path,
-                    customer_id,
+                    card_info['customer_code'],
                     card_info['customer_name'],
                     stmt_date,
                     {

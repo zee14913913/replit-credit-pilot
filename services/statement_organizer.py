@@ -91,13 +91,13 @@ class StatementOrganizer:
         # 替换空格为下划线
         return clean_name.replace(' ', '_')
     
-    def create_folder_structure(self, customer_id, category, bank_name, year, month):
+    def create_folder_structure(self, customer_code, category, bank_name, year, month):
         """
-        创建四级文件夹结构（按客户ID隔离）
+        创建四级文件夹结构（按客户代码隔离）
         
         结构：
         uploads/customers/
-        └── customer_{id}/
+        └── {customer_code}/  (例如: Be_rich_CCC_01)
             ├── credit_cards/
             │   └── {bank_name}/
             │       └── {year}-{month:02d}/
@@ -106,7 +106,7 @@ class StatementOrganizer:
                     └── {year}-{month:02d}/
         
         Args:
-            customer_id: 客户ID（使用ID而非名称，避免特殊字符和重复）
+            customer_code: 客户代码（例如：Be_rich_CCC_01）
             category: 类别 ('credit_cards' 或 'savings')
             bank_name: 银行名称
             year: 年份
@@ -118,23 +118,22 @@ class StatementOrganizer:
         # 清理银行名称
         safe_bank_name = self.sanitize_name(bank_name)
         
-        # 构建路径：customers/customer_{id}/类别/银行/月份
+        # 构建路径：customers/{customer_code}/类别/银行/月份
         month_folder = f"{year}-{month:02d}"
-        customer_folder = f"customer_{customer_id}"
-        folder_path = Path(self.customers_folder) / customer_folder / category / safe_bank_name / month_folder
+        folder_path = Path(self.customers_folder) / customer_code / category / safe_bank_name / month_folder
         
         # 创建文件夹
         os.makedirs(folder_path, exist_ok=True)
         
         return str(folder_path)
     
-    def organize_statement(self, file_path, customer_id, customer_name, statement_date, card_info, category=CATEGORY_CREDIT_CARD):
+    def organize_statement(self, file_path, customer_code, customer_name, statement_date, card_info, category=CATEGORY_CREDIT_CARD):
         """
-        归档账单文件到正确的层级文件夹（按客户ID隔离）
+        归档账单文件到正确的层级文件夹（按客户代码隔离）
         
         Args:
             file_path: 上传的文件路径
-            customer_id: 客户ID（用于文件夹组织）
+            customer_code: 客户代码（例如：Be_rich_CCC_01）
             customer_name: 客户名称（保留用于兼容性）
             statement_date: 账单日期（string or datetime）
             card_info: 信用卡/储蓄账户信息 (dict with bank_name, last_4_digits)
@@ -154,9 +153,9 @@ class StatementOrganizer:
         # 获取银行名称
         bank_name = card_info.get('bank_name', 'UNKNOWN_BANK')
         
-        # 创建文件夹结构（使用customer_id）
+        # 创建文件夹结构（使用customer_code）
         folder_path = self.create_folder_structure(
-            customer_id, category, bank_name, year, month
+            customer_code, category, bank_name, year, month
         )
         
         # 生成新文件名：BankName_Last4Digits_YYYY-MM-DD.pdf
