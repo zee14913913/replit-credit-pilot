@@ -10,6 +10,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 from db.database import get_db, log_audit, get_all_customers, get_customer_cards, get_card_statements, get_statement_transactions
+from utils.auth_decorators import login_required, admin_required, customer_access_required, get_accessible_customers
 from ingest.statement_parser import parse_statement_auto
 from validate.categorizer import categorize_transaction, validate_statement, get_spending_summary
 from validate.transaction_validator import validate_transactions, generate_validation_report
@@ -1250,7 +1251,9 @@ def generate_enhanced_report(customer_id):
 
 @app.route('/customer/login', methods=['GET', 'POST'])
 def customer_login():
-    """Customer login page"""
+    """统一登录页面（支持Admin和Customer）"""
+    import hashlib
+    
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -1258,16 +1261,40 @@ def customer_login():
         if not email or not password:
             return render_template('customer_login.html', error='Email and password are required')
         
-        result = authenticate_customer(email, password)
+        # 使用users表进行认证
+        password_hash = hashlib.sha256(password.encode()).hexdigest()
         
-        if result['success']:
-            session['customer_token'] = result['session_token']
-            session['customer_id'] = result['customer_id']
-            session['customer_name'] = result['customer_name']
-            flash(f"{translate('welcome_back', session.get('language', 'en'))}, {result['customer_name']}!", 'success')
-            return redirect(url_for('customer_portal'))
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT u.id, u.email, u.role, u.full_name, c.id as customer_id, c.name as customer_name
+                FROM users u
+                LEFT JOIN customers c ON u.id = c.user_id
+                WHERE u.email = ? AND u.password_hash = ? AND u.is_active = 1
+            ''', (email, password_hash))
+            
+            user = cursor.fetchone()
+        
+        if user:
+            # 保存登录信息到session
+            session['user_id'] = user['id']
+            session['user_email'] = user['email']
+            session['user_role'] = user['role']
+            session['user_name'] = user['full_name'] or user['customer_name']
+            
+            if user['role'] == 'customer' and user['customer_id']:
+                session['customer_id'] = user['customer_id']
+                session['customer_name'] = user['customer_name']
+            
+            flash(f"欢迎回来, {session['user_name']}!", 'success')
+            
+            # 根据角色跳转
+            if user['role'] == 'admin':
+                return redirect(url_for('index'))  # 管理员看到所有功能
+            else:
+                return redirect(url_for('customer_portal'))  # 客户看到自己的数据
         else:
-            return render_template('customer_login.html', error=result['error'])
+            return render_template('customer_login.html', error='Invalid email or password')
     
     return render_template('customer_login.html')
 
@@ -3226,9 +3253,13 @@ def loan_matcher_analyze():
 # ============================================================================
 
 @app.route('/credit-card/ledger', methods=['GET', 'POST'])
+@login_required
 def credit_card_ledger():
     """第一层：客户列表 - 显示所有有信用卡账单的客户 + 上传功能"""
     from utils.name_utils import get_customer_code
+    
+    # 获取当前用户可访问的客户列表
+    accessible_customer_ids = get_accessible_customers(session['user_id'], session['user_role'])
     
     # POST: 处理上传
     if request.method == 'POST':
@@ -3443,18 +3474,24 @@ def credit_card_ledger():
     with get_db() as conn:
         cursor = conn.cursor()
         
-        # 获取所有有信用卡账单的客户
-        cursor.execute('''
-            SELECT DISTINCT
-                c.id,
-                c.name,
-                COUNT(DISTINCT s.id) as statement_count
-            FROM customers c
-            JOIN credit_cards cc ON c.id = cc.customer_id
-            JOIN statements s ON cc.id = s.card_id
-            GROUP BY c.id
-            ORDER BY c.name
-        ''')
+        # 获取所有有信用卡账单的客户（筛选权限）
+        if accessible_customer_ids:
+            placeholders = ','.join('?' * len(accessible_customer_ids))
+            cursor.execute(f'''
+                SELECT DISTINCT
+                    c.id,
+                    c.name,
+                    COUNT(DISTINCT s.id) as statement_count
+                FROM customers c
+                JOIN credit_cards cc ON c.id = cc.customer_id
+                JOIN statements s ON cc.id = s.card_id
+                WHERE c.id IN ({placeholders})
+                GROUP BY c.id
+                ORDER BY c.name
+            ''', accessible_customer_ids)
+        else:
+            # 如果没有可访问的客户，返回空列表
+            cursor.execute('SELECT * FROM customers WHERE 1=0')
         
         customers = []
         for row in cursor.fetchall():
@@ -3462,19 +3499,26 @@ def credit_card_ledger():
             customer['code'] = get_customer_code(customer['name'])
             customers.append(customer)
         
-        # 获取所有信用卡供上传表单使用
-        all_customers = get_all_customers()
+        # 获取所有信用卡供上传表单使用（仅可访问的客户）
         all_cards = []
-        for customer in all_customers:
-            cards = get_customer_cards(customer['id'])
-            for card in cards:
-                card['customer_name'] = customer['name']
-                all_cards.append(card)
+        for cust_id in accessible_customer_ids:
+            cursor.execute('SELECT * FROM customers WHERE id = ?', (cust_id,))
+            customer = cursor.fetchone()
+            if customer:
+                cards = get_customer_cards(cust_id)
+                for card in cards:
+                    card['customer_name'] = customer['name']
+                    all_cards.append(card)
     
-    return render_template('credit_card/ledger_index.html', customers=customers, all_cards=all_cards)
+    return render_template('credit_card/ledger_index.html', 
+                         customers=customers, 
+                         all_cards=all_cards,
+                         is_admin=(session['user_role'] == 'admin'))
 
 
 @app.route('/credit-card/ledger/<int:customer_id>/timeline')
+@login_required
+@customer_access_required
 def credit_card_ledger_timeline(customer_id):
     """第二层：年月网格 - 显示客户所有账单的年月分布"""
     from utils.name_utils import get_customer_code
@@ -3551,6 +3595,8 @@ def credit_card_ledger_timeline(customer_id):
 
 
 @app.route('/credit-card/ledger/<int:customer_id>/<year>/<month>')
+@login_required
+@customer_access_required
 def credit_card_ledger_monthly(customer_id, year, month):
     """第三层：月度详情 - 按银行分组显示该客户该月所有账单的完整分析"""
     from utils.name_utils import get_customer_code
@@ -3707,11 +3753,34 @@ def credit_card_ledger_monthly(customer_id, year, month):
 
 
 @app.route('/credit-card/ledger/statement/<int:statement_id>')
+@login_required
 def credit_card_ledger_detail(statement_id):
     """单个账单的OWNER vs INFINITE详细分析"""
     from services.owner_infinite_classifier import OwnerInfiniteClassifier
     
     classifier = OwnerInfiniteClassifier()
+    
+    # 权限检查：验证statement属于当前用户可访问的客户
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT c.id as customer_id
+            FROM statements s
+            JOIN credit_cards cc ON s.card_id = cc.id
+            JOIN customers c ON cc.customer_id = c.id
+            WHERE s.id = ?
+        ''', (statement_id,))
+        stmt_customer = cursor.fetchone()
+        
+        if not stmt_customer:
+            flash('账单不存在', 'error')
+            return redirect(url_for('credit_card_ledger'))
+        
+        # 检查权限
+        accessible_ids = get_accessible_customers(session['user_id'], session['user_role'])
+        if stmt_customer['customer_id'] not in accessible_ids:
+            flash('您没有权限访问此账单', 'error')
+            return redirect(url_for('credit_card_ledger'))
     
     with get_db() as conn:
         cursor = conn.cursor()
