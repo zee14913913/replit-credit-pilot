@@ -181,11 +181,8 @@
                     <h5 class="mb-0"><i class="bi bi-lightning"></i> 快速操作</h5>
                 </div>
                 <div class="card-body">
-                    <a href="/customer/{{ customer_id }}/consumption_records" class="btn btn-outline-primary me-2">
-                        <i class="bi bi-list-ul"></i> 查看消费记录
-                    </a>
-                    <a href="/customer/{{ customer_id }}/payment_records" class="btn btn-outline-success me-2">
-                        <i class="bi bi-cash-stack"></i> 查看付款记录
+                    <a href="/credit_card_ledger" class="btn btn-outline-primary me-2">
+                        <i class="bi bi-list-ul"></i> 查看 OWNER vs INFINITE 账本
                     </a>
                     <a href="/customer/{{ customer_id }}/generate_monthly_report?month={{ selected_month }}" class="btn btn-outline-info">
                         <i class="bi bi-file-earmark-pdf"></i> 生成月度报告
