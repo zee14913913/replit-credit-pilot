@@ -2947,7 +2947,12 @@ def savings_account_detail(account_id):
             WHERE id = ?
         ''', (account_id,))
         
-        account = dict(cursor.fetchone())
+        account_row = cursor.fetchone()
+        if not account_row:
+            flash('⚠️ Savings account not found', 'error')
+            return redirect(url_for('savings_customers'))
+        
+        account = dict(account_row)
         
         # 获取账单列表
         cursor.execute('''
@@ -3205,6 +3210,7 @@ def savings_verify_statement(statement_id):
         cursor.execute('''
             SELECT 
                 ss.id,
+                ss.savings_account_id,
                 ss.statement_date,
                 ss.file_path,
                 ss.file_type,
@@ -3301,6 +3307,28 @@ def flag_statement_discrepancy(statement_id):
     
     flash('⚠️ Discrepancy flagged. Please review and correct the differences.', 'warning')
     return redirect(url_for('savings_verify_statement', statement_id=statement_id))
+
+@app.route('/view_savings_statement_file/<int:statement_id>')
+def view_savings_statement_file(statement_id):
+    """查看储蓄账户账单原始PDF文件"""
+    from flask import send_file
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT file_path FROM savings_statements WHERE id = ?', (statement_id,))
+        row = cursor.fetchone()
+        
+        if not row or not row['file_path']:
+            return "PDF file not found", 404
+        
+        file_path = row['file_path']
+        
+        # 检查文件是否存在
+        if not os.path.exists(file_path):
+            return f"File does not exist: {file_path}", 404
+        
+        # 返回PDF文件
+        return send_file(file_path, mimetype='application/pdf')
 
 
 # ============================================================================
