@@ -221,16 +221,47 @@ def add_customer():
                 flash(f'Customer with email {email} already exists', 'error')
                 return redirect(url_for('index'))
             
-            # Insert new customer
+            # 自动生成customer_code
+            def generate_customer_code(name):
+                """生成客户代码：Be_rich_{首字母缩写}_{序号}"""
+                words = name.upper().split()
+                initials = ''.join([word[0] for word in words if word])
+                return initials
+            
+            initials = generate_customer_code(name)
+            
+            # 查找相同缩写的最大序号
             cursor.execute("""
-                INSERT INTO customers (name, email, phone, monthly_income)
-                VALUES (?, ?, ?, ?)
-            """, (name, email, phone, monthly_income))
+                SELECT customer_code FROM customers 
+                WHERE customer_code LIKE ?
+                ORDER BY customer_code DESC
+                LIMIT 1
+            """, (f"Be_rich_{initials}_%",))
+            
+            existing = cursor.fetchone()
+            if existing:
+                # 提取序号并递增
+                last_code = existing['customer_code']
+                try:
+                    last_seq = int(last_code.split('_')[-1])
+                    seq_num = last_seq + 1
+                except:
+                    seq_num = 1
+            else:
+                seq_num = 1
+            
+            customer_code = f"Be_rich_{initials}_{seq_num:02d}"
+            
+            # Insert new customer with customer_code
+            cursor.execute("""
+                INSERT INTO customers (name, email, phone, monthly_income, customer_code)
+                VALUES (?, ?, ?, ?, ?)
+            """, (name, email, phone, monthly_income, customer_code))
             
             customer_id = cursor.lastrowid
             conn.commit()
             
-            flash(f'Customer {name} added successfully! They can now register and login using {email}', 'success')
+            flash(f'Customer {name} ({customer_code}) added successfully! They can now register and login using {email}', 'success')
             return redirect(url_for('customer_dashboard', customer_id=customer_id))
             
     except Exception as e:
@@ -3489,6 +3520,7 @@ def credit_card_ledger():
                 SELECT DISTINCT
                     c.id,
                     c.name,
+                    c.customer_code,
                     COUNT(DISTINCT s.id) as statement_count
                 FROM customers c
                 JOIN credit_cards cc ON c.id = cc.customer_id
@@ -3504,7 +3536,8 @@ def credit_card_ledger():
         customers = []
         for row in cursor.fetchall():
             customer = dict(row)
-            customer['code'] = get_customer_code(customer['name'])
+            # 直接使用数据库中的customer_code字段
+            customer['code'] = customer.get('customer_code', 'Be_rich_UNKNOWN_00')
             customers.append(customer)
         
         # 获取所有信用卡供上传表单使用（仅可访问的客户）
@@ -3529,7 +3562,6 @@ def credit_card_ledger():
 @customer_access_required
 def credit_card_ledger_timeline(customer_id):
     """第二层：年月网格 - 显示客户所有账单的年月分布"""
-    from utils.name_utils import get_customer_code
     from datetime import datetime
     from collections import defaultdict
     
@@ -3544,7 +3576,8 @@ def credit_card_ledger_timeline(customer_id):
             return redirect(url_for('credit_card_ledger'))
         
         customer = dict(customer_row)
-        customer['code'] = get_customer_code(customer['name'])
+        # 直接使用数据库中的customer_code字段
+        customer['code'] = customer.get('customer_code', 'Be_rich_UNKNOWN_00')
         
         # 获取该客户所有账单的年月和银行
         cursor.execute('''
@@ -3607,7 +3640,6 @@ def credit_card_ledger_timeline(customer_id):
 @customer_access_required
 def credit_card_ledger_monthly(customer_id, year, month):
     """第三层：月度详情 - 按银行分组显示该客户该月所有账单的完整分析"""
-    from utils.name_utils import get_customer_code
     from datetime import datetime
     from collections import defaultdict
     
@@ -3625,7 +3657,8 @@ def credit_card_ledger_monthly(customer_id, year, month):
             return redirect(url_for('credit_card_ledger'))
         
         customer = dict(customer_row)
-        customer['code'] = get_customer_code(customer['name'])
+        # 直接使用数据库中的customer_code字段
+        customer['code'] = customer.get('customer_code', 'Be_rich_UNKNOWN_00')
         
         # 🔥 获取该月账单（可能按银行筛选）
         if bank_name:
