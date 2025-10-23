@@ -198,16 +198,20 @@ class MonthlyLedgerEngine:
                 print(f"  INFINITE付款: RM {infinite_payments:,.2f}")
                 print(f"  INFINITE余额: RM {infinite_rolling_balance:,.2f}")
                 
-                # 插入或更新客户月度账本
+                # 插入或更新客户月度账本（使用新的OWNER/INFINITE字段）
                 cursor.execute("""
                     INSERT OR REPLACE INTO monthly_ledger 
                     (card_id, customer_id, month_start, statement_id, previous_balance, 
-                     customer_spend, customer_payments, rolling_balance, updated_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     customer_spend, customer_payments, rolling_balance,
+                     owner_expenses, owner_payments, infinite_expenses, infinite_payments,
+                     owner_balance, infinite_balance, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     card_id, customer_id, month_start, statement_id,
                     previous_customer_balance, customer_spend, customer_payments,
-                    customer_rolling_balance, datetime.now()
+                    customer_rolling_balance,
+                    customer_spend, customer_payments, infinite_spend, infinite_payments,
+                    customer_rolling_balance, infinite_rolling_balance, datetime.now()
                 ))
                 
                 # 插入或更新INFINITE月度账本

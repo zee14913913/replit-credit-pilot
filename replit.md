@@ -46,7 +46,7 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Advanced Analytics Dashboard:** Integrates analytical features with dynamic charts and real-time warnings.
 
 ### System Design Choices
-- **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, authentication, advisory services, supplier_config, customer_aliases, account_baselines, and monthly_ledger.
+- **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, authentication, advisory services, supplier_config, customer_aliases, account_baselines, and monthly_ledger (with mandatory OWNER/INFINITE tracking fields: owner_expenses, owner_payments, infinite_expenses, infinite_payments, owner_balance, infinite_balance).
 - **Design Patterns:** Repository Pattern for database abstraction, Template Inheritance for UI consistency, Context Manager Pattern for database connection handling, and Service Layer Pattern for OWNER/INFINITE classification logic.
 - **Security:** Session secret key from environment variables, file upload size limits, SQL injection prevention, and audit logging.
 - **Data Accuracy:** Implemented robust previous balance extraction and monthly ledger engine overhaul to ensure 100% accuracy in financial calculations and DR/CR classification, including a universal balance-change algorithm for all bank statements. Independent statement-level reconciliation guarantees each monthly statement is tracked separately without data aggregation.
