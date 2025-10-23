@@ -76,23 +76,45 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **SQLite**: File-based relational database (`db/smart_loan_manager.db`), with WAL mode and centralized connection management.
 
 ### File Storage
-- **Local File System with Customer-Code-Based Isolation**: 
-  - **Mandatory organized structure** using `StatementOrganizer` service with complete customer isolation:
-    - **Base Structure**: `static/uploads/customers/{customer_code}/`
-    - **Customer Code Format**: `Be_rich_{INITIALS}` (例如: Be_rich_CCC for CHANG CHOON CHOW)
-    - **Credit Cards**: `{customer_code}/credit_cards/{bank_name}/{YYYY-MM}/`
-    - **Savings Accounts**: `{customer_code}/savings/{bank_name}/{YYYY-MM}/`
-    - **Receipts**: `{customer_code}/receipts/{card_last4}/`
-    - File naming: `{BankName}_{Last4Digits}_{YYYY-MM-DD}.pdf`
-  - **Pending Receipts**: `static/uploads/pending_receipts/`
-  - **All file uploads are automatically organized by customer_code → category → bank → month**
-  - **File paths are stored in database and served via `/view_statement_file/<statement_id>` route**
+
+#### Unified File Storage Architecture (2025-10-23 升级)
+- **统一存储管理服务**: `FileStorageManager` (services/file_storage_manager.py)
+  - 标准化路径生成、目录管理、文件操作
+  - 全自动化文件组织和命名规范
+  - 详细架构文档: `docs/FILE_STORAGE_ARCHITECTURE.md`
+
+- **标准目录结构**: `static/uploads/customers/{customer_code}/`
+  - **Customer Code Format**: `Be_rich_{INITIALS}` (例如: Be_rich_CCC for CHANG CHOON CHOW)
+  - **Credit Cards**: `credit_cards/{bank_name}/{YYYY-MM}/{BankName}_{Last4}_{YYYY-MM-DD}.pdf`
+  - **Savings Accounts**: `savings/{bank_name}/{YYYY-MM}/{BankName}_{AccountNum}_{YYYY-MM-DD}.pdf`
+  - **Payment Receipts**: `receipts/payment_receipts/{YYYY-MM}/{YYYY-MM-DD}_{Merchant}_{Amount}_{card_last4}.{jpg|png}`
+  - **Merchant Receipts**: `receipts/merchant_receipts/{YYYY-MM}/`
+  - **Supplier Invoices**: `invoices/supplier/{YYYY-MM}/Invoice_{SupplierName}_{InvoiceNum}_{Date}.pdf`
+  - **Customer Invoices**: `invoices/customer/{YYYY-MM}/`
+  - **Monthly Reports**: `reports/monthly/{YYYY-MM}/Monthly_Report_{YYYY-MM}.pdf`
+  - **Annual Reports**: `reports/annual/{YYYY}/Annual_Report_{YYYY}.pdf`
+  - **Loan Applications**: `loans/applications/{YYYY-MM}/`
+  - **CTOS Reports**: `loans/ctos_reports/{YYYY-MM}/`
+  - **Documents**: `documents/{contracts|identification|misc}/`
+
+- **文件迁移工具**: `migrate_file_storage.py`
+  - 从旧结构迁移到新统一架构
+  - 支持预览（--dry-run）、测试（--test）、全量迁移（--migrate）
+  - 自动备份、验证、报告生成
+  - **状态**: 架构已就绪，迁移待执行
+
+- **核心特性**:
+  - ✅ **完全客户隔离**: 每个客户独立文件夹
+  - ✅ **路径即索引**: 文件路径自解释，无需额外索引
+  - ✅ **时间维度管理**: 按年月自动分类，易于归档
+  - ✅ **类型自动分类**: 按文件类型自动组织目录
+  - ✅ **标准化命名**: 所有文件遵循统一命名规范
+  - ✅ **可扩展性**: 支持未来新增文件类型
+  - ✅ **跨平台兼容**: 使用正斜杠，相对路径存储
   
-  **Organization Benefits:**
-  - **Complete Customer Isolation**: Each customer has their own folder with meaningful code
-  - **Human-Readable**: Customer codes are meaningful (initials-based) not just numbers
-  - **Easy Backup**: Backup single customer by copying their folder (e.g., Be_rich_CCC)
-  - **Scalability**: Supports thousands of customers without root directory clutter
-  - **Security**: Customer data physically separated on filesystem
-  - **Easy Navigation**: customer_code → category (credit_cards/savings/receipts) → bank → month
-  - **Professional**: Code format maintains brand identity (Be_rich prefix)
+- **迁移安全措施**:
+  - 迁移前自动备份数据库和文件
+  - 先复制后验证，确保无误再删除旧文件
+  - 完整的迁移日志和报告
+  - 支持单客户测试迁移
+  - 随时可恢复到迁移前状态
