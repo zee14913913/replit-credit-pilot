@@ -1523,6 +1523,44 @@ def admin_login():
     
     return render_template('admin_login.html')
 
+def get_bank_abbreviation(bank_name):
+    """Convert bank full name to abbreviation"""
+    bank_abbr_map = {
+        'MAYBANK': 'MBB',
+        'CIMB': 'CIMB',
+        'PUBLIC BANK': 'PBB',
+        'RHB': 'RHB',
+        'HONG LEONG': 'HLB',
+        'AMBANK': 'AMB',
+        'ALLIANCE': 'ALL',
+        'AFFIN': 'AFF',
+        'HSBC': 'HSBC',
+        'STANDARD CHARTERED': 'SCB',
+        'CITIBANK': 'CITI',
+        'UOB': 'UOB',
+        'OCBC': 'OCBC',
+        'BANK ISLAM': 'BIM',
+        'BANK RAKYAT': 'BRK',
+        'BANK MUAMALAT': 'BMM',
+        'GX BANK': 'GX',
+    }
+    
+    if not bank_name:
+        return ''
+    
+    # Try exact match first
+    bank_upper = bank_name.upper().strip()
+    if bank_upper in bank_abbr_map:
+        return bank_abbr_map[bank_upper]
+    
+    # Try partial match
+    for key, abbr in bank_abbr_map.items():
+        if key in bank_upper:
+            return abbr
+    
+    # If no match, return original (shortened)
+    return bank_name[:10] if len(bank_name) > 10 else bank_name
+
 @app.route('/admin')
 def admin_dashboard():
     """Admin dashboard route"""
@@ -1575,9 +1613,11 @@ def admin_dashboard():
         cc_statements = [dict(row) for row in cursor.fetchall()]
         
         # Calculate OWNER and INFINITE outstanding balances for each statement
+        # Also convert bank names to abbreviations
         for stmt in cc_statements:
             stmt['owner_os_bal'] = stmt['owner_expenses'] - stmt['owner_payments']
             stmt['infinite_os_bal'] = stmt['infinite_expenses'] - stmt['infinite_payments']
+            stmt['bank_abbr'] = get_bank_abbreviation(stmt['bank_name'])
         
         # Get all savings account statements
         # Sorted by: Customer Name -> Bank -> Month (JAN-DEC order)
@@ -1602,6 +1642,10 @@ def admin_dashboard():
             LIMIT 100
         """)
         sa_statements = [dict(row) for row in cursor.fetchall()]
+        
+        # Convert bank names to abbreviations for savings accounts
+        for stmt in sa_statements:
+            stmt['bank_abbr'] = get_bank_abbreviation(stmt['bank_name'])
     
     return render_template('admin_dashboard.html', 
                          customers=customers,

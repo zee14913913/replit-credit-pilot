@@ -88,7 +88,7 @@
                                     <tr class="hover-glow-row">
                                         <td style="font-weight: 600; color: #FF007F;">{{ stmt['statement_date'][:7] }}</td>
                                         <td style="font-weight: 600;">{{ stmt['customer_name'] }}</td>
-                                        <td>{{ stmt['bank_name'] }}</td>
+                                        <td style="font-weight: 600; color: #FFD700;">{{ stmt['bank_abbr'] }}</td>
                                         <td>{{ stmt['due_date'] if stmt['due_date'] else '-' }}</td>
                                         <td style="font-weight: 600;">RM {{ "{:,.2f}".format(stmt['due_total']) }}</td>
                                         <td style="color: #FFB6C1;">RM {{ "{:,.2f}".format(stmt['owner_expenses']) }}</td>
@@ -160,7 +160,7 @@
                                     <tr class="hover-glow-row">
                                         <td style="font-weight: 600; color: #9D4EDD;">{{ stmt['statement_date'][:7] }}</td>
                                         <td style="font-weight: 600;">{{ stmt['customer_name'] }}</td>
-                                        <td>{{ stmt['bank_name'] }}</td>
+                                        <td style="font-weight: 600; color: #FFD700;">{{ stmt['bank_abbr'] }}</td>
                                         <td style="color: #90EE90;">RM {{ "{:,.2f}".format(stmt['monthly_credit']) }}</td>
                                         <td style="color: #FFB6C1;">RM {{ "{:,.2f}".format(stmt['monthly_debit']) }}</td>
                                         <td style="font-weight: 600;">RM {{ "{:,.2f}".format(stmt['closing_bal'] if stmt['closing_bal'] else 0) }}</td>
