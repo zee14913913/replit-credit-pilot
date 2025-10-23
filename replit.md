@@ -76,19 +76,21 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **SQLite**: File-based relational database (`db/smart_loan_manager.db`), with WAL mode and centralized connection management.
 
 ### File Storage
-- **Local File System with 4-Level Hierarchical Organization**: 
-  - **Mandatory organized structure** using `StatementOrganizer` service with category/bank separation:
-    - **Credit Cards**: `static/uploads/{customer_name}/credit_cards/{bank_name}/{YYYY-MM}/`
-    - **Savings Accounts**: `static/uploads/{customer_name}/savings/{bank_name}/{YYYY-MM}/`
+- **Local File System with Customer-ID-Based Isolation**: 
+  - **Mandatory organized structure** using `StatementOrganizer` service with complete customer isolation:
+    - **Base Structure**: `static/uploads/customers/customer_{id}/`
+    - **Credit Cards**: `customer_{id}/credit_cards/{bank_name}/{YYYY-MM}/`
+    - **Savings Accounts**: `customer_{id}/savings/{bank_name}/{YYYY-MM}/`
+    - **Receipts**: `customer_{id}/receipts/{card_last4}/`
     - File naming: `{BankName}_{Last4Digits}_{YYYY-MM-DD}.pdf`
-  - **Receipts**: 
-    - Matched: `static/uploads/receipts/{customer_id}/{card_last4}/`
-    - Unmatched: `static/uploads/receipts/pending/`
-  - **All file uploads are automatically organized by customer → category → bank → month**
+  - **Pending Receipts**: `static/uploads/pending_receipts/`
+  - **All file uploads are automatically organized by customer_id → category → bank → month**
   - **File paths are stored in database and served via `/view_statement_file/<statement_id>` route**
   
   **Organization Benefits:**
-  - Easy browsing: Navigate by customer → view categories (credit cards vs savings) → select bank → pick month
-  - Clear separation: Credit card and savings statements never mix
-  - Bank isolation: Each bank's statements stored independently
-  - Scalability: Structure supports unlimited customers, banks, and months
+  - **Complete Customer Isolation**: Each customer has their own folder identified by ID
+  - **Avoid Name Conflicts**: Uses customer_id instead of name (no special character issues)
+  - **Easy Backup**: Backup single customer by copying their folder
+  - **Scalability**: Supports thousands of customers without root directory clutter
+  - **Security**: Customer data physically separated on filesystem
+  - **Easy Navigation**: customer_id → category (credit_cards/savings/receipts) → bank → month
