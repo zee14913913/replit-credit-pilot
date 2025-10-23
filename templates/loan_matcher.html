@@ -113,7 +113,13 @@
                                     <label class="form-label text-golden fw-bold">
                                         <i class="bi bi-cloud-upload-fill me-2"></i>{{ t('upload_ctos_optional') }}
                                     </label>
-                                    <input type="file" name="ctos_file" class="form-control galaxy-input mb-3" accept="application/pdf">
+                                    <div class="custom-file-upload mb-3">
+                                        <input type="file" name="ctos_file" id="ctos_file_input" class="d-none" accept="application/pdf" onchange="updateFileName(this)">
+                                        <label for="ctos_file_input" class="btn btn-outline-light w-100 text-start d-flex justify-content-between align-items-center" style="cursor: pointer;">
+                                            <span id="file_name_display" class="text-silver-pearl">{{ t('no_file_chosen') }}</span>
+                                            <span class="badge bg-golden text-dark">{{ t('choose_file') }}</span>
+                                        </label>
+                                    </div>
                                     <small class="text-silver-pearl d-block">
                                         <i class="bi bi-info-circle me-1"></i>
                                         {{ t('ctos_auto_extract_note') }}
@@ -247,5 +253,40 @@ small.text-silver-pearl {
     margin-top: 0.5rem;
     display: block;
 }
+
+/* Custom File Upload Styling */
+.custom-file-upload .btn-outline-light {
+    border: 1px solid rgba(229, 228, 226, 0.3);
+    background: rgba(20, 20, 20, 0.5);
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.custom-file-upload .btn-outline-light:hover {
+    background: rgba(229, 228, 226, 0.1);
+    border-color: rgba(229, 228, 226, 0.5);
+}
+
+.custom-file-upload .badge {
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+}
 </style>
+
+<script>
+function updateFileName(input) {
+    const fileNameDisplay = document.getElementById('file_name_display');
+    const noFileText = "{{ t('no_file_chosen') }}";
+    
+    if (input.files && input.files.length > 0) {
+        fileNameDisplay.textContent = input.files[0].name;
+        fileNameDisplay.classList.remove('text-silver-pearl');
+        fileNameDisplay.classList.add('text-white', 'fw-semibold');
+    } else {
+        fileNameDisplay.textContent = noFileText;
+        fileNameDisplay.classList.remove('text-white', 'fw-semibold');
+        fileNameDisplay.classList.add('text-silver-pearl');
+    }
+}
+</script>
 {% endblock %}
