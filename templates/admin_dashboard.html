@@ -46,70 +46,149 @@
         <div class="col-md-12">
             <div class="content-card">
                 <h3 class="card-title" style="color: #FF007F; font-weight: 700;">{{ t('quick_actions') }}</h3>
-                <div class="d-flex gap-3 mt-3">
+                <div class="d-flex gap-3 mt-3 flex-wrap">
                     <a href="{{ url_for('admin_customers_cards') }}" class="btn-white-glow"><i class="bi bi-credit-card-2-front"></i> {{ t('customers_credit_cards_management') }}</a>
-                    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">{{ t('view_dashboard') }}</a>
                     <a href="{{ url_for('admin_logout') }}" class="btn btn-outline-danger">{{ t('logout') }}</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Customer List -->
-    <div class="row">
+    <!-- Credit Card Statements Card -->
+    <div class="row g-4 mb-5">
         <div class="col-12">
-            <div class="content-card">
-                <h3 class="card-title" style="color: #FF007F; font-weight: 700;">{{ t('customer_management') }}</h3>
-                <div class="table-responsive mt-4">
-                    <table class="table table-dark table-hover">
-                        <thead>
-                            <tr>
-                                <th>{{ t('id') }}</th>
-                                <th>{{ t('name') }}</th>
-                                <th>{{ t('email') }}</th>
-                                <th>{{ t('monthly_income') }}</th>
-                                <th>{{ t('employment_type') }}</th>
-                                <th>{{ t('created_at') }}</th>
-                                <th>{{ t('actions') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for c in customers %}
-                            <tr>
-                                <td>{{ c['id'] }}</td>
-                                <td>{{ c['name'] }}</td>
-                                <td>{{ c['email'] }}</td>
-                                <td>RM {{ "{:,.2f}".format(c['monthly_income']) if c['monthly_income'] else t('n_a') }}</td>
-                                <td>{{ c['employment_type'] if c['employment_type'] else t('n_a') }}</td>
-                                <td>{{ c['created_at'] }}</td>
-                                <td>
-                                    <div class="d-flex gap-2 flex-wrap">
-                                        <a href="{{ url_for('customer_dashboard', customer_id=c['id']) }}" 
-                                           class="btn btn-sm btn-outline-light">
-                                            {{ t('view') }}
-                                        </a>
-                                        <a href="{{ url_for('credit_card_ledger_timeline', customer_id=c['id']) }}" 
-                                           class="btn btn-sm"
-                                           style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
-                                                  border: 2px solid #FF007F; 
-                                                  color: #FF007F;
-                                                  font-weight: 700;">
-                                            CC Dashboard
-                                        </a>
-                                        <a href="{{ url_for('savings_accounts', customer_id=c['id']) }}" 
-                                           class="btn btn-sm"
-                                           style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
-                                                  border: 2px solid #9D4EDD; 
-                                                  color: #9D4EDD;
-                                                  font-weight: 700;">
-                                            SA Dashboard
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+            <div class="statement-card" style="border: 2px solid #FF007F;">
+                <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #FF007F;">
+                    <h3 class="card-title-custom" style="color: #FF007F; font-weight: 700; margin: 0; padding: 1.5rem;">
+                        <i class="bi bi-credit-card"></i> {{ t('credit_card_statements') }}
+                    </h3>
+                </div>
+                <div class="card-body-custom" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover elegant-table" style="margin: 0;">
+                            <thead style="background: rgba(255, 0, 127, 0.1); border-bottom: 2px solid #FF007F;">
+                                <tr>
+                                    <th>{{ t('month_of_statement') }}</th>
+                                    <th>{{ t('client_code') }}</th>
+                                    <th>{{ t('bank') }}</th>
+                                    <th>{{ t('due_date') }}</th>
+                                    <th>{{ t('due_total') }}</th>
+                                    <th>{{ t('owner_expenses') }}</th>
+                                    <th>{{ t('owner_payments') }}</th>
+                                    <th>{{ t('infinite_expenses') }}</th>
+                                    <th>{{ t('infinite_payments') }}</th>
+                                    <th>{{ t('owner_os_bal') }}</th>
+                                    <th>{{ t('infinite_os_bal') }}</th>
+                                    <th style="text-align: center;">{{ t('actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if cc_statements %}
+                                    {% for stmt in cc_statements %}
+                                    <tr class="hover-glow-row">
+                                        <td style="font-weight: 600; color: #FF007F;">{{ stmt['statement_date'][:7] }}</td>
+                                        <td>{{ stmt['customer_name'][:20] }}</td>
+                                        <td>{{ stmt['bank_name'] }}</td>
+                                        <td>{{ stmt['due_date'] if stmt['due_date'] else '-' }}</td>
+                                        <td style="font-weight: 600;">RM {{ "{:,.2f}".format(stmt['due_total']) }}</td>
+                                        <td style="color: #FFB6C1;">RM {{ "{:,.2f}".format(stmt['owner_expenses']) }}</td>
+                                        <td style="color: #90EE90;">RM {{ "{:,.2f}".format(stmt['owner_payments']) }}</td>
+                                        <td style="color: #FFB6C1;">RM {{ "{:,.2f}".format(stmt['infinite_expenses']) }}</td>
+                                        <td style="color: #90EE90;">RM {{ "{:,.2f}".format(stmt['infinite_payments']) }}</td>
+                                        <td style="font-weight: 700; color: {% if stmt['owner_os_bal'] > 0 %}#FF6B6B{% else %}#4ECDC4{% endif %};">
+                                            RM {{ "{:,.2f}".format(stmt['owner_os_bal']) }}
+                                        </td>
+                                        <td style="font-weight: 700; color: {% if stmt['infinite_os_bal'] > 0 %}#FF6B6B{% else %}#4ECDC4{% endif %};">
+                                            RM {{ "{:,.2f}".format(stmt['infinite_os_bal']) }}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a href="{{ url_for('view_statement', statement_id=stmt['statement_id']) }}" 
+                                               class="btn btn-sm btn-view-details"
+                                               style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+                                                      border: 2px solid #FF007F; 
+                                                      color: #FF007F;
+                                                      font-weight: 600;
+                                                      padding: 0.25rem 0.75rem;">
+                                                {{ t('view_details') }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="12" style="text-align: center; padding: 3rem; color: #999;">
+                                            {{ t('no_cc_statements_found') }}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bank Account Statements Card -->
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <div class="statement-card" style="border: 2px solid #9D4EDD;">
+                <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(157, 78, 221, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #9D4EDD;">
+                    <h3 class="card-title-custom" style="color: #9D4EDD; font-weight: 700; margin: 0; padding: 1.5rem;">
+                        <i class="bi bi-bank"></i> {{ t('bank_account_statements') }}
+                    </h3>
+                </div>
+                <div class="card-body-custom" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover elegant-table" style="margin: 0;">
+                            <thead style="background: rgba(157, 78, 221, 0.1); border-bottom: 2px solid #9D4EDD;">
+                                <tr>
+                                    <th>{{ t('month_of_statement') }}</th>
+                                    <th>{{ t('client_code') }}</th>
+                                    <th>{{ t('bank') }}</th>
+                                    <th>{{ t('monthly_credit') }}</th>
+                                    <th>{{ t('monthly_debit') }}</th>
+                                    <th>{{ t('closing_bal') }}</th>
+                                    <th>{{ t('cc_sum_payment') }}</th>
+                                    <th>{{ t('total_transfer') }}</th>
+                                    <th style="text-align: center;">{{ t('actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if sa_statements %}
+                                    {% for stmt in sa_statements %}
+                                    <tr class="hover-glow-row">
+                                        <td style="font-weight: 600; color: #9D4EDD;">{{ stmt['statement_date'][:7] }}</td>
+                                        <td>{{ stmt['customer_name'][:20] }}</td>
+                                        <td>{{ stmt['bank_name'] }}</td>
+                                        <td style="color: #90EE90;">RM {{ "{:,.2f}".format(stmt['monthly_credit']) }}</td>
+                                        <td style="color: #FFB6C1;">RM {{ "{:,.2f}".format(stmt['monthly_debit']) }}</td>
+                                        <td style="font-weight: 600;">RM {{ "{:,.2f}".format(stmt['closing_bal'] if stmt['closing_bal'] else 0) }}</td>
+                                        <td style="color: #FFD700;">RM {{ "{:,.2f}".format(stmt['cc_sum_payment']) }}</td>
+                                        <td style="color: #87CEEB;">RM {{ "{:,.2f}".format(stmt['total_transfer']) }}</td>
+                                        <td style="text-align: center;">
+                                            <a href="{{ url_for('view_savings_statement', statement_id=stmt['statement_id']) }}" 
+                                               class="btn btn-sm btn-view-details"
+                                               style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+                                                      border: 2px solid #9D4EDD; 
+                                                      color: #9D4EDD;
+                                                      font-weight: 600;
+                                                      padding: 0.25rem 0.75rem;">
+                                                {{ t('view_details') }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="9" style="text-align: center; padding: 3rem; color: #999;">
+                                            {{ t('no_sa_statements_found') }}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -148,30 +227,54 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    width: 40px;
-    height: 40px;
-    border-top: 2px solid rgba(192, 192, 192, 0.3);
-    border-left: 2px solid rgba(192, 192, 192, 0.3);
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.05) 50%);
 }
 
-.table-dark {
-    background: rgba(15, 15, 15, 0.5);
-    color: #E5E5E5;
+.statement-card {
+    background: #000000;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
-.table-dark th {
-    background: rgba(26, 26, 26, 0.8);
-    border-color: rgba(192, 192, 192, 0.2);
-    color: #FFFFFF;
-    font-weight: 600;
+.elegant-table {
+    background: #000000;
 }
 
-.table-dark td {
-    border-color: rgba(192, 192, 192, 0.15);
+.elegant-table thead th {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.85rem;
+    padding: 1rem;
+    border: none;
 }
 
-.table-dark tbody tr:hover {
-    background: rgba(192, 192, 192, 0.1);
+.elegant-table tbody td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+}
+
+.hover-glow-row {
+    transition: all 0.3s ease;
+}
+
+.hover-glow-row:hover {
+    background: rgba(255, 255, 255, 0.03) !important;
+    transform: translateX(5px);
+}
+
+.btn-view-details {
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.btn-view-details:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 0, 127, 0.4);
 }
 </style>
 {% endblock %}
