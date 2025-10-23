@@ -3228,7 +3228,12 @@ def savings_verify_statement(statement_id):
             WHERE ss.id = ?
         ''', (statement_id,))
         
-        statement = dict(cursor.fetchone())
+        statement_row = cursor.fetchone()
+        if not statement_row:
+            flash('客户不存在', 'danger')
+            return redirect(url_for('savings_customers'))
+        
+        statement = dict(statement_row)
         
         # 获取所有交易记录（按日期和金额排序，与PDF一致）
         cursor.execute('''
