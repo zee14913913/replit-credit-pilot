@@ -83,7 +83,28 @@
                                 <td>{{ c['employment_type'] if c['employment_type'] else t('n_a') }}</td>
                                 <td>{{ c['created_at'] }}</td>
                                 <td>
-                                    <a href="{{ url_for('customer_dashboard', customer_id=c['id']) }}" class="btn btn-sm btn-outline-light">{{ t('view') }}</a>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <a href="{{ url_for('customer_dashboard', customer_id=c['id']) }}" 
+                                           class="btn btn-sm btn-outline-light">
+                                            {{ t('view') }}
+                                        </a>
+                                        <a href="{{ url_for('credit_card_ledger_timeline', customer_id=c['id']) }}" 
+                                           class="btn btn-sm"
+                                           style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+                                                  border: 2px solid #FF007F; 
+                                                  color: #FF007F;
+                                                  font-weight: 700;">
+                                            CC Dashboard
+                                        </a>
+                                        <a href="{{ url_for('savings_accounts', customer_id=c['id']) }}" 
+                                           class="btn btn-sm"
+                                           style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+                                                  border: 2px solid #9D4EDD; 
+                                                  color: #9D4EDD;
+                                                  font-weight: 700;">
+                                            SA Dashboard
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}
