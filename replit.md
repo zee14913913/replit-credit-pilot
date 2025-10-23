@@ -10,7 +10,12 @@ Design requirements: Premium, sophisticated, high-end - suitable for professiona
 ## System Architecture
 
 ### UI/UX Decisions
-The platform features an elegant, mysterious, high-end Galaxy Universe theme with a pure black background, golden gradients, and starfield effects. The design system includes a specific color palette (pure black, golden accents, silver-pearl text), visual effects (animated sparkles, aurora borealis, frosted glass), Inter font family with gradient headings, and interactive elements with silver-white glow on hover. Components include navigation with golden shimmer, glass-morphism cards, and elegant tables. It is fully responsive with multi-language support (English/Chinese). CSS styling is managed through `galaxy-theme.css`.
+The platform features a strict professional design with **MINIMAL 3-COLOR PALETTE ONLY**:
+- **Black (#000000)**: Primary background
+- **Hot Pink (#FF007F)**: Primary accent, highlights, revenue, income, credits
+- **Dark Purple (#322446)**: Secondary accent, expenses, debits, borders
+
+No other colors are permitted. The design system emphasizes clean, professional layouts with bilingual support (English/Chinese). All CSS styling follows this strict color constraint.
 
 ### Technical Implementations
 The backend is built with Flask, utilizing SQLite with a context manager pattern for database interactions. Jinja2 handles server-side rendering, and Bootstrap 5 with Bootstrap Icons provides a responsive UI. Plotly.js is integrated for client-side data visualization.
