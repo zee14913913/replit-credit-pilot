@@ -1596,6 +1596,7 @@ def admin_dashboard():
                 cu.id as customer_id,
                 cu.name as customer_name,
                 cc.bank_name,
+                cc.card_number_last4,
                 s.due_date,
                 s.statement_total as due_total,
                 COALESCE(SUM(CASE WHEN t.category = 'owner_expense' THEN ABS(t.amount) ELSE 0 END), 0) as owner_expenses,
@@ -1606,7 +1607,7 @@ def admin_dashboard():
             JOIN credit_cards cc ON s.card_id = cc.id
             JOIN customers cu ON cc.customer_id = cu.id
             LEFT JOIN transactions t ON s.id = t.statement_id
-            GROUP BY s.id, s.statement_date, cu.id, cu.name, cc.bank_name, s.due_date, s.statement_total
+            GROUP BY s.id, s.statement_date, cu.id, cu.name, cc.bank_name, cc.card_number_last4, s.due_date, s.statement_total
             ORDER BY cu.name ASC, cc.bank_name ASC, s.statement_date ASC
             LIMIT 100
         """)
