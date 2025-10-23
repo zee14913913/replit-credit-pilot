@@ -52,7 +52,12 @@
                         </a>
                         <button onclick="deleteCustomer({{ customer.id }}, '{{ customer.name }}')" 
                                 class="btn-professional-outline" 
-                                style="background: #FF007F; color: #FFFFFF; border-color: #FF007F; text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);">
+                                style="background: linear-gradient(135deg, #C0C0C0 0%, #808080 50%, #A8A8A8 100%); 
+                                       color: #FF007F; 
+                                       border: 2px solid rgba(255, 0, 127, 0.3);
+                                       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+                                       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+                                       font-weight: 700;">
                             <i class="bi bi-trash"></i> {{ t('delete_customer') }}
                         </button>
                     </div>

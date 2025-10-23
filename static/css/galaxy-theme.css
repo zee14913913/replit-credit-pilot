@@ -401,19 +401,19 @@ p {
 }
 
 .nav-link {
-    background: linear-gradient(135deg, #C0C0C0 0%, #808080 50%, #A8A8A8 100%);
-    color: #FF007F;
+    background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%);
+    color: #FFFFFF;
     text-decoration: none;
     font-weight: 700;
     font-size: 0.95rem;
     padding: 0.6rem 1rem;
     border-radius: 8px;
-    border: 2px solid rgba(255, 0, 127, 0.3);
+    border: 2px solid #FF007F;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 15px rgba(255, 0, 127, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .nav-link::before {
@@ -425,7 +425,7 @@ p {
     height: 100%;
     background: linear-gradient(90deg, 
         transparent, 
-        rgba(255, 0, 127, 0.2), 
+        rgba(255, 255, 255, 0.3), 
         transparent);
     transition: left 0.5s ease;
 }
@@ -435,19 +435,21 @@ p {
 }
 
 .nav-link:hover {
-    background: linear-gradient(135deg, #D8D8D8 0%, #A0A0A0 50%, #C0C0C0 100%);
-    color: #FF007F;
-    border-color: #FF007F;
-    box-shadow: 0 0 15px rgba(255, 0, 127, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #FF1A8C 0%, #F0008A 100%);
+    color: #FFFFFF;
+    border-color: #FFFFFF;
+    box-shadow: 0 0 25px rgba(255, 0, 127, 0.6), 0 4px 12px rgba(0, 0, 0, 0.4);
     transform: translateY(-2px);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 0.8);
 }
 
 .nav-link.active {
-    background: linear-gradient(135deg, #E0E0E0 0%, #B0B0B0 50%, #D0D0D0 100%);
-    color: #FF007F;
-    border-color: #FF007F;
-    box-shadow: 0 0 20px rgba(255, 0, 127, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #FF3399 0%, #FF007F 100%);
+    color: #FFFFFF;
+    border-color: #FFFFFF;
+    box-shadow: 0 0 30px rgba(255, 0, 127, 0.7), 0 4px 12px rgba(0, 0, 0, 0.4);
     font-weight: 800;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 0.9);
 }
 
 /* Language Switcher */
