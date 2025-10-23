@@ -1550,6 +1550,7 @@ def admin_dashboard():
         active_cards = cursor.fetchone()[0]
         
         # Get all credit card statements with OWNER/INFINITE breakdown
+        # Sorted by: Customer Name -> Bank -> Month (JAN-DEC order)
         cursor.execute("""
             SELECT 
                 s.id as statement_id,
@@ -1568,8 +1569,8 @@ def admin_dashboard():
             JOIN customers cu ON cc.customer_id = cu.id
             LEFT JOIN transactions t ON s.id = t.statement_id
             GROUP BY s.id, s.statement_date, cu.id, cu.name, cc.bank_name, s.due_date, s.statement_total
-            ORDER BY s.statement_date DESC
-            LIMIT 50
+            ORDER BY cu.name ASC, cc.bank_name ASC, s.statement_date ASC
+            LIMIT 100
         """)
         cc_statements = [dict(row) for row in cursor.fetchall()]
         
@@ -1579,6 +1580,7 @@ def admin_dashboard():
             stmt['infinite_os_bal'] = stmt['infinite_expenses'] - stmt['infinite_payments']
         
         # Get all savings account statements
+        # Sorted by: Customer Name -> Bank -> Month (JAN-DEC order)
         cursor.execute("""
             SELECT 
                 ss.id as statement_id,
@@ -1596,8 +1598,8 @@ def admin_dashboard():
             JOIN customers cu ON sa.customer_id = cu.id
             LEFT JOIN savings_transactions st ON ss.id = st.savings_statement_id
             GROUP BY ss.id, ss.statement_date, cu.id, cu.name, sa.bank_name
-            ORDER BY ss.statement_date DESC
-            LIMIT 50
+            ORDER BY cu.name ASC, sa.bank_name ASC, ss.statement_date ASC
+            LIMIT 100
         """)
         sa_statements = [dict(row) for row in cursor.fetchall()]
     
