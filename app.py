@@ -2776,14 +2776,57 @@ def upload_savings_statement():
     customers = get_all_customers()
     return render_template('savings/upload.html', customers=customers)
 
+@app.route('/savings/customers')
+def savings_customers():
+    """Layer 1: 查看所有拥有储蓄账户的客户列表"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取所有有储蓄账户的客户
+        cursor.execute('''
+            SELECT DISTINCT
+                c.id,
+                c.name,
+                c.customer_code,
+                COUNT(DISTINCT sa.id) as account_count,
+                COUNT(DISTINCT ss.id) as statement_count,
+                COUNT(st.id) as total_transactions,
+                SUM(CASE WHEN st.transaction_type = 'debit' THEN st.amount ELSE 0 END) as total_debit,
+                SUM(CASE WHEN st.transaction_type = 'credit' THEN st.amount ELSE 0 END) as total_credit
+            FROM customers c
+            JOIN savings_accounts sa ON c.id = sa.customer_id
+            LEFT JOIN savings_statements ss ON sa.id = ss.savings_account_id
+            LEFT JOIN savings_transactions st ON ss.id = st.savings_statement_id
+            GROUP BY c.id, c.name, c.customer_code
+            ORDER BY c.name
+        ''')
+        
+        customers = [dict(row) for row in cursor.fetchall()]
+    
+    return render_template('savings/customers.html', customers=customers)
+
 @app.route('/savings/accounts')
-def savings_accounts():
-    """查看所有储蓄账户和账单"""
+@app.route('/savings/accounts/<int:customer_id>')
+def savings_accounts(customer_id=None):
+    """Layer 2: 查看特定客户的所有储蓄账户和账单"""
     import re
+    
+    # 如果没有提供customer_id，重定向到客户列表页
+    if customer_id is None:
+        return redirect(url_for('savings_customers'))
     
     with get_db() as conn:
         cursor = conn.cursor()
         
+        # 获取客户信息
+        cursor.execute('SELECT id, name, customer_code FROM customers WHERE id = ?', (customer_id,))
+        customer_row = cursor.fetchone()
+        if not customer_row:
+            flash('客户不存在', 'error')
+            return redirect(url_for('savings_customers'))
+        customer = dict(customer_row)
+        
+        # 获取该客户的所有储蓄账户
         cursor.execute('''
             SELECT 
                 sa.id,
@@ -2797,22 +2840,24 @@ def savings_accounts():
             FROM savings_accounts sa
             LEFT JOIN savings_statements ss ON sa.id = ss.savings_account_id
             LEFT JOIN savings_transactions st ON ss.id = st.savings_statement_id
+            WHERE sa.customer_id = ?
             GROUP BY sa.id
             ORDER BY sa.created_at DESC
-        ''')
+        ''', (customer_id,))
         
         accounts = [dict(row) for row in cursor.fetchall()]
         
-        # 提取所有转账交易中的收款人信息（按收款人+收款银行分组）
+        # 提取该客户所有转账交易中的收款人信息（按收款人+收款银行分组）
         cursor.execute('''
             SELECT st.description, st.amount, st.transaction_date, sa.bank_name as source_bank
             FROM savings_transactions st
             JOIN savings_statements ss ON st.savings_statement_id = ss.id
             JOIN savings_accounts sa ON ss.savings_account_id = sa.id
-            WHERE st.transaction_type = 'debit' 
+            WHERE sa.customer_id = ?
+                AND st.transaction_type = 'debit' 
                 AND (st.description LIKE '%Transfer%' OR st.description LIKE '%转账%' OR st.description LIKE '%Pay%')
             ORDER BY st.transaction_date
-        ''')
+        ''', (customer_id,))
         
         all_transfers = cursor.fetchall()
         
@@ -2883,7 +2928,11 @@ def savings_accounts():
         # 转换为列表并按总金额排序
         recipients = sorted(recipient_groups.values(), key=lambda x: x['total_amount'], reverse=True)
     
-    return render_template('savings/accounts.html', accounts=accounts, recipients=recipients)
+    return render_template('savings/accounts.html', 
+                         customer=customer,
+                         customer_id=customer_id,
+                         accounts=accounts, 
+                         recipients=recipients)
 
 @app.route('/savings/account/<int:account_id>')
 def savings_account_detail(account_id):
