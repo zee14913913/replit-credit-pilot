@@ -3593,13 +3593,14 @@ def credit_card_ledger_timeline(customer_id):
         customer = dict(customer_row)
         customer['code'] = get_customer_code(customer['name'])
         
-        # 获取该客户所有账单的年月
+        # 获取该客户所有账单的年月和银行
         cursor.execute('''
             SELECT DISTINCT
                 s.id,
                 s.statement_date,
                 strftime('%Y', s.statement_date) as year,
-                strftime('%m', s.statement_date) as month
+                strftime('%m', s.statement_date) as month,
+                cc.bank_name
             FROM statements s
             JOIN credit_cards cc ON s.card_id = cc.id
             WHERE cc.customer_id = ?
@@ -3608,8 +3609,9 @@ def credit_card_ledger_timeline(customer_id):
         
         statements = cursor.fetchall()
         
-        # 按年月组织账单
+        # 按年月组织账单，同时收集银行信息
         statements_by_year_month = defaultdict(lambda: defaultdict(list))
+        banks_by_year_month = defaultdict(lambda: defaultdict(set))
         years = set()
         
         for stmt in statements:
@@ -3620,17 +3622,20 @@ def credit_card_ledger_timeline(customer_id):
                 'id': stmt['id'],
                 'statement_date': stmt['statement_date']
             })
+            banks_by_year_month[year][month].add(stmt['bank_name'])
         
         # 生成年度数据（按降序排列）
         years_data = []
         for year in sorted(years, reverse=True):
             months_data = []
             for month in range(1, 13):
+                banks_list = sorted(list(banks_by_year_month[year][month])) if month in banks_by_year_month[year] else []
                 month_info = {
                     'number': month,
                     'name': datetime(2000, month, 1).strftime('%b'),
                     'has_statements': month in statements_by_year_month[year],
-                    'statements': statements_by_year_month[year][month] if month in statements_by_year_month[year] else []
+                    'statements': statements_by_year_month[year][month] if month in statements_by_year_month[year] else [],
+                    'banks': banks_list  # 🔥 新增：该月的银行列表
                 }
                 months_data.append(month_info)
             
