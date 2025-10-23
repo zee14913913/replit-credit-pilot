@@ -26,7 +26,7 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Data Export & Reporting:** Professional Excel/CSV export and PDF report generation (using ReportLab).
 - **Batch Operations:** Multi-file upload and batch job management.
 - **Reminder System:** Scheduled payment reminders via email.
-- **Authentication & Authorization:** Secure login/registration with SHA-256 hashing and token-based session management.
+- **Authentication & Authorization:** Multi-role permission system (Admin/Customer) with secure SHA-256 hashing. Admin users can access all customer data; Customer users can only access their own data. All sensitive routes protected with @login_required and @customer_access_required decorators.
 - **Customer Authorization Agreement:** Bilingual service agreement.
 - **Statement Organization System:** Organizes statements by `statement_date` with automatic monthly folder structure.
 - **Automated Monthly Report System:** Auto-generates and sends comprehensive galaxy-themed PDF reports per customer monthly, including detailed transactions, category summaries, optimization proposals, DSR calculation, and a profit-sharing service workflow.
