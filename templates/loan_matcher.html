@@ -149,7 +149,7 @@
                                     <i class="bi bi-building me-2"></i>{{ t('company_operating_years') }}
                                 </label>
                                 <input type="number" name="company_age" class="form-control galaxy-input" min="0" placeholder="{{ t('company_age_placeholder') }}">
-                                <small class="text-silver-pearl">
+                                <small style="color: #FF007F; font-weight: 700; text-shadow: 0 0 8px rgba(255,0,127,0.3);">
                                     {{ t('sme_loan_only') }}
                                 </small>
                             </div>
@@ -174,7 +174,17 @@
 
             <!-- Back Button -->
             <div class="text-center mt-4">
-                <a href="{{ url_for('index') }}" class="btn btn-outline-light">
+                <a href="{{ url_for('index') }}" class="btn btn-lg" 
+                   style="background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%); 
+                          color: #C0C0C0; 
+                          border: 2px solid #FF007F; 
+                          font-weight: 700; 
+                          padding: 0.75rem 2rem;
+                          text-shadow: 0 0 8px rgba(192,192,192,0.5);
+                          box-shadow: 0 0 15px rgba(255,0,127,0.3);
+                          transition: all 0.3s ease;"
+                   onmouseover="this.style.boxShadow='0 0 25px rgba(255,0,127,0.5)'; this.style.transform='translateY(-2px)';"
+                   onmouseout="this.style.boxShadow='0 0 15px rgba(255,0,127,0.3)'; this.style.transform='translateY(0)';">
                     <i class="bi bi-arrow-left me-2"></i>{{ t('back_to_home') }}
                 </a>
             </div>
