@@ -127,13 +127,13 @@
                                         <td style="font-weight: 600; color: #FF007F;">{{ stmt['statement_date'][:7] }}</td>
                                         <td style="font-weight: 600;">{{ stmt['customer_name'] }}</td>
                                         <td style="font-weight: 600; color: #FF007F;">{{ stmt['bank_abbr'] }}</td>
-                                        <td style="font-weight: 600; color: #322446;">****{{ stmt['card_number_last4'] }}</td>
+                                        <td style="font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">****{{ stmt['card_number_last4'] }}</td>
                                         <td>{{ stmt['due_date'] if stmt['due_date'] else '-' }}</td>
                                         <td style="font-weight: 600;">RM {{ "{:,.2f}".format(stmt['due_total']) }}</td>
                                         <td style="color: #FF007F;">RM {{ "{:,.2f}".format(stmt['owner_expenses']) }}</td>
-                                        <td style="color: #322446;">RM {{ "{:,.2f}".format(stmt['owner_payments']) }}</td>
+                                        <td style="color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">RM {{ "{:,.2f}".format(stmt['owner_payments']) }}</td>
                                         <td style="color: #FF007F;">RM {{ "{:,.2f}".format(stmt['infinite_expenses']) }}</td>
-                                        <td style="color: #322446;">RM {{ "{:,.2f}".format(stmt['infinite_payments']) }}</td>
+                                        <td style="color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">RM {{ "{:,.2f}".format(stmt['infinite_payments']) }}</td>
                                         <td style="font-weight: 700; color: #FF007F;">
                                             RM {{ "{:,.2f}".format(stmt['owner_os_bal']) }}
                                         </td>
