@@ -1,36 +1,34 @@
 {% extends "base.html" %}
 
-{% block title %}Settlement Report / 结算报告 - {{ settlement.customer_name }}{% endblock %}
+{% block title %}{{ t('settlement_report') }} - {{ settlement.customer_name }}{% endblock %}
 
 {% block content %}
 <div class="fade-in">
     <div class="section-header">
-        <h1 class="section-title">
-            <i class="bi bi-file-earmark-text"></i> Settlement Report / 结算报告
-        </h1>
-        <p class="section-subtitle">客户转账记录汇总</p>
+        <h1 class="section-title">{{ t('settlement_report') }}</h1>
+        <p class="section-subtitle">{{ t('customer_name') }}: {{ settlement.customer_name }}</p>
     </div>
 
     <!-- Settlement Summary Card -->
-    <div class="professional-card mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-        <div class="row g-4 text-white">
+    <div class="professional-card mb-4" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(0, 0, 0, 0.4) 100%); border-left: 4px solid var(--accent-gold);">
+        <div class="row g-4">
             <div class="col-md-4">
-                <h5 style="color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; font-size: 0.9rem;">
-                    Customer Name / 客户名字
+                <h5 style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.9rem;">
+                    {{ t('customer_name') }}
                 </h5>
-                <h2 style="color: white; margin: 0;">{{ settlement.customer_name }}</h2>
+                <h2 style="color: var(--text-primary); margin: 0;">{{ settlement.customer_name }}</h2>
             </div>
             <div class="col-md-4">
-                <h5 style="color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; font-size: 0.9rem;">
-                    Total Amount / 总预付金额
+                <h5 style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.9rem;">
+                    {{ t('total_prepayment_amount') }}
                 </h5>
-                <h2 style="color: #ffd700; margin: 0;">RM {{ "{:,.2f}".format(settlement.total_amount) }}</h2>
+                <h2 style="color: var(--accent-gold); margin: 0;">RM {{ "{:,.2f}".format(settlement.total_amount) }}</h2>
             </div>
             <div class="col-md-4">
-                <h5 style="color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; font-size: 0.9rem;">
-                    Transaction Count / 转账笔数
+                <h5 style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.9rem;">
+                    {{ t('transaction_count') }}
                 </h5>
-                <h2 style="color: white; margin: 0;">{{ settlement.transaction_count }} 笔</h2>
+                <h2 style="color: var(--text-primary); margin: 0;">{{ settlement.transaction_count }}</h2>
             </div>
         </div>
     </div>
@@ -38,25 +36,23 @@
     <!-- Monthly Summary -->
     {% if settlement.monthly_summary %}
     <div class="professional-card mb-4">
-        <h3 style="color: var(--text-primary); margin-bottom: 1.5rem;">
-            <i class="bi bi-calendar3"></i> Monthly Summary / 月度汇总
-        </h3>
+        <h3 style="color: var(--text-primary); margin-bottom: 1.5rem;">{{ t('monthly_summary') }}</h3>
 
         <div class="row g-4">
             {% for month_data in settlement.monthly_summary %}
             <div class="col-md-6 col-lg-4">
-                <div class="professional-card" style="background: linear-gradient(135deg, rgba(230, 230, 230, 0.1) 0%, rgba(200, 200, 200, 0.05) 100%); border: 1px solid rgba(255,255,255,0.1);">
+                <div class="professional-card" style="background: var(--bg-secondary); border: 1px solid rgba(212, 175, 55, 0.3);">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 style="color: var(--text-primary); margin: 0; font-size: 1.1rem;">
-                            📅 {{ month_data.month }}
+                            {{ month_data.month }}
                         </h4>
                         <span class="badge-professional badge-info-pro">
-                            {{ month_data.transaction_count }} 笔
+                            {{ month_data.transaction_count }}
                         </span>
                     </div>
-                    <div style="padding: 1rem; background: var(--bg-secondary); border-radius: 8px; text-align: center;">
-                        <small style="color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Monthly Total / 月度总额</small>
-                        <h3 style="color: var(--text-primary); margin: 0; font-weight: 700;">
+                    <div style="padding: 1rem; background: rgba(212, 175, 55, 0.1); border-radius: 8px; text-align: center;">
+                        <small style="color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">{{ t('monthly_total') }}</small>
+                        <h3 style="color: var(--accent-gold); margin: 0; font-weight: 700;">
                             RM {{ "{:,.2f}".format(month_data.total_amount) }}
                         </h3>
                     </div>
@@ -69,9 +65,7 @@
 
     <!-- Transaction Details -->
     <div class="professional-card">
-        <h3 style="color: var(--text-primary); margin-bottom: 1rem;">
-            <i class="bi bi-list-ul"></i> Transaction Details / 交易明细
-        </h3>
+        <h3 style="color: var(--text-primary); margin-bottom: 1rem;">{{ t('transaction_details') }}</h3>
 
         {% if settlement.monthly_summary %}
         <!-- Group by Month -->
@@ -80,10 +74,10 @@
             <div style="background: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h4 style="color: var(--text-primary); margin: 0; font-size: 1rem;">
-                        📅 {{ month_data.month }}
+                        {{ month_data.month }}
                     </h4>
                     <span style="color: var(--text-primary); font-weight: 600;">
-                        RM {{ "{:,.2f}".format(month_data.total_amount) }} ({{ month_data.transaction_count }} 笔)
+                        RM {{ "{:,.2f}".format(month_data.total_amount) }} ({{ month_data.transaction_count }})
                     </span>
                 </div>
             </div>
@@ -93,9 +87,9 @@
                     <thead>
                         <tr>
                             <th style="width: 50px;">#</th>
-                            <th>Date / 日期</th>
-                            <th>Description / 描述</th>
-                            <th>Amount / 金额</th>
+                            <th>{{ t('date') }}</th>
+                            <th>{{ t('description') }}</th>
+                            <th>{{ t('amount') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -115,10 +109,10 @@
                     <tfoot>
                         <tr style="background: var(--bg-secondary);">
                             <td colspan="3" style="text-align: right; font-weight: 600; color: var(--text-primary);">
-                                Month Subtotal / 月度小计:
+                                {{ t('month_subtotal') }}:
                             </td>
                             <td>
-                                <span style="color: var(--text-primary); font-weight: 700;">
+                                <span style="color: var(--accent-gold); font-weight: 700;">
                                     RM {{ "{:,.2f}".format(month_data.total_amount) }}
                                 </span>
                             </td>
@@ -130,16 +124,16 @@
         {% endfor %}
 
         <!-- Grand Total -->
-        <div style="background: linear-gradient(135deg, var(--text-primary) 0%, #c0392b 100%); padding: 1.5rem; border-radius: 12px; margin-top: 2rem;">
-            <div class="row g-3 text-white align-items-center">
+        <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%); padding: 1.5rem; border-radius: 12px; margin-top: 2rem; border: 2px solid var(--accent-gold);">
+            <div class="row g-3 align-items-center">
                 <div class="col-md-8">
-                    <h3 style="color: white; margin: 0; font-size: 1.3rem;">
-                        💰 Grand Total / 总计应收金额
+                    <h3 style="color: var(--text-primary); margin: 0; font-size: 1.3rem;">
+                        {{ t('grand_total') }}
                     </h3>
-                    <small style="color: rgba(255,255,255,0.8);">共 {{ settlement.transaction_count }} 笔转账</small>
+                    <small style="color: var(--text-secondary);">{{ settlement.transaction_count }} {{ t('transactions') }}</small>
                 </div>
                 <div class="col-md-4 text-md-end">
-                    <h2 style="color: #ffd700; margin: 0; font-weight: 700; font-size: 2rem;">
+                    <h2 style="color: var(--accent-gold); margin: 0; font-weight: 700; font-size: 2rem;">
                         RM {{ "{:,.2f}".format(settlement.total_amount) }}
                     </h2>
                 </div>
@@ -153,10 +147,10 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Date / 日期</th>
-                        <th>Bank / 银行</th>
-                        <th>Description / 描述</th>
-                        <th>Amount / 金额</th>
+                        <th>{{ t('date') }}</th>
+                        <th>{{ t('bank') }}</th>
+                        <th>{{ t('description') }}</th>
+                        <th>{{ t('amount') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -181,10 +175,10 @@
                 <tfoot>
                     <tr style="background: var(--bg-secondary);">
                         <td colspan="4" style="text-align: right; font-weight: 600; color: var(--text-primary);">
-                            Total Amount to Collect / 应收总额:
+                            {{ t('total_amount_to_collect') }}:
                         </td>
                         <td>
-                            <span style="color: var(--text-primary); font-weight: 700; font-size: 1.2rem;">
+                            <span style="color: var(--accent-gold); font-weight: 700;">
                                 RM {{ "{:,.2f}".format(settlement.total_amount) }}
                             </span>
                         </td>
@@ -195,39 +189,27 @@
         {% endif %}
     </div>
 
-    <!-- Generated Info -->
-    <div class="professional-card mt-4" style="background: var(--bg-secondary);">
+    <!-- Footer Info -->
+    <div class="professional-card mt-4">
         <div class="row g-3">
             <div class="col-md-6">
-                <small style="color: var(--text-secondary);">Report Generated / 报告生成时间</small>
-                <div style="color: var(--text-primary);">{{ settlement.generated_date }}</div>
+                <small style="color: var(--text-secondary);">{{ t('report_generated') }}</small>
+                <div style="color: var(--text-primary); font-weight: 600;">{{ settlement.created_at or 'N/A' }}</div>
             </div>
-            <div class="col-md-6 text-end">
-                <small style="color: var(--text-secondary);">Status / 状态</small>
-                <div><span class="badge-professional badge-warning-pro">待收款 Pending Collection</span></div>
+            <div class="col-md-6">
+                <small style="color: var(--text-secondary);">{{ t('status') }}</small>
+                <div>
+                    <span class="badge-professional badge-warning-pro">{{ t('pending') }}</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Action Buttons -->
+    <!-- Back Button -->
     <div class="mt-4">
-        <button onclick="window.print()" class="btn-professional">
-            <i class="bi bi-printer"></i> Print Report / 打印报告
-        </button>
-        <a href="{{ url_for('savings_accounts') }}" class="btn-professional-outline ms-3">
-            <i class="bi bi-arrow-left"></i> Back to Accounts / 返回账户列表
-        </a>
-        <a href="{{ url_for('savings_search') }}?q={{ settlement.customer_name }}" class="btn-professional-outline ms-3">
-            <i class="bi bi-search"></i> Search More / 搜索更多
+        <a href="{{ url_for('savings_search') }}" class="btn-professional-outline">
+            {{ t('back_to_customers') }}
         </a>
     </div>
 </div>
-
-<style>
-@media print {
-    .section-header, .btn-professional, .btn-professional-outline, nav, footer {
-        display: none !important;
-    }
-}
-</style>
 {% endblock %}
