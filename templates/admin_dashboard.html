@@ -65,21 +65,21 @@
                 </div>
                 <div class="card-body-custom" style="padding: 0;">
                     <div class="table-responsive">
-                        <table class="table table-dark table-hover elegant-table" style="margin: 0;">
+                        <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto; font-size: 0.95rem;">
                             <thead style="background: rgba(255, 0, 127, 0.1); border-bottom: 2px solid #FF007F;">
                                 <tr>
-                                    <th style="min-width: 100px;">{{ t('month_of_statement') }}</th>
-                                    <th style="min-width: 180px;">{{ t('name') }}</th>
-                                    <th style="min-width: 120px;">{{ t('bank') }}</th>
-                                    <th style="min-width: 90px;">{{ t('due_date') }}</th>
-                                    <th style="min-width: 100px;">{{ t('due_total') }}</th>
-                                    <th style="min-width: 110px;">{{ t('owner_expenses') }}</th>
-                                    <th style="min-width: 110px;">{{ t('owner_payments') }}</th>
-                                    <th style="min-width: 110px;">{{ t('infinite_expenses') }}</th>
-                                    <th style="min-width: 110px;">{{ t('infinite_payments') }}</th>
-                                    <th style="min-width: 110px;">{{ t('owner_os_bal') }}</th>
-                                    <th style="min-width: 110px;">{{ t('infinite_os_bal') }}</th>
-                                    <th style="text-align: center; min-width: 100px;">{{ t('actions') }}</th>
+                                    <th>{{ t('month_of_statement') }}</th>
+                                    <th>{{ t('name') }}</th>
+                                    <th>{{ t('bank') }}</th>
+                                    <th>{{ t('due_date') }}</th>
+                                    <th>{{ t('due_total') }}</th>
+                                    <th>{{ t('owner_expenses') }}</th>
+                                    <th>{{ t('owner_payments') }}</th>
+                                    <th>{{ t('infinite_expenses') }}</th>
+                                    <th>{{ t('infinite_payments') }}</th>
+                                    <th>{{ t('owner_os_bal') }}</th>
+                                    <th>{{ t('infinite_os_bal') }}</th>
+                                    <th style="text-align: center;">{{ t('actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -140,18 +140,18 @@
                 </div>
                 <div class="card-body-custom" style="padding: 0;">
                     <div class="table-responsive">
-                        <table class="table table-dark table-hover elegant-table" style="margin: 0;">
+                        <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto; font-size: 0.95rem;">
                             <thead style="background: rgba(157, 78, 221, 0.1); border-bottom: 2px solid #9D4EDD;">
                                 <tr>
-                                    <th style="min-width: 100px;">{{ t('month_of_statement') }}</th>
-                                    <th style="min-width: 180px;">{{ t('name') }}</th>
-                                    <th style="min-width: 120px;">{{ t('bank') }}</th>
-                                    <th style="min-width: 110px;">{{ t('monthly_credit') }}</th>
-                                    <th style="min-width: 110px;">{{ t('monthly_debit') }}</th>
-                                    <th style="min-width: 100px;">{{ t('closing_bal') }}</th>
-                                    <th style="min-width: 120px;">{{ t('cc_sum_payment') }}</th>
-                                    <th style="min-width: 110px;">{{ t('total_transfer') }}</th>
-                                    <th style="text-align: center; min-width: 100px;">{{ t('actions') }}</th>
+                                    <th>{{ t('month_of_statement') }}</th>
+                                    <th>{{ t('name') }}</th>
+                                    <th>{{ t('bank') }}</th>
+                                    <th>{{ t('monthly_credit') }}</th>
+                                    <th>{{ t('monthly_debit') }}</th>
+                                    <th>{{ t('closing_bal') }}</th>
+                                    <th>{{ t('cc_sum_payment') }}</th>
+                                    <th>{{ t('total_transfer') }}</th>
+                                    <th style="text-align: center;">{{ t('actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -247,15 +247,17 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    font-size: 0.85rem;
-    padding: 1rem;
+    font-size: 0.9rem;
+    padding: 1.2rem;
     border: none;
+    white-space: nowrap;
 }
 
 .elegant-table tbody td {
-    padding: 1rem;
+    padding: 1rem 1.2rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     vertical-align: middle;
+    white-space: nowrap;
 }
 
 .hover-glow-row {
