@@ -45,7 +45,7 @@
                         {% if month.banks|length > 1 %}
                         <a href="{{ url_for('credit_card_ledger_monthly', customer_id=customer.id, year=year_data.year, month="%02d"|format(month.number)) }}" 
                            class="bank-link view-all">
-                            View All
+                            {{ t('view_all_banks') }}
                         </a>
                         {% endif %}
                     </div>
