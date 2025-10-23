@@ -80,10 +80,10 @@ class FileStorageMigrator:
             SELECT 
                 s.id,
                 c.customer_id,
-                cu.full_name,
+                cu.name,
                 cu.customer_code,
                 c.bank_name,
-                c.card_last4,
+                c.card_number_last4,
                 s.statement_date,
                 s.file_path
             FROM statements s
@@ -113,10 +113,10 @@ class FileStorageMigrator:
             SELECT 
                 ss.id,
                 sa.customer_id,
-                cu.full_name,
+                cu.name,
                 cu.customer_code,
                 sa.bank_name,
-                sa.account_number,
+                sa.account_number_last4,
                 ss.statement_date,
                 ss.file_path
             FROM savings_statements ss
@@ -158,7 +158,7 @@ class FileStorageMigrator:
         
         # 获取客户信息
         cursor.execute("""
-            SELECT id, full_name, customer_code 
+            SELECT id, name, customer_code 
             FROM customers 
             WHERE id = ?
         """, (customer_id,))
@@ -179,7 +179,7 @@ class FileStorageMigrator:
             SELECT 
                 s.id,
                 c.bank_name,
-                c.card_last4,
+                c.card_number_last4,
                 s.statement_date,
                 s.file_path
             FROM statements s
@@ -211,7 +211,7 @@ class FileStorageMigrator:
             SELECT 
                 ss.id,
                 sa.bank_name,
-                sa.account_number,
+                sa.account_number_last4,
                 ss.statement_date,
                 ss.file_path
             FROM savings_statements ss
@@ -366,7 +366,7 @@ def main():
         
         conn = sqlite3.connect('db/smart_loan_manager.db')
         cursor = conn.cursor()
-        cursor.execute("SELECT id, full_name FROM customers LIMIT 2")
+        cursor.execute("SELECT id, name FROM customers LIMIT 2")
         customers = cursor.fetchall()
         conn.close()
         
