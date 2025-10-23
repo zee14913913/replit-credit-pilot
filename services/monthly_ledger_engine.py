@@ -152,15 +152,16 @@ class MonthlyLedgerEngine:
                                 infinite_payments += abs(amount)
                 
                 # 计算滚动余额
-                # 第一个statement: 使用stmt_prev_balance作为起点（如果>0，全部分配给客户）
+                # 第一个statement: 使用stmt_prev_balance作为起点（全部分配给客户，包括负数CR）
                 # 后续statement: 使用上月的rolling_balance作为起点，验证stmt_prev_balance
                 
-                if is_first_statement and stmt_prev_balance > 0:
+                if is_first_statement and abs(stmt_prev_balance) > 0.01:
                     # 第一个statement: 使用PDF中的Previous Balance作为起点
                     # 假设全部属于客户（第一个月通常还没有INFINITE业务）
                     previous_customer_balance = stmt_prev_balance
                     previous_infinite_balance = 0
-                    print(f"  📍 第一个statement，使用Previous Balance: RM {stmt_prev_balance:.2f}（归入客户）")
+                    bal_type = "CR" if stmt_prev_balance < 0 else "DR"
+                    print(f"  📍 第一个statement，使用Previous Balance: RM {abs(stmt_prev_balance):.2f} {bal_type}（归入客户）")
                 
                 # 计算基于交易的余额
                 calculated_customer_balance = previous_customer_balance + customer_spend - customer_payments
