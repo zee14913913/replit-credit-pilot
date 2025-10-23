@@ -72,18 +72,24 @@ def generate_business_plan(customer_id: int) -> dict:
         ''', (customer_id,))
         skills = cursor.fetchall()
         
-        # 5. 获取财务数据（累计消费和付款）
+        # 5. 获取财务数据（累计消费和付款，使用 OWNER vs INFINITE 分类）
         cursor.execute('''
-            SELECT COALESCE(SUM(Amount), 0) as total_consumption
-            FROM consumption_records
-            WHERE customer_id = ?
+            SELECT COALESCE(SUM(t.amount), 0) as total_consumption
+            FROM transactions t
+            JOIN statements s ON t.statement_id = s.id
+            JOIN credit_cards c ON s.card_id = c.id
+            WHERE c.customer_id = ?
+              AND t.category IN ('owner_expense', 'infinite_expense')
         ''', (customer_id,))
         total_consumption = cursor.fetchone()[0]
         
         cursor.execute('''
-            SELECT COALESCE(SUM(PaymentAmount), 0) as total_payment
-            FROM payment_records
-            WHERE customer_id = ?
+            SELECT COALESCE(SUM(ABS(t.amount)), 0) as total_payment
+            FROM transactions t
+            JOIN statements s ON t.statement_id = s.id
+            JOIN credit_cards c ON s.card_id = c.id
+            WHERE c.customer_id = ?
+              AND t.category IN ('owner_payment', 'infinite_payment')
         ''', (customer_id,))
         total_payment = cursor.fetchone()[0]
         

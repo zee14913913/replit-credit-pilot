@@ -108,27 +108,29 @@ class MonthlySummaryGenerator:
             total_points = 0
             
             for stmt_id, card_id, bank, last4, full_num, stmt_date in statements:
-                # 获取消费数据 - 使用用户指定的字段名
+                # 获取消费数据（使用新的 OWNER vs INFINITE 分类）
                 cursor.execute('''
-                    SELECT category, Suppliers_Usage,
+                    SELECT t.category, t.supplier_name,
                            COUNT(*) as count,
-                           SUM(Amount) as total,
-                           SUM(supplier_fee) as fees
-                    FROM consumption_records
-                    WHERE statement_id = ? AND customer_id = ?
-                    GROUP BY category, Suppliers_Usage
-                ''', (stmt_id, customer_id))
+                           SUM(t.amount) as total,
+                           SUM(t.supplier_fee) as fees
+                    FROM transactions t
+                    WHERE t.statement_id = ?
+                      AND t.category IN ('owner_expense', 'infinite_expense')
+                    GROUP BY t.category, t.supplier_name
+                ''', (stmt_id,))
                 consumption = cursor.fetchall()
                 
-                # 获取付款数据 - 使用用户指定的字段名
+                # 获取付款数据（使用新的 OWNER vs INFINITE 分类）
                 cursor.execute('''
-                    SELECT category, PaymentUser,
+                    SELECT t.category, t.payer_name,
                            COUNT(*) as count,
-                           SUM(PaymentAmount) as total
-                    FROM payment_records
-                    WHERE statement_id = ? AND customer_id = ?
-                    GROUP BY category, PaymentUser
-                ''', (stmt_id, customer_id))
+                           SUM(ABS(t.amount)) as total
+                    FROM transactions t
+                    WHERE t.statement_id = ?
+                      AND t.category IN ('owner_payment', 'infinite_payment')
+                    GROUP BY t.category, t.payer_name
+                ''', (stmt_id,))
                 payments = cursor.fetchall()
                 
                 # 获取积分

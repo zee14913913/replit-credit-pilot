@@ -2167,47 +2167,10 @@ init_consultation_table()
 
 
 # ============================================================================
-# 智能分类和月度报告路由
+# OWNER vs INFINITE 分类系统和月度报告路由
 # ============================================================================
-
-@app.route('/statement/<int:statement_id>/classification')
-def view_classification(statement_id):
-    """查看账单的分类结果"""
-    from services.transaction_classifier import get_consumption_summary, get_payment_summary
-    
-    with get_db() as conn:
-        cursor = conn.cursor()
-        
-        # 获取账单信息
-        cursor.execute('''
-            SELECT s.statement_date, s.statement_total, c.customer_id, c.bank_name, 
-                   c.card_number_last4, cu.name
-            FROM statements s
-            JOIN credit_cards c ON s.card_id = c.id
-            JOIN customers cu ON c.customer_id = cu.id
-            WHERE s.id = ?
-        ''', (statement_id,))
-        
-        stmt_info = cursor.fetchone()
-        if not stmt_info:
-            flash('账单不存在', 'error')
-            return redirect(url_for('index'))
-        
-        stmt_date, stmt_total, customer_id, bank, last4, customer_name = stmt_info
-    
-    # 获取分类汇总
-    consumption = get_consumption_summary(customer_id, statement_id)
-    payments = get_payment_summary(customer_id, statement_id)
-    
-    return render_template('classification_view.html',
-                          statement_id=statement_id,
-                          customer_name=customer_name,
-                          bank=bank,
-                          card_last4=last4,
-                          statement_date=stmt_date,
-                          statement_total=stmt_total,
-                          consumption=consumption,
-                          payments=payments)
+# 注意：旧的 view_classification, consumption_records, payment_records 路由已删除
+# 现在使用 Credit Card Ledger 查看 OWNER vs INFINITE 分类
 
 
 @app.route('/customer/<int:customer_id>/generate_monthly_report')
@@ -2250,70 +2213,8 @@ def generate_monthly_report_route(customer_id):
         return redirect(url_for('customer_dashboard', customer_id=customer_id))
 
 
-@app.route('/customer/<int:customer_id>/consumption_records')
-def view_consumption_records(customer_id):
-    """查看客户的所有消费记录"""
-    with get_db() as conn:
-        cursor = conn.cursor()
-        
-        # 获取客户信息
-        cursor.execute('SELECT name FROM customers WHERE id = ?', (customer_id,))
-        result = cursor.fetchone()
-        if not result:
-            flash('客户不存在', 'error')
-            return redirect(url_for('index'))
-        customer_name = result[0]
-        
-        # 获取消费记录（最近100条）- 使用用户指定的字段名
-        cursor.execute('''
-            SELECT c.id, c.Bank, c.Card_FullNumber, c.Statement_Date, 
-                   c.Transactions_Date, c.Transaction_Details, c.Suppliers_Usage,
-                   c.User, c.Amount, c.category, c.supplier_fee
-            FROM consumption_records c
-            WHERE c.customer_id = ?
-            ORDER BY c.Statement_Date DESC, c.Transactions_Date DESC
-            LIMIT 100
-        ''', (customer_id,))
-        
-        records = cursor.fetchall()
-    
-    return render_template('consumption_records.html',
-                          customer_id=customer_id,
-                          customer_name=customer_name,
-                          records=records)
-
-
-@app.route('/customer/<int:customer_id>/payment_records')
-def view_payment_records(customer_id):
-    """查看客户的所有付款记录"""
-    with get_db() as conn:
-        cursor = conn.cursor()
-        
-        # 获取客户信息
-        cursor.execute('SELECT name FROM customers WHERE id = ?', (customer_id,))
-        result = cursor.fetchone()
-        if not result:
-            flash('客户不存在', 'error')
-            return redirect(url_for('index'))
-        customer_name = result[0]
-        
-        # 获取付款记录（最近100条）- 使用用户指定的字段名
-        cursor.execute('''
-            SELECT p.id, p.Bank, p.CreditCard_Full_Number, p.DueDate,
-                   p.PaymentDate, p.PaymentDetails, p.PaymentUser,
-                   p.PaymentAmount, p.category
-            FROM payment_records p
-            WHERE p.customer_id = ?
-            ORDER BY p.PaymentDate DESC
-            LIMIT 100
-        ''', (customer_id,))
-        
-        records = cursor.fetchall()
-    
-    return render_template('payment_records.html',
-                          customer_id=customer_id,
-                          customer_name=customer_name,
-                          records=records)
+# consumption_records 和 payment_records 路由已删除
+# 现在使用 Credit Card Ledger 查看 OWNER vs INFINITE 交易明细
 
 
 # ============================================================================

@@ -157,46 +157,50 @@ class ComprehensiveStatementProcessor:
             ''', (statement_id,))
             statement_total = cursor.fetchone()[0]
             
-            # 验证1: 检查消费记录数量
+            # 验证1: 检查费用交易数量（使用新的 OWNER vs INFINITE 分类）
             cursor.execute('''
                 SELECT COUNT(*)
-                FROM consumption_records
-                WHERE statement_id = ? AND customer_id = ?
-            ''', (statement_id, customer_id))
-            consumption_count = cursor.fetchone()[0]
+                FROM transactions
+                WHERE statement_id = ?
+                  AND category IN ('owner_expense', 'infinite_expense')
+            ''', (statement_id,))
+            expense_count = cursor.fetchone()[0]
             
-            # 验证2: 检查付款记录数量
+            # 验证2: 检查付款交易数量
             cursor.execute('''
                 SELECT COUNT(*)
-                FROM payment_records
-                WHERE statement_id = ? AND customer_id = ?
-            ''', (statement_id, customer_id))
+                FROM transactions
+                WHERE statement_id = ?
+                  AND category IN ('owner_payment', 'infinite_payment')
+            ''', (statement_id,))
             payment_count = cursor.fetchone()[0]
             
             # 验证3: 检查金额总计
             cursor.execute('''
-                SELECT SUM(amount)
-                FROM consumption_records
-                WHERE statement_id = ? AND customer_id = ?
-            ''', (statement_id, customer_id))
+                SELECT COALESCE(SUM(amount), 0)
+                FROM transactions
+                WHERE statement_id = ?
+                  AND category IN ('owner_expense', 'infinite_expense')
+            ''', (statement_id,))
             consumption_total = cursor.fetchone()[0] or 0
             
             cursor.execute('''
-                SELECT SUM(payment_amount)
-                FROM payment_records
-                WHERE statement_id = ? AND customer_id = ?
-            ''', (statement_id, customer_id))
+                SELECT COALESCE(SUM(ABS(amount)), 0)
+                FROM transactions
+                WHERE statement_id = ?
+                  AND category IN ('owner_payment', 'infinite_payment')
+            ''', (statement_id,))
             payment_total = cursor.fetchone()[0] or 0
             
             # 分析验证结果
             issues = []
             
             # 检查1: 记录数量完整性
-            classified_total = consumption_count + payment_count
+            classified_total = expense_count + payment_count
             if classified_total != original_count:
                 issues.append(
                     f"交易数量不匹配: 原始 {original_count} vs 分类 {classified_total} "
-                    f"(消费 {consumption_count} + 付款 {payment_count})"
+                    f"(费用 {expense_count} + 付款 {payment_count})"
                 )
             
             # 检查2: 金额准确性（允许小额误差）

@@ -1,6 +1,7 @@
 """
 Dashboard Metrics Service
 计算客户和信用卡的关键财务指标
+使用新的 OWNER vs INFINITE 分类系统（从 transactions 表读取）
 """
 
 from db.database import get_db
@@ -30,39 +31,51 @@ def get_customer_monthly_metrics(customer_id: int, year_month: str) -> Dict:
     with get_db() as conn:
         cursor = conn.cursor()
         
-        # 1. 客户当月总消费
+        # 1. 客户当月总消费（从transactions表，category为expense）
         cursor.execute('''
-            SELECT COALESCE(SUM(Amount), 0) as total
-            FROM consumption_records
-            WHERE customer_id = ?
-              AND strftime('%Y-%m', Statement_Date) = ?
+            SELECT COALESCE(SUM(t.amount), 0) as total
+            FROM transactions t
+            JOIN statements s ON t.statement_id = s.id
+            JOIN credit_cards c ON s.card_id = c.id
+            WHERE c.customer_id = ?
+              AND strftime('%Y-%m', s.statement_date) = ?
+              AND t.category IN ('owner_expense', 'infinite_expense')
         ''', (customer_id, year_month))
         
         total_consumption = cursor.fetchone()[0]
         
-        # 2. 客户当月总付款
+        # 2. 客户当月总付款（从transactions表，category为payment）
         cursor.execute('''
-            SELECT COALESCE(SUM(PaymentAmount), 0) as total
-            FROM payment_records
-            WHERE customer_id = ?
-              AND strftime('%Y-%m', PaymentDate) = ?
+            SELECT COALESCE(SUM(ABS(t.amount)), 0) as total
+            FROM transactions t
+            JOIN statements s ON t.statement_id = s.id
+            JOIN credit_cards c ON s.card_id = c.id
+            WHERE c.customer_id = ?
+              AND strftime('%Y-%m', s.statement_date) = ?
+              AND t.category IN ('owner_payment', 'infinite_payment')
         ''', (customer_id, year_month))
         
         total_payment = cursor.fetchone()[0]
         
         # 3. 客户累计欠款总余额 (所有时间的消费 - 所有时间的付款)
         cursor.execute('''
-            SELECT COALESCE(SUM(Amount), 0) as total_consume
-            FROM consumption_records
-            WHERE customer_id = ?
+            SELECT COALESCE(SUM(t.amount), 0) as total_consume
+            FROM transactions t
+            JOIN statements s ON t.statement_id = s.id
+            JOIN credit_cards c ON s.card_id = c.id
+            WHERE c.customer_id = ?
+              AND t.category IN ('owner_expense', 'infinite_expense')
         ''', (customer_id,))
         
         all_time_consumption = cursor.fetchone()[0]
         
         cursor.execute('''
-            SELECT COALESCE(SUM(PaymentAmount), 0) as total_paid
-            FROM payment_records
-            WHERE customer_id = ?
+            SELECT COALESCE(SUM(ABS(t.amount)), 0) as total_paid
+            FROM transactions t
+            JOIN statements s ON t.statement_id = s.id
+            JOIN credit_cards c ON s.card_id = c.id
+            WHERE c.customer_id = ?
+              AND t.category IN ('owner_payment', 'infinite_payment')
         ''', (customer_id,))
         
         all_time_payment = cursor.fetchone()[0]
@@ -119,42 +132,46 @@ def get_card_monthly_metrics(customer_id: int, card_id: int, year_month: str) ->
         
         # 1. 该卡当月总消费（通过 statement_id 关联）
         cursor.execute('''
-            SELECT COALESCE(SUM(c.Amount), 0) as total
-            FROM consumption_records c
-            INNER JOIN statements s ON c.statement_id = s.id
-            WHERE c.customer_id = ? AND s.card_id = ?
-              AND strftime('%Y-%m', c.Statement_Date) = ?
-        ''', (customer_id, card_id, year_month))
+            SELECT COALESCE(SUM(t.amount), 0) as total
+            FROM transactions t
+            JOIN statements s ON t.statement_id = s.id
+            WHERE s.card_id = ?
+              AND strftime('%Y-%m', s.statement_date) = ?
+              AND t.category IN ('owner_expense', 'infinite_expense')
+        ''', (card_id, year_month))
         
         monthly_consumption = cursor.fetchone()[0]
         
         # 2. 该卡当月总付款（通过 statement_id 关联）
         cursor.execute('''
-            SELECT COALESCE(SUM(p.PaymentAmount), 0) as total
-            FROM payment_records p
-            INNER JOIN statements s ON p.statement_id = s.id
-            WHERE p.customer_id = ? AND s.card_id = ?
-              AND strftime('%Y-%m', p.PaymentDate) = ?
-        ''', (customer_id, card_id, year_month))
+            SELECT COALESCE(SUM(ABS(t.amount)), 0) as total
+            FROM transactions t
+            JOIN statements s ON t.statement_id = s.id
+            WHERE s.card_id = ?
+              AND strftime('%Y-%m', s.statement_date) = ?
+              AND t.category IN ('owner_payment', 'infinite_payment')
+        ''', (card_id, year_month))
         
         monthly_payment = cursor.fetchone()[0]
         
         # 3. 该卡累计欠款余额（通过 statement_id 关联）
         cursor.execute('''
-            SELECT COALESCE(SUM(c.Amount), 0) as total_consume
-            FROM consumption_records c
-            INNER JOIN statements s ON c.statement_id = s.id
-            WHERE c.customer_id = ? AND s.card_id = ?
-        ''', (customer_id, card_id))
+            SELECT COALESCE(SUM(t.amount), 0) as total_consume
+            FROM transactions t
+            JOIN statements s ON t.statement_id = s.id
+            WHERE s.card_id = ?
+              AND t.category IN ('owner_expense', 'infinite_expense')
+        ''', (card_id,))
         
         card_all_consumption = cursor.fetchone()[0]
         
         cursor.execute('''
-            SELECT COALESCE(SUM(p.PaymentAmount), 0) as total_paid
-            FROM payment_records p
-            INNER JOIN statements s ON p.statement_id = s.id
-            WHERE p.customer_id = ? AND s.card_id = ?
-        ''', (customer_id, card_id))
+            SELECT COALESCE(SUM(ABS(t.amount)), 0) as total_paid
+            FROM transactions t
+            JOIN statements s ON t.statement_id = s.id
+            WHERE s.card_id = ?
+              AND t.category IN ('owner_payment', 'infinite_payment')
+        ''', (card_id,))
         
         card_all_payment = cursor.fetchone()[0]
         
