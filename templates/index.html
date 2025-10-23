@@ -38,17 +38,32 @@
                         <a href="{{ url_for('customer_dashboard', customer_id=customer.id) }}" class="btn-professional">
                             {{ t('view_dashboard') }}
                         </a>
-                        <a href="{{ url_for('credit_card_ledger') }}" class="btn-professional-outline">
-                            {{ t('upload_statement') }}
+                        
+                        <!-- CC Dashboard 信用卡账单 -->
+                        <a href="{{ url_for('credit_card_ledger_timeline', customer_id=customer.id) }}" 
+                           class="btn-professional-outline"
+                           style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+                                  border: 2px solid #FF007F; 
+                                  color: #FF007F;
+                                  font-weight: 700;">
+                            CC Dashboard 信用卡账单
                         </a>
+                        
+                        <!-- SA Dashboard 储蓄/来往账户月结单 -->
+                        <a href="{{ url_for('savings_accounts', customer_id=customer.id) }}" 
+                           class="btn-professional-outline"
+                           style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+                                  border: 2px solid #9D4EDD; 
+                                  color: #9D4EDD;
+                                  font-weight: 700;">
+                            SA Dashboard 储蓄/来往账户月结单
+                        </a>
+                        
                         <a href="{{ url_for('analytics', customer_id=customer.id) }}" class="btn-professional-outline">
                             {{ t('view_analytics') }}
                         </a>
-                        <a href="{{ url_for('generate_enhanced_report', customer_id=customer.id) }}" class="btn-professional-outline">
-                            {{ t('generate_report') }}
-                        </a>
                         <a href="{{ url_for('financial_advisory', customer_id=customer.id) }}" class="btn-white-glow">
-                            <i class="bi bi-stars"></i> {{ t('nav_advisory') }}
+                            {{ t('nav_advisory') }}
                         </a>
                         <button onclick="deleteCustomer({{ customer.id }}, '{{ customer.name }}')" 
                                 class="btn-professional-outline" 

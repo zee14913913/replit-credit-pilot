@@ -958,6 +958,8 @@ def analytics(customer_id):
 # ========== NEW FEATURES ==========
 
 @app.route('/export/<int:customer_id>/<format>')
+@login_required
+@customer_access_required
 def export_transactions(customer_id, format):
     """Export transactions to Excel or CSV"""
     filters = {
@@ -2039,6 +2041,8 @@ def export_statement_transactions(statement_id, format):
 
 # Monthly Reports Routes
 @app.route('/customer/<int:customer_id>/monthly-reports')
+@login_required
+@customer_access_required
 def customer_monthly_reports(customer_id):
     """查看客户的所有月度报表（按信用卡分组）"""
     with get_db() as conn:
@@ -2072,6 +2076,8 @@ def customer_monthly_reports(customer_id):
                          reports_by_period=reports_by_period)
 
 @app.route('/customer/<int:customer_id>/generate-monthly-report/<int:year>/<int:month>')
+@login_required
+@customer_access_required
 def generate_customer_monthly_report(customer_id, year, month):
     """手动生成指定月份的银河主题月度报表"""
     from report.galaxy_report_generator import GalaxyMonthlyReportGenerator
@@ -2109,6 +2115,8 @@ def download_monthly_report(report_id):
 # ============================================================================
 
 @app.route('/customer/<int:customer_id>/optimization-proposal')
+@login_required
+@customer_access_required
 def show_optimization_proposal(customer_id):
     """
     展示优化方案对比页面
@@ -2403,6 +2411,8 @@ def delete_customer(customer_id):
 # ============================================================================
 
 @app.route('/customer/<int:customer_id>/resources')
+@login_required
+@customer_access_required
 def customer_resources(customer_id):
     """客户资源、人脉、技能管理页面"""
     with get_db() as conn:
@@ -2839,14 +2849,17 @@ def savings_customers():
     return render_template('savings/customers.html', customers=customers)
 
 @app.route('/savings/accounts')
+@login_required
+def savings_accounts_redirect():
+    """Redirect to savings customers list"""
+    return redirect(url_for('savings_customers'))
+
 @app.route('/savings/accounts/<int:customer_id>')
-def savings_accounts(customer_id=None):
+@login_required
+@customer_access_required
+def savings_accounts(customer_id):
     """Layer 2: 查看特定客户的所有储蓄账户和账单"""
     import re
-    
-    # 如果没有提供customer_id，重定向到客户列表页
-    if customer_id is None:
-        return redirect(url_for('savings_customers'))
     
     with get_db() as conn:
         cursor = conn.cursor()
@@ -4415,6 +4428,8 @@ def receipts_manual_match(receipt_id):
         return jsonify({'success': False, 'message': '❌ 匹配失败'})
 
 @app.route('/receipts/customer/<int:customer_id>')
+@login_required
+@customer_access_required
 def receipts_by_customer(customer_id):
     """查看客户的所有收据"""
     with get_db() as conn:
