@@ -384,6 +384,8 @@ def customer_dashboard(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/add-card', methods=['GET', 'POST'])
+@login_required
+@customer_access_required
 def add_credit_card(customer_id):
     """添加信用卡"""
     with get_db() as conn:
@@ -845,6 +847,8 @@ def mark_paid_route(reminder_id):
     return redirect(url_for('reminders'))
 
 @app.route('/loan_evaluation/<int:customer_id>')
+@login_required
+@customer_access_required
 def loan_evaluation(customer_id):
     with get_db() as conn:
         cursor = conn.cursor()
@@ -886,6 +890,8 @@ def loan_evaluation(customer_id):
                          current_repayments=current_repayments)
 
 @app.route('/generate_report/<int:customer_id>')
+@login_required
+@customer_access_required
 def generate_report(customer_id):
     with get_db() as conn:
         cursor = conn.cursor()
@@ -928,6 +934,8 @@ def generate_report(customer_id):
     return send_file(output_path, as_attachment=True, download_name=output_filename)
 
 @app.route('/analytics/<int:customer_id>')
+@login_required
+@customer_access_required
 def analytics(customer_id):
     with get_db() as conn:
         cursor = conn.cursor()
@@ -984,6 +992,8 @@ def export_transactions(customer_id, format):
         return redirect(request.referrer or url_for('index'))
 
 @app.route('/search/<int:customer_id>', methods=['GET'])
+@login_required
+@customer_access_required
 def search_transactions(customer_id):
     """Search and filter transactions"""
     query = request.args.get('q', '')
@@ -1012,6 +1022,8 @@ def search_transactions(customer_id):
                           current_query=query, current_filters=filters)
 
 @app.route('/batch/upload/<int:customer_id>', methods=['GET', 'POST'])
+@login_required
+@customer_access_required
 def batch_upload(customer_id):
     """Batch upload statements with auto-create credit cards"""
     if request.method == 'POST':
@@ -1153,6 +1165,8 @@ def add_transaction_tag(transaction_id):
 # ========== FINANCIAL ADVISORY ROUTES ==========
 
 @app.route('/advisory/<int:customer_id>')
+@login_required
+@customer_access_required
 def financial_advisory(customer_id):
     """Financial advisory dashboard - card recommendations and optimizations"""
     from advisory.card_recommendation_engine import CardRecommendationEngine
@@ -1182,6 +1196,8 @@ def financial_advisory(customer_id):
                           optimizations=optimizations)
 
 @app.route('/consultation/request/<int:customer_id>', methods=['POST'])
+@login_required
+@customer_access_required
 def request_consultation(customer_id):
     """Customer requests detailed consultation"""
     
@@ -1213,6 +1229,8 @@ def request_consultation(customer_id):
     return redirect(url_for('financial_advisory', customer_id=customer_id))
 
 @app.route('/customer/<int:customer_id>/employment', methods=['GET', 'POST'])
+@login_required
+@customer_access_required
 def set_employment_type(customer_id):
     """Set customer employment type and upload income documents"""
     
@@ -1264,6 +1282,8 @@ def customer_authorization():
     return render_template('customer_authorization.html')
 
 @app.route('/generate_report/<int:customer_id>')
+@login_required
+@customer_access_required
 def generate_enhanced_report(customer_id):
     """Generate enhanced monthly report with financial advisory"""
     from report.enhanced_pdf_generator import generate_enhanced_monthly_report
@@ -1790,6 +1810,8 @@ anomaly_service = AnomalyDetector()
 recommendation_service = RecommendationEngine()
 
 @app.route('/advanced-analytics/<int:customer_id>')
+@login_required
+@customer_access_required
 def advanced_analytics(customer_id):
     """高级财务分析仪表板"""
     lang = session.get('language', 'en')
@@ -1821,6 +1843,8 @@ def advanced_analytics(customer_id):
                          current_lang=lang)
 
 @app.route('/api/cashflow-prediction/<int:customer_id>')
+@login_required
+@customer_access_required
 def api_cashflow_prediction(customer_id):
     """API: 获取现金流预测数据"""
     months = request.args.get('months', 12, type=int)
@@ -1828,24 +1852,32 @@ def api_cashflow_prediction(customer_id):
     return jsonify(prediction)
 
 @app.route('/api/financial-score/<int:customer_id>')
+@login_required
+@customer_access_required
 def api_financial_score(customer_id):
     """API: 获取财务健康评分"""
     score_data = health_score_service.calculate_score(customer_id)
     return jsonify(score_data)
 
 @app.route('/api/anomalies/<int:customer_id>')
+@login_required
+@customer_access_required
 def api_anomalies(customer_id):
     """API: 获取财务异常"""
     anomalies = anomaly_service.get_active_anomalies(customer_id)
     return jsonify({'anomalies': anomalies})
 
 @app.route('/api/recommendations/<int:customer_id>')
+@login_required
+@customer_access_required
 def api_recommendations(customer_id):
     """API: 获取个性化推荐"""
     recommendations = recommendation_service.generate_recommendations(customer_id)
     return jsonify(recommendations)
 
 @app.route('/api/tier-info/<int:customer_id>')
+@login_required
+@customer_access_required
 def api_tier_info(customer_id):
     """API: 获取客户等级信息"""
     tier_info = tier_service.calculate_customer_tier(customer_id)
@@ -2175,6 +2207,8 @@ def show_optimization_proposal(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/request-optimization-consultation', methods=['GET', 'POST'])
+@login_required
+@customer_access_required
 def request_optimization_consultation(customer_id):
     """
     客户申请咨询优化方案
@@ -2249,6 +2283,8 @@ init_consultation_table()
 
 
 @app.route('/customer/<int:customer_id>/generate_monthly_report')
+@login_required
+@customer_access_required
 def generate_monthly_report_route(customer_id):
     """为客户生成月度报告"""
     from services.statement_processor import generate_customer_monthly_report
@@ -2447,6 +2483,8 @@ def customer_resources(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/add_resource', methods=['POST'])
+@login_required
+@customer_access_required
 def add_resource(customer_id):
     """添加个人资源"""
     with get_db() as conn:
@@ -2463,6 +2501,8 @@ def add_resource(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/add_network', methods=['POST'])
+@login_required
+@customer_access_required
 def add_network(customer_id):
     """添加人脉联系人"""
     with get_db() as conn:
@@ -2480,6 +2520,8 @@ def add_network(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/add_skill', methods=['POST'])
+@login_required
+@customer_access_required
 def add_skill(customer_id):
     """添加特长技能"""
     with get_db() as conn:
@@ -2497,6 +2539,8 @@ def add_skill(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/delete_resource/<int:resource_id>')
+@login_required
+@customer_access_required
 def delete_resource(customer_id, resource_id):
     """删除资源"""
     with get_db() as conn:
@@ -2509,6 +2553,8 @@ def delete_resource(customer_id, resource_id):
 
 
 @app.route('/customer/<int:customer_id>/delete_network/<int:network_id>')
+@login_required
+@customer_access_required
 def delete_network(customer_id, network_id):
     """删除人脉"""
     with get_db() as conn:
@@ -2521,6 +2567,8 @@ def delete_network(customer_id, network_id):
 
 
 @app.route('/customer/<int:customer_id>/delete_skill/<int:skill_id>')
+@login_required
+@customer_access_required
 def delete_skill(customer_id, skill_id):
     """删除技能"""
     with get_db() as conn:
@@ -2533,6 +2581,8 @@ def delete_skill(customer_id, skill_id):
 
 
 @app.route('/customer/<int:customer_id>/generate_business_plan')
+@login_required
+@customer_access_required
 def generate_plan(customer_id):
     """生成AI商业计划"""
     result = generate_business_plan(customer_id)
@@ -2546,6 +2596,8 @@ def generate_plan(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/business_plan/<int:plan_id>')
+@login_required
+@customer_access_required
 def view_business_plan(customer_id, plan_id):
     """查看商业计划"""
     with get_db() as conn:
@@ -2586,6 +2638,8 @@ def view_business_plan(customer_id, plan_id):
 
 
 @app.route('/customer/<int:customer_id>/business_plans')
+@login_required
+@customer_access_required
 def list_business_plans(customer_id):
     """查看所有商业计划历史"""
     with get_db() as conn:
@@ -4155,6 +4209,8 @@ def credit_card_optimizer():
     return render_template('credit_card_optimizer.html', customers=customers)
 
 @app.route('/credit-card-optimizer/report/<int:customer_id>')
+@login_required
+@customer_access_required
 def credit_card_optimizer_report(customer_id):
     """生成并显示客户信用卡优化报告"""
     try:
@@ -4177,6 +4233,8 @@ def credit_card_optimizer_report(customer_id):
         return redirect(url_for('credit_card_optimizer'))
 
 @app.route('/credit-card-optimizer/download/<int:customer_id>')
+@login_required
+@customer_access_required
 def download_credit_card_report(customer_id):
     """下载HTML格式的信用卡优化报告"""
     try:
@@ -4471,6 +4529,8 @@ def receipts_by_customer(customer_id):
                          receipts_by_card=receipts_by_card)
 
 @app.route('/api/customer/<int:customer_id>/cards')
+@login_required
+@customer_access_required
 def api_get_customer_cards(customer_id):
     """API: 获取客户的所有信用卡"""
     cards = receipt_matcher.get_customer_cards(customer_id)
