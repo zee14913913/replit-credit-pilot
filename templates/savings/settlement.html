@@ -10,7 +10,7 @@
     </div>
 
     <!-- Settlement Summary Card -->
-    <div class="professional-card mb-4" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(0, 0, 0, 0.4) 100%); border-left: 4px solid var(--accent-gold);">
+    <div class="professional-card mb-4" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(0, 0, 0, 0.4) 100%); border-left: 4px solid #FF007F;">
         <div class="row g-4">
             <div class="col-md-4">
                 <h5 style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.9rem;">
@@ -22,7 +22,7 @@
                 <h5 style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.9rem;">
                     {{ t('total_prepayment_amount') }}
                 </h5>
-                <h2 style="color: var(--accent-gold); margin: 0;">RM {{ "{:,.2f}".format(settlement.total_amount) }}</h2>
+                <h2 style="color: #FF007F; margin: 0;">RM {{ "{:,.2f}".format(settlement.total_amount) }}</h2>
             </div>
             <div class="col-md-4">
                 <h5 style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.9rem;">
@@ -52,7 +52,7 @@
                     </div>
                     <div style="padding: 1rem; background: rgba(212, 175, 55, 0.1); border-radius: 8px; text-align: center;">
                         <small style="color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">{{ t('monthly_total') }}</small>
-                        <h3 style="color: var(--accent-gold); margin: 0; font-weight: 700;">
+                        <h3 style="color: #FF007F; margin: 0; font-weight: 700;">
                             RM {{ "{:,.2f}".format(month_data.total_amount) }}
                         </h3>
                     </div>
@@ -112,7 +112,7 @@
                                 {{ t('month_subtotal') }}:
                             </td>
                             <td>
-                                <span style="color: var(--accent-gold); font-weight: 700;">
+                                <span style="color: #FF007F; font-weight: 700;">
                                     RM {{ "{:,.2f}".format(month_data.total_amount) }}
                                 </span>
                             </td>
@@ -124,7 +124,7 @@
         {% endfor %}
 
         <!-- Grand Total -->
-        <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%); padding: 1.5rem; border-radius: 12px; margin-top: 2rem; border: 2px solid var(--accent-gold);">
+        <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%); padding: 1.5rem; border-radius: 12px; margin-top: 2rem; border: 2px solid #FF007F;">
             <div class="row g-3 align-items-center">
                 <div class="col-md-8">
                     <h3 style="color: var(--text-primary); margin: 0; font-size: 1.3rem;">
@@ -133,7 +133,7 @@
                     <small style="color: var(--text-secondary);">{{ settlement.transaction_count }} {{ t('transactions') }}</small>
                 </div>
                 <div class="col-md-4 text-md-end">
-                    <h2 style="color: var(--accent-gold); margin: 0; font-weight: 700; font-size: 2rem;">
+                    <h2 style="color: #FF007F; margin: 0; font-weight: 700; font-size: 2rem;">
                         RM {{ "{:,.2f}".format(settlement.total_amount) }}
                     </h2>
                 </div>
@@ -178,7 +178,7 @@
                             {{ t('total_amount_to_collect') }}:
                         </td>
                         <td>
-                            <span style="color: var(--accent-gold); font-weight: 700;">
+                            <span style="color: #FF007F; font-weight: 700;">
                                 RM {{ "{:,.2f}".format(settlement.total_amount) }}
                             </span>
                         </td>

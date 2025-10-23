@@ -7,7 +7,7 @@
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb" style="background: transparent; padding: 0;">
-            <li class="breadcrumb-item"><a href="{{ url_for('savings_customers') }}" style="color: var(--accent-gold);">{{ t('nav_savings') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('savings_customers') }}" style="color: #FF007F;">{{ t('nav_savings') }}</a></li>
             <li class="breadcrumb-item active" style="color: var(--text-secondary);">{{ account.bank_name }}</li>
         </ol>
     </nav>
@@ -31,7 +31,7 @@
         <div class="col-md-3 col-sm-6">
             <div class="professional-card text-center">
                 <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">{{ t('total_statements') }}</div>
-                <div style="color: var(--accent-gold); font-weight: 600; font-size: 2rem;">
+                <div style="color: #FF007F; font-weight: 600; font-size: 2rem;">
                     {{ statements|length }}
                 </div>
             </div>
@@ -102,17 +102,17 @@
                         </td>
                         <td>
                             {% if statement.verification_status == 'verified' %}
-                            <span class="badge-professional badge-success-pro">✓ {{ t('verified') }}</span>
+                            <span class="badge-professional badge-pink-custom">✓ {{ t('verified') }}</span>
                             {% elif statement.verification_status == 'discrepancy' %}
-                            <span class="badge-professional badge-danger-pro">⚠️ {{ t('discrepancy') }}</span>
+                            <span class="badge-professional badge-pink-outline">⚠️ {{ t('discrepancy') }}</span>
                             {% else %}
-                            <span class="badge-professional badge-warning-pro">{{ t('pending') }}</span>
+                            <span class="badge-professional badge-purple-custom">{{ t('pending') }}</span>
                             {% endif %}
                         </td>
                         <td>
                             <a href="{{ url_for('savings_verify_statement', statement_id=statement.id) }}" 
                                class="btn btn-sm"
-                               style="background: linear-gradient(135deg, var(--accent-gold) 0%, #d4af37 100%); color: #000; padding: 0.25rem 0.75rem; border-radius: 6px; text-decoration: none; display: inline-block;">
+                               style="background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%); color: #000; padding: 0.25rem 0.75rem; border-radius: 6px; text-decoration: none; display: inline-block;">
                                 {{ t('view_verification') }}
                             </a>
                         </td>
@@ -173,7 +173,7 @@
                         </td>
                         <td>
                             {% if trans.customer_name_tag %}
-                            <span class="badge-professional badge-warning-pro">
+                            <span class="badge-professional badge-purple-custom">
                                 {{ trans.customer_name_tag }}
                             </span>
                             {% else %}
@@ -189,7 +189,7 @@
                         </td>
                         <td>
                             <button class="btn btn-sm" 
-                                    style="background: rgba(212, 175, 55, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 0.25rem 0.75rem; border-radius: 6px;"
+                                    style="background: rgba(255, 0, 127, 0.2); color: #FF007F; border: 1px solid #FF007F; padding: 0.25rem 0.75rem; border-radius: 6px;"
                                     onclick="openEditModal({{ trans.id }}, '{{ trans.customer_name_tag or '' }}', '{{ trans.notes or '' }}')">
                                 {{ t('edit') }}
                             </button>
@@ -218,7 +218,7 @@
 <div class="modal fade" id="editTransactionModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="background: var(--glass-bg); border: var(--border-gold); border-radius: var(--radius-lg); backdrop-filter: blur(20px);">
-            <div class="modal-header" style="border-bottom: 1px solid rgba(212, 175, 55, 0.3);">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(255, 0, 127, 0.3);">
                 <h5 class="modal-title" style="color: var(--text-primary);">
                     {{ t('edit_transaction') }}
                 </h5>
@@ -231,17 +231,17 @@
                             {{ t('customer_tag') }}
                         </label>
                         <input type="text" class="form-control" id="customerTag" name="customer_tag" 
-                               style="background: rgba(26, 26, 26, 0.8); border: 1px solid rgba(212, 175, 55, 0.4); color: var(--text-primary);">
+                               style="background: rgba(26, 26, 26, 0.8); border: 1px solid rgba(255, 0, 127, 0.4); color: var(--text-primary);">
                     </div>
                     <div class="mb-3">
                         <label for="notes" class="form-label" style="color: var(--text-secondary);">
                             {{ t('notes') }}
                         </label>
                         <textarea class="form-control" id="notes" name="notes" rows="3"
-                                  style="background: rgba(26, 26, 26, 0.8); border: 1px solid rgba(212, 175, 55, 0.4); color: var(--text-primary);"></textarea>
+                                  style="background: rgba(26, 26, 26, 0.8); border: 1px solid rgba(255, 0, 127, 0.4); color: var(--text-primary);"></textarea>
                     </div>
                 </div>
-                <div class="modal-footer" style="border-top: 1px solid rgba(212, 175, 55, 0.3);">
+                <div class="modal-footer" style="border-top: 1px solid rgba(255, 0, 127, 0.3);">
                     <button type="button" class="btn-professional-outline" data-bs-dismiss="modal">{{ t('cancel') }}</button>
                     <button type="submit" class="btn-professional">{{ t('save') }}</button>
                 </div>

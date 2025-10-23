@@ -1174,6 +1174,28 @@ footer p {
     border-color: #10B981;
 }
 
+/* Custom Pink/Purple Badges for Savings Module */
+.badge-pink-custom {
+    background: linear-gradient(135deg, #322446 0%, #1a1329 100%);
+    color: #FF007F;
+    border: 1px solid #FF007F;
+    font-weight: 700;
+}
+
+.badge-pink-outline {
+    background: rgba(255, 0, 127, 0.1);
+    color: #FF007F;
+    border: 1px solid #FF007F;
+    font-weight: 700;
+}
+
+.badge-purple-custom {
+    background: rgba(50, 36, 70, 0.3);
+    color: #C0C0C0;
+    border: 1px solid #322446;
+    font-weight: 600;
+}
+
 /* ========================================
    ANIMATIONS
    ======================================== */

@@ -32,18 +32,26 @@
             {% for customer in customers %}
             <div class="col-md-6 col-lg-4">
                 <a href="{{ url_for('savings_accounts', customer_id=customer.id) }}" style="text-decoration: none;">
-                    <div class="professional-card hover-lift" style="height: 100%; border-left: 3px solid var(--accent-gold);">
+                    <div class="professional-card hover-lift" style="height: 100%; border-left: 3px solid #FF007F;">
                         <!-- Customer Header -->
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div>
-                                <h3 style="color: var(--accent-gold); margin-bottom: 0.25rem; font-size: 1.3rem;">
+                                <h3 style="color: #FF007F; margin-bottom: 0.25rem; font-size: 1.3rem; font-weight: 700;">
                                     {{ customer.name }}
                                 </h3>
                                 <p style="color: var(--text-secondary); margin: 0; font-size: 0.9rem;">
                                     {{ customer.customer_code or customer.name }}
                                 </p>
                             </div>
-                            <span class="badge-professional badge-success-pro">
+                            <span style="
+                                background: linear-gradient(135deg, #322446 0%, #1a1329 100%);
+                                color: #FF007F;
+                                padding: 0.4rem 0.8rem;
+                                border-radius: 20px;
+                                font-weight: 700;
+                                font-size: 0.95rem;
+                                border: 1px solid #FF007F;
+                            ">
                                 {{ customer.account_count }}
                             </span>
                         </div>
@@ -81,7 +89,7 @@
                                     <small style="color: var(--text-secondary); font-size: 0.85rem; display: block;">
                                         {{ t('statements') }}
                                     </small>
-                                    <div style="color: var(--accent-gold); font-weight: 600; font-size: 1.1rem;">
+                                    <div style="color: #FF007F; font-weight: 700; font-size: 1.1rem;">
                                         {{ customer.statement_count or 0 }}
                                     </div>
                                 </div>
@@ -97,9 +105,9 @@
                         </div>
 
                         <!-- View Details Indicator -->
-                        <div class="text-center pt-2" style="border-top: 1px solid rgba(212, 175, 55, 0.2);">
-                            <small style="color: var(--accent-gold);">
-                                {{ t('view_accounts') }}
+                        <div class="text-center pt-2" style="border-top: 1px solid rgba(255, 0, 127, 0.3);">
+                            <small style="color: #FF007F; font-weight: 600;">
+                                {{ t('view_accounts') }} →
                             </small>
                         </div>
                     </div>

@@ -8,7 +8,7 @@
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb" style="background: transparent; padding: 0;">
             <li class="breadcrumb-item">
-                <a href="{{ url_for('savings_customers') }}" style="color: var(--accent-gold);">
+                <a href="{{ url_for('savings_customers') }}" style="color: #FF007F;">
                     {{ t('all_customers_with_savings') }}
                 </a>
             </li>
@@ -19,10 +19,10 @@
     </nav>
 
     <!-- Customer Header -->
-    <div class="professional-card mb-4" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%); border-left: 4px solid var(--accent-gold);">
+    <div class="professional-card mb-4" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%); border-left: 4px solid #FF007F;">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <h1 style="color: var(--accent-gold); margin-bottom: 0.5rem; font-size: 1.8rem;">
+                <h1 style="color: #FF007F; margin-bottom: 0.5rem; font-size: 1.8rem; font-weight: 700;">
                     {{ customer.name }}
                 </h1>
                 <p style="color: var(--text-secondary); margin: 0; font-size: 1rem;">
@@ -64,14 +64,21 @@
                         <!-- Bank Header -->
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div>
-                                <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem; font-size: 1.2rem;">
+                                <h3 style="color: #FF007F; margin-bottom: 0.5rem; font-size: 1.2rem; font-weight: 700;">
                                     {{ account.bank_name }}
                                 </h3>
                                 <p style="color: var(--text-secondary); margin: 0; font-size: 0.95rem;">
                                     ****{{ account.account_number_last4 }}
                                 </p>
                             </div>
-                            <span class="badge-professional badge-info-pro">
+                            <span style="
+                                background: linear-gradient(135deg, #322446 0%, #1a1329 100%);
+                                color: #FF007F;
+                                padding: 0.4rem 0.8rem;
+                                border-radius: 20px;
+                                font-weight: 700;
+                                border: 1px solid #FF007F;
+                            ">
                                 {{ account.statement_count }}
                             </span>
                         </div>
@@ -108,16 +115,16 @@
                                 <span style="color: var(--text-secondary); font-size: 0.9rem;">
                                     {{ t('transactions') }}
                                 </span>
-                                <span style="color: var(--accent-gold); font-weight: 600; font-size: 1.1rem;">
+                                <span style="color: #FF007F; font-weight: 700; font-size: 1.1rem;">
                                     {{ account.total_transactions or 0 }}
                                 </span>
                             </div>
                         </div>
 
                         <!-- View Details Indicator -->
-                        <div class="text-center pt-2" style="border-top: 1px solid rgba(212, 175, 55, 0.2);">
-                            <small style="color: var(--accent-gold);">
-                                {{ t('view_details') }}
+                        <div class="text-center pt-2" style="border-top: 1px solid rgba(255, 0, 127, 0.3);">
+                            <small style="color: #FF007F; font-weight: 600;">
+                                {{ t('view_details') }} →
                             </small>
                         </div>
                     </div>
@@ -148,10 +155,10 @@
         <div class="row g-4">
             {% for recipient in recipients %}
             <div class="col-md-6 col-lg-4">
-                <div class="professional-card" style="border-left: 3px solid var(--accent-gold);">
+                <div class="professional-card" style="border-left: 3px solid #FF007F;">
                     <!-- Recipient Info -->
                     <div class="mb-3">
-                        <h3 style="color: var(--text-primary); margin-bottom: 0.5rem; font-size: 1.1rem;">
+                        <h3 style="color: #FF007F; margin-bottom: 0.5rem; font-size: 1.1rem; font-weight: 700;">
                             {{ recipient.recipient_name }}
                         </h3>
                         <p style="color: var(--text-secondary); margin: 0; font-size: 0.9rem;">
@@ -166,7 +173,7 @@
                         <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">
                             {{ t('amount') }}
                         </div>
-                        <div style="color: var(--accent-gold); font-weight: 600; font-size: 1.5rem;">
+                        <div style="color: #FF007F; font-weight: 700; font-size: 1.5rem;">
                             RM {{ "{:,.2f}".format(recipient.total_amount) }}
                         </div>
                         <div style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.75rem;">
