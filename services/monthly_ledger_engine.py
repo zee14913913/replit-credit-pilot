@@ -95,9 +95,9 @@ class MonthlyLedgerEngine:
                 
                 print(f"📅 处理 {statement_date[:7]} (Statement ID: {statement_id})")
                 
-                # 获取该月所有交易
+                # 获取该月所有交易（包含category字段）
                 cursor.execute("""
-                    SELECT id, description, amount, transaction_type
+                    SELECT id, description, amount, transaction_type, category
                     FROM transactions
                     WHERE statement_id = ?
                 """, (statement_id,))
@@ -110,28 +110,46 @@ class MonthlyLedgerEngine:
                 infinite_payments = 0
                 infinite_supplier_transactions = []  # 用于发票生成
                 
-                # 分类并累计
-                for txn_id, description, amount, txn_type in transactions:
-                    if txn_type == 'purchase':
-                        # 检查是否是INFINITE供应商
+                # 使用category字段进行分类和累计
+                for txn_id, description, amount, txn_type, category in transactions:
+                    # 使用category字段判断（优先级高于动态分类）
+                    if category == 'owner_expense':
+                        customer_spend += abs(amount)
+                    elif category == 'owner_payment':
+                        customer_payments += abs(amount)
+                    elif category == 'infinite_expense':
+                        infinite_spend += abs(amount)
+                        # 检查是否是INFINITE供应商（用于发票生成）
                         is_supplier, supplier_name = self.classifier.is_infinite_supplier(description)
                         if is_supplier:
-                            infinite_spend += amount
                             infinite_supplier_transactions.append({
                                 'transaction_id': txn_id,
                                 'supplier_name': supplier_name,
-                                'amount': amount,
+                                'amount': abs(amount),
                                 'description': description
                             })
-                        else:
-                            customer_spend += amount
-                    elif txn_type == 'payment':
-                        # 分类付款
-                        payment_type = self.classifier.classify_payment(description, customer_id)
-                        if payment_type in ['customer', 'company']:
-                            customer_payments += amount
-                        else:
-                            infinite_payments += amount
+                    elif category == 'infinite_payment':
+                        infinite_payments += abs(amount)
+                    else:
+                        # 如果category为空或其他值，回退到旧逻辑
+                        if txn_type == 'purchase':
+                            is_supplier, supplier_name = self.classifier.is_infinite_supplier(description)
+                            if is_supplier:
+                                infinite_spend += abs(amount)
+                                infinite_supplier_transactions.append({
+                                    'transaction_id': txn_id,
+                                    'supplier_name': supplier_name,
+                                    'amount': abs(amount),
+                                    'description': description
+                                })
+                            else:
+                                customer_spend += abs(amount)
+                        elif txn_type == 'payment':
+                            payment_type = self.classifier.classify_payment(description, customer_id)
+                            if payment_type in ['customer', 'company']:
+                                customer_payments += abs(amount)
+                            else:
+                                infinite_payments += abs(amount)
                 
                 # 计算滚动余额
                 # 第一个statement: 使用stmt_prev_balance作为起点（如果>0，全部分配给客户）
