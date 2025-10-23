@@ -349,6 +349,7 @@ def main():
     parser.add_argument('--dry-run', action='store_true', help='预览迁移计划')
     parser.add_argument('--test', action='store_true', help='测试迁移（前2个客户）')
     parser.add_argument('--migrate', action='store_true', help='执行全量迁移')
+    parser.add_argument('--yes', action='store_true', help='自动确认，跳过交互式提示')
     parser.add_argument('--verify', action='store_true', help='验证迁移结果')
     parser.add_argument('--customer', type=int, help='只迁移指定客户ID')
     
@@ -387,11 +388,14 @@ def main():
         # 全量迁移
         print("\n⚠️  即将执行全量迁移！")
         print("请确认已备份数据库和文件系统。")
-        confirm = input("输入 'YES' 继续: ")
         
-        if confirm != 'YES':
-            print("已取消迁移")
-            return
+        if not args.yes:
+            confirm = input("输入 'YES' 继续: ")
+            if confirm != 'YES':
+                print("已取消迁移")
+                return
+        else:
+            print("自动确认模式 - 继续执行迁移...")
         
         # 备份
         migrator.backup_database()
