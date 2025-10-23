@@ -23,15 +23,15 @@
         <!-- Left Column: Login Form -->
         <div class="col-lg-5">
             <div class="professional-card" style="padding: 3rem; height: 100%;">
-                <h3 style="color: #C0C0C0; margin-bottom: 2rem; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 0.75rem;">
-                    <i class="bi bi-box-arrow-in-right" style="color: #C0C0C0;"></i>
+                <h3 style="color: #FFFFFF; margin-bottom: 2rem; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 0.75rem; text-shadow: 0 0 10px rgba(255,255,255,0.3);">
+                    <i class="bi bi-box-arrow-in-right" style="color: #FFFFFF; filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));"></i>
                     {{ t('login') }}
                 </h3>
 
                 <form method="POST" action="/customer/login">
                     <div style="margin-bottom: 2rem;">
-                        <label for="email" style="display: block; color: #C0C0C0; font-weight: 700; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
-                            <i class="bi bi-envelope-at" style="color: #C0C0C0; margin-right: 0.5rem;"></i>{{ t('email') }}
+                        <label for="email" style="display: block; color: #FFFFFF; font-weight: 700; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px; text-shadow: 0 0 8px rgba(255,255,255,0.3);">
+                            <i class="bi bi-envelope-at" style="color: #FFFFFF; margin-right: 0.5rem; filter: drop-shadow(0 0 6px rgba(255,255,255,0.3));"></i>{{ t('email') }}
                         </label>
                         <input 
                             type="email" 
@@ -46,8 +46,8 @@
                     </div>
 
                     <div style="margin-bottom: 2.5rem;">
-                        <label for="password" style="display: block; color: #C0C0C0; font-weight: 700; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px;">
-                            <i class="bi bi-key" style="color: #C0C0C0; margin-right: 0.5rem;"></i>{{ t('password') }}
+                        <label for="password" style="display: block; color: #FFFFFF; font-weight: 700; margin-bottom: 0.75rem; font-size: 1.05rem; letter-spacing: 0.3px; text-shadow: 0 0 8px rgba(255,255,255,0.3);">
+                            <i class="bi bi-key" style="color: #FFFFFF; margin-right: 0.5rem; filter: drop-shadow(0 0 6px rgba(255,255,255,0.3));"></i>{{ t('password') }}
                         </label>
                         <input 
                             type="password" 
@@ -84,11 +84,11 @@
                     </button>
 
                     <div class="text-center" style="padding-top: 1.5rem; border-top: 1px solid rgba(192,192,192,0.3);">
-                        <p style="color: #C0C0C0; margin-bottom: 0.75rem; font-size: 0.95rem; font-weight: 700;">{{ t('no_account_question') }}</p>
-                        <a href="/customer/register" style="color: #C0C0C0; text-decoration: none; font-weight: 700; font-size: 1.05rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;" 
-                           onmouseover="this.style.color='#E0E0E0'" 
-                           onmouseout="this.style.color='#C0C0C0'">
-                            <i class="bi bi-person-plus-fill"></i> {{ t('create_account') }}
+                        <p style="color: #FFFFFF; margin-bottom: 0.75rem; font-size: 0.95rem; font-weight: 700; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ t('no_account_question') }}</p>
+                        <a href="/customer/register" style="color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 1.05rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem; text-shadow: 0 0 8px rgba(255,255,255,0.3);" 
+                           onmouseover="this.style.color='#FFFFFF'; this.style.textShadow='0 0 12px rgba(255,255,255,0.5)'" 
+                           onmouseout="this.style.color='#FFFFFF'; this.style.textShadow='0 0 8px rgba(255,255,255,0.3)'">
+                            <i class="bi bi-person-plus-fill" style="filter: drop-shadow(0 0 6px rgba(255,255,255,0.3));"></i> {{ t('create_account') }}
                         </a>
                     </div>
                 </form>
