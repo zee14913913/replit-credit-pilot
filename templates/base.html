@@ -34,59 +34,87 @@
             </a>
             
             <ul class="nav-menu">
-                <li class="nav-item">
-                    <a class="nav-link {{ 'active' if request.endpoint == 'index' }}" href="{{ url_for('index') }}">
-                        {{ t('nav_dashboard') }}
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ 'active' if 'credit_card_ledger' in request.endpoint }}" 
-                       href="{{ url_for('credit_card_ledger') }}">
-                        {{ t('nav_cc_ledger') }}
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ 'active' if 'savings' in request.endpoint }}" href="{{ url_for('savings_customers') }}">
-                        {{ t('nav_savings') }}
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ 'active' if 'loan_matcher' in request.endpoint }}" href="{{ url_for('loan_matcher') }}">
-                        {{ t('nav_loan_matcher') }}
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ 'active' if 'receipts' in request.endpoint }}" href="{{ url_for('receipts_home') }}">
-                        {{ t('nav_receipts') }}
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ 'active' if request.endpoint == 'reminders' }}" href="{{ url_for('reminders') }}">
-                        {{ t('nav_reminders') }}
-                    </a>
-                </li>
-                <li class="nav-item">
-                    {% if session.get('customer_token') %}
-                    <a class="nav-link {{ 'active' if request.endpoint == 'customer_portal' }}" href="{{ url_for('customer_portal') }}">
-                        {{ t('customer_portal') }}
-                    </a>
-                    {% else %}
-                    <a class="nav-link {{ 'active' if request.endpoint == 'customer_login' }}" href="{{ url_for('customer_login') }}">
-                        {{ t('customer_login') }}
-                    </a>
-                    {% endif %}
-                </li>
-                <li class="nav-item">
-                    {% if session.get('is_admin') %}
-                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_dashboard' }}" href="{{ url_for('admin_dashboard') }}">
-                        {{ t('nav_admin') }}
-                    </a>
-                    {% else %}
-                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_login' }}" href="{{ url_for('admin_login') }}">
-                        {{ t('nav_admin') }}
-                    </a>
-                    {% endif %}
-                </li>
+                {% if session.get('user_role') == 'admin' %}
+                    <!-- Admin Navigation -->
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'index' }}" href="{{ url_for('index') }}">
+                            <i class="bi bi-speedometer2"></i> {{ t('nav_dashboard') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if 'credit_card_ledger' in request.endpoint }}" 
+                           href="{{ url_for('credit_card_ledger') }}">
+                            <i class="bi bi-credit-card"></i> {{ t('nav_cc_ledger') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if 'savings' in request.endpoint }}" href="{{ url_for('savings_customers') }}">
+                            <i class="bi bi-piggy-bank"></i> {{ t('nav_savings') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if 'loan_matcher' in request.endpoint }}" href="{{ url_for('loan_matcher') }}">
+                            <i class="bi bi-calculator"></i> {{ t('nav_loan_matcher') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if 'receipts' in request.endpoint }}" href="{{ url_for('receipts_home') }}">
+                            <i class="bi bi-receipt"></i> {{ t('nav_receipts') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'reminders' }}" href="{{ url_for('reminders') }}">
+                            <i class="bi bi-bell"></i> {{ t('nav_reminders') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'admin_dashboard' }}" href="{{ url_for('admin_dashboard') }}">
+                            <i class="bi bi-shield-check"></i> {{ t('nav_admin') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_logout') }}">
+                            <i class="bi bi-box-arrow-right"></i> {{ t('logout') }}
+                        </a>
+                    </li>
+                {% elif session.get('user_role') == 'customer' %}
+                    <!-- Customer Navigation -->
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'customer_portal' }}" href="{{ url_for('customer_portal') }}">
+                            <i class="bi bi-house-door"></i> {{ t('my_dashboard') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if 'credit_card_ledger' in request.endpoint }}" 
+                           href="{{ url_for('credit_card_ledger') }}">
+                            <i class="bi bi-credit-card"></i> {{ t('my_cards') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if 'savings' in request.endpoint }}" href="{{ url_for('savings_customers') }}">
+                            <i class="bi bi-piggy-bank"></i> {{ t('my_savings') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('customer_logout') }}">
+                            <i class="bi bi-box-arrow-right"></i> {{ t('logout') }}
+                        </a>
+                    </li>
+                {% else %}
+                    <!-- Public Navigation (Not Logged In) -->
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'customer_login' }}" href="{{ url_for('customer_login') }}">
+                            <i class="bi bi-person-circle"></i> {{ t('customer_login') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'admin_login' }}" href="{{ url_for('admin_login') }}">
+                            <i class="bi bi-shield-lock"></i> {{ t('admin_login') }}
+                        </a>
+                    </li>
+                {% endif %}
+                
+                <!-- Universal Items -->
                 <li class="nav-item">
                     <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Theme">
                         <i id="theme-icon-sun" class="bi bi-sun-fill" style="display: inline-block;"></i>

@@ -73,6 +73,8 @@ TRANSLATIONS = {
         
         # Customer Portal
         'my_dashboard': 'My Dashboard',
+        'my_cards': 'My Cards',
+        'my_savings': 'My Savings',
         'my_statements': 'My Statements',
         'my_reports': 'My Reports',
         'download_data': 'Download Data',
@@ -748,6 +750,8 @@ TRANSLATIONS = {
         
         # Customer Portal
         'my_dashboard': '我的仪表板',
+        'my_cards': '我的信用卡',
+        'my_savings': '我的储蓄账户',
         'my_statements': '我的账单',
         'my_reports': '我的报告',
         'download_data': '下载数据',

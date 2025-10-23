@@ -193,26 +193,29 @@ def serve_uploaded_file(filename):
 @login_required
 def index():
     """
-    Dashboard - 根据用户角色显示客户列表
-    - Admin: 看到所有客户
-    - Customer: 只看到自己
+    Dashboard - Admin sees all customers, Customer redirected to portal
+    - Admin: Show all customers
+    - Customer: Redirect to customer portal
     """
     user_role = session.get('user_role')
     
+    # SECURITY FIX: Use single trusted user_role source
     if user_role == 'admin':
-        # 管理员：显示所有客户
+        # Admin: show all customers
         customers = get_all_customers()
+        return render_template('index.html', customers=customers)
     elif user_role == 'customer':
-        # 普通客户：只显示自己
+        # Customer: redirect to portal
         customer_id = session.get('customer_id')
-        customer = get_customer(customer_id)
-        customers = [customer] if customer else []
+        if customer_id:
+            return redirect(url_for('customer_portal'))
+        else:
+            flash('Customer ID not found', 'error')
+            return redirect(url_for('customer_login'))
     else:
-        # 未知角色：重定向到登录
-        flash('请先登录', 'warning')
+        # Unknown role: redirect to login
+        flash('Please login first', 'warning')
         return redirect(url_for('customer_login'))
-    
-    return render_template('index.html', customers=customers)
 
 @app.route('/add_customer_page')
 @admin_required
@@ -1485,8 +1488,12 @@ def admin_login():
             return render_template('admin_login.html')
         
         if email == admin_email and password == admin_password:
+            # SECURITY FIX: Use single trusted user_role source
+            session['user_role'] = 'admin'
+            session['user_email'] = email
+            session['user_name'] = 'Administrator'
+            # Keep is_admin for backward compatibility during transition
             session['is_admin'] = True
-            session['admin_email'] = email
             flash('Admin login successful', 'success')
             return redirect(url_for('admin_dashboard'))
         else:
@@ -1497,7 +1504,7 @@ def admin_login():
 @app.route('/admin')
 def admin_dashboard():
     """Admin dashboard route"""
-    if not session.get('is_admin'):
+    if session.get('user_role') != 'admin':
         flash('Please login as admin first', 'warning')
         return redirect(url_for('admin_login'))
     
@@ -1529,15 +1536,14 @@ def admin_dashboard():
 @app.route('/admin-logout')
 def admin_logout():
     """Admin logout route"""
-    session.pop('is_admin', None)
-    session.pop('admin_email', None)
+    session.clear()
     flash('Admin logged out successfully', 'success')
     return redirect(url_for('index'))
 
 @app.route('/admin/customers-cards')
 def admin_customers_cards():
     """Admin page showing all customers and their credit cards"""
-    if not session.get('is_admin'):
+    if session.get('user_role') != 'admin':
         flash('Please login as admin first', 'warning')
         return redirect(url_for('admin_login'))
     
@@ -3491,11 +3497,31 @@ def loan_matcher_analyze():
 @app.route('/credit-card/ledger', methods=['GET', 'POST'])
 @login_required
 def credit_card_ledger():
-    """第一层：客户列表 - 显示所有有信用卡账单的客户 + 上传功能"""
+    """
+    第一层：客户列表 (Admin) or 直接跳转到时间线 (Customer)
+    - Admin: 显示所有有信用卡账单的客户 + 上传功能
+    - Customer: 直接跳转到自己的时间线
+    """
     from utils.name_utils import get_customer_code
     
-    # 获取当前用户可访问的客户列表
-    accessible_customer_ids = get_accessible_customers(session['user_id'], session['user_role'])
+    user_role = session.get('user_role')
+    
+    # SECURITY FIX: Use single trusted user_role source
+    if user_role == 'admin':
+        # Admin: show all customer list + upload functionality
+        accessible_customer_ids = get_accessible_customers(session['user_id'], session['user_role'])
+    elif user_role == 'customer':
+        # Customer: redirect directly to their timeline (skip Layer 1)
+        customer_id = session.get('customer_id')
+        if customer_id:
+            return redirect(url_for('credit_card_ledger_timeline', customer_id=customer_id))
+        else:
+            flash('Customer ID not found', 'error')
+            return redirect(url_for('customer_login'))
+    else:
+        # Unknown role
+        flash('Please login first', 'warning')
+        return redirect(url_for('customer_login'))
     
     # POST: 处理上传
     if request.method == 'POST':
