@@ -115,9 +115,14 @@
                                     </label>
                                     <div class="custom-file-upload mb-3">
                                         <input type="file" name="ctos_file" id="ctos_file_input" class="d-none" accept="application/pdf" onchange="updateFileName(this)">
-                                        <label for="ctos_file_input" class="btn btn-outline-light w-100 text-start d-flex justify-content-between align-items-center" style="cursor: pointer;">
+                                        <label for="ctos_file_input" class="btn w-100 text-start d-flex justify-content-between align-items-center" 
+                                               style="cursor: pointer;
+                                                      background: rgba(20, 20, 20, 0.5);
+                                                      border: 1px solid rgba(229, 228, 226, 0.3);
+                                                      padding: 0.75rem 1rem;
+                                                      transition: all 0.3s ease;">
                                             <span id="file_name_display" class="text-silver-pearl">{{ t('no_file_chosen') }}</span>
-                                            <span class="badge bg-golden text-dark">{{ t('choose_file') }}</span>
+                                            <span class="nav-link-file-button">{{ t('choose_file') }}</span>
                                         </label>
                                     </div>
                                     <small class="text-silver-pearl d-block">
@@ -255,21 +260,30 @@ small.text-silver-pearl {
 }
 
 /* Custom File Upload Styling */
-.custom-file-upload .btn-outline-light {
-    border: 1px solid rgba(229, 228, 226, 0.3);
-    background: rgba(20, 20, 20, 0.5);
-    padding: 0.75rem 1rem;
-    transition: all 0.3s ease;
-}
-
-.custom-file-upload .btn-outline-light:hover {
+.custom-file-upload .btn:hover {
     background: rgba(229, 228, 226, 0.1);
     border-color: rgba(229, 228, 226, 0.5);
 }
 
-.custom-file-upload .badge {
+/* Navigation Style Button for File Upload */
+.nav-link-file-button {
+    background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%);
+    color: #FFFFFF;
     padding: 0.5rem 1rem;
-    font-weight: 600;
+    border-radius: 8px;
+    border: 2px solid #FF007F;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.nav-link-file-button:hover {
+    background: linear-gradient(135deg, #FF1A8C 0%, #F0008A 100%);
+    box-shadow: 0 0 25px rgba(255, 0, 127, 0.6);
+    transform: translateY(-2px);
 }
 </style>
 
