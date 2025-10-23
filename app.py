@@ -9,7 +9,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-from db.database import get_db, log_audit, get_all_customers, get_customer_cards, get_card_statements, get_statement_transactions
+from db.database import get_db, log_audit, get_all_customers, get_customer, get_customer_cards, get_card_statements, get_statement_transactions
 from utils.auth_decorators import login_required, admin_required, customer_access_required, get_accessible_customers
 from ingest.statement_parser import parse_statement_auto
 from validate.categorizer import categorize_transaction, validate_statement, get_spending_summary
@@ -190,16 +190,38 @@ def serve_uploaded_file(filename):
     return response
 
 @app.route('/')
+@login_required
 def index():
-    customers = get_all_customers()
+    """
+    Dashboard - 根据用户角色显示客户列表
+    - Admin: 看到所有客户
+    - Customer: 只看到自己
+    """
+    user_role = session.get('user_role')
+    
+    if user_role == 'admin':
+        # 管理员：显示所有客户
+        customers = get_all_customers()
+    elif user_role == 'customer':
+        # 普通客户：只显示自己
+        customer_id = session.get('customer_id')
+        customer = get_customer(customer_id)
+        customers = [customer] if customer else []
+    else:
+        # 未知角色：重定向到登录
+        flash('请先登录', 'warning')
+        return redirect(url_for('customer_login'))
+    
     return render_template('index.html', customers=customers)
 
 @app.route('/add_customer_page')
+@admin_required
 def add_customer_page():
-    """Show add customer form page"""
+    """Show add customer form page - Admin only"""
     return render_template('add_customer.html')
 
 @app.route('/add_customer', methods=['POST'])
+@admin_required
 def add_customer():
     """Admin: Add a new customer"""
     try:
@@ -247,6 +269,8 @@ def add_customer():
         return redirect(url_for('index'))
 
 @app.route('/customer/<int:customer_id>')
+@login_required
+@customer_access_required
 def customer_dashboard(customer_id):
     with get_db() as conn:
         cursor = conn.cursor()
@@ -2259,9 +2283,11 @@ def generate_monthly_report_route(customer_id):
 # ============================================================================
 
 @app.route('/customer/<int:customer_id>/dashboard')
+@login_required
+@customer_access_required
 def financial_dashboard(customer_id):
     """
-    客户财务仪表板
+    客户财务仪表板 - 需要登录和访问权限
     展示关键指标：
     - 客户当月总消费/总付款/累计欠款余额
     - 每张信用卡的当月消费/付款/累计余额/积分
@@ -2304,9 +2330,10 @@ def financial_dashboard(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/delete', methods=['POST'])
+@admin_required
 def delete_customer(customer_id):
     """
-    删除客户及其所有相关数据
+    删除客户及其所有相关数据 - 仅管理员
     级联删除：信用卡、账单、交易、月度账本、供应商发票等
     """
     try:
