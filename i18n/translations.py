@@ -8,9 +8,9 @@ TRANSLATIONS = {
         # Navigation
         'nav_dashboard': 'Dashboard',
         'nav_upload': 'Upload',
-        'nav_cc_ledger': 'CC Ledger',
+        'nav_cc_ledger': 'CC',
         'nav_savings': 'Savings',
-        'nav_loan_matcher': 'Loan Matcher',
+        'nav_loan_matcher': 'Loans',
         'nav_receipts': 'Receipts',
         'nav_reminders': 'Reminders',
         'nav_news': 'News',
@@ -683,9 +683,9 @@ TRANSLATIONS = {
         # Navigation
         'nav_dashboard': '仪表板',
         'nav_upload': '上传',
-        'nav_cc_ledger': '信用卡账本',
+        'nav_cc_ledger': 'CC',
         'nav_savings': '储蓄账户',
-        'nav_loan_matcher': '贷款匹配',
+        'nav_loan_matcher': '贷款',
         'nav_receipts': '收据管理',
         'nav_reminders': '提醒',
         'nav_news': '资讯',
