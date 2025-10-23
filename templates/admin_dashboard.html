@@ -173,7 +173,7 @@
         <div class="col-12">
             <div class="statement-card" style="border: 2px solid #322446;">
                 <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #322446;">
-                    <h3 class="card-title-custom" style="color: #322446; font-weight: 700; margin: 0; padding: 1.5rem;">
+                    <h3 class="card-title-custom" style="color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); font-weight: 700; margin: 0; padding: 1.5rem;">
                         <i class="bi bi-bank"></i> {{ t('bank_account_statements') }}
                     </h3>
                 </div>
@@ -182,35 +182,36 @@
                         <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto; font-size: 0.95rem;">
                             <thead style="background: rgba(50, 36, 70, 0.3); border-bottom: 2px solid #322446;">
                                 <tr>
-                                    <th>{{ t('month_of_statement') }}</th>
+                                    <th style="color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ t('month_of_statement') }}</th>
                                     <th>{{ t('name') }}</th>
                                     <th>{{ t('bank') }}</th>
                                     <th>{{ t('monthly_credit') }}</th>
-                                    <th>{{ t('monthly_debit') }}</th>
+                                    <th style="color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ t('monthly_debit') }}</th>
                                     <th>{{ t('closing_bal') }}</th>
                                     <th>{{ t('cc_sum_payment') }}</th>
-                                    <th>{{ t('total_transfer') }}</th>
-                                    <th style="text-align: center;">{{ t('actions') }}</th>
+                                    <th style="color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ t('total_transfer') }}</th>
+                                    <th style="text-align: center; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ t('actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% if sa_statements %}
                                     {% for stmt in sa_statements %}
                                     <tr class="hover-glow-row">
-                                        <td style="font-weight: 600; color: #322446;">{{ stmt['statement_date'][:7] }}</td>
+                                        <td style="font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ stmt['statement_date'][:7] }}</td>
                                         <td style="font-weight: 600;">{{ stmt['customer_name'] }}</td>
                                         <td style="font-weight: 600; color: #FF007F;">{{ stmt['bank_abbr'] }}</td>
                                         <td style="color: #FF007F;">RM {{ "{:,.2f}".format(stmt['monthly_credit']) }}</td>
-                                        <td style="color: #322446;">RM {{ "{:,.2f}".format(stmt['monthly_debit']) }}</td>
+                                        <td style="color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">RM {{ "{:,.2f}".format(stmt['monthly_debit']) }}</td>
                                         <td style="font-weight: 600;">RM {{ "{:,.2f}".format(stmt['closing_bal'] if stmt['closing_bal'] else 0) }}</td>
                                         <td style="color: #FF007F;">RM {{ "{:,.2f}".format(stmt['cc_sum_payment']) }}</td>
-                                        <td style="color: #322446;">RM {{ "{:,.2f}".format(stmt['total_transfer']) }}</td>
+                                        <td style="color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">RM {{ "{:,.2f}".format(stmt['total_transfer']) }}</td>
                                         <td style="text-align: center;">
                                             <a href="{{ url_for('savings_verify_statement', statement_id=stmt['statement_id']) }}" 
                                                class="btn btn-sm btn-view-details"
                                                style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
                                                       border: 2px solid #322446; 
-                                                      color: #322446;
+                                                      color: #FFFFFF;
+                                                      text-shadow: 0 0 8px rgba(255,255,255,0.3);
                                                       font-weight: 600;
                                                       padding: 0.25rem 0.75rem;">
                                                 {{ t('view_details') }}
