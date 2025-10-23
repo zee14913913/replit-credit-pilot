@@ -4371,7 +4371,7 @@ def download_credit_card_report(customer_id):
 
 @app.route('/receipts')
 def receipts_home():
-    """收据管理主页"""
+    """收据管理主页 - 包含供应商发票和付款收据两个表格"""
     with get_db() as conn:
         cursor = conn.cursor()
         
@@ -4386,30 +4386,48 @@ def receipts_home():
         """)
         stats = dict(cursor.fetchone())
         
-        # 获取最近上传的收据
+        # 获取所有供应商发票（已生成发票的交易）
         cursor.execute("""
             SELECT 
-                r.id,
-                r.receipt_type,
-                r.original_filename,
-                r.transaction_date,
-                r.amount,
-                r.merchant_name,
-                r.card_last4,
-                r.match_status,
-                r.match_confidence,
-                r.created_at,
-                c.name as customer_name,
-                cc.card_type
-            FROM receipts r
-            LEFT JOIN customers c ON r.customer_id = c.id
-            LEFT JOIN credit_cards cc ON r.card_id = cc.id
-            ORDER BY r.created_at DESC
-            LIMIT 50
+                si.id,
+                si.invoice_date as date,
+                si.supplier_name as description,
+                si.total_amount as amount,
+                c.name as from_customer,
+                si.invoice_number as remarks,
+                si.pdf_path,
+                si.supplier_fee,
+                si.created_at
+            FROM supplier_invoices si
+            JOIN customers c ON si.customer_id = c.id
+            ORDER BY si.invoice_date DESC
+            LIMIT 100
         """)
-        recent_receipts = [dict(row) for row in cursor.fetchall()]
+        supplier_invoices = [dict(row) for row in cursor.fetchall()]
+        
+        # 获取所有付款收据（为客户付款的单据）
+        cursor.execute("""
+            SELECT 
+                pr.id,
+                pr.payment_date as date,
+                'Credit Card Payment' as description,
+                pr.payment_amount as amount,
+                c.name as from_customer,
+                cc.bank_name || ' ' || cc.card_number_last4 as remarks,
+                pr.receipt_file_path,
+                pr.uploaded_at
+            FROM payment_receipts pr
+            JOIN customers c ON pr.customer_id = c.id
+            JOIN credit_cards cc ON pr.card_id = cc.id
+            ORDER BY pr.payment_date DESC
+            LIMIT 100
+        """)
+        payment_receipts = [dict(row) for row in cursor.fetchall()]
     
-    return render_template('receipts/home.html', stats=stats, recent_receipts=recent_receipts)
+    return render_template('receipts/home.html', 
+                         stats=stats, 
+                         supplier_invoices=supplier_invoices,
+                         payment_receipts=payment_receipts)
 
 @app.route('/receipts/upload', methods=['GET', 'POST'])
 def receipts_upload():

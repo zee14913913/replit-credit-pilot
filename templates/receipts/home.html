@@ -50,60 +50,242 @@
         </div>
     </div>
     
-    <div class="glass-panel p-4">
-        <h3 class="text-silver mb-3">{{ t('recent_receipts') }}</h3>
-        
-        {% if recent_receipts %}
-        <div class="table-responsive">
-            <table class="table table-dark table-hover">
-                <thead>
-                    <tr>
-                        <th>{{ t('filename') }}</th>
-                        <th>{{ t('receipt_type') }}</th>
-                        <th>{{ t('customer') }}</th>
-                        <th>{{ t('card_number') }}</th>
-                        <th>{{ t('transaction_date') }}</th>
-                        <th>{{ t('amount') }}</th>
-                        <th>{{ t('status') }}</th>
-                        <th>{{ t('upload_time') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for receipt in recent_receipts %}
-                    <tr>
-                        <td>{{ receipt.original_filename }}</td>
-                        <td>
-                            {% if receipt.receipt_type == 'merchant_swipe' %}
-                            <span class="badge bg-info">{{ t('merchant_swipe') }}</span>
-                            {% else %}
-                            <span class="badge bg-success">{{ t('payment_proof') }}</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ receipt.customer_name or '-' }}</td>
-                        <td>****{{ receipt.card_last4 or '?' }}</td>
-                        <td>{{ receipt.transaction_date or '-' }}</td>
-                        <td>RM {{ "%.2f"|format(receipt.amount or 0) }}</td>
-                        <td>
-                            {% if receipt.match_status == 'auto_matched' %}
-                            <span class="badge bg-success">{{ t('auto_matched') }}</span>
-                            {% elif receipt.match_status == 'manual_matched' %}
-                            <span class="badge bg-info">{{ t('manual_matched') }}</span>
-                            {% else %}
-                            <span class="badge bg-warning">{{ t('pending_match') }}</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ receipt.created_at }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <!-- Supplier Invoices Table -->
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <div class="statement-card" style="border: 2px solid #FFD700;">
+                <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #FFD700;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
+                        <h3 class="card-title-custom" style="color: #FFD700; font-weight: 700; margin: 0;">
+                            <i class="bi bi-file-earmark-text"></i> Supplier Invoices (供应商发票)
+                        </h3>
+                        <button id="exportSupplierTable" class="btn btn-sm" style="background: #FFD700; color: #000; border: none; font-weight: 600;">
+                            <i class="bi bi-download"></i> Export Excel
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body-custom" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table id="supplierInvoicesTable" class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto; font-size: 0.95rem;">
+                            <thead style="background: rgba(255, 215, 0, 0.1); border-bottom: 2px solid #FFD700;">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>From</th>
+                                    <th>Remarks</th>
+                                    <th>Supplier Fee (1%)</th>
+                                    <th style="text-align: center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if supplier_invoices %}
+                                    {% for invoice in supplier_invoices %}
+                                    <tr class="hover-glow-row">
+                                        <td style="font-weight: 600; color: #FFD700;">{{ invoice['date'] }}</td>
+                                        <td style="font-weight: 600;">{{ invoice['description'] }}</td>
+                                        <td style="font-weight: 600; color: #90EE90;">RM {{ "{:,.2f}".format(invoice['amount']) }}</td>
+                                        <td>{{ invoice['from_customer'] }}</td>
+                                        <td style="color: #87CEEB;">{{ invoice['remarks'] }}</td>
+                                        <td style="color: #FFB6C1;">RM {{ "{:,.2f}".format(invoice['supplier_fee']) }}</td>
+                                        <td style="text-align: center;">
+                                            {% if invoice['pdf_path'] %}
+                                            <a href="/{{ invoice['pdf_path'] }}" target="_blank" 
+                                               class="btn btn-sm btn-view-details"
+                                               style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+                                                      border: 2px solid #FFD700; 
+                                                      color: #FFD700;
+                                                      font-weight: 600;
+                                                      padding: 0.25rem 0.75rem;">
+                                                <i class="bi bi-file-pdf"></i> View Invoice
+                                            </a>
+                                            {% else %}
+                                            <span style="color: #999;">-</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; padding: 3rem; color: #999;">
+                                            No supplier invoices found
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-        {% else %}
-        <p class="text-center py-5" style="color: #FF007F; font-weight: 700;">
-            <i class="bi bi-inbox" style="font-size: 3rem;"></i><br>
-            {{ t('no_receipts_uploaded') }}
-        </p>
-        {% endif %}
+    </div>
+
+    <!-- Payment Receipts Table -->
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <div class="statement-card" style="border: 2px solid #FF007F;">
+                <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #FF007F;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
+                        <h3 class="card-title-custom" style="color: #FF007F; font-weight: 700; margin: 0;">
+                            <i class="bi bi-receipt"></i> Payment Receipts (付款收据)
+                        </h3>
+                        <button id="exportPaymentTable" class="btn btn-sm" style="background: #FF007F; color: white; border: none;">
+                            <i class="bi bi-download"></i> Export Excel
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body-custom" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table id="paymentReceiptsTable" class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto; font-size: 0.95rem;">
+                            <thead style="background: rgba(255, 0, 127, 0.1); border-bottom: 2px solid #FF007F;">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>From</th>
+                                    <th>Remarks</th>
+                                    <th style="text-align: center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if payment_receipts %}
+                                    {% for receipt in payment_receipts %}
+                                    <tr class="hover-glow-row">
+                                        <td style="font-weight: 600; color: #FF007F;">{{ receipt['date'] }}</td>
+                                        <td style="font-weight: 600;">{{ receipt['description'] }}</td>
+                                        <td style="font-weight: 600; color: #90EE90;">RM {{ "{:,.2f}".format(receipt['amount']) }}</td>
+                                        <td>{{ receipt['from_customer'] }}</td>
+                                        <td style="color: #87CEEB;">{{ receipt['remarks'] }}</td>
+                                        <td style="text-align: center;">
+                                            {% if receipt['receipt_file_path'] %}
+                                            <a href="/{{ receipt['receipt_file_path'] }}" target="_blank" 
+                                               class="btn btn-sm btn-view-details"
+                                               style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+                                                      border: 2px solid #FF007F; 
+                                                      color: #FF007F;
+                                                      font-weight: 600;
+                                                      padding: 0.25rem 0.75rem;">
+                                                <i class="bi bi-file-image"></i> View Receipt
+                                            </a>
+                                            {% else %}
+                                            <span style="color: #999;">-</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; padding: 3rem; color: #999;">
+                                            No payment receipts found
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<style>
+.statement-card {
+    background: #000000;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.elegant-table {
+    background: #000000;
+}
+
+.elegant-table thead th {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.9rem;
+    padding: 1.2rem;
+    border: none;
+    white-space: nowrap;
+}
+
+.elegant-table tbody td {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.hover-glow-row {
+    transition: all 0.3s ease;
+}
+
+.hover-glow-row:hover {
+    background: rgba(255, 255, 255, 0.03) !important;
+    transform: translateX(5px);
+}
+
+.btn-view-details {
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.btn-view-details:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 0, 127, 0.4);
+}
+</style>
+
+<script>
+// Export to Excel (CSV format)
+function exportTableToExcel(tableId, filename = 'export.csv') {
+    const table = document.getElementById(tableId);
+    if (!table) return;
+
+    const rows = table.querySelectorAll('tr');
+    const csv = [];
+
+    rows.forEach(row => {
+        const cols = row.querySelectorAll('td, th');
+        const rowData = [];
+        
+        cols.forEach(col => {
+            let text = col.innerText || col.textContent;
+            text = text.replace(/"/g, '""');
+            
+            if (!text.includes('View Invoice') && !text.includes('View Receipt')) {
+                rowData.push(`"${text}"`);
+            }
+        });
+        
+        if (rowData.length > 0) {
+            csv.push(rowData.join(','));
+        }
+    });
+
+    const csvContent = csv.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('exportSupplierTable')?.addEventListener('click', function() {
+        exportTableToExcel('supplierInvoicesTable', 'Supplier_Invoices.csv');
+    });
+    
+    document.getElementById('exportPaymentTable')?.addEventListener('click', function() {
+        exportTableToExcel('paymentReceiptsTable', 'Payment_Receipts.csv');
+    });
+});
+</script>
 {% endblock %}
