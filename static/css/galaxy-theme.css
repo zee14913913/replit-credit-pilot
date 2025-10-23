@@ -17,6 +17,7 @@
     --gold-bronze: #D4C5A9;         /* 淡香槟金 */
     --champagne: #E6DCC8;           /* 浅香槟色 */
     --accent-pale-gold: #E6D7BC;    /* 淡金色点缀 */
+    --accent-gold: #D4AF37;         /* 主要金色点缀 */
     
     /* Text Colors - 银白珍珠色系 */
     --text-white: #FFFFFF;
@@ -74,6 +75,7 @@
     --gold-light: #CBD5E1;
     --gold-dark: #64748B;
     --gold-bronze: #94A3B8;
+    --accent-gold: #64748B;         /* 主要金色点缀（浅模式） */
     --champagne: #E2E8F0;
     
     /* Text Colors - 统一深灰色系 */

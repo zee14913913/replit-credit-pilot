@@ -586,6 +586,24 @@ TRANSLATIONS = {
         'no_fee_calculations_yet': 'No fee calculations yet - Waiting for service completion',
         'n_a': 'N/A',
         'advisory': 'Advisory',
+        
+        # Savings
+        'savings_customers': 'Savings Account Customers',
+        'select_customer_view_accounts': 'Select a customer to view their savings accounts and transactions',
+        'all_customers_with_savings': 'All Customers with Savings Accounts',
+        'total_debit': 'Total Debit',
+        'total_credit': 'Total Credit',
+        'view_accounts': 'View Accounts',
+        'customer_code': 'Customer Code',
+        'back_to_customers': 'Back to Customers',
+        'my_savings_accounts': 'My Savings Accounts',
+        'view_account_details': 'View account details, statements, and transaction history',
+        'search_transactions': 'Search Transactions',
+        'no_savings_yet': 'No savings accounts yet',
+        'upload_first_statement': 'Upload First Statement',
+        'upload_statement_btn': 'Upload Statement',
+        'transfer_payment_summary': 'Transfer Payment Summary',
+        'transfer_summary_desc': 'Summary of money transferred from your savings accounts to others (grouped by recipient)',
     },
     'zh': {
         # Navigation
@@ -1209,6 +1227,24 @@ TRANSLATIONS = {
         'no_fee_calculations_yet': '还没有费用计算 - 等待服务完成',
         'n_a': '不适用',
         'advisory': '咨询',
+        
+        # Savings
+        'savings_customers': '储蓄账户客户列表',
+        'select_customer_view_accounts': '选择客户查看其储蓄账户详情',
+        'all_customers_with_savings': '所有拥有储蓄账户的客户',
+        'total_debit': '总支出',
+        'total_credit': '总收入',
+        'view_accounts': '查看账户',
+        'customer_code': '客户代码',
+        'back_to_customers': '返回客户列表',
+        'my_savings_accounts': '我的储蓄账户',
+        'view_account_details': '查看账户详情、账单和交易记录',
+        'search_transactions': '搜索交易',
+        'no_savings_yet': '暂无储蓄账户',
+        'upload_first_statement': '上传第一份账单',
+        'upload_statement_btn': '上传账单',
+        'transfer_payment_summary': '转账支出统计',
+        'transfer_summary_desc': '从储蓄账户转账给其他人的支出汇总（按收款人分组）',
     }
 }
 

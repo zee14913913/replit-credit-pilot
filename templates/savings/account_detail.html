@@ -41,7 +41,7 @@
         <div class="col-md-3 col-sm-6">
             <div class="professional-card text-center">
                 <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">Total Debit / 转出</div>
-                <div style="color: #e74c3c; font-weight: 600; font-size: 1.5rem;">
+                <div style="color: var(--text-primary); font-weight: 600; font-size: 1.5rem;">
                     RM {{ "{:,.2f}".format(stats.total_debit or 0) }}
                 </div>
             </div>
@@ -49,7 +49,7 @@
         <div class="col-md-3 col-sm-6">
             <div class="professional-card text-center">
                 <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">Total Credit / 转入</div>
-                <div style="color: #2ecc71; font-weight: 600; font-size: 1.5rem;">
+                <div style="color: var(--text-primary); font-weight: 600; font-size: 1.5rem;">
                     RM {{ "{:,.2f}".format(stats.total_credit or 0) }}
                 </div>
             </div>
@@ -91,10 +91,10 @@
                                 {{ statement.transaction_count }} transactions
                             </span>
                         </td>
-                        <td style="color: #e74c3c;">
+                        <td style="color: var(--text-primary);">
                             RM {{ "{:,.2f}".format(statement.total_debit or 0) }}
                         </td>
-                        <td style="color: #2ecc71;">
+                        <td style="color: var(--text-primary);">
                             RM {{ "{:,.2f}".format(statement.total_credit or 0) }}
                         </td>
                         <td>
@@ -144,16 +144,16 @@
                         <td style="color: var(--text-primary);">
                             {{ trans.description[:60] }}{% if trans.description|length > 60 %}...{% endif %}
                         </td>
-                        <td style="color: {% if trans.transaction_type == 'debit' %}#e74c3c{% else %}#2ecc71{% endif %}; font-weight: 600;">
+                        <td style="color: {% if trans.transaction_type == 'debit' %}var(--text-primary){% else %}var(--text-primary){% endif %}; font-weight: 600;">
                             RM {{ "{:,.2f}".format(trans.amount) }}
                         </td>
                         <td>
                             {% if trans.transaction_type == 'debit' %}
-                            <span class="badge-professional" style="background: rgba(231, 76, 60, 0.2); color: #e74c3c;">
+                            <span class="badge-professional" style="background: var(--bg-secondary); color: var(--text-primary);">
                                 Debit / 转出
                             </span>
                             {% else %}
-                            <span class="badge-professional" style="background: rgba(46, 204, 113, 0.2); color: #2ecc71;">
+                            <span class="badge-professional" style="background: var(--bg-secondary); color: var(--text-primary);">
                                 Credit / 转入
                             </span>
                             {% endif %}

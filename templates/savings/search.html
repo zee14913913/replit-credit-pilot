@@ -81,11 +81,11 @@
                         </td>
                         <td>
                             {% if trans.transaction_type == 'debit' %}
-                            <span style="color: #e74c3c; font-weight: 600;">
+                            <span style="color: var(--text-primary); font-weight: 600;">
                                 -RM {{ "{:,.2f}".format(trans.amount) }}
                             </span>
                             {% else %}
-                            <span style="color: #2ecc71; font-weight: 600;">
+                            <span style="color: var(--text-primary); font-weight: 600;">
                                 +RM {{ "{:,.2f}".format(trans.amount) }}
                             </span>
                             {% endif %}

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ customer.name }} - Savings Accounts / 储蓄账户{% endblock %}
+{% block title %}{{ customer.name }} - {{ t('nav_savings') }}{% endblock %}
 
 {% block content %}
 <div class="fade-in">
@@ -9,7 +9,7 @@
         <ol class="breadcrumb" style="background: transparent; padding: 0;">
             <li class="breadcrumb-item">
                 <a href="{{ url_for('savings_customers') }}" style="color: var(--accent-gold);">
-                    <i class="bi bi-people-fill"></i> All Customers / 客户列表
+                    {{ t('all_customers_with_savings') }}
                 </a>
             </li>
             <li class="breadcrumb-item active" style="color: var(--text-secondary);">
@@ -23,15 +23,15 @@
         <div class="d-flex justify-content-between align-items-center">
             <div>
                 <h1 style="color: var(--accent-gold); margin-bottom: 0.5rem; font-size: 1.8rem;">
-                    <i class="bi bi-person-circle"></i> {{ customer.name }}
+                    {{ customer.name }}
                 </h1>
                 <p style="color: var(--text-secondary); margin: 0; font-size: 1rem;">
-                    <i class="bi bi-tag"></i> Customer Code: <strong style="color: var(--text-primary);">{{ customer.customer_code or customer.name }}</strong>
+                    {{ t('customer_code') }}: <strong style="color: var(--text-primary);">{{ customer.customer_code or customer.name }}</strong>
                 </p>
             </div>
             <div class="text-end">
                 <span class="badge-professional badge-info-pro" style="font-size: 1.1rem; padding: 0.5rem 1rem;">
-                    {{ accounts|length }} Savings Account{{ 's' if accounts|length != 1 else '' }}
+                    {{ accounts|length }} SAVINGS ACCOUNT{{ 'S' if accounts|length != 1 else '' }}
                 </span>
             </div>
         </div>
@@ -40,28 +40,20 @@
     <!-- Action Buttons -->
     <div class="mb-4">
         <a href="{{ url_for('upload_savings_statement') }}" class="btn-professional">
-            <i class="bi bi-cloud-upload"></i> Upload Statement / 上传账单
+            {{ t('upload_statement_btn') }}
         </a>
         <a href="{{ url_for('savings_search') }}" class="btn-professional-outline ms-3">
-            <i class="bi bi-search"></i> Search Transactions / 搜索交易
+            {{ t('search_transactions') }}
         </a>
         <a href="{{ url_for('savings_customers') }}" class="btn-professional-outline ms-3">
-            <i class="bi bi-arrow-left-circle"></i> Back to Customers / 返回客户列表
+            {{ t('back_to_customers') }}
         </a>
     </div>
 
-    <!-- 储蓄账户列表 (主要部分) -->
+    <!-- Savings Accounts List -->
     <div class="mb-5">
-        <h2 class="section-title mb-3">
-            <i class="bi bi-wallet2"></i> 我的储蓄账户 / My Savings Accounts
-        </h2>
-        <p class="section-subtitle mb-4">
-            查看您的储蓄账户详情、账单和交易记录
-            <br>
-            <small style="color: var(--text-secondary); font-size: 0.9rem;">
-                View account details, statements, and transaction history
-            </small>
-        </p>
+        <h2 class="section-title mb-3">{{ t('my_savings_accounts') }}</h2>
+        <p class="section-subtitle mb-4">{{ t('view_account_details') }}</p>
         
         {% if accounts %}
         <div class="row g-4">
@@ -69,53 +61,52 @@
             <div class="col-md-6 col-lg-4">
                 <a href="{{ url_for('savings_account_detail', account_id=account.id) }}" style="text-decoration: none;">
                     <div class="professional-card hover-lift" style="height: 100%;">
-                        <!-- 银行标题 -->
+                        <!-- Bank Header -->
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div>
                                 <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem; font-size: 1.2rem;">
-                                    <i class="bi bi-bank2"></i> {{ account.bank_name }}
+                                    {{ account.bank_name }}
                                 </h3>
                                 <p style="color: var(--text-secondary); margin: 0; font-size: 0.95rem;">
-                                    <i class="bi bi-credit-card-2-front"></i> Account ****{{ account.account_number_last4 }}
+                                    ****{{ account.account_number_last4 }}
                                 </p>
                             </div>
                             <span class="badge-professional badge-info-pro">
-                                {{ account.statement_count }} 
-                                <i class="bi bi-file-earmark-text"></i>
+                                {{ account.statement_count }}
                             </span>
                         </div>
 
                         <div class="divider-professional mb-3"></div>
 
-                        <!-- 统计数据网格 -->
+                        <!-- Statistics Grid -->
                         <div class="row g-3 mb-3">
                             <div class="col-6">
-                                <div style="background: rgba(231, 76, 60, 0.1); padding: 0.75rem; border-radius: 8px; border-left: 3px solid #e74c3c;">
+                                <div style="background: var(--bg-secondary); padding: 0.75rem; border-radius: 8px;">
                                     <small style="color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">
-                                        <i class="bi bi-arrow-up-circle"></i> 支出 Debit
+                                        {{ t('total_debit') }}
                                     </small>
-                                    <div style="color: #e74c3c; font-weight: 600; font-size: 1.1rem;">
+                                    <div style="color: var(--text-primary); font-weight: 600; font-size: 1.1rem;">
                                         RM {{ "{:,.2f}".format(account.total_debit or 0) }}
                                     </div>
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div style="background: rgba(46, 204, 113, 0.1); padding: 0.75rem; border-radius: 8px; border-left: 3px solid #2ecc71;">
+                                <div style="background: var(--bg-secondary); padding: 0.75rem; border-radius: 8px;">
                                     <small style="color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">
-                                        <i class="bi bi-arrow-down-circle"></i> 收入 Credit
+                                        {{ t('total_credit') }}
                                     </small>
-                                    <div style="color: #2ecc71; font-weight: 600; font-size: 1.1rem;">
+                                    <div style="color: var(--text-primary); font-weight: 600; font-size: 1.1rem;">
                                         RM {{ "{:,.2f}".format(account.total_credit or 0) }}
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 交易数量 -->
+                        <!-- Transaction Count -->
                         <div style="background: var(--bg-secondary); padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem;">
                             <div class="d-flex justify-content-between align-items-center">
                                 <span style="color: var(--text-secondary); font-size: 0.9rem;">
-                                    <i class="bi bi-list-ul"></i> 总交易数 Total Transactions
+                                    {{ t('transactions') }}
                                 </span>
                                 <span style="color: var(--accent-gold); font-weight: 600; font-size: 1.1rem;">
                                     {{ account.total_transactions or 0 }}
@@ -123,10 +114,10 @@
                             </div>
                         </div>
 
-                        <!-- 查看详情提示 -->
+                        <!-- View Details Indicator -->
                         <div class="text-center pt-2" style="border-top: 1px solid rgba(212, 175, 55, 0.2);">
                             <small style="color: var(--accent-gold);">
-                                <i class="bi bi-arrow-right-circle-fill"></i> 点击查看完整详情 Click to View Details
+                                {{ t('view_details') }}
                             </small>
                         </div>
                     </div>
@@ -136,160 +127,58 @@
         </div>
         {% else %}
         <div class="professional-card text-center py-5">
-            <i class="bi bi-inbox" style="font-size: 4rem; color: var(--text-secondary); opacity: 0.3;"></i>
             <p style="color: var(--text-secondary); margin-top: 1.5rem; font-size: 1.1rem;">
-                暂无储蓄账户 / No Savings Accounts Yet
-            </p>
-            <p style="color: var(--text-secondary); margin-top: 0.5rem; font-size: 0.95rem;">
-                上传您的第一份储蓄账户账单开始管理
+                {{ t('no_savings_yet') }}
             </p>
             <a href="{{ url_for('upload_savings_statement') }}" class="btn-professional mt-3">
-                <i class="bi bi-cloud-upload"></i> {{ t('upload_first_statement') }}
+                {{ t('upload_first_statement') }}
             </a>
         </div>
         {% endif %}
     </div>
 
-    <!-- 转账支出统计 (次要部分，如果有数据才显示) -->
+    <!-- Transfer Payment Summary -->
     {% if recipients %}
     <div class="divider-professional mb-5"></div>
     
     <div class="mb-5">
-        <h2 class="section-title mb-3">
-            <i class="bi bi-arrow-left-right"></i> 转账支出统计 / Transfer Payment Summary
-        </h2>
-        <p class="section-subtitle mb-4">
-            从储蓄账户转账给其他人的支出汇总（按收款人分组）
-            <br>
-            <small style="color: var(--text-secondary); font-size: 0.9rem;">
-                Summary of money transferred from your savings accounts to others (grouped by recipient)
-            </small>
-        </p>
+        <h2 class="section-title mb-3">{{ t('transfer_payment_summary') }}</h2>
+        <p class="section-subtitle mb-4">{{ t('transfer_summary_desc') }}</p>
         
         <div class="row g-4">
             {% for recipient in recipients %}
             <div class="col-md-6 col-lg-4">
                 <div class="professional-card" style="border-left: 3px solid var(--accent-gold);">
-                    <!-- 收款人信息 -->
+                    <!-- Recipient Info -->
                     <div class="mb-3">
                         <h3 style="color: var(--text-primary); margin-bottom: 0.5rem; font-size: 1.1rem;">
-                            <i class="bi bi-person-circle"></i> {{ recipient.recipient_name }}
+                            {{ recipient.recipient_name }}
                         </h3>
-                        <div style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6;">
-                            <div>
-                                <i class="bi bi-bank"></i> 收款银行 / Recipient Bank: 
-                                <strong style="color: var(--accent-gold);">{{ recipient.recipient_bank }}</strong>
-                            </div>
-                            <div>
-                                <i class="bi bi-arrow-right"></i> 转出自 / From: 
-                                <strong>{{ recipient.source_bank }}</strong>
-                            </div>
-                        </div>
+                        <p style="color: var(--text-secondary); margin: 0; font-size: 0.9rem;">
+                            {{ recipient.bank_name }}
+                        </p>
                     </div>
 
                     <div class="divider-professional mb-3"></div>
 
-                    <!-- 统计数据 -->
-                    <div class="row g-3 mb-3">
-                        <div class="col-7">
-                            <div style="background: rgba(231, 76, 60, 0.1); padding: 0.75rem; border-radius: 8px;">
-                                <small style="color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">
-                                    转账总额 / Total Amount
-                                </small>
-                                <div style="color: #e74c3c; font-weight: 700; font-size: 1.3rem;">
-                                    RM {{ "{:,.2f}".format(recipient.total_amount) }}
-                                </div>
-                            </div>
+                    <!-- Transfer Statistics -->
+                    <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 8px; text-align: center;">
+                        <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">
+                            {{ t('amount') }}
                         </div>
-                        <div class="col-5">
-                            <div style="background: var(--bg-secondary); padding: 0.75rem; border-radius: 8px; text-align: center;">
-                                <small style="color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">
-                                    笔数 / Count
-                                </small>
-                                <div style="color: var(--accent-gold); font-weight: 700; font-size: 1.3rem;">
-                                    {{ recipient.transaction_count }}
-                                </div>
-                            </div>
+                        <div style="color: var(--accent-gold); font-weight: 600; font-size: 1.5rem;">
+                            RM {{ "{:,.2f}".format(recipient.total_amount) }}
                         </div>
-                    </div>
-
-                    <!-- 最近转账记录预览 -->
-                    <div class="mb-3">
-                        <small style="color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">
-                            <i class="bi bi-clock-history"></i> 最近转账 / Recent Transfers:
-                        </small>
-                        {% for trans in recipient.transactions[:3] %}
-                        <div style="padding: 0.5rem; background: var(--bg-secondary); border-radius: 6px; margin-bottom: 0.4rem;">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span style="color: var(--text-secondary); font-size: 0.85rem;">
-                                    <i class="bi bi-calendar3"></i> {{ trans.date }}
-                                </span>
-                                <span style="color: #e74c3c; font-weight: 600; font-size: 0.9rem;">
-                                    RM {{ "{:,.2f}".format(trans.amount) }}
-                                </span>
-                            </div>
+                        <div style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.75rem;">
+                            {{ recipient.transaction_count }} {{ t('transactions') }}
                         </div>
-                        {% endfor %}
-                        {% if recipient.transaction_count > 3 %}
-                        <div class="text-center mt-2">
-                            <small style="color: var(--text-secondary); font-size: 0.85rem;">
-                                ... 还有 {{ recipient.transaction_count - 3 }} 笔转账 / {{ recipient.transaction_count - 3 }} more
-                            </small>
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <!-- 操作按钮 -->
-                    <div class="d-grid gap-2">
-                        <a href="{{ url_for('savings_settlement', customer_name=recipient.recipient_name) }}" 
-                           class="btn-professional" 
-                           style="padding: 0.6rem 1rem; font-size: 0.9rem;">
-                            <i class="bi bi-calculator-fill"></i> 查看结算报告 / Settlement Report
-                        </a>
-                        <a href="{{ url_for('savings_search') }}?q={{ recipient.recipient_name }}" 
-                           class="btn-professional-outline"
-                           style="padding: 0.6rem 1rem; font-size: 0.9rem;">
-                            <i class="bi bi-search"></i> 搜索所有转账 / Search All Transfers
-                        </a>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
-
-        <!-- 功能说明 -->
-        <div class="professional-card mt-4" style="background: rgba(52, 152, 219, 0.05); border-left: 3px solid #3498db;">
-            <div class="d-flex align-items-start">
-                <i class="bi bi-info-circle-fill" style="color: #3498db; font-size: 1.5rem; margin-right: 1rem; margin-top: 0.25rem;"></i>
-                <div>
-                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem; font-size: 1rem;">
-                        关于"转账支出统计" / About "Transfer Payment Summary"
-                    </h4>
-                    <p style="color: var(--text-secondary); margin: 0; line-height: 1.6; font-size: 0.9rem;">
-                        <strong>中文：</strong>此功能自动识别并统计您从储蓄账户转账给其他人的所有支出，按收款人分组显示总金额和转账次数。适用于追踪业务往来、还款记录等。
-                        <br>
-                        <strong>English:</strong> This feature automatically identifies and summarizes all money transferred from your savings accounts to others, grouped by recipient with total amounts and transaction counts. Useful for tracking business payments, loan repayments, etc.
-                    </p>
-                </div>
-            </div>
-        </div>
     </div>
     {% endif %}
+
 </div>
-
-<style>
-.hover-lift {
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.hover-lift:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 24px rgba(212, 175, 55, 0.2);
-}
-
-.professional-card {
-    transition: all 0.3s ease;
-}
-</style>
 {% endblock %}
