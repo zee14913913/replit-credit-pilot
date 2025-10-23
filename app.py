@@ -1646,6 +1646,19 @@ def admin_dashboard():
         # Convert bank names to abbreviations for savings accounts
         for stmt in sa_statements:
             stmt['bank_abbr'] = get_bank_abbreviation(stmt['bank_name'])
+        
+        # Calculate monthly statistics for dashboard cards
+        total_owner_expenses = sum(stmt['owner_expenses'] for stmt in cc_statements)
+        total_owner_payments = sum(stmt['owner_payments'] for stmt in cc_statements)
+        total_gz_expenses = sum(stmt['infinite_expenses'] for stmt in cc_statements)
+        total_gz_payments = sum(stmt['infinite_payments'] for stmt in cc_statements)
+        total_gz_revenue = total_gz_expenses * 0.01  # 1% supplier fee
+        total_owner_balance = total_owner_expenses - total_owner_payments
+        total_gz_balance = total_gz_expenses - total_gz_payments
+        
+        # Count unique banks
+        cursor.execute("SELECT COUNT(DISTINCT bank_name) FROM credit_cards")
+        unique_banks = cursor.fetchone()[0]
     
     return render_template('admin_dashboard.html', 
                          customers=customers,
@@ -1653,7 +1666,13 @@ def admin_dashboard():
                          txn_count=txn_count,
                          active_cards=active_cards,
                          cc_statements=cc_statements,
-                         sa_statements=sa_statements)
+                         sa_statements=sa_statements,
+                         total_owner_expenses=total_owner_expenses,
+                         total_gz_expenses=total_gz_expenses,
+                         total_gz_revenue=total_gz_revenue,
+                         total_owner_balance=total_owner_balance,
+                         total_gz_balance=total_gz_balance,
+                         unique_banks=unique_banks)
 
 @app.route('/admin-logout')
 def admin_logout():

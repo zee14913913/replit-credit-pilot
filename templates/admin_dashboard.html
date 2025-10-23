@@ -10,7 +10,7 @@
     </div>
 
     <!-- System Summary -->
-    <div class="row g-4 mb-5">
+    <div class="row g-4 mb-4">
         <div class="col-md-3">
             <div class="stat-card">
                 <div class="stat-value">{{ customers|length }}</div>
@@ -41,6 +41,38 @@
         </div>
     </div>
 
+    <!-- Financial Statistics -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 192, 203, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FFB6C1;">
+                <div class="stat-value" style="color: #FFB6C1;">RM {{ "{:,.0f}".format(total_owner_expenses) }}</div>
+                <div class="stat-label">💳 Own's Expenses</div>
+                <div class="stat-corner" style="background: #FFB6C1;"></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FFD700;">
+                <div class="stat-value" style="color: #FFD700;">RM {{ "{:,.0f}".format(total_gz_expenses) }}</div>
+                <div class="stat-label">🏢 GZ's Expenses</div>
+                <div class="stat-corner" style="background: #FFD700;"></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(144, 238, 144, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #90EE90;">
+                <div class="stat-value" style="color: #90EE90;">RM {{ "{:,.2f}".format(total_gz_revenue) }}</div>
+                <div class="stat-label">💰 GZ's Revenue (1%)</div>
+                <div class="stat-corner" style="background: #90EE90;"></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(157, 78, 221, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #9D4EDD;">
+                <div class="stat-value" style="color: #9D4EDD;">{{ unique_banks }}</div>
+                <div class="stat-label">🏦 Partner Banks</div>
+                <div class="stat-corner" style="background: #9D4EDD;"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Quick Actions -->
     <div class="row g-4 mb-5">
         <div class="col-md-12">
@@ -59,9 +91,14 @@
         <div class="col-12">
             <div class="statement-card" style="border: 2px solid #FF007F;">
                 <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #FF007F;">
-                    <h3 class="card-title-custom" style="color: #FF007F; font-weight: 700; margin: 0; padding: 1.5rem;">
-                        <i class="bi bi-credit-card"></i> {{ t('credit_card_statements') }}
-                    </h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
+                        <h3 class="card-title-custom" style="color: #FF007F; font-weight: 700; margin: 0;">
+                            <i class="bi bi-credit-card"></i> {{ t('credit_card_statements') }}
+                        </h3>
+                        <button id="exportCCTable" class="btn btn-sm" style="background: #FF007F; color: white; border: none;">
+                            <i class="bi bi-download"></i> Export Excel
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body-custom" style="padding: 0;">
                     <div class="table-responsive">
@@ -278,5 +315,212 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(255, 0, 127, 0.4);
 }
+
+.datatable-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.datatable-pagination {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.datatable-pagination button {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.datatable-pagination button:hover:not(:disabled) {
+    background: rgba(255, 0, 127, 0.2);
+    border-color: #FF007F;
+}
+
+.datatable-pagination button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.datatable-pagination button.active {
+    background: #FF007F;
+    border-color: #FF007F;
+}
 </style>
+
+<script>
+// Simple DataTable Implementation with Pagination and Export
+class SimpleDataTable {
+    constructor(tableId, options = {}) {
+        this.table = document.getElementById(tableId);
+        this.currentPage = 1;
+        this.rowsPerPage = options.rowsPerPage || 25;
+        this.rows = [];
+        this.init();
+    }
+
+    init() {
+        if (!this.table) return;
+        
+        // Get all rows except header
+        const tbody = this.table.querySelector('tbody');
+        if (!tbody) return;
+        
+        this.rows = Array.from(tbody.querySelectorAll('tr'));
+        
+        // Add controls
+        this.addControls();
+        
+        // Display first page
+        this.displayPage(1);
+    }
+
+    addControls() {
+        const wrapper = this.table.closest('.table-responsive');
+        if (!wrapper) return;
+
+        const controls = document.createElement('div');
+        controls.className = 'datatable-controls';
+        controls.innerHTML = `
+            <div>
+                <span style="color: #999;">Show: </span>
+                <select id="${this.table.id}_pageSize" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.25rem 0.5rem; border-radius: 4px;">
+                    <option value="10">10</option>
+                    <option value="25" selected>25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="-1">All</option>
+                </select>
+                <span style="color: #999; margin-left: 1rem;">entries</span>
+            </div>
+            <div id="${this.table.id}_pagination" class="datatable-pagination"></div>
+        `;
+        
+        wrapper.insertBefore(controls, this.table);
+
+        // Page size change handler
+        document.getElementById(`${this.table.id}_pageSize`).addEventListener('change', (e) => {
+            this.rowsPerPage = parseInt(e.target.value);
+            this.currentPage = 1;
+            this.displayPage(1);
+        });
+    }
+
+    displayPage(page) {
+        const totalRows = this.rows.length;
+        const totalPages = this.rowsPerPage === -1 ? 1 : Math.ceil(totalRows / this.rowsPerPage);
+        
+        this.currentPage = Math.max(1, Math.min(page, totalPages));
+
+        // Hide all rows first
+        this.rows.forEach(row => row.style.display = 'none');
+
+        // Show rows for current page
+        if (this.rowsPerPage === -1) {
+            // Show all
+            this.rows.forEach(row => row.style.display = '');
+        } else {
+            const start = (this.currentPage - 1) * this.rowsPerPage;
+            const end = start + this.rowsPerPage;
+            
+            for (let i = start; i < end && i < totalRows; i++) {
+                this.rows[i].style.display = '';
+            }
+        }
+
+        // Update pagination buttons
+        this.updatePagination(totalPages);
+    }
+
+    updatePagination(totalPages) {
+        const paginationDiv = document.getElementById(`${this.table.id}_pagination`);
+        if (!paginationDiv) return;
+
+        let html = '';
+        
+        // Previous button
+        html += `<button ${this.currentPage === 1 ? 'disabled' : ''} onclick="window.${this.table.id}_dt.displayPage(${this.currentPage - 1})">‹ Prev</button>`;
+        
+        // Page numbers
+        const maxButtons = 5;
+        let startPage = Math.max(1, this.currentPage - Math.floor(maxButtons / 2));
+        let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+        
+        if (endPage - startPage < maxButtons - 1) {
+            startPage = Math.max(1, endPage - maxButtons + 1);
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            html += `<button class="${i === this.currentPage ? 'active' : ''}" onclick="window.${this.table.id}_dt.displayPage(${i})">${i}</button>`;
+        }
+        
+        // Next button
+        html += `<button ${this.currentPage === totalPages ? 'disabled' : ''} onclick="window.${this.table.id}_dt.displayPage(${this.currentPage + 1})">Next ›</button>`;
+        
+        paginationDiv.innerHTML = html;
+    }
+}
+
+// Export to Excel (CSV format)
+function exportTableToExcel(tableId, filename = 'export.csv') {
+    const table = document.getElementById(tableId);
+    if (!table) return;
+
+    const rows = table.querySelectorAll('tr');
+    const csv = [];
+
+    rows.forEach(row => {
+        const cols = row.querySelectorAll('td, th');
+        const rowData = [];
+        
+        cols.forEach(col => {
+            // Clean text and handle special characters
+            let text = col.innerText || col.textContent;
+            text = text.replace(/"/g, '""'); // Escape quotes
+            
+            // Skip "View Details" buttons
+            if (!text.includes('View Details')) {
+                rowData.push(`"${text}"`);
+            }
+        });
+        
+        if (rowData.length > 0) {
+            csv.push(rowData.join(','));
+        }
+    });
+
+    // Create download link
+    const csvContent = csv.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize datatables
+    window.ccStatementsTable_dt = new SimpleDataTable('ccStatementsTable', { rowsPerPage: 25 });
+    
+    // Export button handlers
+    document.getElementById('exportCCTable')?.addEventListener('click', function() {
+        exportTableToExcel('ccStatementsTable', 'Credit_Card_Statements.csv');
+    });
+});
+</script>
 {% endblock %}
