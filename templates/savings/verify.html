@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('verify_statement') }} - {{ statement.statement_date }}{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- Header -->
+    <div class="section-header">
+        <h1 class="section-title">{{ t('verify_statement') }}</h1>
+        <p class="section-subtitle">{{ t('verify_subtitle') }}</p>
+    </div>
+
+    <!-- Statement Info Card -->
+    <div class="professional-card mb-4">
+        <div class="row g-3 align-items-center">
+            <div class="col-md-3">
+                <small style="color: var(--text-secondary);">{{ t('customer_name') }}</small>
+                <div style="color: var(--text-primary); font-weight: 600;">{{ customer_name }}</div>
+            </div>
+            <div class="col-md-2">
+                <small style="color: var(--text-secondary);">{{ t('bank') }}</small>
+                <div style="color: var(--text-primary); font-weight: 600;">{{ statement.bank_name }}</div>
+            </div>
+            <div class="col-md-2">
+                <small style="color: var(--text-secondary);">{{ t('statement_date') }}</small>
+                <div style="color: var(--text-primary); font-weight: 600;">{{ statement.statement_date }}</div>
+            </div>
+            <div class="col-md-2">
+                <small style="color: var(--text-secondary);">{{ t('total_transactions') }}</small>
+                <div style="color: var(--text-primary); font-weight: 600;">{{ transactions|length }}</div>
+            </div>
+            <div class="col-md-3">
+                <small style="color: var(--text-secondary);">{{ t('verification_status') }}</small>
+                <div>
+                    {% if statement.verification_status == 'verified' %}
+                    <span class="badge-professional badge-success-pro">✓ {{ t('verified') }}</span>
+                    {% elif statement.verification_status == 'discrepancy' %}
+                    <span class="badge-professional badge-danger-pro">⚠️ {{ t('discrepancy') }}</span>
+                    {% else %}
+                    <span class="badge-professional badge-warning-pro">{{ t('pending') }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if statement.verified_by %}
+        <div class="divider-professional my-3"></div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <small style="color: var(--text-secondary);">{{ t('verified_by') }}</small>
+                <div style="color: var(--text-primary);">{{ statement.verified_by }}</div>
+            </div>
+            <div class="col-md-6">
+                <small style="color: var(--text-secondary);">{{ t('verified_at') }}</small>
+                <div style="color: var(--text-primary);">{{ statement.verified_at }}</div>
+            </div>
+            {% if statement.discrepancy_notes %}
+            <div class="col-12">
+                <small style="color: var(--text-secondary);">{{ t('discrepancy_notes') }}</small>
+                <div style="color: var(--accent-gold);">{{ statement.discrepancy_notes }}</div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Split View: PDF vs System Records -->
+    <div class="row g-4">
+        <!-- Left: Original PDF -->
+        <div class="col-lg-6">
+            <div class="professional-card" style="height: 800px; display: flex; flex-direction: column;">
+                <h3 style="color: var(--text-primary); margin-bottom: 1rem;">
+                    {{ t('original_pdf_statement') }}
+                </h3>
+                <div style="flex: 1; background: var(--bg-secondary); border-radius: 8px; overflow: hidden;">
+                    {% if statement.file_path %}
+                    <iframe 
+                        src="{{ url_for('view_statement_file', statement_id=statement.id) }}" 
+                        style="width: 100%; height: 100%; border: none;"
+                        title="Original PDF Statement">
+                    </iframe>
+                    {% else %}
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-secondary);">
+                        {{ t('no_pdf_available') }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: System Records -->
+        <div class="col-lg-6">
+            <div class="professional-card" style="height: 800px; display: flex; flex-direction: column;">
+                <h3 style="color: var(--text-primary); margin-bottom: 1rem;">
+                    {{ t('system_records') }}
+                    <span class="badge-professional badge-info-pro ms-2">{{ transactions|length }} {{ t('transactions') }}</span>
+                </h3>
+
+                <!-- Summary Statistics -->
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <div style="background: rgba(255, 0, 127, 0.1); padding: 0.75rem; border-radius: 8px; border-left: 3px solid #FF007F;">
+                            <small style="color: var(--text-secondary); display: block;">{{ t('total_debit') }}</small>
+                            <strong style="color: #FF007F; font-size: 1.1rem;">RM {{ "{:,.2f}".format(total_debit) }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div style="background: rgba(212, 175, 55, 0.1); padding: 0.75rem; border-radius: 8px; border-left: 3px solid var(--accent-gold);">
+                            <small style="color: var(--text-secondary); display: block;">{{ t('total_credit') }}</small>
+                            <strong style="color: var(--accent-gold); font-size: 1.1rem;">RM {{ "{:,.2f}".format(total_credit) }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction List -->
+                <div style="flex: 1; overflow-y: auto; background: var(--bg-secondary); border-radius: 8px; padding: 1rem;">
+                    {% if transactions %}
+                    <div class="table-responsive">
+                        <table class="table-professional" style="font-size: 0.9rem;">
+                            <thead style="position: sticky; top: 0; background: var(--bg-primary); z-index: 10;">
+                                <tr>
+                                    <th style="width: 40px;">#</th>
+                                    <th>{{ t('date') }}</th>
+                                    <th>{{ t('description') }}</th>
+                                    <th style="text-align: right;">{{ t('amount') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for trans in transactions %}
+                                <tr {% if loop.index % 2 == 0 %}style="background: rgba(255,255,255,0.02);"{% endif %}>
+                                    <td style="color: var(--text-secondary); font-size: 0.85rem;">{{ loop.index }}</td>
+                                    <td style="color: var(--text-primary); white-space: nowrap;">{{ trans.transaction_date }}</td>
+                                    <td style="color: var(--text-primary);">
+                                        <div style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">
+                                            {{ trans.description }}
+                                        </div>
+                                        {% if trans.customer_name_tag %}
+                                        <small class="badge-professional badge-success-pro" style="font-size: 0.7rem; margin-top: 0.25rem;">
+                                            {{ trans.customer_name_tag }}
+                                        </small>
+                                        {% endif %}
+                                    </td>
+                                    <td style="text-align: right; white-space: nowrap;">
+                                        {% if trans.transaction_type == 'debit' %}
+                                        <span style="color: #FF007F; font-weight: 600;">-RM {{ "{:,.2f}".format(trans.amount) }}</span>
+                                        {% else %}
+                                        <span style="color: var(--accent-gold); font-weight: 600;">+RM {{ "{:,.2f}".format(trans.amount) }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot style="position: sticky; bottom: 0; background: var(--bg-primary);">
+                                <tr style="border-top: 2px solid var(--accent-gold);">
+                                    <td colspan="3" style="text-align: right; font-weight: 600; color: var(--text-primary);">
+                                        {{ t('total') }}:
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <div style="color: #FF007F; font-weight: 700;">-RM {{ "{:,.2f}".format(total_debit) }}</div>
+                                        <div style="color: var(--accent-gold); font-weight: 700;">+RM {{ "{:,.2f}".format(total_credit) }}</div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                        {{ t('no_transactions_found') }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verification Actions -->
+    <div class="professional-card mt-4">
+        <h3 style="color: var(--text-primary); margin-bottom: 1rem;">{{ t('verification_actions') }}</h3>
+        
+        <div class="alert-professional alert-info-pro mb-3">
+            <strong>{{ t('verification_instructions') }}:</strong>
+            {{ t('verification_instructions_text') }}
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <form method="POST" action="{{ url_for('mark_statement_verified', statement_id=statement.id) }}">
+                    <button type="submit" class="btn-professional w-100" style="background: linear-gradient(135deg, var(--accent-gold) 0%, #d4af37 100%);">
+                        ✓ {{ t('mark_as_verified') }}
+                    </button>
+                    <small style="color: var(--text-secondary); display: block; margin-top: 0.5rem; text-align: center;">
+                        {{ t('confirm_100_percent_accuracy') }}
+                    </small>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <button type="button" class="btn-professional-outline w-100" style="border-color: #FF007F; color: #FF007F;" onclick="document.getElementById('discrepancyModal').style.display='flex'">
+                    ⚠️ {{ t('flag_discrepancy') }}
+                </button>
+                <small style="color: var(--text-secondary); display: block; margin-top: 0.5rem; text-align: center;">
+                    {{ t('report_differences') }}
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="mt-4">
+        <a href="{{ url_for('savings_account_detail', account_id=statement.savings_account_id) }}" class="btn-professional-outline">
+            {{ t('back_to_account') }}
+        </a>
+    </div>
+</div>
+
+<!-- Discrepancy Modal -->
+<div id="discrepancyModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
+    <div class="professional-card" style="max-width: 600px; width: 90%;">
+        <h3 style="color: var(--text-primary); margin-bottom: 1rem;">{{ t('flag_discrepancy') }}</h3>
+        <form method="POST" action="{{ url_for('flag_statement_discrepancy', statement_id=statement.id) }}">
+            <div class="mb-3">
+                <label class="form-label">{{ t('describe_discrepancies') }}</label>
+                <textarea name="discrepancy_notes" class="form-control" rows="4" required 
+                          placeholder="{{ t('discrepancy_placeholder') }}"></textarea>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn-professional" style="background: #FF007F;">
+                    {{ t('submit') }}
+                </button>
+                <button type="button" class="btn-professional-outline" onclick="document.getElementById('discrepancyModal').style.display='none'">
+                    {{ t('cancel') }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

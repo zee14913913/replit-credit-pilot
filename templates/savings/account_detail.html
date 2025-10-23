@@ -69,6 +69,8 @@
                         <th>{{ t('total_debit') }}</th>
                         <th>{{ t('total_credit') }}</th>
                         <th>{{ t('file_type') }}</th>
+                        <th>{{ t('verification_status') }}</th>
+                        <th>{{ t('action') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -97,6 +99,22 @@
                             <span class="badge-professional badge-secondary-pro">
                                 {{ statement.file_type.upper() }}
                             </span>
+                        </td>
+                        <td>
+                            {% if statement.verification_status == 'verified' %}
+                            <span class="badge-professional badge-success-pro">✓ {{ t('verified') }}</span>
+                            {% elif statement.verification_status == 'discrepancy' %}
+                            <span class="badge-professional badge-danger-pro">⚠️ {{ t('discrepancy') }}</span>
+                            {% else %}
+                            <span class="badge-professional badge-warning-pro">{{ t('pending') }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('savings_verify_statement', statement_id=statement.id) }}" 
+                               class="btn btn-sm"
+                               style="background: linear-gradient(135deg, var(--accent-gold) 0%, #d4af37 100%); color: #000; padding: 0.25rem 0.75rem; border-radius: 6px; text-decoration: none; display: inline-block;">
+                                {{ t('view_verification') }}
+                            </a>
                         </td>
                     </tr>
                     {% endfor %}
