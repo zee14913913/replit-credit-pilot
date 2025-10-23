@@ -267,7 +267,13 @@ class OwnerInfiniteClassifier:
             'payer_name': None
         }
         
-        if transaction_type == 'credit':
+        # 判断是付款还是消费（支持多种transaction_type格式）
+        is_payment = (
+            transaction_type and 
+            transaction_type.upper() in ['CREDIT', 'PAYMENT', 'CR']
+        ) or amount < 0
+        
+        if is_payment:
             # 付款/还款交易
             payment_class = self.classify_payment(description, customer_id, customer_name)
             result['category'] = f"{payment_class['payment_type']}_payment"

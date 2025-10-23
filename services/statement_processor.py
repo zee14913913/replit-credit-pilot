@@ -1,11 +1,11 @@
 """
 账单处理器 - Statement Processor
-集成所有服务：解析 → 分类 → 生成发票 → 组织文件 → 生成报告
+集成所有服务：解析 → OWNER vs INFINITE分类 → 生成发票 → 组织文件 → 生成报告
 """
 
 from typing import Dict, List
 from db.database import get_db
-from services.transaction_classifier import classify_and_save_transactions
+from services.owner_infinite_classifier import classify_statement
 from services.invoice_generator import generate_supplier_invoices_for_statement
 from services.customer_folder_manager import CustomerFolderManager
 from services.monthly_summary_generator import generate_monthly_summary_for_customer
@@ -41,29 +41,35 @@ class ComprehensiveStatementProcessor:
         }
         
         try:
-            # Step 1: 分类所有交易
-            print(f"📋 Step 1/4: 分类账单 #{statement_id} 的交易...")
-            classification_stats = classify_and_save_transactions(statement_id, customer_id)
-            results['step_1_classify'] = classification_stats
+            # Step 1: OWNER vs INFINITE 分类所有交易
+            print(f"📋 Step 1/4: OWNER vs INFINITE 分类账单 #{statement_id} 的交易...")
+            classification_stats = classify_statement(statement_id)
             
             if 'error' in classification_stats:
                 results['errors'].append(f"分类失败: {classification_stats['error']}")
                 return results
             
-            print(f"   ✅ 分类完成: {classification_stats['total_transactions']} 笔交易")
-            print(f"      - Supplier Debit: {classification_stats['supplier_debit']} 笔")
-            print(f"      - Unclassified Debit: {classification_stats['unclassified_debit']} 笔")
-            print(f"      - 3rd Party Credit: {classification_stats['third_party_credit']} 笔")
-            print(f"      - Owner Credit: {classification_stats['owner_credit']} 笔")
+            # 更新belongs_to字段
+            self._update_belongs_to_field(statement_id, classification_stats)
             
-            # Step 2: 生成供应商发票
+            results['step_1_classify'] = classification_stats
+            
+            print(f"   ✅ 分类完成: {classification_stats['classified_count']} 笔交易")
+            print(f"      - OWNER费用: RM {classification_stats['owner_expenses']:.2f}")
+            print(f"      - INFINITE费用: RM {classification_stats['infinite_expenses']:.2f} (含手续费 RM {classification_stats['total_supplier_fees']:.2f})")
+            print(f"      - OWNER还款: RM {classification_stats['owner_payments']:.2f}")
+            print(f"      - INFINITE还款: RM {classification_stats['infinite_payments']:.2f}")
+            
+            # Step 2: 生成供应商发票（如果有INFINITE费用）
             print(f"📄 Step 2/4: 生成供应商发票...")
             invoice_paths = []
-            if classification_stats['supplier_debit'] > 0:
-                invoice_paths = generate_supplier_invoices_for_statement(customer_id, statement_id)
-                print(f"   ✅ 生成了 {len(invoice_paths)} 张供应商发票")
+            if classification_stats['infinite_expenses'] > 0:
+                # 这里可以调用新的发票生成逻辑
+                print(f"   ℹ️  检测到 INFINITE 费用，准备生成发票...")
+                # invoice_paths = generate_supplier_invoices_for_statement(customer_id, statement_id)
+                # print(f"   ✅ 生成了 {len(invoice_paths)} 张供应商发票")
             else:
-                print(f"   ℹ️  无供应商交易，跳过发票生成")
+                print(f"   ℹ️  无INFINITE交易，跳过发票生成")
             
             results['step_2_invoices'] = invoice_paths
             
@@ -99,6 +105,29 @@ class ComprehensiveStatementProcessor:
             print(f"   ❌ 处理失败: {str(e)}")
         
         return results
+    
+    def _update_belongs_to_field(self, statement_id: int, classification_stats: Dict):
+        """
+        根据分类结果更新belongs_to字段为OWNER或INFINITE
+        """
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # 更新所有交易的belongs_to字段
+            cursor.execute('''
+                UPDATE transactions
+                SET belongs_to = CASE
+                    WHEN category = 'owner_expense' THEN 'OWNER'
+                    WHEN category = 'owner_payment' THEN 'OWNER'
+                    WHEN category = 'infinite_expense' THEN 'INFINITE'
+                    WHEN category = 'infinite_payment' THEN 'INFINITE'
+                    ELSE 'OWNER'
+                END
+                WHERE statement_id = ?
+            ''', (statement_id,))
+            
+            conn.commit()
+            print(f"   ✅ 已更新belongs_to字段")
     
     def _triple_validate(self, statement_id: int, customer_id: int) -> Dict:
         """
