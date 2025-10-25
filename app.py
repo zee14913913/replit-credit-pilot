@@ -3792,7 +3792,8 @@ def credit_card_ledger():
     user_role = session.get('user_role')
     
     if not user_id or not user_role:
-        flash('登录信息已过期，请重新登录', 'warning')
+        lang = session.get('language', 'en')
+        flash(translate('session_expired', lang), 'warning')
         return redirect(url_for('admin_login' if user_role == 'admin' else 'customer_login'))
     
     # SECURITY FIX: Use single trusted user_role source
