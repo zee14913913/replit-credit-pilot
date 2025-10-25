@@ -6,10 +6,9 @@
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import inch, mm
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
-from reportlab.pdfgen import canvas
 from datetime import datetime
 import os
 from typing import List, Dict
@@ -17,7 +16,7 @@ from db.database import get_db
 
 
 class SupplierInvoiceGenerator:
-    """供应商发票生成器 - 专业商务风格"""
+    """供应商发票生成器 - 真实商业风格"""
     
     def __init__(self, output_dir: str = "static/uploads"):
         """
@@ -33,7 +32,7 @@ class SupplierInvoiceGenerator:
                         customer_name: str, customer_code: str, statement_date: str,
                         invoice_number: str) -> str:
         """
-        生成供应商发票
+        生成供应商发票 - 参考真实商业发票样式
         
         Args:
             supplier_name: 供应商名称
@@ -46,8 +45,8 @@ class SupplierInvoiceGenerator:
         Returns:
             生成的PDF文件路径（相对路径）
         """
-        # 生成文件路径（按客户分类存储）
-        year_month = statement_date[:7]  # YYYY-MM
+        # 生成文件路径
+        year_month = statement_date[:7]
         customer_dir = os.path.join(self.output_dir, f'customers/{customer_code}/invoices/supplier/{year_month}')
         os.makedirs(customer_dir, exist_ok=True)
         
@@ -68,80 +67,71 @@ class SupplierInvoiceGenerator:
         
         styles = getSampleStyleSheet()
         
-        # === 专业商务样式定义 ===
+        # === 简洁商业样式定义 ===
         
-        # 公司名称样式
+        # 公司名称
         company_style = ParagraphStyle(
-            'CompanyName',
+            'Company',
             parent=styles['Normal'],
-            fontSize=14,
-            textColor=colors.HexColor('#000000'),
-            spaceAfter=2,
-            alignment=TA_LEFT,
+            fontSize=16,
+            textColor=colors.black,
             fontName='Helvetica-Bold',
-            leading=16
+            alignment=TA_LEFT,
+            spaceAfter=4
         )
         
-        # 副标题样式
+        # 副标题
         subtitle_style = ParagraphStyle(
             'Subtitle',
             parent=styles['Normal'],
             fontSize=9,
-            textColor=colors.HexColor('#666666'),
-            spaceAfter=12,
+            textColor=colors.black,
             alignment=TA_LEFT,
-            fontName='Helvetica'
+            spaceAfter=2
         )
         
-        # INVOICE大标题样式（右上角）
+        # INVOICE标题
         invoice_title_style = ParagraphStyle(
             'InvoiceTitle',
-            parent=styles['Heading1'],
-            fontSize=32,
-            textColor=colors.HexColor('#000000'),
-            spaceAfter=10,
-            alignment=TA_RIGHT,
+            parent=styles['Normal'],
+            fontSize=28,
+            textColor=colors.black,
             fontName='Helvetica-Bold',
-            leading=36
+            alignment=TA_RIGHT,
+            spaceAfter=10
         )
         
-        # 标签样式
+        # 小标签
         label_style = ParagraphStyle(
             'Label',
             parent=styles['Normal'],
             fontSize=9,
-            textColor=colors.HexColor('#666666'),
-            fontName='Helvetica-Bold',
-            leading=12
+            textColor=colors.black,
+            fontName='Helvetica-Bold'
         )
         
-        # 信息值样式
-        value_style = ParagraphStyle(
-            'Value',
+        # 正文
+        normal_style = ParagraphStyle(
+            'Normal',
             parent=styles['Normal'],
             fontSize=9,
-            textColor=colors.HexColor('#000000'),
-            fontName='Helvetica',
-            leading=12
+            textColor=colors.black
         )
         
-        # 表格文字样式
-        table_text_style = ParagraphStyle(
-            'TableText',
-            parent=styles['Normal'],
-            fontSize=9,
-            textColor=colors.HexColor('#000000'),
-            leading=11
-        )
+        # === 页面顶部 ===
         
-        # === 页面顶部：公司信息 + INVOICE标题 ===
+        # 公司信息 + INVOICE标题
         header_data = [
             [
-                Paragraph("INFINITE GZ", company_style),
+                Paragraph("INFINITE GZ SDN BHD", company_style),
                 Paragraph("INVOICE", invoice_title_style)
             ],
             [
                 Paragraph("Financial Management Services", subtitle_style),
+                ''
+            ],
+            [
+                Paragraph("Kuala Lumpur, Malaysia", subtitle_style),
                 ''
             ]
         ]
@@ -154,41 +144,37 @@ class SupplierInvoiceGenerator:
         story.append(Spacer(1, 15))
         
         # 顶部分隔线
-        line_table = Table([['']], colWidths=[6.5*inch])
-        line_table.setStyle(TableStyle([
-            ('LINEABOVE', (0, 0), (-1, 0), 1.5, colors.HexColor('#000000')),
+        line = Table([['']], colWidths=[6.5*inch])
+        line.setStyle(TableStyle([
+            ('LINEABOVE', (0, 0), (-1, 0), 1, colors.black),
         ]))
-        story.append(line_table)
+        story.append(line)
         story.append(Spacer(1, 20))
         
-        # === 发票信息区域 ===
+        # === 发票信息 ===
+        
         invoice_date = datetime.now().strftime("%d %B %Y")
         
-        info_section_data = [
+        info_data = [
             [
                 Paragraph("<b>BILLED TO:</b>", label_style),
                 '',
                 Paragraph("<b>Invoice No:</b>", label_style),
-                Paragraph(invoice_number, value_style)
+                Paragraph(invoice_number, normal_style)
             ],
             [
-                Paragraph(customer_name, value_style),
+                Paragraph(customer_name, normal_style),
                 '',
                 Paragraph("<b>Invoice Date:</b>", label_style),
-                Paragraph(invoice_date, value_style)
+                Paragraph(invoice_date, normal_style)
             ],
             [
-                Paragraph(f"Customer Code: {customer_code}", value_style),
+                Paragraph(f"Customer Code: {customer_code}", normal_style),
                 '',
                 Paragraph("<b>Statement Period:</b>", label_style),
-                Paragraph(statement_date, value_style)
+                Paragraph(statement_date, normal_style)
             ],
-            [
-                '',
-                '',
-                '',
-                ''
-            ],
+            ['', '', '', ''],
             [
                 Paragraph("<b>SUPPLIER:</b>", label_style),
                 '',
@@ -196,14 +182,14 @@ class SupplierInvoiceGenerator:
                 ''
             ],
             [
-                Paragraph(supplier_name, value_style),
+                Paragraph(supplier_name, normal_style),
                 '',
                 '',
                 ''
             ]
         ]
         
-        info_table = Table(info_section_data, colWidths=[2*inch, 1.5*inch, 1.5*inch, 1.5*inch])
+        info_table = Table(info_data, colWidths=[2*inch, 1.5*inch, 1.5*inch, 1.5*inch])
         info_table.setStyle(TableStyle([
             ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ]))
@@ -213,9 +199,9 @@ class SupplierInvoiceGenerator:
         
         # === 交易明细表格 ===
         
-        # 表格表头
+        # 表头
         table_data = [
-            ['NO.', 'DATE', 'DESCRIPTION', 'QTY', 'UNIT PRICE', 'FEE (1%)', 'SUBTOTAL']
+            ['No.', 'Date', 'Description', 'Qty', 'Unit Price', 'Fee (1%)', 'Subtotal']
         ]
         
         total_amount = 0
@@ -224,9 +210,8 @@ class SupplierInvoiceGenerator:
         for idx, txn in enumerate(transactions, 1):
             date = txn.get('transaction_date', '')
             desc = txn.get('transaction_details', '')
-            # 截断过长的描述
-            if len(desc) > 50:
-                desc = desc[:47] + '...'
+            if len(desc) > 45:
+                desc = desc[:42] + '...'
             amount = txn.get('amount', 0)
             fee = txn.get('supplier_fee', 0)
             subtotal = amount + fee
@@ -244,74 +229,68 @@ class SupplierInvoiceGenerator:
                 f"RM {subtotal:,.2f}"
             ])
         
-        # 总计行
-        grand_total = total_amount + total_fee
-        
-        # 添加空白行
+        # 空白分隔行
         table_data.append(['', '', '', '', '', '', ''])
         
-        # 小计和总计
+        # 总计
+        grand_total = total_amount + total_fee
         table_data.append(['', '', '', '', '', 'Subtotal:', f"RM {total_amount:,.2f}"])
         table_data.append(['', '', '', '', '', 'Processing Fee (1%):', f"RM {total_fee:,.2f}"])
-        table_data.append(['', '', '', '', '', 'TOTAL AMOUNT DUE:', f"RM {grand_total:,.2f}"])
+        table_data.append(['', '', '', '', '', 'Total:', f"RM {grand_total:,.2f}"])
         
         # 创建表格
         txn_table = Table(
-            table_data, 
-            colWidths=[0.4*inch, 0.8*inch, 2.6*inch, 0.4*inch, 1*inch, 1*inch, 1*inch]
+            table_data,
+            colWidths=[0.4*inch, 0.8*inch, 2.5*inch, 0.4*inch, 1*inch, 1.1*inch, 1.1*inch]
         )
         
         txn_table.setStyle(TableStyle([
-            # 表头样式
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#000000')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            # 表头
+            ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
             ('FONTSIZE', (0, 0), (-1, 0), 9),
             ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
             ('TOPPADDING', (0, 0), (-1, 0), 8),
+            ('GRID', (0, 0), (-1, 0), 1, colors.black),
             
-            # 数据行样式
+            # 数据行
             ('FONTNAME', (0, 1), (-1, -5), 'Helvetica'),
             ('FONTSIZE', (0, 1), (-1, -5), 9),
-            ('ALIGN', (0, 1), (0, -5), 'CENTER'),  # NO.居中
-            ('ALIGN', (1, 1), (1, -5), 'CENTER'),  # DATE居中
-            ('ALIGN', (2, 1), (2, -5), 'LEFT'),    # DESCRIPTION左对齐
-            ('ALIGN', (3, 1), (3, -5), 'CENTER'),  # QTY居中
-            ('ALIGN', (4, 1), (-1, -5), 'RIGHT'),  # 价格右对齐
+            ('ALIGN', (0, 1), (0, -5), 'CENTER'),
+            ('ALIGN', (1, 1), (1, -5), 'CENTER'),
+            ('ALIGN', (2, 1), (2, -5), 'LEFT'),
+            ('ALIGN', (3, 1), (3, -5), 'CENTER'),
+            ('ALIGN', (4, 1), (-1, -5), 'RIGHT'),
             ('BOTTOMPADDING', (0, 1), (-1, -5), 6),
             ('TOPPADDING', (0, 1), (-1, -5), 6),
-            ('GRID', (0, 0), (-1, -5), 0.5, colors.HexColor('#CCCCCC')),
+            ('GRID', (0, 1), (-1, -5), 0.5, colors.black),
             
-            # 空白分隔行
-            ('LINEABOVE', (0, -4), (-1, -4), 1, colors.HexColor('#000000')),
-            
-            # 总计区域样式
-            ('FONTNAME', (5, -3), (-1, -3), 'Helvetica'),
-            ('FONTNAME', (5, -2), (-1, -2), 'Helvetica'),
-            ('FONTNAME', (5, -1), (-1, -1), 'Helvetica-Bold'),
+            # 总计区域
+            ('FONTNAME', (5, -3), (-1, -1), 'Helvetica-Bold'),
             ('FONTSIZE', (5, -3), (-1, -1), 9),
             ('ALIGN', (5, -3), (-1, -1), 'RIGHT'),
             ('BOTTOMPADDING', (0, -3), (-1, -1), 5),
             ('TOPPADDING', (0, -3), (-1, -1), 5),
+            ('LINEABOVE', (5, -3), (-1, -3), 1, colors.black),
+            ('LINEABOVE', (5, -1), (-1, -1), 1.5, colors.black),
             
-            # 总计行强调
-            ('FONTSIZE', (5, -1), (-1, -1), 10),
-            ('TEXTCOLOR', (5, -1), (-1, -1), colors.HexColor('#FF007F')),
-            ('LINEABOVE', (5, -1), (-1, -1), 1.5, colors.HexColor('#FF007F')),
+            # 外边框
+            ('BOX', (0, 0), (-1, -5), 1, colors.black),
         ]))
         
         story.append(txn_table)
         story.append(Spacer(1, 30))
         
-        # === 付款说明 ===
-        payment_terms_style = ParagraphStyle(
-            'PaymentTerms',
+        # === 付款条款 ===
+        
+        terms_style = ParagraphStyle(
+            'Terms',
             parent=styles['Normal'],
             fontSize=8,
-            textColor=colors.HexColor('#666666'),
-            leading=11,
-            alignment=TA_LEFT
+            textColor=colors.black,
+            leading=11
         )
         
         payment_terms = f"""
@@ -321,15 +300,16 @@ class SupplierInvoiceGenerator:
         • Please reference invoice number <b>{invoice_number}</b> when making payment<br/>
         • For inquiries, please contact our billing department
         """
-        story.append(Paragraph(payment_terms, payment_terms_style))
-        story.append(Spacer(1, 30))
+        story.append(Paragraph(payment_terms, terms_style))
+        story.append(Spacer(1, 20))
         
         # === 页脚 ===
+        
         footer_style = ParagraphStyle(
             'Footer',
             parent=styles['Normal'],
             fontSize=7,
-            textColor=colors.HexColor('#999999'),
+            textColor=colors.grey,
             alignment=TA_CENTER
         )
         
@@ -352,7 +332,7 @@ class SupplierInvoiceGenerator:
             statement_id: 账单ID
             
         Returns:
-            生成的发票信息列表 [{supplier_name, invoice_number, pdf_path, total_amount, supplier_fee}]
+            生成的发票信息列表
         """
         with get_db() as conn:
             cursor = conn.cursor()
@@ -367,7 +347,7 @@ class SupplierInvoiceGenerator:
             cursor.execute('SELECT statement_date FROM statements WHERE id = ?', (statement_id,))
             statement_date = cursor.fetchone()['statement_date']
             
-            # 获取所有供应商消费（INFINITE expenses）
+            # 获取所有供应商消费
             cursor.execute('''
                 SELECT t.supplier_name, t.transaction_date, t.description, 
                        t.amount, t.supplier_fee
@@ -443,13 +423,6 @@ class SupplierInvoiceGenerator:
 def generate_supplier_invoices_for_statement(customer_id: int, statement_id: int) -> List[Dict]:
     """
     为账单生成所有供应商发票（便捷函数）
-    
-    Args:
-        customer_id: 客户ID
-        statement_id: 账单ID
-        
-    Returns:
-        生成的发票信息列表
     """
     generator = SupplierInvoiceGenerator()
     return generator.generate_all_supplier_invoices(customer_id, statement_id)
