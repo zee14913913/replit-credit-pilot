@@ -217,7 +217,8 @@ def index():
             return redirect(url_for('customer_login'))
     else:
         # Unknown role: redirect to login
-        flash('Please login first', 'warning')
+        lang = session.get('language', 'en')
+        flash(translate('please_login_first', lang), 'warning')
         return redirect(url_for('customer_login'))
 
 @app.route('/add_customer_page')
@@ -285,7 +286,8 @@ def customer_dashboard(customer_id):
         customer = dict(customer_row) if customer_row else None
     
     if not customer:
-        flash('Customer not found', 'error')
+        lang = session.get('language', 'en')
+        flash(translate('customer_not_found', lang), 'error')
         return redirect(url_for('index'))
     
     cards = get_customer_cards(customer_id)
@@ -397,7 +399,8 @@ def add_credit_card(customer_id):
         customer = cursor.fetchone()
         
         if not customer:
-            flash('客户不存在', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('customer_not_found', lang), 'error')
             return redirect(url_for('index'))
         
         if request.method == 'POST':
@@ -408,12 +411,14 @@ def add_credit_card(customer_id):
             
             # 验证必填字段
             if not all([bank_name, card_number_last4, due_date_str]):
-                flash('请填写所有必填字段', 'error')
+                lang = session.get('language', 'en')
+                flash(translate('all_fields_required', lang), 'error')
                 return redirect(request.url)
             
             # 验证卡号后四位
             if not card_number_last4 or not card_number_last4.isdigit() or len(card_number_last4) != 4:
-                flash('卡号后四位必须是4位数字', 'error')
+                lang = session.get('language', 'en')
+                flash(translate('card_last4_invalid', lang), 'error')
                 return redirect(request.url)
             
             # 转换due_date
@@ -422,7 +427,8 @@ def add_credit_card(customer_id):
                 if due_date == 0:
                     raise ValueError("Invalid due date")
             except (ValueError, TypeError):
-                flash('还款日期必须是数字', 'error')
+                lang = session.get('language', 'en')
+                flash(translate('due_date_invalid', lang), 'error')
                 return redirect(request.url)
             
             # ✅ 强制性唯一性检查（大小写无关，去除空格）
@@ -463,7 +469,8 @@ def upload_statement_deprecated():
         file = request.files.get('statement_file')
         
         if not card_id or not file:
-            flash('Please provide card and file', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('provide_card_file', lang), 'error')
             return redirect(request.url)
         
         # 临时保存文件用于解析
@@ -541,7 +548,8 @@ def upload_statement_deprecated():
                 return redirect(request.url)
         
         if not statement_info or not transactions:
-            flash('Failed to parse statement', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('failed_parse_statement', lang), 'error')
             return redirect(request.url)
         
         # Step 2: Dual Validation - Extract PDF text for cross-verification
@@ -597,7 +605,8 @@ def upload_statement_deprecated():
             
             card_row = cursor.fetchone()
             if not card_row:
-                flash('❌ 信用卡不存在', 'error')
+                lang = session.get('language', 'en')
+                flash(f"❌ {translate('credit_card_not_exist', lang)}", 'error')
                 os.remove(temp_file_path)  # 清理临时文件
                 return redirect(request.url)
             
@@ -794,7 +803,8 @@ def validate_statement_view(statement_id):
         statement = dict(statement_row) if statement_row else None
     
     if not statement:
-        flash('Statement not found', 'error')
+        lang = session.get('language', 'en')
+        flash(translate('statement_not_found', lang), 'error')
         return redirect(url_for('index'))
     
     transactions = get_statement_transactions(statement_id)
@@ -819,7 +829,8 @@ def confirm_statement(statement_id):
         conn.commit()
         log_audit(None, 'CONFIRM_STATEMENT', 'statement', statement_id, 'Statement confirmed by user')
     
-    flash('Statement confirmed successfully', 'success')
+    lang = session.get('language', 'en')
+    flash(translate('statement_confirmed', lang), 'success')
     return redirect(url_for('index'))
 
 @app.route('/reminders')
@@ -836,9 +847,11 @@ def create_reminder_route():
     if card_id and due_date and amount_due:
         reminder_id = create_reminder(int(card_id), due_date, float(amount_due))
         log_audit(None, 'CREATE_REMINDER', 'reminder', reminder_id, f'Created reminder for card {card_id}')
-        flash('Reminder created successfully', 'success')
+        lang = session.get('language', 'en')
+        flash(translate('reminder_created', lang), 'success')
     else:
-        flash('Missing required fields', 'error')
+        lang = session.get('language', 'en')
+        flash(translate('missing_required_fields', lang), 'error')
     
     return redirect(url_for('reminders'))
 
@@ -846,7 +859,8 @@ def create_reminder_route():
 def mark_paid_route(reminder_id):
     mark_as_paid(reminder_id)
     log_audit(None, 'MARK_PAID', 'reminder', reminder_id, 'Marked reminder as paid')
-    flash('Payment marked as completed', 'success')
+    lang = session.get('language', 'en')
+    flash(translate('payment_completed', lang), 'success')
     return redirect(url_for('reminders'))
 
 @app.route('/loan_evaluation/<int:customer_id>')
@@ -860,7 +874,8 @@ def loan_evaluation(customer_id):
         customer = dict(customer_row) if customer_row else None
     
     if not customer:
-        flash('Customer not found', 'error')
+        lang = session.get('language', 'en')
+        flash(translate('customer_not_found', lang), 'error')
         return redirect(url_for('index'))
     
     cards = get_customer_cards(customer_id)
@@ -903,7 +918,8 @@ def generate_report(customer_id):
         customer = dict(customer_row) if customer_row else None
     
     if not customer:
-        flash('Customer not found', 'error')
+        lang = session.get('language', 'en')
+        flash(translate('customer_not_found', lang), 'error')
         return redirect(url_for('index'))
     
     cards = get_customer_cards(customer_id)
@@ -947,7 +963,8 @@ def analytics(customer_id):
         customer = dict(customer_row) if customer_row else None
     
     if not customer:
-        flash('Customer not found', 'error')
+        lang = session.get('language', 'en')
+        flash(translate('customer_not_found', lang), 'error')
         return redirect(url_for('index'))
     
     cards = get_customer_cards(customer_id)
@@ -986,7 +1003,8 @@ def export_transactions(customer_id, format):
         elif format == 'csv':
             filepath = export_service.export_to_csv(customer_id, filters)
         else:
-            flash('Invalid export format', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('invalid_export_format', lang), 'error')
             return redirect(request.referrer or url_for('index'))
         
         return send_file(filepath, as_attachment=True)
@@ -1033,7 +1051,8 @@ def batch_upload(customer_id):
         files = request.files.getlist('statement_files')
         
         if not files:
-            flash('Please select files to upload', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('select_files_upload', lang), 'error')
             return redirect(request.url)
         
         batch_id = batch_service.create_batch_job('upload', customer_id, len(files))
@@ -1182,7 +1201,8 @@ def financial_advisory(customer_id):
         customer = dict(customer_row) if customer_row else None
     
     if not customer:
-        flash('Customer not found', 'error')
+        lang = session.get('language', 'en')
+        flash(translate('customer_not_found', lang), 'error')
         return redirect(url_for('index'))
     
     # Get card recommendations
@@ -1228,7 +1248,8 @@ def request_consultation(customer_id):
         
         conn.commit()
     
-    flash('咨询请求已提交！我们的财务顾问将尽快与您联系。', 'success')
+    lang = session.get('language', 'en')
+    flash(translate('consultation_submitted_success', lang), 'success')
     return redirect(url_for('financial_advisory', customer_id=customer_id))
 
 @app.route('/customer/<int:customer_id>/employment', methods=['GET', 'POST'])
@@ -1252,7 +1273,8 @@ def set_employment_type(customer_id):
             ''', (customer_id, employment_type, employer_name, business_name))
             conn.commit()
         
-        flash('雇佣信息已更新', 'success')
+        lang = session.get('language', 'en')
+        flash(translate('employment_info_updated', lang), 'success')
         return redirect(url_for('customer_dashboard', customer_id=customer_id))
     
     with get_db() as conn:
@@ -1298,7 +1320,8 @@ def generate_enhanced_report(customer_id):
         customer = dict(customer_row) if customer_row else None
     
     if not customer:
-        flash('Customer not found', 'error')
+        lang = session.get('language', 'en')
+        flash(translate('customer_not_found', lang), 'error')
         return redirect(url_for('index'))
     
     output_filename = f"enhanced_report_{customer_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
@@ -1306,7 +1329,8 @@ def generate_enhanced_report(customer_id):
     
     generate_enhanced_monthly_report(customer, output_path)
     
-    flash('增强版月结报告生成成功！包含信用卡推荐和财务优化建议。', 'success')
+    lang = session.get('language', 'en')
+    flash(translate('monthly_report_generated', lang), 'success')
     return send_file(output_path, as_attachment=True, download_name=output_filename)
 
 # ==================== CUSTOMER AUTHENTICATION SYSTEM ====================
@@ -1411,7 +1435,8 @@ def customer_register():
         result = create_customer_login(customer_id, email, password)
         
         if result['success']:
-            flash('Registration successful! Please login.', 'success')
+            lang = session.get('language', 'en')
+            flash(translate('registration_successful', lang), 'success')
             return redirect(url_for('customer_login'))
         else:
             return render_template('customer_register.html', error=result['error'])
@@ -1424,7 +1449,8 @@ def customer_portal():
     token = session.get('customer_token')
     
     if not token:
-        flash('Please login to access your portal', 'warning')
+        lang = session.get('language', 'en')
+        flash(translate('please_login_portal', lang), 'warning')
         return redirect(url_for('customer_login'))
     
     # Verify session
@@ -1454,7 +1480,8 @@ def customer_logout():
         logout_customer(token)
     
     session.clear()
-    flash('Logged out successfully', 'success')
+    lang = session.get('language', 'en')
+    flash(translate('logged_out', lang), 'success')
     return redirect(url_for('customer_login'))
 
 @app.route('/customer/download/<int:statement_id>')
@@ -1463,7 +1490,8 @@ def customer_download_statement(statement_id):
     token = session.get('customer_token')
     
     if not token:
-        flash('Please login to access your data', 'warning')
+        lang = session.get('language', 'en')
+        flash(translate('please_login_data', lang), 'warning')
         return redirect(url_for('customer_login'))
     
     # Verify session and ownership
@@ -1488,7 +1516,8 @@ def customer_download_statement(statement_id):
         result = cursor.fetchone()
         
         if not result:
-            flash('Statement not found or access denied', 'danger')
+            lang = session.get('language', 'en')
+            flash(translate('statement_access_denied', lang), 'danger')
             return redirect(url_for('customer_portal'))
         
         file_path = result[0]
@@ -1496,7 +1525,8 @@ def customer_download_statement(statement_id):
         if os.path.exists(file_path):
             return send_file(file_path, as_attachment=True)
         else:
-            flash('File not found', 'danger')
+            lang = session.get('language', 'en')
+            flash(translate('file_not_found', lang), 'danger')
             return redirect(url_for('customer_portal'))
 
 # ==================== END CUSTOMER AUTHENTICATION ====================
@@ -1524,7 +1554,8 @@ def admin_login():
             session['user_name'] = 'Administrator'
             # Keep is_admin for backward compatibility during transition
             session['is_admin'] = True
-            flash('Admin login successful', 'success')
+            lang = session.get('language', 'en')
+            flash(translate('admin_login_successful', lang), 'success')
             
             # 登录成功后跳转回原页面
             next_url = session.pop('next_url', None)
@@ -1532,7 +1563,8 @@ def admin_login():
                 return redirect(next_url)
             return redirect(url_for('admin_dashboard'))
         else:
-            flash('Invalid admin credentials', 'danger')
+            lang = session.get('language', 'en')
+            flash(translate('invalid_admin_credentials', lang), 'danger')
     
     return render_template('admin_login.html')
 
@@ -1578,7 +1610,8 @@ def get_bank_abbreviation(bank_name):
 def admin_dashboard():
     """Admin dashboard route"""
     if session.get('user_role') != 'admin':
-        flash('Please login as admin first', 'warning')
+        lang = session.get('language', 'en')
+        flash(translate('please_login_admin', lang), 'warning')
         return redirect(url_for('admin_login'))
     
     with get_db() as conn:
@@ -1706,14 +1739,16 @@ def admin_dashboard():
 def admin_logout():
     """Admin logout route"""
     session.clear()
-    flash('Admin logged out successfully', 'success')
+    lang = session.get('language', 'en')
+    flash(translate('admin_logged_out', lang), 'success')
     return redirect(url_for('index'))
 
 @app.route('/admin/customers-cards')
 def admin_customers_cards():
     """Admin page showing all customers and their credit cards"""
     if session.get('user_role') != 'admin':
-        flash('Please login as admin first', 'warning')
+        lang = session.get('language', 'en')
+        flash(translate('please_login_admin', lang), 'warning')
         return redirect(url_for('admin_login'))
     
     with get_db() as conn:
@@ -2035,7 +2070,8 @@ def resolve_anomaly_route(anomaly_id):
     """解决财务异常"""
     resolution_note = request.form.get('resolution_note', '')
     anomaly_service.resolve_anomaly(anomaly_id, resolution_note)
-    flash('异常已成功解决', 'success')
+    lang = session.get('language', 'en')
+    flash(translate('anomaly_resolved', lang), 'success')
     return redirect(request.referrer or url_for('index'))
 
 # ==================== END ADVANCED ANALYTICS ====================
@@ -2354,7 +2390,8 @@ def download_monthly_report(report_id):
     if report and os.path.exists(report['pdf_path']):
         return send_file(report['pdf_path'], as_attachment=True)
     else:
-        flash('报表文件不存在', 'error')
+        lang = session.get('language', 'en')
+        flash(translate('report_file_not_exist', lang), 'error')
         return redirect(url_for('index'))
 
 
@@ -2378,7 +2415,8 @@ def show_optimization_proposal(customer_id):
         customer = cursor.fetchone()
         
         if not customer:
-            flash('客户不存在', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('customer_not_found', lang), 'error')
             return redirect(url_for('index'))
         
         # 获取客户所有信用卡
@@ -2436,7 +2474,8 @@ def request_optimization_consultation(customer_id):
         customer = cursor.fetchone()
         
         if not customer:
-            flash('客户不存在', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('customer_not_found', lang), 'error')
             return redirect(url_for('index'))
     
     if request.method == 'POST':
@@ -2457,7 +2496,8 @@ def request_optimization_consultation(customer_id):
         # 发送通知给管理员（可选）
         # email_service.send_consultation_request_notification(customer)
         
-        flash('✅ 咨询申请已提交！我们的顾问将尽快与您联系。', 'success')
+        lang = session.get('language', 'en')
+        flash(f"✅ {translate('consultation_request_submitted', lang)}", 'success')
         log_audit('consultation_request', customer_id, f'客户 {customer["name"]} 申请咨询优化方案')
         
         return redirect(url_for('customer_dashboard', customer_id=customer_id))
@@ -2517,7 +2557,8 @@ def generate_monthly_report_route(customer_id):
         cursor.execute('SELECT name FROM customers WHERE id = ?', (customer_id,))
         result = cursor.fetchone()
         if not result:
-            flash('客户不存在', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('customer_not_found', lang), 'error')
             return redirect(url_for('index'))
         customer_name = result[0]
     
@@ -2568,7 +2609,8 @@ def financial_dashboard(customer_id):
         cursor.execute('SELECT full_name FROM customers WHERE id = ?', (customer_id,))
         result = cursor.fetchone()
         if not result:
-            flash('客户不存在', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('customer_not_found', lang), 'error')
             return redirect(url_for('index'))
         customer_name = result[0]
     
@@ -2674,7 +2716,8 @@ def customer_resources(customer_id):
         cursor.execute('SELECT full_name FROM customers WHERE id = ?', (customer_id,))
         result = cursor.fetchone()
         if not result:
-            flash('客户不存在', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('customer_not_found', lang), 'error')
             return redirect(url_for('index'))
         customer_name = result[0]
         
@@ -2712,7 +2755,8 @@ def add_resource(customer_id):
               request.form.get('description'), request.form.get('estimated_value'), request.form.get('availability')))
         conn.commit()
     
-    flash('资源添加成功！', 'success')
+    lang = session.get('language', 'en')
+    flash(translate('resource_added', lang), 'success')
     return redirect(url_for('customer_resources', customer_id=customer_id))
 
 
@@ -2731,7 +2775,8 @@ def add_network(customer_id):
               request.form.get('can_provide_help'), request.form.get('contact_info')))
         conn.commit()
     
-    flash('人脉联系人添加成功！', 'success')
+    lang = session.get('language', 'en')
+    flash(translate('contact_added', lang), 'success')
     return redirect(url_for('customer_resources', customer_id=customer_id))
 
 
@@ -2750,7 +2795,8 @@ def add_skill(customer_id):
               request.form.get('certifications'), request.form.get('description')))
         conn.commit()
     
-    flash('技能添加成功！', 'success')
+    lang = session.get('language', 'en')
+    flash(translate('skill_added', lang), 'success')
     return redirect(url_for('customer_resources', customer_id=customer_id))
 
 
@@ -2764,7 +2810,8 @@ def delete_resource(customer_id, resource_id):
         cursor.execute('DELETE FROM customer_resources WHERE id = ? AND customer_id = ?', (resource_id, customer_id))
         conn.commit()
     
-    flash('资源已删除', 'success')
+    lang = session.get('language', 'en')
+    flash(translate('resource_deleted', lang), 'success')
     return redirect(url_for('customer_resources', customer_id=customer_id))
 
 
@@ -2778,7 +2825,8 @@ def delete_network(customer_id, network_id):
         cursor.execute('DELETE FROM customer_network WHERE id = ? AND customer_id = ?', (network_id, customer_id))
         conn.commit()
     
-    flash('人脉已删除', 'success')
+    lang = session.get('language', 'en')
+    flash(translate('contact_deleted', lang), 'success')
     return redirect(url_for('customer_resources', customer_id=customer_id))
 
 
@@ -2792,7 +2840,8 @@ def delete_skill(customer_id, skill_id):
         cursor.execute('DELETE FROM customer_skills WHERE id = ? AND customer_id = ?', (skill_id, customer_id))
         conn.commit()
     
-    flash('技能已删除', 'success')
+    lang = session.get('language', 'en')
+    flash(translate('skill_deleted', lang), 'success')
     return redirect(url_for('customer_resources', customer_id=customer_id))
 
 
@@ -2804,7 +2853,8 @@ def generate_plan(customer_id):
     result = generate_business_plan(customer_id)
     
     if result['success']:
-        flash('AI商业计划生成成功！', 'success')
+        lang = session.get('language', 'en')
+        flash(translate('business_plan_generated', lang), 'success')
         return redirect(url_for('view_business_plan', customer_id=customer_id, plan_id=result['plan_id']))
     else:
         flash(f'生成失败：{result["error"]}', 'error')
@@ -2823,7 +2873,8 @@ def view_business_plan(customer_id, plan_id):
         cursor.execute('SELECT full_name FROM customers WHERE id = ?', (customer_id,))
         result = cursor.fetchone()
         if not result:
-            flash('客户不存在', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('customer_not_found', lang), 'error')
             return redirect(url_for('index'))
         customer_name = result[0]
         
@@ -2837,7 +2888,8 @@ def view_business_plan(customer_id, plan_id):
         
         plan = cursor.fetchone()
         if not plan:
-            flash('商业计划不存在', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('business_plan_not_exist', lang), 'error')
             return redirect(url_for('customer_resources', customer_id=customer_id))
     
     # 解析JSON数据
@@ -2864,7 +2916,8 @@ def list_business_plans(customer_id):
         cursor.execute('SELECT full_name FROM customers WHERE id = ?', (customer_id,))
         result = cursor.fetchone()
         if not result:
-            flash('客户不存在', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('customer_not_found', lang), 'error')
             return redirect(url_for('index'))
         customer_name = result[0]
         
@@ -2962,7 +3015,8 @@ def upload_savings_statement():
             files = request.files.getlist('statements')
             
             if not files:
-                flash('请上传至少一个账单文件', 'error')
+                lang = session.get('language', 'en')
+                flash(translate('upload_at_least_one_statement', lang), 'error')
                 return redirect(url_for('upload_savings_statement'))
             
             processed_count = 0
@@ -3138,7 +3192,8 @@ def savings_accounts(customer_id):
         cursor.execute('SELECT id, name, customer_code FROM customers WHERE id = ?', (customer_id,))
         customer_row = cursor.fetchone()
         if not customer_row:
-            flash('客户不存在', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('customer_not_found', lang), 'error')
             return redirect(url_for('savings_customers'))
         customer = dict(customer_row)
         
@@ -3265,7 +3320,8 @@ def savings_account_detail(account_id):
         
         account_row = cursor.fetchone()
         if not account_row:
-            flash('⚠️ Savings account not found', 'error')
+            lang = session.get('language', 'en')
+            flash(f"⚠️ {translate('savings_account_not_found', lang)}", 'error')
             return redirect(url_for('savings_customers'))
         
         account = dict(account_row)
@@ -3496,7 +3552,8 @@ def edit_savings_transaction(transaction_id):
         ''', (customer_tag, notes, transaction_id))
         conn.commit()
     
-    flash('✅ 交易信息已更新', 'success')
+    lang = session.get('language', 'en')
+    flash(f"✅ {translate('transaction_updated', lang)}", 'success')
     return redirect(request.referrer or url_for('savings_accounts'))
 
 @app.route('/savings/tag/<int:transaction_id>', methods=['POST'])
@@ -3604,7 +3661,8 @@ def mark_statement_verified(statement_id):
         ''', (session.get('user_email', 'admin'), datetime.now().isoformat(), statement_id))
         conn.commit()
     
-    flash('✅ Statement verified successfully! 100% accuracy confirmed.', 'success')
+    lang = session.get('language', 'en')
+    flash(f"✅ {translate('statement_verified', lang)}", 'success')
     return redirect(url_for('savings_verify_statement', statement_id=statement_id))
 
 @app.route('/savings/verify/<int:statement_id>/flag_discrepancy', methods=['POST'])
@@ -3626,7 +3684,8 @@ def flag_statement_discrepancy(statement_id):
         ''', (session.get('user_email', 'admin'), datetime.now().isoformat(), notes, statement_id))
         conn.commit()
     
-    flash('⚠️ Discrepancy flagged. Please review and correct the differences.', 'warning')
+    lang = session.get('language', 'en')
+    flash(f"⚠️ {translate('discrepancy_flagged', lang)}", 'warning')
     return redirect(url_for('savings_verify_statement', statement_id=statement_id))
 
 @app.route('/view_savings_statement_file/<int:statement_id>')
@@ -3810,7 +3869,8 @@ def credit_card_ledger():
             return redirect(url_for('customer_login'))
     else:
         # Unknown role
-        flash('Please login first', 'warning')
+        lang = session.get('language', 'en')
+        flash(translate('please_login_first', lang), 'warning')
         return redirect(url_for('customer_login'))
     
     # POST: 处理上传
@@ -3820,7 +3880,8 @@ def credit_card_ledger():
         file = request.files.get('statement_file')
         
         if not card_id or not file:
-            flash('Please provide card and file', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('provide_card_file', lang), 'error')
             return redirect(url_for('credit_card_ledger'))
         
         # 临时保存文件用于解析
@@ -3835,7 +3896,8 @@ def credit_card_ledger():
             statement_info, transactions = parse_statement_auto(temp_file_path)
         except ValueError as e:
             if str(e) == "HSBC_SCANNED_PDF":
-                flash('检测到HSBC扫描版PDF账单，请使用Microsoft Word转换后重新上传', 'warning')
+                lang = session.get('language', 'en')
+                flash(translate('hsbc_scanned_pdf_warning', lang), 'warning')
                 os.remove(temp_file_path)
                 return redirect(url_for('credit_card_ledger'))
             else:
@@ -3844,7 +3906,8 @@ def credit_card_ledger():
                 return redirect(url_for('credit_card_ledger'))
         
         if not statement_info or not transactions:
-            flash('Failed to parse statement', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('failed_parse_statement', lang), 'error')
             os.remove(temp_file_path)
             return redirect(url_for('credit_card_ledger'))
         
@@ -3890,7 +3953,8 @@ def credit_card_ledger():
             
             card_row = cursor.fetchone()
             if not card_row:
-                flash('❌ 信用卡不存在', 'error')
+                lang = session.get('language', 'en')
+                flash(f"❌ {translate('credit_card_not_exist', lang)}", 'error')
                 os.remove(temp_file_path)
                 return redirect(url_for('credit_card_ledger'))
             
@@ -4086,7 +4150,8 @@ def credit_card_ledger_timeline(customer_id):
         cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
         customer_row = cursor.fetchone()
         if not customer_row:
-            flash('客户不存在', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('customer_not_found', lang), 'error')
             return redirect(url_for('credit_card_ledger'))
         
         customer = dict(customer_row)
@@ -4167,7 +4232,8 @@ def credit_card_ledger_monthly(customer_id, year, month):
         cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
         customer_row = cursor.fetchone()
         if not customer_row:
-            flash('客户不存在', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('customer_not_found', lang), 'error')
             return redirect(url_for('credit_card_ledger'))
         
         customer = dict(customer_row)
@@ -4216,7 +4282,8 @@ def credit_card_ledger_monthly(customer_id, year, month):
         all_statements = [dict(row) for row in cursor.fetchall()]
         
         if not all_statements:
-            flash('该月没有账单', 'warning')
+            lang = session.get('language', 'en')
+            flash(translate('no_statement_this_month', lang), 'warning')
             return redirect(url_for('credit_card_ledger_timeline', customer_id=customer_id))
         
         # 🔥 按银行分组账单
@@ -4328,13 +4395,15 @@ def credit_card_ledger_detail(statement_id):
         stmt_customer = cursor.fetchone()
         
         if not stmt_customer:
-            flash('账单不存在', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('statement_not_exist', lang), 'error')
             return redirect(url_for('credit_card_ledger'))
         
         # 检查权限
         accessible_ids = get_accessible_customers(session['user_id'], session['user_role'])
         if stmt_customer['customer_id'] not in accessible_ids:
-            flash('您没有权限访问此账单', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('no_permission_access', lang), 'error')
             return redirect(url_for('credit_card_ledger'))
     
     with get_db() as conn:
@@ -4361,7 +4430,8 @@ def credit_card_ledger_detail(statement_id):
         
         statement_row = cursor.fetchone()
         if not statement_row:
-            flash('账单不存在', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('statement_not_exist', lang), 'error')
             return redirect(url_for('credit_card_ledger'))
         
         statement = dict(statement_row)
@@ -4548,7 +4618,8 @@ def receipts_upload():
     files = request.files.getlist('receipt_files')
     
     if not files or files[0].filename == '':
-        flash('❌ 请选择至少一个收据图片', 'error')
+        lang = session.get('language', 'en')
+        flash(f"❌ {translate('select_at_least_one_receipt', lang)}", 'error')
         return redirect(url_for('receipts_upload'))
     
     results = []
@@ -4739,7 +4810,8 @@ def receipts_by_customer(customer_id):
         customer = cursor.fetchone()
         
         if not customer:
-            flash('❌ 客户不存在', 'error')
+            lang = session.get('language', 'en')
+            flash(f"❌ {translate('customer_not_found', lang)}", 'error')
             return redirect(url_for('receipts_home'))
         
         # 获取该客户的所有收据，按卡号分组
@@ -4796,7 +4868,8 @@ def invoices_home():
     
     # Only admin can access
     if user_role != 'admin':
-        flash('Access denied. Admin only.', 'danger')
+        lang = session.get('language', 'en')
+        flash(translate('access_denied_admin_only', lang), 'danger')
         return redirect(url_for('index'))
     
     with get_db() as conn:
