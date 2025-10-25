@@ -170,7 +170,7 @@
                                         <td style="font-weight: 600;">{{ stmt['customer_name'] }}</td>
                                         <td style="font-weight: 600; color: #FF007F;">{{ stmt['bank_abbr'] }}</td>
                                         <td>{{ stmt['due_date'] if stmt['due_date'] else '-' }}</td>
-                                        <td style="font-weight: 600; color: #322446;">RM {{ "{:,.2f}".format(stmt['prev_bal']) }}</td>
+                                        <td style="font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">RM {{ "{:,.2f}".format(stmt['prev_bal']) }}</td>
                                         <td style="color: #FF007F;">RM {{ "{:,.2f}".format(stmt['owner_expenses']) }}</td>
                                         <td style="color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">RM {{ "{:,.2f}".format(abs(stmt['owner_payments'])) }}</td>
                                         <td style="color: #FF007F;">RM {{ "{:,.2f}".format(stmt['infinite_expenses']) }}</td>
