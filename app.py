@@ -1660,6 +1660,20 @@ def admin_dashboard():
         # Count unique banks
         cursor.execute("SELECT COUNT(DISTINCT bank_name) FROM credit_cards")
         unique_banks = cursor.fetchone()[0]
+        
+        # Get receipts statistics
+        cursor.execute("SELECT COUNT(*) FROM receipts")
+        receipts_count = cursor.fetchone()[0]
+        
+        cursor.execute("SELECT COALESCE(SUM(amount), 0) FROM receipts")
+        receipts_total = cursor.fetchone()[0]
+        
+        # Get supplier invoices statistics
+        cursor.execute("SELECT COUNT(*) FROM supplier_invoices")
+        invoices_count = cursor.fetchone()[0]
+        
+        cursor.execute("SELECT COALESCE(SUM(total_amount + supplier_fee), 0) FROM supplier_invoices")
+        invoices_total = cursor.fetchone()[0]
     
     return render_template('admin_dashboard.html', 
                          customers=customers,
@@ -1673,7 +1687,11 @@ def admin_dashboard():
                          total_gz_revenue=total_gz_revenue,
                          total_owner_balance=total_owner_balance,
                          total_gz_balance=total_gz_balance,
-                         unique_banks=unique_banks)
+                         unique_banks=unique_banks,
+                         receipts_count=receipts_count,
+                         receipts_total=receipts_total,
+                         invoices_count=invoices_count,
+                         invoices_total=invoices_total)
 
 @app.route('/admin-logout')
 def admin_logout():

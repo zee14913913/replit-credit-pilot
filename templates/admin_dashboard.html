@@ -73,6 +73,38 @@
         </div>
     </div>
 
+    <!-- Receipts & Invoices Statistics -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
+                <div class="stat-value" style="color: #FF007F;">{{ receipts_count }}</div>
+                <div class="stat-label">📄 Payment Receipts</div>
+                <div class="stat-corner" style="background: #FF007F;"></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
+                <div class="stat-value" style="color: #322446;">RM {{ "{:,.2f}".format(receipts_total) }}</div>
+                <div class="stat-label">💵 Total Receipts Amount</div>
+                <div class="stat-corner" style="background: #322446;"></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
+                <div class="stat-value" style="color: #FF007F;">{{ invoices_count }}</div>
+                <div class="stat-label">📋 Supplier Invoices</div>
+                <div class="stat-corner" style="background: #FF007F;"></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
+                <div class="stat-value" style="color: #322446;">RM {{ "{:,.2f}".format(invoices_total) }}</div>
+                <div class="stat-label">💼 Total Invoices Amount</div>
+                <div class="stat-corner" style="background: #322446;"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Quick Actions -->
     <div class="row g-4 mb-5">
         <div class="col-md-12">
@@ -80,6 +112,8 @@
                 <h3 class="card-title" style="color: #FF007F; font-weight: 700;">{{ t('quick_actions') }}</h3>
                 <div class="d-flex gap-3 mt-3 flex-wrap">
                     <a href="{{ url_for('admin_customers_cards') }}" class="btn-white-glow"><i class="bi bi-credit-card-2-front"></i> {{ t('customers_credit_cards_management') }}</a>
+                    <a href="{{ url_for('receipts_home') }}" class="btn-white-glow"><i class="bi bi-receipt"></i> Receipts Management</a>
+                    <a href="{{ url_for('invoices_home') }}" class="btn-white-glow"><i class="bi bi-file-earmark-text"></i> Supplier Invoices</a>
                     <a href="{{ url_for('admin_logout') }}" class="btn btn-outline-danger">{{ t('logout') }}</a>
                 </div>
             </div>
