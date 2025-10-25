@@ -51,17 +51,42 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Advanced Analytics Dashboard:** Integrates analytical features with dynamic charts and real-time warnings.
 
 ### System Design Choices
-- **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, authentication, advisory services, supplier_config, customer_aliases, account_baselines, and monthly_ledger (with mandatory OWNER/INFINITE tracking fields: owner_expenses, owner_payments, infinite_expenses, infinite_payments, owner_balance, infinite_balance).
+- **Data Models:** Comprehensive models for customers, credit cards, statements (legacy), monthly_statements (active), monthly_statement_cards, transaction_owner_overrides, transactions, BNM rates, audit logs, authentication, advisory services, supplier_config, customer_aliases, account_baselines, monthly_ledger, and infinite_monthly_ledger (with mandatory OWNER/INFINITE tracking fields).
 - **Design Patterns:** Repository Pattern for database abstraction, Template Inheritance for UI consistency, Context Manager Pattern for database connection handling, and Service Layer Pattern for OWNER/INFINITE classification logic.
 - **Security:** Session secret key from environment variables, file upload size limits, SQL injection prevention, and audit logging.
 - **Data Accuracy:** Implemented robust previous balance extraction and monthly ledger engine overhaul to ensure 100% accuracy in financial calculations and DR/CR classification, including a universal balance-change algorithm for all bank statements. Independent statement-level reconciliation guarantees each monthly statement is tracked separately without data aggregation.
-- **🚨 CRITICAL RULE - Monthly Statement Aggregation:** When a single PDF contains multiple credit cards from the same bank (e.g., Hong Leong Bank cards 2033 and 4170), the system MUST aggregate them into ONE statement per month with:
-  - `statement.previous_balance` = SUM of all cards' previous balances
-  - `statement.total` = SUM of all cards' current balances
-  - ALL transactions from all cards stored under the same statement_id
-  - Each transaction MUST have `card_last4` field to identify which card it belongs to
-  - Display format: Monthly summary shows aggregated totals, with transaction details grouped by card number
-  - This ensures monthly reports show "all cards from same bank in same month" as ONE consolidated view, not separate statements per card.
+
+### 🚨 **CRITICAL: Monthly Statement Architecture (2025-10-25 Upgrade)**
+
+**Consolidation Rule**: Each bank + month combination creates ONE monthly statement record (not per-card):
+- **monthly_statements** table structure:
+  - **Unique constraint**: (customer_id, bank_name, statement_month) - ensures one record per bank per month
+  - **6 mandatory classification fields**:
+    - owner_expenses: Sum of all Own's Expenses across all cards
+    - owner_payments: Sum of all Own's Payments across all cards
+    - gz_expenses: Sum of all GZ's Expenses across all cards
+    - gz_payments: Sum of all GZ's Payments across all cards
+    - owner_balance: Own's Outstanding Balance
+    - gz_balance: GZ's Outstanding Balance
+  - **Balance validation**: owner_balance + gz_balance = closing_balance_total (100% accuracy enforced)
+  
+- **monthly_statement_cards** table: Links which credit cards contributed to each monthly statement
+- **transactions** table: Each transaction includes:
+  - monthly_statement_id: Links to consolidated monthly statement
+  - card_last4: Identifies which card (for multi-card statements)
+  - owner_flag: 'owner' or 'gz' classification
+  - classification_source: 'auto' or 'manual' (override support)
+
+**Display Format**:
+- Monthly summaries show aggregated totals across all cards from same bank
+- Transaction details are grouped by card number (card_last4)
+- Each transaction displays as "description (卡XXXX)" to identify the card
+
+**Migration Completed** (2025-10-25):
+- Successfully migrated 75 single-card statements → 63 monthly bank-aggregated statements
+- 5 banks covered: Alliance Bank, HSBC, Hong Leong Bank, Maybank, UOB
+- All 702 transactions migrated with 100% balance accuracy (RM 0.00 variance)
+- Verification checklists generated for two-round manual validation against PDF originals
 
 ## External Dependencies
 
