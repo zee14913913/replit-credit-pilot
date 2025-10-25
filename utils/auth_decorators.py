@@ -2,16 +2,27 @@
 权限装饰器 - 控制用户访问权限
 """
 from functools import wraps
-from flask import session, redirect, url_for, flash, abort
+from flask import session, redirect, url_for, flash, abort, request
 
 
 def login_required(f):
-    """要求用户登录"""
+    """要求用户登录 - 支持Admin和Customer两种登录"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        # Admin登录检查（有user_role=admin）
+        if session.get('user_role') == 'admin':
+            return f(*args, **kwargs)
+        
+        # Customer登录检查（有user_id）
         if 'user_id' not in session:
             flash('请先登录', 'warning')
-            return redirect(url_for('customer_login'))
+            # 根据当前路由判断应该跳转到哪个登录页
+            if session.get('user_role') is None:
+                # 没有任何登录信息，跳转到客户登录
+                return redirect(url_for('customer_login'))
+            else:
+                # 有登录信息但无效，跳转到对应的登录页
+                return redirect(url_for('admin_login') if 'admin' in str(request.url) else url_for('customer_login'))
         return f(*args, **kwargs)
     return decorated_function
 
