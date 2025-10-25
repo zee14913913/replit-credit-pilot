@@ -643,12 +643,17 @@ p {
     backdrop-filter: blur(15px);
     border: var(--border-gold);
     border-radius: var(--radius-lg);
-    padding: var(--space-xl);
+    padding: var(--space-lg);
     text-align: center;
     position: relative;
     transition: all 0.3s ease;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4),
                 inset 0 0 40px rgba(220, 220, 220, 0.05);
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .stat-card:hover {
@@ -659,7 +664,7 @@ p {
 }
 
 .stat-value {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     font-weight: 900;
     background: linear-gradient(135deg, 
         var(--text-white) 0%, 
@@ -669,14 +674,21 @@ p {
     background-clip: text;
     margin-bottom: var(--space-xs);
     text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    line-height: 1.2;
+    white-space: nowrap;
 }
 
 .stat-label {
     color: var(--text-silver);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    min-height: 2.8em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* ========================================
