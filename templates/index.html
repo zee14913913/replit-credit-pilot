@@ -39,17 +39,17 @@
                             {{ t('view_dashboard') }}
                         </a>
                         
-                        <!-- CC Dashboard 信用卡账单 -->
+                        <!-- CC Dashboard -->
                         <a href="{{ url_for('credit_card_ledger_timeline', customer_id=customer.id) }}" 
                            class="btn-professional-outline"
                            style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
                                   border: 2px solid #FF007F; 
                                   color: #FF007F;
                                   font-weight: 700;">
-                            CC Dashboard 信用卡账单
+                            {{ t('cc_dashboard') }}
                         </a>
                         
-                        <!-- SA Dashboard 储蓄/来往账户月结单 -->
+                        <!-- SA Dashboard -->
                         <a href="{{ url_for('savings_accounts', customer_id=customer.id) }}" 
                            class="btn-professional-outline"
                            style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
@@ -57,7 +57,7 @@
                                   color: #FFFEF0;
                                   text-shadow: 0 0 8px rgba(255,254,240,0.3);
                                   font-weight: 700;">
-                            SA Dashboard 储蓄/来往账户月结单
+                            {{ t('sa_dashboard') }}
                         </a>
                         
                         <a href="{{ url_for('analytics', customer_id=customer.id) }}" class="btn-professional-outline">
