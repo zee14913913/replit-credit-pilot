@@ -1347,7 +1347,12 @@ def customer_login():
             
             flash(f"欢迎回来, {session['user_name']}!", 'success')
             
-            # 根据角色跳转
+            # 登录成功后跳转回原页面
+            next_url = session.pop('next_url', None)
+            if next_url:
+                return redirect(next_url)
+            
+            # 如果没有原页面，根据角色跳转
             if user['role'] == 'admin':
                 return redirect(url_for('index'))  # 管理员看到所有功能
             else:
@@ -1517,6 +1522,11 @@ def admin_login():
             # Keep is_admin for backward compatibility during transition
             session['is_admin'] = True
             flash('Admin login successful', 'success')
+            
+            # 登录成功后跳转回原页面
+            next_url = session.pop('next_url', None)
+            if next_url:
+                return redirect(next_url)
             return redirect(url_for('admin_dashboard'))
         else:
             flash('Invalid admin credentials', 'danger')

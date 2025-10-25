@@ -16,6 +16,8 @@ def login_required(f):
         # Customer登录检查（有user_id）
         if 'user_id' not in session:
             flash('请先登录', 'warning')
+            # 保存用户原本想访问的页面
+            session['next_url'] = request.url
             # 根据当前路由判断应该跳转到哪个登录页
             if session.get('user_role') is None:
                 # 没有任何登录信息，跳转到客户登录
