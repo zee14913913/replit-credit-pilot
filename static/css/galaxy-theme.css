@@ -664,7 +664,7 @@ p {
 }
 
 .stat-value {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     font-weight: 900;
     background: linear-gradient(135deg, 
         var(--text-white) 0%, 
@@ -680,7 +680,7 @@ p {
 
 .stat-label {
     color: var(--text-silver);
-    font-size: 0.9rem;
+    font-size: 1.0rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
