@@ -166,9 +166,9 @@
                                 {% if cc_statements %}
                                     {% for stmt in cc_statements %}
                                     <tr class="hover-glow-row">
-                                        <td style="font-weight: 600; color: #FF007F;">{{ stmt['statement_date'][:7] }}</td>
+                                        <td style="font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ stmt['statement_date'][:7] }}</td>
                                         <td style="font-weight: 600;">{{ stmt['customer_name'] }}</td>
-                                        <td style="font-weight: 600; color: #FF007F;">{{ stmt['bank_abbr'] }}</td>
+                                        <td style="font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ stmt['bank_abbr'] }}</td>
                                         <td>{{ stmt['due_date'] if stmt['due_date'] else '-' }}</td>
                                         <td style="font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">RM {{ "{:,.2f}".format(stmt['prev_bal']) }}</td>
                                         <td style="color: #FF007F;">RM {{ "{:,.2f}".format(stmt['owner_expenses']) }}</td>
