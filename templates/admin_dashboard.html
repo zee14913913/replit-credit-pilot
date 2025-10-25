@@ -41,7 +41,7 @@
         </div>
     </div>
 
-    <!-- Financial Statistics -->
+    <!-- Owner's Financial Statistics -->
     <div class="row g-4 mb-5">
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
@@ -51,6 +51,33 @@
             </div>
         </div>
         <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
+                <div class="stat-value" style="color: #FF007F;">RM {{ "{:,.0f}".format(abs(total_owner_payments)) }}</div>
+                <div class="stat-label">💰 Own's Payment</div>
+                <div class="stat-corner" style="background: #FF007F;"></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
+                <div class="stat-value" style="color: #FF007F;">RM {{ "{:,.0f}".format(total_owner_balance) }}</div>
+                <div class="stat-label">📊 Own's OS Bal</div>
+                <div class="stat-corner" style="background: #FF007F;"></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
+                <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(255,0,127,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                    <div class="stat-value" style="color: #FF007F;">{{ invoices_count }}</div>
+                    <div class="stat-label">📋 Supplier Invoices</div>
+                    <div class="stat-corner" style="background: #FF007F;"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- GZ's Financial Statistics -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
                 <div class="stat-value" style="color: #322446;">RM {{ "{:,.0f}".format(total_gz_expenses) }}</div>
                 <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">🏢 GZ's Expenses</div>
@@ -58,10 +85,17 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
-                <div class="stat-value" style="color: #FF007F;">RM {{ "{:,.2f}".format(total_gz_revenue) }}</div>
-                <div class="stat-label">💰 GZ's Revenue (1%)</div>
-                <div class="stat-corner" style="background: #FF007F;"></div>
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
+                <div class="stat-value" style="color: #322446;">RM {{ "{:,.0f}".format(abs(total_gz_payments)) }}</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">💵 GZ's Payment</div>
+                <div class="stat-corner" style="background: #322446;"></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
+                <div class="stat-value" style="color: #322446;">RM {{ "{:,.0f}".format(total_gz_balance) }}</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">📈 GZ's OS Bal</div>
+                <div class="stat-corner" style="background: #322446;"></div>
             </div>
         </div>
         <div class="col-md-3">
@@ -70,37 +104,6 @@
                     <div class="stat-value" style="color: #322446;">RM {{ "{:,.2f}".format(invoices_total) }}</div>
                     <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">💼 Total Invoices Amount</div>
                     <div class="stat-corner" style="background: #322446;"></div>
-                </div>
-            </a>
-        </div>
-    </div>
-
-    <!-- Receipts & Invoices Statistics - CLICKABLE CARDS -->
-    <div class="row g-4 mb-5">
-        <div class="col-md-3">
-            <a href="{{ url_for('receipts_home') }}" style="text-decoration: none;">
-                <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(255,0,127,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                    <div class="stat-value" style="color: #FF007F;">{{ receipts_count }}</div>
-                    <div class="stat-label">📄 Payment Receipts</div>
-                    <div class="stat-corner" style="background: #FF007F;"></div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3">
-            <a href="{{ url_for('receipts_home') }}" style="text-decoration: none;">
-                <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(50,36,70,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                    <div class="stat-value" style="color: #322446;">RM {{ "{:,.2f}".format(receipts_total) }}</div>
-                    <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">💵 Total Receipts Amount</div>
-                    <div class="stat-corner" style="background: #322446;"></div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3">
-            <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
-                <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(255,0,127,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                    <div class="stat-value" style="color: #FF007F;">{{ invoices_count }}</div>
-                    <div class="stat-label">📋 Supplier Invoices</div>
-                    <div class="stat-corner" style="background: #FF007F;"></div>
                 </div>
             </a>
         </div>
