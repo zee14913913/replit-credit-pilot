@@ -4685,6 +4685,52 @@ def secure_filename(filename):
     filename = re.sub(r'[^\w\s.-]', '', filename)
     return filename
 
+@app.route('/invoices')
+@login_required
+def invoices_home():
+    """发票管理主页 - Invoices Home Page"""
+    user_role = session.get('user_role')
+    
+    # Only admin can access
+    if user_role != 'admin':
+        flash('Access denied. Admin only.', 'danger')
+        return redirect(url_for('index'))
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 查询所有生成的发票
+        cursor.execute('''
+            SELECT 
+                si.id,
+                si.invoice_number,
+                si.invoice_date,
+                si.supplier_name,
+                si.total_amount,
+                si.supplier_fee,
+                si.pdf_path,
+                c.name as customer_name,
+                c.customer_code
+            FROM supplier_invoices si
+            JOIN customers c ON si.customer_id = c.id
+            ORDER BY si.invoice_date DESC, si.invoice_number DESC
+        ''')
+        
+        invoices = cursor.fetchall()
+        
+        # 统计数据
+        total_invoices = len(invoices)
+        total_suppliers = len(set(inv['supplier_name'] for inv in invoices)) if invoices else 0
+        total_amount = sum(inv['total_amount'] for inv in invoices)
+        total_fees = sum(inv['supplier_fee'] for inv in invoices)
+    
+    return render_template('invoices/home.html',
+                         invoices=invoices,
+                         total_invoices=total_invoices,
+                         total_suppliers=total_suppliers,
+                         total_amount=total_amount,
+                         total_fees=total_fees)
+
 @app.route('/test/invoice')
 def test_invoice_view():
     """测试发票查看 - HTML预览页面"""

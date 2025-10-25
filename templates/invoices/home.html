@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('nav_invoices') }} - {{ t('company_name') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid" style="max-width: 98%; padding: 2rem;">
+    
+    <!-- Page Header -->
+    <div class="section-header">
+        <h1 class="section-title" style="color: #FF007F; font-weight: 700;">
+            <i class="bi bi-file-earmark-text"></i> {{ t('nav_invoices') }}
+        </h1>
+        <p class="section-description" style="color: #FF007F;">Supplier Payment Invoices & Financial Documents</p>
+    </div>
+
+    <!-- Statistics Summary -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
+                <div class="stat-value" style="color: #FF007F;">{{ total_invoices }}</div>
+                <div class="stat-label">📄 Total Invoices</div>
+                <div class="stat-corner" style="background: #FF007F;"></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
+                <div class="stat-value" style="color: #322446;">{{ total_suppliers }}</div>
+                <div class="stat-label">🏢 Suppliers</div>
+                <div class="stat-corner" style="background: #322446;"></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
+                <div class="stat-value" style="color: #FF007F;">RM {{ "{:,.2f}".format(total_amount) }}</div>
+                <div class="stat-label">💰 Total Amount</div>
+                <div class="stat-corner" style="background: #FF007F;"></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
+                <div class="stat-value" style="color: #322446;">RM {{ "{:,.2f}".format(total_fees) }}</div>
+                <div class="stat-label">📊 Processing Fees (1%)</div>
+                <div class="stat-corner" style="background: #322446;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sample Invoice Section -->
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <div class="content-card" style="border: 2px solid #FF007F;">
+                <div style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #FF007F; padding: 1.5rem;">
+                    <h3 class="card-title" style="color: #FF007F; font-weight: 700; margin: 0;">
+                        <i class="bi bi-star-fill"></i> Sample Invoice Preview
+                    </h3>
+                </div>
+                <div class="card-body" style="padding: 2rem;">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h4 style="color: #FFFFFF; margin-bottom: 1rem;">Professional Supplier Invoice Template</h4>
+                            <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1rem;">
+                                <i class="bi bi-check-circle-fill" style="color: #FF007F;"></i> Clean white background design<br>
+                                <i class="bi bi-check-circle-fill" style="color: #FF007F;"></i> Professional business format<br>
+                                <i class="bi bi-check-circle-fill" style="color: #FF007F;"></i> Complete transaction details<br>
+                                <i class="bi bi-check-circle-fill" style="color: #FF007F;"></i> 1% processing fee breakdown<br>
+                                <i class="bi bi-check-circle-fill" style="color: #FF007F;"></i> Payment terms & conditions
+                            </p>
+                            <div style="background: rgba(50, 36, 70, 0.3); border-left: 3px solid #FF007F; padding: 1rem; margin-top: 1rem;">
+                                <strong style="color: #FF007F;">Sample Details:</strong><br>
+                                <span style="color: rgba(255, 255, 255, 0.9);">
+                                    Supplier: HUAWEI • Customer: CHEOK JUN YOON<br>
+                                    Invoice No: INF-202506-HUAWEI-01 • Amount: RM 7,672.97
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <a href="/static/sample_invoice.pdf" target="_blank" class="btn-white-glow" style="display: inline-block; margin-bottom: 1rem; width: 80%;">
+                                <i class="bi bi-file-earmark-pdf"></i> View Sample Invoice
+                            </a>
+                            <a href="/static/sample_invoice.pdf" download class="btn btn-outline-light" style="display: inline-block; width: 80%;">
+                                <i class="bi bi-download"></i> Download PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generated Invoices Section -->
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <div class="content-card" style="border: 2px solid #322446;">
+                <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #322446; padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 class="card-title" style="color: #322446; font-weight: 700; margin: 0;">
+                            <i class="bi bi-file-earmark-check"></i> Generated Supplier Invoices
+                        </h3>
+                        <button id="exportInvoiceTable" class="btn btn-sm" style="background: #322446; color: white; border: none;">
+                            <i class="bi bi-download"></i> Export Excel
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    {% if invoices %}
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover elegant-table" id="invoicesTable">
+                            <thead>
+                                <tr>
+                                    <th style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3);">Invoice No</th>
+                                    <th style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3);">Date</th>
+                                    <th style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3);">Customer</th>
+                                    <th style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3);">Supplier</th>
+                                    <th style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3);">Amount</th>
+                                    <th style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3);">Fee (1%)</th>
+                                    <th style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3);">Total</th>
+                                    <th style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3);">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for invoice in invoices %}
+                                <tr>
+                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ invoice.invoice_number }}</td>
+                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ invoice.invoice_date }}</td>
+                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ invoice.customer_name }}</td>
+                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ invoice.supplier_name }}</td>
+                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3);">RM {{ "{:,.2f}".format(invoice.total_amount) }}</td>
+                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3);">RM {{ "{:,.2f}".format(invoice.supplier_fee) }}</td>
+                                    <td style="color: #FF007F; font-weight: bold; text-shadow: 0 0 8px rgba(255,0,127,0.3);">RM {{ "{:,.2f}".format(invoice.total_amount + invoice.supplier_fee) }}</td>
+                                    <td>
+                                        <a href="/static/uploads/{{ invoice.pdf_path }}" target="_blank" class="btn-white-glow" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div style="padding: 3rem; text-align: center;">
+                        <i class="bi bi-inbox" style="font-size: 4rem; color: #322446;"></i>
+                        <p style="color: rgba(255, 255, 255, 0.7); margin-top: 1rem;">
+                            No supplier invoices generated yet.<br>
+                            Upload credit card statements with supplier transactions to generate invoices automatically.
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoice Generation Guide -->
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="content-card" style="border: 1px solid #322446;">
+                <h3 class="card-title" style="color: #FF007F; font-weight: 700;">
+                    <i class="bi bi-lightbulb"></i> How to Generate Invoices
+                </h3>
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div style="background: rgba(50, 36, 70, 0.3); border-left: 3px solid #FF007F; padding: 1rem; height: 100%;">
+                            <h5 style="color: #FF007F;">1. Upload Statements</h5>
+                            <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;">
+                                Upload credit card statements containing INFINITE supplier transactions in the Admin Dashboard.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div style="background: rgba(50, 36, 70, 0.3); border-left: 3px solid #322446; padding: 1rem; height: 100%;">
+                            <h5 style="color: #322446;">2. System Processing</h5>
+                            <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;">
+                                The system automatically identifies supplier transactions and calculates 1% processing fees.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div style="background: rgba(50, 36, 70, 0.3); border-left: 3px solid #FF007F; padding: 1rem; height: 100%;">
+                            <h5 style="color: #FF007F;">3. Invoice Generation</h5>
+                            <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;">
+                                Professional PDF invoices are generated automatically and appear in this page.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// Excel Export
+document.getElementById('exportInvoiceTable')?.addEventListener('click', function() {
+    const table = document.getElementById('invoicesTable');
+    if (!table) return;
+    
+    let csv = [];
+    const rows = table.querySelectorAll('tr');
+    
+    rows.forEach(row => {
+        const cols = row.querySelectorAll('td, th');
+        const csvRow = [];
+        cols.forEach((col, index) => {
+            if (index < cols.length - 1) {
+                csvRow.push('"' + col.innerText.replace(/"/g, '""') + '"');
+            }
+        });
+        csv.push(csvRow.join(','));
+    });
+    
+    const csvContent = csv.join('\n');
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'supplier_invoices_' + new Date().toISOString().slice(0,10) + '.csv';
+    link.click();
+});
+</script>
+
+{% endblock %}
