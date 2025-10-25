@@ -1608,6 +1608,7 @@ def admin_dashboard():
                 ms.bank_name,
                 ms.period_end_date as due_date,
                 ms.closing_balance_total as due_total,
+                ms.previous_balance_total as prev_bal,
                 ms.owner_expenses,
                 ms.owner_payments,
                 ms.owner_balance as owner_os_bal,
