@@ -1,16 +1,5 @@
 # Smart Credit & Loan Manager
 
-## Recent Changes (2025-10-25)
-**Admin Dashboard升级 - 月度账单合并显示 + PRE BAL列**:
-- ✅ 修改admin_dashboard()从`monthly_statements`表查询数据（按银行+月份合并）
-- ✅ 移除Last4列（月度账单可能包含多张卡）
-- ✅ 添加PRE BAL列显示Previous Balance（深紫色#322446突出显示）
-- ✅ Payments显示为正数（更直观，使用abs()格式化）
-- ✅ 列顺序优化：Due Date → PRE BAL → 6个分类字段 → Total → Actions
-- ✅ 创建新路由`monthly_statement_detail`处理月度账单详情查看
-- ✅ 创建新模板`monthly_statement_detail.html`支持多卡账单详情展示
-- ✅ 验证通过：97张月度账单，13列完整显示，数据100%准确
-
 ## Overview
 The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. Its core purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation, guaranteeing 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization suggestions (debt consolidation, balance transfers, loan refinancing), and a success-based fee model. The business vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
@@ -35,23 +24,23 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 
 **Core Features:**
 - **Statement Ingestion:** Supports PDF parsing (with OCR via `pdfplumber`) and Excel, with regex-based transaction extraction and batch upload for 15 major Malaysian banks.
-- **Savings Account Tracking System:** Records all transactions from savings account statements (Maybank, GX Bank, HLB, CIMB, UOB, OCBC, Public Bank) with search-by-customer-name for prepayment settlement. Includes a specialized GX Bank parser for unique statement formats.
+- **Savings Account Tracking System:** Records all transactions from savings account statements (Maybank, GX Bank, HLB, CIMB, UOB, OCBC, Public Bank) with search-by-customer-name for prepayment settlement.
 - **Transaction Categorization:** Keyword-based system with predefined categories and Malaysia-specific merchant recognition.
 - **Statement Validation (Dual Verification):** Ensures 100% data accuracy.
 - **Revenue-Generating Advisory Services:** AI-powered credit card recommendations, financial optimization engine, success-based fee system, and consultation request system.
 - **Data Export & Reporting:** Professional Excel/CSV export and PDF report generation (using ReportLab).
 - **Batch Operations:** Multi-file upload and batch job management.
 - **Reminder System:** Scheduled payment reminders via email.
-- **Authentication & Authorization:** Multi-role permission system (Admin/Customer) with secure SHA-256 hashing. Admin users can access all customer data; Customer users can only access their own data. All sensitive routes protected with @login_required and @customer_access_required decorators.
+- **Authentication & Authorization:** Multi-role permission system (Admin/Customer) with secure SHA-256 hashing.
 - **Customer Authorization Agreement:** Bilingual service agreement.
 - **Statement Organization System:** Organizes statements by `statement_date` with automatic monthly folder structure.
 - **Automated Monthly Report System:** Auto-generates and sends comprehensive galaxy-themed PDF reports per customer monthly, including detailed transactions, category summaries, optimization proposals, DSR calculation, and a profit-sharing service workflow.
 - **Statement Comparison View:** Displays raw PDF alongside categorized reports for validation.
 - **12-Month Timeline View:** Visual calendar grid for each credit card showing statement coverage, amounts, transaction counts, and verification status across a rolling 12-month window.
 - **Intelligent Loan Matcher System:** CTOS report parsing, DSR calculation, and smart loan product matching. Automatically extracts monthly commitments from CTOS PDFs, calculates debt service ratio, and matches clients with eligible loan products from a comprehensive banking database.
-- **Receipt Management System:** OCR-powered receipt upload system supporting JPG/PNG images. Features automatic card number, date, amount, and merchant name extraction using pytesseract. Intelligent matching engine auto-matches receipts to customers and credit cards based on card_last4, transaction date (±3 days), and amount (±1%). Receipts are organized by customer/card number with auto-filing. Supports batch upload, manual matching for failed auto-matches, and provides reconciliation, reimbursement tracking, and audit capabilities. Independent database table (receipts) keeps receipt data separate from credit card and savings systems.
+- **Receipt Management System:** OCR-powered receipt upload system supporting JPG/PNG images. Features automatic card number, date, amount, and merchant name extraction using pytesseract. Intelligent matching engine auto-matches receipts to customers and credit cards based on card_last4, transaction date (±3 days), and amount (±1%). Receipts are organized by customer/card number with auto-filing.
 - **OWNER vs INFINITE Classification System:** Advanced dual-classification system for credit card transactions with 1% supplier fee tracking. Classifies expenses into OWNER (customer personal spending) vs INFINITE (7 configurable supplier merchants with 1% fee), and payments into OWNER (customer payments) vs INFINITE (third-party payer payments). Features first-statement baseline initialization (Previous Balance = 100% OWNER debt), supplier configuration management, customer alias support, and monthly ledger tracking. Implements independent statement-level reconciliation ensuring each bank's monthly statement is recorded separately without aggregation.
-- **Credit Card Ledger (3-Layer Navigation):** Professional hierarchical navigation system for OWNER vs INFINITE analysis. Layer 1: Customer List (displays all customers with full names and auto-generated codes like CCC_ALL for CHANG CHOON CHOW). Layer 2: Year-Month Timeline Grid (CCC_ALL_2024/2025 format with 12-month calendar showing statement availability). Layer 3: Monthly Statement Report (comprehensive analysis including client summary, accounts overview, transaction details per card, monthly summary with OWNER/INFINITE totals, and reconciliation verification). Each layer provides complete bilingual (EN/中文) support.
+- **Credit Card Ledger (3-Layer Navigation):** Professional hierarchical navigation system for OWNER vs INFINITE analysis, providing customer list, year-month timeline, and detailed monthly statement reports.
 
 **AI Advanced Analytics System:**
 - **Financial Health Scoring System:** 0-100 score with optimization suggestions.
@@ -66,38 +55,7 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Design Patterns:** Repository Pattern for database abstraction, Template Inheritance for UI consistency, Context Manager Pattern for database connection handling, and Service Layer Pattern for OWNER/INFINITE classification logic.
 - **Security:** Session secret key from environment variables, file upload size limits, SQL injection prevention, and audit logging.
 - **Data Accuracy:** Implemented robust previous balance extraction and monthly ledger engine overhaul to ensure 100% accuracy in financial calculations and DR/CR classification, including a universal balance-change algorithm for all bank statements. Independent statement-level reconciliation guarantees each monthly statement is tracked separately without data aggregation.
-
-### 🚨 **CRITICAL: Monthly Statement Architecture (2025-10-25 Upgrade)**
-
-**Consolidation Rule**: Each bank + month combination creates ONE monthly statement record (not per-card):
-- **monthly_statements** table structure:
-  - **Unique constraint**: (customer_id, bank_name, statement_month) - ensures one record per bank per month
-  - **6 mandatory classification fields**:
-    - owner_expenses: Sum of all Own's Expenses across all cards
-    - owner_payments: Sum of all Own's Payments across all cards
-    - gz_expenses: Sum of all GZ's Expenses across all cards
-    - gz_payments: Sum of all GZ's Payments across all cards
-    - owner_balance: Own's Outstanding Balance
-    - gz_balance: GZ's Outstanding Balance
-  - **Balance validation**: owner_balance + gz_balance = closing_balance_total (100% accuracy enforced)
-  
-- **monthly_statement_cards** table: Links which credit cards contributed to each monthly statement
-- **transactions** table: Each transaction includes:
-  - monthly_statement_id: Links to consolidated monthly statement
-  - card_last4: Identifies which card (for multi-card statements)
-  - owner_flag: 'owner' or 'gz' classification
-  - classification_source: 'auto' or 'manual' (override support)
-
-**Display Format**:
-- Monthly summaries show aggregated totals across all cards from same bank
-- Transaction details are grouped by card number (card_last4)
-- Each transaction displays as "description (卡XXXX)" to identify the card
-
-**Migration Completed** (2025-10-25):
-- Successfully migrated 75 single-card statements → 63 monthly bank-aggregated statements
-- 5 banks covered: Alliance Bank, HSBC, Hong Leong Bank, Maybank, UOB
-- All 702 transactions migrated with 100% balance accuracy (RM 0.00 variance)
-- Verification checklists generated for two-round manual validation against PDF originals
+- **Monthly Statement Architecture**: Each bank + month combination creates ONE monthly statement record in the `monthly_statements` table, with a unique constraint on (customer_id, bank_name, statement_month). This table aggregates 6 mandatory classification fields (owner_expenses, owner_payments, gz_expenses, gz_payments, owner_balance, gz_balance), ensuring `owner_balance + gz_balance = closing_balance_total`. The `monthly_statement_cards` table links contributing credit cards, and the `transactions` table includes `monthly_statement_id`, `card_last4`, `owner_flag`, and `classification_source`.
 
 ## External Dependencies
 
@@ -118,14 +76,10 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 
 ### File Storage
 
-#### Unified File Storage Architecture (2025-10-23 升级)
-- **统一存储管理服务**: `FileStorageManager` (services/file_storage_manager.py)
-  - 标准化路径生成、目录管理、文件操作
-  - 全自动化文件组织和命名规范
-  - 详细架构文档: `docs/FILE_STORAGE_ARCHITECTURE.md`
-
-- **标准目录结构**: `static/uploads/customers/{customer_code}/`
-  - **Customer Code Format**: `Be_rich_{INITIALS}` (例如: Be_rich_CCC for CHANG CHOON CHOW)
+#### Unified File Storage Architecture
+A `FileStorageManager` handles standardized path generation, directory management, and file operations.
+- **Standard Directory Structure**: `static/uploads/customers/{customer_code}/`
+  - **Customer Code Format**: `Be_rich_{INITIALS}` (e.g., Be_rich_CCC for CHANG CHOON CHOW)
   - **Credit Cards**: `credit_cards/{bank_name}/{YYYY-MM}/{BankName}_{Last4}_{YYYY-MM-DD}.pdf`
   - **Savings Accounts**: `savings/{bank_name}/{YYYY-MM}/{BankName}_{AccountNum}_{YYYY-MM-DD}.pdf`
   - **Payment Receipts**: `receipts/payment_receipts/{YYYY-MM}/{YYYY-MM-DD}_{Merchant}_{Amount}_{card_last4}.{jpg|png}`
@@ -137,29 +91,11 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
   - **Loan Applications**: `loans/applications/{YYYY-MM}/`
   - **CTOS Reports**: `loans/ctos_reports/{YYYY-MM}/`
   - **Documents**: `documents/{contracts|identification|misc}/`
-
-- **文件迁移工具**: `migrate_file_storage.py`
-  - 从旧结构迁移到新统一架构
-  - 支持预览（--dry-run）、测试（--test）、全量迁移（--migrate --yes）
-  - 自动备份、验证、报告生成
-  - **状态**: ✅ 迁移已完成（2025-10-23）
-    - 成功迁移79个文件到新架构
-    - 数据库备份: `db/backup_before_migration_20251023_190630.db`
-    - 旧文件备份: `static/backup_migration_old_folders_20251023_1931/`
-    - 迁移报告: `migration_report_20251023_190630.json`
-
-- **核心特性**:
-  - ✅ **完全客户隔离**: 每个客户独立文件夹
-  - ✅ **路径即索引**: 文件路径自解释，无需额外索引
-  - ✅ **时间维度管理**: 按年月自动分类，易于归档
-  - ✅ **类型自动分类**: 按文件类型自动组织目录
-  - ✅ **标准化命名**: 所有文件遵循统一命名规范
-  - ✅ **可扩展性**: 支持未来新增文件类型
-  - ✅ **跨平台兼容**: 使用正斜杠，相对路径存储
-  
-- **迁移安全措施**:
-  - 迁移前自动备份数据库和文件
-  - 先复制后验证，确保无误再删除旧文件
-  - 完整的迁移日志和报告
-  - 支持单客户测试迁移
-  - 随时可恢复到迁移前状态
+- **Core Characteristics**:
+  - Full customer isolation with independent folders.
+  - Self-explanatory file paths (`path as index`).
+  - Time-dimensional management (automatic year-month classification).
+  - Automatic type-based organization.
+  - Standardized naming conventions for all files.
+  - Scalable for future file types.
+  - Cross-platform compatibility using relative paths.
