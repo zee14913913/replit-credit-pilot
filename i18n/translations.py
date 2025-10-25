@@ -486,6 +486,8 @@ TRANSLATIONS = {
         
         # Receipts
         'receipt_management_system': 'Receipt Management System',
+        'supplier_invoices': 'Supplier Invoices',
+        'payment_receipts': 'Payment Receipts',
         'total_receipts': 'Total Receipts',
         'auto_matched': 'Auto Matched',
         'manual_matched': 'Manual Matched',
@@ -1283,6 +1285,8 @@ TRANSLATIONS = {
         
         # Receipts
         'receipt_management_system': '收据管理系统',
+        'supplier_invoices': '供应商发票',
+        'payment_receipts': '付款收据',
         'total_receipts': '总收据数',
         'auto_matched': '自动匹配',
         'manual_matched': '手动匹配',
