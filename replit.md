@@ -1,12 +1,15 @@
 # Smart Credit & Loan Manager
 
 ## Recent Changes (2025-10-25)
-**Admin Dashboard修复 - 月度账单合并显示**:
+**Admin Dashboard升级 - 月度账单合并显示 + PRE BAL列**:
 - ✅ 修改admin_dashboard()从`monthly_statements`表查询数据（按银行+月份合并）
 - ✅ 移除Last4列（月度账单可能包含多张卡）
+- ✅ 添加PRE BAL列显示Previous Balance（深紫色#322446突出显示）
+- ✅ Payments显示为正数（更直观，使用abs()格式化）
+- ✅ 列顺序优化：Due Date → PRE BAL → 6个分类字段 → Total → Actions
 - ✅ 创建新路由`monthly_statement_detail`处理月度账单详情查看
 - ✅ 创建新模板`monthly_statement_detail.html`支持多卡账单详情展示
-- ✅ 验证通过：97张月度账单，6个分类字段（Own's/GZ's Expenses/Payments/OS Bal）100%准确
+- ✅ 验证通过：97张月度账单，13列完整显示，数据100%准确
 
 ## Overview
 The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. Its core purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation, guaranteeing 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization suggestions (debt consolidation, balance transfers, loan refinancing), and a success-based fee model. The business vision includes expanding into exclusive mortgage interest discounts and SME financing.
