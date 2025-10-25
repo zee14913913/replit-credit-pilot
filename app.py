@@ -3709,12 +3709,18 @@ def credit_card_ledger():
     """
     from utils.name_utils import get_customer_code
     
+    # 确保session中有必要的信息
+    user_id = session.get('user_id')
     user_role = session.get('user_role')
+    
+    if not user_id or not user_role:
+        flash('登录信息已过期，请重新登录', 'warning')
+        return redirect(url_for('admin_login' if user_role == 'admin' else 'customer_login'))
     
     # SECURITY FIX: Use single trusted user_role source
     if user_role == 'admin':
         # Admin: show all customer list + upload functionality
-        accessible_customer_ids = get_accessible_customers(session['user_id'], session['user_role'])
+        accessible_customer_ids = get_accessible_customers(user_id, user_role)
     elif user_role == 'customer':
         # Customer: redirect directly to their timeline (skip Layer 1)
         customer_id = session.get('customer_id')
