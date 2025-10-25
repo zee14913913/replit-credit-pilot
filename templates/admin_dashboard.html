@@ -150,15 +150,14 @@
                                     <th>{{ t('month_of_statement') }}</th>
                                     <th>{{ t('name') }}</th>
                                     <th>{{ t('bank') }}</th>
-                                    <th>{{ t('due_date') }}</th>
                                     <th style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">PRE BAL</th>
+                                    <th>{{ t('due_date') }}</th>
                                     <th>{{ t('owner_expenses') }}</th>
-                                    <th>{{ t('owner_payments') }}</th>
                                     <th>{{ t('infinite_expenses') }}</th>
+                                    <th>{{ t('owner_payments') }}</th>
                                     <th>{{ t('infinite_payments') }}</th>
                                     <th>{{ t('owner_os_bal') }}</th>
                                     <th>{{ t('infinite_os_bal') }}</th>
-                                    <th>{{ t('due_total') }}</th>
                                     <th style="text-align: center; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ t('actions') }}</th>
                                 </tr>
                             </thead>
@@ -169,11 +168,11 @@
                                         <td style="font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ stmt['statement_date'][:7] }}</td>
                                         <td style="font-weight: 600;">{{ stmt['customer_name'] }}</td>
                                         <td style="font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ stmt['bank_abbr'] }}</td>
-                                        <td>{{ stmt['due_date'] if stmt['due_date'] else '-' }}</td>
                                         <td style="font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">RM {{ "{:,.2f}".format(stmt['prev_bal']) }}</td>
+                                        <td>{{ stmt['due_date'] if stmt['due_date'] else '-' }}</td>
                                         <td style="color: #FF007F;">RM {{ "{:,.2f}".format(stmt['owner_expenses']) }}</td>
-                                        <td style="color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">RM {{ "{:,.2f}".format(abs(stmt['owner_payments'])) }}</td>
                                         <td style="color: #FF007F;">RM {{ "{:,.2f}".format(stmt['infinite_expenses']) }}</td>
+                                        <td style="color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">RM {{ "{:,.2f}".format(abs(stmt['owner_payments'])) }}</td>
                                         <td style="color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">RM {{ "{:,.2f}".format(abs(stmt['infinite_payments'])) }}</td>
                                         <td style="font-weight: 700; color: #FF007F;">
                                             RM {{ "{:,.2f}".format(stmt['owner_os_bal']) }}
@@ -181,7 +180,6 @@
                                         <td style="font-weight: 700; color: #FF007F;">
                                             RM {{ "{:,.2f}".format(stmt['infinite_os_bal']) }}
                                         </td>
-                                        <td style="font-weight: 600;">RM {{ "{:,.2f}".format(stmt['due_total']) }}</td>
                                         <td style="text-align: center;">
                                             <a href="{{ url_for('monthly_statement_detail', monthly_statement_id=stmt['statement_id']) }}" 
                                                class="btn btn-sm btn-view-details"
@@ -198,7 +196,7 @@
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td colspan="13" style="text-align: center; padding: 3rem; color: #999;">
+                                        <td colspan="12" style="text-align: center; padding: 3rem; color: #999;">
                                             {{ t('no_cc_statements_found') }}
                                         </td>
                                     </tr>
