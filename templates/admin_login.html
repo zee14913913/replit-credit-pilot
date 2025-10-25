@@ -49,11 +49,12 @@
             </button>
         </form>
         
-        <div class="text-center mt-4">
-            <a href="{{ url_for('index') }}" style="color: rgba(192, 192, 192, 0.7); text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;" 
-               onmouseover="this.style.color='#E0E0E0'" 
-               onmouseout="this.style.color='rgba(192, 192, 192, 0.7)'">
-                ← {{ t('back_to_home') }}
+        <div class="text-center mt-4" style="padding-top: 1.5rem; border-top: 1px solid rgba(192,192,192,0.2);">
+            <p style="color: rgba(255,255,255,0.8); margin-bottom: 0.75rem; font-size: 0.95rem; font-weight: 700; text-shadow: 0 0 8px rgba(255,255,255,0.3);">Not an administrator?</p>
+            <a href="{{ url_for('customer_login') }}" style="color: #FF007F; text-decoration: none; font-weight: 700; font-size: 1.05rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem; text-shadow: 0 0 8px rgba(255,0,127,0.4);" 
+               onmouseover="this.style.color='#FF3399'; this.style.textShadow='0 0 12px rgba(255,0,127,0.6)'" 
+               onmouseout="this.style.color='#FF007F'; this.style.textShadow='0 0 8px rgba(255,0,127,0.4)'">
+                <i class="bi bi-person-fill" style="filter: drop-shadow(0 0 6px rgba(255,0,127,0.4));"></i> {{ t('customer_login') }}
             </a>
         </div>
     </div>
