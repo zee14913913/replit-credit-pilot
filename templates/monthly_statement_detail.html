@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}Monthly Statement - {{ monthly_stmt.bank_name }}{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="section-header">
+        <h1 class="section-title">
+            <i class="bi bi-calendar-month"></i> Monthly Statement Detail / 月度账单详情
+        </h1>
+        <p class="section-subtitle">{{ monthly_stmt.bank_name }} - {{ monthly_stmt.statement_month }}</p>
+    </div>
+
+    <!-- Statement Info Card -->
+    <div class="professional-card mb-4">
+        <div class="row g-4">
+            <div class="col-md-2">
+                <small style="color: var(--text-secondary);">Customer / 客户</small>
+                <div style="color: var(--text-primary); font-weight: 600;">{{ monthly_stmt.customer_name }}</div>
+            </div>
+            <div class="col-md-2">
+                <small style="color: var(--text-secondary);">Month / 月份</small>
+                <div style="color: var(--text-primary); font-weight: 600;">{{ monthly_stmt.statement_month }}</div>
+            </div>
+            <div class="col-md-2">
+                <small style="color: var(--text-secondary);">Cards / 卡数</small>
+                <div style="color: var(--text-primary); font-weight: 600;">{{ summary.card_count }}</div>
+            </div>
+            <div class="col-md-2">
+                <small style="color: var(--text-secondary);">Transactions / 交易数</small>
+                <div style="color: var(--text-primary); font-weight: 600;">{{ summary.total_transactions }}</div>
+            </div>
+            <div class="col-md-2">
+                <small style="color: var(--text-secondary);">Total Balance / 总余额</small>
+                <div style="color: var(--text-primary); font-weight: 600;">RM {{ "{:,.2f}".format(monthly_stmt.closing_balance_total) }}</div>
+            </div>
+            <div class="col-md-2">
+                <a href="{{ url_for('admin_dashboard') }}" class="btn-professional-sm">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cards List -->
+    <div class="professional-card mb-4">
+        <h3 style="color: var(--text-primary); margin-bottom: 1rem;">
+            <i class="bi bi-credit-card"></i> Credit Cards Included / 包含的信用卡
+        </h3>
+        <div class="divider-professional"></div>
+        <div class="row g-3 mt-3">
+            {% for card in cards %}
+            <div class="col-md-4">
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 8px;">
+                    <div style="color: #FF007F; font-weight: 600;">****{{ card.card_number_last4 }}</div>
+                    <small style="color: var(--text-secondary);">Limit: RM {{ "{:,.2f}".format(card.credit_limit) }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Classification Summary -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="professional-card">
+                <h3 style="color: #FF007F; margin-bottom: 1rem;">
+                    <i class="bi bi-person"></i> Own's Summary / 个人账目
+                </h3>
+                <div class="divider-professional"></div>
+                <div class="row g-3 mt-3">
+                    <div class="col-6">
+                        <small style="color: var(--text-secondary);">Expenses / 消费</small>
+                        <div style="color: #FF007F; font-weight: 600;">RM {{ "{:,.2f}".format(summary.owner_expenses) }}</div>
+                    </div>
+                    <div class="col-6">
+                        <small style="color: var(--text-secondary);">Payments / 付款</small>
+                        <div style="color: #FFFFFF; font-weight: 600;">RM {{ "{:,.2f}".format(summary.owner_payments) }}</div>
+                    </div>
+                    <div class="col-12">
+                        <small style="color: var(--text-secondary);">Outstanding Balance / 未偿余额</small>
+                        <div style="color: #FF007F; font-weight: 700; font-size: 1.2rem;">RM {{ "{:,.2f}".format(monthly_stmt.owner_balance) }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="professional-card">
+                <h3 style="color: #322446; margin-bottom: 1rem;">
+                    <i class="bi bi-building"></i> GZ's Summary / 公司账目
+                </h3>
+                <div class="divider-professional"></div>
+                <div class="row g-3 mt-3">
+                    <div class="col-6">
+                        <small style="color: var(--text-secondary);">Expenses / 消费</small>
+                        <div style="color: #FF007F; font-weight: 600;">RM {{ "{:,.2f}".format(summary.gz_expenses) }}</div>
+                    </div>
+                    <div class="col-6">
+                        <small style="color: var(--text-secondary);">Payments / 付款</small>
+                        <div style="color: #FFFFFF; font-weight: 600;">RM {{ "{:,.2f}".format(summary.gz_payments) }}</div>
+                    </div>
+                    <div class="col-12">
+                        <small style="color: var(--text-secondary);">Outstanding Balance / 未偿余额</small>
+                        <div style="color: #FF007F; font-weight: 700; font-size: 1.2rem;">RM {{ "{:,.2f}".format(monthly_stmt.gz_balance) }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supplier Fees -->
+    {% if summary.supplier_fees > 0 %}
+    <div class="alert-professional alert-success-pro mb-4">
+        <i class="bi bi-cash-coin"></i>
+        <strong>Supplier Merchant Fee (1%):</strong> RM {{ "{:,.2f}".format(summary.supplier_fees) }}
+    </div>
+    {% endif %}
+
+    <!-- Transactions Table -->
+    <div class="professional-card">
+        <h3 style="color: var(--text-primary); margin-bottom: 1rem;">
+            <i class="bi bi-table"></i> All Transactions / 所有交易
+        </h3>
+        <div class="divider-professional"></div>
+        <div style="overflow-x: auto; margin-top: 1rem;">
+            <table class="table-professional">
+                <thead>
+                    <tr>
+                        <th>Date / 日期</th>
+                        <th>Card / 卡号</th>
+                        <th>Description / 描述</th>
+                        <th>Type / 类型</th>
+                        <th>Owner / 归属</th>
+                        <th>Amount / 金额</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for txn in transactions %}
+                    <tr>
+                        <td>{{ txn.transaction_date }}</td>
+                        <td>****{{ txn.card_last4 }}</td>
+                        <td>{{ txn.description }}</td>
+                        <td>
+                            {% if txn.transaction_type == 'purchase' %}
+                            <span style="color: #e74c3c;">Expense</span>
+                            {% else %}
+                            <span style="color: #2ecc71;">Payment</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if txn.owner_flag == 'own' %}
+                            <span style="color: #FF007F;">Own</span>
+                            {% else %}
+                            <span style="color: #322446;">GZ</span>
+                            {% endif %}
+                        </td>
+                        <td style="font-weight: 600; text-align: right;">
+                            {% if txn.transaction_type == 'purchase' %}
+                            <span style="color: #e74c3c;">-RM {{ "{:,.2f}".format(txn.amount|abs) }}</span>
+                            {% else %}
+                            <span style="color: #2ecc71;">+RM {{ "{:,.2f}".format(txn.amount|abs) }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1597,37 +1597,32 @@ def admin_dashboard():
         cursor.execute("SELECT COUNT(*) FROM credit_cards")
         active_cards = cursor.fetchone()[0]
         
-        # Get all credit card statements with OWNER/INFINITE breakdown
-        # Sorted by: Customer Name -> Bank -> Month (JAN-DEC order)
+        # Get all monthly credit card statements (consolidated by BANK + MONTH)
+        # Sorted by: Customer Name -> Bank -> Month (newest first)
         cursor.execute("""
             SELECT 
-                s.id as statement_id,
-                s.statement_date,
-                cu.id as customer_id,
-                cu.name as customer_name,
-                cc.bank_name,
-                cc.card_number_last4,
-                s.due_date,
-                s.statement_total as due_total,
-                COALESCE(SUM(CASE WHEN t.category = 'owner_expense' THEN ABS(t.amount) ELSE 0 END), 0) as owner_expenses,
-                COALESCE(SUM(CASE WHEN t.category = 'owner_payment' THEN ABS(t.amount) ELSE 0 END), 0) as owner_payments,
-                COALESCE(SUM(CASE WHEN t.category = 'infinite_expense' THEN ABS(t.amount) ELSE 0 END), 0) as infinite_expenses,
-                COALESCE(SUM(CASE WHEN t.category = 'infinite_payment' THEN ABS(t.amount) ELSE 0 END), 0) as infinite_payments
-            FROM statements s
-            JOIN credit_cards cc ON s.card_id = cc.id
-            JOIN customers cu ON cc.customer_id = cu.id
-            LEFT JOIN transactions t ON s.id = t.statement_id
-            GROUP BY s.id, s.statement_date, cu.id, cu.name, cc.bank_name, cc.card_number_last4, s.due_date, s.statement_total
-            ORDER BY cu.name ASC, cc.bank_name ASC, s.statement_date ASC
+                ms.id as statement_id,
+                ms.statement_month as statement_date,
+                ms.customer_id,
+                c.name as customer_name,
+                ms.bank_name,
+                ms.period_end_date as due_date,
+                ms.closing_balance_total as due_total,
+                ms.owner_expenses,
+                ms.owner_payments,
+                ms.owner_balance as owner_os_bal,
+                ms.gz_expenses as infinite_expenses,
+                ms.gz_payments as infinite_payments,
+                ms.gz_balance as infinite_os_bal
+            FROM monthly_statements ms
+            JOIN customers c ON ms.customer_id = c.id
+            ORDER BY c.name ASC, ms.bank_name ASC, ms.statement_month DESC
             LIMIT 100
         """)
         cc_statements = [dict(row) for row in cursor.fetchall()]
         
-        # Calculate OWNER and INFINITE outstanding balances for each statement
-        # Also convert bank names to abbreviations
+        # Convert bank names to abbreviations
         for stmt in cc_statements:
-            stmt['owner_os_bal'] = stmt['owner_expenses'] - stmt['owner_payments']
-            stmt['infinite_os_bal'] = stmt['infinite_expenses'] - stmt['infinite_payments']
             stmt['bank_abbr'] = get_bank_abbreviation(stmt['bank_name'])
         
         # Get all savings account statements
@@ -2176,6 +2171,75 @@ def statement_comparison(statement_id):
     
     return render_template('statement_comparison.html',
                          statement=statement,
+                         transactions=transactions,
+                         summary=summary,
+                         customer_id=customer_id)
+
+# Monthly Statement Detail Route (for consolidated statements)
+@app.route('/monthly_statement/<int:monthly_statement_id>/detail')
+def monthly_statement_detail(monthly_statement_id):
+    """月度账单详情页面：显示合并后的月度账单详情（可能包含多张卡）"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # Get monthly statement info
+        cursor.execute('''
+            SELECT ms.*, c.name as customer_name
+            FROM monthly_statements ms
+            JOIN customers c ON ms.customer_id = c.id
+            WHERE ms.id = ?
+        ''', (monthly_statement_id,))
+        
+        monthly_stmt = cursor.fetchone()
+        if not monthly_stmt:
+            flash('Monthly statement not found', 'error')
+            return redirect(url_for('admin_dashboard'))
+        
+        monthly_stmt = dict(monthly_stmt)
+        customer_id = monthly_stmt['customer_id']
+        
+        # Get all cards included in this monthly statement
+        cursor.execute('''
+            SELECT cc.card_number_last4, cc.credit_limit
+            FROM monthly_statement_cards msc
+            JOIN credit_cards cc ON msc.credit_card_id = cc.id
+            WHERE msc.monthly_statement_id = ?
+        ''', (monthly_statement_id,))
+        
+        cards = [dict(row) for row in cursor.fetchall()]
+        
+        # Get all transactions for this monthly statement
+        cursor.execute('''
+            SELECT * FROM transactions
+            WHERE monthly_statement_id = ?
+            ORDER BY transaction_date DESC
+        ''', (monthly_statement_id,))
+        
+        transactions = [dict(row) for row in cursor.fetchall()]
+        
+        # Calculate summary by owner_flag
+        owner_transactions = [t for t in transactions if t.get('owner_flag') == 'own']
+        gz_transactions = [t for t in transactions if t.get('owner_flag') == 'gz']
+        
+        owner_expenses = sum(abs(t['amount']) for t in owner_transactions if t['transaction_type'] == 'purchase')
+        owner_payments = sum(abs(t['amount']) for t in owner_transactions if t['transaction_type'] == 'payment')
+        gz_expenses = sum(abs(t['amount']) for t in gz_transactions if t['transaction_type'] == 'purchase')
+        gz_payments = sum(abs(t['amount']) for t in gz_transactions if t['transaction_type'] == 'payment')
+        supplier_fees = sum(t.get('supplier_fee', 0) for t in transactions if t.get('supplier_fee'))
+        
+        summary = {
+            'owner_expenses': owner_expenses,
+            'owner_payments': owner_payments,
+            'gz_expenses': gz_expenses,
+            'gz_payments': gz_payments,
+            'supplier_fees': supplier_fees,
+            'total_transactions': len(transactions),
+            'card_count': len(cards)
+        }
+    
+    return render_template('monthly_statement_detail.html',
+                         monthly_stmt=monthly_stmt,
+                         cards=cards,
                          transactions=transactions,
                          summary=summary,
                          customer_id=customer_id)

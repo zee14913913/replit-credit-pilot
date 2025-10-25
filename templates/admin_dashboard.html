@@ -150,7 +150,6 @@
                                     <th>{{ t('month_of_statement') }}</th>
                                     <th>{{ t('name') }}</th>
                                     <th>{{ t('bank') }}</th>
-                                    <th>Last4</th>
                                     <th>{{ t('due_date') }}</th>
                                     <th>{{ t('due_total') }}</th>
                                     <th>{{ t('owner_expenses') }}</th>
@@ -169,7 +168,6 @@
                                         <td style="font-weight: 600; color: #FF007F;">{{ stmt['statement_date'][:7] }}</td>
                                         <td style="font-weight: 600;">{{ stmt['customer_name'] }}</td>
                                         <td style="font-weight: 600; color: #FF007F;">{{ stmt['bank_abbr'] }}</td>
-                                        <td style="font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">****{{ stmt['card_number_last4'] }}</td>
                                         <td>{{ stmt['due_date'] if stmt['due_date'] else '-' }}</td>
                                         <td style="font-weight: 600;">RM {{ "{:,.2f}".format(stmt['due_total']) }}</td>
                                         <td style="color: #FF007F;">RM {{ "{:,.2f}".format(stmt['owner_expenses']) }}</td>
@@ -183,7 +181,7 @@
                                             RM {{ "{:,.2f}".format(stmt['infinite_os_bal']) }}
                                         </td>
                                         <td style="text-align: center;">
-                                            <a href="{{ url_for('statement_comparison', statement_id=stmt['statement_id']) }}" 
+                                            <a href="{{ url_for('monthly_statement_detail', monthly_statement_id=stmt['statement_id']) }}" 
                                                class="btn btn-sm btn-view-details"
                                                style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
                                                       border: 2px solid #FF007F; 
@@ -198,7 +196,7 @@
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td colspan="13" style="text-align: center; padding: 3rem; color: #999;">
+                                        <td colspan="12" style="text-align: center; padding: 3rem; color: #999;">
                                             {{ t('no_cc_statements_found') }}
                                         </td>
                                     </tr>
