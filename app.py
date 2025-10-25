@@ -90,6 +90,9 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable static file caching
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
+# Register abs() function for Jinja2 templates
+app.jinja_env.globals.update(abs=abs)
+
 # Force no-cache headers for all responses
 @app.after_request
 def add_no_cache_headers(response):
