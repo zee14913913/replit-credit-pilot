@@ -4685,6 +4685,18 @@ def secure_filename(filename):
     filename = re.sub(r'[^\w\s.-]', '', filename)
     return filename
 
+@app.route('/test/invoice')
+def test_invoice_view():
+    """测试发票查看"""
+    invoice_path = "customers/Be_rich_CJY/invoices/supplier/2025-06/Invoice_HUAWEI_INF-202506-HUAWEI-01_2025-06-30.pdf"
+    full_path = os.path.join('static/uploads', invoice_path)
+    
+    if os.path.exists(full_path):
+        from flask import send_file
+        return send_file(full_path, mimetype='application/pdf')
+    else:
+        return f"文件不存在: {full_path}", 404
+
 
 if __name__ == '__main__':
     # Get environment settings
