@@ -680,10 +680,10 @@ p {
 
 .stat-label {
     color: var(--text-silver);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     line-height: 1.4;
     min-height: 2.8em;
     display: flex;
