@@ -33,6 +33,11 @@ def init_database():
         )
     ''')
     
+    # ⚠️ DEPRECATED TABLE: statements
+    # 此表已废弃，仅保留用于历史数据查询
+    # 新系统请使用: monthly_statements (月度账单合并表)
+    # Deprecated: This table is kept only for historical data reference
+    # New system uses: monthly_statements (consolidated monthly statements)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS statements (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -95,17 +100,8 @@ def init_database():
         )
     ''')
     
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS banking_news (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            bank_name TEXT NOT NULL,
-            news_type TEXT,
-            title TEXT NOT NULL,
-            content TEXT,
-            effective_date TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
+    # ⚠️ REMOVED: banking_news table (News Management feature deprecated)
+    # 已删除: banking_news 表（新闻管理功能已废弃）
     
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS bnm_rates (
