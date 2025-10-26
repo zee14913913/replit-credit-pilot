@@ -221,6 +221,7 @@
                         <th>{{ t('type') }}</th>
                         <th>{{ t('category') }}</th>
                         <th>{{ t('details') }}</th>
+                        <th>CR/DR</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -256,6 +257,13 @@
                             {% endif %}
                             {% if txn.payer_name %}
                             <div><i class="bi bi-person-badge"></i> Payer: {{ txn.payer_name }}</div>
+                            {% endif %}
+                        </td>
+                        <td style="font-weight: 700; text-align: center;">
+                            {% if txn.transaction_type == 'payment' %}
+                            <span style="color: #FF007F;">CR</span>
+                            {% else %}
+                            <span style="color: #FFFEF0;">DR</span>
                             {% endif %}
                         </td>
                     </tr>

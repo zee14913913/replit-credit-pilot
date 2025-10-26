@@ -106,6 +106,7 @@
                                 <th>Category</th>
                                 <th class="text-end">Amount</th>
                                 <th class="text-center">Type</th>
+                                <th class="text-center">CR/DR</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -134,6 +135,13 @@
                                     <i class="bi bi-arrow-down-circle text-danger"></i>
                                     {% else %}
                                     <i class="bi bi-arrow-up-circle text-success"></i>
+                                    {% endif %}
+                                </td>
+                                <td style="font-weight: 700; text-align: center;">
+                                    {% if t.transaction_type == 'credit' %}
+                                    <span style="color: #FF007F;">CR</span>
+                                    {% else %}
+                                    <span style="color: #FFFEF0;">DR</span>
                                     {% endif %}
                                 </td>
                             </tr>

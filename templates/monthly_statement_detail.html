@@ -132,6 +132,7 @@
                         <th>Type / 类型</th>
                         <th>Owner / 归属</th>
                         <th>Amount / 金额</th>
+                        <th>CR/DR</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -159,6 +160,13 @@
                             <span style="color: #e74c3c;">-RM {{ "{:,.2f}".format(txn.amount|abs) }}</span>
                             {% else %}
                             <span style="color: #2ecc71;">+RM {{ "{:,.2f}".format(txn.amount|abs) }}</span>
+                            {% endif %}
+                        </td>
+                        <td style="font-weight: 700; text-align: center;">
+                            {% if txn.transaction_type == 'purchase' %}
+                            <span style="color: #FFFEF0;">DR</span>
+                            {% else %}
+                            <span style="color: #FF007F;">CR</span>
                             {% endif %}
                         </td>
                     </tr>
