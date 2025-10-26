@@ -109,9 +109,9 @@ class FileStorageManager:
         # 生成年月目录
         year_month = statement_date.strftime('%Y-%m')
         
-        # 生成文件名
+        # 生成文件名：银行名_日期.pdf（不包含卡号）
         date_str = statement_date.strftime('%Y-%m-%d')
-        filename = f"{clean_bank}_{card_last4}_{date_str}.{file_extension}"
+        filename = f"{clean_bank}_{date_str}.{file_extension}"
         
         # 拼接完整路径
         path = os.path.join(

@@ -1317,7 +1317,7 @@ def admin_dashboard():
                 c.name as customer_name,
                 ms.bank_name,
                 ms.period_end_date as due_date,
-                ms.closing_balance_total as due_total,
+                ms.closing_balance_total as closing_balance,
                 ms.previous_balance_total as prev_bal,
                 ms.owner_expenses,
                 ms.owner_payments,
