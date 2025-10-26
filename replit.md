@@ -1,5 +1,29 @@
 # Smart Credit & Loan Manager
 
+## Recent Changes (2025-10-26)
+**系统清理 - 删除废弃功能和代码**:
+- ✅ 删除废弃的upload_statement_deprecated路由（324行代码）
+- ✅ 删除废弃的数据库表（banking_news, pending_news, budgets）
+- ✅ 从db/init_db.py移除废弃表的CREATE语句
+- ✅ 在statements表添加废弃标记注释（保留用于历史数据查询）
+- ✅ 整理迁移脚本到migrations/archived/和scripts/archived/文件夹
+- ✅ 创建归档README说明迁移历史
+- ✅ 修复端口5000占用问题，服务器正常运行
+- ✅ Architect审查通过，确认所有更改安全且正确
+
+**系统标准化文档**:
+- ✅ 创建完整的《信用卡账单系统设置标准文档》(`docs/CREDIT_CARD_STATEMENT_STANDARDS.md`)
+  - 11个主要章节，涵盖所有系统设置细节
+  - 数据库架构标准（表结构、字段定义、约束、索引）
+  - 月度账单合并规则（ONE BANK + ONE MONTH = ONE RECORD）
+  - OWNER vs INFINITE分类系统完整规则
+  - 文件存储标准（统一命名规范、目录结构）
+  - 双重验证机制（数学验证 + PDF交叉验证）
+  - 15家支持银行列表及特殊处理规则
+  - PDF解析Regex规则及OCR处理
+  - UI/UX显示格式标准（3色严格限制）
+  - 自动化流程和批量操作标准
+
 ## Overview
 The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. Its core purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation, guaranteeing 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization suggestions (debt consolidation, balance transfers, loan refinancing), and a success-based fee model. The business vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
