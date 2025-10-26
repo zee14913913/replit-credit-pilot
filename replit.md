@@ -2,6 +2,14 @@
 
 ## Recent Changes (2025-10-26)
 
+**Session 4: 添加CR/DR会计标识列**:
+- ✅ 在所有交易记录表格添加CR/DR标识列（会计借贷标准）
+- ✅ Monthly Statement Detail页面：Payment = CR（桃红色#FF007F），Purchase = DR（莹白色#FFFEF0）
+- ✅ Credit Card Ledger Detail页面：Payment = CR（桃红色），Expense = DR（莹白色）
+- ✅ Statement Comparison页面：Credit = CR（桃红色），Debit = DR（莹白色）
+- ✅ 表格布局保持一致，列数对齐，响应式设计完整支持新列
+- ✅ Architect审查通过：CR/DR逻辑正确，颜色分配符合规范，无安全隐患
+
 **Session 3: 用户新标准实施 - 文件命名、界面优化、标准文档最终版**:
 - ✅ 修改文件命名规则：从`Bank_Last4_Date.pdf`改为`Bank_Date.pdf`（移除卡号后4位）
 - ✅ Admin Dashboard优化：添加"Statement OS"列，调整为标准13列布局
