@@ -145,7 +145,7 @@
                             <td style="color: var(--text-secondary);">{{ txn.transaction_date }}</td>
                             <td style="color: var(--text-primary);">{{ txn.description }}</td>
                             <td style="font-weight: 600; color: {% if txn.amount > 0 %}#FF1493{% else %}#FF007F{% endif %};">
-                                {{ "{:,.2f}".format(txn.amount|abs) }}{% if txn.amount < 0 %} CR{% endif %}
+                                {{ "{:,.2f}".format(txn.amount) }}
                             </td>
                             <td>
                                 {% if txn.category == 'owner_expense' %}

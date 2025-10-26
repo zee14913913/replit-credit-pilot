@@ -230,7 +230,7 @@
                         <td style="color: var(--text-secondary);">{{ txn.transaction_date }}</td>
                         <td style="color: var(--text-primary);">{{ txn.description }}</td>
                         <td style="font-weight: 600; {% if txn.amount > 0 %}color: #330066;{% else %}color: #FF007F;{% endif %}">
-                            RM {{ "{:,.2f}".format(txn.amount|abs) }}
+                            RM {{ "{:,.2f}".format(txn.amount) }}
                         </td>
                         <td>
                             {% if txn.transaction_type == 'payment' %}

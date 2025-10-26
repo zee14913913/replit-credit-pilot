@@ -125,9 +125,9 @@
                                     <span class="badge-professional badge-primary-pro">{{ t.category or 'Uncategorized' }}</span>
                                 </td>
                                 <td class="text-end" style="font-weight: 600; color: {{ '#e74c3c' if t.transaction_type == 'debit' else '#2ecc71' }};">
-                                    {{ '-' if t.transaction_type == 'debit' else '+' }}RM {{ "{:,.2f}".format(t.amount|abs) }}
+                                    RM {{ "{:,.2f}".format(t.amount) }}
                                     {% if t.supplier_fee and t.supplier_fee > 0 %}
-                                    <br><small style="color: #2ecc71;">(Fee: +RM {{ "{:.2f}".format(t.supplier_fee) }})</small>
+                                    <br><small style="color: #2ecc71;">(Fee: RM {{ "{:.2f}".format(t.supplier_fee) }})</small>
                                     {% endif %}
                                 </td>
                                 <td class="text-center">
