@@ -17,7 +17,7 @@
     <!-- 账单信息卡片 -->
     <div class="row mb-4">
         <div class="col-12">
-            <div style="background-color: #1a1a1a; border: 1px solid #322446; border-radius: 8px; padding: 25px;">
+            <div style="background-color: #000000; border: 1px solid #322446; border-radius: 8px; padding: 25px;">
                 <h4 style="color: #FF007F; margin-bottom: 20px;">📋 账单信息</h4>
                 
                 <div class="row">
@@ -48,7 +48,7 @@
                         <div style="color: #FFFEF0; opacity: 0.7; font-size: 12px;">验证状态</div>
                         <div>
                             {% if statement.verification_status == 'verified' %}
-                                <span style="color: #00ff00; font-size: 16px; font-weight: bold;">✅ 已验证</span>
+                                <span style="color: #FF007F; font-size: 16px; font-weight: bold;">✅ 已验证</span>
                             {% else %}
                                 <span style="color: #FF007F; font-size: 16px; font-weight: bold;">⏳ 待验证</span>
                             {% endif %}
@@ -66,7 +66,7 @@
     <!-- 验证步骤指引 -->
     <div class="row mb-4">
         <div class="col-12">
-            <div style="background-color: #1a1a1a; border: 2px solid #FF007F; border-radius: 8px; padding: 25px;">
+            <div style="background-color: #000000; border: 2px solid #FF007F; border-radius: 8px; padding: 25px;">
                 <h4 style="color: #FF007F; margin-bottom: 20px;">📝 双重验证步骤（必须完成）</h4>
                 
                 <div style="color: #FFFEF0; line-height: 1.8;">
@@ -114,7 +114,7 @@
     <!-- 交易记录对比表 -->
     <div class="row mb-4">
         <div class="col-12">
-            <div style="background-color: #1a1a1a; border: 1px solid #322446; border-radius: 8px; padding: 25px;">
+            <div style="background-color: #000000; border: 1px solid #322446; border-radius: 8px; padding: 25px;">
                 <h4 style="color: #FF007F; margin-bottom: 20px;">📊 交易记录详细对比表（请与PDF原件逐行核对）</h4>
                 
                 <div class="table-responsive">
@@ -131,7 +131,7 @@
                         </thead>
                         <tbody>
                             {% for txn in transactions %}
-                            <tr style="border-bottom: 1px solid #333;">
+                            <tr style="border-bottom: 1px solid #322446;">
                                 <td style="color: #FFFEF0; text-align: center; font-weight: bold;">{{ loop.index }}</td>
                                 <td style="color: #FFFEF0; text-align: left;">{{ txn.transaction_date }}</td>
                                 <td style="color: #FFFEF0; text-align: left; max-width: 400px; word-wrap: break-word;">
@@ -166,7 +166,7 @@
     <!-- 财务汇总 -->
     <div class="row mb-4">
         <div class="col-12">
-            <div style="background-color: #1a1a1a; border: 2px solid #FF007F; border-radius: 8px; padding: 25px;">
+            <div style="background-color: #000000; border: 2px solid #FF007F; border-radius: 8px; padding: 25px;">
                 <h4 style="color: #FF007F; margin-bottom: 20px;">💰 财务汇总</h4>
                 
                 <div class="row">
@@ -200,7 +200,7 @@
                 点击前请确保已完成第一遍和第二遍人工验证
             </p>
             {% else %}
-            <div style="color: #00ff00; font-size: 20px; font-weight: bold;">
+            <div style="color: #FF007F; font-size: 20px; font-weight: bold;">
                 ✅ 此账单已验证完成！数据已确认100%准确。
             </div>
             <p style="color: #FFFEF0; margin-top: 15px; opacity: 0.7;">
