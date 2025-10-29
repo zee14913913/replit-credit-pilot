@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}储蓄账户管理中心{% endblock %}
+
+{% block content %}
+<div class="container-fluid" style="padding-top: 4rem; padding-bottom: 4rem; background: #000000;">
+    
+    <div class="row mb-4">
+        <div class="col-12">
+            <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); 
+                        border: 2px solid #322446; 
+                        border-radius: 15px; 
+                        padding: 2rem 2.5rem; 
+                        box-shadow: 0 0 30px rgba(50, 36, 70, 0.5);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 style="color: #FFFEF0; text-shadow: 0 0 20px rgba(255,254,240,0.5); font-weight: 700; margin: 0; font-size: 2.2rem;">
+                            <i class="bi bi-bank"></i> 储蓄账户管理中心
+                        </h1>
+                        <p style="color: #999; margin: 0.5rem 0 0 0; font-size: 0.95rem;">Savings Account Management Dashboard</p>
+                    </div>
+                    <div>
+                        <a href="{{ url_for('savings_customers') }}" class="btn btn-sm" 
+                           style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+                                  border: 2px solid #322446; 
+                                  color: #FFFEF0;
+                                  padding: 0.6rem 1.5rem;
+                                  font-weight: 600;">
+                            <i class="bi bi-arrow-left"></i> 返回客户列表
+                        </a>
+                        <a href="{{ url_for('logout') }}" class="btn btn-sm" 
+                           style="background: linear-gradient(135deg, #2d1a1a 0%, #3d2d2d 100%); 
+                                  border: 2px solid #FF007F; 
+                                  color: #FFFEF0;
+                                  padding: 0.6rem 1.5rem;
+                                  font-weight: 600;">
+                            <i class="bi bi-box-arrow-right"></i> 退出登录
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon" style="color: #FF007F;">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 style="color: #FF007F; text-shadow: 0 0 15px rgba(255, 0, 127, 0.6); font-weight: 700; margin: 0; font-size: 2.5rem;">{{ total_customers }}</h3>
+                    <p style="color: #FFFEF0; margin: 0; font-weight: 600; font-size: 0.9rem;">储蓄账户客户总数</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon" style="color: #FF007F;">
+                    <i class="bi bi-bank2"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 style="color: #FF007F; text-shadow: 0 0 15px rgba(255, 0, 127, 0.6); font-weight: 700; margin: 0; font-size: 2.5rem;">{{ total_accounts }}</h3>
+                    <p style="color: #FFFEF0; margin: 0; font-weight: 600; font-size: 0.9rem;">储蓄账户总数</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon" style="color: #FF007F;">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 style="color: #FF007F; text-shadow: 0 0 15px rgba(255, 0, 127, 0.6); font-weight: 700; margin: 0; font-size: 2.5rem;">{{ total_statements }}</h3>
+                    <p style="color: #FFFEF0; margin: 0; font-weight: 600; font-size: 0.9rem;">月结单总数</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon" style="color: #FF007F;">
+                    <i class="bi bi-currency-dollar"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 style="color: #FF007F; text-shadow: 0 0 15px rgba(255, 0, 127, 0.6); font-weight: 700; margin: 0; font-size: 2.5rem;">{{ total_transactions }}</h3>
+                    <p style="color: #FFFEF0; margin: 0; font-weight: 600; font-size: 0.9rem;">交易笔数</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card galaxy-card" style="background: linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%); border: 2px solid rgba(50, 36, 70, 0.5); border-radius: 15px; box-shadow: 0 0 30px rgba(50, 36, 70, 0.4);">
+                <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #322446;">
+                    <h3 class="card-title-custom" style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; margin: 0; padding: 1.5rem;">
+                        <i class="bi bi-file-earmark-text"></i> 最近上传的月结单
+                    </h3>
+                </div>
+                <div class="card-body-custom" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto;">
+                            <thead style="background: rgba(50, 36, 70, 0.3); border-bottom: 2px solid #322446;">
+                                <tr>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">月份</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">客户姓名</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">银行</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">账号尾数</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">总Credit</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">总Debit</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">Closing Balance</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">验证状态</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if statements %}
+                                    {% for stmt in statements %}
+                                    <tr class="hover-glow-row">
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">{{ stmt['statement_date'][:7] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">{{ stmt['customer_name'] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">{{ stmt['bank_name'] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #999; white-space: nowrap;">****{{ stmt['account_number_last4'] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FF007F; text-shadow: 0 0 8px rgba(255,0,127,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['total_credit']) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #322446; text-shadow: 0 0 8px rgba(50,36,70,0.5); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['total_debit']) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['closing_balance'] if stmt['closing_balance'] else 0) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">
+                                            {% if stmt['verification_status'] == 'verified' %}
+                                                <span class="badge" style="background: linear-gradient(135deg, #1a3d1a 0%, #2d5d2d 100%); color: #90EE90; border: 1px solid #90EE90; padding: 0.35rem 0.8rem; font-size: 0.75rem; font-weight: 600;">
+                                                    <i class="bi bi-check-circle-fill"></i> 已验证
+                                                </span>
+                                            {% else %}
+                                                <span class="badge" style="background: linear-gradient(135deg, #3d3d1a 0%, #5d5d2d 100%); color: #FFD700; border: 1px solid #FFD700; padding: 0.35rem 0.8rem; font-size: 0.75rem; font-weight: 600;">
+                                                    <i class="bi bi-clock-fill"></i> 待验证
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center; white-space: nowrap;">
+                                            <a href="{{ url_for('verify_savings_statement', statement_id=stmt['statement_id']) }}" 
+                                               class="btn btn-sm btn-view-details"
+                                               style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+                                                      border: 2px solid #322446; 
+                                                      color: #FFFEF0;
+                                                      text-shadow: 0 0 8px rgba(255,254,240,0.3);
+                                                      font-weight: 600;
+                                                      padding: 0.25rem 0.75rem;
+                                                      font-size: 0.75rem;">
+                                                <i class="bi bi-eye"></i> 查看详情
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="9" style="text-align: center; padding: 3rem; color: #999;">
+                                            暂无月结单数据
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+.stat-card {
+    background: linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
+    border: 2px solid rgba(50, 36, 70, 0.5);
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 0 20px rgba(50, 36, 70, 0.3);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 30px rgba(255, 0, 127, 0.4);
+    border-color: rgba(255, 0, 127, 0.5);
+}
+
+.stat-icon {
+    font-size: 3rem;
+    margin-right: 1.5rem;
+}
+
+.stat-info h3 {
+    margin: 0;
+}
+
+.hover-glow-row {
+    transition: all 0.3s ease;
+}
+
+.hover-glow-row:hover {
+    background: rgba(50, 36, 70, 0.2) !important;
+    box-shadow: 0 0 20px rgba(255, 0, 127, 0.2);
+}
+
+.btn-view-details:hover {
+    background: linear-gradient(135deg, #2d2d2d 0%, #3d3d3d 100%) !important;
+    border-color: #FF007F !important;
+    box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+    transform: translateY(-2px);
+}
+</style>
+{% endblock %}

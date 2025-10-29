@@ -1419,6 +1419,96 @@ def admin_logout():
     flash(translate('admin_logged_out', lang), 'success')
     return redirect(url_for('index'))
 
+# ==================== SAVINGS ADMIN AUTHENTICATION ====================
+
+@app.route('/savings-admin-login', methods=['GET', 'POST'])
+def savings_admin_login():
+    """储蓄账户管理员登录"""
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        admin_email = os.environ.get('ADMIN_EMAIL')
+        admin_password = os.environ.get('ADMIN_PASSWORD')
+        
+        if not admin_email or not admin_password:
+            flash('管理员凭证未配置。请设置ADMIN_EMAIL和ADMIN_PASSWORD环境变量。', 'danger')
+            return render_template('savings_admin_login.html')
+        
+        if email == admin_email and password == admin_password:
+            session['user_role'] = 'savings_admin'
+            session['user_email'] = email
+            session['user_name'] = 'Savings Administrator'
+            session['is_admin'] = True
+            flash('储蓄账户管理员登录成功！', 'success')
+            return redirect(url_for('savings_admin_dashboard'))
+        else:
+            flash('邮箱或密码错误', 'danger')
+    
+    return render_template('savings_admin_login.html')
+
+@app.route('/savings-admin')
+def savings_admin_dashboard():
+    """储蓄账户管理中心 Dashboard"""
+    if session.get('user_role') not in ['admin', 'savings_admin']:
+        flash('请先登录储蓄账户管理中心', 'warning')
+        return redirect(url_for('savings_admin_login'))
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 统计数据
+        cursor.execute("""
+            SELECT COUNT(DISTINCT c.id) as total_customers
+            FROM customers c
+            JOIN savings_accounts sa ON c.id = sa.customer_id
+        """)
+        total_customers = cursor.fetchone()['total_customers']
+        
+        cursor.execute("SELECT COUNT(*) as total_accounts FROM savings_accounts")
+        total_accounts = cursor.fetchone()['total_accounts']
+        
+        cursor.execute("SELECT COUNT(*) as total_statements FROM savings_statements")
+        total_statements = cursor.fetchone()['total_statements']
+        
+        cursor.execute("SELECT COUNT(*) as total_transactions FROM savings_transactions")
+        total_transactions = cursor.fetchone()['total_transactions']
+        
+        # 获取最近的月结单（前30条）
+        cursor.execute("""
+            SELECT 
+                ss.id as statement_id,
+                ss.statement_date,
+                ss.total_transactions,
+                ss.verification_status,
+                ss.verified_at,
+                sa.bank_name,
+                sa.account_number_last4,
+                c.id as customer_id,
+                c.name as customer_name,
+                COALESCE(SUM(CASE WHEN st.transaction_type = 'credit' THEN ABS(st.amount) ELSE 0 END), 0) as total_credit,
+                COALESCE(SUM(CASE WHEN st.transaction_type = 'debit' THEN ABS(st.amount) ELSE 0 END), 0) as total_debit,
+                MAX(st.balance) as closing_balance
+            FROM savings_statements ss
+            JOIN savings_accounts sa ON ss.savings_account_id = sa.id
+            JOIN customers c ON sa.customer_id = c.id
+            LEFT JOIN savings_transactions st ON ss.id = st.savings_statement_id
+            GROUP BY ss.id, ss.statement_date, ss.total_transactions, ss.verification_status, 
+                     ss.verified_at, sa.bank_name, sa.account_number_last4, c.id, c.name
+            ORDER BY ss.statement_date DESC, c.name ASC
+            LIMIT 30
+        """)
+        statements = [dict(row) for row in cursor.fetchall()]
+    
+    return render_template('savings_admin_dashboard.html',
+                         total_customers=total_customers,
+                         total_accounts=total_accounts,
+                         total_statements=total_statements,
+                         total_transactions=total_transactions,
+                         statements=statements)
+
+# ==================== END SAVINGS ADMIN AUTHENTICATION ====================
+
 @app.route('/admin/customers-cards')
 def admin_customers_cards():
     """Admin page showing all customers and their credit cards"""
