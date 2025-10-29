@@ -397,31 +397,60 @@ total_transactions_in_db == total_transactions_in_pdf
 last_transaction_balance == closing_balance_in_pdf
 ```
 
-### 第二重验证：人工验证
+### 第二重验证：双重人工验证（Mandatory）
 
-#### 验证流程
-1. **打开PDF** - 在系统中查看原始PDF
-2. **逐行对比** - 将系统记录与PDF逐行对比
-3. **标记状态** - 验证通过后标记为 `verified`
-4. **记录差异** - 如有差异，在 `discrepancy_notes` 中记录
+#### 核心要求：零容差、100%准确性
 
-#### 验证标准
-- [x] 交易日期100%一致
-- [x] 交易描述100%一致
-- [x] 交易金额100%一致
-- [x] 交易类型（Credit/Debit）正确
-- [x] 每笔交易的余额正确
-- [x] 交易总数一致
+每条存入系统的交易记录的**序号、日期、描述、金额、类型、余额**都必须与PDF原件完全一致，一字不差。
 
-#### 验证记录
-```sql
-UPDATE savings_statements
-SET 
-    verification_status = 'verified',
-    verified_by = 'Admin Name',
-    verified_at = CURRENT_TIMESTAMP
-WHERE id = {statement_id};
+#### 双重验证工作流程
+
+**第一步：运行验证脚本**
+```bash
+# 显示对比表
+python3 scripts/verify_savings_statement.py <statement_id>
 ```
+
+**第二步：第一遍人工验证**
+1. 打开PDF原件（从输出的PDF路径）
+2. 逐行对比：序号、日期、描述、金额、类型、余额
+3. 重点检查：
+   - 描述内容是否有多字、少字、错字
+   - 特殊字符（空格、标点符号）是否一致
+   - 日期格式是否准确
+   - 金额小数点后2位是否正确
+4. 在纸上记录：第1遍验证通过 ✓
+
+**第三步：第二遍人工验证**
+1. 休息5分钟，让眼睛放松
+2. 重新从第1笔交易开始，再次逐行对比
+3. 特别注意第一遍标记的疑问点
+4. 在纸上记录：第2遍验证通过 ✓
+
+**第四步：标记为已验证**
+```bash
+# 确认两遍验证都通过后
+python3 scripts/mark_statement_verified.py <statement_id>
+# 输入 YES 确认
+```
+
+#### 验证标准（100%准确性）
+- [x] 交易总数：系统记录数 = PDF交易总数
+- [x] 交易日期：100%一致
+- [x] 交易描述：100%一致（一字不差，包括空格和标点）
+- [x] 交易金额：小数点后2位完全相同
+- [x] 交易类型：CR/DR标识正确
+- [x] 每笔余额：余额连续性正确
+- [x] Total Credit：系统汇总 = PDF汇总
+- [x] Total Debit：系统汇总 = PDF汇总
+- [x] Closing Balance：期末余额完全一致
+
+**不合格标准**：任何一项不符合100%要求，整个账单验证失败。
+
+#### 详细验证流程
+
+完整的双重验证工作流程、检查清单、质量标准，请参见：
+**`docs/MANUAL_VERIFICATION_WORKFLOW.md`**
 
 ---
 
@@ -477,18 +506,29 @@ WHERE id = {statement_id};
 - 显示成功/失败信息
 - 显示交易总数
 
-#### 步骤12: 人工验证（必须！）
-- 访问: `/savings/account/{account_id}`
-- 查看账单详情
-- 逐行对比PDF
+#### 步骤12: 双重人工验证（必须！）
+```bash
+# 运行验证脚本
+python3 scripts/verify_savings_statement.py <statement_id>
+```
+- 打开PDF原件
+- 第一遍：逐行对比序号、日期、描述、金额、类型、余额
+- 休息5分钟
+- 第二遍：重新逐行对比一遍
 
 #### 步骤13: 标记验证状态
-- 点击"Verify"按钮
-- 填写验证信息
+```bash
+# 确认两遍验证都通过后
+python3 scripts/mark_statement_verified.py <statement_id>
+```
+- 输入 `YES` 确认
+- 系统更新验证状态为 `verified`
+- 记录验证时间戳
 
 #### 步骤14: 完成
-- 验证状态更新为 `verified`
+- 验证状态：`verified`
 - 数据可用于后续分析
+- 详细验证流程：`docs/MANUAL_VERIFICATION_WORKFLOW.md`
 
 ### 批量上传注意事项
 

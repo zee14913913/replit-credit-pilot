@@ -16,11 +16,41 @@
 - ✅ 月度报表生成规则（30/31号生成，1号发送）
 - ✅ 3色严格限制（Black #000000, Hot Pink #FF007F, Dark Purple #322446）
 
-**用途**：这是系统的"操作圣经"，所有录入、验证、分类都按照这个文档执行
+**用途**：信用卡系统的"操作圣经"，所有录入、验证、分类都按照这个文档执行
 
 ---
 
-### 2️⃣ 项目状态和架构记录
+### 2️⃣ 储蓄账户月结单系统设置标准文档
+**文件位置**：`docs/SAVINGS_ACCOUNT_STATEMENT_STANDARDS.md`
+
+**内容**：
+- ✅ 8家支持银行（Maybank, GX Bank, HLB, CIMB, UOB, OCBC, Public Bank, Maybank Islamic）
+- ✅ Balance-Change算法（核心数据提取逻辑）
+- ✅ 双重人工验证系统（Mandatory）
+- ✅ 文件存储标准（按客户/银行/月份分类）
+- ✅ 完整14步上传流程
+- ✅ 100%准确性验证标准
+
+**用途**：储蓄账户系统的"操作圣经"，确保100%数据准确性
+
+---
+
+### 3️⃣ 双重人工验证工作流程
+**文件位置**：`docs/MANUAL_VERIFICATION_WORKFLOW.md`
+
+**内容**：
+- ✅ 零容差、100%准确性核心原则
+- ✅ 完整双重验证工作流程（第一遍 + 第二遍）
+- ✅ 验证检查清单（Checklist）
+- ✅ 质量标准（9项100%准确性要求）
+- ✅ 验证脚本使用说明
+- ✅ 时间估算和安全性规范
+
+**用途**：储蓄账户月结单的双重人工验证标准操作流程
+
+---
+
+### 4️⃣ 项目状态和架构记录
 **文件位置**：`replit.md`
 
 **内容**：
@@ -86,10 +116,20 @@
 ## 🔍 快速查找规则
 
 ### 想要查找...
-- **如何录入账单？** → `docs/CREDIT_CARD_STATEMENT_STANDARDS_FINAL.md`
+
+**信用卡相关**：
+- **如何录入信用卡账单？** → `docs/CREDIT_CARD_STATEMENT_STANDARDS_FINAL.md`
 - **7个供应商是哪些？** → `docs/CREDIT_CARD_STATEMENT_STANDARDS_FINAL.md`
-- **文件命名规则？** → `docs/CREDIT_CARD_STATEMENT_STANDARDS_FINAL.md`
 - **OWNER vs INFINITE怎么分？** → `docs/CREDIT_CARD_STATEMENT_STANDARDS_FINAL.md`
+
+**储蓄账户相关**：
+- **如何录入储蓄账户月结单？** → `docs/SAVINGS_ACCOUNT_STATEMENT_STANDARDS.md`
+- **如何进行双重人工验证？** → `docs/MANUAL_VERIFICATION_WORKFLOW.md`
+- **Balance-Change算法是什么？** → `docs/SAVINGS_ACCOUNT_STATEMENT_STANDARDS.md`
+- **支持哪些银行？** → `docs/SAVINGS_ACCOUNT_STATEMENT_STANDARDS.md`
+
+**系统相关**：
+- **文件命名规则？** → `docs/CREDIT_CARD_STATEMENT_STANDARDS_FINAL.md` 或 `docs/SAVINGS_ACCOUNT_STATEMENT_STANDARDS.md`
 - **系统有什么功能？** → `docs/core/系统功能完整清单.md`
 - **如何部署系统？** → `docs/deployment/DEPLOYMENT_GUIDE.md`
 - **最新变更记录？** → `replit.md`
@@ -99,11 +139,13 @@
 
 ## 🎯 核心原则（必须记住）
 
-1. **标准文档位置固定**：`docs/CREDIT_CARD_STATEMENT_STANDARDS_FINAL.md`
-2. **系统记忆固定**：`replit.md`
-3. **文档索引固定**：`DOCUMENTATION_INDEX.md`（本文件）
+1. **信用卡标准文档**：`docs/CREDIT_CARD_STATEMENT_STANDARDS_FINAL.md`
+2. **储蓄账户标准文档**：`docs/SAVINGS_ACCOUNT_STATEMENT_STANDARDS.md`
+3. **双重验证工作流程**：`docs/MANUAL_VERIFICATION_WORKFLOW.md`
+4. **系统记忆**：`replit.md`
+5. **文档索引**：`DOCUMENTATION_INDEX.md`（本文件）
 
-**这3个文件是整个系统的"导航中心"，永远不会移动或删除！**
+**这5个文件是整个系统的"导航中心"，永远不会移动或删除！**
 
 ---
 
@@ -121,6 +163,11 @@
 
 ## 🚀 最后更新
 
-**日期**：2025年10月26日  
+**日期**：2024年10月29日  
+**更新内容**：
+- ✅ 新增储蓄账户月结单系统设置标准文档
+- ✅ 新增双重人工验证工作流程文档
+- ✅ 更新文档索引，添加储蓄账户相关内容
+
 **状态**：✅ 文档系统已完整建立，所有文件位置固定  
 **下次更新**：有新增或删除文档时更新此索引
