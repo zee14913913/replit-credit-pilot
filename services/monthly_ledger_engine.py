@@ -4,8 +4,9 @@ Monthly Ledger Engine
 """
 import sqlite3
 from datetime import datetime
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 from services.ledger_classifier import LedgerClassifier
+from services.invoice_generator import SupplierInvoiceGenerator
 
 
 class MonthlyLedgerEngine:
@@ -95,9 +96,9 @@ class MonthlyLedgerEngine:
                 
                 print(f"📅 处理 {statement_date[:7]} (Statement ID: {statement_id})")
                 
-                # 获取该月所有交易（包含category字段）
+                # 获取该月所有交易（包含category字段和transaction_date）
                 cursor.execute("""
-                    SELECT id, description, amount, transaction_type, category
+                    SELECT id, description, amount, transaction_type, category, transaction_date
                     FROM transactions
                     WHERE statement_id = ?
                 """, (statement_id,))
@@ -111,7 +112,7 @@ class MonthlyLedgerEngine:
                 infinite_supplier_transactions = []  # 用于发票生成
                 
                 # 使用category字段进行分类和累计
-                for txn_id, description, amount, txn_type, category in transactions:
+                for txn_id, description, amount, txn_type, category, transaction_date in transactions:
                     # 使用category字段判断（优先级高于动态分类）
                     if category == 'owner_expense':
                         customer_spend += abs(amount)
@@ -126,7 +127,8 @@ class MonthlyLedgerEngine:
                                 'transaction_id': txn_id,
                                 'supplier_name': supplier_name,
                                 'amount': abs(amount),
-                                'description': description
+                                'description': description,
+                                'date': transaction_date  # 保留实际交易日期
                             })
                     elif category == 'infinite_payment':
                         infinite_payments += abs(amount)
@@ -140,7 +142,8 @@ class MonthlyLedgerEngine:
                                     'transaction_id': txn_id,
                                     'supplier_name': supplier_name,
                                     'amount': abs(amount),
-                                    'description': description
+                                    'description': description,
+                                    'date': transaction_date  # 保留实际交易日期
                                 })
                             else:
                                 customer_spend += abs(amount)
@@ -228,10 +231,24 @@ class MonthlyLedgerEngine:
                 
                 # 如果有INFINITE供应商交易，生成发票记录
                 if infinite_supplier_transactions:
-                    self._generate_supplier_invoices(
-                        cursor, customer_id, statement_id, 
-                        month_start, infinite_supplier_transactions
-                    )
+                    # 获取或创建对应的monthly_statement_id
+                    year_month = month_start[:7]  # 2025-05-01 -> 2025-05
+                    cursor.execute("""
+                        SELECT id FROM monthly_statements
+                        WHERE customer_id = ? AND statement_month = ?
+                    """, (customer_id, year_month))
+                    ms_row = cursor.fetchone()
+                    
+                    if ms_row:
+                        monthly_statement_id = ms_row[0]
+                        # 交易已包含实际的transaction_date，无需覆盖
+                        
+                        self._generate_supplier_invoices(
+                            cursor, customer_id, monthly_statement_id, 
+                            month_start, infinite_supplier_transactions
+                        )
+                    else:
+                        print(f"   ⚠️  找不到对应的monthly_statement (customer_id={customer_id}, month={year_month})，跳过发票生成")
                 
                 # 更新上月余额
                 previous_customer_balance = customer_rolling_balance
@@ -251,47 +268,95 @@ class MonthlyLedgerEngine:
         finally:
             conn.close()
     
-    def _generate_supplier_invoices(self, cursor, customer_id: int, statement_id: int, 
+    def _generate_supplier_invoices(self, cursor, customer_id: int, monthly_statement_id: int, 
                                    month_start: str, transactions: List[Dict]):
-        """生成供应商发票记录"""
-        # 按供应商分组
-        supplier_groups = {}
+        """生成供应商发票记录和PDF文件"""
+        # 获取客户信息
+        cursor.execute('SELECT name, customer_code FROM customers WHERE id = ?', (customer_id,))
+        customer_row = cursor.fetchone()
+        if not customer_row:
+            print(f"   ⚠️  客户ID {customer_id} 不存在，跳过发票生成")
+            return
+        
+        customer_name = customer_row[0]
+        customer_code = customer_row[1]
+        
+        # 按日期+供应商分组（每个日期的供应商交易独立发票）
+        date_supplier_groups = {}
         for txn in transactions:
             supplier_name = txn['supplier_name']
-            if supplier_name not in supplier_groups:
-                supplier_groups[supplier_name] = []
-            supplier_groups[supplier_name].append(txn)
+            transaction_date = txn['date']
+            
+            # 创建日期+供应商的组合key
+            group_key = (transaction_date, supplier_name)
+            
+            if group_key not in date_supplier_groups:
+                date_supplier_groups[group_key] = []
+            date_supplier_groups[group_key].append(txn)
         
-        # 为每个供应商生成发票
-        for supplier_name, txns in supplier_groups.items():
+        # 初始化PDF生成器
+        invoice_generator = SupplierInvoiceGenerator()
+        
+        # 为每个日期的供应商交易生成独立发票
+        for (transaction_date, supplier_name), txns in date_supplier_groups.items():
             total_amount = sum([t['amount'] for t in txns])
             supplier_fee = self.classifier.calculate_supplier_fee(total_amount, supplier_name)
             
-            # 生成发票编号
-            invoice_number = f"INF-{month_start[:7].replace('-', '')}-{supplier_name.replace(' ', '')[:10]}"
+            # 生成发票编号（包含日期以确保唯一性）
+            # 格式: INF-YYYYMMDD-SUPPLIER
+            date_str = transaction_date.replace('-', '').replace(' ', '')[:8]  # YYYYMMDD
+            safe_supplier = supplier_name.upper().replace(' ', '')[:10]
+            invoice_number = f"INF-{date_str}-{safe_supplier}"
             
-            # 检查是否已存在
+            # 检查是否已存在（使用invoice_number作为唯一标识）
             cursor.execute("""
                 SELECT id FROM supplier_invoices 
-                WHERE customer_id = ? AND statement_id = ? AND supplier_name = ?
-            """, (customer_id, statement_id, supplier_name))
+                WHERE invoice_number = ?
+            """, (invoice_number,))
             
-            if cursor.fetchone():
+            existing = cursor.fetchone()
+            
+            # 准备交易数据供PDF生成
+            txn_list = []
+            for t in txns:
+                txn_list.append({
+                    'transaction_date': t['date'],
+                    'transaction_details': t['description'],
+                    'amount': t['amount'],
+                    'supplier_fee': self.classifier.calculate_supplier_fee(t['amount'], supplier_name)
+                })
+            
+            # 生成PDF（使用实际交易日期）
+            try:
+                pdf_path = invoice_generator.generate_invoice(
+                    supplier_name=supplier_name,
+                    transactions=txn_list,
+                    customer_name=customer_name,
+                    customer_code=customer_code,
+                    statement_date=transaction_date,  # 使用实际交易日期
+                    invoice_number=invoice_number
+                )
+                print(f"      ✅ PDF已生成: {transaction_date} {supplier_name} - {pdf_path}")
+            except Exception as e:
+                print(f"      ⚠️  PDF生成失败: {supplier_name} - {e}")
+                pdf_path = None
+            
+            if existing:
                 # 更新
                 cursor.execute("""
                     UPDATE supplier_invoices 
-                    SET total_amount = ?, supplier_fee = ?, invoice_date = ?
-                    WHERE customer_id = ? AND statement_id = ? AND supplier_name = ?
-                """, (total_amount, supplier_fee, month_start, customer_id, statement_id, supplier_name))
+                    SET total_amount = ?, supplier_fee = ?, invoice_date = ?, pdf_path = ?
+                    WHERE invoice_number = ?
+                """, (total_amount, supplier_fee, transaction_date, pdf_path, invoice_number))
             else:
-                # 插入
+                # 插入（使用monthly_statement_id，实际交易日期）
                 cursor.execute("""
                     INSERT INTO supplier_invoices 
-                    (customer_id, statement_id, supplier_name, invoice_number, 
-                     total_amount, supplier_fee, invoice_date)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                """, (customer_id, statement_id, supplier_name, invoice_number,
-                      total_amount, supplier_fee, month_start))
+                    (customer_id, monthly_statement_id, supplier_name, invoice_number, 
+                     total_amount, supplier_fee, invoice_date, pdf_path)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """, (customer_id, monthly_statement_id, supplier_name, invoice_number,
+                      total_amount, supplier_fee, transaction_date, pdf_path))
     
     def calculate_all_cards_for_customer(self, customer_id: int, recalculate_all: bool = False):
         """计算客户所有信用卡的月度账本"""
@@ -316,7 +381,7 @@ class MonthlyLedgerEngine:
             print(f"\n📇 处理: {bank_name} (*{last4})")
             self.calculate_monthly_ledger_for_card(card_id, recalculate_all)
     
-    def get_monthly_summary(self, customer_id: int, month_start: str = None):
+    def get_monthly_summary(self, customer_id: int, month_start: Optional[str] = None):
         """获取客户的月度汇总"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
