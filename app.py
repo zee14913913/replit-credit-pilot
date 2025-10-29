@@ -2697,6 +2697,7 @@ def upload_savings_statement():
             
             processed_count = 0
             total_transactions = 0
+            last_statement_id = None  # 记录最后一个账单ID用于跳转验证
             
             for file in files:
                 if file and file.filename:
@@ -2805,9 +2806,14 @@ def upload_savings_statement():
                         
                         processed_count += 1
                         total_transactions += len(transactions)
+                        last_statement_id = statement_id  # 记录最后一个账单ID
             
-            flash(f'✅ 成功上传{processed_count}个账单，共{total_transactions}笔交易记录', 'success')
-            return redirect(url_for('savings_accounts'))
+            # ✅ 上传成功后，自动跳转到双重验证页面
+            flash(f'✅ 成功上传{processed_count}个账单，共{total_transactions}笔交易记录。请进行双重人工验证。', 'success')
+            if last_statement_id:
+                return redirect(url_for('verify_savings_statement', statement_id=last_statement_id))
+            else:
+                return redirect(url_for('savings_customers'))
             
         except Exception as e:
             flash(f'上传失败: {str(e)}', 'error')
@@ -2818,6 +2824,94 @@ def upload_savings_statement():
     # GET request - show upload form
     customers = get_all_customers()
     return render_template('savings/upload.html', customers=customers)
+
+@app.route('/savings/verify/<int:statement_id>')
+@login_required
+def verify_savings_statement(statement_id):
+    """
+    储蓄账户月结单 - 双重人工验证页面
+    上传成功后自动跳转到此页面，显示对比表供人工验证
+    """
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取账单信息
+        cursor.execute('''
+            SELECT 
+                ss.id,
+                ss.statement_date,
+                ss.total_transactions,
+                ss.file_path,
+                ss.verification_status,
+                ss.verified_at,
+                sa.bank_name,
+                sa.account_number_last4,
+                sa.account_holder_name,
+                sa.customer_id,
+                c.name as customer_name,
+                c.customer_code
+            FROM savings_statements ss
+            JOIN savings_accounts sa ON ss.savings_account_id = sa.id
+            JOIN customers c ON sa.customer_id = c.id
+            WHERE ss.id = ?
+        ''', (statement_id,))
+        
+        stmt = cursor.fetchone()
+        
+        if not stmt:
+            flash('账单不存在', 'error')
+            return redirect(url_for('savings_customers'))
+        
+        statement = dict(stmt)
+        
+        # 获取所有交易记录
+        cursor.execute('''
+            SELECT 
+                id,
+                transaction_date,
+                description,
+                amount,
+                transaction_type,
+                balance
+            FROM savings_transactions
+            WHERE savings_statement_id = ?
+            ORDER BY id
+        ''', (statement_id,))
+        
+        transactions = [dict(row) for row in cursor.fetchall()]
+        
+        # 计算财务汇总
+        total_credit = sum(t['amount'] for t in transactions if t['transaction_type'] == 'credit')
+        total_debit = sum(t['amount'] for t in transactions if t['transaction_type'] == 'debit')
+        closing_balance = transactions[-1]['balance'] if transactions else 0
+        
+        statement['total_credit'] = total_credit
+        statement['total_debit'] = total_debit
+        statement['closing_balance'] = closing_balance
+    
+    return render_template('savings/verify.html', 
+                          statement=statement, 
+                          transactions=transactions)
+
+@app.route('/savings/mark_verified/<int:statement_id>', methods=['POST'])
+@login_required
+def mark_savings_verified(statement_id):
+    """标记账单为已验证"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 更新验证状态
+        cursor.execute('''
+            UPDATE savings_statements
+            SET verification_status = 'verified',
+                verified_at = ?
+            WHERE id = ?
+        ''', (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), statement_id))
+        
+        conn.commit()
+    
+    flash('✅ 账单已标记为已验证！数据已确认100%准确。', 'success')
+    return redirect(url_for('savings_customers'))
 
 @app.route('/savings/customers')
 def savings_customers():
