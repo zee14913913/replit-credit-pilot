@@ -99,7 +99,7 @@
                 <!-- Transactions Table -->
                 <div style="flex: 1; overflow-y: auto;">
                     <table class="table-professional">
-                        <thead style="position: sticky; top: 0; background: var(--bg-primary); z-index: 10;">
+                        <thead style="position: sticky; top: 0; background: var(--bg-primary); z-index: 10; white-space: nowrap;">
                             <tr>
                                 <th>Date</th>
                                 <th>Description</th>
@@ -112,32 +112,32 @@
                         <tbody>
                             {% for t in transactions %}
                             <tr style="{{ 'background: rgba(46, 204, 113, 0.05);' if t.transaction_type == 'credit' else '' }}">
-                                <td style="color: var(--text-secondary); font-size: 0.9rem;">
+                                <td style="color: var(--text-secondary); font-size: 0.9rem; white-space: nowrap;">
                                     {{ t.transaction_date }}
                                 </td>
-                                <td style="color: var(--text-primary);">
+                                <td style="color: var(--text-primary); white-space: nowrap;">
                                     {{ t.description[:40] }}{% if t.description|length > 40 %}...{% endif %}
                                     {% if t.transaction_subtype == 'supplier_debit' %}
                                     <span class="badge-professional badge-success-pro ms-2">Supplier</span>
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td style="white-space: nowrap;">
                                     <span class="badge-professional badge-primary-pro">{{ t.category or 'Uncategorized' }}</span>
                                 </td>
-                                <td class="text-end" style="font-weight: 600; color: {{ '#e74c3c' if t.transaction_type == 'debit' else '#2ecc71' }};">
+                                <td class="text-end" style="font-weight: 600; color: {{ '#e74c3c' if t.transaction_type == 'debit' else '#2ecc71' }}; white-space: nowrap;">
                                     RM {{ "{:,.2f}".format(t.amount) }}
                                     {% if t.supplier_fee and t.supplier_fee > 0 %}
                                     <br><small style="color: #2ecc71;">(Fee: RM {{ "{:.2f}".format(t.supplier_fee) }})</small>
                                     {% endif %}
                                 </td>
-                                <td class="text-center">
+                                <td style="white-space: nowrap;" class="text-center">
                                     {% if t.transaction_type == 'debit' %}
                                     <i class="bi bi-arrow-down-circle text-danger"></i>
                                     {% else %}
                                     <i class="bi bi-arrow-up-circle text-success"></i>
                                     {% endif %}
                                 </td>
-                                <td style="font-weight: 700; text-align: center;">
+                                <td style="font-weight: 700; text-align: center; white-space: nowrap;">
                                     {% if t.transaction_type == 'credit' %}
                                     <span style="color: #FF007F;">CR</span>
                                     {% else %}

@@ -132,44 +132,44 @@
                     <table class="table" style="margin-top: 1rem;">
                         <thead>
                             <tr style="background: rgba(255,122,67,0.1);">
-                                <th style="color: rgba(255,255,255,0.95); font-weight: 900;">项目</th>
-                                <th style="color: #FF007F; font-weight: 900;">当前</th>
-                                <th style="color: #4CAF50; font-weight: 900;">优化后</th>
+                                <th style="color: rgba(255,255,255,0.95); font-weight: 900; white-space: nowrap;">项目</th>
+                                <th style="color: #FF007F; font-weight: 900; white-space: nowrap;">当前</th>
+                                <th style="color: #4CAF50; font-weight: 900; white-space: nowrap;">优化后</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% if item.type == 'debt_consolidation' %}
                             <tr>
-                                <td style="color: rgba(255,255,255,0.9); font-weight: 700;">利率</td>
-                                <td style="color: #FF007F; font-weight: 700;">{{ "%.1f"|format(item.current.interest_rate) }}%</td>
-                                <td style="color: #4CAF50; font-weight: 700;">{{ "%.1f"|format(item.proposed.interest_rate) }}%</td>
+                                <td style="color: rgba(255,255,255,0.9); font-weight: 700; white-space: nowrap;">利率</td>
+                                <td style="color: #FF007F; font-weight: 700; white-space: nowrap;">{{ "%.1f"|format(item.current.interest_rate) }}%</td>
+                                <td style="color: #4CAF50; font-weight: 700; white-space: nowrap;">{{ "%.1f"|format(item.proposed.interest_rate) }}%</td>
                             </tr>
                             <tr>
-                                <td style="color: rgba(255,255,255,0.9); font-weight: 700;">月度利息</td>
-                                <td style="color: #FF007F; font-weight: 700;">RM {{ "%.2f"|format(item.current.monthly_interest) }}</td>
-                                <td style="color: #4CAF50; font-weight: 700;">RM {{ "%.2f"|format(item.proposed.monthly_interest) }}</td>
+                                <td style="color: rgba(255,255,255,0.9); font-weight: 700; white-space: nowrap;">月度利息</td>
+                                <td style="color: #FF007F; font-weight: 700; white-space: nowrap;">RM {{ "%.2f"|format(item.current.monthly_interest) }}</td>
+                                <td style="color: #4CAF50; font-weight: 700; white-space: nowrap;">RM {{ "%.2f"|format(item.proposed.monthly_interest) }}</td>
                             </tr>
                             {% elif item.type == 'balance_transfer' %}
                             <tr>
-                                <td style="color: rgba(255,255,255,0.9); font-weight: 700;">月度利息</td>
-                                <td style="color: #FF007F; font-weight: 700;">RM {{ "%.2f"|format(item.current.monthly_interest) }}</td>
-                                <td style="color: #4CAF50; font-weight: 700;">RM 0.00 ({{ item.proposed.promo_months }}个月促销)</td>
+                                <td style="color: rgba(255,255,255,0.9); font-weight: 700; white-space: nowrap;">月度利息</td>
+                                <td style="color: #FF007F; font-weight: 700; white-space: nowrap;">RM {{ "%.2f"|format(item.current.monthly_interest) }}</td>
+                                <td style="color: #4CAF50; font-weight: 700; white-space: nowrap;">RM 0.00 ({{ item.proposed.promo_months }}个月促销)</td>
                             </tr>
                             <tr>
-                                <td style="color: rgba(255,255,255,0.9); font-weight: 700;">促销期成本</td>
-                                <td style="color: #FF007F; font-weight: 700;">RM {{ "%.2f"|format(item.current.promo_period_cost) }}</td>
-                                <td style="color: #4CAF50; font-weight: 700;">RM {{ "%.2f"|format(item.proposed.transfer_fee) }} (手续费)</td>
+                                <td style="color: rgba(255,255,255,0.9); font-weight: 700; white-space: nowrap;">促销期成本</td>
+                                <td style="color: #FF007F; font-weight: 700; white-space: nowrap;">RM {{ "%.2f"|format(item.current.promo_period_cost) }}</td>
+                                <td style="color: #4CAF50; font-weight: 700; white-space: nowrap;">RM {{ "%.2f"|format(item.proposed.transfer_fee) }} (手续费)</td>
                             </tr>
                             {% elif item.type == 'cashback_optimization' %}
                             <tr>
-                                <td style="color: rgba(255,255,255,0.9); font-weight: 700;">返现率</td>
-                                <td style="color: #FF007F; font-weight: 700;">{{ "%.1f"|format(item.current.cashback_rate) }}%</td>
-                                <td style="color: #4CAF50; font-weight: 700;">{{ "%.1f"|format(item.proposed.avg_cashback_rate) }}%</td>
+                                <td style="color: rgba(255,255,255,0.9); font-weight: 700; white-space: nowrap;">返现率</td>
+                                <td style="color: #FF007F; font-weight: 700; white-space: nowrap;">{{ "%.1f"|format(item.current.cashback_rate) }}%</td>
+                                <td style="color: #4CAF50; font-weight: 700; white-space: nowrap;">{{ "%.1f"|format(item.proposed.avg_cashback_rate) }}%</td>
                             </tr>
                             <tr>
-                                <td style="color: rgba(255,255,255,0.9); font-weight: 700;">月度返现</td>
-                                <td style="color: #FF007F; font-weight: 700;">RM {{ "%.2f"|format(item.current.monthly_cashback) }}</td>
-                                <td style="color: #4CAF50; font-weight: 700;">RM {{ "%.2f"|format(item.proposed.monthly_cashback) }}</td>
+                                <td style="color: rgba(255,255,255,0.9); font-weight: 700; white-space: nowrap;">月度返现</td>
+                                <td style="color: #FF007F; font-weight: 700; white-space: nowrap;">RM {{ "%.2f"|format(item.current.monthly_cashback) }}</td>
+                                <td style="color: #4CAF50; font-weight: 700; white-space: nowrap;">RM {{ "%.2f"|format(item.proposed.monthly_cashback) }}</td>
                             </tr>
                             {% endif %}
                         </tbody>

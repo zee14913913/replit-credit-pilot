@@ -88,7 +88,7 @@
                                         text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
                                         font-size: 0.95rem;
                                         font-weight: 500;
-                                    ">Total Credit:</td>
+                                    ; white-space: nowrap;">Total Credit:</td>
                                     <td style="
                                         padding: 0.75rem 1rem;
                                         color: #FFFFFF;
@@ -96,7 +96,7 @@
                                         font-size: 0.95rem;
                                         font-weight: 600;
                                         text-align: right;
-                                    ">RM {{ "{:,.2f}".format(customer.total_credit or 0) }}</td>
+                                    ; white-space: nowrap;">RM {{ "{:,.2f}".format(customer.total_credit or 0) }}</td>
                                 </tr>
                                 <tr style="border-bottom: 1px solid rgba(255, 0, 127, 0.3);">
                                     <td style="
@@ -105,7 +105,7 @@
                                         text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
                                         font-size: 0.95rem;
                                         font-weight: 500;
-                                    ">Total Debit:</td>
+                                    ; white-space: nowrap;">Total Debit:</td>
                                     <td style="
                                         padding: 0.75rem 1rem;
                                         color: #FFFFFF;
@@ -113,7 +113,7 @@
                                         font-size: 0.95rem;
                                         font-weight: 600;
                                         text-align: right;
-                                    ">RM {{ "{:,.2f}".format(customer.total_debit or 0) }}</td>
+                                    ; white-space: nowrap;">RM {{ "{:,.2f}".format(customer.total_debit or 0) }}</td>
                                 </tr>
                                 <tr style="border-bottom: 1px solid rgba(255, 0, 127, 0.3);">
                                     <td style="
@@ -122,7 +122,7 @@
                                         text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
                                         font-size: 0.95rem;
                                         font-weight: 500;
-                                    ">Total Statement:</td>
+                                    ; white-space: nowrap;">Total Statement:</td>
                                     <td style="
                                         padding: 0.75rem 1rem;
                                         color: #FFFFFF;
@@ -130,7 +130,7 @@
                                         font-size: 0.95rem;
                                         font-weight: 600;
                                         text-align: right;
-                                    ">{{ customer.statement_count or 0 }}</td>
+                                    ; white-space: nowrap;">{{ customer.statement_count or 0 }}</td>
                                 </tr>
                                 <tr>
                                     <td style="
@@ -139,7 +139,7 @@
                                         text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
                                         font-size: 0.95rem;
                                         font-weight: 500;
-                                    ">Transactions:</td>
+                                    ; white-space: nowrap;">Transactions:</td>
                                     <td style="
                                         padding: 0.75rem 1rem;
                                         color: #FFFFFF;
@@ -147,7 +147,7 @@
                                         font-size: 0.95rem;
                                         font-weight: 600;
                                         text-align: right;
-                                    ">{{ customer.total_transactions or 0 }}</td>
+                                    ; white-space: nowrap;">{{ customer.total_transactions or 0 }}</td>
                                 </tr>
                             </tbody>
                         </table>

@@ -76,31 +76,31 @@
                 <tbody>
                     {% for statement in statements %}
                     <tr>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <strong style="color: var(--text-primary);">
                                 {{ statement.statement_date or 'N/A' }}
                             </strong>
                         </td>
-                        <td style="color: var(--text-secondary);">
+                        <td style="color: var(--text-secondary); white-space: nowrap;">
                             {{ statement.created_at[:16] if statement.created_at else 'N/A' }}
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <span class="badge-professional badge-info-pro">
                                 {{ statement.transaction_count }}
                             </span>
                         </td>
-                        <td style="color: var(--text-primary);">
+                        <td style="color: var(--text-primary); white-space: nowrap;">
                             RM {{ "{:,.2f}".format(statement.total_debit or 0) }}
                         </td>
-                        <td style="color: var(--text-primary);">
+                        <td style="color: var(--text-primary); white-space: nowrap;">
                             RM {{ "{:,.2f}".format(statement.total_credit or 0) }}
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <span class="badge-professional badge-secondary-pro">
                                 {{ statement.file_type.upper() }}
                             </span>
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             {% if statement.verification_status == 'verified' %}
                             <span class="badge-professional badge-pink-custom">✓ {{ t('verified') }}</span>
                             {% elif statement.verification_status == 'discrepancy' %}
@@ -109,7 +109,7 @@
                             <span class="badge-professional badge-purple-custom">{{ t('pending') }}</span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <a href="{{ url_for('savings_verify_statement', statement_id=statement.id) }}" 
                                class="btn btn-sm"
                                style="background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%); color: #000; padding: 0.25rem 0.75rem; border-radius: 6px; text-decoration: none; display: inline-block;">
@@ -151,16 +151,16 @@
                 <tbody>
                     {% for trans in recent_transactions %}
                     <tr>
-                        <td style="color: var(--text-secondary);">
+                        <td style="color: var(--text-secondary); white-space: nowrap;">
                             {{ trans.transaction_date }}
                         </td>
-                        <td style="color: var(--text-primary);">
+                        <td style="color: var(--text-primary); white-space: nowrap;">
                             {{ trans.description[:60] }}{% if trans.description|length > 60 %}...{% endif %}
                         </td>
-                        <td style="color: var(--text-primary); font-weight: 600;">
+                        <td style="color: var(--text-primary); font-weight: 600; white-space: nowrap;">
                             RM {{ "{:,.2f}".format(trans.amount) }}
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             {% if trans.transaction_type == 'debit' %}
                             <span class="badge-professional" style="background: var(--bg-secondary); color: var(--text-primary);">
                                 {{ t('total_debit') }}
@@ -171,7 +171,7 @@
                             </span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             {% if trans.customer_name_tag %}
                             <span class="badge-professional badge-purple-custom">
                                 {{ trans.customer_name_tag }}
@@ -180,14 +180,14 @@
                             <span style="color: var(--text-secondary); font-size: 0.85rem;">-</span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             {% if trans.notes %}
                             <span style="color: var(--text-primary); font-size: 0.9rem;">{{ trans.notes[:30] }}{% if trans.notes|length > 30 %}...{% endif %}</span>
                             {% else %}
                             <span style="color: var(--text-secondary); font-size: 0.85rem;">-</span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <button class="btn btn-sm" 
                                     style="background: rgba(255, 0, 127, 0.2); color: #FF007F; border: 1px solid #FF007F; padding: 0.25rem 0.75rem; border-radius: 6px;"
                                     onclick="openEditModal({{ trans.id }}, '{{ trans.customer_name_tag or '' }}', '{{ trans.notes or '' }}')">

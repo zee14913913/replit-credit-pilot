@@ -227,19 +227,19 @@
                 <tbody>
                     {% for txn in transactions %}
                     <tr>
-                        <td style="color: var(--text-secondary);">{{ txn.transaction_date }}</td>
-                        <td style="color: var(--text-primary);">{{ txn.description }}</td>
-                        <td style="font-weight: 600; {% if txn.amount > 0 %}color: #330066;{% else %}color: #FF007F;{% endif %}">
+                        <td style="color: var(--text-secondary); white-space: nowrap;">{{ txn.transaction_date }}</td>
+                        <td style="color: var(--text-primary); white-space: nowrap;">{{ txn.description }}</td>
+                        <td style="white-space: nowrap;" style="font-weight: 600; {% if txn.amount > 0 %}color: #330066;{% else %}color: #FF007F;{% endif %}">
                             RM {{ "{:,.2f}".format(txn.amount) }}
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             {% if txn.transaction_type == 'payment' %}
                             <span class="badge-professional badge-success-pro">{{ t('payment') }}</span>
                             {% else %}
                             <span class="badge-professional badge-info-pro">{{ t('expense') }}</span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             {% if txn.category == 'owner_expense' %}
                             <span style="color: #330066;"><i class="bi bi-person-fill"></i> OWNER</span>
                             {% elif txn.category == 'infinite_expense' %}
@@ -250,7 +250,7 @@
                             <span style="color: #FF007F;"><i class="bi bi-infinity"></i> {{ t('third_party') }}</span>
                             {% endif %}
                         </td>
-                        <td style="color: var(--text-secondary); font-size: 0.85rem;">
+                        <td style="color: var(--text-secondary); font-size: 0.85rem; white-space: nowrap;">
                             {% if txn.is_supplier %}
                             <div><i class="bi bi-building"></i> {{ txn.supplier_name }}</div>
                             <div style="color: #322446;"><i class="bi bi-percent"></i> {{ t('fee') }}: RM {{ "{:,.2f}".format(txn.supplier_fee) }}</div>
@@ -259,7 +259,7 @@
                             <div><i class="bi bi-person-badge"></i> Payer: {{ txn.payer_name }}</div>
                             {% endif %}
                         </td>
-                        <td style="font-weight: 700; text-align: center;">
+                        <td style="font-weight: 700; text-align: center; white-space: nowrap;">
                             {% if txn.transaction_type == 'payment' %}
                             <span style="color: #FF007F;">CR</span>
                             {% else %}

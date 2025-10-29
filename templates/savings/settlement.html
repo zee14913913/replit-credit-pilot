@@ -86,7 +86,7 @@
                 <table class="table-professional">
                     <thead>
                         <tr>
-                            <th style="width: 50px;">#</th>
+                            <th style="width: 50px; white-space: nowrap;">#</th>
                             <th>{{ t('date') }}</th>
                             <th>{{ t('description') }}</th>
                             <th>{{ t('amount') }}</th>
@@ -95,10 +95,10 @@
                     <tbody>
                         {% for trans in month_data.transactions %}
                         <tr>
-                            <td>{{ loop.index }}</td>
-                            <td>{{ trans.transaction_date }}</td>
-                            <td>{{ trans.description }}</td>
-                            <td>
+                            <td style="white-space: nowrap;">{{ loop.index }}</td>
+                            <td style="white-space: nowrap;">{{ trans.transaction_date }}</td>
+                            <td style="white-space: nowrap;">{{ trans.description }}</td>
+                            <td style="white-space: nowrap;">
                                 <span style="color: var(--text-primary); font-weight: 600;">
                                     RM {{ "{:,.2f}".format(trans.amount) }}
                                 </span>
@@ -108,10 +108,10 @@
                     </tbody>
                     <tfoot>
                         <tr style="background: var(--bg-secondary);">
-                            <td colspan="3" style="text-align: right; font-weight: 600; color: var(--text-primary);">
+                            <td colspan="3" style="text-align: right; font-weight: 600; color: var(--text-primary); white-space: nowrap;">
                                 {{ t('month_subtotal') }}:
                             </td>
-                            <td>
+                            <td style="white-space: nowrap;">
                                 <span style="color: #FF007F; font-weight: 700;">
                                     RM {{ "{:,.2f}".format(month_data.total_amount) }}
                                 </span>
@@ -156,15 +156,15 @@
                 <tbody>
                     {% for trans in settlement.all_transactions %}
                     <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ trans.transaction_date }}</td>
-                        <td>
+                        <td style="white-space: nowrap;">{{ loop.index }}</td>
+                        <td style="white-space: nowrap;">{{ trans.transaction_date }}</td>
+                        <td style="white-space: nowrap;">
                             <span class="badge-professional badge-secondary-pro">
                                 {{ trans.bank_name }}
                             </span>
                         </td>
-                        <td>{{ trans.description }}</td>
-                        <td>
+                        <td style="white-space: nowrap;">{{ trans.description }}</td>
+                        <td style="white-space: nowrap;">
                             <span style="color: var(--text-primary); font-weight: 600;">
                                 RM {{ "{:,.2f}".format(trans.amount) }}
                             </span>
@@ -174,10 +174,10 @@
                 </tbody>
                 <tfoot>
                     <tr style="background: var(--bg-secondary);">
-                        <td colspan="4" style="text-align: right; font-weight: 600; color: var(--text-primary);">
+                        <td colspan="4" style="text-align: right; font-weight: 600; color: var(--text-primary); white-space: nowrap;">
                             {{ t('total_amount_to_collect') }}:
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <span style="color: #FF007F; font-weight: 700;">
                                 RM {{ "{:,.2f}".format(settlement.total_amount) }}
                             </span>

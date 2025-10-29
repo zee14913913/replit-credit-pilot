@@ -128,15 +128,15 @@
                             <tbody>
                                 {% for proposal in client.workflow.proposals %}
                                 <tr>
-                                    <td>{{ proposal.suggestion_type }}</td>
-                                    <td>{{ proposal.details[:100] }}...</td>
-                                    <td class="text-success">RM {{ "{:,.2f}".format(proposal.expected_annual_savings or 0) }}</td>
-                                    <td>
+                                    <td style="white-space: nowrap;">{{ proposal.suggestion_type }}</td>
+                                    <td style="white-space: nowrap;">{{ proposal.details[:100] }}...</td>
+                                    <td style="white-space: nowrap;" class="text-success">RM {{ "{:,.2f}".format(proposal.expected_annual_savings or 0) }}</td>
+                                    <td style="white-space: nowrap;">
                                         <span class="badge bg-{{ 'success' if proposal.status == 'accepted' else ('warning' if proposal.status == 'proposed' else 'secondary') }}">
                                             {{ proposal.status }}
                                         </span>
                                     </td>
-                                    <td>{{ proposal.created_at }}</td>
+                                    <td style="white-space: nowrap;">{{ proposal.created_at }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -163,15 +163,15 @@
                             <tbody>
                                 {% for consult in client.workflow.consultations %}
                                 <tr>
-                                    <td>{{ consult.service_type }}</td>
-                                    <td>{{ consult.preferred_time }}</td>
-                                    <td>
+                                    <td style="white-space: nowrap;">{{ consult.service_type }}</td>
+                                    <td style="white-space: nowrap;">{{ consult.preferred_time }}</td>
+                                    <td style="white-space: nowrap;">
                                         <span class="badge bg-{{ 'success' if consult.status == 'completed' else ('warning' if consult.status == 'scheduled' else 'secondary') }}">
                                             {{ consult.status }}
                                         </span>
                                     </td>
-                                    <td>{{ consult.consultation_outcome or t('n_a') }}</td>
-                                    <td>{{ consult.created_at }}</td>
+                                    <td style="white-space: nowrap;">{{ consult.consultation_outcome or t('n_a') }}</td>
+                                    <td style="white-space: nowrap;">{{ consult.created_at }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -198,15 +198,15 @@
                             <tbody>
                                 {% for contract in client.workflow.contracts %}
                                 <tr>
-                                    <td>{{ contract.services_agreed }}</td>
-                                    <td class="text-success">RM {{ "{:,.2f}".format(contract.expected_annual_savings or 0) }}</td>
-                                    <td>{{ contract.fee_percentage }}%</td>
-                                    <td>
+                                    <td style="white-space: nowrap;">{{ contract.services_agreed }}</td>
+                                    <td style="white-space: nowrap;" class="text-success">RM {{ "{:,.2f}".format(contract.expected_annual_savings or 0) }}</td>
+                                    <td style="white-space: nowrap;">{{ contract.fee_percentage }}%</td>
+                                    <td style="white-space: nowrap;">
                                         <span class="badge bg-{{ 'success' if contract.status == 'active' else ('info' if contract.status == 'signed' else 'secondary') }}">
                                             {{ contract.status }}
                                         </span>
                                     </td>
-                                    <td>{{ contract.created_at }}</td>
+                                    <td style="white-space: nowrap;">{{ contract.created_at }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -233,11 +233,11 @@
                             <tbody>
                                 {% for payment in client.workflow.payments %}
                                 <tr>
-                                    <td>{{ payment.payment_type }}</td>
-                                    <td class="text-primary">RM {{ "{:,.2f}".format(payment.amount) }}</td>
-                                    <td>{{ payment.recipient_name }}</td>
-                                    <td>{{ payment.payment_date }}</td>
-                                    <td>
+                                    <td style="white-space: nowrap;">{{ payment.payment_type }}</td>
+                                    <td style="white-space: nowrap;" class="text-primary">RM {{ "{:,.2f}".format(payment.amount) }}</td>
+                                    <td style="white-space: nowrap;">{{ payment.recipient_name }}</td>
+                                    <td style="white-space: nowrap;">{{ payment.payment_date }}</td>
+                                    <td style="white-space: nowrap;">
                                         <span class="badge bg-{{ 'success' if payment.status == 'completed' else ('warning' if payment.status == 'pending' else 'danger') }}">
                                             {{ payment.status }}
                                         </span>
@@ -269,18 +269,18 @@
                             <tbody>
                                 {% for fee in client.workflow.fee_calculations %}
                                 <tr>
-                                    <td>{{ fee.service_period }}</td>
-                                    <td class="text-success"><strong>RM {{ "{:,.2f}".format(fee.actual_savings_achieved or 0) }}</strong></td>
-                                    <td class="text-primary">RM {{ "{:,.2f}".format((fee.actual_savings_achieved or 0) * 0.5) }}</td>
-                                    <td class="text-info"><strong>RM {{ "{:,.2f}".format(fee.our_fee_50_percent or 0) }}</strong></td>
-                                    <td>
+                                    <td style="white-space: nowrap;">{{ fee.service_period }}</td>
+                                    <td style="white-space: nowrap;" class="text-success"><strong>RM {{ "{:,.2f}".format(fee.actual_savings_achieved or 0) }}</strong></td>
+                                    <td style="white-space: nowrap;" class="text-primary">RM {{ "{:,.2f}".format((fee.actual_savings_achieved or 0) * 0.5) }}</td>
+                                    <td style="white-space: nowrap;" class="text-info"><strong>RM {{ "{:,.2f}".format(fee.our_fee_50_percent or 0) }}</strong></td>
+                                    <td style="white-space: nowrap;">
                                         {% if fee.fee_paid %}
                                             <span class="badge bg-success"><i class="bi bi-check-circle"></i> {{ t('paid') }}</span>
                                         {% else %}
                                             <span class="badge bg-warning">{{ t('pending') }}</span>
                                         {% endif %}
                                     </td>
-                                    <td>{{ fee.calculation_date }}</td>
+                                    <td style="white-space: nowrap;">{{ fee.calculation_date }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

@@ -110,12 +110,12 @@
                                     <tbody>
                                         {% for resource in resources %}
                                         <tr>
-                                            <td><span class="badge bg-info">{{ resource[2] }}</span></td>
-                                            <td>{{ resource[3] }}</td>
-                                            <td>{{ resource[4] or '-' }}</td>
-                                            <td>RM {{ "{:,.2f}".format(resource[5]) if resource[5] else '-' }}</td>
-                                            <td><span class="badge bg-success">{{ resource[6] or '-' }}</span></td>
-                                            <td>
+                                            <td style="white-space: nowrap;"><span class="badge bg-info">{{ resource[2] }}</span></td>
+                                            <td style="white-space: nowrap;">{{ resource[3] }}</td>
+                                            <td style="white-space: nowrap;">{{ resource[4] or '-' }}</td>
+                                            <td style="white-space: nowrap;">RM {{ "{:,.2f}".format(resource[5]) if resource[5] else '-' }}</td>
+                                            <td style="white-space: nowrap;"><span class="badge bg-success">{{ resource[6] or '-' }}</span></td>
+                                            <td style="white-space: nowrap;">
                                                 <a href="/customer/{{ customer_id }}/delete_resource/{{ resource[0] }}" 
                                                    class="btn btn-sm btn-danger" 
                                                    onclick="return confirm('确定删除吗？')">删除</a>
@@ -211,11 +211,11 @@
                                     <tbody>
                                         {% for network in networks %}
                                         <tr>
-                                            <td><strong>{{ network[2] }}</strong></td>
-                                            <td><span class="badge bg-primary">{{ network[3] }}</span></td>
-                                            <td>{{ network[4] or '-' }} / {{ network[6] or '-' }}</td>
-                                            <td>{{ network[7] or '-' }}</td>
-                                            <td>
+                                            <td style="white-space: nowrap;"><strong>{{ network[2] }}</strong></td>
+                                            <td style="white-space: nowrap;"><span class="badge bg-primary">{{ network[3] }}</span></td>
+                                            <td style="white-space: nowrap;">{{ network[4] or '-' }} / {{ network[6] or '-' }}</td>
+                                            <td style="white-space: nowrap;">{{ network[7] or '-' }}</td>
+                                            <td style="white-space: nowrap;">
                                                 <a href="/customer/{{ customer_id }}/delete_network/{{ network[0] }}" 
                                                    class="btn btn-sm btn-danger"
                                                    onclick="return confirm('确定删除吗？')">删除</a>
@@ -315,12 +315,12 @@
                                     <tbody>
                                         {% for skill in skills %}
                                         <tr>
-                                            <td><strong>{{ skill[2] }}</strong></td>
-                                            <td><span class="badge bg-secondary">{{ skill[3] }}</span></td>
-                                            <td><span class="badge bg-warning">{{ skill[4] }}</span></td>
-                                            <td>{{ skill[5] or '-' }} 年</td>
-                                            <td>{{ skill[6] or '-' }}</td>
-                                            <td>
+                                            <td style="white-space: nowrap;"><strong>{{ skill[2] }}</strong></td>
+                                            <td style="white-space: nowrap;"><span class="badge bg-secondary">{{ skill[3] }}</span></td>
+                                            <td style="white-space: nowrap;"><span class="badge bg-warning">{{ skill[4] }}</span></td>
+                                            <td style="white-space: nowrap;">{{ skill[5] or '-' }} 年</td>
+                                            <td style="white-space: nowrap;">{{ skill[6] or '-' }}</td>
+                                            <td style="white-space: nowrap;">
                                                 <a href="/customer/{{ customer_id }}/delete_skill/{{ skill[0] }}" 
                                                    class="btn btn-sm btn-danger"
                                                    onclick="return confirm('确定删除吗？')">删除</a>

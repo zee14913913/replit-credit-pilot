@@ -107,7 +107,7 @@
                     <tbody>
                         {% for report in period_reports %}
                         <tr>
-                            <td>
+                            <td style="white-space: nowrap;">
                                 <div style="font-weight: 600; color: var(--text-primary);">
                                     {% if report.bank_name %}
                                         {{ report.bank_name }} ****{{ report.card_number_last4 }}
@@ -116,27 +116,27 @@
                                     {% endif %}
                                 </div>
                             </td>
-                            <td class="text-end" style="color: var(--text-danger);">
+                            <td class="text-end" style="color: var(--text-danger); white-space: nowrap;">
                                 RM {{ "{:,.2f}".format(report.customer_total_debit or report.total_debit or 0) }}
                             </td>
-                            <td class="text-end" style="color: var(--accent-success);">
+                            <td class="text-end" style="color: var(--accent-success); white-space: nowrap;">
                                 RM {{ "{:,.2f}".format(report.customer_total_credit or report.total_credit or 0) }}
                             </td>
-                            <td class="text-end" style="font-weight: 600; color: #3498db;">
+                            <td class="text-end" style="font-weight: 600; color: #3498db; white-space: nowrap;">
                                 RM {{ "{:,.2f}".format(report.customer_outstanding or 0) }}
                             </td>
-                            <td class="text-end" style="color: #8e44ad;">
+                            <td class="text-end" style="color: #8e44ad; white-space: nowrap;">
                                 RM {{ "{:,.2f}".format(report.infinite_total_debit or 0) }}
                             </td>
-                            <td class="text-end" style="font-weight: 600; color: #e67e22;">
+                            <td class="text-end" style="font-weight: 600; color: #e67e22; white-space: nowrap;">
                                 RM {{ "{:,.2f}".format(report.infinite_outstanding or 0) }}
                             </td>
-                            <td class="text-end">
+                            <td style="white-space: nowrap;" class="text-end">
                                 <span class="badge-professional {{ 'badge-danger-pro' if report.dsr >= 70 else 'badge-success-pro' if report.dsr < 50 else 'badge-warning-pro' }}">
                                     {{ "%.1f"|format(report.dsr) }}%
                                 </span>
                             </td>
-                            <td class="text-center">
+                            <td style="white-space: nowrap;" class="text-center">
                                 <a href="{{ url_for('download_monthly_report', report_id=report.id) }}" 
                                    class="btn-professional-sm">
                                     <i class="bi bi-download"></i> PDF
@@ -147,23 +147,23 @@
                         
                         <!-- Period Totals -->
                         <tr style="background: var(--bg-secondary); font-weight: 600;">
-                            <td style="color: var(--text-primary);">Period Total / 期间合计</td>
-                            <td class="text-end" style="color: var(--text-danger);">
+                            <td style="color: var(--text-primary); white-space: nowrap;">Period Total / 期间合计</td>
+                            <td class="text-end" style="color: var(--text-danger); white-space: nowrap;">
                                 RM {{ "{:,.2f}".format(period_reports|sum(attribute='customer_total_debit', start=0)|default(0)) }}
                             </td>
-                            <td class="text-end" style="color: var(--accent-success);">
+                            <td class="text-end" style="color: var(--accent-success); white-space: nowrap;">
                                 RM {{ "{:,.2f}".format(period_reports|sum(attribute='customer_total_credit', start=0)|default(0)) }}
                             </td>
-                            <td class="text-end" style="color: #3498db;">
+                            <td class="text-end" style="color: #3498db; white-space: nowrap;">
                                 RM {{ "{:,.2f}".format(period_reports|sum(attribute='customer_outstanding', start=0)|default(0)) }}
                             </td>
-                            <td class="text-end" style="color: #8e44ad;">
+                            <td class="text-end" style="color: #8e44ad; white-space: nowrap;">
                                 RM {{ "{:,.2f}".format(period_reports|sum(attribute='infinite_total_debit', start=0)|default(0)) }}
                             </td>
-                            <td class="text-end" style="color: #e67e22;">
+                            <td class="text-end" style="color: #e67e22; white-space: nowrap;">
                                 RM {{ "{:,.2f}".format(period_reports|sum(attribute='infinite_outstanding', start=0)|default(0)) }}
                             </td>
-                            <td colspan="2"></td>
+                            <td style="white-space: nowrap;" colspan="2"></td>
                         </tr>
                     </tbody>
                 </table>

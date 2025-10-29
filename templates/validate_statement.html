@@ -76,10 +76,10 @@
                             <tbody>
                                 {% for trans in transactions %}
                                 <tr>
-                                    <td>{{ trans.transaction_date }}</td>
-                                    <td>{{ trans.description }}</td>
-                                    <td class="fw-bold">RM {{ "{:,.2f}".format(trans.amount) }}</td>
-                                    <td>
+                                    <td style="white-space: nowrap;">{{ trans.transaction_date }}</td>
+                                    <td style="white-space: nowrap;">{{ trans.description }}</td>
+                                    <td style="white-space: nowrap;" class="fw-bold">RM {{ "{:,.2f}".format(trans.amount) }}</td>
+                                    <td style="white-space: nowrap;">
                                         <span class="badge badge-info">
                                             🔹{{ trans.category }}
                                         </span>

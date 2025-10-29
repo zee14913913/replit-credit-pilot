@@ -117,20 +117,20 @@
                     {% if transactions %}
                     <div class="table-responsive">
                         <table class="table-professional" style="font-size: 0.9rem;">
-                            <thead style="position: sticky; top: 0; background: var(--bg-primary); z-index: 10;">
+                            <thead style="position: sticky; top: 0; background: var(--bg-primary); z-index: 10; white-space: nowrap;">
                                 <tr>
-                                    <th style="width: 40px;">#</th>
+                                    <th style="width: 40px; white-space: nowrap;">#</th>
                                     <th>{{ t('date') }}</th>
                                     <th>{{ t('description') }}</th>
-                                    <th style="text-align: right;">{{ t('amount') }}</th>
+                                    <th style="text-align: right; white-space: nowrap;">{{ t('amount') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for trans in transactions %}
                                 <tr {% if loop.index % 2 == 0 %}style="background: rgba(255,255,255,0.02);"{% endif %}>
-                                    <td style="color: var(--text-secondary); font-size: 0.85rem;">{{ loop.index }}</td>
+                                    <td style="color: var(--text-secondary); font-size: 0.85rem; white-space: nowrap;">{{ loop.index }}</td>
                                     <td style="color: var(--text-primary); white-space: nowrap;">{{ trans.transaction_date }}</td>
-                                    <td style="color: var(--text-primary);">
+                                    <td style="color: var(--text-primary); white-space: nowrap;">
                                         <div style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">
                                             {{ trans.description }}
                                         </div>
@@ -152,10 +152,10 @@
                             </tbody>
                             <tfoot style="position: sticky; bottom: 0; background: var(--bg-primary);">
                                 <tr style="border-top: 2px solid #FF007F;">
-                                    <td colspan="3" style="text-align: right; font-weight: 600; color: var(--text-primary);">
+                                    <td colspan="3" style="text-align: right; font-weight: 600; color: var(--text-primary); white-space: nowrap;">
                                         {{ t('total') }}:
                                     </td>
-                                    <td style="text-align: right;">
+                                    <td style="text-align: right; white-space: nowrap;">
                                         <div style="color: #FF007F; font-weight: 700;">-RM {{ "{:,.2f}".format(total_debit) }}</div>
                                         <div style="color: #FF007F; font-weight: 700;">+RM {{ "{:,.2f}".format(total_credit) }}</div>
                                     </td>

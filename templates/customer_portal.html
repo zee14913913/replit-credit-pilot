@@ -88,16 +88,16 @@
                 <tbody>
                     {% for statement in statements %}
                     <tr>
-                        <td>{{ statement.statement_date }}</td>
-                        <td>RM {{ "{:,.2f}".format(statement.total_amount) }}</td>
-                        <td>
+                        <td style="white-space: nowrap;">{{ statement.statement_date }}</td>
+                        <td style="white-space: nowrap;">RM {{ "{:,.2f}".format(statement.total_amount) }}</td>
+                        <td style="white-space: nowrap;">
                             {% if statement.is_confirmed %}
                             <span class="badge-professional badge-success-pro">{{ t['confirmed'] }}</span>
                             {% else %}
                             <span class="badge-professional badge-warning-pro">{{ t['pending'] }}</span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             {% if statement.is_confirmed %}
                             <a href="/customer/download/{{ statement.id }}" class="btn-professional-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
                                 {{ t['download'] }}

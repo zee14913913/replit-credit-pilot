@@ -64,16 +64,16 @@
                 <tbody>
                     {% for trans in transactions %}
                     <tr>
-                        <td>{{ trans.transaction_date }}</td>
-                        <td>
+                        <td style="white-space: nowrap;">{{ trans.transaction_date }}</td>
+                        <td style="white-space: nowrap;">
                             <span class="badge-professional badge-secondary-pro">
                                 {{ trans.bank_name }}
                             </span>
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <div style="max-width: 400px;">{{ trans.description }}</div>
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             {% if trans.transaction_type == 'debit' %}
                             <span style="color: var(--text-primary); font-weight: 600;">
                                 -RM {{ "{:,.2f}".format(trans.amount) }}
@@ -84,7 +84,7 @@
                             </span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             {% if trans.customer_name_tag %}
                             <span class="badge-professional badge-success-pro">
                                 {{ trans.customer_name_tag }}
@@ -93,7 +93,7 @@
                             <small style="color: var(--text-secondary);">-</small>
                             {% endif %}
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <form method="POST" action="{{ url_for('tag_savings_transaction', transaction_id=trans.id) }}" class="d-inline">
                                 <div class="input-group input-group-sm" style="width: 200px;">
                                     <input type="text" 

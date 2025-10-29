@@ -35,24 +35,24 @@
                 <table class="table-professional">
                     <tbody>
                         <tr>
-                            <td style="color: var(--text-secondary); width: 30%;">{{ t('customer_name') }}</td>
-                            <td style="color: var(--text-primary); font-weight: 600;">{{ customer.name }}</td>
+                            <td style="color: var(--text-secondary); width: 30%; white-space: nowrap;">{{ t('customer_name') }}</td>
+                            <td style="color: var(--text-primary); font-weight: 600; white-space: nowrap;">{{ customer.name }}</td>
                         </tr>
                         <tr>
-                            <td style="color: var(--text-secondary);">{{ t('bank') }}</td>
-                            <td style="color: #FF1493; font-weight: 600;">{{ bank_name }}</td>
+                            <td style="color: var(--text-secondary); white-space: nowrap;">{{ t('bank') }}</td>
+                            <td style="color: #FF1493; font-weight: 600; white-space: nowrap;">{{ bank_name }}</td>
                         </tr>
                         <tr>
-                            <td style="color: var(--text-secondary);">{{ t('report_code') }}</td>
-                            <td style="color: #FF1493; font-weight: 600;">{{ customer.code }}_{{ bank_name }}_{{ year }}{{ month }}</td>
+                            <td style="color: var(--text-secondary); white-space: nowrap;">{{ t('report_code') }}</td>
+                            <td style="color: #FF1493; font-weight: 600; white-space: nowrap;">{{ customer.code }}_{{ bank_name }}_{{ year }}{{ month }}</td>
                         </tr>
                         <tr>
-                            <td style="color: var(--text-secondary);">{{ t('period') }}</td>
-                            <td style="color: var(--text-primary); font-weight: 600;">{{ period_display }}</td>
+                            <td style="color: var(--text-secondary); white-space: nowrap;">{{ t('period') }}</td>
+                            <td style="color: var(--text-primary); font-weight: 600; white-space: nowrap;">{{ period_display }}</td>
                         </tr>
                         <tr>
-                            <td style="color: var(--text-secondary);">{{ t('total_accounts') }}</td>
-                            <td style="color: #FF1493; font-weight: 600;">{{ bank_data.statements|length }}</td>
+                            <td style="color: var(--text-secondary); white-space: nowrap;">{{ t('total_accounts') }}</td>
+                            <td style="color: #FF1493; font-weight: 600; white-space: nowrap;">{{ bank_data.statements|length }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -80,16 +80,16 @@
                     <tbody>
                         {% for stmt in bank_data.statements %}
                         <tr>
-                            <td style="color: var(--text-secondary);">****{{ stmt.card_number_last4 }}</td>
-                            <td style="color: var(--text-secondary);">{{ t('main_card') }}</td>
-                            <td style="color: {% if stmt.previous_balance < 0 %}#FF007F{% else %}#322446{% endif %}; font-weight: 600;">
+                            <td style="color: var(--text-secondary); white-space: nowrap;">****{{ stmt.card_number_last4 }}</td>
+                            <td style="color: var(--text-secondary); white-space: nowrap;">{{ t('main_card') }}</td>
+                            <td style="color: {% if stmt.previous_balance < 0 %}#FF007F{% else %}#322446{% endif %}; font-weight: 600; white-space: nowrap;">
                                 RM {{ "{:,.2f}".format(stmt.previous_balance) }}
                             </td>
-                            <td style="color: {% if stmt.statement_total < 0 %}#FF007F{% else %}#322446{% endif %}; font-weight: 600;">
+                            <td style="color: {% if stmt.statement_total < 0 %}#FF007F{% else %}#322446{% endif %}; font-weight: 600; white-space: nowrap;">
                                 RM {{ "{:,.2f}".format(stmt.statement_total) }}
                             </td>
-                            <td style="color: var(--text-secondary);">{{ stmt.txn_count }}</td>
-                            <td>
+                            <td style="color: var(--text-secondary); white-space: nowrap;">{{ stmt.txn_count }}</td>
+                            <td style="white-space: nowrap;">
                                 <a href="{{ url_for('view_statement_file', statement_id=stmt.id) }}" 
                                    class="btn-professional-outline" 
                                    style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: #330066; color: #330066;" 
@@ -130,24 +130,24 @@
                     <tbody>
                         <!-- 上期结余 -->
                         <tr style="background: rgba(255, 20, 147, 0.05);">
-                            <td style="color: var(--text-secondary);">-</td>
-                            <td style="color: var(--text-primary); font-weight: 600;">{{ t('previous_balance') }}</td>
-                            <td style="color: {% if stmt.previous_balance < 0 %}#FF007F{% else %}#322446{% endif %}; font-weight: 700;">
+                            <td style="color: var(--text-secondary); white-space: nowrap;">-</td>
+                            <td style="color: var(--text-primary); font-weight: 600; white-space: nowrap;">{{ t('previous_balance') }}</td>
+                            <td style="color: {% if stmt.previous_balance < 0 %}#FF007F{% else %}#322446{% endif %}; font-weight: 700; white-space: nowrap;">
                                 {{ "{:,.2f}".format(stmt.previous_balance) }}
                             </td>
-                            <td style="color: var(--text-secondary);">{{ t('baseline') }}</td>
-                            <td style="color: var(--text-secondary);">{{ t('included_in_owner_debt') }}</td>
+                            <td style="color: var(--text-secondary); white-space: nowrap;">{{ t('baseline') }}</td>
+                            <td style="color: var(--text-secondary); white-space: nowrap;">{{ t('included_in_owner_debt') }}</td>
                         </tr>
                         
                         <!-- 交易明细 -->
                         {% for txn in stmt.transactions %}
                         <tr>
-                            <td style="color: var(--text-secondary);">{{ txn.transaction_date }}</td>
-                            <td style="color: var(--text-primary);">{{ txn.description }}</td>
-                            <td style="font-weight: 600; color: {% if txn.amount > 0 %}#FF1493{% else %}#FF007F{% endif %};">
+                            <td style="color: var(--text-secondary); white-space: nowrap;">{{ txn.transaction_date }}</td>
+                            <td style="color: var(--text-primary); white-space: nowrap;">{{ txn.description }}</td>
+                            <td style="white-space: nowrap;" style="font-weight: 600; color: {% if txn.amount > 0 %}#FF1493{% else %}#FF007F{% endif %};">
                                 {{ "{:,.2f}".format(txn.amount) }}
                             </td>
-                            <td>
+                            <td style="white-space: nowrap;">
                                 {% if txn.category == 'owner_expense' %}
                                 <span style="color: #FF1493;">Owner</span>
                                 {% elif txn.category == 'infinite_expense' %}
@@ -158,7 +158,7 @@
                                 <span style="color: #FF007F;">INFINITE {{ t('payment') }}</span>
                                 {% endif %}
                             </td>
-                            <td style="color: var(--text-secondary); font-size: 0.85rem;">
+                            <td style="color: var(--text-secondary); font-size: 0.85rem; white-space: nowrap;">
                                 {% if txn.transaction_type == 'payment' %}
                                 {{ t('customer_payment') }}
                                 {% elif txn.is_supplier %}
@@ -308,34 +308,34 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="color: var(--text-secondary);">{{ t('total_accounts') }}</td>
-                            <td style="color: var(--text-primary); font-weight: 600;">{{ bank_data.statements|length }}</td>
-                            <td><span class="badge-professional badge-success-pro">✓</span></td>
+                            <td style="color: var(--text-secondary); white-space: nowrap;">{{ t('total_accounts') }}</td>
+                            <td style="color: var(--text-primary); font-weight: 600; white-space: nowrap;">{{ bank_data.statements|length }}</td>
+                            <td style="white-space: nowrap;"><span class="badge-professional badge-success-pro">✓</span></td>
                         </tr>
                         <tr>
-                            <td style="color: var(--text-secondary);">{{ t('total_transactions') }}</td>
-                            <td style="color: var(--text-primary); font-weight: 600;">{{ bank_data.total_txn_count }}</td>
-                            <td><span class="badge-professional badge-success-pro">✓</span></td>
+                            <td style="color: var(--text-secondary); white-space: nowrap;">{{ t('total_transactions') }}</td>
+                            <td style="color: var(--text-primary); font-weight: 600; white-space: nowrap;">{{ bank_data.total_txn_count }}</td>
+                            <td style="white-space: nowrap;"><span class="badge-professional badge-success-pro">✓</span></td>
                         </tr>
                         <tr>
-                            <td style="color: var(--text-secondary);">Owner {{ t('total_expenses') }}</td>
-                            <td style="color: #FF1493; font-weight: 700;">RM {{ "{:,.2f}".format(bank_data.owner_expenses) }}</td>
-                            <td><span class="badge-professional badge-success-pro">✓</span></td>
+                            <td style="color: var(--text-secondary); white-space: nowrap;">Owner {{ t('total_expenses') }}</td>
+                            <td style="color: #FF1493; font-weight: 700; white-space: nowrap;">RM {{ "{:,.2f}".format(bank_data.owner_expenses) }}</td>
+                            <td style="white-space: nowrap;"><span class="badge-professional badge-success-pro">✓</span></td>
                         </tr>
                         <tr>
-                            <td style="color: var(--text-secondary);">INFINITE {{ t('total_expenses') }}</td>
-                            <td style="color: #330066; font-weight: 700;">RM {{ "{:,.2f}".format(bank_data.infinite_expenses) }}</td>
-                            <td><span class="badge-professional badge-success-pro">✓</span></td>
+                            <td style="color: var(--text-secondary); white-space: nowrap;">INFINITE {{ t('total_expenses') }}</td>
+                            <td style="color: #330066; font-weight: 700; white-space: nowrap;">RM {{ "{:,.2f}".format(bank_data.infinite_expenses) }}</td>
+                            <td style="white-space: nowrap;"><span class="badge-professional badge-success-pro">✓</span></td>
                         </tr>
                         <tr>
-                            <td style="color: var(--text-secondary);">Owner {{ t('cumulative_balance') }}</td>
-                            <td style="color: #FF1493; font-weight: 900;">RM {{ "{:,.2f}".format(bank_data.owner_cumulative_balance) }}</td>
-                            <td><span class="badge-professional badge-success-pro">✓</span></td>
+                            <td style="color: var(--text-secondary); white-space: nowrap;">Owner {{ t('cumulative_balance') }}</td>
+                            <td style="color: #FF1493; font-weight: 900; white-space: nowrap;">RM {{ "{:,.2f}".format(bank_data.owner_cumulative_balance) }}</td>
+                            <td style="white-space: nowrap;"><span class="badge-professional badge-success-pro">✓</span></td>
                         </tr>
                         <tr>
-                            <td style="color: var(--text-secondary);">INFINITE {{ t('cumulative_balance') }}</td>
-                            <td style="color: #330066; font-weight: 900;">RM {{ "{:,.2f}".format(bank_data.infinite_cumulative_balance) }}</td>
-                            <td><span class="badge-professional badge-success-pro">✓</span></td>
+                            <td style="color: var(--text-secondary); white-space: nowrap;">INFINITE {{ t('cumulative_balance') }}</td>
+                            <td style="color: #330066; font-weight: 900; white-space: nowrap;">RM {{ "{:,.2f}".format(bank_data.infinite_cumulative_balance) }}</td>
+                            <td style="white-space: nowrap;"><span class="badge-professional badge-success-pro">✓</span></td>
                         </tr>
                     </tbody>
                 </table>

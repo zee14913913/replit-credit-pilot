@@ -76,29 +76,29 @@
                         <thead>
                             <tr>
                                 <th>{{ t('item') }}</th>
-                                <th style="text-align: center;">{{ t('before') }}</th>
-                                <th style="text-align: center;">{{ t('after') }}</th>
-                                <th style="text-align: center; color: var(--success);">{{ t('savings') }}</th>
+                                <th style="text-align: center; white-space: nowrap;">{{ t('before') }}</th>
+                                <th style="text-align: center; white-space: nowrap;">{{ t('after') }}</th>
+                                <th style="text-align: center; color: var(--success); white-space: nowrap;">{{ t('savings') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{ t('monthly_payment') }}</td>
-                                <td style="text-align: center;">RM {{ "%.2f"|format(opt.current_monthly_payment) }}</td>
-                                <td style="text-align: center;">RM {{ "%.2f"|format(opt.optimized_monthly_payment) }}</td>
-                                <td style="text-align: center; color: var(--success); font-weight: 600;">RM {{ "%.2f"|format(opt.monthly_savings) }}</td>
+                                <td style="white-space: nowrap;">{{ t('monthly_payment') }}</td>
+                                <td style="text-align: center; white-space: nowrap;">RM {{ "%.2f"|format(opt.current_monthly_payment) }}</td>
+                                <td style="text-align: center; white-space: nowrap;">RM {{ "%.2f"|format(opt.optimized_monthly_payment) }}</td>
+                                <td style="text-align: center; color: var(--success); font-weight: 600; white-space: nowrap;">RM {{ "%.2f"|format(opt.monthly_savings) }}</td>
                             </tr>
                             <tr>
-                                <td>{{ t('interest_rate') }}</td>
-                                <td style="text-align: center;">{{ "%.2f"|format(opt.current_interest_rate) }}%</td>
-                                <td style="text-align: center;">{{ "%.2f"|format(opt.optimized_interest_rate) }}%</td>
-                                <td style="text-align: center; color: var(--success); font-weight: 600;">{{ "%.2f"|format(opt.current_interest_rate - opt.optimized_interest_rate) }}%</td>
+                                <td style="white-space: nowrap;">{{ t('interest_rate') }}</td>
+                                <td style="text-align: center; white-space: nowrap;">{{ "%.2f"|format(opt.current_interest_rate) }}%</td>
+                                <td style="text-align: center; white-space: nowrap;">{{ "%.2f"|format(opt.optimized_interest_rate) }}%</td>
+                                <td style="text-align: center; color: var(--success); font-weight: 600; white-space: nowrap;">{{ "%.2f"|format(opt.current_interest_rate - opt.optimized_interest_rate) }}%</td>
                             </tr>
                             <tr>
-                                <td>{{ t('total_cost_3years') }}</td>
-                                <td style="text-align: center;">RM {{ "%.2f"|format(opt.current_total_cost) }}</td>
-                                <td style="text-align: center;">RM {{ "%.2f"|format(opt.optimized_total_cost) }}</td>
-                                <td style="text-align: center; color: var(--success); font-weight: 600;">RM {{ "%.2f"|format(opt.total_savings) }}</td>
+                                <td style="white-space: nowrap;">{{ t('total_cost_3years') }}</td>
+                                <td style="text-align: center; white-space: nowrap;">RM {{ "%.2f"|format(opt.current_total_cost) }}</td>
+                                <td style="text-align: center; white-space: nowrap;">RM {{ "%.2f"|format(opt.optimized_total_cost) }}</td>
+                                <td style="text-align: center; color: var(--success); font-weight: 600; white-space: nowrap;">RM {{ "%.2f"|format(opt.total_savings) }}</td>
                             </tr>
                         </tbody>
                     </table>

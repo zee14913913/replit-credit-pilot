@@ -344,17 +344,17 @@
                 <tbody>
                     {% for stmt in statements[:5] %}
                     <tr>
-                        <td>{{ stmt.statement_date }}</td>
-                        <td>{{ stmt.bank_name }}</td>
-                        <td style="color: var(--text-primary); font-weight: 600;">RM {{ "{:,.2f}".format(stmt.statement_total) }}</td>
-                        <td>
+                        <td style="white-space: nowrap;">{{ stmt.statement_date }}</td>
+                        <td style="white-space: nowrap;">{{ stmt.bank_name }}</td>
+                        <td style="color: var(--text-primary); font-weight: 600; white-space: nowrap;">RM {{ "{:,.2f}".format(stmt.statement_total) }}</td>
+                        <td style="white-space: nowrap;">
                             {% if stmt.is_confirmed %}
                                 <span class="badge-professional badge-success-pro">Confirmed</span>
                             {% else %}
                                 <span class="badge-professional badge-primary-pro">Pending</span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <div class="d-flex gap-2">
                                 <a href="{{ url_for('validate', statement_id=stmt.id) }}" class="btn-professional-outline" style="padding: 0.4rem 1rem; font-size: 0.85rem;">View</a>
                                 {% if stmt.is_confirmed %}

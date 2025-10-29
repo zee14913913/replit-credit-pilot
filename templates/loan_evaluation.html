@@ -95,14 +95,14 @@
                             <tbody>
                                 {% for scenario in scenarios %}
                                 <tr>
-                                    <td class="fw-bold">RM {{ "{:,.0f}".format(scenario.loan_amount) }}</td>
-                                    <td>RM {{ "{:,.2f}".format(scenario.monthly_payment) }}</td>
-                                    <td>
+                                    <td style="white-space: nowrap;" class="fw-bold">RM {{ "{:,.0f}".format(scenario.loan_amount) }}</td>
+                                    <td style="white-space: nowrap;">RM {{ "{:,.2f}".format(scenario.monthly_payment) }}</td>
+                                    <td style="white-space: nowrap;">
                                         <span class="{{ 'text-jade' if scenario.new_dsr < 0.45 else 'text-amber' if scenario.new_dsr < 0.60 else 'text-ruby' }}">
                                             {{ "{:.2%}".format(scenario.new_dsr) }}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td style="white-space: nowrap;">
                                         {% if scenario.affordable %}
                                         <span class="badge badge-success">
                                             🔹Affordable

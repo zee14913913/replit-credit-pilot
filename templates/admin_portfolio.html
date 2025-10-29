@@ -121,19 +121,19 @@
                             <tbody>
                                 {% for client in risk_clients %}
                                 <tr>
-                                    <td>
+                                    <td style="white-space: nowrap;">
                                         <a href="/admin/portfolio/client/{{ client.customer_id }}">
                                             {{ client.name }}
                                         </a>
                                     </td>
-                                    <td>
+                                    <td style="white-space: nowrap;">
                                         <span class="badge bg-{{ 'danger' if client.severity == 'critical' else 'warning' }}">
                                             {{ client.risk_type }}
                                         </span>
                                     </td>
-                                    <td>{{ client.detail }}</td>
-                                    <td>{{ client.action_required }}</td>
-                                    <td>
+                                    <td style="white-space: nowrap;">{{ client.detail }}</td>
+                                    <td style="white-space: nowrap;">{{ client.action_required }}</td>
+                                    <td style="white-space: nowrap;">
                                         {% if client.severity == 'critical' %}
                                             <i class="bi bi-exclamation-circle-fill text-danger"></i> {{ t('critical') }}
                                         {% else %}
@@ -180,33 +180,33 @@
                             <tbody>
                                 {% for client in clients %}
                                 <tr>
-                                    <td>{{ client.id }}</td>
-                                    <td>
+                                    <td style="white-space: nowrap;">{{ client.id }}</td>
+                                    <td style="white-space: nowrap;">
                                         <strong>{{ client.name }}</strong><br>
                                         <small class="text-muted">{{ client.email }}</small>
                                     </td>
-                                    <td>
+                                    <td style="white-space: nowrap;">
                                         <span class="badge bg-{{ client.workflow_stage.status }}">
                                             {{ t('stage') }} {{ client.workflow_stage.stage }}
                                         </span><br>
                                         <small>{{ client.workflow_stage.stage_name }}</small><br>
                                         <small class="text-muted">{{ client.workflow_stage.stage_detail }}</small>
                                     </td>
-                                    <td class="text-success">
+                                    <td style="white-space: nowrap;" class="text-success">
                                         <strong>RM {{ "{:,.2f}".format(client.metrics.total_savings) }}</strong>
                                     </td>
-                                    <td class="text-info">
+                                    <td style="white-space: nowrap;" class="text-info">
                                         <strong>RM {{ "{:,.2f}".format(client.metrics.gz_revenue) }}</strong>
                                     </td>
-                                    <td class="text-primary">
+                                    <td style="white-space: nowrap;" class="text-primary">
                                         RM {{ "{:,.2f}".format(client.metrics.customer_keeps) }}
                                     </td>
-                                    <td>
+                                    <td style="white-space: nowrap;">
                                         <span class="badge bg-{{ 'danger' if client.metrics.dsr > 70 else ('warning' if client.metrics.dsr > 50 else 'success') }}">
                                             {{ "{:.1f}".format(client.metrics.dsr) }}%
                                         </span>
                                     </td>
-                                    <td>
+                                    <td style="white-space: nowrap;">
                                         {% if client.metrics.risk_status == 'safe' %}
                                             <i class="bi bi-check-circle text-success"></i> {{ t('safe') }}
                                         {% elif client.metrics.risk_status == 'high_dsr' %}
@@ -215,7 +215,7 @@
                                             <i class="bi bi-exclamation-circle text-danger"></i> {{ t('overdrawn') }}
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td style="white-space: nowrap;">
                                         <a href="/admin/portfolio/client/{{ client.id }}" class="btn-white-glow" style="font-size: 0.875rem; padding: 0.5rem 1rem; text-decoration: none;">
                                             <i class="bi bi-eye"></i> {{ t('view') }}
                                         </a>
@@ -255,10 +255,10 @@
                             <tbody>
                                 {% for month_data in revenue_breakdown.advisory_revenue_monthly[:6] %}
                                 <tr>
-                                    <td>{{ month_data.month }}</td>
-                                    <td>{{ month_data.client_count }}</td>
-                                    <td class="text-success">RM {{ "{:,.2f}".format(month_data.total_savings) }}</td>
-                                    <td class="text-info">RM {{ "{:,.2f}".format(month_data.gz_revenue) }}</td>
+                                    <td style="white-space: nowrap;">{{ month_data.month }}</td>
+                                    <td style="white-space: nowrap;">{{ month_data.client_count }}</td>
+                                    <td style="white-space: nowrap;" class="text-success">RM {{ "{:,.2f}".format(month_data.total_savings) }}</td>
+                                    <td style="white-space: nowrap;" class="text-info">RM {{ "{:,.2f}".format(month_data.gz_revenue) }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -290,10 +290,10 @@
                             <tbody>
                                 {% for supplier in revenue_breakdown.revenue_by_supplier[:6] %}
                                 <tr>
-                                    <td>{{ supplier.supplier }}</td>
-                                    <td>{{ supplier.transaction_count }}</td>
-                                    <td>RM {{ "{:,.2f}".format(supplier.total_spending) }}</td>
-                                    <td class="text-info">RM {{ "{:,.2f}".format(supplier.gz_commission) }}</td>
+                                    <td style="white-space: nowrap;">{{ supplier.supplier }}</td>
+                                    <td style="white-space: nowrap;">{{ supplier.transaction_count }}</td>
+                                    <td style="white-space: nowrap;">RM {{ "{:,.2f}".format(supplier.total_spending) }}</td>
+                                    <td style="white-space: nowrap;" class="text-info">RM {{ "{:,.2f}".format(supplier.gz_commission) }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

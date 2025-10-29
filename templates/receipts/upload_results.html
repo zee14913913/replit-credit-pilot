@@ -24,8 +24,8 @@
                         <tbody>
                             {% for result in results %}
                             <tr>
-                                <td>{{ result.filename }}</td>
-                                <td>
+                                <td style="white-space: nowrap;">{{ result.filename }}</td>
+                                <td style="white-space: nowrap;">
                                     {% if result.status == 'auto_matched' %}
                                     <span class="badge bg-success">自动匹配</span>
                                     {% elif result.status in ['no_match', 'multiple_matches'] %}
@@ -36,14 +36,14 @@
                                     <span class="badge bg-danger">错误</span>
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td style="white-space: nowrap;">
                                     {% if result.confidence %}
                                     {{ "%.0f"|format(result.confidence * 100) }}%
                                     {% else %}
                                     -
                                     {% endif %}
                                 </td>
-                                <td>{{ result.message }}</td>
+                                <td style="white-space: nowrap;">{{ result.message }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
