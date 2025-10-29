@@ -113,9 +113,9 @@
     <div class="row g-4 mb-5">
         <div class="col-12 mb-3">
             <h3 style="color: #FF007F; text-shadow: 0 0 15px rgba(255,0,127,0.5); font-weight: 700; font-size: 1.8rem; margin: 0;">
-                <i class="bi bi-grid-3x3-gap-fill"></i> 管理中心 Quick Actions
+                <i class="bi bi-grid-3x3-gap-fill"></i> {{ t('management_center') }}
             </h3>
-            <p style="color: #999; margin: 0.5rem 0 0 0; font-size: 0.95rem;">选择您要管理的模块</p>
+            <p style="color: #999; margin: 0.5rem 0 0 0; font-size: 0.95rem;">{{ t('select_module_to_manage') }}</p>
         </div>
         
         <!-- 1. 信用卡账单管理 -->
@@ -134,16 +134,13 @@
                         <i class="bi bi-credit-card" style="font-size: 3.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
                     </div>
                     <h4 style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; text-align: center; margin-bottom: 1rem; font-size: 1.2rem;">
-                        信用卡账单管理
+                        {{ t('credit_card_statements_management') }}
                     </h4>
-                    <p style="color: #999; text-align: center; font-size: 0.85rem; margin-bottom: 1rem;">
-                        Credit Card Statements
-                    </p>
                     <div style="background: rgba(255,0,127,0.1); border-radius: 8px; padding: 0.8rem; text-align: center;">
                         <div style="color: #FF007F; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
                             {{ cc_statements|length }}
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">月结单数量</div>
+                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">{{ t('statement_count') }}</div>
                     </div>
                 </div>
             </a>
@@ -165,16 +162,13 @@
                         <i class="bi bi-bank" style="font-size: 3.5rem; color: #322446; text-shadow: 0 0 20px rgba(50,36,70,0.8);"></i>
                     </div>
                     <h4 style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; text-align: center; margin-bottom: 1rem; font-size: 1.2rem;">
-                        储蓄账户月结单
+                        {{ t('savings_account_statements_management') }}
                     </h4>
-                    <p style="color: #999; text-align: center; font-size: 0.85rem; margin-bottom: 1rem;">
-                        Savings Account Statements
-                    </p>
                     <div style="background: rgba(50,36,70,0.3); border-radius: 8px; padding: 0.8rem; text-align: center;">
                         <div style="color: #322446; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 10px rgba(50,36,70,0.6);">
                             {{ sa_statements|length }}
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">月结单数量</div>
+                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">{{ t('statement_count') }}</div>
                     </div>
                 </div>
             </a>
@@ -196,16 +190,13 @@
                         <i class="bi bi-receipt" style="font-size: 3.5rem; color: #C0C0C0; text-shadow: 0 0 20px rgba(192,192,192,0.5);"></i>
                     </div>
                     <h4 style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; text-align: center; margin-bottom: 1rem; font-size: 1.2rem;">
-                        付款收据管理
+                        {{ t('receipts_management') }}
                     </h4>
-                    <p style="color: #999; text-align: center; font-size: 0.85rem; margin-bottom: 1rem;">
-                        Receipts Management
-                    </p>
                     <div style="background: rgba(192,192,192,0.1); border-radius: 8px; padding: 0.8rem; text-align: center;">
                         <div style="color: #C0C0C0; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 10px rgba(192,192,192,0.4);">
                             {{ receipts_count }}
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">收据总数</div>
+                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">{{ t('receipt_total') }}</div>
                     </div>
                 </div>
             </a>
@@ -227,16 +218,13 @@
                         <i class="bi bi-file-earmark-text-fill" style="font-size: 3.5rem; color: #FFD700; text-shadow: 0 0 20px rgba(255,215,0,0.5);"></i>
                     </div>
                     <h4 style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; text-align: center; margin-bottom: 1rem; font-size: 1.2rem;">
-                        供应商发票管理
+                        {{ t('supplier_invoices_management') }}
                     </h4>
-                    <p style="color: #999; text-align: center; font-size: 0.85rem; margin-bottom: 1rem;">
-                        Supplier Invoices
-                    </p>
                     <div style="background: rgba(255,215,0,0.1); border-radius: 8px; padding: 0.8rem; text-align: center;">
                         <div style="color: #FFD700; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,215,0,0.4);">
                             {{ invoices_count }}
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">发票总数</div>
+                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">{{ t('invoice_total') }}</div>
                     </div>
                 </div>
             </a>

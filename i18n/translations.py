@@ -104,6 +104,15 @@ TRANSLATIONS = {
         
         # Quick Actions
         'quick_actions': 'Quick Actions',
+        'management_center': 'Management Center',
+        'select_module_to_manage': 'Select the module you want to manage',
+        'credit_card_statements_management': 'Credit Card Statements',
+        'savings_account_statements_management': 'Savings Account Statements',
+        'receipts_management': 'Receipts Management',
+        'supplier_invoices_management': 'Supplier Invoices',
+        'statement_count': 'Statements',
+        'receipt_total': 'Receipts',
+        'invoice_total': 'Invoices',
         'search_filter': 'Search & Filter',
         'budget_manager': 'Budget Manager',
         'batch_upload': 'Batch Upload',
@@ -863,6 +872,15 @@ TRANSLATIONS = {
         
         # Quick Actions
         'quick_actions': '快捷操作',
+        'management_center': '管理中心',
+        'select_module_to_manage': '选择您要管理的模块',
+        'credit_card_statements_management': '信用卡账单管理',
+        'savings_account_statements_management': '储蓄账户月结单',
+        'receipts_management': '付款收据管理',
+        'supplier_invoices_management': '供应商发票管理',
+        'statement_count': '月结单数量',
+        'receipt_total': '收据总数',
+        'invoice_total': '发票总数',
         'search_filter': '搜索与筛选',
         'budget_manager': '预算管理',
         'batch_upload': '批量上传',
