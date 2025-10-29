@@ -246,7 +246,7 @@
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['cc_sum_payment']) }}</td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['total_transfer']) }}</td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center; white-space: nowrap;">
-                                            <a href="{{ url_for('savings_verify_statement', statement_id=stmt['statement_id']) }}" 
+                                            <a href="{{ url_for('verify_savings_statement', statement_id=stmt['statement_id']) }}" 
                                                class="btn btn-sm btn-view-details"
                                                style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
                                                       border: 2px solid #322446; 
