@@ -90,7 +90,7 @@
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FF007F; white-space: nowrap;">RM {{ "{:,.2f}".format(invoice['supplier_fee']) }}</td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center; white-space: nowrap;">
                                             {% if invoice['pdf_path'] %}
-                                            <a href="/{{ invoice['pdf_path'] }}" target="_blank" 
+                                            <a href="/static/uploads/{{ invoice['pdf_path'] }}" target="_blank" 
                                                class="btn btn-sm btn-view-details"
                                                style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
                                                       border: 2px solid #322446; 
@@ -160,7 +160,7 @@
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ receipt['remarks'] }}</td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center; white-space: nowrap;">
                                             {% if receipt['receipt_file_path'] %}
-                                            <a href="/{{ receipt['receipt_file_path'] }}" target="_blank" 
+                                            <a href="/static/uploads/{{ receipt['receipt_file_path'] }}" target="_blank" 
                                                class="btn btn-sm btn-view-details"
                                                style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
                                                       border: 2px solid #FF007F; 
