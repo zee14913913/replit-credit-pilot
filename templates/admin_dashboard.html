@@ -109,23 +109,142 @@
         </div>
     </div>
 
-    <!-- Quick Actions -->
+    <!-- Quick Actions - 专业管理模块 -->
     <div class="row g-4 mb-5">
-        <div class="col-md-12">
-            <div class="content-card">
-                <h3 class="card-title" style="color: #FF007F; font-weight: 700;">{{ t('quick_actions') }}</h3>
-                <div class="d-flex gap-3 mt-3 flex-wrap">
-                    <a href="{{ url_for('admin_customers_cards') }}" class="btn-white-glow"><i class="bi bi-credit-card-2-front"></i> {{ t('customers_credit_cards_management') }}</a>
-                    <a href="{{ url_for('receipts_home') }}" class="btn-white-glow"><i class="bi bi-receipt"></i> Receipts Management</a>
-                    <a href="{{ url_for('invoices_home') }}" class="btn-white-glow"><i class="bi bi-file-earmark-text"></i> Supplier Invoices</a>
-                    <a href="{{ url_for('admin_logout') }}" class="btn btn-outline-danger">{{ t('logout') }}</a>
+        <div class="col-12 mb-3">
+            <h3 style="color: #FF007F; text-shadow: 0 0 15px rgba(255,0,127,0.5); font-weight: 700; font-size: 1.8rem; margin: 0;">
+                <i class="bi bi-grid-3x3-gap-fill"></i> 管理中心 Quick Actions
+            </h3>
+            <p style="color: #999; margin: 0.5rem 0 0 0; font-size: 0.95rem;">选择您要管理的模块</p>
+        </div>
+        
+        <!-- 1. 信用卡账单管理 -->
+        <div class="col-md-6 col-lg-3">
+            <a href="#creditCardStatements" style="text-decoration: none;" onclick="document.getElementById('creditCardStatements').scrollIntoView({behavior: 'smooth'}); return false;">
+                <div class="quick-action-card" style="
+                    background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%);
+                    border: 2px solid #FF007F;
+                    border-radius: 15px;
+                    padding: 2rem 1.5rem;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    height: 100%;
+                " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 35px rgba(255,0,127,0.4)'; this.style.borderColor='#FF007F'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='#FF007F'">
+                    <div style="text-align: center; margin-bottom: 1.2rem;">
+                        <i class="bi bi-credit-card" style="font-size: 3.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
+                    </div>
+                    <h4 style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; text-align: center; margin-bottom: 1rem; font-size: 1.2rem;">
+                        信用卡账单管理
+                    </h4>
+                    <p style="color: #999; text-align: center; font-size: 0.85rem; margin-bottom: 1rem;">
+                        Credit Card Statements
+                    </p>
+                    <div style="background: rgba(255,0,127,0.1); border-radius: 8px; padding: 0.8rem; text-align: center;">
+                        <div style="color: #FF007F; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
+                            {{ cc_statements|length }}
+                        </div>
+                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">月结单数量</div>
+                    </div>
                 </div>
-            </div>
+            </a>
+        </div>
+
+        <!-- 2. 储蓄账户月结单管理 -->
+        <div class="col-md-6 col-lg-3">
+            <a href="#savingsStatements" style="text-decoration: none;" onclick="document.getElementById('savingsStatements').scrollIntoView({behavior: 'smooth'}); return false;">
+                <div class="quick-action-card" style="
+                    background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%);
+                    border: 2px solid #322446;
+                    border-radius: 15px;
+                    padding: 2rem 1.5rem;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    height: 100%;
+                " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 35px rgba(50,36,70,0.5)'; this.style.borderColor='#FF007F'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='#322446'">
+                    <div style="text-align: center; margin-bottom: 1.2rem;">
+                        <i class="bi bi-bank" style="font-size: 3.5rem; color: #322446; text-shadow: 0 0 20px rgba(50,36,70,0.8);"></i>
+                    </div>
+                    <h4 style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; text-align: center; margin-bottom: 1rem; font-size: 1.2rem;">
+                        储蓄账户月结单
+                    </h4>
+                    <p style="color: #999; text-align: center; font-size: 0.85rem; margin-bottom: 1rem;">
+                        Savings Account Statements
+                    </p>
+                    <div style="background: rgba(50,36,70,0.3); border-radius: 8px; padding: 0.8rem; text-align: center;">
+                        <div style="color: #322446; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 10px rgba(50,36,70,0.6);">
+                            {{ sa_statements|length }}
+                        </div>
+                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">月结单数量</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- 3. 付款收据管理 -->
+        <div class="col-md-6 col-lg-3">
+            <a href="{{ url_for('receipts_home') }}" style="text-decoration: none;">
+                <div class="quick-action-card" style="
+                    background: linear-gradient(135deg, rgba(192, 192, 192, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%);
+                    border: 2px solid #C0C0C0;
+                    border-radius: 15px;
+                    padding: 2rem 1.5rem;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    height: 100%;
+                " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 35px rgba(192,192,192,0.3)'; this.style.borderColor='#FF007F'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='#C0C0C0'">
+                    <div style="text-align: center; margin-bottom: 1.2rem;">
+                        <i class="bi bi-receipt" style="font-size: 3.5rem; color: #C0C0C0; text-shadow: 0 0 20px rgba(192,192,192,0.5);"></i>
+                    </div>
+                    <h4 style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; text-align: center; margin-bottom: 1rem; font-size: 1.2rem;">
+                        付款收据管理
+                    </h4>
+                    <p style="color: #999; text-align: center; font-size: 0.85rem; margin-bottom: 1rem;">
+                        Receipts Management
+                    </p>
+                    <div style="background: rgba(192,192,192,0.1); border-radius: 8px; padding: 0.8rem; text-align: center;">
+                        <div style="color: #C0C0C0; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 10px rgba(192,192,192,0.4);">
+                            {{ receipts_count }}
+                        </div>
+                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">收据总数</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- 4. Supplier Invoices 管理 -->
+        <div class="col-md-6 col-lg-3">
+            <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
+                <div class="quick-action-card" style="
+                    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%);
+                    border: 2px solid #FFD700;
+                    border-radius: 15px;
+                    padding: 2rem 1.5rem;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    height: 100%;
+                " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 35px rgba(255,215,0,0.3)'; this.style.borderColor='#FF007F'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='#FFD700'">
+                    <div style="text-align: center; margin-bottom: 1.2rem;">
+                        <i class="bi bi-file-earmark-text-fill" style="font-size: 3.5rem; color: #FFD700; text-shadow: 0 0 20px rgba(255,215,0,0.5);"></i>
+                    </div>
+                    <h4 style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; text-align: center; margin-bottom: 1rem; font-size: 1.2rem;">
+                        供应商发票管理
+                    </h4>
+                    <p style="color: #999; text-align: center; font-size: 0.85rem; margin-bottom: 1rem;">
+                        Supplier Invoices
+                    </p>
+                    <div style="background: rgba(255,215,0,0.1); border-radius: 8px; padding: 0.8rem; text-align: center;">
+                        <div style="color: #FFD700; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,215,0,0.4);">
+                            {{ invoices_count }}
+                        </div>
+                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">发票总数</div>
+                    </div>
+                </div>
+            </a>
         </div>
     </div>
 
     <!-- Credit Card Statements Card -->
-    <div class="row g-4 mb-5">
+    <div class="row g-4 mb-5" id="creditCardStatements">
         <div class="col-12">
             <div class="statement-card" style="border: 2px solid #FF007F;">
                 <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #FF007F;">
@@ -209,7 +328,7 @@
     </div>
 
     <!-- Bank Account Statements Card -->
-    <div class="row g-4 mb-5">
+    <div class="row g-4 mb-5" id="savingsStatements">
         <div class="col-12">
             <div class="statement-card" style="border: 2px solid #322446;">
                 <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #322446;">
