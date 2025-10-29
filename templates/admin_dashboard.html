@@ -79,21 +79,21 @@
     <div class="row g-4 mb-5">
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
-                <div class="stat-value" style="color: #322446; font-size: 1.8rem;">RM {{ "{:,.0f}".format(total_gz_expenses) }}</div>
+                <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.0f}".format(total_gz_expenses) }}</div>
                 <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">🏢 GZ's Expenses</div>
                 <div class="stat-corner" style="background: #322446;"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
-                <div class="stat-value" style="color: #322446; font-size: 1.8rem;">RM {{ "{:,.0f}".format(abs(total_gz_payments)) }}</div>
+                <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.0f}".format(abs(total_gz_payments)) }}</div>
                 <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">💵 GZ's Payment</div>
                 <div class="stat-corner" style="background: #322446;"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
-                <div class="stat-value" style="color: #322446; font-size: 1.8rem;">RM {{ "{:,.0f}".format(total_gz_balance) }}</div>
+                <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.0f}".format(total_gz_balance) }}</div>
                 <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">📈 GZ's OS Bal</div>
                 <div class="stat-corner" style="background: #322446;"></div>
             </div>
@@ -101,7 +101,7 @@
         <div class="col-md-3">
             <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
                 <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(50,36,70,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                    <div class="stat-value" style="color: #322446; font-size: 1.8rem;">RM {{ "{:,.2f}".format(invoices_total) }}</div>
+                    <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.2f}".format(invoices_total) }}</div>
                     <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">💼 Total Invoices Amount</div>
                     <div class="stat-corner" style="background: #322446;"></div>
                 </div>
@@ -169,13 +169,13 @@
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['closing_balance']) }}</td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">{{ stmt['due_date'] if stmt['due_date'] else '-' }}</td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['owner_expenses']) }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #322446; text-shadow: 0 0 8px rgba(50,36,70,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['infinite_expenses']) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['infinite_expenses']) }}</td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25); white-space: nowrap;">RM {{ "{:,.2f}".format(abs(stmt['owner_payments'])) }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #322446; text-shadow: 0 0 8px rgba(50,36,70,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(abs(stmt['infinite_payments'])) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(abs(stmt['infinite_payments'])) }}</td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25); white-space: nowrap;">
                                             RM {{ "{:,.2f}".format(stmt['owner_os_bal']) }}
                                         </td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #322446; text-shadow: 0 0 8px rgba(50,36,70,0.3); white-space: nowrap;">
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">
                                             RM {{ "{:,.2f}".format(stmt['infinite_os_bal']) }}
                                         </td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center; white-space: nowrap;">

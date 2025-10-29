@@ -101,8 +101,8 @@
             </div>
             <div class="col-md-4">
                 <div style="padding: 1rem; background: rgba(218, 165, 32, 0.05); border-radius: 8px; border: 1px solid rgba(218, 165, 32, 0.2);">
-                    <small style="color: #322446;">{{ t('infinite') }} Baseline</small>
-                    <div style="font-size: 1.5rem; font-weight: 600; color: #322446; margin-top: 0.5rem;">
+                    <small style="color: #FFFEF0;">{{ t('infinite') }} Baseline</small>
+                    <div style="font-size: 1.5rem; font-weight: 600; color: #FFFEF0; margin-top: 0.5rem;">
                         RM {{ "{:,.2f}".format(statement.baseline.infinite_baseline) }}
                     </div>
                 </div>
@@ -157,7 +157,7 @@
             <div class="col-md-6">
                 <div style="padding: 2rem; background: linear-gradient(135deg, rgba(218, 165, 32, 0.05) 0%, rgba(255, 215, 0, 0.02) 100%); border-radius: 12px; border: 1px solid rgba(218, 165, 32, 0.3); height: 100%;">
                     <div class="text-center mb-4">
-                        <h3 style="color: #322446; font-size: 1.5rem;">
+                        <h3 style="color: #FFFEF0; font-size: 1.5rem;">
                             <i class="bi bi-infinity"></i> {{ t('infinite') }}
                         </h3>
                     </div>
@@ -168,7 +168,7 @@
                             <span style="color: var(--text-secondary);">
                                 <i class="bi bi-cart"></i> {{ t('supplier_expenses') }}
                             </span>
-                            <span style="color: #322446; font-size: 1.5rem; font-weight: 700;">
+                            <span style="color: #FFFEF0; font-size: 1.5rem; font-weight: 700;">
                                 RM {{ "{:,.2f}".format(statement.infinite_expenses) }}
                             </span>
                         </div>
@@ -193,7 +193,7 @@
                             <span style="color: var(--text-secondary);">
                                 <i class="bi bi-percent"></i> {{ t('supplier_fees') }}
                             </span>
-                            <span style="color: #322446; font-size: 1.5rem; font-weight: 700;">
+                            <span style="color: #FFFEF0; font-size: 1.5rem; font-weight: 700;">
                                 RM {{ "{:,.2f}".format(statement.supplier_fees) }}
                             </span>
                         </div>
@@ -243,7 +243,7 @@
                             {% if txn.category == 'owner_expense' %}
                             <span style="color: #330066;"><i class="bi bi-person-fill"></i> OWNER</span>
                             {% elif txn.category == 'infinite_expense' %}
-                            <span style="color: #322446;"><i class="bi bi-infinity"></i> INFINITE</span>
+                            <span style="color: #FFFEF0;"><i class="bi bi-infinity"></i> INFINITE</span>
                             {% elif txn.category == 'owner_payment' %}
                             <span style="color: #FF007F;"><i class="bi bi-person-fill"></i> {{ t('owner_pay') }}</span>
                             {% elif txn.category == 'infinite_payment' %}
@@ -253,7 +253,7 @@
                         <td style="color: var(--text-secondary); font-size: 0.85rem; white-space: nowrap;">
                             {% if txn.is_supplier %}
                             <div><i class="bi bi-building"></i> {{ txn.supplier_name }}</div>
-                            <div style="color: #322446;"><i class="bi bi-percent"></i> {{ t('fee') }}: RM {{ "{:,.2f}".format(txn.supplier_fee) }}</div>
+                            <div style="color: #FFFEF0;"><i class="bi bi-percent"></i> {{ t('fee') }}: RM {{ "{:,.2f}".format(txn.supplier_fee) }}</div>
                             {% endif %}
                             {% if txn.payer_name %}
                             <div><i class="bi bi-person-badge"></i> Payer: {{ txn.payer_name }}</div>
