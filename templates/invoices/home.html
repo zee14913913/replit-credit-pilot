@@ -120,14 +120,14 @@
                             <tbody>
                                 {% for invoice in invoices %}
                                 <tr>
-                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3); font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05);">{{ invoice.invoice_number }}</td>
-                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3); font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05);">{{ invoice.invoice_date }}</td>
-                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3); font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05);">{{ invoice.customer_name }}</td>
-                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3); font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05);">{{ invoice.supplier_name }}</td>
-                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3); font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05);">RM {{ "{:,.2f}".format(invoice.total_amount) }}</td>
-                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3); font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05);">RM {{ "{:,.2f}".format(invoice.supplier_fee) }}</td>
-                                    <td style="color: #FF007F; font-weight: bold; text-shadow: 0 0 8px rgba(255,0,127,0.3); font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05);">RM {{ "{:,.2f}".format(invoice.total_amount + invoice.supplier_fee) }}</td>
-                                    <td style="padding: 0.9rem 1.2rem;">
+                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3); font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">{{ invoice.invoice_number }}</td>
+                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3); font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">{{ invoice.invoice_date }}</td>
+                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3); font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">{{ invoice.customer_name }}</td>
+                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3); font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">{{ invoice.supplier_name }}</td>
+                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3); font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">RM {{ "{:,.2f}".format(invoice.total_amount) }}</td>
+                                    <td style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 0 8px rgba(255,255,255,0.3); font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">RM {{ "{:,.2f}".format(invoice.supplier_fee) }}</td>
+                                    <td style="color: #FF007F; font-weight: bold; text-shadow: 0 0 8px rgba(255,0,127,0.3); font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">RM {{ "{:,.2f}".format(invoice.total_amount + invoice.supplier_fee) }}</td>
+                                    <td style="padding: 0.9rem 1.2rem; white-space: nowrap;">
                                         <a href="/static/uploads/{{ invoice.pdf_path }}" target="_blank" class="btn-white-glow" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;">
                                             <i class="bi bi-eye"></i> View
                                         </a>

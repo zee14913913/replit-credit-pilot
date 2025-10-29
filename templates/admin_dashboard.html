@@ -140,45 +140,45 @@
                 </div>
                 <div class="card-body-custom" style="padding: 0;">
                     <div class="table-responsive">
-                        <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto; font-size: 0.95rem;">
+                        <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto;">
                             <thead style="background: rgba(255, 0, 127, 0.1); border-bottom: 2px solid #FF007F;">
                                 <tr>
-                                    <th>{{ t('month_of_statement') }}</th>
-                                    <th>{{ t('name') }}</th>
-                                    <th>{{ t('bank') }}</th>
-                                    <th style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">PRE BAL</th>
-                                    <th style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">Statement OS</th>
-                                    <th>{{ t('due_date') }}</th>
-                                    <th>{{ t('owner_expenses') }}</th>
-                                    <th>GZ Expenses</th>
-                                    <th>{{ t('owner_payments') }}</th>
-                                    <th>GZ Payments</th>
-                                    <th>{{ t('owner_os_bal') }}</th>
-                                    <th>GZ Balance</th>
-                                    <th style="text-align: center; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ t('actions') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('month_of_statement') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('name') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('bank') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">PRE BAL</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">Statement OS</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('due_date') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('owner_expenses') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">GZ Expenses</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('owner_payments') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">GZ Payments</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('owner_os_bal') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">GZ Balance</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ t('actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% if cc_statements %}
                                     {% for stmt in cc_statements %}
                                     <tr class="hover-glow-row">
-                                        <td style="font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ stmt['statement_date'][:7] }}</td>
-                                        <td style="font-weight: 600;">{{ stmt['customer_name'] }}</td>
-                                        <td style="font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ stmt['bank_abbr'] }}</td>
-                                        <td style="font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">RM {{ "{:,.2f}".format(stmt['prev_bal']) }}</td>
-                                        <td style="font-weight: 700; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">RM {{ "{:,.2f}".format(stmt['closing_balance']) }}</td>
-                                        <td>{{ stmt['due_date'] if stmt['due_date'] else '-' }}</td>
-                                        <td style="font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25);">RM {{ "{:,.2f}".format(stmt['owner_expenses']) }}</td>
-                                        <td style="font-weight: 700; color: #322446; text-shadow: 0 0 8px rgba(50,36,70,0.3);">RM {{ "{:,.2f}".format(stmt['infinite_expenses']) }}</td>
-                                        <td style="font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25);">RM {{ "{:,.2f}".format(abs(stmt['owner_payments'])) }}</td>
-                                        <td style="font-weight: 700; color: #322446; text-shadow: 0 0 8px rgba(50,36,70,0.3);">RM {{ "{:,.2f}".format(abs(stmt['infinite_payments'])) }}</td>
-                                        <td style="font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25);">
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ stmt['statement_date'][:7] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; white-space: nowrap;">{{ stmt['customer_name'] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ stmt['bank_abbr'] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['prev_bal']) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['closing_balance']) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">{{ stmt['due_date'] if stmt['due_date'] else '-' }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['owner_expenses']) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #322446; text-shadow: 0 0 8px rgba(50,36,70,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['infinite_expenses']) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25); white-space: nowrap;">RM {{ "{:,.2f}".format(abs(stmt['owner_payments'])) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #322446; text-shadow: 0 0 8px rgba(50,36,70,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(abs(stmt['infinite_payments'])) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25); white-space: nowrap;">
                                             RM {{ "{:,.2f}".format(stmt['owner_os_bal']) }}
                                         </td>
-                                        <td style="font-weight: 700; color: #322446; text-shadow: 0 0 8px rgba(50,36,70,0.3);">
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #322446; text-shadow: 0 0 8px rgba(50,36,70,0.3); white-space: nowrap;">
                                             RM {{ "{:,.2f}".format(stmt['infinite_os_bal']) }}
                                         </td>
-                                        <td style="text-align: center;">
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center; white-space: nowrap;">
                                             <a href="{{ url_for('monthly_statement_detail', monthly_statement_id=stmt['statement_id']) }}" 
                                                class="btn btn-sm btn-view-details"
                                                style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
@@ -186,7 +186,8 @@
                                                       color: #FFFFFF;
                                                       text-shadow: 0 0 8px rgba(255,255,255,0.3);
                                                       font-weight: 600;
-                                                      padding: 0.25rem 0.75rem;">
+                                                      padding: 0.25rem 0.75rem;
+                                                      font-size: 0.75rem;">
                                                 {{ t('view_details') }}
                                             </a>
                                         </td>
@@ -218,33 +219,33 @@
                 </div>
                 <div class="card-body-custom" style="padding: 0;">
                     <div class="table-responsive">
-                        <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto; font-size: 0.95rem;">
+                        <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto;">
                             <thead style="background: rgba(50, 36, 70, 0.3); border-bottom: 2px solid #322446;">
                                 <tr>
-                                    <th style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('month_of_statement') }}</th>
-                                    <th style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('name') }}</th>
-                                    <th style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('bank') }}</th>
-                                    <th style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('monthly_credit') }}</th>
-                                    <th style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('monthly_debit') }}</th>
-                                    <th style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('closing_bal') }}</th>
-                                    <th style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('cc_sum_payment') }}</th>
-                                    <th style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('total_transfer') }}</th>
-                                    <th style="text-align: center; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('actions') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('month_of_statement') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('name') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('bank') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('monthly_credit') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('monthly_debit') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('closing_bal') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('cc_sum_payment') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('total_transfer') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% if sa_statements %}
                                     {% for stmt in sa_statements %}
                                     <tr class="hover-glow-row">
-                                        <td style="font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ stmt['statement_date'][:7] }}</td>
-                                        <td style="font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ stmt['customer_name'] }}</td>
-                                        <td style="font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ stmt['bank_abbr'] }}</td>
-                                        <td style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">RM {{ "{:,.2f}".format(stmt['monthly_credit']) }}</td>
-                                        <td style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">RM {{ "{:,.2f}".format(stmt['monthly_debit']) }}</td>
-                                        <td style="font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">RM {{ "{:,.2f}".format(stmt['closing_bal'] if stmt['closing_bal'] else 0) }}</td>
-                                        <td style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">RM {{ "{:,.2f}".format(stmt['cc_sum_payment']) }}</td>
-                                        <td style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">RM {{ "{:,.2f}".format(stmt['total_transfer']) }}</td>
-                                        <td style="text-align: center;">
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">{{ stmt['statement_date'][:7] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">{{ stmt['customer_name'] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">{{ stmt['bank_abbr'] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['monthly_credit']) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['monthly_debit']) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['closing_bal'] if stmt['closing_bal'] else 0) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['cc_sum_payment']) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['total_transfer']) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center; white-space: nowrap;">
                                             <a href="{{ url_for('savings_verify_statement', statement_id=stmt['statement_id']) }}" 
                                                class="btn btn-sm btn-view-details"
                                                style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
@@ -252,7 +253,8 @@
                                                       color: #FFFEF0;
                                                       text-shadow: 0 0 8px rgba(255,254,240,0.3);
                                                       font-weight: 600;
-                                                      padding: 0.25rem 0.75rem;">
+                                                      padding: 0.25rem 0.75rem;
+                                                      font-size: 0.75rem;">
                                                 {{ t('view_details') }}
                                             </a>
                                         </td>
