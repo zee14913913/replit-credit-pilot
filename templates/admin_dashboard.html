@@ -150,22 +150,22 @@
         <div class="col-md-6 col-lg-3">
             <a href="#savingsStatements" style="text-decoration: none;" onclick="document.getElementById('savingsStatements').scrollIntoView({behavior: 'smooth'}); return false;">
                 <div class="quick-action-card" style="
-                    background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%);
-                    border: 2px solid #322446;
+                    background: linear-gradient(135deg, rgba(192, 192, 192, 0.15) 0%, rgba(0, 0, 0, 0.95) 100%);
+                    border: 2px solid #C0C0C0;
                     border-radius: 15px;
                     padding: 2rem 1.5rem;
                     transition: all 0.3s ease;
                     cursor: pointer;
                     height: 100%;
-                " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 35px rgba(50,36,70,0.5)'; this.style.borderColor='#FF007F'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='#322446'">
+                " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 35px rgba(192,192,192,0.4)'; this.style.borderColor='#FF007F'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='#C0C0C0'">
                     <div style="text-align: center; margin-bottom: 1.2rem;">
-                        <i class="bi bi-bank" style="font-size: 3.5rem; color: #322446; text-shadow: 0 0 20px rgba(50,36,70,0.8);"></i>
+                        <i class="bi bi-bank" style="font-size: 3.5rem; color: #C0C0C0; text-shadow: 0 0 20px rgba(192,192,192,0.6);"></i>
                     </div>
                     <h4 style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; text-align: center; margin-bottom: 1rem; font-size: 1.2rem;">
                         {{ t('savings_account_statements_management') }}
                     </h4>
-                    <div style="background: rgba(50,36,70,0.3); border-radius: 8px; padding: 0.8rem; text-align: center;">
-                        <div style="color: #322446; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 10px rgba(50,36,70,0.6);">
+                    <div style="background: rgba(192,192,192,0.15); border-radius: 8px; padding: 0.8rem; text-align: center;">
+                        <div style="color: #C0C0C0; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 10px rgba(192,192,192,0.5);">
                             {{ sa_statements|length }}
                         </div>
                         <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">{{ t('statement_count') }}</div>
@@ -206,22 +206,22 @@
         <div class="col-md-6 col-lg-3">
             <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
                 <div class="quick-action-card" style="
-                    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%);
-                    border: 2px solid #FFD700;
+                    background: linear-gradient(135deg, rgba(229, 228, 226, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%);
+                    border: 2px solid #E5E4E2;
                     border-radius: 15px;
                     padding: 2rem 1.5rem;
                     transition: all 0.3s ease;
                     cursor: pointer;
                     height: 100%;
-                " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 35px rgba(255,215,0,0.3)'; this.style.borderColor='#FF007F'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='#FFD700'">
+                " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 35px rgba(229,228,226,0.35)'; this.style.borderColor='#FF007F'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='#E5E4E2'">
                     <div style="text-align: center; margin-bottom: 1.2rem;">
-                        <i class="bi bi-file-earmark-text-fill" style="font-size: 3.5rem; color: #FFD700; text-shadow: 0 0 20px rgba(255,215,0,0.5);"></i>
+                        <i class="bi bi-file-earmark-text-fill" style="font-size: 3.5rem; color: #E5E4E2; text-shadow: 0 0 20px rgba(229,228,226,0.6);"></i>
                     </div>
                     <h4 style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; text-align: center; margin-bottom: 1rem; font-size: 1.2rem;">
                         {{ t('supplier_invoices_management') }}
                     </h4>
-                    <div style="background: rgba(255,215,0,0.1); border-radius: 8px; padding: 0.8rem; text-align: center;">
-                        <div style="color: #FFD700; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,215,0,0.4);">
+                    <div style="background: rgba(229,228,226,0.1); border-radius: 8px; padding: 0.8rem; text-align: center;">
+                        <div style="color: #E5E4E2; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 10px rgba(229,228,226,0.5);">
                             {{ invoices_count }}
                         </div>
                         <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">{{ t('invoice_total') }}</div>
