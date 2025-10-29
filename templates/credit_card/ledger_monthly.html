@@ -82,10 +82,10 @@
                         <tr>
                             <td style="color: var(--text-secondary); white-space: nowrap;">****{{ stmt.card_number_last4 }}</td>
                             <td style="color: var(--text-secondary); white-space: nowrap;">{{ t('main_card') }}</td>
-                            <td style="color: {% if stmt.previous_balance < 0 %}#FF007F{% else %}#322446{% endif %}; font-weight: 600; white-space: nowrap;">
+                            <td style="color: {% if stmt.previous_balance < 0 %}#FF007F{% else %}#FFFEF0{% endif %}; font-weight: 600; white-space: nowrap;">
                                 RM {{ "{:,.2f}".format(stmt.previous_balance) }}
                             </td>
-                            <td style="color: {% if stmt.statement_total < 0 %}#FF007F{% else %}#322446{% endif %}; font-weight: 600; white-space: nowrap;">
+                            <td style="color: {% if stmt.statement_total < 0 %}#FF007F{% else %}#FFFEF0{% endif %}; font-weight: 600; white-space: nowrap;">
                                 RM {{ "{:,.2f}".format(stmt.statement_total) }}
                             </td>
                             <td style="color: var(--text-secondary); white-space: nowrap;">{{ stmt.txn_count }}</td>
@@ -132,7 +132,7 @@
                         <tr style="background: rgba(255, 20, 147, 0.05);">
                             <td style="color: var(--text-secondary); white-space: nowrap;">-</td>
                             <td style="color: var(--text-primary); font-weight: 600; white-space: nowrap;">{{ t('previous_balance') }}</td>
-                            <td style="color: {% if stmt.previous_balance < 0 %}#FF007F{% else %}#322446{% endif %}; font-weight: 700; white-space: nowrap;">
+                            <td style="color: {% if stmt.previous_balance < 0 %}#FF007F{% else %}#FFFEF0{% endif %}; font-weight: 700; white-space: nowrap;">
                                 {{ "{:,.2f}".format(stmt.previous_balance) }}
                             </td>
                             <td style="color: var(--text-secondary); white-space: nowrap;">{{ t('baseline') }}</td>
