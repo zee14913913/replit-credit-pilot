@@ -66,29 +66,29 @@
                 </div>
                 <div class="card-body-custom" style="padding: 0;">
                     <div class="table-responsive">
-                        <table id="supplierInvoicesTable" class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto; font-size: 0.95rem;">
-                            <thead style="background: rgba(50, 36, 70, 0.3); border-bottom: 2px solid #322446; white-space: nowrap;">
+                        <table id="supplierInvoicesTable" class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto;">
+                            <thead style="background: rgba(50, 36, 70, 0.3); border-bottom: 2px solid #322446;">
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Description</th>
-                                    <th>Amount</th>
-                                    <th>From</th>
-                                    <th>Remarks</th>
-                                    <th>Supplier Fee (1%)</th>
-                                    <th style="text-align: center; white-space: nowrap;">Action</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Date</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Description</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Amount</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">From</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Remarks</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Supplier Fee (1%)</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; white-space: nowrap;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% if supplier_invoices %}
                                     {% for invoice in supplier_invoices %}
                                     <tr class="hover-glow-row">
-                                        <td style="font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ invoice['date'] }}</td>
-                                        <td style="font-weight: 600; white-space: nowrap;">{{ invoice['description'] }}</td>
-                                        <td style="font-weight: 600; color: #FF007F; white-space: nowrap;">RM {{ "{:,.2f}".format(invoice['amount']) }}</td>
-                                        <td style="white-space: nowrap;">{{ invoice['from_customer'] }}</td>
-                                        <td style="color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ invoice['remarks'] }}</td>
-                                        <td style="color: #FF007F; white-space: nowrap;">RM {{ "{:,.2f}".format(invoice['supplier_fee']) }}</td>
-                                        <td style="text-align: center; white-space: nowrap;">
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ invoice['date'] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; white-space: nowrap;">{{ invoice['description'] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FF007F; white-space: nowrap;">RM {{ "{:,.2f}".format(invoice['amount']) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">{{ invoice['from_customer'] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ invoice['remarks'] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FF007F; white-space: nowrap;">RM {{ "{:,.2f}".format(invoice['supplier_fee']) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center; white-space: nowrap;">
                                             {% if invoice['pdf_path'] %}
                                             <a href="/{{ invoice['pdf_path'] }}" target="_blank" 
                                                class="btn btn-sm btn-view-details"
@@ -97,7 +97,8 @@
                                                       color: #FFFFFF;
                                                       text-shadow: 0 0 8px rgba(255,255,255,0.3);
                                                       font-weight: 600;
-                                                      padding: 0.25rem 0.75rem;">
+                                                      padding: 0.25rem 0.75rem;
+                                                      font-size: 0.75rem;">
                                                 <i class="bi bi-file-pdf"></i> View Details
                                             </a>
                                             {% else %}
@@ -137,27 +138,27 @@
                 </div>
                 <div class="card-body-custom" style="padding: 0;">
                     <div class="table-responsive">
-                        <table id="paymentReceiptsTable" class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto; font-size: 0.95rem;">
-                            <thead style="background: rgba(255, 0, 127, 0.1); border-bottom: 2px solid #FF007F; white-space: nowrap;">
+                        <table id="paymentReceiptsTable" class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto;">
+                            <thead style="background: rgba(255, 0, 127, 0.1); border-bottom: 2px solid #FF007F;">
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Description</th>
-                                    <th>Amount</th>
-                                    <th>From</th>
-                                    <th>Remarks</th>
-                                    <th style="text-align: center; white-space: nowrap;">Action</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Date</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Description</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Amount</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">From</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Remarks</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; white-space: nowrap;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% if payment_receipts %}
                                     {% for receipt in payment_receipts %}
                                     <tr class="hover-glow-row">
-                                        <td style="font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ receipt['date'] }}</td>
-                                        <td style="font-weight: 600; white-space: nowrap;">{{ receipt['description'] }}</td>
-                                        <td style="font-weight: 600; color: #FF007F; white-space: nowrap;">RM {{ "{:,.2f}".format(receipt['amount']) }}</td>
-                                        <td style="white-space: nowrap;">{{ receipt['from_customer'] }}</td>
-                                        <td style="color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ receipt['remarks'] }}</td>
-                                        <td style="text-align: center; white-space: nowrap;">
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ receipt['date'] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; white-space: nowrap;">{{ receipt['description'] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FF007F; white-space: nowrap;">RM {{ "{:,.2f}".format(receipt['amount']) }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">{{ receipt['from_customer'] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ receipt['remarks'] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center; white-space: nowrap;">
                                             {% if receipt['receipt_file_path'] %}
                                             <a href="/{{ receipt['receipt_file_path'] }}" target="_blank" 
                                                class="btn btn-sm btn-view-details"
@@ -166,7 +167,8 @@
                                                       color: #FFFFFF;
                                                       text-shadow: 0 0 8px rgba(255,255,255,0.3);
                                                       font-weight: 600;
-                                                      padding: 0.25rem 0.75rem;">
+                                                      padding: 0.25rem 0.75rem;
+                                                      font-size: 0.75rem;">
                                                 <i class="bi bi-file-image"></i> View Details
                                             </a>
                                             {% else %}
