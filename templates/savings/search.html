@@ -107,19 +107,28 @@
                             {% endif %}
                         </td>
                         <td style="white-space: nowrap; padding: 16px; color: #FFFFFF;">
-                            <form method="POST" action="{{ url_for('tag_savings_transaction', transaction_id=trans.id) }}" class="d-inline" style="width: 100%;">
-                                <div class="input-group input-group-sm">
-                                    <input type="text" 
-                                           name="customer_tag" 
-                                           class="form-control" 
-                                           placeholder="Tag customer"
-                                           value="{{ trans.customer_name_tag or '' }}"
-                                           style="font-size: 0.8rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.3); color: #FFFFFF;">
-                                    <button type="submit" class="btn btn-sm" style="background: #322446; border: 1px solid #00FF9D; color: #FFFFFF;">
-                                        <i class="bi bi-save" style="color: #FFFFFF;"></i>
-                                    </button>
-                                </div>
-                            </form>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <a href="{{ url_for('export_transaction_image', transaction_id=trans.id) }}" 
+                                   target="_blank"
+                                   class="btn btn-sm" 
+                                   style="background: #322446; border: 1px solid #FF007F; color: #FFFFFF; padding: 6px 12px; white-space: nowrap;"
+                                   title="Export Transaction Image">
+                                    <i class="bi bi-camera" style="color: #FFFFFF;"></i> 截图
+                                </a>
+                                <form method="POST" action="{{ url_for('tag_savings_transaction', transaction_id=trans.id) }}" class="d-inline" style="flex: 1;">
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" 
+                                               name="customer_tag" 
+                                               class="form-control" 
+                                               placeholder="Tag"
+                                               value="{{ trans.customer_name_tag or '' }}"
+                                               style="font-size: 0.8rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.3); color: #FFFFFF;">
+                                        <button type="submit" class="btn btn-sm" style="background: #322446; border: 1px solid #00FF9D; color: #FFFFFF; padding: 6px 10px;">
+                                            <i class="bi bi-save" style="color: #FFFFFF;"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
