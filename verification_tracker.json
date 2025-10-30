@@ -1787,38 +1787,6 @@
   },
   {
     "seq": 107,
-    "statement_id": 302,
-    "customer_id": 13,
-    "customer_code": "CORP20251030061207",
-    "account_id": 22,
-    "bank_name": "Public Bank",
-    "account_last4": "9009",
-    "statement_date": "2025-05-31",
-    "file_path": "static/uploads/customers/CORP20251030061207/savings/Public_Bank/2025-05/AI_SMART_TECH_Public_Bank_9009_2025-05-31.pdf",
-    "file_exists": true,
-    "correct_location": true,
-    "txn_count": 60,
-    "verified": false,
-    "verification_notes": "无法提取交易数量"
-  },
-  {
-    "seq": 108,
-    "statement_id": 299,
-    "customer_id": 13,
-    "customer_code": "CORP20251030061207",
-    "account_id": 22,
-    "bank_name": "Public Bank",
-    "account_last4": "9009",
-    "statement_date": "2025-06-30",
-    "file_path": "static/uploads/customers/CORP20251030061207/savings/Public_Bank/2025-06/AI_SMART_TECH_Public_Bank_9009_2025-06-30.pdf",
-    "file_exists": true,
-    "correct_location": true,
-    "txn_count": 39,
-    "verified": false,
-    "verification_notes": "无法提取交易数量"
-  },
-  {
-    "seq": 109,
     "statement_id": 303,
     "customer_id": 13,
     "customer_code": "CORP20251030061207",
@@ -1835,7 +1803,7 @@
     "verification_result": "PASSED"
   },
   {
-    "seq": 110,
+    "seq": 108,
     "statement_id": 300,
     "customer_id": 13,
     "customer_code": "CORP20251030061207",
@@ -1850,21 +1818,5 @@
     "verified": true,
     "verification_notes": "验证通过",
     "verification_result": "PASSED"
-  },
-  {
-    "seq": 111,
-    "statement_id": 304,
-    "customer_id": 13,
-    "customer_code": "CORP20251030061207",
-    "account_id": 22,
-    "bank_name": "Public Bank",
-    "account_last4": "9009",
-    "statement_date": "2025-09-30",
-    "file_path": "static/uploads/customers/CORP20251030061207/savings/Public_Bank/2025-09/AI_SMART_TECH_Public_Bank_9009_2025-09-30.pdf",
-    "file_exists": true,
-    "correct_location": true,
-    "txn_count": 86,
-    "verified": false,
-    "verification_notes": "无法提取交易数量"
   }
 ]
