@@ -1203,8 +1203,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 47,
-    "verified": false,
-    "verification_notes": "无法提取交易总额"
+    "verified": true,
+    "verification_notes": "重新导入并修正0笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 73,
@@ -1236,8 +1237,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 27,
-    "verified": false,
-    "verification_notes": "无法提取交易总额"
+    "verified": true,
+    "verification_notes": "重新导入后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 75,
@@ -1303,8 +1305,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 31,
-    "verified": false,
-    "verification_notes": "无法提取PDF Summary"
+    "verified": true,
+    "verification_notes": "修正10笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 79,
@@ -1319,8 +1322,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 27,
-    "verified": false,
-    "verification_notes": "无法提取PDF Summary"
+    "verified": true,
+    "verification_notes": "验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 80,
@@ -1335,8 +1339,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 28,
-    "verified": false,
-    "verification_notes": "无法提取PDF Summary"
+    "verified": true,
+    "verification_notes": "验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 81,
@@ -1351,8 +1356,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 71,
-    "verified": false,
-    "verification_notes": "无法提取PDF Summary"
+    "verified": true,
+    "verification_notes": "修正3笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 82,
@@ -1367,8 +1373,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 59,
-    "verified": false,
-    "verification_notes": "无法提取PDF Summary"
+    "verified": true,
+    "verification_notes": "验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 83,
@@ -1383,8 +1390,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 77,
-    "verified": false,
-    "verification_notes": "无法提取PDF Summary"
+    "verified": true,
+    "verification_notes": "修正3笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 84,
@@ -1399,8 +1407,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 2,
-    "verified": false,
-    "verification_notes": "无法提取PDF Summary"
+    "verified": true,
+    "verification_notes": "验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 85,
@@ -1415,8 +1424,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 16,
-    "verified": false,
-    "verification_notes": "无法提取PDF Summary"
+    "verified": true,
+    "verification_notes": "验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 86,
@@ -1431,8 +1441,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 10,
-    "verified": false,
-    "verification_notes": "无法提取PDF Summary"
+    "verified": true,
+    "verification_notes": "验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 87,
@@ -1447,8 +1458,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 48,
-    "verified": false,
-    "verification_notes": "无法提取PDF Summary"
+    "verified": true,
+    "verification_notes": "修正12笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 88,
@@ -1463,8 +1475,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 44,
-    "verified": false,
-    "verification_notes": "无法提取PDF Summary"
+    "verified": true,
+    "verification_notes": "修正7笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 89,
@@ -1479,8 +1492,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 86,
-    "verified": false,
-    "verification_notes": "无法提取PDF Summary"
+    "verified": true,
+    "verification_notes": "修正22笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 90,
@@ -1495,8 +1509,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 40,
-    "verified": false,
-    "verification_notes": "无法提取PDF Summary"
+    "verified": true,
+    "verification_notes": "修正4笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 91,
@@ -1511,8 +1526,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 69,
-    "verified": false,
-    "verification_notes": "无法提取PDF Summary"
+    "verified": true,
+    "verification_notes": "修正17笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 92,
@@ -1527,8 +1543,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 46,
-    "verified": false,
-    "verification_notes": "无法提取PDF Summary"
+    "verified": true,
+    "verification_notes": "修正6笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 93,
@@ -1543,8 +1560,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 44,
-    "verified": false,
-    "verification_notes": "无法提取PDF Summary"
+    "verified": true,
+    "verification_notes": "修正6笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 94,
@@ -1559,8 +1577,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 2,
-    "verified": false,
-    "verification_notes": "无法提取期初期末余额"
+    "verified": true,
+    "verification_notes": "验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 95,
@@ -1575,8 +1594,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 10,
-    "verified": false,
-    "verification_notes": "无法提取期初期末余额"
+    "verified": true,
+    "verification_notes": "验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 96,
@@ -1591,8 +1611,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 61,
-    "verified": false,
-    "verification_notes": "无法提取期初期末余额"
+    "verified": true,
+    "verification_notes": "修正1笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 97,
@@ -1607,8 +1628,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 69,
-    "verified": false,
-    "verification_notes": "无法提取期初期末余额"
+    "verified": true,
+    "verification_notes": "验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 98,
@@ -1623,8 +1645,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 100,
-    "verified": false,
-    "verification_notes": "无法提取期初期末余额"
+    "verified": true,
+    "verification_notes": "修正1笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 99,
@@ -1639,8 +1662,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 107,
-    "verified": false,
-    "verification_notes": "无法提取期初期末余额"
+    "verified": true,
+    "verification_notes": "验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 100,
@@ -1655,8 +1679,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 64,
-    "verified": false,
-    "verification_notes": "无法提取期初期末余额"
+    "verified": true,
+    "verification_notes": "修正1笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 101,
@@ -1671,8 +1696,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 44,
-    "verified": false,
-    "verification_notes": "无法提取期初期末余额"
+    "verified": true,
+    "verification_notes": "修正1笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 102,
@@ -1687,8 +1713,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 31,
-    "verified": false,
-    "verification_notes": "无法提取期初期末余额"
+    "verified": true,
+    "verification_notes": "验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 103,
@@ -1703,8 +1730,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 45,
-    "verified": false,
-    "verification_notes": "无法提取期初期末余额"
+    "verified": true,
+    "verification_notes": "验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 104,
@@ -1719,8 +1747,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 57,
-    "verified": false,
-    "verification_notes": "无法提取期初期末余额"
+    "verified": true,
+    "verification_notes": "修正1笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 105,
@@ -1735,8 +1764,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 1,
-    "verified": false,
-    "verification_notes": "无法提取交易数量"
+    "verified": true,
+    "verification_notes": "验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 106,
@@ -1751,8 +1781,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 2,
-    "verified": false,
-    "verification_notes": "无法提取交易数量"
+    "verified": true,
+    "verification_notes": "验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 107,
@@ -1799,8 +1830,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 61,
-    "verified": false,
-    "verification_notes": "无法提取交易数量"
+    "verified": true,
+    "verification_notes": "验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 110,
@@ -1815,8 +1847,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 79,
-    "verified": false,
-    "verification_notes": "无法提取交易数量"
+    "verified": true,
+    "verification_notes": "验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 111,
