@@ -114,14 +114,82 @@ class CardRecommendationEngine:
     
     def _find_suitable_cards(self, monthly_income: float) -> List[Dict]:
         """查找符合收入要求的信用卡"""
-        with get_db() as conn:
-            cursor = conn.cursor()
-            cursor.execute('''
-                SELECT * FROM credit_card_products
-                WHERE min_income_requirement <= ? AND is_active = 1
-                ORDER BY min_income_requirement DESC
-            ''', (monthly_income,))
-            return [dict(row) for row in cursor.fetchall()]
+        # Return sample Malaysian credit card recommendations
+        # This is a simplified version without database dependency
+        sample_cards = [
+            {
+                'id': 1,
+                'bank_name': 'Maybank',
+                'card_name': 'Maybank 2 Cards',
+                'card_type': 'Cashback',
+                'annual_fee': 0,
+                'cashback_rate_general': 0.02,
+                'cashback_rate_dining': 0.02,
+                'cashback_rate_petrol': 0.02,
+                'cashback_rate_grocery': 0.02,
+                'cashback_rate_online': 0,
+                'cashback_rate_travel': 0,
+                'points_rate_general': 0,
+                'points_rate_dining': 0,
+                'points_rate_petrol': 0,
+                'points_rate_grocery': 0,
+                'points_rate_online': 0,
+                'points_rate_travel': 0,
+                'points_value': 0,
+                'cashback_cap_monthly': 200,
+                'min_income_requirement': 2000,
+                'best_for_category': 'General Cashback'
+            },
+            {
+                'id': 2,
+                'bank_name': 'CIMB',
+                'card_name': 'CIMB Cash Rebate Platinum',
+                'card_type': 'Cashback',
+                'annual_fee': 188,
+                'cashback_rate_general': 0.01,
+                'cashback_rate_petrol': 0.08,
+                'cashback_rate_dining': 0,
+                'cashback_rate_grocery': 0,
+                'cashback_rate_online': 0,
+                'cashback_rate_travel': 0,
+                'points_rate_general': 0,
+                'points_rate_dining': 0,
+                'points_rate_petrol': 0,
+                'points_rate_grocery': 0,
+                'points_rate_online': 0,
+                'points_rate_travel': 0,
+                'points_value': 0,
+                'cashback_cap_monthly': 50,
+                'min_income_requirement': 2500,
+                'best_for_category': 'Petrol'
+            },
+            {
+                'id': 3,
+                'bank_name': 'Public Bank',
+                'card_name': 'Public Bank Quantum',
+                'card_type': 'Cashback',
+                'annual_fee': 0,
+                'cashback_rate_general': 0,
+                'cashback_rate_grocery': 0.05,
+                'cashback_rate_dining': 0.05,
+                'cashback_rate_petrol': 0,
+                'cashback_rate_online': 0,
+                'cashback_rate_travel': 0,
+                'points_rate_general': 0,
+                'points_rate_dining': 0,
+                'points_rate_petrol': 0,
+                'points_rate_grocery': 0,
+                'points_rate_online': 0,
+                'points_rate_travel': 0,
+                'points_value': 0,
+                'cashback_cap_monthly': 100,
+                'min_income_requirement': 2000,
+                'best_for_category': 'Grocery & Dining'
+            }
+        ]
+        
+        # Filter by income requirement
+        return [card for card in sample_cards if card['min_income_requirement'] <= monthly_income]
     
     def _calculate_card_benefit(self, card: Dict, spending: Dict) -> Tuple[float, float, str]:
         """计算信用卡收益和匹配度"""
