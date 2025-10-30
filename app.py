@@ -4390,6 +4390,62 @@ def monthly_summary_yearly(customer_id, year):
         flash(f'❌ 生成年度报告失败: {str(e)}', 'error')
         return redirect(url_for('monthly_summary_index'))
 
+@app.route('/monthly-summary/download/monthly/<int:customer_id>/<int:year>/<int:month>')
+@login_required
+@customer_access_required
+def download_monthly_summary_pdf(customer_id, year, month):
+    """下载月度汇总PDF报告"""
+    try:
+        # 生成PDF
+        pdf_path = monthly_summary_reporter.generate_monthly_pdf(customer_id, year, month)
+        
+        # 记录审计日志
+        log_audit(
+            user_id=session.get('user_id', 0),
+            action_type='DOWNLOAD_MONTHLY_SUMMARY_PDF',
+            description=f'客户ID: {customer_id}, 期间: {year}-{month:02d}'
+        )
+        
+        # 返回文件
+        return send_file(
+            pdf_path,
+            as_attachment=True,
+            download_name=os.path.basename(pdf_path),
+            mimetype='application/pdf'
+        )
+    
+    except Exception as e:
+        flash(f'❌ 生成PDF失败: {str(e)}', 'error')
+        return redirect(url_for('monthly_summary_index'))
+
+@app.route('/monthly-summary/download/yearly/<int:customer_id>/<int:year>')
+@login_required
+@customer_access_required
+def download_yearly_summary_pdf(customer_id, year):
+    """下载年度汇总PDF报告"""
+    try:
+        # 生成PDF
+        pdf_path = monthly_summary_reporter.generate_yearly_pdf(customer_id, year)
+        
+        # 记录审计日志
+        log_audit(
+            user_id=session.get('user_id', 0),
+            action_type='DOWNLOAD_YEARLY_SUMMARY_PDF',
+            description=f'客户ID: {customer_id}, 年份: {year}'
+        )
+        
+        # 返回文件
+        return send_file(
+            pdf_path,
+            as_attachment=True,
+            download_name=os.path.basename(pdf_path),
+            mimetype='application/pdf'
+        )
+    
+    except Exception as e:
+        flash(f'❌ 生成PDF失败: {str(e)}', 'error')
+        return redirect(url_for('monthly_summary_index'))
+
 
 # ============================================================================
 # RECEIPT MANAGEMENT - 收据管理系统

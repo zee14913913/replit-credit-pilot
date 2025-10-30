@@ -17,6 +17,10 @@
                     </h5>
                 </div>
                 <div>
+                    <a href="{{ url_for('download_monthly_summary_pdf', customer_id=summary.customer_id, year=summary.year, month=summary.month) }}" 
+                       class="btn me-2" style="background: linear-gradient(135deg, #FF007F 0%, #C1006C 100%); color: white; border: none;">
+                        <i class="bi bi-file-pdf"></i> 导出PDF
+                    </a>
                     <a href="{{ url_for('monthly_summary_index') }}" class="btn btn-outline-light">
                         <i class="bi bi-arrow-left"></i> 返回
                     </a>
