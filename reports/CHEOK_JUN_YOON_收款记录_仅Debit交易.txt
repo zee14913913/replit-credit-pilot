@@ -1,0 +1,198 @@
+======================================================================================================================================================
+CHEOK JUN YOON 收款记录详细报告
+说明: 仅统计这些账户【转出至】CHEOK JUN YOON 的记录（Debit交易）
+生成时间: 2025-10-30 18:29:06
+======================================================================================================================================================
+
+【记录 1】
+  日期:         2025-06-04
+  金额:         RM 19,900.00
+  付款银行:     Alliance Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*5540)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 14.30
+  月结单日期:   2025-06-30
+  参考编号:     N/A
+  完整描述:     Instant Transfer AOBIFT04062025531234 CHEOK JUN YOON
+
+【记录 2】
+  日期:         2025-06-04
+  金额:         RM 31,258.27
+  付款银行:     Public Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*9009)
+  账户类型:     RM Cm Current Account-i
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 16,209.55
+  月结单日期:   2025-06-30
+  参考编号:     N/A
+  完整描述:     DUITNOW TRSF DR 704994 CHEOK JUN YOON PAYMENT SERVICE 20250604PBBEMYKL010OCB23083491
+
+【记录 3】
+  日期:         2025-06-10
+  金额:         RM 3,750.00
+  付款银行:     Alliance Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*5540)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 8,092.91
+  月结单日期:   2025-06-30
+  参考编号:     N/A
+  完整描述:     Instant Transfer AOBIFT09062025639019 CHEOK JUN YOON
+
+【记录 4】
+  日期:         2025-06-25
+  金额:         RM 1,500.00
+  付款银行:     Public Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*9009)
+  账户类型:     RM Cm Current Account-i
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 3,084.79
+  月结单日期:   2025-06-30
+  参考编号:     N/A
+  完整描述:     DUITNOW TRSF DR 233801 CHEOK JUN YOON PAYMENT SERVICE 20250625PBBEMYKL010OCB22489489
+
+【记录 5】
+  日期:         2025-07-09
+  金额:         RM 7,900.00
+  付款银行:     Alliance Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*5540)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 58,620.62
+  月结单日期:   2025-07-31
+  参考编号:     N/A
+  完整描述:     Instant Transfer AOBIFT09072025303032 pay on behalf CHEOK JUN YOON
+
+【记录 6】
+  日期:         2025-08-07
+  金额:         RM 1,508.25
+  付款银行:     Hong Leong Bank
+  付款账户:     INFINITE GZ SDN. BHD. (*4645)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 22,139.92
+  月结单日期:   05-09-2025
+  参考编号:     N/A
+  完整描述:     CIB Instant Transfer at DIO Pay On Behalf CHEOK JUN YOON 20250807HLBBMYKL010OCB03182528
+
+【记录 7】
+  日期:         2025-08-17
+  金额:         RM 1,377.80
+  付款银行:     Hong Leong Bank
+  付款账户:     INFINITE GZ SDN. BHD. (*4645)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 700.00
+  月结单日期:   05-09-2025
+  参考编号:     N/A
+  完整描述:     CIB Instant Transfer at DIO pay on behalf CHEOK JUN YOON 20250817HLBBMYKL010OCB13275125
+
+【记录 8】
+  日期:         2025-09-03
+  金额:         RM 3,464.42
+  付款银行:     Public Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*9009)
+  账户类型:     RM Cm Current Account-i
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 781.55
+  月结单日期:   2025-09-30
+  参考编号:     N/A
+  完整描述:     TSFR FUND DR-ATM/EFT 778023 5013XXXXXX CHEOK JUN YOON FUND TRANSFER
+
+【记录 9】
+  日期:         2025-09-04
+  金额:         RM 9,000.00
+  付款银行:     Alliance Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*5540)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 128.82
+  月结单日期:   2025-09-30
+  参考编号:     N/A
+  完整描述:     Instant Transfer AOBIFT04092025533132 CHEOK JUN YOON
+
+【记录 10】
+  日期:         2025-09-09
+  金额:         RM 1,000.00
+  付款银行:     Alliance Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*5540)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 7,896.50
+  月结单日期:   2025-09-30
+  参考编号:     N/A
+  完整描述:     Instant Transfer AOBIFT09092025633417 CHEOK JUN YOON
+
+【记录 11】
+  日期:         2025-09-09
+  金额:         RM 1,500.00
+  付款银行:     Alliance Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*5540)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 6,396.50
+  月结单日期:   2025-09-30
+  参考编号:     N/A
+  完整描述:     Instant Transfer AOBIFT09092025633426 CHEOK JUN YOON
+
+【记录 12】
+  日期:         2025-09-17
+  金额:         RM 625.75
+  付款银行:     Hong Leong Bank
+  付款账户:     INFINITE GZ SDN. BHD. (*4645)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 735.99
+  月结单日期:   05-10-2025
+  参考编号:     N/A
+  完整描述:     CIB Instant Transfer at DIO Pay On Behalf CHEOK JUN YOON 20250917HLBBMYKL010OCB44983157
+
+【记录 13】
+  日期:         26-06-2025
+  金额:         RM 1,500.00
+  付款银行:     OCBC
+  付款账户:     YEO CHEE WANG (*1484)
+  账户类型:     EASI-SAVE Savings Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 572.30
+  月结单日期:   2025-06-30
+  参考编号:     N/A
+  完整描述:     INSTANT TRANSFER /IB CHEOK JUN YOON DESC: REF: Credit card payment
+
+【记录 14】
+  日期:         7 Jul 2025
+  金额:         RM 6,750.00
+  付款银行:     GX Bank
+  付款账户:     YEO CHEE WANG (*8373)
+  账户类型:     Savings Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 0.00
+  月结单日期:   2025-07-01
+  参考编号:     N/A
+  完整描述:     CHEOK JUN YOON 10:22 PM Duitnow - Account number Transfer
+
+【记录 15】
+  日期:         7 Jul 2025
+  金额:         RM 6,750.00
+  付款银行:     GX Bank
+  付款账户:     YEO CHEE WANG (*8373)
+  账户类型:     Savings
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 25.56
+  月结单日期:   Jul 2025
+  参考编号:     N/A
+  完整描述:     CHEOK JUN YOON 10:22 PM Duitnow - Account number
+
+======================================================================================================================================================
+按月份统计
+======================================================================================================================================================
+  2025-06  RM 57,908.27  (5笔)
+  2025-07  RM 21,400.00  (3笔)
+  2025-08  RM 2,886.05  (2笔)
+  2025-09  RM 15,590.17  (5笔)
+
+======================================================================================================================================================
+CHEOK JUN YOON 总收款金额: RM 97,784.49
+总交易笔数: 15 笔
+======================================================================================================================================================
