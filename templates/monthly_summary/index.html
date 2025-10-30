@@ -16,15 +16,15 @@
     </div>
 
     <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div style="background: rgba(50, 36, 70, 0.3); border: 1px solid #322446; border-radius: 12px; padding: 30px;">
+        <div class="col-lg-10 col-xl-9">
+            <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.6) 0%, rgba(36, 25, 52, 0.8) 100%); border: 2px solid rgba(255, 0, 127, 0.4); border-radius: 24px; padding: 4rem 3.5rem; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 0, 127, 0.2);">
                 
                 <!-- 客户选择 -->
-                <div class="mb-4">
-                    <label class="form-label" style="color: #FF007F; font-weight: bold;">
+                <div class="mb-5">
+                    <label class="form-label" style="color: #FF007F; font-weight: bold; font-size: 1.3rem; margin-bottom: 1rem;">
                         <i class="bi bi-person-circle"></i> 选择客户
                     </label>
-                    <select id="customerSelect" class="form-select" style="background: #000000; color: #FFFFFF; border: 1px solid #322446;">
+                    <select id="customerSelect" class="form-select form-select-lg" style="background: rgba(30, 20, 45, 0.8); color: #FFFFFF; border: 2px solid rgba(255, 0, 127, 0.3); padding: 1rem; font-size: 1.15rem; border-radius: 12px;">
                         <option value="">-- 请选择客户 --</option>
                         {% for customer in customers %}
                         <option value="{{ customer.id }}">
@@ -35,12 +35,12 @@
                 </div>
 
                 <!-- 年份和月份选择 -->
-                <div class="row mb-4">
+                <div class="row mb-5 g-4">
                     <div class="col-md-6">
-                        <label class="form-label" style="color: #FF007F; font-weight: bold;">
+                        <label class="form-label" style="color: #FF007F; font-weight: bold; font-size: 1.3rem; margin-bottom: 1rem;">
                             <i class="bi bi-calendar-event"></i> 年份
                         </label>
-                        <select id="yearSelect" class="form-select" style="background: #000000; color: #FFFFFF; border: 1px solid #322446;">
+                        <select id="yearSelect" class="form-select form-select-lg" style="background: rgba(30, 20, 45, 0.8); color: #FFFFFF; border: 2px solid rgba(255, 0, 127, 0.3); padding: 1rem; font-size: 1.15rem; border-radius: 12px;">
                             {% for year in years %}
                             <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>
                                 {{ year }}年
@@ -49,10 +49,10 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label" style="color: #FF007F; font-weight: bold;">
+                        <label class="form-label" style="color: #FF007F; font-weight: bold; font-size: 1.3rem; margin-bottom: 1rem;">
                             <i class="bi bi-calendar-month"></i> 月份
                         </label>
-                        <select id="monthSelect" class="form-select" style="background: #000000; color: #FFFFFF; border: 1px solid #322446;">
+                        <select id="monthSelect" class="form-select form-select-lg" style="background: rgba(30, 20, 45, 0.8); color: #FFFFFF; border: 2px solid rgba(255, 0, 127, 0.3); padding: 1rem; font-size: 1.15rem; border-radius: 12px;">
                             {% for month in months %}
                             <option value="{{ month }}" {% if month == current_month %}selected{% endif %}>
                                 {{ month }}月
@@ -63,14 +63,14 @@
                 </div>
 
                 <!-- 按钮组 -->
-                <div class="row">
+                <div class="row g-4">
                     <div class="col-md-6 mb-2">
-                        <button id="viewMonthlyBtn" class="btn w-100" style="background: linear-gradient(135deg, #FF007F 0%, #C1006C 100%); color: white; border: none;">
+                        <button id="viewMonthlyBtn" class="btn w-100" style="background: linear-gradient(135deg, #FF007F 0%, #C1006C 100%); color: white; border: none; padding: 1.2rem 2rem; font-size: 1.2rem; font-weight: 600; border-radius: 12px; box-shadow: 0 4px 15px rgba(255, 0, 127, 0.3);">
                             <i class="bi bi-file-text"></i> 查看月度报告
                         </button>
                     </div>
                     <div class="col-md-6 mb-2">
-                        <button id="viewYearlyBtn" class="btn w-100" style="background: linear-gradient(135deg, #322446 0%, #4A3564 100%); color: white; border: none;">
+                        <button id="viewYearlyBtn" class="btn w-100" style="background: linear-gradient(135deg, #322446 0%, #4A3564 100%); color: white; border: none; padding: 1.2rem 2rem; font-size: 1.2rem; font-weight: 600; border-radius: 12px; box-shadow: 0 4px 15px rgba(75, 53, 100, 0.3);">
                             <i class="bi bi-calendar3-range"></i> 查看年度汇总
                         </button>
                     </div>
@@ -81,21 +81,21 @@
     </div>
 
     <!-- 快速说明 -->
-    <div class="row justify-content-center mt-4">
-        <div class="col-lg-8">
-            <div style="background: rgba(50, 36, 70, 0.2); border: 1px solid #322446; border-radius: 8px; padding: 20px;">
-                <h6 style="color: #FF007F; margin-bottom: 15px;">
+    <div class="row justify-content-center mt-5">
+        <div class="col-lg-10 col-xl-9">
+            <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.4) 0%, rgba(36, 25, 52, 0.6) 100%); border: 2px solid rgba(255, 0, 127, 0.25); border-radius: 20px; padding: 2.5rem 3rem; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);">
+                <h6 style="color: #FF007F; margin-bottom: 1.5rem; font-size: 1.4rem; font-weight: 700;">
                     <i class="bi bi-info-circle"></i> 报告说明
                 </h6>
-                <div style="color: #FFFFFF; font-size: 0.9rem; line-height: 1.6;">
-                    <p><strong style="color: #FF007F;">📊 月度汇总报告</strong> 整合该客户所有信用卡的Supplier消费与付款情况：</p>
-                    <ul>
-                        <li><strong style="color: #FF007F;">Supplier消费</strong>：该月在所有信用卡上的供应商消费总额</li>
-                        <li><strong style="color: #FF007F;">手续费(1%)</strong>：系统自动计算的1%服务费</li>
-                        <li><strong style="color: #FF007F;">付款记录</strong>：通过转账/还款为客户支付的金额</li>
-                        <li><strong style="color: #FF007F;">净余额</strong>：消费+费用-付款的对账结果</li>
+                <div style="color: #FFFFFF; font-size: 1.05rem; line-height: 1.8;">
+                    <p style="font-size: 1.1rem;"><strong style="color: #FF007F;">📊 月度汇总报告</strong> 整合该客户所有信用卡的Supplier消费与付款情况：</p>
+                    <ul style="list-style: none; padding-left: 0; margin-left: 1.5rem;">
+                        <li style="margin-bottom: 0.8rem;"><strong style="color: #FF007F;">✦ Supplier消费</strong>：该月在所有信用卡上的供应商消费总额</li>
+                        <li style="margin-bottom: 0.8rem;"><strong style="color: #FF007F;">✦ 手续费(1%)</strong>：系统自动计算的1%服务费</li>
+                        <li style="margin-bottom: 0.8rem;"><strong style="color: #FF007F;">✦ 付款记录</strong>：通过转账/还款为客户支付的金额</li>
+                        <li style="margin-bottom: 0.8rem;"><strong style="color: #FF007F;">✦ 净余额</strong>：消费+费用-付款的对账结果</li>
                     </ul>
-                    <p class="mb-0" style="color: #FF007F;">
+                    <p class="mb-0" style="color: #FF007F; font-size: 1.1rem; margin-top: 1rem;">
                         <i class="bi bi-check-circle"></i> 每月及时查看，清楚明了，避免误会！
                     </p>
                 </div>
