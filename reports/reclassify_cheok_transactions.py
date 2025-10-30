@@ -12,21 +12,26 @@ from db.database import get_db
 from decimal import Decimal
 
 # Supplier名单（这些是INFINITE分类）
-# 根据实际交易数据更新的完整列表
+# 用户确认的完整Supplier列表：
+# AI SMART TECH, RAUB SYC HAINAN, HUAWEI, PASARAYA, PUCHONG HERBS
 SUPPLIER_KEYWORDS = [
     'INFINITE',
     'GZ SMART',
-    'AI SMART',  # 匹配 "AI SMART TECH"
+    'AI SMART',      # 匹配 "AI SMART TECH"
+    'RAUB',          # 匹配 "RAUB SYC HAINAN"
+    'HAINAN',        # 匹配 "RAUB SYC HAINAN"
     'HUAWEI',
-    'UAWEI',  # 匹配 "H UAWEI" (带空格的情况)
-    'TFE',  # 匹配 "TFE PERFUME & COSMETICS"
+    'UAWEI',         # 匹配 "H UAWEI" (带空格的情况)
+    'PASARAYA',      # 匹配 "PASARAYA"
     'PUCHONG HERBS',
+    'PUCHONG',       # 匹配 "PUCHONG HERBS"
+    'TFE',           # 匹配 "TFE PERFUME & COSMETICS"
     'GUARDIAN',
     'PHARMACARE',
     'WATSONS',
     'CARING',
     'BIG',
-    'RIMAN'  # 匹配 "RIMAN MALAYSIA"
+    'RIMAN'          # 匹配 "RIMAN MALAYSIA"
 ]
 
 def is_supplier_transaction(description):

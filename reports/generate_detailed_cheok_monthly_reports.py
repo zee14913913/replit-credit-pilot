@@ -217,7 +217,7 @@ def main():
     """主函数"""
     print("="*100)
     print("CHEOK JUN YOON 详细月结报告生成器")
-    print("时间范围: 2025年5月-10月")
+    print("时间范围: 2025年5月-9月")
     print("="*100)
     
     conn = get_db_connection()
@@ -225,7 +225,7 @@ def main():
     try:
         customer_id = 6  # CHEOK JUN YOON
         year = 2025
-        months = [5, 6, 7, 8, 9, 10]
+        months = [5, 6, 7, 8, 9]  # 5月-9月，不包括10月
         
         all_reports = []
         
@@ -235,7 +235,7 @@ def main():
         
         # 生成总汇总
         print(f"\n{'='*100}")
-        print(f"总汇总: {year}年5月-10月")
+        print(f"总汇总: {year}年5月-9月")
         print(f"{'='*100}")
         
         total_supplier = sum(r['supplier_total'] for r in all_reports)
