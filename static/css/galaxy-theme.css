@@ -1785,3 +1785,166 @@ footer p {
     border-color: rgba(147, 197, 253, 0.8);
     color: #1e40af;
 }
+
+/* ========================================
+   LARGE STAT CARDS - Reports页面优化
+   ======================================== */
+
+/* 更大更宽敞的统计卡片 */
+.stat-card-large {
+    background: linear-gradient(135deg, rgba(50, 36, 70, 0.6) 0%, rgba(36, 25, 52, 0.8) 100%);
+    border: 2px solid rgba(255, 0, 127, 0.3);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(255, 0, 127, 0.1);
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card-large::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at top right, rgba(255, 0, 127, 0.15) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.stat-card-large:hover::before {
+    opacity: 1;
+}
+
+.stat-card-large:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(255, 0, 127, 0.3);
+    border-color: rgba(255, 0, 127, 0.6);
+}
+
+.stat-value-large {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #FF007F 0%, #FF4DA6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    text-shadow: 0 0 30px rgba(255, 0, 127, 0.5);
+}
+
+.stat-label-large {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+}
+
+/* 更宽的专业卡片 - 增加内边距和间距 */
+.professional-card-wide {
+    background: linear-gradient(135deg, rgba(50, 36, 70, 0.6) 0%, rgba(36, 25, 52, 0.8) 100%);
+    border: 2px solid rgba(255, 0, 127, 0.3);
+    border-radius: 20px;
+    padding: 3rem 2.5rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(255, 0, 127, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.professional-card-wide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at top left, rgba(255, 0, 127, 0.1) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.professional-card-wide:hover::before {
+    opacity: 1;
+}
+
+.professional-card-wide:hover {
+    border-color: rgba(255, 0, 127, 0.5);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(255, 0, 127, 0.2);
+    transform: translateY(-4px);
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+    .stat-card-large {
+        min-height: 150px;
+        padding: 2rem 1.5rem;
+    }
+    
+    .stat-value-large {
+        font-size: 2.5rem;
+    }
+    
+    .stat-label-large {
+        font-size: 1rem;
+    }
+    
+    .professional-card-wide {
+        padding: 2rem 1.5rem;
+    }
+}
+
+/* Light theme support */
+[data-theme="light"] .stat-card-large,
+[data-theme="light"] .professional-card-wide {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 250, 250, 0.9) 100%);
+    border: 2px solid rgba(255, 0, 127, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+                0 0 20px rgba(255, 0, 127, 0.05);
+}
+
+[data-theme="light"] .stat-card-large:hover,
+[data-theme="light"] .professional-card-wide:hover {
+    border-color: rgba(255, 0, 127, 0.5);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15),
+                0 0 40px rgba(255, 0, 127, 0.1);
+}
+
+[data-theme="light"] .stat-value-large {
+    background: linear-gradient(135deg, #FF007F 0%, #FF4DA6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+[data-theme="light"] .stat-label-large {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+/* 增强表格行高和间距 - Reports页面 */
+.table-professional tbody tr {
+    height: 60px;
+}
+
+.table-professional td,
+.table-professional th {
+    padding: 1.2rem 1rem;
+    vertical-align: middle;
+}
+
+/* Force reload timestamp */
+/* Updated: 2025-10-30 Reports Layout Optimization v2 */
