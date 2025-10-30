@@ -1348,7 +1348,7 @@ def admin_dashboard():
             stmt['bank_abbr'] = get_bank_abbreviation(stmt['bank_name'])
         
         # Get all savings account statements
-        # Sorted by: Customer Name -> Bank -> Month (JAN-DEC order)
+        # Sorted by: Customer Name -> Bank -> Month (NEWEST FIRST)
         cursor.execute("""
             SELECT 
                 ss.id as statement_id,
@@ -1366,8 +1366,8 @@ def admin_dashboard():
             JOIN customers cu ON sa.customer_id = cu.id
             LEFT JOIN savings_transactions st ON ss.id = st.savings_statement_id
             GROUP BY ss.id, ss.statement_date, cu.id, cu.name, sa.bank_name
-            ORDER BY cu.name ASC, sa.bank_name ASC, ss.statement_date ASC
-            LIMIT 100
+            ORDER BY cu.name ASC, sa.bank_name ASC, ss.statement_date DESC
+            LIMIT 200
         """)
         sa_statements = [dict(row) for row in cursor.fetchall()]
         
