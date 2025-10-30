@@ -51,17 +51,23 @@ static/uploads/customers/{customer_code}/
 
 **路径格式：**
 ```
-static/uploads/customers/{customer_code}/savings/{bank_name}/{YYYY-MM}/{bank_name}_{last4}_{YYYY-MM-DD}.pdf
+static/uploads/customers/{customer_code}/savings/{bank_name}/{YYYY-MM}/{customer_name}_{bank_name}_{last4}_{YYYY-MM-DD}.pdf
 ```
 
 **示例：**
 ```
-static/uploads/customers/Be_rich_CCC/savings/Public_Bank/2025-03/Public_Bank_9009_2025-03-25.pdf
-static/uploads/customers/Be_rich_YCW/savings/Hong_Leong_Bank/2025-09/Hong_Leong_Bank_4645_2025-09-05.pdf
-static/uploads/customers/Be_rich_TZL/savings/GX_Bank/2025-08/GX_Bank_8373_2025-08-31.pdf
+static/uploads/customers/Be_rich_CCC/savings/Public_Bank/2025-03/AI_SMART_TECH_Public_Bank_9009_2025-03-25.pdf
+static/uploads/customers/Be_rich_YCW/savings/Hong_Leong_Bank/2025-09/INFINITE_GZ_Hong_Leong_Bank_4645_2025-09-05.pdf
+static/uploads/customers/Be_rich_TZL/savings/GX_Bank/2025-08/TAN_ZEE_LIANG_GX_Bank_8373_2025-08-31.pdf
 ```
 
 **命名规范：**
+- `{customer_name}`: 客户名称（全大写，空格替换为下划线）
+  - AI SMART TECH SDN. BHD. → `AI_SMART_TECH`
+  - INFINITE GZ SDN. BHD. → `INFINITE_GZ`
+  - TAN ZEE LIANG → `TAN_ZEE_LIANG`
+  - CHEOK JUN YOON → `CHEOK_JUN_YOON`
+
 - `{bank_name}`: 银行名称，空格替换为下划线
   - Alliance Bank → `Alliance_Bank`
   - Hong Leong Bank → `Hong_Leong_Bank`
@@ -74,19 +80,27 @@ static/uploads/customers/Be_rich_TZL/savings/GX_Bank/2025-08/GX_Bank_8373_2025-0
 - `{last4}`: 账户后4位数字
 - `{YYYY-MM-DD}`: 月结单日期（statement_date）
 
+**为什么必须包含客户名称？**
+- ✅ 防止同一银行的不同客户文件混淆
+- ✅ 文件名本身就能识别所属客户
+- ✅ 即使文件被移动，仍能追溯来源
+- ✅ 批量操作时不会误覆盖其他客户的文件
+
 ---
 
 ### 2. 信用卡月结单 (Credit Card Statements)
 
 **路径格式：**
 ```
-static/uploads/customers/{customer_code}/credit_cards/{bank_name}/{YYYY-MM}/{bank_name}_{last4}_{YYYY-MM-DD}.pdf
+static/uploads/customers/{customer_code}/credit_cards/{bank_name}/{YYYY-MM}/{customer_name}_{bank_name}_{last4}_{YYYY-MM-DD}.pdf
 ```
 
 **示例：**
 ```
-static/uploads/customers/Be_rich_YCW/credit_cards/Alliance_Bank/2025-06/Alliance_Bank_1234_2025-06-08.pdf
+static/uploads/customers/Be_rich_YCW/credit_cards/Alliance_Bank/2025-06/YEO_CHEE_WOOI_Alliance_Bank_1234_2025-06-08.pdf
 ```
+
+**注意：**同样必须包含客户名称，原因与储蓄账户相同
 
 ---
 
