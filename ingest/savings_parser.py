@@ -991,8 +991,36 @@ def parse_uob_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
     
     return info, transactions
 
+def parse_ocbc_date(date_str: str) -> Optional[str]:
+    """
+    将OCBC日期转换为YYYY-MM-DD格式
+    支持两种格式：
+    - DD MMM YYYY (例如: 07 SEP 2025)
+    - DD/MM/YYYY (例如: 26/08/2025)
+    """
+    if not date_str:
+        return None
+    
+    date_str = date_str.strip()
+    
+    try:
+        # 尝试 DD MMM YYYY 格式
+        if re.match(r'^\d{1,2}\s+[A-Z]{3}\s+\d{4}$', date_str):
+            date_obj = datetime.strptime(date_str, '%d %b %Y')
+            return date_obj.strftime('%Y-%m-%d')
+        
+        # 尝试 DD/MM/YYYY 格式
+        elif re.match(r'^\d{1,2}/\d{1,2}/\d{4}$', date_str):
+            date_obj = datetime.strptime(date_str, '%d/%m/%Y')
+            return date_obj.strftime('%Y-%m-%d')
+        
+    except ValueError:
+        pass
+    
+    return None
+
 def parse_ocbc_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
-    """OCBC储蓄账户解析器 - 处理DD MMM YYYY格式和Withdrawal/Deposit列"""
+    """OCBC储蓄账户解析器 - 支持Transaction History和Statement两种格式"""
     info = {
         'bank_name': 'OCBC',
         'account_last4': '',
@@ -1010,10 +1038,10 @@ def parse_ocbc_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
             
             lines = full_text.split('\n')
             
-            # 提取账号后4位 (格式: 712-261489-2)
+            # 提取账号后4位 (格式: 712-261489-2 或 712261489)
             for line in lines:
-                if 'Account Number' in line or 'Nombor Akaun' in line:
-                    match = re.search(r'(\d{3})-(\d{6})-(\d)', line)
+                if 'Account Number' in line or 'Nombor Akaun' in line or 'EASI-SAVE' in line:
+                    match = re.search(r'(\d{3})-?(\d{6})-?(\d)?', line)
                     if match:
                         info['account_last4'] = match.group(2)[-4:]
             
@@ -1022,20 +1050,32 @@ def parse_ocbc_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                 if 'Statement Date' in line or 'Tarikh Penyata' in line:
                     match = re.search(r'(\d{1,2}\s+\w+\s+\d{4})\s+TO\s+(\d{1,2}\s+\w+\s+\d{4})', line)
                     if match:
-                        info['statement_date'] = match.group(2)  # Ending date
+                        end_date = parse_ocbc_date(match.group(2))
+                        info['statement_date'] = end_date if end_date else match.group(2)
             
-            # 解析交易记录 - OCBC格式
-            # 格式: DD MMM YYYY DESCRIPTION /IB [Withdrawal] [Deposit] Balance
+            # 解析交易记录 - 支持两种格式
+            # 格式1: DD MMM YYYY DESCRIPTION /IB [Withdrawal] [Deposit] Balance
+            # 格式2: DD/MM/YYYY DD/MM/YYYY DESCRIPTION Debit Credit
             i = 0
             while i < len(lines):
                 line = lines[i].strip()
                 
-                # 匹配交易行: DD MMM YYYY开头
-                trans_match = re.match(r'^(\d{1,2}\s+[A-Z]{3}\s+\d{4})\s+(.+)', line)
+                # 匹配交易行 - 尝试两种日期格式
+                # 格式1: DD MMM YYYY
+                trans_match_1 = re.match(r'^(\d{1,2}\s+[A-Z]{3}\s+\d{4})\s+(.+)', line)
+                # 格式2: DD/MM/YYYY
+                trans_match_2 = re.match(r'^(\d{1,2}/\d{1,2}/\d{4})\s+(\d{1,2}/\d{1,2}/\d{4})?\s*(.+)', line)
+                
+                trans_match = trans_match_1 or trans_match_2
                 
                 if trans_match:
-                    date_str = trans_match.group(1)
-                    rest = trans_match.group(2).strip()
+                    # 提取日期和其余内容
+                    if trans_match_1:
+                        date_str = trans_match_1.group(1)  # DD MMM YYYY
+                        rest = trans_match_1.group(2).strip()
+                    else:  # trans_match_2
+                        date_str = trans_match_2.group(1)  # DD/MM/YYYY
+                        rest = trans_match_2.group(3).strip() if trans_match_2.group(3) else ''
                     
                     # 跳过特殊行
                     if 'Balance B/F' in rest or 'Balance C/F' in rest:
@@ -1112,16 +1152,15 @@ def parse_ocbc_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                             i += 1
                             continue
                         
-                        # 转换日期格式 DD MMM YYYY -> DD-MM-YYYY
-                        try:
-                            from datetime import datetime
-                            date_obj = datetime.strptime(date_str, '%d %b %Y')
-                            formatted_date = date_obj.strftime('%d-%m-%Y')
-                        except:
-                            formatted_date = date_str
+                        # 转换日期格式为 YYYY-MM-DD
+                        formatted_date = parse_ocbc_date(date_str)
+                        if not formatted_date:
+                            # 如果解析失败，跳过这笔交易
+                            i += 1
+                            continue
                         
                         transactions.append({
-                            'date': formatted_date,
+                            'transaction_date': formatted_date,  # ISO格式日期
                             'description': description.strip(),
                             'amount': amount,  # 临时金额
                             'type': trans_type,  # 临时类型
