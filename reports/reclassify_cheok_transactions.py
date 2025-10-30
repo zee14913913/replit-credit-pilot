@@ -81,7 +81,7 @@ def reclassify_transactions(customer_id):
                         t.description,
                         t.amount,
                         t.transaction_type,
-                        t.infinite_classification
+                        t.owner_flag
                     FROM transactions t
                     JOIN statements s ON t.statement_id = s.id
                     WHERE s.card_id = ?
@@ -96,7 +96,7 @@ def reclassify_transactions(customer_id):
                 
                 # 重新分类每个交易
                 for trans in transactions:
-                    old_classification = trans['infinite_classification']
+                    old_classification = trans['owner_flag']
                     
                     if is_supplier_transaction(trans['description']):
                         new_classification = 'INFINITE'
@@ -106,7 +106,7 @@ def reclassify_transactions(customer_id):
                     if old_classification != new_classification:
                         cursor.execute("""
                             UPDATE transactions
-                            SET infinite_classification = ?
+                            SET owner_flag = ?
                             WHERE id = ?
                         """, (new_classification, trans['id']))
                         total_updated += 1
@@ -154,7 +154,7 @@ def recalculate_monthly_statement(conn, monthly_stmt_id):
         SELECT 
             t.amount,
             t.transaction_type,
-            t.infinite_classification
+            t.owner_flag
         FROM transactions t
         JOIN statements s ON t.statement_id = s.id
         WHERE s.card_id IN ({placeholders})
@@ -173,7 +173,7 @@ def recalculate_monthly_statement(conn, monthly_stmt_id):
     for trans in transactions:
         amount = Decimal(str(trans['amount']))
         trans_type = trans['transaction_type']
-        classification = trans['infinite_classification']
+        classification = trans['owner_flag']
         
         if classification == 'OWNER':
             if trans_type == 'DR':

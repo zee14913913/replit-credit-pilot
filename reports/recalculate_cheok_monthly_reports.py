@@ -108,21 +108,22 @@ def get_savings_transactions_by_month(conn, account_id, year, month):
     """获取某个储蓄账户在指定月份的所有交易"""
     cursor = conn.cursor()
     
+    # 查找该账户该月的所有账单和交易
     cursor.execute("""
         SELECT 
             st.id,
             st.transaction_date,
             st.description,
-            st.withdrawal,
-            st.deposit,
+            st.amount,
+            st.transaction_type,
             st.balance
         FROM savings_transactions st
-        JOIN savings_statements ss ON st.statement_id = ss.id
+        JOIN savings_statements ss ON st.savings_statement_id = ss.id
         WHERE ss.savings_account_id = ?
-        AND ss.statement_year = ?
-        AND ss.statement_month = ?
+        AND strftime('%Y', st.transaction_date) = ?
+        AND strftime('%m', st.transaction_date) = ?
         ORDER BY st.transaction_date
-    """, (account_id, year, month))
+    """, (account_id, str(year), f'{month:02d}'))
     
     return cursor.fetchall()
 
@@ -139,10 +140,11 @@ def find_payment_to_customer(transactions, customer_keywords):
     
     for trans in transactions:
         desc = (trans['description'] or '').upper()
-        withdrawal = Decimal(str(trans['withdrawal'] or 0))
+        amount = Decimal(str(trans['amount'] or 0))
+        trans_type = (trans['transaction_type'] or '').upper()
         
-        # 如果是支出（withdrawal > 0）且描述包含关键词
-        if withdrawal > 0:
+        # 如果是支出（DR/DEBIT/WITHDRAWAL）且描述包含关键词
+        if trans_type in ['DR', 'DEBIT', 'WITHDRAWAL'] and amount > 0:
             matched = False
             for keyword in keywords:
                 if keyword.upper() in desc:
@@ -150,11 +152,11 @@ def find_payment_to_customer(transactions, customer_keywords):
                     break
             
             if matched:
-                total_payment += withdrawal
+                total_payment += amount
                 payment_records.append({
                     'date': trans['transaction_date'],
                     'description': trans['description'],
-                    'amount': withdrawal
+                    'amount': amount
                 })
     
     return total_payment, payment_records
