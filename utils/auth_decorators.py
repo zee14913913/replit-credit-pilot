@@ -15,16 +15,20 @@ def login_required(f):
         
         # Customer登录检查（有user_id）
         if 'user_id' not in session:
-            flash('请先登录', 'warning')
             # 保存用户原本想访问的页面
             session['next_url'] = request.url
-            # 根据当前路由判断应该跳转到哪个登录页
-            if session.get('user_role') is None:
-                # 没有任何登录信息，跳转到客户登录
-                return redirect(url_for('customer_login'))
+            
+            # 判断应该使用哪个登录页面
+            # 如果URL包含这些关键词，引导到admin登录
+            admin_keywords = ['monthly-summary', 'reminders', 'advisory', 'analytics', 'admin']
+            should_use_admin_login = any(keyword in request.url for keyword in admin_keywords)
+            
+            if should_use_admin_login:
+                flash('请使用管理员账号登录以访问此功能', 'info')
+                return redirect(url_for('admin_login', next=request.url))
             else:
-                # 有登录信息但无效，跳转到对应的登录页
-                return redirect(url_for('admin_login') if 'admin' in str(request.url) else url_for('customer_login'))
+                flash('请先登录', 'warning')
+                return redirect(url_for('customer_login'))
         return f(*args, **kwargs)
     return decorated_function
 

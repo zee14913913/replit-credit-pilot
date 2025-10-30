@@ -1214,6 +1214,12 @@ def customer_download_statement(statement_id):
 @app.route('/admin-login', methods=['GET', 'POST'])
 def admin_login():
     """Admin login route"""
+    # 获取next参数（从URL或session）
+    if request.method == 'GET':
+        next_url = request.args.get('next') or session.get('next_url')
+        if next_url:
+            session['next_url'] = next_url
+    
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
