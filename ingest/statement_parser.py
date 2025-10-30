@@ -352,15 +352,23 @@ def parse_hong_leong_statement(file_path):
                     info["total"] = float(total_match.group(1).replace(",", ""))
                 
                 # Extract transactions - Pattern: "DD MMM DD MMM DESCRIPTION [USD XX.XX] AMOUNT [CR]"
-                # Example: "26 MAY 27 MAY ShopeePay Top Up Kuala Lumpur MYS 2,500.00"
-                # Example: "13 JUN 13 JUN MACHINES-IOI RESORT CITY SELANGOR MY 4,298.00 CR"
+                # Example: "08 AUG 08 AUG QUICK CASH 03/60 353.74"
+                # Example: "27 AUG 27 AUG PAYMENT THANK YOU - IB 2,960.39 CR"
                 # Example: "15 JUN 16 JUN OPENAI *CHATGPT SUBSCR OPENAI.COM USA USD 21.60 93.75"
+                
+                # CRITICAL FIX: Extract year from statement date to complete transaction dates
+                statement_year = None
+                if info.get("statement_date"):
+                    try:
+                        statement_year = int(info["statement_date"].split('-')[0])
+                    except:
+                        pass
                 
                 # Pattern handles both regular and foreign currency transactions
                 pattern = r'(\d{1,2}\s+[A-Z]{3})\s+\d{1,2}\s+[A-Z]{3}\s+(.+?)\s+(?:USD\s+[\d,]+\.\d{2}\s+)?([\d,]+\.\d{2})\s*(CR)?$'
                 
                 for match in re.finditer(pattern, full_text, re.MULTILINE):
-                    trans_date = match.group(1).strip()
+                    trans_date_partial = match.group(1).strip()  # "08 AUG" without year
                     trans_desc = match.group(2).strip()
                     trans_amount = abs(float(match.group(3).replace(",", "")))
                     trans_cr_marker = match.group(4)
@@ -379,6 +387,18 @@ def parse_hong_leong_statement(file_path):
                     # Skip reference numbers (like "03821285163223016950011")
                     if re.match(r'^\d{20,}$', trans_desc):
                         continue
+                    
+                    # CRITICAL FIX: Complete the date with the correct year from statement
+                    # Convert "08 AUG" to "08 AUG 2024" using statement year
+                    if statement_year:
+                        trans_date_full = f"{trans_date_partial} {statement_year}"
+                        try:
+                            parsed_date = datetime.strptime(trans_date_full, "%d %b %Y")
+                            trans_date = parsed_date.strftime("%d/%m/%y")
+                        except:
+                            trans_date = trans_date_partial  # Fallback
+                    else:
+                        trans_date = trans_date_partial
                     
                     # CR means credit/repayment/rebate
                     trans_type = "credit" if trans_cr_marker else "debit"
