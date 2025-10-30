@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block title %}{{ customer.name }} - {{ year}}年度汇总{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- 标题区 -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 style="color: #FF007F;">
+                        <i class="bi bi-calendar3-range"></i> {{ year }}年度汇总报告
+                    </h1>
+                    <h5 style="color: #FFFFFF;">
+                        {{ customer.name }} ({{ customer.customer_code }})
+                    </h5>
+                </div>
+                <div>
+                    <a href="{{ url_for('monthly_summary_index') }}" class="btn btn-outline-light">
+                        <i class="bi bi-arrow-left"></i> 返回
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 年度总计卡片 -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div style="background: linear-gradient(135deg, rgba(255,0,127,0.3) 0%, rgba(193,0,108,0.3) 100%); 
+                        border: 2px solid #FF007F; border-radius: 12px; padding: 20px;">
+                <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 10px;">
+                    <i class="bi bi-cart3"></i> 年度Supplier消费
+                </div>
+                <div style="color: #FFFFFF; font-size: 2rem; font-weight: bold;">
+                    RM {{ "{:,.2f}".format(year_total.total_supplier_spending) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div style="background: rgba(50, 36, 70, 0.4); 
+                        border: 1px solid #322446; border-radius: 12px; padding: 20px;">
+                <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 10px;">
+                    <i class="bi bi-percent"></i> 年度手续费 (1%)
+                </div>
+                <div style="color: #FFFFFF; font-size: 2rem; font-weight: bold;">
+                    RM {{ "{:,.2f}".format(year_total.total_supplier_fee) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div style="background: rgba(50, 36, 70, 0.4); 
+                        border: 1px solid #322446; border-radius: 12px; padding: 20px;">
+                <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 10px;">
+                    <i class="bi bi-cash-coin"></i> 年度已付款
+                </div>
+                <div style="color: #00FF7F; font-size: 2rem; font-weight: bold;">
+                    RM {{ "{:,.2f}".format(year_total.total_payments) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div style="background: {% if year_total.net_balance > 0 %}rgba(255,0,127,0.3){% elif year_total.net_balance < 0 %}rgba(0,255,127,0.3){% else %}rgba(50,36,70,0.4){% endif %}; 
+                        border: 2px solid {% if year_total.net_balance > 0 %}#FF007F{% elif year_total.net_balance < 0 %}#00FF7F{% else %}#322446{% endif %}; 
+                        border-radius: 12px; padding: 20px;">
+                <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 10px;">
+                    <i class="bi bi-calculator"></i> 年度净余额
+                </div>
+                <div style="color: #FFFFFF; font-size: 2rem; font-weight: bold;">
+                    RM {{ "{:,.2f}".format(year_total.net_balance) }}
+                </div>
+                <div style="font-size: 0.8rem; margin-top: 5px;">
+                    {% if year_total.net_balance > 0 %}
+                        <span style="color: #FF007F;">⚠️ 客户需补款</span>
+                    {% elif year_total.net_balance < 0 %}
+                        <span style="color: #00FF7F;">💰 我们需退款</span>
+                    {% else %}
+                        <span style="color: #FFFFFF;">✅ 已结清</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 逐月明细表 -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div style="background: rgba(50, 36, 70, 0.3); border: 1px solid #322446; border-radius: 12px; padding: 25px;">
+                <h5 style="color: #FF007F; margin-bottom: 20px;">
+                    <i class="bi bi-calendar2-month"></i> 逐月明细 ({{ monthly_data|length }}个月)
+                </h5>
+
+                <div class="table-responsive">
+                    <table class="table table-hover" style="color: #FFFFFF;">
+                        <thead style="background: rgba(255,0,127,0.1);">
+                            <tr>
+                                <th style="border-color: #322446; color: #FF007F;">月份</th>
+                                <th style="border-color: #322446; color: #FF007F;" class="text-center">信用卡数</th>
+                                <th style="border-color: #322446; color: #FF007F;" class="text-end">Supplier消费</th>
+                                <th style="border-color: #322446; color: #FF007F;" class="text-end">手续费</th>
+                                <th style="border-color: #322446; color: #FF007F;" class="text-end">付款金额</th>
+                                <th style="border-color: #322446; color: #FF007F;" class="text-end">净余额</th>
+                                <th style="border-color: #322446; color: #FF007F;" class="text-center">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for month_data in monthly_data %}
+                            <tr>
+                                <td style="border-color: #322446;">
+                                    <strong>{{ month_data.period }}</strong>
+                                </td>
+                                <td style="border-color: #322446;" class="text-center">
+                                    <span class="badge" style="background: #322446;">{{ month_data.total_cards }}</span>
+                                </td>
+                                <td style="border-color: #322446; color: #FF007F;" class="text-end">
+                                    RM {{ "{:,.2f}".format(month_data.total_supplier_spending) }}
+                                </td>
+                                <td style="border-color: #322446;" class="text-end">
+                                    RM {{ "{:,.2f}".format(month_data.total_supplier_fee) }}
+                                </td>
+                                <td style="border-color: #322446; color: #00FF7F;" class="text-end">
+                                    RM {{ "{:,.2f}".format(month_data.total_payments) }}
+                                </td>
+                                <td style="border-color: #322446;" class="text-end">
+                                    <strong style="color: {% if month_data.net_balance > 0 %}#FF007F{% elif month_data.net_balance < 0 %}#00FF7F{% else %}#FFFFFF{% endif %};">
+                                        RM {{ "{:,.2f}".format(month_data.net_balance) }}
+                                    </strong>
+                                </td>
+                                <td style="border-color: #322446;" class="text-center">
+                                    <a href="{{ url_for('monthly_summary_report', customer_id=month_data.customer_id, year=month_data.year, month=month_data.month) }}" 
+                                       class="btn btn-sm" style="background: #FF007F; color: white; border: none;">
+                                        <i class="bi bi-eye"></i> 查看
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot style="background: rgba(255,0,127,0.05); font-weight: bold;">
+                            <tr>
+                                <td colspan="2" style="border-color: #322446; color: #FF007F;">
+                                    <strong>{{ year }}年总计</strong>
+                                </td>
+                                <td style="border-color: #322446; color: #FF007F;" class="text-end">
+                                    <strong>RM {{ "{:,.2f}".format(year_total.total_supplier_spending) }}</strong>
+                                </td>
+                                <td style="border-color: #322446;" class="text-end">
+                                    <strong>RM {{ "{:,.2f}".format(year_total.total_supplier_fee) }}</strong>
+                                </td>
+                                <td style="border-color: #322446; color: #00FF7F;" class="text-end">
+                                    <strong>RM {{ "{:,.2f}".format(year_total.total_payments) }}</strong>
+                                </td>
+                                <td style="border-color: #322446;" class="text-end">
+                                    <strong style="color: {% if year_total.net_balance > 0 %}#FF007F{% elif year_total.net_balance < 0 %}#00FF7F{% else %}#FFFFFF{% endif %};">
+                                        RM {{ "{:,.2f}".format(year_total.net_balance) }}
+                                    </strong>
+                                </td>
+                                <td style="border-color: #322446;"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 年度总结 -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div style="background: linear-gradient(135deg, rgba(255,0,127,0.1) 0%, rgba(50,36,70,0.2) 100%); 
+                        border: 2px solid #FF007F; border-radius: 12px; padding: 30px; text-align: center;">
+                <h5 style="color: #FF007F; margin-bottom: 20px;">
+                    <i class="bi bi-graph-up"></i> {{ year }}年度总结
+                </h5>
+                
+                <div style="font-size: 1.1rem; color: #FFFFFF; line-height: 2;">
+                    <p>
+                        全年共<strong style="color: #FF007F;">{{ monthly_data|length }}个月</strong>有Supplier消费记录
+                    </p>
+                    <p>
+                        总消费（含费用）：<strong style="color: #FF007F;">RM {{ "{:,.2f}".format(year_total.total_supplier_spending + year_total.total_supplier_fee) }}</strong>
+                    </p>
+                    <p>
+                        总付款金额：<strong style="color: #00FF7F;">RM {{ "{:,.2f}".format(year_total.total_payments) }}</strong>
+                    </p>
+                    <p style="font-size: 1.3rem; margin-top: 20px;">
+                        净余额：
+                        <strong style="color: {% if year_total.net_balance > 0 %}#FF007F{% elif year_total.net_balance < 0 %}#00FF7F{% else %}#FFFFFF{% endif %};">
+                            RM {{ "{:,.2f}".format(year_total.net_balance|abs) }}
+                        </strong>
+                        {% if year_total.net_balance > 0 %}
+                            <span style="color: #FF007F;">(客户需补款)</span>
+                        {% elif year_total.net_balance < 0 %}
+                            <span style="color: #00FF7F;">(我们需退款)</span>
+                        {% else %}
+                            <span style="color: #FFFFFF;">(已完全结清)</span>
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #322446;">
+                    <div style="color: #FF007F;">
+                        <i class="bi bi-check-circle-fill"></i> 
+                        账目清晰，数据准确，每月对账无误会！
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

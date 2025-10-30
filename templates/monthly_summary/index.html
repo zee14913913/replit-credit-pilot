@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}月度汇总报告 - Monthly Summary Report{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-center" style="color: #FF007F;">
+                <i class="bi bi-calendar3"></i> 月度汇总报告
+            </h1>
+            <p class="text-center" style="color: #FFFFFF;">
+                按月查看Supplier消费与付款对账情况，清晰透明，避免误会
+            </p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div style="background: rgba(50, 36, 70, 0.3); border: 1px solid #322446; border-radius: 12px; padding: 30px;">
+                
+                <!-- 客户选择 -->
+                <div class="mb-4">
+                    <label class="form-label" style="color: #FF007F; font-weight: bold;">
+                        <i class="bi bi-person-circle"></i> 选择客户
+                    </label>
+                    <select id="customerSelect" class="form-select" style="background: #000000; color: #FFFFFF; border: 1px solid #322446;">
+                        <option value="">-- 请选择客户 --</option>
+                        {% for customer in customers %}
+                        <option value="{{ customer.id }}">
+                            {{ customer.name }} ({{ customer.customer_code }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- 年份和月份选择 -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label" style="color: #FF007F; font-weight: bold;">
+                            <i class="bi bi-calendar-event"></i> 年份
+                        </label>
+                        <select id="yearSelect" class="form-select" style="background: #000000; color: #FFFFFF; border: 1px solid #322446;">
+                            {% for year in years %}
+                            <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>
+                                {{ year }}年
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" style="color: #FF007F; font-weight: bold;">
+                            <i class="bi bi-calendar-month"></i> 月份
+                        </label>
+                        <select id="monthSelect" class="form-select" style="background: #000000; color: #FFFFFF; border: 1px solid #322446;">
+                            {% for month in months %}
+                            <option value="{{ month }}" {% if month == current_month %}selected{% endif %}>
+                                {{ month }}月
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 按钮组 -->
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <button id="viewMonthlyBtn" class="btn w-100" style="background: linear-gradient(135deg, #FF007F 0%, #C1006C 100%); color: white; border: none;">
+                            <i class="bi bi-file-text"></i> 查看月度报告
+                        </button>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <button id="viewYearlyBtn" class="btn w-100" style="background: linear-gradient(135deg, #322446 0%, #4A3564 100%); color: white; border: none;">
+                            <i class="bi bi-calendar3-range"></i> 查看年度汇总
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 快速说明 -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-8">
+            <div style="background: rgba(50, 36, 70, 0.2); border: 1px solid #322446; border-radius: 8px; padding: 20px;">
+                <h6 style="color: #FF007F; margin-bottom: 15px;">
+                    <i class="bi bi-info-circle"></i> 报告说明
+                </h6>
+                <div style="color: #FFFFFF; font-size: 0.9rem; line-height: 1.6;">
+                    <p><strong style="color: #FF007F;">📊 月度汇总报告</strong> 整合该客户所有信用卡的Supplier消费与付款情况：</p>
+                    <ul>
+                        <li><strong style="color: #FF007F;">Supplier消费</strong>：该月在所有信用卡上的供应商消费总额</li>
+                        <li><strong style="color: #FF007F;">手续费(1%)</strong>：系统自动计算的1%服务费</li>
+                        <li><strong style="color: #FF007F;">付款记录</strong>：通过转账/还款为客户支付的金额</li>
+                        <li><strong style="color: #FF007F;">净余额</strong>：消费+费用-付款的对账结果</li>
+                    </ul>
+                    <p class="mb-0" style="color: #FF007F;">
+                        <i class="bi bi-check-circle"></i> 每月及时查看，清楚明了，避免误会！
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const customerSelect = document.getElementById('customerSelect');
+    const yearSelect = document.getElementById('yearSelect');
+    const monthSelect = document.getElementById('monthSelect');
+    const viewMonthlyBtn = document.getElementById('viewMonthlyBtn');
+    const viewYearlyBtn = document.getElementById('viewYearlyBtn');
+
+    // 查看月度报告
+    viewMonthlyBtn.addEventListener('click', function() {
+        const customerId = customerSelect.value;
+        const year = yearSelect.value;
+        const month = monthSelect.value;
+
+        if (!customerId) {
+            alert('请先选择客户');
+            return;
+        }
+
+        window.location.href = `/monthly-summary/report/${customerId}/${year}/${month}`;
+    });
+
+    // 查看年度汇总
+    viewYearlyBtn.addEventListener('click', function() {
+        const customerId = customerSelect.value;
+        const year = yearSelect.value;
+
+        if (!customerId) {
+            alert('请先选择客户');
+            return;
+        }
+
+        window.location.href = `/monthly-summary/yearly/${customerId}/${year}`;
+    });
+});
+</script>
+{% endblock %}

@@ -66,6 +66,9 @@ from modules.recommendations.benefit_calculator import BenefitCalculator
 from ingest.receipt_parser import ReceiptParser
 from services.receipt_matcher import ReceiptMatcher
 
+# Monthly Summary Report Service
+from services.monthly_summary_report import MonthlySummaryReport
+
 # Initialize services
 export_service = ExportService()
 search_service = SearchService()
@@ -73,6 +76,7 @@ batch_service = BatchService()
 # Removed: budget_service initialization (feature deleted)
 email_service = EmailService()
 tag_service = TagService()
+monthly_summary_reporter = MonthlySummaryReport()
 statement_organizer = StatementOrganizer()
 optimization_service = OptimizationProposal()
 monthly_report_scheduler = MonthlyReportScheduler()
@@ -4281,6 +4285,110 @@ def download_credit_card_report(customer_id):
     except Exception as e:
         flash(f'❌ 下载失败: {str(e)}', 'error')
         return redirect(url_for('credit_card_optimizer'))
+
+
+# ============================================================================
+# MONTHLY SUMMARY REPORT - 月度汇总报告系统
+# ============================================================================
+
+@app.route('/monthly-summary')
+@login_required
+def monthly_summary_index():
+    """月度汇总报告 - 主页面"""
+    user_role = session.get('user_role')
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        if user_role == 'admin':
+            # 管理员可以查看所有客户
+            cursor.execute('SELECT id, name, customer_code FROM customers ORDER BY name')
+            customers = [dict(row) for row in cursor.fetchall()]
+        else:
+            # 客户只能查看自己
+            customer_id = session.get('customer_id')
+            cursor.execute('SELECT id, name, customer_code FROM customers WHERE id = ?', (customer_id,))
+            customer = cursor.fetchone()
+            customers = [dict(customer)] if customer else []
+    
+    # 获取可用的年份和月份
+    current_year = datetime.now().year
+    years = list(range(current_year - 2, current_year + 1))  # 最近3年
+    months = list(range(1, 13))
+    
+    return render_template('monthly_summary/index.html', 
+                          customers=customers,
+                          years=years,
+                          months=months,
+                          current_year=current_year,
+                          current_month=datetime.now().month)
+
+@app.route('/monthly-summary/report/<int:customer_id>/<int:year>/<int:month>')
+@login_required
+@customer_access_required
+def monthly_summary_report(customer_id, year, month):
+    """生成并显示月度汇总报告"""
+    try:
+        # 获取月度汇总数据
+        summary = monthly_summary_reporter.get_customer_monthly_summary(customer_id, year, month)
+        
+        if not summary:
+            flash(f'❌ 未找到{year}年{month}月的数据', 'error')
+            return redirect(url_for('monthly_summary_index'))
+        
+        if summary['total_cards'] == 0:
+            flash(f'ℹ️  {year}年{month}月暂无Supplier消费记录', 'info')
+            return redirect(url_for('monthly_summary_index'))
+        
+        # 记录审计日志
+        log_audit(
+            user_id=session.get('user_id', 0),
+            action_type='VIEW_MONTHLY_SUMMARY',
+            description=f'客户: {summary["customer_name"]}, 期间: {summary["period"]}, Supplier消费: RM {summary["total_supplier_spending"]:.2f}'
+        )
+        
+        return render_template('monthly_summary/report.html', summary=summary)
+    
+    except Exception as e:
+        flash(f'❌ 生成报告失败: {str(e)}', 'error')
+        return redirect(url_for('monthly_summary_index'))
+
+@app.route('/monthly-summary/yearly/<int:customer_id>/<int:year>')
+@login_required
+@customer_access_required
+def monthly_summary_yearly(customer_id, year):
+    """显示客户全年的月度汇总（1-12月）"""
+    try:
+        # 获取全年数据
+        yearly_data = monthly_summary_reporter.get_customer_yearly_summary(customer_id, year)
+        
+        if not yearly_data:
+            flash(f'❌ {year}年暂无数据', 'error')
+            return redirect(url_for('monthly_summary_index'))
+        
+        # 获取客户信息
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT name, customer_code FROM customers WHERE id = ?', (customer_id,))
+            customer = dict(cursor.fetchone())
+        
+        # 计算年度总计
+        year_total = {
+            'total_supplier_spending': sum(m['total_supplier_spending'] for m in yearly_data),
+            'total_supplier_fee': sum(m['total_supplier_fee'] for m in yearly_data),
+            'total_payments': sum(m['total_payments'] for m in yearly_data),
+            'net_balance': sum(m['net_balance'] for m in yearly_data)
+        }
+        
+        return render_template('monthly_summary/yearly.html',
+                              customer=customer,
+                              year=year,
+                              monthly_data=yearly_data,
+                              year_total=year_total)
+    
+    except Exception as e:
+        flash(f'❌ 生成年度报告失败: {str(e)}', 'error')
+        return redirect(url_for('monthly_summary_index'))
 
 
 # ============================================================================
