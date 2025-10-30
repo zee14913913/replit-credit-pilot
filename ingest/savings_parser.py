@@ -1191,48 +1191,68 @@ def parse_publicbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                         info['statement_date'] = match.group(1)
             
             # 解析交易记录 - Public Bank格式
-            # 格式: DD/MM Description DebitAmount CreditAmount Balance
-            # 或: DD/MM Description Amount Balance (只有一个金额，在debit或credit列)
+            # 格式1: DD/MM Description DebitAmount CreditAmount Balance
+            # 格式2: DD/MM Description Amount Balance
+            # 格式3: Description Amount Balance (没有日期，继承上一个日期)
             i = 0
             current_year = info['statement_date'].split()[-1] if info['statement_date'] else '2025'
+            current_date = None  # 追踪当前日期，用于没有日期前缀的交易行
             
             while i < len(lines):
                 line = lines[i].strip()
                 
-                # 匹配交易行: DD/MM开头
-                trans_match = re.match(r'^(\d{2}/\d{2})\s+(.+)', line)
+                # 跳过表头和特殊行
+                if not line or 'TARIKH' in line or 'DATE' in line or 'TRANSACTION' in line or 'DEBIT' in line or 'CREDIT' in line or 'BALANCE' in line:
+                    i += 1
+                    continue
                 
-                if trans_match:
-                    date_str = trans_match.group(1)
-                    rest = trans_match.group(2).strip()
+                if 'Balance From Last Statement' in line or 'Closing Balance In This Statement' in line or 'Balance C/F' in line or 'Penyata ini' in line or 'This is a computer' in line or 'Dilindungi' in line or 'Protected' in line:
+                    i += 1
+                    continue
+                
+                # 匹配带日期的交易行: DD/MM开头
+                trans_with_date = re.match(r'^(\d{2}/\d{2})\s+(.+)', line)
+                
+                if trans_with_date:
+                    date_str = trans_with_date.group(1)
+                    rest = trans_with_date.group(2).strip()
                     
-                    # 跳过特殊行
-                    if 'Balance From Last Statement' in rest or 'Balance C/F' in rest or 'Balance B/F' in rest or 'Closing Balance' in rest:
+                    # 更新当前日期
+                    day, month = date_str.split('/')
+                    current_date = f"{day}-{month}-{current_year}"
+                    
+                    # 跳过Balance B/F行（但保留日期）
+                    if 'Balance B/F' in rest:
                         i += 1
                         continue
                     
                     # 解析金额和余额
-                    # 尝试匹配: Description DebitAmount CreditAmount Balance
-                    # 或: Description Amount Balance
-                    parts = rest.rsplit(None, 2)  # 从右边分割出最后2个数字（可能是金额+余额）
+                    parts = rest.rsplit(None, 2)  # 从右边分割出最后2个可能的数字
                     
                     if len(parts) >= 2:
-                        # 检查最后两个部分是否是数字
                         try:
-                            # 使用clean_balance_string清理金额和余额
                             balance = clean_balance_string(parts[-1])
                             amount = clean_balance_string(parts[-2]) or 0
-                            
-                            # 描述是除了最后两个数字的部分
                             description = ' '.join(parts[:-2]) if len(parts) > 2 else 'Transaction'
                             
                             # 收集完整描述（可能跨多行）
                             full_desc = description
                             j = i + 1
-                            while j < len(lines) and j < i + 3:
+                            while j < len(lines) and j < i + 5:
                                 next_line = lines[j].strip()
-                                # 如果下一行不是新交易且不是空行
-                                if next_line and not re.match(r'^\d{2}/\d{2}\s+', next_line) and not next_line.startswith('Balance') and not next_line.startswith('Penyata'):
+                                if next_line and not re.match(r'^\d{2}/\d{2}\s+', next_line) and not next_line.startswith('Balance') and not next_line.startswith('Penyata') and not next_line.startswith('Closing'):
+                                    # 检查下一行是否可能是另一笔交易（没有日期但有金额+余额）
+                                    next_parts = next_line.rsplit(None, 2)
+                                    if len(next_parts) >= 2:
+                                        try:
+                                            test_bal = clean_balance_string(next_parts[-1])
+                                            test_amt = clean_balance_string(next_parts[-2])
+                                            if test_bal is not None and test_amt is not None:
+                                                # 这是下一笔交易，不要添加到描述
+                                                break
+                                        except:
+                                            pass
+                                    
                                     # 跳过纯数字行
                                     if not re.match(r'^[\d,\.]+$', next_line):
                                         full_desc += ' ' + next_line
@@ -1241,31 +1261,87 @@ def parse_publicbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                                 j += 1
                             
                             # 判断是debit还是credit
-                            # Public Bank: DEBIT列在左，CREDIT列在右
-                            # 更robust的检测方法：检查描述中是否包含"DR"或"CR"标记
-                            trans_type = 'credit'  # 默认credit
-                            
-                            # 检查是否是debit交易（转出）- 更通用的DR检测
-                            if ' DR' in full_desc or full_desc.startswith('DR') or ' DR-' in full_desc:
+                            trans_type = 'credit'
+                            if ' DR' in full_desc or full_desc.startswith('DR') or ' DR-' in full_desc or 'TRSF DR' in full_desc or 'FUND DR' in full_desc:
                                 trans_type = 'debit'
-                            # 明确的credit标记
-                            elif ' CR' in full_desc or full_desc.startswith('CR') or 'DEP-' in full_desc or 'DEPOSIT' in full_desc.upper():
+                            elif ' CR' in full_desc or full_desc.startswith('CR') or 'DEP-' in full_desc or 'DEPOSIT' in full_desc.upper() or 'TRSF CR' in full_desc:
                                 trans_type = 'credit'
                             
-                            # 转换日期格式 DD/MM -> DD-MM-YYYY
-                            day, month = date_str.split('/')
-                            formatted_date = f"{day}-{month}-{current_year}"
-                            
                             transactions.append({
-                                'date': formatted_date,
+                                'date': current_date,
                                 'description': full_desc.strip(),
                                 'amount': amount,
                                 'type': trans_type,
-                                'balance': balance  # 添加balance字段
+                                'balance': balance
                             })
                         
                         except ValueError:
-                            pass  # 不是金额格式，跳过
+                            pass
+                
+                # 匹配没有日期的交易行: Description Amount Balance
+                elif current_date and not trans_with_date:
+                    # 尝试解析没有日期的交易行
+                    parts = line.rsplit(None, 2)
+                    
+                    if len(parts) >= 2:
+                        try:
+                            balance = clean_balance_string(parts[-1])
+                            amount = clean_balance_string(parts[-2])
+                            
+                            # 必须有有效的金额和余额
+                            if balance is not None and amount is not None and amount > 0:
+                                description = ' '.join(parts[:-2]) if len(parts) > 2 else ''
+                                
+                                # 过滤掉误识别的行：
+                                # 1. 描述为空（只有两个数字的行，如参考号）
+                                # 2. 金额异常大（>50000），可能是参考号而不是金额
+                                # 3. 只包含纯数字的描述（如"90425"）
+                                if not description or amount > 50000 or re.match(r'^[\d\s]+$', description):
+                                    i += 1
+                                    continue
+                                
+                                description = description if description else 'Transaction'
+                                
+                                # 收集完整描述（可能跨多行）
+                                full_desc = description
+                                j = i + 1
+                                while j < len(lines) and j < i + 5:
+                                    next_line = lines[j].strip()
+                                    if next_line and not re.match(r'^\d{2}/\d{2}\s+', next_line) and not next_line.startswith('Balance') and not next_line.startswith('Penyata') and not next_line.startswith('Closing'):
+                                        # 检查下一行是否可能是另一笔交易
+                                        next_parts = next_line.rsplit(None, 2)
+                                        if len(next_parts) >= 2:
+                                            try:
+                                                test_bal = clean_balance_string(next_parts[-1])
+                                                test_amt = clean_balance_string(next_parts[-2])
+                                                if test_bal is not None and test_amt is not None:
+                                                    break
+                                            except:
+                                                pass
+                                        
+                                        if not re.match(r'^[\d,\.]+$', next_line):
+                                            full_desc += ' ' + next_line
+                                    else:
+                                        break
+                                    j += 1
+                                
+                                # 判断是debit还是credit
+                                trans_type = 'credit'
+                                if ' DR' in full_desc or full_desc.startswith('DR') or ' DR-' in full_desc or 'TRSF DR' in full_desc or 'FUND DR' in full_desc or 'PYMT-' in full_desc:
+                                    trans_type = 'debit'
+                                elif ' CR' in full_desc or full_desc.startswith('CR') or 'DEP-' in full_desc or 'DEPOSIT' in full_desc.upper() or 'TRSF CR' in full_desc:
+                                    trans_type = 'credit'
+                                
+                                transactions.append({
+                                    'date': current_date,
+                                    'description': full_desc.strip(),
+                                    'amount': amount,
+                                    'type': trans_type,
+                                    'balance': balance
+                                })
+                        
+                        except ValueError:
+                            pass
                 
                 i += 1
             
