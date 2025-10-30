@@ -12,14 +12,21 @@ from db.database import get_db
 from decimal import Decimal
 
 # Supplier名单（这些是INFINITE分类）
+# 根据实际交易数据更新的完整列表
 SUPPLIER_KEYWORDS = [
     'INFINITE',
     'GZ SMART',
+    'AI SMART',  # 匹配 "AI SMART TECH"
+    'HUAWEI',
+    'UAWEI',  # 匹配 "H UAWEI" (带空格的情况)
+    'TFE',  # 匹配 "TFE PERFUME & COSMETICS"
+    'PUCHONG HERBS',
     'GUARDIAN',
     'PHARMACARE',
     'WATSONS',
     'CARING',
-    'BIG'
+    'BIG',
+    'RIMAN'  # 匹配 "RIMAN MALAYSIA"
 ]
 
 def is_supplier_transaction(description):
@@ -171,19 +178,19 @@ def recalculate_monthly_statement(conn, monthly_stmt_id):
     gz_payments = Decimal('0.00')
     
     for trans in transactions:
-        amount = Decimal(str(trans['amount']))
-        trans_type = trans['transaction_type']
+        amount = Decimal(str(abs(trans['amount'])))  # 使用绝对值
+        trans_type = (trans['transaction_type'] or '').lower()
         classification = trans['owner_flag']
         
         if classification == 'OWNER':
-            if trans_type == 'DR':
+            if trans_type in ['purchase', 'debit', 'dr']:
                 owner_expenses += amount
-            else:  # CR
+            else:  # payment, credit, cr
                 owner_payments += amount
         else:  # INFINITE
-            if trans_type == 'DR':
+            if trans_type in ['purchase', 'debit', 'dr']:
                 gz_expenses += amount
-            else:  # CR
+            else:  # payment, credit, cr
                 gz_payments += amount
     
     # 计算余额
