@@ -3052,6 +3052,11 @@ def mark_savings_verified(statement_id):
     flash('✅ 账单已标记为已验证！数据已确认100%准确。', 'success')
     return redirect(url_for('savings_customers'))
 
+@app.route('/savings')
+def savings_report():
+    """Public Savings Report - CHEOK JUN YOON Transfer Report"""
+    return render_template('savings_report.html')
+
 @app.route('/savings/customers')
 def savings_customers():
     """Layer 1: 查看所有拥有储蓄账户的客户列表"""
