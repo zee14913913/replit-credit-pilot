@@ -13,7 +13,7 @@ from decimal import Decimal
 
 # Supplier名单（这些是INFINITE分类）
 # 用户确认的完整Supplier列表：
-# AI SMART TECH, RAUB SYC HAINAN, HUAWEI, PASARAYA, PUCHONG HERBS
+# AI SMART TECH, RAUB SYC HAINAN, HUAWEI, PASARAYA, PUCHONG HERBS, SHOPEE (~RM 10,500)
 SUPPLIER_KEYWORDS = [
     'INFINITE',
     'GZ SMART',
@@ -25,6 +25,7 @@ SUPPLIER_KEYWORDS = [
     'PASARAYA',      # 匹配 "PASARAYA"
     'PUCHONG HERBS',
     'PUCHONG',       # 匹配 "PUCHONG HERBS"
+    'SHOPEE',        # 匹配 "Shopee Malaysia" 和 "ShopeePay Top Up"
     'TFE',           # 匹配 "TFE PERFUME & COSMETICS"
     'GUARDIAN',
     'PHARMACARE',

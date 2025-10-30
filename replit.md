@@ -4,6 +4,17 @@
 The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. Its core purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation, guaranteeing 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization suggestions (debt consolidation, balance transfers, loan refinancing), and a success-based fee model. The business vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
 ## Recent Changes
+**2025-10-30**: CHEOK JUN YOON 5-9月详细月结报告完成
+- 时间范围：2025年5月-9月（5个月）
+- 已识别Supplier：AI SMART TECH, HUAWEI, PUCHONG HERBS, RIMAN, GUARDIAN, SHOPEE等
+- Supplier消费总额：RM 144,719.54（42笔交易）
+- 手续费(1%)：RM 1,447.20
+- 应收总额：RM 146,166.74
+- 实际付款总额：RM 82,784.49（从5个账户的转账记录）
+- 净余额（客户欠款）：RM 63,382.25
+- 报告包含每笔交易的完整明细：消费日期、银行、卡号、Supplier名称、付款描述等
+- **缺失数据**：RAUB SYC HAINAN和PASARAYA的交易在数据库中不存在，可能账单未导入
+
 **2025-10-30**: Public Bank活期账户导入完成
 - 成功导入AI SMART TECH SDN. BHD.的Public Bank Islamic账户#3824549009
 - 时间跨度：2025年3月 - 2025年9月（7个月结单）
