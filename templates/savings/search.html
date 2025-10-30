@@ -49,42 +49,44 @@
         <div class="divider-professional mb-3"></div>
 
         <!-- Transactions Table -->
-        <div class="table-responsive">
-            <table class="table-professional">
+        <div class="table-responsive" style="overflow-x: auto;">
+            <table class="table-professional" style="min-width: 1400px; table-layout: fixed;">
                 <thead>
                     <tr>
-                        <th>{{ t('date') }}</th>
-                        <th>{{ t('bank') }}</th>
-                        <th>{{ t('description') }}</th>
-                        <th>{{ t('amount') }}</th>
-                        <th>{{ t('customer_tag') }}</th>
-                        <th>{{ t('actions') }}</th>
+                        <th style="width: 120px;">{{ t('date') }}</th>
+                        <th style="width: 150px;">{{ t('bank') }}</th>
+                        <th style="width: 500px;">{{ t('description') }}</th>
+                        <th style="width: 140px; text-align: right;">{{ t('amount') }}</th>
+                        <th style="width: 150px;">{{ t('customer_tag') }}</th>
+                        <th style="width: 240px;">{{ t('actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for trans in transactions %}
                     <tr>
-                        <td style="white-space: nowrap;">{{ trans.transaction_date }}</td>
-                        <td style="white-space: nowrap;">
+                        <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {{ trans.transaction_date }}
+                        </td>
+                        <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                             <span class="badge-professional badge-secondary-pro">
                                 {{ trans.bank_name }}
                             </span>
                         </td>
-                        <td style="white-space: nowrap;">
-                            <div style="max-width: 400px;">{{ trans.description }}</div>
+                        <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ trans.description }}">
+                            {{ trans.description }}
                         </td>
-                        <td style="white-space: nowrap;">
+                        <td style="white-space: nowrap; text-align: right;">
                             {% if trans.transaction_type == 'debit' %}
-                            <span style="color: var(--text-primary); font-weight: 600;">
+                            <span style="color: #FF007F; font-weight: 700;">
                                 -RM {{ "{:,.2f}".format(trans.amount) }}
                             </span>
                             {% else %}
-                            <span style="color: var(--text-primary); font-weight: 600;">
+                            <span style="color: #00FF9D; font-weight: 700;">
                                 +RM {{ "{:,.2f}".format(trans.amount) }}
                             </span>
                             {% endif %}
                         </td>
-                        <td style="white-space: nowrap;">
+                        <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                             {% if trans.customer_name_tag %}
                             <span class="badge-professional badge-success-pro">
                                 {{ trans.customer_name_tag }}
@@ -95,11 +97,13 @@
                         </td>
                         <td style="white-space: nowrap;">
                             <form method="POST" action="{{ url_for('tag_savings_transaction', transaction_id=trans.id) }}" class="d-inline">
-                                <div class="input-group input-group-sm" style="width: 200px;">
+                                <div class="input-group input-group-sm" style="width: 220px;">
                                     <input type="text" 
                                            name="customer_tag" 
                                            class="form-control" 
-                                           value="{{ trans.customer_name_tag or '' }}">
+                                           placeholder="Tag customer"
+                                           value="{{ trans.customer_name_tag or '' }}"
+                                           style="font-size: 0.85rem;">
                                     <button type="submit" class="btn btn-sm btn-outline-success">
                                         {{ t('save') }}
                                     </button>
