@@ -892,22 +892,22 @@ def parse_uob_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                                 amount = deposit
                                 trans_type = 'credit'
                         
-                        # 转换日期格式
+                        # 转换日期格式为ISO格式 YYYY-MM-DD
                         try:
                             from datetime import datetime
                             if info['statement_date']:
                                 year = info['statement_date'].split()[-1]
                                 date_with_year = f"{trans_date} {year}"
                                 date_obj = datetime.strptime(date_with_year, '%d %b %Y')
-                                formatted_date = date_obj.strftime('%d-%m-%Y')
+                                formatted_date = date_obj.strftime('%Y-%m-%d')  # ISO格式
                             else:
-                                formatted_date = trans_date
+                                formatted_date = None
                         except:
-                            formatted_date = trans_date
+                            formatted_date = None
                         
                         # 创建pending交易
                         pending_transaction = {
-                            'date': formatted_date,
+                            'transaction_date': formatted_date,  # 使用transaction_date字段
                             'description': '',  # 稍后填充
                             'amount': amount,
                             'type': trans_type,
