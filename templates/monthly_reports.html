@@ -11,59 +11,59 @@
         <p class="section-subtitle">月度账单汇总报表 - {{ customer.name }}</p>
     </div>
 
-    <!-- Summary Cards -->
+    <!-- Summary Cards - 更宽敞的布局 -->
     <div class="row g-4 mb-5">
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-value">{{ reports|length }}</div>
-                <div class="stat-label">Total Reports / 报表总数</div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="stat-card-large">
+                <div class="stat-value-large">{{ reports|length }}</div>
+                <div class="stat-label-large">Total Reports / 报表总数</div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-value">{{ reports_by_period|length }}</div>
-                <div class="stat-label">Periods / 期数</div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="stat-card-large">
+                <div class="stat-value-large">{{ reports_by_period|length }}</div>
+                <div class="stat-label-large">Periods / 期数</div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-value">RM {{ "{:,.2f}".format(reports|sum(attribute='customer_total_debit', start=0)|default(0)) }}</div>
-                <div class="stat-label">Customer Debit / 客户消费</div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="stat-card-large">
+                <div class="stat-value-large">RM {{ "{:,.2f}".format(reports|sum(attribute='customer_total_debit', start=0)|default(0)) }}</div>
+                <div class="stat-label-large">Customer Debit / 客户消费</div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-value">RM {{ "{:,.2f}".format(reports|sum(attribute='infinite_total_debit', start=0)|default(0)) }}</div>
-                <div class="stat-label">INFINITE Debit / INFINITE消费</div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="stat-card-large">
+                <div class="stat-value-large">RM {{ "{:,.2f}".format(reports|sum(attribute='infinite_total_debit', start=0)|default(0)) }}</div>
+                <div class="stat-label-large">INFINITE Debit / INFINITE消费</div>
             </div>
         </div>
     </div>
 
-    <!-- Generate New Report -->
+    <!-- Generate New Report - 更大的卡片 -->
     <div class="mb-5">
-        <div class="professional-card">
-            <h3 style="color: var(--text-primary); margin-bottom: 1rem;">
+        <div class="professional-card-wide">
+            <h3 style="color: var(--text-primary); margin-bottom: 1.5rem; font-size: 1.5rem;">
                 <i class="bi bi-plus-circle"></i> Generate New Monthly Report / 生成新月度报表
             </h3>
-            <form id="generateReportForm" method="get" class="row g-3">
-                <div class="col-md-4">
-                    <label class="form-label" style="color: var(--text-secondary);">Year / 年份</label>
-                    <select id="reportYear" name="year" class="form-select" style="background: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);">
+            <form id="generateReportForm" method="get" class="row g-4">
+                <div class="col-12 col-md-4">
+                    <label class="form-label" style="color: var(--text-secondary); font-size: 1.1rem;">Year / 年份</label>
+                    <select id="reportYear" name="year" class="form-select form-select-lg" style="background: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);">
                         <option value="2025">2025</option>
                         <option value="2024">2024</option>
                         <option value="2023">2023</option>
                     </select>
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label" style="color: var(--text-secondary);">Month / 月份</label>
-                    <select id="reportMonth" name="month" class="form-select" style="background: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);">
+                <div class="col-12 col-md-4">
+                    <label class="form-label" style="color: var(--text-secondary); font-size: 1.1rem;">Month / 月份</label>
+                    <select id="reportMonth" name="month" class="form-select form-select-lg" style="background: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);">
                         {% for m in range(1, 13) %}
                         <option value="{{ m }}" {% if m == 9 %}selected{% endif %}>{{ m }}月</option>
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-md-4 d-flex align-items-end">
-                    <button type="submit" class="btn-professional w-100">
+                <div class="col-12 col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn-professional w-100" style="padding: 0.75rem 1.5rem; font-size: 1.1rem;">
                         <i class="bi bi-play-circle"></i> Generate Report / 生成报表
                     </button>
                 </div>
@@ -82,11 +82,11 @@
         
         {% if reports_by_period %}
         {% for period, period_reports in reports_by_period.items() %}
-        <div class="professional-card mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 style="color: var(--text-primary); margin: 0;">
+        <div class="professional-card-wide mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 style="color: var(--text-primary); margin: 0; font-size: 1.5rem;">
                     📅 {{ period }} 
-                    <span class="badge-professional badge-primary-pro">{{ period_reports|length }} cards</span>
+                    <span class="badge-professional badge-primary-pro" style="font-size: 1rem; padding: 0.5rem 1rem;">{{ period_reports|length }} cards</span>
                 </h4>
             </div>
             

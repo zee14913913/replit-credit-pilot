@@ -1332,3 +1332,114 @@ input[type="file"]::file-selector-button:hover {
     color: #2C2416 !important;
 }
 /* Force reload - Sat Oct 11 02:44:11 AM UTC 2025 */
+
+/* ========================================
+   LARGE STAT CARDS - Reports页面优化
+   ======================================== */
+
+/* 更大更宽敞的统计卡片 */
+.stat-card-large {
+    background: linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%);
+    border: 2px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.stat-card-large:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--border-secondary);
+}
+
+.stat-value-large {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
+}
+
+.stat-label-large {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* 更宽的专业卡片 - 增加内边距和间距 */
+.professional-card-wide {
+    background: linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%);
+    border: 2px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+}
+
+.professional-card-wide:hover {
+    border-color: var(--border-secondary);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+    .stat-card-large {
+        min-height: 140px;
+        padding: 1.5rem 1rem;
+    }
+    
+    .stat-value-large {
+        font-size: 2rem;
+    }
+    
+    .stat-label-large {
+        font-size: 0.9rem;
+    }
+    
+    .professional-card-wide {
+        padding: 1.5rem;
+    }
+}
+
+/* Light theme support */
+[data-theme="light"] .stat-card-large,
+[data-theme="light"] .professional-card-wide {
+    background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%);
+    border-color: #D4D4D4;
+}
+
+[data-theme="light"] .stat-card-large:hover,
+[data-theme="light"] .professional-card-wide:hover {
+    border-color: #CCCCCC;
+}
+
+[data-theme="light"] .stat-value-large {
+    color: #0F0F0F;
+}
+
+[data-theme="light"] .stat-label-large {
+    color: #404040;
+}
+
+/* 增强表格行高和间距 - Reports页面 */
+.table-professional tbody tr {
+    height: 60px;
+}
+
+.table-professional td,
+.table-professional th {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+}
+
+/* Force reload timestamp */
+/* Updated: 2025-10-30 Reports Layout Optimization */
