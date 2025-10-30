@@ -621,14 +621,22 @@ def parse_gxbank_savings(file_path: str) -> Tuple[Dict, List[Dict]]:
                         i += 1
                         continue
                     
+                    # 转换日期为ISO格式 YYYY-MM-DD
+                    full_date_str = f"{date_str} {statement_year}"  # 例如: "1 Aug 2025"
+                    try:
+                        date_obj = datetime.strptime(full_date_str, '%d %b %Y')
+                        iso_date = date_obj.strftime('%Y-%m-%d')
+                    except:
+                        iso_date = None
+                    
                     # 添加到临时交易列表（包含balance用于验证）
-                    full_date = f"{date_str} {statement_year}"
-                    temp_transactions.append({
-                        'date': full_date,
-                        'description': description.strip(),
-                        'amount': abs(transaction_amount) if transaction_amount else 0,
-                        'balance': closing_balance
-                    })
+                    if iso_date:  # 只添加日期有效的交易
+                        temp_transactions.append({
+                            'transaction_date': iso_date,  # 使用ISO格式
+                            'description': description.strip(),
+                            'amount': abs(transaction_amount) if transaction_amount else 0,
+                            'balance': closing_balance
+                        })
                 
                 i += 1
             
