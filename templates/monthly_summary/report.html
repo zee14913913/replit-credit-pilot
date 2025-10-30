@@ -31,59 +31,59 @@
 
     <!-- 月度汇总卡片 -->
     <div class="row mb-4">
-        <div class="col-lg-3 col-md-6 mb-3">
-            <div style="background: linear-gradient(135deg, rgba(255,0,127,0.2) 0%, rgba(193,0,108,0.2) 100%); 
-                        border: 1px solid #FF007F; border-radius: 12px; padding: 20px;">
-                <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 10px;">
-                    <i class="bi bi-cart3"></i> Supplier消费
+        <div class="col-3">
+            <div style="background: rgba(255,0,127,0.1); 
+                        border: 1px solid #FF007F; border-radius: 12px; padding: 20px; white-space: nowrap;">
+                <div style="color: #FF007F; font-size: 0.85rem; margin-bottom: 10px;">
+                    Supplier消费
                 </div>
-                <div style="color: #FFFFFF; font-size: 1.8rem; font-weight: bold;">
+                <div style="color: #FFFFFF; font-size: 1.6rem; font-weight: bold;">
                     RM {{ "{:,.2f}".format(summary.total_supplier_spending) }}
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-3 col-md-6 mb-3">
+        <div class="col-3">
             <div style="background: rgba(50, 36, 70, 0.3); 
-                        border: 1px solid #322446; border-radius: 12px; padding: 20px;">
-                <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 10px;">
-                    <i class="bi bi-percent"></i> 手续费 (1%)
+                        border: 1px solid #322446; border-radius: 12px; padding: 20px; white-space: nowrap;">
+                <div style="color: #FF007F; font-size: 0.85rem; margin-bottom: 10px;">
+                    手续费 (1%)
                 </div>
-                <div style="color: #FFFFFF; font-size: 1.8rem; font-weight: bold;">
+                <div style="color: #FFFFFF; font-size: 1.6rem; font-weight: bold;">
                     RM {{ "{:,.2f}".format(summary.total_supplier_fee) }}
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-3 col-md-6 mb-3">
+        <div class="col-3">
             <div style="background: rgba(50, 36, 70, 0.3); 
-                        border: 1px solid #322446; border-radius: 12px; padding: 20px;">
-                <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 10px;">
-                    <i class="bi bi-cash-coin"></i> 已付款
+                        border: 1px solid #322446; border-radius: 12px; padding: 20px; white-space: nowrap;">
+                <div style="color: #FF007F; font-size: 0.85rem; margin-bottom: 10px;">
+                    已付款
                 </div>
-                <div style="color: #FFFFFF; font-size: 1.8rem; font-weight: bold;">
+                <div style="color: #FFFFFF; font-size: 1.6rem; font-weight: bold;">
                     RM {{ "{:,.2f}".format(summary.total_payments) }}
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-3 col-md-6 mb-3">
-            <div style="background: {% if summary.net_balance > 0 %}rgba(255,0,127,0.2){% elif summary.net_balance < 0 %}rgba(0,255,127,0.2){% else %}rgba(50,36,70,0.3){% endif %}; 
-                        border: 1px solid {% if summary.net_balance > 0 %}#FF007F{% elif summary.net_balance < 0 %}#00FF7F{% else %}#322446{% endif %}; 
-                        border-radius: 12px; padding: 20px;">
-                <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 10px;">
-                    <i class="bi bi-calculator"></i> 净余额
+        <div class="col-3">
+            <div style="background: rgba(50,36,70,0.3); 
+                        border: 1px solid #322446; 
+                        border-radius: 12px; padding: 20px; white-space: nowrap;">
+                <div style="color: #FF007F; font-size: 0.85rem; margin-bottom: 10px;">
+                    净余额
                 </div>
-                <div style="color: #FFFFFF; font-size: 1.8rem; font-weight: bold;">
+                <div style="color: #FFFFFF; font-size: 1.6rem; font-weight: bold;">
                     RM {{ "{:,.2f}".format(summary.net_balance) }}
                 </div>
-                <div style="font-size: 0.8rem; margin-top: 5px;">
+                <div style="font-size: 0.75rem; margin-top: 5px;">
                     {% if summary.net_balance > 0 %}
-                        <span style="color: #FF007F;">⚠️ 客户需补款</span>
+                        <span style="color: #FF007F;">客户需补款</span>
                     {% elif summary.net_balance < 0 %}
-                        <span style="color: #00FF7F;">💰 我们需退款</span>
+                        <span style="color: #322446;">我们需退款</span>
                     {% else %}
-                        <span style="color: #FFFFFF;">✅ 已结清</span>
+                        <span style="color: #FFFFFF;">已结清</span>
                     {% endif %}
                 </div>
             </div>
@@ -99,58 +99,58 @@
                 </h5>
 
                 <div class="table-responsive">
-                    <table class="table table-hover" style="color: #FFFFFF;">
-                        <thead style="background: rgba(255,0,127,0.1);">
+                    <table class="table table-hover" style="color: #FFFFFF; border-collapse: collapse;">
+                        <thead style="background: rgba(0,0,0,0.3);">
                             <tr>
-                                <th style="border-color: #322446; color: #FF007F;">银行</th>
-                                <th style="border-color: #322446; color: #FF007F;">卡号</th>
-                                <th style="border-color: #322446; color: #FF007F;">账单日期</th>
-                                <th style="border-color: #322446; color: #FF007F;" class="text-end">Supplier消费</th>
-                                <th style="border-color: #322446; color: #FF007F;" class="text-end">手续费</th>
-                                <th style="border-color: #322446; color: #FF007F;" class="text-end">付款金额</th>
-                                <th style="border-color: #322446; color: #FF007F;" class="text-end">滚动余额</th>
-                                <th style="border-color: #322446; color: #FF007F;" class="text-center">转账次数</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">银行</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">卡号</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">账单日期</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">Supplier消费</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">手续费</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">付款金额</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">滚动余额</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">转账次数</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for card in summary.card_details %}
                             <tr>
-                                <td style="border-color: #322446;">{{ card.bank_name }}</td>
-                                <td style="border-color: #322446;">{{ card.card_number }}</td>
-                                <td style="border-color: #322446;">{{ card.statement_date }}</td>
-                                <td style="border-color: #322446; color: #FF007F;" class="text-end">
+                                <td style="border: 1px solid #000000; padding: 1rem 1.5rem;">{{ card.bank_name }}</td>
+                                <td style="border: 1px solid #000000; padding: 1rem 1.5rem;">{{ card.card_number }}</td>
+                                <td style="border: 1px solid #000000; padding: 1rem 1.5rem;">{{ card.statement_date }}</td>
+                                <td style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">
                                     RM {{ "{:,.2f}".format(card.infinite_spend) }}
                                 </td>
-                                <td style="border-color: #322446;" class="text-end">
+                                <td style="border: 1px solid #000000; padding: 1rem 1.5rem;">
                                     RM {{ "{:,.2f}".format(card.supplier_fee) }}
                                 </td>
-                                <td style="border-color: #322446; color: #00FF7F;" class="text-end">
+                                <td style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">
                                     RM {{ "{:,.2f}".format(card.infinite_payments) }}
                                 </td>
-                                <td style="border-color: #322446;" class="text-end">
-                                    <strong>RM {{ "{:,.2f}".format(card.rolling_balance) }}</strong>
+                                <td style="border: 1px solid #000000; padding: 1rem 1.5rem;">
+                                    RM {{ "{:,.2f}".format(card.rolling_balance) }}
                                 </td>
-                                <td style="border-color: #322446;" class="text-center">
-                                    <span class="badge" style="background: #322446;">{{ card.transfer_count }}</span>
+                                <td style="border: 1px solid #000000; padding: 1rem 1.5rem;">
+                                    {{ card.transfer_count }}
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
-                        <tfoot style="background: rgba(255,0,127,0.05); font-weight: bold;">
+                        <tfoot style="background: rgba(0,0,0,0.5); font-weight: bold;">
                             <tr>
-                                <td colspan="3" style="border-color: #322446; color: #FF007F;">
-                                    <strong>总计</strong>
+                                <td colspan="3" style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">
+                                    总计
                                 </td>
-                                <td style="border-color: #322446; color: #FF007F;" class="text-end">
-                                    <strong>RM {{ "{:,.2f}".format(summary.total_supplier_spending) }}</strong>
+                                <td style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">
+                                    RM {{ "{:,.2f}".format(summary.total_supplier_spending) }}
                                 </td>
-                                <td style="border-color: #322446;" class="text-end">
-                                    <strong>RM {{ "{:,.2f}".format(summary.total_supplier_fee) }}</strong>
+                                <td style="border: 1px solid #000000; padding: 1rem 1.5rem;">
+                                    RM {{ "{:,.2f}".format(summary.total_supplier_fee) }}
                                 </td>
-                                <td style="border-color: #322446; color: #00FF7F;" class="text-end">
-                                    <strong>RM {{ "{:,.2f}".format(summary.total_payments) }}</strong>
+                                <td style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">
+                                    RM {{ "{:,.2f}".format(summary.total_payments) }}
                                 </td>
-                                <td colspan="2" style="border-color: #322446;"></td>
+                                <td colspan="2" style="border: 1px solid #000000; padding: 1rem 1.5rem;"></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -169,30 +169,30 @@
                 </h5>
 
                 <div class="table-responsive">
-                    <table class="table table-hover" style="color: #FFFFFF;">
-                        <thead style="background: rgba(255,0,127,0.1);">
+                    <table class="table table-hover" style="color: #FFFFFF; border-collapse: collapse;">
+                        <thead style="background: rgba(0,0,0,0.3);">
                             <tr>
-                                <th style="border-color: #322446; color: #FF007F;">日期</th>
-                                <th style="border-color: #322446; color: #FF007F;">付款人</th>
-                                <th style="border-color: #322446; color: #FF007F;">收款人</th>
-                                <th style="border-color: #322446; color: #FF007F;">信用卡</th>
-                                <th style="border-color: #322446; color: #FF007F;" class="text-end">金额</th>
-                                <th style="border-color: #322446; color: #FF007F;">说明</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">日期</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">付款人</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">收款人</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">信用卡</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">金额</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">说明</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for payment in summary.payment_details %}
                             <tr>
-                                <td style="border-color: #322446;">{{ payment.transfer_date }}</td>
-                                <td style="border-color: #322446;">{{ payment.payer_name }}</td>
-                                <td style="border-color: #322446;">{{ payment.payee_name }}</td>
-                                <td style="border-color: #322446;">
+                                <td style="border: 1px solid #000000; padding: 1rem 1.5rem;">{{ payment.transfer_date }}</td>
+                                <td style="border: 1px solid #000000; padding: 1rem 1.5rem;">{{ payment.payer_name }}</td>
+                                <td style="border: 1px solid #000000; padding: 1rem 1.5rem;">{{ payment.payee_name }}</td>
+                                <td style="border: 1px solid #000000; padding: 1rem 1.5rem;">
                                     {{ payment.bank_name }} - {{ payment.card_number }}
                                 </td>
-                                <td style="border-color: #322446; color: #00FF7F;" class="text-end">
-                                    <strong>RM {{ "{:,.2f}".format(payment.amount) }}</strong>
+                                <td style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">
+                                    RM {{ "{:,.2f}".format(payment.amount) }}
                                 </td>
-                                <td style="border-color: #322446;">
+                                <td style="border: 1px solid #000000; padding: 1rem 1.5rem;">
                                     {{ payment.description or '-' }}
                                 </td>
                             </tr>
@@ -234,7 +234,7 @@
                             <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 5px;">
                                 为客户付款
                             </div>
-                            <div style="color: #00FF7F; font-size: 2rem; font-weight: bold;">
+                            <div style="color: #FFFFFF; font-size: 2rem; font-weight: bold;">
                                 RM {{ "{:,.2f}".format(summary.total_payments) }}
                             </div>
                             <div style="color: #AAAAAA; font-size: 0.8rem;">
@@ -248,17 +248,16 @@
                             <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 5px;">
                                 净余额
                             </div>
-                            <div style="color: {% if summary.net_balance > 0 %}#FF007F{% elif summary.net_balance < 0 %}#00FF7F{% else %}#FFFFFF{% endif %}; 
-                                        font-size: 2rem; font-weight: bold;">
+                            <div style="color: #FFFFFF; font-size: 2rem; font-weight: bold;">
                                 RM {{ "{:,.2f}".format(summary.net_balance|abs) }}
                             </div>
                             <div style="font-size: 0.9rem; margin-top: 5px;">
                                 {% if summary.net_balance > 0 %}
-                                    <span style="color: #FF007F;">⚠️ 客户需补款给我们</span>
+                                    <span style="color: #FF007F;">客户需补款给我们</span>
                                 {% elif summary.net_balance < 0 %}
-                                    <span style="color: #00FF7F;">💰 我们需退款给客户</span>
+                                    <span style="color: #322446;">我们需退款给客户</span>
                                 {% else %}
-                                    <span style="color: #FFFFFF;">✅ 已完全结清</span>
+                                    <span style="color: #FFFFFF;">已完全结清</span>
                                 {% endif %}
                             </div>
                         </div>

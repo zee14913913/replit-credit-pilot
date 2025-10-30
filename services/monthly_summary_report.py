@@ -25,6 +25,34 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 from services.file_storage_manager import FileStorageManager
 
+def get_bank_abbreviation(bank_name):
+    """Convert bank full name to abbreviation"""
+    if not bank_name:
+        return ''
+    
+    bank_name_upper = bank_name.upper()
+    bank_abbr_map = {
+        'MAYBANK': 'MBB',
+        'CIMB': 'CIMB',
+        'PUBLIC BANK': 'PBB',
+        'RHB': 'RHB',
+        'HONG LEONG': 'HLB',
+        'AMBANK': 'AMB',
+        'ALLIANCE': 'ALL',
+        'AFFIN': 'AFF',
+        'HSBC': 'HSBC',
+        'STANDARD CHARTERED': 'SCB',
+        'CITIBANK': 'CITI',
+        'UOB': 'UOB',
+        'OCBC': 'OCBC',
+        'BANK ISLAM': 'BIM',
+        'BANK RAKYAT': 'BRK',
+        'BANK MUAMALAT': 'BMM',
+        'GX BANK': 'GX',
+    }
+    
+    return bank_abbr_map.get(bank_name_upper, bank_name[:4].upper())
+
 class MonthlySummaryReport:
     """月度汇总报告生成器"""
     
@@ -104,7 +132,7 @@ class MonthlySummaryReport:
         for ledger in card_ledgers:
             card_info = {
                 'card_id': ledger['card_id'],
-                'bank_name': ledger['bank_name'],
+                'bank_name': get_bank_abbreviation(ledger['bank_name']),
                 'card_number': ledger['card_number_last4'],
                 'card_type': ledger['card_type'],
                 'statement_date': ledger['statement_date'],
@@ -142,7 +170,7 @@ class MonthlySummaryReport:
         for transfer in cursor.fetchall():
             payment_details.append({
                 'card_id': transfer['card_id'],
-                'bank_name': transfer['bank_name'],
+                'bank_name': get_bank_abbreviation(transfer['bank_name']),
                 'card_number': transfer['card_number_last4'],
                 'transfer_date': transfer['transfer_date'],
                 'payer_name': transfer['payer_name'],
