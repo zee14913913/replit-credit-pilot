@@ -1230,6 +1230,7 @@ def admin_login():
             session['user_role'] = 'admin'
             session['user_email'] = email
             session['user_name'] = 'Administrator'
+            session['user_id'] = 0  # Admin用户的user_id设为0
             # Keep is_admin for backward compatibility during transition
             session['is_admin'] = True
             lang = session.get('language', 'en')
