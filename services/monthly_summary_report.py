@@ -92,7 +92,7 @@ class MonthlySummaryReport:
         
         if not customer:
             conn.close()
-            return None
+            return {}
         
         # 2. 构建月份起始日期（用于匹配）
         month_start = f"{year}-{month:02d}-01"
