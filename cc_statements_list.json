@@ -1,0 +1,1162 @@
+[
+  {
+    "id": 178,
+    "date": "2024-09-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "4514",
+    "total": 550.0,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Alliance_Bank/2024-09/Alliance_Bank_4514_2024-09-12.pdf"
+  },
+  {
+    "id": 190,
+    "date": "2024-09-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "6432",
+    "total": -4427.95,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 191,
+    "date": "2024-09-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "3836",
+    "total": 0.0,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 179,
+    "date": "2024-10-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "4514",
+    "total": 550.0,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Alliance_Bank/2024-10/Alliance_Bank_4514_2024-10-12.pdf"
+  },
+  {
+    "id": 192,
+    "date": "2024-10-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "6432",
+    "total": -4427.95,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Alliance_Bank/2024-10/Alliance_Bank_6432_2024-10-12.pdf"
+  },
+  {
+    "id": 193,
+    "date": "2024-10-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "3836",
+    "total": 0.0,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 180,
+    "date": "2024-11-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "4514",
+    "total": 550.0,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Alliance_Bank/2024-11/Alliance_Bank_4514_2024-11-12.pdf"
+  },
+  {
+    "id": 194,
+    "date": "2024-11-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "6432",
+    "total": -4427.95,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Alliance_Bank/2024-11/Alliance_Bank_6432_2024-11-12.pdf"
+  },
+  {
+    "id": 195,
+    "date": "2024-11-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "3836",
+    "total": -0.53,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 196,
+    "date": "2024-12-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "3836",
+    "total": -2877.95,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Alliance_Bank/2024-12/Alliance_Bank_3836_2024-12-12.pdf"
+  },
+  {
+    "id": 199,
+    "date": "2025-01-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "6432",
+    "total": 553.45,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Alliance_Bank/2025-01/Alliance_Bank_6432_2025-01-12.pdf"
+  },
+  {
+    "id": 202,
+    "date": "2025-02-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "4514",
+    "total": 550.0,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Alliance_Bank/2025-02/Alliance_Bank_4514_2025-02-12.pdf"
+  },
+  {
+    "id": 204,
+    "date": "2025-03-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "4514",
+    "total": 547.0,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Alliance_Bank/2025-03/Alliance_Bank_4514_2025-03-12.pdf"
+  },
+  {
+    "id": 205,
+    "date": "2025-03-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "3836",
+    "total": 0.0,
+    "confirmed": true,
+    "file_path": null
+  },
+  {
+    "id": 206,
+    "date": "2025-04-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "4514",
+    "total": 5316.0,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Alliance_Bank/2025-04/Alliance_Bank_4514_2025-04-12.pdf"
+  },
+  {
+    "id": 207,
+    "date": "2025-04-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "3836",
+    "total": -0.53,
+    "confirmed": true,
+    "file_path": null
+  },
+  {
+    "id": 186,
+    "date": "2025-05-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "4514",
+    "total": 6549.0,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Alliance_Bank/2025-05/Alliance_Bank_4514_2025-05-12.pdf"
+  },
+  {
+    "id": 208,
+    "date": "2025-05-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "3836",
+    "total": 0.0,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 187,
+    "date": "2025-06-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "4514",
+    "total": 6141.42,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Alliance_Bank/2025-06/Alliance_Bank_4514_2025-06-12.pdf"
+  },
+  {
+    "id": 209,
+    "date": "2025-06-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "3836",
+    "total": -53.53,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 188,
+    "date": "2025-07-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "4514",
+    "total": 5905.16,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Alliance_Bank/2025-07/Alliance_Bank_4514_2025-07-12.pdf"
+  },
+  {
+    "id": 210,
+    "date": "2025-07-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "3836",
+    "total": 0.0,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 189,
+    "date": "2025-08-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "4514",
+    "total": 10004.46,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Alliance_Bank/2025-08/Alliance_Bank_4514_2025-08-12.pdf"
+  },
+  {
+    "id": 211,
+    "date": "2025-08-12",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Alliance Bank",
+    "last4": "3836",
+    "total": 0.0,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 215,
+    "date": "2024-09-10",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "HSBC",
+    "last4": "2058",
+    "total": 10274.78,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 216,
+    "date": "2024-10-10",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "HSBC",
+    "last4": "2058",
+    "total": 1630.21,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 217,
+    "date": "2024-11-10",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "HSBC",
+    "last4": "2058",
+    "total": 4891.01,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 218,
+    "date": "2024-12-10",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "HSBC",
+    "last4": "2058",
+    "total": 4153.69,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 219,
+    "date": "2025-01-11",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "HSBC",
+    "last4": "2058",
+    "total": 7411.51,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 220,
+    "date": "2025-02-10",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "HSBC",
+    "last4": "2058",
+    "total": 9857.28,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 221,
+    "date": "2025-03-10",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "HSBC",
+    "last4": "2058",
+    "total": 9583.12,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 222,
+    "date": "2025-04-10",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "HSBC",
+    "last4": "2058",
+    "total": 1132.92,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 223,
+    "date": "2025-05-10",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "HSBC",
+    "last4": "2058",
+    "total": 1548.8,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 224,
+    "date": "2025-06-10",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "HSBC",
+    "last4": "2058",
+    "total": 12814.6,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 225,
+    "date": "2025-07-10",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "HSBC",
+    "last4": "2058",
+    "total": 13798.3,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 226,
+    "date": "2025-08-10",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "HSBC",
+    "last4": "2058",
+    "total": 18564.06,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 174,
+    "date": "2024-09-07",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Hong Leong Bank",
+    "last4": "2033",
+    "total": 5063.02,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Hong_Leong_Bank/2024-09/Hong_Leong_Bank_2033_2024-09-07.pdf"
+  },
+  {
+    "id": 175,
+    "date": "2024-10-07",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Hong Leong Bank",
+    "last4": "2033",
+    "total": 15978.97,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Hong_Leong_Bank/2024-10/Hong_Leong_Bank_2033_2024-10-07.pdf"
+  },
+  {
+    "id": 176,
+    "date": "2024-11-07",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Hong Leong Bank",
+    "last4": "2033",
+    "total": 59297.18,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Hong_Leong_Bank/2024-11/Hong_Leong_Bank_2033_2024-11-07.pdf"
+  },
+  {
+    "id": 177,
+    "date": "2024-12-07",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Hong Leong Bank",
+    "last4": "2033",
+    "total": 53914.19,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Hong_Leong_Bank/2024-12/Hong_Leong_Bank_2033_2024-12-07.pdf"
+  },
+  {
+    "id": 166,
+    "date": "2025-01-07",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Hong Leong Bank",
+    "last4": "2033",
+    "total": 45416.94,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Hong_Leong_Bank/2025-01/Hong_Leong_Bank_2033_2025-01-07.pdf"
+  },
+  {
+    "id": 167,
+    "date": "2025-02-07",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Hong Leong Bank",
+    "last4": "2033",
+    "total": 48509.32,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Hong_Leong_Bank/2025-02/Hong_Leong_Bank_2033_2025-02-07.pdf"
+  },
+  {
+    "id": 168,
+    "date": "2025-03-07",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Hong Leong Bank",
+    "last4": "2033",
+    "total": 29441.85,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Hong_Leong_Bank/2025-03/Hong_Leong_Bank_2033_2025-03-07.pdf"
+  },
+  {
+    "id": 169,
+    "date": "2025-04-07",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Hong Leong Bank",
+    "last4": "2033",
+    "total": 78397.93,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Hong_Leong_Bank/2025-04/Hong_Leong_Bank_2033_2025-04-07.pdf"
+  },
+  {
+    "id": 170,
+    "date": "2025-05-07",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Hong Leong Bank",
+    "last4": "2033",
+    "total": 84300.61,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Hong_Leong_Bank/2025-05/Hong_Leong_Bank_2033_2025-05-07.pdf"
+  },
+  {
+    "id": 171,
+    "date": "2025-06-07",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Hong Leong Bank",
+    "last4": "2033",
+    "total": 87980.34,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Hong_Leong_Bank/2025-06/Hong_Leong_Bank_2033_2025-06-07.pdf"
+  },
+  {
+    "id": 173,
+    "date": "2025-07-07",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Hong Leong Bank",
+    "last4": "2033",
+    "total": 88230.64,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Hong_Leong_Bank/2025-07/Hong_Leong_Bank_2033_2025-07-07.pdf"
+  },
+  {
+    "id": 172,
+    "date": "2025-08-07",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Hong Leong Bank",
+    "last4": "2033",
+    "total": 81939.0,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CCC/credit_cards/Hong_Leong_Bank/2025-08/Hong_Leong_Bank_2033_2025-08-07.pdf"
+  },
+  {
+    "id": 251,
+    "date": "2025-09-07",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Hong Leong Bank",
+    "last4": "2033",
+    "total": 79113.79,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 227,
+    "date": "2024-09-03",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Maybank",
+    "last4": "5943",
+    "total": 29212.6,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 228,
+    "date": "2024-10-03",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Maybank",
+    "last4": "5943",
+    "total": 29608.49,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 229,
+    "date": "2024-11-03",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Maybank",
+    "last4": "5943",
+    "total": 53012.88,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 230,
+    "date": "2024-12-03",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Maybank",
+    "last4": "5943",
+    "total": 9666.07,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 231,
+    "date": "2025-01-03",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Maybank",
+    "last4": "5943",
+    "total": 37094.3,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 232,
+    "date": "2025-02-03",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Maybank",
+    "last4": "5943",
+    "total": 42736.71,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 233,
+    "date": "2025-03-03",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Maybank",
+    "last4": "5943",
+    "total": 42811.29,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 234,
+    "date": "2025-04-03",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Maybank",
+    "last4": "5943",
+    "total": 42460.04,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 235,
+    "date": "2025-05-03",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Maybank",
+    "last4": "5943",
+    "total": 44600.33,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 236,
+    "date": "2025-06-03",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Maybank",
+    "last4": "5943",
+    "total": 35225.99,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 237,
+    "date": "2025-07-03",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Maybank",
+    "last4": "5943",
+    "total": 38376.42,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 238,
+    "date": "2025-08-03",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Maybank",
+    "last4": "5943",
+    "total": 45487.91,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 252,
+    "date": "2025-10-03",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "Maybank",
+    "last4": "5943",
+    "total": 46477.0,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 239,
+    "date": "2024-09-21",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "UOB",
+    "last4": "2195",
+    "total": 1997.85,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 240,
+    "date": "2024-10-21",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "UOB",
+    "last4": "2195",
+    "total": 3834.21,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 241,
+    "date": "2024-11-21",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "UOB",
+    "last4": "2195",
+    "total": 3726.63,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 242,
+    "date": "2024-12-21",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "UOB",
+    "last4": "2195",
+    "total": 1358.33,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 247,
+    "date": "2025-01-21",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "UOB",
+    "last4": "2195",
+    "total": 1323.48,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 248,
+    "date": "2025-02-21",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "UOB",
+    "last4": "2195",
+    "total": 7025.19,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 249,
+    "date": "2025-03-21",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "UOB",
+    "last4": "2195",
+    "total": 3871.22,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 250,
+    "date": "2025-04-21",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "UOB",
+    "last4": "2195",
+    "total": 2341.66,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 243,
+    "date": "2025-05-21",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "UOB",
+    "last4": "2195",
+    "total": 1940.88,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 244,
+    "date": "2025-06-21",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "UOB",
+    "last4": "2195",
+    "total": 2558.03,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 245,
+    "date": "2025-07-21",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "UOB",
+    "last4": "2195",
+    "total": 20317.99,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 246,
+    "date": "2025-08-21",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "UOB",
+    "last4": "2195",
+    "total": 21629.62,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 253,
+    "date": "2025-09-21",
+    "customer": "CHANG CHOON CHOW",
+    "bank": "UOB",
+    "last4": "2195",
+    "total": 21405.18,
+    "confirmed": false,
+    "file_path": null
+  },
+  {
+    "id": 115,
+    "date": "2025-05-28",
+    "customer": "CHEOK JUN YOON",
+    "bank": "AmBank",
+    "last4": "6354",
+    "total": 9008.71,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-05/AmBank_6354_2025-05-28.pdf"
+  },
+  {
+    "id": 116,
+    "date": "2025-06-28",
+    "customer": "CHEOK JUN YOON",
+    "bank": "AmBank",
+    "last4": "6354",
+    "total": 14533.88,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-06/AmBank_6354_2025-06-28.pdf"
+  },
+  {
+    "id": 117,
+    "date": "2025-07-28",
+    "customer": "CHEOK JUN YOON",
+    "bank": "AmBank",
+    "last4": "6354",
+    "total": 12889.83,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-07/AmBank_6354_2025-07-28.pdf"
+  },
+  {
+    "id": 118,
+    "date": "2025-08-28",
+    "customer": "CHEOK JUN YOON",
+    "bank": "AmBank",
+    "last4": "6354",
+    "total": 14719.77,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-08/AmBank_6354_2025-08-28.pdf"
+  },
+  {
+    "id": 119,
+    "date": "2025-09-28",
+    "customer": "CHEOK JUN YOON",
+    "bank": "AmBank",
+    "last4": "6354",
+    "total": 14515.49,
+    "confirmed": true,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-09/AmBank_6354_2025-09-28.pdf"
+  },
+  {
+    "id": 259,
+    "date": "2025-10-28",
+    "customer": "CHEOK JUN YOON",
+    "bank": "AmBank",
+    "last4": "6354",
+    "total": 15062.57,
+    "confirmed": true,
+    "file_path": "attached_assets/AMB 28:10:2025_1761838711519.pdf"
+  },
+  {
+    "id": 125,
+    "date": "2025-05-28",
+    "customer": "CHEOK JUN YOON",
+    "bank": "AmBank Islamic",
+    "last4": "9902",
+    "total": 9149.0,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-05/AMBANK_9902_2025-05-28.pdf"
+  },
+  {
+    "id": 126,
+    "date": "2025-06-28",
+    "customer": "CHEOK JUN YOON",
+    "bank": "AmBank Islamic",
+    "last4": "9902",
+    "total": 12064.17,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-06/AMBANK_9902_2025-06-28.pdf"
+  },
+  {
+    "id": 127,
+    "date": "2025-07-28",
+    "customer": "CHEOK JUN YOON",
+    "bank": "AmBank Islamic",
+    "last4": "9902",
+    "total": 10674.24,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-07/AMBANK_9902_2025-07-28.pdf"
+  },
+  {
+    "id": 128,
+    "date": "2025-08-28",
+    "customer": "CHEOK JUN YOON",
+    "bank": "AmBank Islamic",
+    "last4": "9902",
+    "total": 16168.45,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-08/AMBANK_9902_2025-08-28.pdf"
+  },
+  {
+    "id": 129,
+    "date": "2025-09-28",
+    "customer": "CHEOK JUN YOON",
+    "bank": "AmBank Islamic",
+    "last4": "9902",
+    "total": 14478.62,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-09/AMBANK_9902_2025-09-28.pdf"
+  },
+  {
+    "id": 260,
+    "date": "2025-10-28",
+    "customer": "CHEOK JUN YOON",
+    "bank": "AmBank Islamic",
+    "last4": "9902",
+    "total": 14776.32,
+    "confirmed": true,
+    "file_path": "attached_assets/AMB IS 28:10:2025_1761838756926.pdf"
+  },
+  {
+    "id": 130,
+    "date": "2025-06-16",
+    "customer": "CHEOK JUN YOON",
+    "bank": "HONG LEONG",
+    "last4": "3964",
+    "total": 766.84,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/HONG_LEONG/2025-06/HONG_LEONG_3964_2025-06-16.pdf"
+  },
+  {
+    "id": 131,
+    "date": "2025-07-16",
+    "customer": "CHEOK JUN YOON",
+    "bank": "HONG LEONG",
+    "last4": "3964",
+    "total": 835.87,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/HONG_LEONG/2025-07/HONG_LEONG_3964_2025-07-16.pdf"
+  },
+  {
+    "id": 132,
+    "date": "2025-08-16",
+    "customer": "CHEOK JUN YOON",
+    "bank": "HONG LEONG",
+    "last4": "3964",
+    "total": 1552.8,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/HONG_LEONG/2025-08/HONG_LEONG_3964_2025-08-16.pdf"
+  },
+  {
+    "id": 133,
+    "date": "2025-09-16",
+    "customer": "CHEOK JUN YOON",
+    "bank": "HONG LEONG",
+    "last4": "3964",
+    "total": 3874.46,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/HONG_LEONG/2025-09/HONG_LEONG_3964_2025-09-16.pdf"
+  },
+  {
+    "id": 258,
+    "date": "2025-10-16",
+    "customer": "CHEOK JUN YOON",
+    "bank": "HONG LEONG",
+    "last4": "3964",
+    "total": 4120.9,
+    "confirmed": false,
+    "file_path": "attached_assets/HLB Receipt-2025-10-17_1761808445879.pdf"
+  },
+  {
+    "id": 134,
+    "date": "2025-05-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "HSBC",
+    "last4": "0034",
+    "total": 50.0,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/HSBC/2025-05/HSBC_0034_2025-05-13.pdf"
+  },
+  {
+    "id": 135,
+    "date": "2025-06-14",
+    "customer": "CHEOK JUN YOON",
+    "bank": "HSBC",
+    "last4": "0034",
+    "total": 1226.46,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/HSBC/2025-06/HSBC_0034_2025-06-14.pdf"
+  },
+  {
+    "id": 136,
+    "date": "2025-07-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "HSBC",
+    "last4": "0034",
+    "total": 1165.26,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/HSBC/2025-07/HSBC_0034_2025-07-13.pdf"
+  },
+  {
+    "id": 137,
+    "date": "2025-08-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "HSBC",
+    "last4": "0034",
+    "total": 1196.6,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/HSBC/2025-08/HSBC_0034_2025-08-13.pdf"
+  },
+  {
+    "id": 138,
+    "date": "2025-09-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "HSBC",
+    "last4": "0034",
+    "total": 1151.71,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/HSBC/2025-09/HSBC_0034_2025-09-13.pdf"
+  },
+  {
+    "id": 257,
+    "date": "2025-10-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "HSBC",
+    "last4": "0034",
+    "total": 1110.91,
+    "confirmed": false,
+    "file_path": "attached_assets/2025-10-13_Statement 2(1)_1761808329495.pdf"
+  },
+  {
+    "id": 139,
+    "date": "2025-05-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "OCBC",
+    "last4": "3506",
+    "total": 1190.69,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/OCBC/2025-05/OCBC_3506_2025-05-13.pdf"
+  },
+  {
+    "id": 140,
+    "date": "2025-06-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "OCBC",
+    "last4": "3506",
+    "total": 24188.71,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/OCBC/2025-06/OCBC_3506_2025-06-13.pdf"
+  },
+  {
+    "id": 141,
+    "date": "2025-07-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "OCBC",
+    "last4": "3506",
+    "total": 34540.33,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/OCBC/2025-07/OCBC_3506_2025-07-13.pdf"
+  },
+  {
+    "id": 142,
+    "date": "2025-08-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "OCBC",
+    "last4": "3506",
+    "total": 38295.3,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/OCBC/2025-08/OCBC_3506_2025-08-13.pdf"
+  },
+  {
+    "id": 143,
+    "date": "2025-09-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "OCBC",
+    "last4": "3506",
+    "total": 29937.93,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/OCBC/2025-09/OCBC_3506_2025-09-13.pdf"
+  },
+  {
+    "id": 255,
+    "date": "2025-10-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "OCBC",
+    "last4": "3506",
+    "total": 633.74,
+    "confirmed": false,
+    "file_path": "attached_assets/GE MASTERCARD PLATINUM-3506-Oct-25_1761808065471.pdf"
+  },
+  {
+    "id": 144,
+    "date": "2025-05-14",
+    "customer": "CHEOK JUN YOON",
+    "bank": "STANDARD CHARTERED",
+    "last4": "1237",
+    "total": 3049.36,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED/2025-05/STANDARD_CHARTERED_1237_2025-05-14.pdf"
+  },
+  {
+    "id": 145,
+    "date": "2025-06-15",
+    "customer": "CHEOK JUN YOON",
+    "bank": "STANDARD CHARTERED",
+    "last4": "1237",
+    "total": 67775.0,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED/2025-06/STANDARD_CHARTERED_1237_2025-06-15.pdf"
+  },
+  {
+    "id": 146,
+    "date": "2025-07-14",
+    "customer": "CHEOK JUN YOON",
+    "bank": "STANDARD CHARTERED",
+    "last4": "1237",
+    "total": 60738.83,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED/2025-07/STANDARD_CHARTERED_1237_2025-07-14.pdf"
+  },
+  {
+    "id": 147,
+    "date": "2025-08-14",
+    "customer": "CHEOK JUN YOON",
+    "bank": "STANDARD CHARTERED",
+    "last4": "1237",
+    "total": 68813.39,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED/2025-08/STANDARD_CHARTERED_1237_2025-08-14.pdf"
+  },
+  {
+    "id": 148,
+    "date": "2025-09-14",
+    "customer": "CHEOK JUN YOON",
+    "bank": "STANDARD CHARTERED",
+    "last4": "1237",
+    "total": 72718.54,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED/2025-09/STANDARD_CHARTERED_1237_2025-09-14.pdf"
+  },
+  {
+    "id": 254,
+    "date": "2025-10-14",
+    "customer": "CHEOK JUN YOON",
+    "bank": "STANDARD CHARTERED",
+    "last4": "1237",
+    "total": 73889.93,
+    "confirmed": false,
+    "file_path": "attached_assets/SDC OCT _1761808054088.pdf"
+  },
+  {
+    "id": 149,
+    "date": "2025-05-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "UOB",
+    "last4": "3530",
+    "total": 729.31,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/UOB/2025-05/UOB_3530_2025-05-13.pdf"
+  },
+  {
+    "id": 150,
+    "date": "2025-06-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "UOB",
+    "last4": "4004",
+    "total": 10.38,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/UOB/2025-06/UOB_4004_2025-06-13.pdf"
+  },
+  {
+    "id": 151,
+    "date": "2025-07-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "UOB",
+    "last4": "3530",
+    "total": 3789.69,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/UOB/2025-07/UOB_3530_2025-07-13.pdf"
+  },
+  {
+    "id": 152,
+    "date": "2025-08-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "UOB",
+    "last4": "3530",
+    "total": 3443.9,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/UOB/2025-08/UOB_3530_2025-08-13.pdf"
+  },
+  {
+    "id": 153,
+    "date": "2025-09-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "UOB",
+    "last4": "3530",
+    "total": 9600.82,
+    "confirmed": false,
+    "file_path": "static/uploads/customers/Be_rich_CJY/credit_cards/UOB/2025-09/UOB_3530_2025-09-13.pdf"
+  },
+  {
+    "id": 256,
+    "date": "2025-10-13",
+    "customer": "CHEOK JUN YOON",
+    "bank": "UOB",
+    "last4": "8387",
+    "total": 9935.19,
+    "confirmed": false,
+    "file_path": "attached_assets/eStatement_1761807973839.pdf"
+  }
+]
