@@ -47,7 +47,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 40,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "完全匹配PDF"
   },
   {
     "seq": 4,
@@ -62,7 +64,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 32,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 5,
@@ -77,7 +80,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 32,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 6,
@@ -92,7 +96,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 18,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 7,
@@ -107,7 +112,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 5,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 8,
@@ -122,7 +128,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 2,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 9,
@@ -137,7 +144,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 0,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 10,
@@ -152,7 +160,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 0,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 11,
