@@ -1148,8 +1148,8 @@ footer p {
 }
 
 .alert-success-pro {
-    border-left-color: #10B981;
-    background: rgba(16, 185, 129, 0.1);
+    border-left-color: #FF007F;
+    background: rgba(255, 0, 127, 0.1);
 }
 
 .alert-info-pro {
@@ -1189,9 +1189,9 @@ footer p {
 }
 
 .badge-success-pro {
-    background: rgba(16, 185, 129, 0.2);
-    color: #10B981;
-    border-color: #10B981;
+    background: rgba(255, 0, 127, 0.2);
+    color: #FF007F;
+    border-color: #FF007F;
 }
 
 /* Custom Pink/Purple Badges for Savings Module */
@@ -1566,9 +1566,9 @@ footer p {
 }
 
 [data-theme="light"] .alert-success {
-    background: rgba(209, 250, 229, 0.9);
-    border-color: rgba(167, 243, 208, 0.8);
-    color: #065f46;
+    background: rgba(255, 0, 127, 0.1);
+    border-color: rgba(255, 0, 127, 0.3);
+    color: #FF007F;
 }
 
 [data-theme="light"] .alert-danger {
@@ -1626,8 +1626,8 @@ footer p {
 }
 
 [data-theme="light"] .badge-success {
-    background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
-    color: #065f46;
+    background: linear-gradient(135deg, rgba(255, 0, 127, 0.2) 0%, rgba(255, 0, 127, 0.3) 100%);
+    color: #FF007F;
 }
 
 [data-theme="light"] .badge-warning {
@@ -1763,9 +1763,9 @@ footer p {
 }
 
 [data-theme="light"] .alert-success-pro {
-    background: rgba(209, 250, 229, 0.9);
-    border-color: rgba(167, 243, 208, 0.8);
-    color: #065f46;
+    background: rgba(255, 0, 127, 0.1);
+    border-color: rgba(255, 0, 127, 0.3);
+    color: #FF007F;
 }
 
 [data-theme="light"] .alert-danger-pro {
