@@ -50,65 +50,85 @@
 
         <!-- Transactions Table -->
         <div class="table-responsive" style="overflow-x: auto;">
-            <table class="table-professional" style="min-width: 1400px; table-layout: fixed;">
+            <table class="table-professional" style="min-width: 1600px; table-layout: fixed; border-spacing: 0 12px; border-collapse: separate;">
                 <thead>
                     <tr>
-                        <th style="width: 120px;">{{ t('date') }}</th>
-                        <th style="width: 150px;">{{ t('bank') }}</th>
-                        <th style="width: 500px;">{{ t('description') }}</th>
-                        <th style="width: 140px; text-align: right;">{{ t('amount') }}</th>
-                        <th style="width: 150px;">{{ t('customer_tag') }}</th>
-                        <th style="width: 240px;">{{ t('actions') }}</th>
+                        <th style="width: 120px; padding: 12px 16px;">{{ t('date') }}</th>
+                        <th style="width: 100px; padding: 12px 16px;">{{ t('bank') }}</th>
+                        <th style="width: 550px; padding: 12px 16px;">{{ t('description') }}</th>
+                        <th style="width: 140px; padding: 12px 16px; text-align: right;">{{ t('amount') }}</th>
+                        <th style="width: 150px; padding: 12px 16px;">{{ t('customer_tag') }}</th>
+                        <th style="width: 340px; padding: 12px 16px;">{{ t('actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for trans in transactions %}
-                    <tr>
-                        <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    <tr style="background: rgba(50, 36, 70, 0.3); border: 1px solid rgba(192, 192, 192, 0.2);">
+                        <td style="white-space: nowrap; padding: 16px; overflow: hidden; text-overflow: ellipsis;">
                             {{ trans.transaction_date }}
                         </td>
-                        <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                            <span class="badge-professional badge-secondary-pro">
-                                {{ trans.bank_name }}
+                        <td style="white-space: nowrap; padding: 16px; overflow: hidden; text-overflow: ellipsis;">
+                            <span class="badge-professional badge-secondary-pro" style="font-size: 0.75rem;">
+                                {% if 'Hong Leong' in trans.bank_name %}HLB
+                                {% elif 'Public Bank' in trans.bank_name %}PBB
+                                {% elif 'Alliance' in trans.bank_name %}ABB
+                                {% elif 'OCBC' in trans.bank_name %}OCBC
+                                {% elif 'GX Bank' in trans.bank_name %}GXB
+                                {% elif 'Maybank' in trans.bank_name %}MBB
+                                {% elif 'CIMB' in trans.bank_name %}CIMB
+                                {% elif 'RHB' in trans.bank_name %}RHB
+                                {% elif 'AmBank' in trans.bank_name %}AMB
+                                {% elif 'UOB' in trans.bank_name %}UOB
+                                {% else %}{{ trans.bank_name[:4].upper() }}
+                                {% endif %}
                             </span>
                         </td>
-                        <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ trans.description }}">
+                        <td style="white-space: nowrap; padding: 16px; overflow: hidden; text-overflow: ellipsis;" title="{{ trans.description }}">
                             {{ trans.description }}
                         </td>
-                        <td style="white-space: nowrap; text-align: right;">
+                        <td style="white-space: nowrap; padding: 16px; text-align: right;">
                             {% if trans.transaction_type == 'debit' %}
-                            <span style="color: #FF007F; font-weight: 700;">
+                            <span style="color: #FF007F; font-weight: 700; font-size: 0.95rem;">
                                 -RM {{ "{:,.2f}".format(trans.amount) }}
                             </span>
                             {% else %}
-                            <span style="color: #00FF9D; font-weight: 700;">
+                            <span style="color: #00FF9D; font-weight: 700; font-size: 0.95rem;">
                                 +RM {{ "{:,.2f}".format(trans.amount) }}
                             </span>
                             {% endif %}
                         </td>
-                        <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        <td style="white-space: nowrap; padding: 16px; overflow: hidden; text-overflow: ellipsis;">
                             {% if trans.customer_name_tag %}
-                            <span class="badge-professional badge-success-pro">
+                            <span class="badge-professional badge-success-pro" style="font-size: 0.75rem;">
                                 {{ trans.customer_name_tag }}
                             </span>
                             {% else %}
                             <small style="color: var(--text-secondary);">-</small>
                             {% endif %}
                         </td>
-                        <td style="white-space: nowrap;">
-                            <form method="POST" action="{{ url_for('tag_savings_transaction', transaction_id=trans.id) }}" class="d-inline">
-                                <div class="input-group input-group-sm" style="width: 220px;">
-                                    <input type="text" 
-                                           name="customer_tag" 
-                                           class="form-control" 
-                                           placeholder="Tag customer"
-                                           value="{{ trans.customer_name_tag or '' }}"
-                                           style="font-size: 0.85rem;">
-                                    <button type="submit" class="btn btn-sm btn-outline-success">
-                                        {{ t('save') }}
-                                    </button>
-                                </div>
-                            </form>
+                        <td style="white-space: nowrap; padding: 16px;">
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <a href="{{ url_for('view_savings_statement_file', statement_id=trans.statement_date) }}" 
+                                   target="_blank"
+                                   class="btn btn-sm" 
+                                   style="background: #322446; border: 1px solid #FF007F; color: #FF007F; padding: 4px 12px;"
+                                   title="View Statement PDF">
+                                    <i class="bi bi-file-pdf"></i>
+                                </a>
+                                <form method="POST" action="{{ url_for('tag_savings_transaction', transaction_id=trans.id) }}" class="d-inline" style="flex: 1;">
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" 
+                                               name="customer_tag" 
+                                               class="form-control" 
+                                               placeholder="Tag customer"
+                                               value="{{ trans.customer_name_tag or '' }}"
+                                               style="font-size: 0.8rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.3); color: #fff;">
+                                        <button type="submit" class="btn btn-sm" style="background: #322446; border: 1px solid #00FF9D; color: #00FF9D;">
+                                            <i class="bi bi-save"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
