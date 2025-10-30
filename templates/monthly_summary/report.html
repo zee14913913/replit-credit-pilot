@@ -73,18 +73,16 @@
                         border-radius: 12px; padding: 20px; white-space: nowrap;">
                 <div style="color: #FF007F; font-size: 0.85rem; margin-bottom: 10px;">
                     净余额
+                    {% if summary.net_balance > 0 %}
+                        <span style="color: #FF007F;">(客户需补款)</span>
+                    {% elif summary.net_balance < 0 %}
+                        <span style="color: #322446;">(我们需退款)</span>
+                    {% else %}
+                        <span style="color: #FFFFFF;">(已结清)</span>
+                    {% endif %}
                 </div>
                 <div style="color: #FFFFFF; font-size: 1.6rem; font-weight: bold;">
                     RM {{ "{:,.2f}".format(summary.net_balance) }}
-                </div>
-                <div style="font-size: 0.75rem; margin-top: 5px;">
-                    {% if summary.net_balance > 0 %}
-                        <span style="color: #FF007F;">客户需补款</span>
-                    {% elif summary.net_balance < 0 %}
-                        <span style="color: #322446;">我们需退款</span>
-                    {% else %}
-                        <span style="color: #FFFFFF;">已结清</span>
-                    {% endif %}
                 </div>
             </div>
         </div>
