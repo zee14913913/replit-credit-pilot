@@ -370,7 +370,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 23,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 24,
@@ -385,7 +387,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 85,
-    "verified": false
+    "verified": true,
+    "verification_notes": "balance字段批量修复后验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 25,
@@ -400,7 +404,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 134,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 26,
@@ -415,7 +421,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 137,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 27,
@@ -430,7 +438,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 169,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 28,
@@ -445,7 +455,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 121,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 29,
@@ -460,7 +472,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 134,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 30,
@@ -475,7 +489,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 196,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 31,
@@ -490,7 +506,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 154,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 32,
@@ -505,7 +523,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 148,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 33,
@@ -520,7 +540,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 125,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 34,
@@ -535,7 +557,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 85,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 35,
@@ -550,7 +574,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 9,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 36,
@@ -565,7 +591,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 1,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 37,
@@ -580,7 +608,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 6,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 38,
@@ -595,7 +625,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 7,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 39,
@@ -610,7 +642,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 71,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 40,
@@ -625,7 +659,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 67,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 41,
@@ -640,7 +676,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 90,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 42,
@@ -655,7 +693,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 67,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 43,
@@ -670,7 +710,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 90,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 44,
@@ -685,7 +727,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 92,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "修正17笔分类错误后通过"
   },
   {
     "seq": 45,
@@ -700,7 +744,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 83,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "修正23笔分类错误后通过"
   },
   {
     "seq": 46,
@@ -715,7 +761,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 134,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 47,
@@ -730,7 +778,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 84,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 48,
@@ -745,7 +795,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 131,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 49,
@@ -760,7 +812,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 132,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 50,
@@ -775,7 +829,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 116,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 51,
@@ -790,7 +846,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 92,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 52,
@@ -805,7 +863,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 162,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "balance字段批量修复后验证通过"
   },
   {
     "seq": 53,
@@ -820,7 +880,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 4,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "批量验证通过"
   },
   {
     "seq": 54,
@@ -835,7 +897,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 3,
-    "verified": false
+    "verified": false,
+    "verification_notes": "金额或数量不匹配"
   },
   {
     "seq": 55,
@@ -850,7 +913,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 0,
-    "verified": false
+    "verified": false,
+    "verification_notes": "数据库无交易记录"
   },
   {
     "seq": 56,
@@ -865,7 +929,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 9,
-    "verified": false
+    "verified": false,
+    "verification_notes": "金额或数量不匹配"
   },
   {
     "seq": 57,
@@ -880,7 +945,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 3,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "批量验证通过"
   },
   {
     "seq": 58,
@@ -895,7 +962,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 3,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "批量验证通过"
   },
   {
     "seq": 59,
@@ -910,7 +979,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 2,
-    "verified": false
+    "verified": false,
+    "verification_notes": "金额或数量不匹配"
   },
   {
     "seq": 60,
@@ -925,7 +995,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 9,
-    "verified": false
+    "verified": false,
+    "verification_notes": "金额或数量不匹配"
   },
   {
     "seq": 61,
@@ -940,7 +1011,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 7,
-    "verified": false
+    "verified": false,
+    "verification_notes": "金额或数量不匹配"
   },
   {
     "seq": 62,
@@ -955,7 +1027,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 3,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "批量验证通过"
   },
   {
     "seq": 63,
@@ -970,7 +1044,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 2,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "批量验证通过"
   },
   {
     "seq": 64,
@@ -985,7 +1061,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 2,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "批量验证通过"
   },
   {
     "seq": 65,
@@ -1000,7 +1078,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 1,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "批量验证通过"
   },
   {
     "seq": 66,
@@ -1015,7 +1095,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 2,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "批量验证通过"
   },
   {
     "seq": 67,
@@ -1030,7 +1112,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 1,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "批量验证通过"
   },
   {
     "seq": 68,
@@ -1045,7 +1129,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 2,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "批量验证通过"
   },
   {
     "seq": 69,
@@ -1060,7 +1146,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 8,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "批量验证通过"
   },
   {
     "seq": 70,
@@ -1075,7 +1163,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 12,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "批量验证通过"
   },
   {
     "seq": 71,
@@ -1090,7 +1180,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 1,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "批量验证通过"
   },
   {
     "seq": 72,
@@ -1105,7 +1197,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 47,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取交易总额"
   },
   {
     "seq": 73,
@@ -1120,7 +1213,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 22,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取交易总额"
   },
   {
     "seq": 74,
@@ -1135,7 +1229,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 27,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取交易总额"
   },
   {
     "seq": 75,
@@ -1150,7 +1245,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 37,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取交易总额"
   },
   {
     "seq": 76,
@@ -1165,7 +1261,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 25,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取交易总额"
   },
   {
     "seq": 77,
@@ -1180,7 +1277,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 14,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取交易总额"
   },
   {
     "seq": 78,
@@ -1195,7 +1293,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 31,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取PDF Summary"
   },
   {
     "seq": 79,
@@ -1210,7 +1309,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 27,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取PDF Summary"
   },
   {
     "seq": 80,
@@ -1225,7 +1325,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 28,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取PDF Summary"
   },
   {
     "seq": 81,
@@ -1240,7 +1341,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 71,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取PDF Summary"
   },
   {
     "seq": 82,
@@ -1255,7 +1357,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 59,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取PDF Summary"
   },
   {
     "seq": 83,
@@ -1270,7 +1373,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 77,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取PDF Summary"
   },
   {
     "seq": 84,
@@ -1285,7 +1389,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 2,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取PDF Summary"
   },
   {
     "seq": 85,
@@ -1300,7 +1405,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 16,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取PDF Summary"
   },
   {
     "seq": 86,
@@ -1315,7 +1421,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 10,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取PDF Summary"
   },
   {
     "seq": 87,
@@ -1330,7 +1437,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 48,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取PDF Summary"
   },
   {
     "seq": 88,
@@ -1345,7 +1453,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 44,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取PDF Summary"
   },
   {
     "seq": 89,
@@ -1360,7 +1469,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 86,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取PDF Summary"
   },
   {
     "seq": 90,
@@ -1375,7 +1485,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 40,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取PDF Summary"
   },
   {
     "seq": 91,
@@ -1390,7 +1501,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 69,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取PDF Summary"
   },
   {
     "seq": 92,
@@ -1405,7 +1517,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 46,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取PDF Summary"
   },
   {
     "seq": 93,
@@ -1420,7 +1533,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 44,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取PDF Summary"
   },
   {
     "seq": 94,
@@ -1435,7 +1549,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 2,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取期初期末余额"
   },
   {
     "seq": 95,
@@ -1450,7 +1565,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 10,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取期初期末余额"
   },
   {
     "seq": 96,
@@ -1465,7 +1581,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 61,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取期初期末余额"
   },
   {
     "seq": 97,
@@ -1480,7 +1597,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 69,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取期初期末余额"
   },
   {
     "seq": 98,
@@ -1495,7 +1613,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 100,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取期初期末余额"
   },
   {
     "seq": 99,
@@ -1510,7 +1629,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 107,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取期初期末余额"
   },
   {
     "seq": 100,
@@ -1525,7 +1645,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 64,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取期初期末余额"
   },
   {
     "seq": 101,
@@ -1540,7 +1661,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 44,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取期初期末余额"
   },
   {
     "seq": 102,
@@ -1555,7 +1677,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 31,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取期初期末余额"
   },
   {
     "seq": 103,
@@ -1570,7 +1693,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 45,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取期初期末余额"
   },
   {
     "seq": 104,
@@ -1585,7 +1709,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 57,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取期初期末余额"
   },
   {
     "seq": 105,
@@ -1600,7 +1725,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 1,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取交易数量"
   },
   {
     "seq": 106,
@@ -1615,7 +1741,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 2,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取交易数量"
   },
   {
     "seq": 107,
@@ -1630,7 +1757,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 60,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取交易数量"
   },
   {
     "seq": 108,
@@ -1645,7 +1773,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 39,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取交易数量"
   },
   {
     "seq": 109,
@@ -1660,7 +1789,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 61,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取交易数量"
   },
   {
     "seq": 110,
@@ -1675,7 +1805,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 79,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取交易数量"
   },
   {
     "seq": 111,
@@ -1690,6 +1821,7 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 86,
-    "verified": false
+    "verified": false,
+    "verification_notes": "无法提取交易数量"
   }
 ]
