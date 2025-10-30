@@ -6,7 +6,7 @@ Analyzes customer finances and provides optimization suggestions based on latest
 from typing import List, Dict
 from db.database import get_db
 from datetime import datetime, date
-from news.bnm_api import fetch_bnm_rates
+from advisory.bnm_api import fetch_bnm_rates
 import json
 
 class FinancialOptimizer:

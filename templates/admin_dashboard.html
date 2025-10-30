@@ -230,6 +230,34 @@
                 </div>
             </a>
         </div>
+
+        <!-- 5. Monthly Summary Reports -->
+        <div class="col-md-6 col-lg-3">
+            <a href="{{ url_for('monthly_summary_index') }}" style="text-decoration: none;">
+                <div class="quick-action-card" style="
+                    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(0, 0, 0, 0.95) 100%);
+                    border: 2px solid #FFD700;
+                    border-radius: 15px;
+                    padding: 2rem 1.5rem;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    height: 100%;
+                " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 35px rgba(255,215,0,0.4)'; this.style.borderColor='#FF007F'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='#FFD700'">
+                    <div style="text-align: center; margin-bottom: 1.2rem;">
+                        <i class="bi bi-file-earmark-bar-graph-fill" style="font-size: 3.5rem; color: #FFD700; text-shadow: 0 0 20px rgba(255,215,0,0.6);"></i>
+                    </div>
+                    <h4 style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; text-align: center; margin-bottom: 1rem; font-size: 1.2rem;">
+                        Monthly Summary Reports
+                    </h4>
+                    <div style="background: rgba(255,215,0,0.15); border-radius: 8px; padding: 0.8rem; text-align: center;">
+                        <div style="color: #FFD700; font-size: 1.2rem; font-weight: 700; text-shadow: 0 0 15px rgba(255,215,0,0.5);">
+                            View Reports
+                        </div>
+                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">Supplier Expenses & Payments</div>
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
 
     <!-- Credit Card Statements Card -->
