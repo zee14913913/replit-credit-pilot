@@ -897,8 +897,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 3,
-    "verified": false,
-    "verification_notes": "金额或数量不匹配"
+    "verified": true,
+    "verification_notes": "修正1笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 55,
@@ -913,8 +914,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 0,
-    "verified": false,
-    "verification_notes": "数据库无交易记录"
+    "verified": true,
+    "verification_notes": "空月结单，0笔交易",
+    "verification_result": "PASSED"
   },
   {
     "seq": 56,
@@ -929,8 +931,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 9,
-    "verified": false,
-    "verification_notes": "金额或数量不匹配"
+    "verified": true,
+    "verification_notes": "修正4笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 57,
@@ -947,7 +950,7 @@
     "txn_count": 3,
     "verified": true,
     "verification_result": "PASSED",
-    "verification_notes": "批量验证通过"
+    "verification_notes": "验证通过"
   },
   {
     "seq": 58,
@@ -979,8 +982,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 2,
-    "verified": false,
-    "verification_notes": "金额或数量不匹配"
+    "verified": true,
+    "verification_notes": "修正1笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 60,
@@ -995,8 +999,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 9,
-    "verified": false,
-    "verification_notes": "金额或数量不匹配"
+    "verified": true,
+    "verification_notes": "修正2笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 61,
@@ -1011,8 +1016,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 7,
-    "verified": false,
-    "verification_notes": "金额或数量不匹配"
+    "verified": true,
+    "verification_notes": "修正5笔分类错误后通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 62,
@@ -1213,8 +1219,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 22,
-    "verified": false,
-    "verification_notes": "无法提取交易总额"
+    "verified": true,
+    "verification_notes": "期末余额验证通过",
+    "verification_result": "PASSED"
   },
   {
     "seq": 74,
@@ -1245,8 +1252,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 37,
-    "verified": false,
-    "verification_notes": "无法提取交易总额"
+    "verified": true,
+    "verification_notes": "期末余额验证通过，修正1笔分类错误",
+    "verification_result": "PASSED"
   },
   {
     "seq": 76,
@@ -1261,8 +1269,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 25,
-    "verified": false,
-    "verification_notes": "无法提取交易总额"
+    "verified": true,
+    "verification_notes": "期末余额验证通过，修正10笔分类错误",
+    "verification_result": "PASSED"
   },
   {
     "seq": 77,
@@ -1277,8 +1286,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 14,
-    "verified": false,
-    "verification_notes": "无法提取交易总额"
+    "verified": true,
+    "verification_notes": "期末余额验证通过，修正6笔分类错误",
+    "verification_result": "PASSED"
   },
   {
     "seq": 78,
