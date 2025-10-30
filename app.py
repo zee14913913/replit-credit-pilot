@@ -10,7 +10,6 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 from db.database import get_db, log_audit, get_all_customers, get_customer, get_customer_cards, get_card_statements, get_statement_transactions
-from utils.auth_decorators import login_required, admin_required, customer_access_required, get_accessible_customers
 from ingest.statement_parser import parse_statement_auto
 from validate.categorizer import categorize_transaction, validate_statement, get_spending_summary
 from validate.transaction_validator import validate_transactions, generate_validation_report
@@ -197,42 +196,17 @@ def serve_uploaded_file(filename):
     return response
 
 @app.route('/')
-@login_required
 def index():
-    """
-    Dashboard - Admin sees all customers, Customer redirected to portal
-    - Admin: Show all customers
-    - Customer: Redirect to customer portal
-    """
-    user_role = session.get('user_role')
-    
-    # SECURITY FIX: Use single trusted user_role source
-    if user_role == 'admin':
-        # Admin: show all customers
-        customers = get_all_customers()
-        return render_template('index.html', customers=customers)
-    elif user_role == 'customer':
-        # Customer: redirect to portal
-        customer_id = session.get('customer_id')
-        if customer_id:
-            return redirect(url_for('customer_portal'))
-        else:
-            flash('Customer ID not found', 'error')
-            return redirect(url_for('customer_login'))
-    else:
-        # Unknown role: redirect to login
-        lang = session.get('language', 'en')
-        flash(translate('please_login_first', lang), 'warning')
-        return redirect(url_for('customer_login'))
+    """Dashboard - Public access, show all customers"""
+    customers = get_all_customers()
+    return render_template('index.html', customers=customers)
 
 @app.route('/add_customer_page')
-@admin_required
 def add_customer_page():
     """Show add customer form page - Admin only"""
     return render_template('add_customer.html')
 
 @app.route('/add_customer', methods=['POST'])
-@admin_required
 def add_customer():
     """Admin: Add a new customer"""
     try:
@@ -280,8 +254,6 @@ def add_customer():
         return redirect(url_for('index'))
 
 @app.route('/customer/<int:customer_id>')
-@login_required
-@customer_access_required
 def customer_dashboard(customer_id):
     with get_db() as conn:
         cursor = conn.cursor()
@@ -393,8 +365,6 @@ def customer_dashboard(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/add-card', methods=['GET', 'POST'])
-@login_required
-@customer_access_required
 def add_credit_card(customer_id):
     """添加信用卡"""
     with get_db() as conn:
@@ -542,8 +512,6 @@ def mark_paid_route(reminder_id):
     return redirect(url_for('reminders'))
 
 @app.route('/loan_evaluation/<int:customer_id>')
-@login_required
-@customer_access_required
 def loan_evaluation(customer_id):
     with get_db() as conn:
         cursor = conn.cursor()
@@ -586,8 +554,6 @@ def loan_evaluation(customer_id):
                          current_repayments=current_repayments)
 
 @app.route('/generate_report/<int:customer_id>')
-@login_required
-@customer_access_required
 def generate_report(customer_id):
     with get_db() as conn:
         cursor = conn.cursor()
@@ -631,8 +597,6 @@ def generate_report(customer_id):
     return send_file(output_path, as_attachment=True, download_name=output_filename)
 
 @app.route('/analytics/<int:customer_id>')
-@login_required
-@customer_access_required
 def analytics(customer_id):
     with get_db() as conn:
         cursor = conn.cursor()
@@ -664,8 +628,6 @@ def analytics(customer_id):
 # ========== NEW FEATURES ==========
 
 @app.route('/export/<int:customer_id>/<format>')
-@login_required
-@customer_access_required
 def export_transactions(customer_id, format):
     """Export transactions to Excel or CSV"""
     filters = {
@@ -691,8 +653,6 @@ def export_transactions(customer_id, format):
         return redirect(request.referrer or url_for('index'))
 
 @app.route('/search/<int:customer_id>', methods=['GET'])
-@login_required
-@customer_access_required
 def search_transactions(customer_id):
     """Search and filter transactions"""
     query = request.args.get('q', '')
@@ -721,8 +681,6 @@ def search_transactions(customer_id):
                           current_query=query, current_filters=filters)
 
 @app.route('/batch/upload/<int:customer_id>', methods=['GET', 'POST'])
-@login_required
-@customer_access_required
 def batch_upload(customer_id):
     """Batch upload statements with auto-create credit cards"""
     if request.method == 'POST':
@@ -865,8 +823,6 @@ def add_transaction_tag(transaction_id):
 # ========== FINANCIAL ADVISORY ROUTES ==========
 
 @app.route('/advisory/<int:customer_id>')
-@login_required
-@customer_access_required
 def financial_advisory(customer_id):
     """Financial advisory dashboard - card recommendations and optimizations"""
     from advisory.card_recommendation_engine import CardRecommendationEngine
@@ -897,8 +853,6 @@ def financial_advisory(customer_id):
                           optimizations=optimizations)
 
 @app.route('/consultation/request/<int:customer_id>', methods=['POST'])
-@login_required
-@customer_access_required
 def request_consultation(customer_id):
     """Customer requests detailed consultation"""
     
@@ -931,8 +885,6 @@ def request_consultation(customer_id):
     return redirect(url_for('financial_advisory', customer_id=customer_id))
 
 @app.route('/customer/<int:customer_id>/employment', methods=['GET', 'POST'])
-@login_required
-@customer_access_required
 def set_employment_type(customer_id):
     """Set customer employment type and upload income documents"""
     
@@ -985,8 +937,6 @@ def customer_authorization():
     return render_template('customer_authorization.html')
 
 @app.route('/generate_report/<int:customer_id>')
-@login_required
-@customer_access_required
 def generate_enhanced_report(customer_id):
     """Generate enhanced monthly report with financial advisory"""
     from report.enhanced_pdf_generator import generate_enhanced_monthly_report
@@ -1012,60 +962,6 @@ def generate_enhanced_report(customer_id):
     return send_file(output_path, as_attachment=True, download_name=output_filename)
 
 # ==================== CUSTOMER AUTHENTICATION SYSTEM ====================
-
-@app.route('/customer/login', methods=['GET', 'POST'])
-def customer_login():
-    """统一登录页面（支持Admin和Customer）"""
-    import hashlib
-    
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        
-        if not email or not password:
-            return render_template('customer_login.html', error='Email and password are required')
-        
-        # 使用users表进行认证
-        password_hash = hashlib.sha256(password.encode()).hexdigest()
-        
-        with get_db() as conn:
-            cursor = conn.cursor()
-            cursor.execute('''
-                SELECT u.id, u.email, u.role, u.full_name, c.id as customer_id, c.name as customer_name
-                FROM users u
-                LEFT JOIN customers c ON u.id = c.user_id
-                WHERE u.email = ? AND u.password_hash = ? AND u.is_active = 1
-            ''', (email, password_hash))
-            
-            user = cursor.fetchone()
-        
-        if user:
-            # 保存登录信息到session
-            session['user_id'] = user['id']
-            session['user_email'] = user['email']
-            session['user_role'] = user['role']
-            session['user_name'] = user['full_name'] or user['customer_name']
-            
-            if user['role'] == 'customer' and user['customer_id']:
-                session['customer_id'] = user['customer_id']
-                session['customer_name'] = user['customer_name']
-            
-            flash(f"欢迎回来, {session['user_name']}!", 'success')
-            
-            # 登录成功后跳转回原页面
-            next_url = session.pop('next_url', None)
-            if next_url:
-                return redirect(next_url)
-            
-            # 如果没有原页面，根据角色跳转
-            if user['role'] == 'admin':
-                return redirect(url_for('index'))  # 管理员看到所有功能
-            else:
-                return redirect(url_for('customer_portal'))  # 客户看到自己的数据
-        else:
-            return render_template('customer_login.html', error='Invalid email or password')
-    
-    return render_template('customer_login.html')
 
 @app.route('/customer/register', methods=['GET', 'POST'])
 def customer_register():
@@ -1149,19 +1045,6 @@ def customer_portal():
                          statements=data['statements'],
                          total_spending=data['total_spending'])
 
-@app.route('/customer/logout')
-def customer_logout():
-    """Logout customer"""
-    token = session.get('customer_token')
-    
-    if token:
-        logout_customer(token)
-    
-    session.clear()
-    lang = session.get('language', 'en')
-    flash(translate('logged_out', lang), 'success')
-    return redirect(url_for('customer_login'))
-
 @app.route('/customer/download/<int:statement_id>')
 def customer_download_statement(statement_id):
     """Download specific statement (customer access only)"""
@@ -1211,93 +1094,9 @@ def customer_download_statement(statement_id):
 
 # ==================== ADMIN AUTHENTICATION ====================
 
-@app.route('/admin-login', methods=['GET', 'POST'])
-def admin_login():
-    """Admin login route"""
-    # 获取next参数（从URL或session）
-    if request.method == 'GET':
-        next_url = request.args.get('next') or session.get('next_url')
-        if next_url:
-            session['next_url'] = next_url
-    
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        
-        admin_email = os.environ.get('ADMIN_EMAIL')
-        admin_password = os.environ.get('ADMIN_PASSWORD')
-        
-        if not admin_email or not admin_password:
-            flash('Admin credentials not configured. Please set ADMIN_EMAIL and ADMIN_PASSWORD environment variables.', 'danger')
-            return render_template('admin_login.html')
-        
-        if email == admin_email and password == admin_password:
-            # SECURITY FIX: Use single trusted user_role source
-            session['user_role'] = 'admin'
-            session['user_email'] = email
-            session['user_name'] = 'Administrator'
-            session['user_id'] = 0  # Admin用户的user_id设为0
-            # Keep is_admin for backward compatibility during transition
-            session['is_admin'] = True
-            lang = session.get('language', 'en')
-            flash(translate('admin_login_successful', lang), 'success')
-            
-            # 登录成功后跳转回原页面
-            next_url = session.pop('next_url', None)
-            if next_url:
-                return redirect(next_url)
-            return redirect(url_for('admin_dashboard'))
-        else:
-            lang = session.get('language', 'en')
-            flash(translate('invalid_admin_credentials', lang), 'danger')
-    
-    return render_template('admin_login.html')
-
-def get_bank_abbreviation(bank_name):
-    """Convert bank full name to abbreviation"""
-    bank_abbr_map = {
-        'MAYBANK': 'MBB',
-        'CIMB': 'CIMB',
-        'PUBLIC BANK': 'PBB',
-        'RHB': 'RHB',
-        'HONG LEONG': 'HLB',
-        'AMBANK': 'AMB',
-        'ALLIANCE': 'ALL',
-        'AFFIN': 'AFF',
-        'HSBC': 'HSBC',
-        'STANDARD CHARTERED': 'SCB',
-        'CITIBANK': 'CITI',
-        'UOB': 'UOB',
-        'OCBC': 'OCBC',
-        'BANK ISLAM': 'BIM',
-        'BANK RAKYAT': 'BRK',
-        'BANK MUAMALAT': 'BMM',
-        'GX BANK': 'GX',
-    }
-    
-    if not bank_name:
-        return ''
-    
-    # Try exact match first
-    bank_upper = bank_name.upper().strip()
-    if bank_upper in bank_abbr_map:
-        return bank_abbr_map[bank_upper]
-    
-    # Try partial match
-    for key, abbr in bank_abbr_map.items():
-        if key in bank_upper:
-            return abbr
-    
-    # If no match, return original (shortened)
-    return bank_name[:10] if len(bank_name) > 10 else bank_name
-
 @app.route('/admin')
 def admin_dashboard():
-    """Admin dashboard route"""
-    if session.get('user_role') != 'admin':
-        lang = session.get('language', 'en')
-        flash(translate('please_login_admin', lang), 'warning')
-        return redirect(url_for('admin_login'))
+    """Admin dashboard route - Public access"""
     
     with get_db() as conn:
         cursor = conn.cursor()
@@ -1345,7 +1144,7 @@ def admin_dashboard():
         
         # Convert bank names to abbreviations
         for stmt in cc_statements:
-            stmt['bank_abbr'] = get_bank_abbreviation(stmt['bank_name'])
+            stmt['bank_abbr'] = stmt['bank_name'][:4].upper()  # Simple abbreviation
         
         # Get all savings account statements
         # Sorted by: Customer Name -> Bank -> Month (NEWEST FIRST)
@@ -1373,7 +1172,7 @@ def admin_dashboard():
         
         # Convert bank names to abbreviations for savings accounts
         for stmt in sa_statements:
-            stmt['bank_abbr'] = get_bank_abbreviation(stmt['bank_name'])
+            stmt['bank_abbr'] = stmt['bank_name'][:4].upper()  # Simple abbreviation
         
         # Calculate monthly statistics for dashboard cards
         total_owner_expenses = sum(stmt['owner_expenses'] for stmt in cc_statements)
@@ -1460,48 +1259,9 @@ def admin_dashboard():
                          invoices_count=invoices_count,
                          invoices_total=invoices_total)
 
-@app.route('/admin-logout')
-def admin_logout():
-    """Admin logout route"""
-    session.clear()
-    lang = session.get('language', 'en')
-    flash(translate('admin_logged_out', lang), 'success')
-    return redirect(url_for('index'))
-
-# ==================== SAVINGS ADMIN AUTHENTICATION ====================
-
-@app.route('/savings-admin-login', methods=['GET', 'POST'])
-def savings_admin_login():
-    """储蓄账户管理员登录"""
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        
-        admin_email = os.environ.get('ADMIN_EMAIL')
-        admin_password = os.environ.get('ADMIN_PASSWORD')
-        
-        if not admin_email or not admin_password:
-            flash('管理员凭证未配置。请设置ADMIN_EMAIL和ADMIN_PASSWORD环境变量。', 'danger')
-            return render_template('savings_admin_login.html')
-        
-        if email == admin_email and password == admin_password:
-            session['user_role'] = 'savings_admin'
-            session['user_email'] = email
-            session['user_name'] = 'Savings Administrator'
-            session['is_admin'] = True
-            flash('储蓄账户管理员登录成功！', 'success')
-            return redirect(url_for('savings_admin_dashboard'))
-        else:
-            flash('邮箱或密码错误', 'danger')
-    
-    return render_template('savings_admin_login.html')
-
 @app.route('/savings-admin')
 def savings_admin_dashboard():
-    """储蓄账户管理中心 Dashboard"""
-    if session.get('user_role') not in ['admin', 'savings_admin']:
-        flash('请先登录储蓄账户管理中心', 'warning')
-        return redirect(url_for('savings_admin_login'))
+    """储蓄账户管理中心 Dashboard - Public access"""
     
     with get_db() as conn:
         cursor = conn.cursor()
@@ -1560,11 +1320,7 @@ def savings_admin_dashboard():
 
 @app.route('/admin/customers-cards')
 def admin_customers_cards():
-    """Admin page showing all customers and their credit cards"""
-    if session.get('user_role') != 'admin':
-        lang = session.get('language', 'en')
-        flash(translate('please_login_admin', lang), 'warning')
-        return redirect(url_for('admin_login'))
+    """Admin page showing all customers and their credit cards - Public access"""
     
     with get_db() as conn:
         cursor = conn.cursor()
@@ -1807,8 +1563,6 @@ anomaly_service = AnomalyDetector()
 recommendation_service = RecommendationEngine()
 
 @app.route('/advanced-analytics/<int:customer_id>')
-@login_required
-@customer_access_required
 def advanced_analytics(customer_id):
     """高级财务分析仪表板"""
     lang = session.get('language', 'en')
@@ -1840,8 +1594,6 @@ def advanced_analytics(customer_id):
                          current_lang=lang)
 
 @app.route('/api/cashflow-prediction/<int:customer_id>')
-@login_required
-@customer_access_required
 def api_cashflow_prediction(customer_id):
     """API: 获取现金流预测数据"""
     months = request.args.get('months', 12, type=int)
@@ -1849,32 +1601,24 @@ def api_cashflow_prediction(customer_id):
     return jsonify(prediction)
 
 @app.route('/api/financial-score/<int:customer_id>')
-@login_required
-@customer_access_required
 def api_financial_score(customer_id):
     """API: 获取财务健康评分"""
     score_data = health_score_service.calculate_score(customer_id)
     return jsonify(score_data)
 
 @app.route('/api/anomalies/<int:customer_id>')
-@login_required
-@customer_access_required
 def api_anomalies(customer_id):
     """API: 获取财务异常"""
     anomalies = anomaly_service.get_active_anomalies(customer_id)
     return jsonify({'anomalies': anomalies})
 
 @app.route('/api/recommendations/<int:customer_id>')
-@login_required
-@customer_access_required
 def api_recommendations(customer_id):
     """API: 获取个性化推荐"""
     recommendations = recommendation_service.generate_recommendations(customer_id)
     return jsonify(recommendations)
 
 @app.route('/api/tier-info/<int:customer_id>')
-@login_required
-@customer_access_required
 def api_tier_info(customer_id):
     """API: 获取客户等级信息"""
     tier_info = tier_service.calculate_customer_tier(customer_id)
@@ -2140,8 +1884,6 @@ def export_statement_transactions(statement_id, format):
 
 # Monthly Reports Routes
 @app.route('/customer/<int:customer_id>/monthly-reports')
-@login_required
-@customer_access_required
 def customer_monthly_reports(customer_id):
     """查看客户的所有月度报表（按信用卡分组）"""
     with get_db() as conn:
@@ -2175,8 +1917,6 @@ def customer_monthly_reports(customer_id):
                          reports_by_period=reports_by_period)
 
 @app.route('/customer/<int:customer_id>/generate-monthly-report/<int:year>/<int:month>')
-@login_required
-@customer_access_required
 def generate_customer_monthly_report(customer_id, year, month):
     """手动生成指定月份的银河主题月度报表"""
     from report.galaxy_report_generator import GalaxyMonthlyReportGenerator
@@ -2215,8 +1955,6 @@ def download_monthly_report(report_id):
 # ============================================================================
 
 @app.route('/customer/<int:customer_id>/optimization-proposal')
-@login_required
-@customer_access_required
 def show_optimization_proposal(customer_id):
     """
     展示优化方案对比页面
@@ -2276,8 +2014,6 @@ def show_optimization_proposal(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/request-optimization-consultation', methods=['GET', 'POST'])
-@login_required
-@customer_access_required
 def request_optimization_consultation(customer_id):
     """
     客户申请咨询优化方案
@@ -2354,8 +2090,6 @@ init_consultation_table()
 
 
 @app.route('/customer/<int:customer_id>/generate_monthly_report')
-@login_required
-@customer_access_required
 def generate_monthly_report_route(customer_id):
     """为客户生成月度报告"""
     from services.statement_processor import generate_customer_monthly_report
@@ -2405,8 +2139,6 @@ def generate_monthly_report_route(customer_id):
 # ============================================================================
 
 @app.route('/customer/<int:customer_id>/dashboard')
-@login_required
-@customer_access_required
 def financial_dashboard(customer_id):
     """
     客户财务仪表板 - 需要登录和访问权限
@@ -2453,7 +2185,6 @@ def financial_dashboard(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/delete', methods=['POST'])
-@admin_required
 def delete_customer(customer_id):
     """
     删除客户及其所有相关数据 - 仅管理员
@@ -2520,8 +2251,6 @@ def delete_customer(customer_id):
 # ============================================================================
 
 @app.route('/customer/<int:customer_id>/resources')
-@login_required
-@customer_access_required
 def customer_resources(customer_id):
     """客户资源、人脉、技能管理页面"""
     with get_db() as conn:
@@ -2557,8 +2286,6 @@ def customer_resources(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/add_resource', methods=['POST'])
-@login_required
-@customer_access_required
 def add_resource(customer_id):
     """添加个人资源"""
     with get_db() as conn:
@@ -2576,8 +2303,6 @@ def add_resource(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/add_network', methods=['POST'])
-@login_required
-@customer_access_required
 def add_network(customer_id):
     """添加人脉联系人"""
     with get_db() as conn:
@@ -2596,8 +2321,6 @@ def add_network(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/add_skill', methods=['POST'])
-@login_required
-@customer_access_required
 def add_skill(customer_id):
     """添加特长技能"""
     with get_db() as conn:
@@ -2616,8 +2339,6 @@ def add_skill(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/delete_resource/<int:resource_id>')
-@login_required
-@customer_access_required
 def delete_resource(customer_id, resource_id):
     """删除资源"""
     with get_db() as conn:
@@ -2631,8 +2352,6 @@ def delete_resource(customer_id, resource_id):
 
 
 @app.route('/customer/<int:customer_id>/delete_network/<int:network_id>')
-@login_required
-@customer_access_required
 def delete_network(customer_id, network_id):
     """删除人脉"""
     with get_db() as conn:
@@ -2646,8 +2365,6 @@ def delete_network(customer_id, network_id):
 
 
 @app.route('/customer/<int:customer_id>/delete_skill/<int:skill_id>')
-@login_required
-@customer_access_required
 def delete_skill(customer_id, skill_id):
     """删除技能"""
     with get_db() as conn:
@@ -2661,8 +2378,6 @@ def delete_skill(customer_id, skill_id):
 
 
 @app.route('/customer/<int:customer_id>/generate_business_plan')
-@login_required
-@customer_access_required
 def generate_plan(customer_id):
     """生成AI商业计划"""
     result = generate_business_plan(customer_id)
@@ -2677,8 +2392,6 @@ def generate_plan(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/business_plan/<int:plan_id>')
-@login_required
-@customer_access_required
 def view_business_plan(customer_id, plan_id):
     """查看商业计划"""
     with get_db() as conn:
@@ -2721,8 +2434,6 @@ def view_business_plan(customer_id, plan_id):
 
 
 @app.route('/customer/<int:customer_id>/business_plans')
-@login_required
-@customer_access_required
 def list_business_plans(customer_id):
     """查看所有商业计划历史"""
     with get_db() as conn:
@@ -2965,7 +2676,6 @@ def upload_savings_statement():
     return render_template('savings/upload.html', customers=customers)
 
 @app.route('/savings/verify/<int:statement_id>')
-@login_required
 def verify_savings_statement(statement_id):
     """
     储蓄账户月结单 - 双重人工验证页面
@@ -3033,7 +2743,6 @@ def verify_savings_statement(statement_id):
                           transactions=transactions)
 
 @app.route('/savings/mark_verified/<int:statement_id>', methods=['POST'])
-@login_required
 def mark_savings_verified(statement_id):
     """标记账单为已验证"""
     with get_db() as conn:
@@ -3087,14 +2796,11 @@ def savings_customers():
     return render_template('savings/customers.html', customers=customers)
 
 @app.route('/savings/accounts')
-@login_required
 def savings_accounts_redirect():
     """Redirect to savings customers list"""
     return redirect(url_for('savings_customers'))
 
 @app.route('/savings/accounts/<int:customer_id>')
-@login_required
-@customer_access_required
 def savings_accounts(customer_id):
     """Layer 2: 查看特定客户的所有储蓄账户和账单"""
     import re
@@ -3636,7 +3342,6 @@ def loan_matcher_analyze():
 # ============================================================================
 
 @app.route('/credit-card/ledger', methods=['GET', 'POST'])
-@login_required
 def credit_card_ledger():
     """
     第一层：客户列表 (Admin) or 直接跳转到时间线 (Customer)
@@ -3645,32 +3350,7 @@ def credit_card_ledger():
     """
     from utils.name_utils import get_customer_code
     
-    # 确保session中有必要的信息
-    user_id = session.get('user_id')
-    user_role = session.get('user_role')
-    
-    if not user_id or not user_role:
-        lang = session.get('language', 'en')
-        flash(translate('session_expired', lang), 'warning')
-        return redirect(url_for('admin_login' if user_role == 'admin' else 'customer_login'))
-    
-    # SECURITY FIX: Use single trusted user_role source
-    if user_role == 'admin':
-        # Admin: show all customer list + upload functionality
-        accessible_customer_ids = get_accessible_customers(user_id, user_role)
-    elif user_role == 'customer':
-        # Customer: redirect directly to their timeline (skip Layer 1)
-        customer_id = session.get('customer_id')
-        if customer_id:
-            return redirect(url_for('credit_card_ledger_timeline', customer_id=customer_id))
-        else:
-            flash('Customer ID not found', 'error')
-            return redirect(url_for('customer_login'))
-    else:
-        # Unknown role
-        lang = session.get('language', 'en')
-        flash(translate('please_login_first', lang), 'warning')
-        return redirect(url_for('customer_login'))
+    # No authentication required - public access
     
     # POST: 处理上传
     if request.method == 'POST':
@@ -3886,29 +3566,23 @@ def credit_card_ledger():
         flash(f'✅ Statement uploaded successfully!', 'success')
         return redirect(url_for('credit_card_ledger'))
     
-    # GET: 显示页面
+    # GET: 显示页面 - Public access, show all customers
     with get_db() as conn:
         cursor = conn.cursor()
         
-        # 获取所有有信用卡账单的客户（筛选权限）
-        if accessible_customer_ids:
-            placeholders = ','.join('?' * len(accessible_customer_ids))
-            cursor.execute(f'''
-                SELECT DISTINCT
-                    c.id,
-                    c.name,
-                    c.customer_code,
-                    COUNT(DISTINCT s.id) as statement_count
-                FROM customers c
-                JOIN credit_cards cc ON c.id = cc.customer_id
-                JOIN statements s ON cc.id = s.card_id
-                WHERE c.id IN ({placeholders})
-                GROUP BY c.id
-                ORDER BY c.name
-            ''', accessible_customer_ids)
-        else:
-            # 如果没有可访问的客户，返回空列表
-            cursor.execute('SELECT * FROM customers WHERE 1=0')
+        # 获取所有有信用卡账单的客户（公开访问）
+        cursor.execute('''
+            SELECT DISTINCT
+                c.id,
+                c.name,
+                c.customer_code,
+                COUNT(DISTINCT s.id) as statement_count
+            FROM customers c
+            JOIN credit_cards cc ON c.id = cc.customer_id
+            JOIN statements s ON cc.id = s.card_id
+            GROUP BY c.id
+            ORDER BY c.name
+        ''')
         
         customers = []
         for row in cursor.fetchall():
@@ -3917,26 +3591,22 @@ def credit_card_ledger():
             customer['code'] = customer.get('customer_code', 'Be_rich_UNKNOWN_00')
             customers.append(customer)
         
-        # 获取所有信用卡供上传表单使用（仅可访问的客户）
-        all_cards = []
-        for cust_id in accessible_customer_ids:
-            cursor.execute('SELECT * FROM customers WHERE id = ?', (cust_id,))
-            customer = cursor.fetchone()
-            if customer:
-                cards = get_customer_cards(cust_id)
-                for card in cards:
-                    card['customer_name'] = customer['name']
-                    all_cards.append(card)
+        # 获取所有信用卡供上传表单使用
+        cursor.execute('''
+            SELECT cc.*, c.name as customer_name
+            FROM credit_cards cc
+            JOIN customers c ON cc.customer_id = c.id
+            ORDER BY c.name, cc.bank_name
+        ''')
+        all_cards = [dict(row) for row in cursor.fetchall()]
     
     return render_template('credit_card/ledger_index.html', 
                          customers=customers, 
                          all_cards=all_cards,
-                         is_admin=(session['user_role'] == 'admin'))
+                         is_admin=True)
 
 
 @app.route('/credit-card/ledger/<int:customer_id>/timeline')
-@login_required
-@customer_access_required
 def credit_card_ledger_timeline(customer_id):
     """第二层：年月网格 - 显示客户所有账单的年月分布"""
     from datetime import datetime
@@ -4014,8 +3684,6 @@ def credit_card_ledger_timeline(customer_id):
 
 
 @app.route('/credit-card/ledger/<int:customer_id>/<year>/<month>')
-@login_required
-@customer_access_required
 def credit_card_ledger_monthly(customer_id, year, month):
     """第三层：月度详情 - 按银行分组显示该客户该月所有账单的完整分析"""
     from datetime import datetime
@@ -4174,7 +3842,6 @@ def credit_card_ledger_monthly(customer_id, year, month):
 
 
 @app.route('/credit-card/ledger/statement/<int:statement_id>')
-@login_required
 def credit_card_ledger_detail(statement_id):
     """单个账单的OWNER vs INFINITE详细分析"""
     from services.owner_infinite_classifier import OwnerInfiniteClassifier
@@ -4194,15 +3861,7 @@ def credit_card_ledger_detail(statement_id):
         stmt_customer = cursor.fetchone()
         
         if not stmt_customer:
-            lang = session.get('language', 'en')
-            flash(translate('statement_not_exist', lang), 'error')
-            return redirect(url_for('credit_card_ledger'))
-        
-        # 检查权限
-        accessible_ids = get_accessible_customers(session['user_id'], session['user_role'])
-        if stmt_customer['customer_id'] not in accessible_ids:
-            lang = session.get('language', 'en')
-            flash(translate('no_permission_access', lang), 'error')
+            flash('Statement not found', 'error')
             return redirect(url_for('credit_card_ledger'))
     
     with get_db() as conn:
@@ -4301,8 +3960,6 @@ def credit_card_optimizer():
     return render_template('credit_card_optimizer.html', customers=customers)
 
 @app.route('/credit-card-optimizer/report/<int:customer_id>')
-@login_required
-@customer_access_required
 def credit_card_optimizer_report(customer_id):
     """生成并显示客户信用卡优化报告"""
     try:
@@ -4325,8 +3982,6 @@ def credit_card_optimizer_report(customer_id):
         return redirect(url_for('credit_card_optimizer'))
 
 @app.route('/credit-card-optimizer/download/<int:customer_id>')
-@login_required
-@customer_access_required
 def download_credit_card_report(customer_id):
     """下载HTML格式的信用卡优化报告"""
     try:
@@ -4342,7 +3997,6 @@ def download_credit_card_report(customer_id):
 # ============================================================================
 
 @app.route('/monthly-summary')
-@login_required
 def monthly_summary_index():
     """月度汇总报告 - 主页面"""
     user_role = session.get('user_role')
@@ -4374,8 +4028,6 @@ def monthly_summary_index():
                           current_month=datetime.now().month)
 
 @app.route('/monthly-summary/report/<int:customer_id>/<int:year>/<int:month>')
-@login_required
-@customer_access_required
 def monthly_summary_report(customer_id, year, month):
     """生成并显示月度汇总报告"""
     try:
@@ -4404,8 +4056,6 @@ def monthly_summary_report(customer_id, year, month):
         return redirect(url_for('monthly_summary_index'))
 
 @app.route('/monthly-summary/yearly/<int:customer_id>/<int:year>')
-@login_required
-@customer_access_required
 def monthly_summary_yearly(customer_id, year):
     """显示客户全年的月度汇总（1-12月）"""
     try:
@@ -4441,8 +4091,6 @@ def monthly_summary_yearly(customer_id, year):
         return redirect(url_for('monthly_summary_index'))
 
 @app.route('/monthly-summary/download/monthly/<int:customer_id>/<int:year>/<int:month>')
-@login_required
-@customer_access_required
 def download_monthly_summary_pdf(customer_id, year, month):
     """下载月度汇总PDF报告"""
     try:
@@ -4469,8 +4117,6 @@ def download_monthly_summary_pdf(customer_id, year, month):
         return redirect(url_for('monthly_summary_index'))
 
 @app.route('/monthly-summary/download/yearly/<int:customer_id>/<int:year>')
-@login_required
-@customer_access_required
 def download_yearly_summary_pdf(customer_id, year):
     """下载年度汇总PDF报告"""
     try:
@@ -4757,8 +4403,6 @@ def receipts_manual_match(receipt_id):
         return jsonify({'success': False, 'message': '❌ 匹配失败'})
 
 @app.route('/receipts/customer/<int:customer_id>')
-@login_required
-@customer_access_required
 def receipts_by_customer(customer_id):
     """查看客户的所有收据"""
     with get_db() as conn:
@@ -4801,8 +4445,6 @@ def receipts_by_customer(customer_id):
                          receipts_by_card=receipts_by_card)
 
 @app.route('/api/customer/<int:customer_id>/cards')
-@login_required
-@customer_access_required
 def api_get_customer_cards(customer_id):
     """API: 获取客户的所有信用卡"""
     cards = receipt_matcher.get_customer_cards(customer_id)
@@ -4820,7 +4462,6 @@ def secure_filename(filename):
     return filename
 
 @app.route('/invoices')
-@login_required
 def invoices_home():
     """发票管理主页 - Invoices Home Page"""
     user_role = session.get('user_role')

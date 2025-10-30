@@ -11,20 +11,13 @@
     </div>
 
     <!-- Action Buttons -->
-    <div class="mb-4 d-flex justify-content-between align-items-center">
-        <div>
-            <a href="{{ url_for('upload_savings_statement') }}" class="btn-professional">
-                {{ t('upload_statement_btn') }}
-            </a>
-            <a href="{{ url_for('savings_search') }}" class="btn-professional-outline ms-3">
-                {{ t('search_transactions') }}
-            </a>
-        </div>
-        <div>
-            <a href="{{ url_for('savings_admin_login') }}" class="btn-professional-outline" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(192, 0, 96, 0.1) 100%); border: 2px solid #FF007F; color: #FF007F;">
-                <i class="bi bi-shield-lock-fill"></i> 储蓄账户管理中心
-            </a>
-        </div>
+    <div class="mb-4">
+        <a href="{{ url_for('upload_savings_statement') }}" class="btn-professional">
+            {{ t('upload_statement_btn') }}
+        </a>
+        <a href="{{ url_for('savings_search') }}" class="btn-professional-outline ms-3">
+            {{ t('search_transactions') }}
+        </a>
     </div>
 
     <!-- Customer List -->

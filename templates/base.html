@@ -34,100 +34,53 @@
             </a>
             
             <ul class="nav-menu">
-                {% if session.get('user_role') == 'admin' %}
-                    <!-- Admin Navigation -->
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'active' if request.endpoint == 'index' }}" href="{{ url_for('index') }}">
-                            {{ t('nav_dashboard') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'active' if 'credit_card_ledger' in request.endpoint }}" 
-                           href="{{ url_for('credit_card_ledger') }}">
-                            {{ t('nav_cc_ledger') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'active' if 'savings' in request.endpoint }}" href="{{ url_for('savings_customers') }}">
-                            {{ t('nav_savings') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'active' if 'loan_matcher' in request.endpoint }}" href="{{ url_for('loan_matcher') }}">
-                            {{ t('nav_loan_matcher') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'active' if 'receipts' in request.endpoint }}" href="{{ url_for('receipts_home') }}">
-                            {{ t('nav_receipts') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'active' if 'invoices' in request.endpoint }}" href="{{ url_for('invoices_home') }}">
-                            {{ t('nav_invoices') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'active' if 'monthly_summary' in request.endpoint }}" href="{{ url_for('monthly_summary_index') }}">
-                            {{ t('nav_monthly_summary') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'active' if request.endpoint == 'reminders' }}" href="{{ url_for('reminders') }}">
-                            {{ t('nav_reminders') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'active' if request.endpoint == 'admin_dashboard' }}" href="{{ url_for('admin_dashboard') }}">
-                            {{ t('nav_admin') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin_logout') }}">
-                            {{ t('logout') }}
-                        </a>
-                    </li>
-                {% elif session.get('user_role') == 'customer' %}
-                    <!-- Customer Navigation -->
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'active' if request.endpoint == 'customer_portal' }}" href="{{ url_for('customer_portal') }}">
-                            {{ t('my_dashboard') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'active' if 'credit_card_ledger' in request.endpoint }}" 
-                           href="{{ url_for('credit_card_ledger') }}">
-                            {{ t('my_cards') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'active' if 'savings' in request.endpoint }}" href="{{ url_for('savings_customers') }}">
-                            {{ t('my_savings') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'active' if 'monthly_summary' in request.endpoint }}" href="{{ url_for('monthly_summary_index') }}">
-                            {{ t('my_monthly_summary') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('customer_logout') }}">
-                            {{ t('logout') }}
-                        </a>
-                    </li>
-                {% else %}
-                    <!-- Public Navigation (Not Logged In) -->
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'active' if request.endpoint == 'customer_login' }}" href="{{ url_for('customer_login') }}">
-                            {{ t('customer_login') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ 'active' if request.endpoint == 'admin_login' }}" href="{{ url_for('admin_login') }}">
-                            {{ t('admin_login') }}
-                        </a>
-                    </li>
-                {% endif %}
+                <!-- Public Navigation - No Authentication Required -->
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'index' }}" href="{{ url_for('index') }}">
+                        {{ t('nav_dashboard') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if 'credit_card_ledger' in request.endpoint }}" 
+                       href="{{ url_for('credit_card_ledger') }}">
+                        {{ t('nav_cc_ledger') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if 'savings' in request.endpoint }}" href="{{ url_for('savings_customers') }}">
+                        {{ t('nav_savings') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if 'loan_matcher' in request.endpoint }}" href="{{ url_for('loan_matcher') }}">
+                        {{ t('nav_loan_matcher') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if 'receipts' in request.endpoint }}" href="{{ url_for('receipts_home') }}">
+                        {{ t('nav_receipts') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if 'invoices' in request.endpoint }}" href="{{ url_for('invoices_home') }}">
+                        {{ t('nav_invoices') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if 'monthly_summary' in request.endpoint }}" href="{{ url_for('monthly_summary_index') }}">
+                        {{ t('nav_monthly_summary') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'reminders' }}" href="{{ url_for('reminders') }}">
+                        {{ t('nav_reminders') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_dashboard' }}" href="{{ url_for('admin_dashboard') }}">
+                        {{ t('nav_admin') }}
+                    </a>
+                </li>
                 
                 <!-- Universal Items -->
                 <li class="nav-item">
@@ -194,9 +147,8 @@
                 <div class="footer-column">
                     <h4 class="footer-heading">{{ t('footer_customers') }}</h4>
                     <ul class="footer-menu">
-                        <li><a href="{{ url_for('customer_register') }}" class="footer-link">{{ t('register') }}</a></li>
-                        <li><a href="{{ url_for('customer_login') }}" class="footer-link">{{ t('login') }}</a></li>
-                        <li><a href="{{ url_for('customer_portal') }}" class="footer-link">{{ t('nav_dashboard') }}</a></li>
+                        <li><a href="{{ url_for('index') }}" class="footer-link">{{ t('nav_dashboard') }}</a></li>
+                        <li><a href="{{ url_for('savings_customers') }}" class="footer-link">{{ t('nav_savings') }}</a></li>
                     </ul>
                 </div>
                 
@@ -205,8 +157,8 @@
                     <h4 class="footer-heading">{{ t('footer_services') }}</h4>
                     <ul class="footer-menu">
                         <li><a href="{{ url_for('loan_matcher') }}" class="footer-link">{{ t('footer_loans') }}</a></li>
-                        <li><a href="{{ url_for('customer_authorization') }}" class="footer-link">{{ t('footer_business') }}</a></li>
-                        <li><a href="{{ url_for('customer_authorization') }}" class="footer-link">{{ t('footer_agreements') }}</a></li>
+                        <li><a href="{{ url_for('receipts_home') }}" class="footer-link">{{ t('nav_receipts') }}</a></li>
+                        <li><a href="{{ url_for('invoices_home') }}" class="footer-link">{{ t('nav_invoices') }}</a></li>
                     </ul>
                 </div>
             </div>
