@@ -495,76 +495,134 @@ def parse_ambank_statement(file_path):
 
 
 def parse_alliance_statement(file_path):
-    """Alliance Bank - Detects CR marker for payments vs purchases"""
+    """
+    Alliance Bank - Fixed parser for combined statements (multiple cards in 1 PDF)
+    CRITICAL FIX: Only extracts transactions for the target card, scoped by card section and statement date
+    """
     transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None, "due_date": None, "due_amount": None, "minimum_payment": None}
     try:
         if file_path.endswith(".pdf"):
             with pdfplumber.open(file_path) as pdf:
                 full_text = "\n".join(p.extract_text() for p in pdf.pages)
             
+            # Extract target card last 4 digits from file path
+            # Example: "Alliance_Bank_4514_2024-09-12.pdf" -> "4514"
+            filename = os.path.basename(file_path)
+            card_match = re.search(r'_(\d{4})_\d{4}-\d{2}-\d{2}\.pdf', filename)
+            if card_match:
+                info["card_last4"] = card_match.group(1)
+            
+            # Extract statement date from filename or PDF
+            # Filename pattern: "Alliance_Bank_4514_2024-09-12.pdf"
+            stmt_date_match = re.search(r'_(\d{4}-\d{2}-\d{2})\.pdf', filename)
+            if stmt_date_match:
+                info["statement_date"] = stmt_date_match.group(1)
+            else:
+                # Fallback: Extract from PDF content "Statement Date 12/09/24"
+                date_match = re.search(r'Statement\s+Date[\s:]*(\d{1,2}/\d{1,2}/\d{2,4})', full_text, re.IGNORECASE)
+                if date_match:
+                    try:
+                        date_str = date_match.group(1).strip()
+                        parsed_date = datetime.strptime(date_str, "%d/%m/%y")
+                        info["statement_date"] = parsed_date.strftime("%Y-%m-%d")
+                    except:
+                        pass
+            
             # Extract due date
             due_date_patterns = [
-                r'Payment\s+Due\s+Date[\s:]*(\d{1,2}\s+[A-Za-z]{3,}\s+\d{4})',
-                r'Due\s+Date[\s:]*(\d{1,2}\s+[A-Za-z]{3,}\s+\d{4})',
-                r'Pay\s+by[\s:]*(\d{1,2}\s+[A-Za-z]{3,}\s+\d{4})',
-                r'Payment\s+Due[\s:]*(\d{1,2}/\d{1,2}/\d{2,4})',
+                r'Payment\s+Due\s+Date[\s:]*(\d{1,2}/\d{1,2}/\d{2,4})',
+                r'Tarikh\s+Bayaran\s+Perlu\s+Dibuat[\s:]*(\d{1,2}/\d{1,2}/\d{2,4})',
             ]
             for pattern in due_date_patterns:
                 match = re.search(pattern, full_text, re.IGNORECASE)
                 if match:
                     try:
                         date_str = match.group(1).strip()
-                        if '/' in date_str:
-                            parsed_date = datetime.strptime(date_str, "%d/%m/%Y")
-                        else:
-                            parsed_date = datetime.strptime(date_str, "%d %b %Y")
+                        parsed_date = datetime.strptime(date_str, "%d/%m/%y")
                         info["due_date"] = parsed_date.strftime("%Y-%m-%d")
                         break
                     except:
                         pass
             
-            # Extract due amount and minimum payment
-            due_amount_patterns = [
-                r'Total\s+Amount\s+Due[\s:]*RM[\s]*([\d,]+\.\d{2})',
-                r'Amount\s+Due[\s:]*RM[\s]*([\d,]+\.\d{2})',
-                r'Total\s+Payment[\s:]*RM[\s]*([\d,]+\.\d{2})',
-            ]
-            for pattern in due_amount_patterns:
-                match = re.search(pattern, full_text, re.IGNORECASE)
-                if match:
-                    try:
-                        info["due_amount"] = float(match.group(1).replace(",", ""))
-                        break
-                    except:
-                        pass
+            # CRITICAL FIX: Extract card-specific section from combined statement
+            # Alliance Bank format: "MASTERCARD GOLD : 5465 9464 0768 4514"
+            target_last4 = info.get("card_last4")
+            if not target_last4:
+                print(f"⚠️ Cannot extract card number from filename: {filename}")
+                return info, transactions
             
-            min_payment_patterns = [
-                r'Minimum\s+Payment[\s:]*RM[\s]*([\d,]+\.\d{2})',
-                r'Min\s+Payment[\s:]*RM[\s]*([\d,]+\.\d{2})',
-            ]
-            for pattern in min_payment_patterns:
-                match = re.search(pattern, full_text, re.IGNORECASE)
-                if match:
-                    try:
-                        info["minimum_payment"] = float(match.group(1).replace(",", ""))
-                        break
-                    except:
-                        pass
+            # Find the target card's transaction section
+            # Alliance Bank format: "MASTERCARD GOLD : 5465 9464 0768 4514" (16-digit card number with spaces)
+            lines = full_text.split('\n')
+            card_section_text = []
+            card_header_index = -1
             
-            # Pattern to capture optional CR marker at end
-            # Example: "02/08/25 pay on behalf 817.76 CR" -> CR = payment/credit
-            # Example: "29/07/25 AI SMART TECH SHAH ALAM MYS 4,299.00" -> no CR = purchase/debit
-            pattern = r'(\d{2}/\d{2}/\d{2,4}|\d{2}/\d{2})\s+(.+?)\s+([\d,]+\.\d{2})\s*(CR)?$'
+            # First, find the card header line
+            for i, line in enumerate(lines):
+                # Pattern: "MASTERCARD/VISA/BALANCE TRANSFER ... : #### #### #### 4514"
+                card_header_match = re.search(r'(MASTERCARD|VISA|BALANCE\s+TRANSFER)\s+.*:\s+\d{4}\s+\d{4}\s+\d{4}\s+' + target_last4, line, re.IGNORECASE)
+                if card_header_match:
+                    card_header_index = i
+                    break
             
-            for match in re.finditer(pattern, full_text, re.MULTILINE):
-                trans_date = match.group(1).strip()
-                trans_desc = match.group(2).strip()
-                trans_amount = abs(float(match.group(3).replace(",", "")))
-                trans_cr_marker = match.group(4)
+            if card_header_index == -1:
+                print(f"⚠️ Cannot find card header for #{target_last4}")
+                return info, transactions
+            
+            # Now scan backwards to find PREVIOUS STATEMENT BALANCE (start of section)
+            section_start = card_header_index
+            for i in range(card_header_index - 1, max(0, card_header_index - 20), -1):
+                if 'PREVIOUS STATEMENT BALANCE' in lines[i].upper():
+                    section_start = i
+                    break
+            
+            # Extract section from PREVIOUS STATEMENT BALANCE to CHARGES THIS MONTH
+            for i in range(section_start, len(lines)):
+                line = lines[i]
+                card_section_text.append(line)
+                
+                # Stop at "CHARGES THIS MONTH:"
+                if 'CHARGES THIS MONTH:' in line:
+                    break
+                # Stop at next card section (another 16-digit card number)
+                if i > card_header_index and re.search(r'(MASTERCARD|VISA|BALANCE\s+TRANSFER)\s+.*:\s+\d{4}\s+\d{4}\s+\d{4}\s+\d{4}', line, re.IGNORECASE) and target_last4 not in line:
+                    break
+            
+            if not card_section_text:
+                print(f"⚠️ Cannot find transaction section for card #{target_last4}")
+                return info, transactions
+            
+            # Join card section for pattern matching
+            card_section = '\n'.join(card_section_text)
+            
+            # Extract PREVIOUS STATEMENT BALANCE for this card
+            prev_balance_match = re.search(r'PREVIOUS\s+STATEMENT\s+BALANCE\s+([\d,]+\.\d{2})\s*(CR)?', card_section, re.IGNORECASE)
+            if prev_balance_match:
+                prev_balance = float(prev_balance_match.group(1).replace(",", ""))
+                if prev_balance_match.group(2) == "CR":
+                    prev_balance = -prev_balance
+                info["previous_balance"] = prev_balance
+            
+            # Extract current balance from "CHARGES THIS MONTH"
+            charges_match = re.search(r'CHARGES\s+THIS\s+MONTH:\s+([\d,]+\.\d{2})', card_section, re.IGNORECASE)
+            if charges_match:
+                info["total"] = float(charges_match.group(1).replace(",", ""))
+            
+            # Pattern: "DD/MM/YY Description Amount CR?"
+            # Only match within the card section
+            pattern = r'(\d{2}/\d{2}/\d{2})\s+(\d{2}/\d{2}/\d{2})\s+(.+?)\s+([\d,]+\.\d{2})\s*(CR)?$'
+            
+            for match in re.finditer(pattern, card_section, re.MULTILINE):
+                trans_date = match.group(1).strip()  # Transaction Date
+                posting_date = match.group(2).strip()  # Posting Date
+                trans_desc = match.group(3).strip()
+                trans_amount = abs(float(match.group(4).replace(",", "")))
+                trans_cr_marker = match.group(5)
                 
                 # Skip summary/header lines
                 skip_keywords = ['PREVIOUS BALANCE', 'PREVIOUS STATEMENT BALANCE', 'CHARGES THIS MONTH',
-                               'CURRENT BALANCE', 'TOTAL MINIMUM PAYMENT', 'INTEREST ON']
+                               'CURRENT BALANCE', 'TOTAL MINIMUM PAYMENT', 'Balance From Last Statement',
+                               'Payment Amount', 'Minimum Payment']
                 if any(kw in trans_desc.upper() for kw in skip_keywords):
                     continue
                 
@@ -576,7 +634,7 @@ def parse_alliance_statement(file_path):
                 trans_type = "credit" if trans_cr_marker else "debit"
                 
                 transactions.append({
-                    "date": trans_date,
+                    "date": posting_date,  # Use posting date for consistency
                     "description": trans_desc,
                     "amount": trans_amount,
                     "type": trans_type
@@ -591,10 +649,12 @@ def parse_alliance_statement(file_path):
                     "type": "debit"  # Default for Excel imports
                 })
         
-        if info["total"] == 0.0:
-            info["total"] = sum(t["amount"] for t in transactions)
+        if info["total"] == 0.0 and transactions:
+            debit_total = sum(t["amount"] for t in transactions if t.get("type") == "debit")
+            credit_total = sum(t["amount"] for t in transactions if t.get("type") == "credit")
+            info["total"] = debit_total - credit_total
         
-        print(f"✅ Alliance Bank parsed {len(transactions)} transactions.")
+        print(f"✅ Alliance Bank parsed {len(transactions)} transactions for card #{info.get('card_last4', 'N/A')}.")
         return info, transactions
     except Exception as e:
         print(f"❌ Error parsing Alliance: {e}")
