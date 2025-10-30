@@ -107,28 +107,19 @@
                             {% endif %}
                         </td>
                         <td style="white-space: nowrap; padding: 16px; color: #FFFFFF;">
-                            <div style="display: flex; gap: 8px; align-items: center;">
-                                <a href="{{ url_for('view_savings_statement_file', statement_id=trans.statement_date) }}" 
-                                   target="_blank"
-                                   class="btn btn-sm" 
-                                   style="background: #322446; border: 1px solid #FF007F; color: #FFFFFF; padding: 4px 12px;"
-                                   title="View Statement PDF">
-                                    <i class="bi bi-file-pdf" style="color: #FFFFFF;"></i>
-                                </a>
-                                <form method="POST" action="{{ url_for('tag_savings_transaction', transaction_id=trans.id) }}" class="d-inline" style="flex: 1;">
-                                    <div class="input-group input-group-sm">
-                                        <input type="text" 
-                                               name="customer_tag" 
-                                               class="form-control" 
-                                               placeholder="Tag customer"
-                                               value="{{ trans.customer_name_tag or '' }}"
-                                               style="font-size: 0.8rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.3); color: #FFFFFF;">
-                                        <button type="submit" class="btn btn-sm" style="background: #322446; border: 1px solid #00FF9D; color: #FFFFFF;">
-                                            <i class="bi bi-save" style="color: #FFFFFF;"></i>
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                            <form method="POST" action="{{ url_for('tag_savings_transaction', transaction_id=trans.id) }}" class="d-inline" style="width: 100%;">
+                                <div class="input-group input-group-sm">
+                                    <input type="text" 
+                                           name="customer_tag" 
+                                           class="form-control" 
+                                           placeholder="Tag customer"
+                                           value="{{ trans.customer_name_tag or '' }}"
+                                           style="font-size: 0.8rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(192,192,192,0.3); color: #FFFFFF;">
+                                    <button type="submit" class="btn btn-sm" style="background: #322446; border: 1px solid #00FF9D; color: #FFFFFF;">
+                                        <i class="bi bi-save" style="color: #FFFFFF;"></i>
+                                    </button>
+                                </div>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}
