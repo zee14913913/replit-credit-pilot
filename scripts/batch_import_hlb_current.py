@@ -164,8 +164,7 @@ def get_or_create_customer(conn, customer_name):
     """
     cursor = conn.cursor()
     
-    cursor.execute('SELECT id FROM customers WHERE full_name_cn = ? OR full_name_en = ?', 
-                   (customer_name, customer_name))
+    cursor.execute('SELECT id FROM customers WHERE name = ?', (customer_name,))
     row = cursor.fetchone()
     
     if row:
@@ -174,13 +173,13 @@ def get_or_create_customer(conn, customer_name):
         return customer_id
     
     customer_code = f"CORP{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    email = f"{customer_code.lower()}@company.local"
     
     cursor.execute('''
         INSERT INTO customers (
-            customer_code, full_name_en, full_name_cn, customer_type,
-            tier, created_at
+            customer_code, name, email, phone, monthly_income, created_at
         ) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-    ''', (customer_code, customer_name, customer_name, 'Corporate', 'Gold'))
+    ''', (customer_code, customer_name, email, '', 0.0))
     
     customer_id = cursor.lastrowid
     
