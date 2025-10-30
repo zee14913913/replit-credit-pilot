@@ -12,7 +12,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 31,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "修正2笔CREDIT分类错误后，完全匹配PDF"
   },
   {
     "seq": 2,
@@ -27,7 +29,10 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 35,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "errors_found": 1,
+    "verification_notes": "原始数据正确，无需修正"
   },
   {
     "seq": 3,
