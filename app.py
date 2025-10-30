@@ -1401,6 +1401,42 @@ def admin_dashboard():
         
         cursor.execute("SELECT COALESCE(SUM(total_amount + supplier_fee), 0) FROM supplier_invoices")
         invoices_total = cursor.fetchone()[0]
+        
+        # Get Credit Card Customers (customers with at least one credit card)
+        cursor.execute("""
+            SELECT DISTINCT
+                c.id,
+                c.name,
+                c.email,
+                c.phone,
+                c.monthly_income,
+                COUNT(DISTINCT cc.id) as total_cards,
+                COUNT(DISTINCT ms.id) as total_statements
+            FROM customers c
+            INNER JOIN credit_cards cc ON c.id = cc.customer_id
+            LEFT JOIN monthly_statements ms ON c.id = ms.customer_id
+            GROUP BY c.id, c.name, c.email, c.phone, c.monthly_income
+            ORDER BY c.name ASC
+        """)
+        credit_card_customers = [dict(row) for row in cursor.fetchall()]
+        
+        # Get Savings Account Customers (customers with at least one savings account)
+        cursor.execute("""
+            SELECT DISTINCT
+                c.id,
+                c.name,
+                c.email,
+                c.phone,
+                c.monthly_income,
+                COUNT(DISTINCT sa.id) as total_accounts,
+                COUNT(DISTINCT ss.id) as total_statements
+            FROM customers c
+            INNER JOIN savings_accounts sa ON c.id = sa.customer_id
+            LEFT JOIN savings_statements ss ON sa.id = ss.savings_account_id
+            GROUP BY c.id, c.name, c.email, c.phone, c.monthly_income
+            ORDER BY c.name ASC
+        """)
+        savings_customers = [dict(row) for row in cursor.fetchall()]
     
     return render_template('admin_dashboard.html', 
                          customers=customers,
@@ -1409,6 +1445,8 @@ def admin_dashboard():
                          active_cards=active_cards,
                          cc_statements=cc_statements,
                          sa_statements=sa_statements,
+                         credit_card_customers=credit_card_customers,
+                         savings_customers=savings_customers,
                          total_owner_expenses=total_owner_expenses,
                          total_owner_payments=total_owner_payments,
                          total_gz_expenses=total_gz_expenses,

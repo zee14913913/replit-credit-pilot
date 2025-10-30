@@ -260,6 +260,164 @@
         </div>
     </div>
 
+    <!-- Credit Card Customers Table -->
+    <div class="row g-4 mb-5" id="creditCardCustomers">
+        <div class="col-12">
+            <div class="statement-card" style="border: 2px solid #FF007F;">
+                <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #FF007F;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
+                        <h3 class="card-title-custom" style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; margin: 0;">
+                            <i class="bi bi-credit-card"></i> Credit Card Customers
+                        </h3>
+                        <span style="background: rgba(255,0,127,0.2); padding: 0.5rem 1rem; border-radius: 8px; color: #FF007F; font-weight: 700;">
+                            {{ credit_card_customers|length }} Customers
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body-custom" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%;">
+                            <thead style="background: rgba(255, 0, 127, 0.1); border-bottom: 2px solid #FF007F;">
+                                <tr>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">Customer Name</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">Email</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">Phone</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">Monthly Income</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">Total Cards</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">Total Statements</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if credit_card_customers %}
+                                    {% for customer in credit_card_customers %}
+                                    <tr class="hover-glow-row">
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">
+                                            {{ customer['name'] }}
+                                        </td>
+                                        <td style="font-size: 0.75rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #999;">
+                                            {{ customer['email'] if customer['email'] else '-' }}
+                                        </td>
+                                        <td style="font-size: 0.75rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #999;">
+                                            {{ customer['phone'] if customer['phone'] else '-' }}
+                                        </td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FF007F;">
+                                            RM {{ "{:,.0f}".format(customer['monthly_income']) if customer['monthly_income'] else '-' }}
+                                        </td>
+                                        <td style="font-size: 0.85rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); text-align: center; font-weight: 700; color: #FF007F;">
+                                            {{ customer['total_cards'] }}
+                                        </td>
+                                        <td style="font-size: 0.85rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); text-align: center; font-weight: 700; color: #FFF;">
+                                            {{ customer['total_statements'] }}
+                                        </td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center;">
+                                            <a href="{{ url_for('credit_card_ledger', customer_id=customer['id']) }}" 
+                                               class="btn btn-sm btn-view-details"
+                                               style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+                                                      border: 2px solid #FF007F; 
+                                                      color: #FFFFFF;
+                                                      font-weight: 600;
+                                                      padding: 0.25rem 0.75rem;
+                                                      font-size: 0.75rem;">
+                                                View Ledger
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; padding: 3rem; color: #999;">
+                                            No credit card customers found
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Savings Account Customers Table -->
+    <div class="row g-4 mb-5" id="savingsCustomers">
+        <div class="col-12">
+            <div class="statement-card" style="border: 2px solid #7B68EE;">
+                <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #7B68EE;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
+                        <h3 class="card-title-custom" style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; margin: 0;">
+                            <i class="bi bi-bank"></i> Savings Account Customers
+                        </h3>
+                        <span style="background: rgba(123,104,238,0.3); padding: 0.5rem 1rem; border-radius: 8px; color: #9370DB; font-weight: 700;">
+                            {{ savings_customers|length }} Customers
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body-custom" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%;">
+                            <thead style="background: rgba(50, 36, 70, 0.3); border-bottom: 2px solid #7B68EE;">
+                                <tr>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">Customer Name</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">Email</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">Phone</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">Monthly Income</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">Total Accounts</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">Total Statements</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if savings_customers %}
+                                    {% for customer in savings_customers %}
+                                    <tr class="hover-glow-row">
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">
+                                            {{ customer['name'] }}
+                                        </td>
+                                        <td style="font-size: 0.75rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #999;">
+                                            {{ customer['email'] if customer['email'] else '-' }}
+                                        </td>
+                                        <td style="font-size: 0.75rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #999;">
+                                            {{ customer['phone'] if customer['phone'] else '-' }}
+                                        </td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #9370DB;">
+                                            RM {{ "{:,.0f}".format(customer['monthly_income']) if customer['monthly_income'] else '-' }}
+                                        </td>
+                                        <td style="font-size: 0.85rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); text-align: center; font-weight: 700; color: #9370DB;">
+                                            {{ customer['total_accounts'] }}
+                                        </td>
+                                        <td style="font-size: 0.85rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); text-align: center; font-weight: 700; color: #FFF;">
+                                            {{ customer['total_statements'] }}
+                                        </td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center;">
+                                            <a href="{{ url_for('savings_customers') }}" 
+                                               class="btn btn-sm btn-view-details"
+                                               style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+                                                      border: 2px solid #7B68EE; 
+                                                      color: #FFFFFF;
+                                                      font-weight: 600;
+                                                      padding: 0.25rem 0.75rem;
+                                                      font-size: 0.75rem;">
+                                                View Accounts
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; padding: 3rem; color: #999;">
+                                            No savings account customers found
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Credit Card Statements Card -->
     <div class="row g-4 mb-5" id="creditCardStatements">
         <div class="col-12">
