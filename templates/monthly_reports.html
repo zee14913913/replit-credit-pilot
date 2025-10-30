@@ -12,58 +12,58 @@
     </div>
 
     <!-- Summary Cards - 更宽敞的布局 -->
-    <div class="row g-4 mb-5">
+    <div class="row g-5 mb-5">
         <div class="col-12 col-md-6 col-xl-3">
-            <div class="stat-card-large">
-                <div class="stat-value-large">{{ reports|length }}</div>
-                <div class="stat-label-large">Total Reports / 报表总数</div>
+            <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.6) 0%, rgba(36, 25, 52, 0.8) 100%); border: 2px solid rgba(255, 0, 127, 0.4); border-radius: 20px; padding: 3rem 2rem; text-align: center; min-height: 200px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 0, 127, 0.2); transition: all 0.3s ease;">
+                <div style="font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #FF007F 0%, #FF4DA6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">{{ reports|length }}</div>
+                <div style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); font-weight: 500;">Total Reports / 报表总数</div>
             </div>
         </div>
         <div class="col-12 col-md-6 col-xl-3">
-            <div class="stat-card-large">
-                <div class="stat-value-large">{{ reports_by_period|length }}</div>
-                <div class="stat-label-large">Periods / 期数</div>
+            <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.6) 0%, rgba(36, 25, 52, 0.8) 100%); border: 2px solid rgba(255, 0, 127, 0.4); border-radius: 20px; padding: 3rem 2rem; text-align: center; min-height: 200px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 0, 127, 0.2); transition: all 0.3s ease;">
+                <div style="font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #FF007F 0%, #FF4DA6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">{{ reports_by_period|length }}</div>
+                <div style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); font-weight: 500;">Periods / 期数</div>
             </div>
         </div>
         <div class="col-12 col-md-6 col-xl-3">
-            <div class="stat-card-large">
-                <div class="stat-value-large">RM {{ "{:,.2f}".format(reports|sum(attribute='customer_total_debit', start=0)|default(0)) }}</div>
-                <div class="stat-label-large">Customer Debit / 客户消费</div>
+            <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.6) 0%, rgba(36, 25, 52, 0.8) 100%); border: 2px solid rgba(255, 0, 127, 0.4); border-radius: 20px; padding: 3rem 2rem; text-align: center; min-height: 200px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 0, 127, 0.2); transition: all 0.3s ease;">
+                <div style="font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #FF007F 0%, #FF4DA6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">RM {{ "{:,.2f}".format(reports|sum(attribute='customer_total_debit', start=0)|default(0)) }}</div>
+                <div style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); font-weight: 500;">Customer Debit / 客户消费</div>
             </div>
         </div>
         <div class="col-12 col-md-6 col-xl-3">
-            <div class="stat-card-large">
-                <div class="stat-value-large">RM {{ "{:,.2f}".format(reports|sum(attribute='infinite_total_debit', start=0)|default(0)) }}</div>
-                <div class="stat-label-large">INFINITE Debit / INFINITE消费</div>
+            <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.6) 0%, rgba(36, 25, 52, 0.8) 100%); border: 2px solid rgba(255, 0, 127, 0.4); border-radius: 20px; padding: 3rem 2rem; text-align: center; min-height: 200px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 0, 127, 0.2); transition: all 0.3s ease;">
+                <div style="font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #FF007F 0%, #FF4DA6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">RM {{ "{:,.2f}".format(reports|sum(attribute='infinite_total_debit', start=0)|default(0)) }}</div>
+                <div style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); font-weight: 500;">INFINITE Debit / INFINITE消费</div>
             </div>
         </div>
     </div>
 
     <!-- Generate New Report - 更大的卡片 -->
     <div class="mb-5">
-        <div class="professional-card-wide">
-            <h3 style="color: var(--text-primary); margin-bottom: 1.5rem; font-size: 1.5rem;">
+        <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.6) 0%, rgba(36, 25, 52, 0.8) 100%); border: 2px solid rgba(255, 0, 127, 0.4); border-radius: 24px; padding: 3.5rem 3rem; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 0, 127, 0.2);">
+            <h3 style="color: #FFFFFF; margin-bottom: 2rem; font-size: 1.8rem; font-weight: 700;">
                 <i class="bi bi-plus-circle"></i> Generate New Monthly Report / 生成新月度报表
             </h3>
-            <form id="generateReportForm" method="get" class="row g-4">
+            <form id="generateReportForm" method="get" class="row g-5">
                 <div class="col-12 col-md-4">
-                    <label class="form-label" style="color: var(--text-secondary); font-size: 1.1rem;">Year / 年份</label>
-                    <select id="reportYear" name="year" class="form-select form-select-lg" style="background: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);">
+                    <label class="form-label" style="color: rgba(255, 255, 255, 0.85); font-size: 1.2rem; font-weight: 500; margin-bottom: 0.75rem;">Year / 年份</label>
+                    <select id="reportYear" name="year" class="form-select form-select-lg" style="background: rgba(30, 20, 45, 0.8); color: #FFFFFF; border: 2px solid rgba(255, 0, 127, 0.3); padding: 1rem; font-size: 1.1rem; border-radius: 12px;">
                         <option value="2025">2025</option>
                         <option value="2024">2024</option>
                         <option value="2023">2023</option>
                     </select>
                 </div>
                 <div class="col-12 col-md-4">
-                    <label class="form-label" style="color: var(--text-secondary); font-size: 1.1rem;">Month / 月份</label>
-                    <select id="reportMonth" name="month" class="form-select form-select-lg" style="background: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);">
+                    <label class="form-label" style="color: rgba(255, 255, 255, 0.85); font-size: 1.2rem; font-weight: 500; margin-bottom: 0.75rem;">Month / 月份</label>
+                    <select id="reportMonth" name="month" class="form-select form-select-lg" style="background: rgba(30, 20, 45, 0.8); color: #FFFFFF; border: 2px solid rgba(255, 0, 127, 0.3); padding: 1rem; font-size: 1.1rem; border-radius: 12px;">
                         {% for m in range(1, 13) %}
                         <option value="{{ m }}" {% if m == 9 %}selected{% endif %}>{{ m }}月</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="col-12 col-md-4 d-flex align-items-end">
-                    <button type="submit" class="btn-professional w-100" style="padding: 0.75rem 1.5rem; font-size: 1.1rem;">
+                    <button type="submit" class="btn-professional w-100" style="padding: 1.2rem 2rem; font-size: 1.2rem; font-weight: 600; border-radius: 12px;">
                         <i class="bi bi-play-circle"></i> Generate Report / 生成报表
                     </button>
                 </div>
@@ -82,11 +82,11 @@
         
         {% if reports_by_period %}
         {% for period, period_reports in reports_by_period.items() %}
-        <div class="professional-card-wide mb-5">
+        <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.6) 0%, rgba(36, 25, 52, 0.8) 100%); border: 2px solid rgba(255, 0, 127, 0.4); border-radius: 24px; padding: 3rem 2.5rem; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 0, 127, 0.2); margin-bottom: 3rem;">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 style="color: var(--text-primary); margin: 0; font-size: 1.5rem;">
+                <h4 style="color: #FFFFFF; margin: 0; font-size: 1.8rem; font-weight: 700;">
                     📅 {{ period }} 
-                    <span class="badge-professional badge-primary-pro" style="font-size: 1rem; padding: 0.5rem 1rem;">{{ period_reports|length }} cards</span>
+                    <span class="badge-professional badge-primary-pro" style="font-size: 1.1rem; padding: 0.65rem 1.2rem;">{{ period_reports|length }} cards</span>
                 </h4>
             </div>
             
