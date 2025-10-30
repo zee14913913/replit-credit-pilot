@@ -176,7 +176,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 4,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 12,
@@ -191,7 +192,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 1,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 13,
@@ -206,7 +208,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 3,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 14,
@@ -221,7 +224,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 8,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "修正5笔分类错误后通过"
   },
   {
     "seq": 15,
@@ -236,7 +241,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 1,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 16,
@@ -251,7 +257,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 1,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 17,
@@ -266,7 +273,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 2,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 18,
@@ -281,7 +289,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 0,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 19,
@@ -296,7 +305,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 7,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 20,
@@ -311,7 +321,9 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 9,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED",
+    "verification_notes": "修正5笔分类错误后通过"
   },
   {
     "seq": 21,
@@ -326,7 +338,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 14,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 22,
@@ -341,7 +354,8 @@
     "file_exists": true,
     "correct_location": true,
     "txn_count": 5,
-    "verified": false
+    "verified": true,
+    "verification_result": "PASSED"
   },
   {
     "seq": 23,
