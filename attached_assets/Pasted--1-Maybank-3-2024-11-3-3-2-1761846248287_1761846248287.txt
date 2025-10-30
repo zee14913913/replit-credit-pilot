@@ -1,0 +1,165 @@
+最核心的规则（必须记住）
+1️⃣ 一家银行一个月 = 一条记录
+* 比如：您在Maybank有3张卡，2024年11月的账单
+* 系统会把这3张卡合并成一条记录
+* 就像把3份账单装进一个信封里
+
+2️⃣ 每笔消费/付款都要分清楚：是客户自己的，还是Infinite 公司的
+* Own's（客户自己的）：客户个人的消费和客户本名付款
+* GZ's（infinite公司的）：7个供应商的消费，或者第3方付的款项
+
+🗂️ 数据库里存了什么？
+想象一下，我们有3个大账本：
+
+账本1：月度账单总表（monthly_statements）
+记录每个月每家银行的总账，包括：
+
+* 哪个客户？哪家银行？哪个月？
+
+* 上个月欠多少？（ PRE BAL）
+
+* 这个月总共欠多少？（Total ）
+
+* 6个关键数字（必须有）：
+    * Own's消费、Own's付款、Own's欠款余额
+    * GZ's消费、GZ's付款、GZ's欠款余额
+
+
+账本2：信用卡关联表（monthly_statement_cards）
+记录这个月的账单包含了哪几张卡
+
+* 比如：2024年11月的Maybank账单包含了卡1234、5678、9012
+
+
+账本3：交易明细表（transactions）
+100%将信用卡账单里的每一笔交易记录都无删减，无添加，无修改的把每一笔在信用卡账单里的消费和付款的详细信息都1比1的复刻到系统里面
+
+* 消费日期、消费金额、消费description、卡号
+
+* 付款日期、付款金额、付款description、卡号
+
+* 标签: Own’ Expenses , Own’s Payment ,      GZ’s Expenses , GZ’s Payment  
+
+怎么区分Own's和GZ's？
+消费类（花钱）：
+
+* 如果是以下这7个供应商 → 标记为GZ‘s Expenses 并征收1%手续费
+
+* Suppliers List
+    * 7SL、HUAWEI、PASAR RAYA 、DINAS、 RAUB SYC HAINAN , AI SMART TECH , HUAWEI , PUCHONG HERBS 
+
+* 其他所有消费 → 标记为Own’Expenses 
+
+* 所有的Suppliers 消费记录均自动生成一份invoices 存放在Invoices 页面里
+
+
+付款类（还钱）：
+
+* 如果付款描述里有客户的名字 → 标记为Own’Payment 
+    * 比如："PAYMENT FROM CHANG CHOON CHOW"
+
+* 付款没有任何名字，或者是其他人 → 标记为.              GZ’s Payment 
+    * 比如："PAYMENT FROM INFINITE "（公司付的，算GZ）
+
+简单记法：
+* 消费看商家（7个供应商=GZ，其他=Own）
+* 付款看名字（客户名字=Own，其他=GZ）
+
+💾 文件怎么存？
+就像整理照片一样，有固定的文件夹结构：
+客户文件夹/
+└── Be_rich_CCC/ （客户代号）
+└── credit_cards/ （信用卡）
+└── Maybank/ （银行名）
+└── 2024-11/ （年-月）
+├── Maybank_2024-11-03.pdf
+
+文件名规则：银行名_信用卡账单statement日期.pdf
+
+✅ 怎么确保数据100%准确？
+我们用双重检查：
+
+第1重：数学验证
+* 把PDF上写的“本月需付款金的总金额”
+* 跟系统加起来的总额对比
+* 不能有任何差距
+
+第2重：逐笔核对
+* 把PDF原文与系统记录的重新对比一遍
+* 确认原件信用卡账单里的每一笔交易都无差别的记录到了系统里
+* 没有漏掉，没有添加，没有删减，没有更改或重复
+
+打分制：不需要打分，我需要的是100% 复刻原件信用卡账单里的全部交易细节记录1比1还原记录到系统里
+
+
+🏦 支持哪些银行？
+总共15家马来西亚银行：
+* Maybank、CIMB、Public Bank、RHB
+* Hong Leong Bank、HSBC、UOB、OCBC
+* AmBank、Alliance Bank、Affin Bank
+* Standard Chartered、Bank Islam、Bank Rakyat等
+
+特别注意：
+* Hong Leong Bank：付款金额存储方式跟其他银行不一样（正数 vs 负数）
+
+* AmBank vs AmBank Islamic：算两家不同的银行 （ 其他任何有islamic bank 的都一样 ） 
+
+1. 第一排：系统统计
+- [ ] （客户数、账单数、交易数、活跃卡数）
+
+2. 第二排：Own's财务
+- [ ] （Own’s Expenses , Own’s Payment ,Own’s OS Bal , Suppliers Invoices ) - 粉色系
+
+3. 第三排：GZ's财务
+- [ ] （GZ’s Expenses , GZ’s Payment , GZ’s OS Bal , Total Invoices Amount ) - 紫色
+
+🔄 上传流程是怎样的？
+
+→ 系统自动化的在客户信用卡账单statement date 提醒客户记得把已经收到的信用卡账单转发给我们分析及系统管理
+
+收到信用卡账单后，我上传PDF，然后开始以下操作
+
+→ 系统识别是哪家银行
+
+→ 提取里面的交易数据
+
+→ 自动分类 Own/GZ
+
+→ 双重验证检查
+
+→ (通过) 存进数据库
+
+→ 手动逐一将原件与系统里的每一笔交易记录进行对比，看看是否所有的消费和付款的交易记录都保持一致
+
+→ 再次逐一把每一笔交易细节手动确认无差错，且所有数据都与原件上的数据对上,且消费和付款记录没有混乱
+
+→ 全部都确认无误后，为该银行的信用卡账单独立制作一份该银行信用卡账单的月份报告。
+
+→ 分类好后，系统自动化在该信用卡账单due date 的3天前提醒客户记得付款，并告知客户可在完成付款后将收据上传到系统让我们为其进行管理，供以后税收时使用。
+
+→ 每月的最后一天30/31号将所有依据信用卡账单的statement date来进行划分一组并把全部同一月份的银行信用卡账单月报告结合并在里面给出详细分析客户的现状后再提供优化的操作对比客户现状的差别直接影响客户选择我们的服务创造自动化商机并生成一份月度账单报表记录存放在系统的一个固定位置。
+
+→每月的1号将统计好的月度账单报表发给每一个客户
+
+→ 完成！
+
+如果同一个银行同一个月系统已经该月份的信用卡账单，系统必须通知我 ，不要重复设置 。 然后所有的验证交易细节记录都必须是手动且进行逐一的交易细节确认，必须一定要手动的一笔一笔检查所有的交易细节，不要设置系统化来进行检查。
+
+📊 月度账单列表显示什么？
+Admin Dashboard上的表格有13列：
+列名	显示什么
+Month	账单的月份
+Name	客户名字
+Bank	银行名字
+PRE BAL	上个月欠多少
+Statement OS 	账单欠款总金额
+Due Date	还款截止日
+Own’s  Expenses	Own's本月消费
+GZ Expenses	GZ's本月消费
+Own’s Payments	Own's本月付款
+GZ Payments	GZ's本月付款
+Own’s Balance	Own's现在欠款余额
+GZ Balance	GZ's现在欠款余额
+Actions	查看/编辑按钮
+重点：第一个月的信用卡账单里的Previous Bal 都归为客户使用的欠款余额处理，客户刚刚才将信用卡交与我们来管理，既然我们都还没有开始使用，那么一定是客户使用的欠款余额，而从第二个月份开始就需要将第一个月的Own’s OS Bal + Own’s Expenses - Own’s Payment 来获取第2个月份的最新的信用卡欠款余额 ； GZ’s Os Bal 也一样
+
