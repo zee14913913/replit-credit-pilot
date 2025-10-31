@@ -1882,6 +1882,65 @@ def export_statement_transactions(statement_id, format):
                         as_attachment=True,
                         download_name=f'Statement_{statement_id}_Transactions.csv')
 
+# Edit Monthly Statement Route (for Admin corrections)
+@app.route('/monthly_statement/<int:monthly_statement_id>/edit', methods=['POST'])
+def edit_monthly_statement(monthly_statement_id):
+    """编辑月度账单的余额和分类数据"""
+    try:
+        # Get form data
+        data = request.get_json() if request.is_json else request.form
+        
+        previous_balance = float(data.get('previous_balance', 0))
+        owner_balance = float(data.get('owner_balance', 0))
+        gz_balance = float(data.get('gz_balance', 0))
+        owner_expenses = float(data.get('owner_expenses', 0))
+        owner_payments = float(data.get('owner_payments', 0))
+        gz_expenses = float(data.get('gz_expenses', 0))
+        gz_payments = float(data.get('gz_payments', 0))
+        closing_balance = float(data.get('closing_balance', 0))
+        
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # Update monthly statement
+            cursor.execute('''
+                UPDATE monthly_statements 
+                SET previous_balance_total = ?,
+                    owner_balance = ?,
+                    gz_balance = ?,
+                    owner_expenses = ?,
+                    owner_payments = ?,
+                    gz_expenses = ?,
+                    gz_payments = ?,
+                    closing_balance_total = ?,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?
+            ''', (previous_balance, owner_balance, gz_balance, 
+                  owner_expenses, owner_payments, gz_expenses, gz_payments,
+                  closing_balance, monthly_statement_id))
+            
+            conn.commit()
+            
+            # Log audit (admin user_id=1)
+            log_audit(1, 'EDIT_MONTHLY_STATEMENT', 
+                     entity_type='monthly_statement', 
+                     entity_id=monthly_statement_id,
+                     description=f'Edited monthly statement {monthly_statement_id}: prev_bal={previous_balance}, owner_bal={owner_balance}, gz_bal={gz_balance}')
+        
+        if request.is_json:
+            return jsonify({'success': True, 'message': '账单已成功更新！'})
+        else:
+            flash('账单数据已成功更新！', 'success')
+            return redirect(url_for('admin_dashboard'))
+            
+    except Exception as e:
+        print(f"Error editing monthly statement: {e}")
+        if request.is_json:
+            return jsonify({'success': False, 'message': f'更新失败：{str(e)}'}), 400
+        else:
+            flash(f'更新失败：{str(e)}', 'error')
+            return redirect(url_for('admin_dashboard'))
+
 # Monthly Reports Routes
 @app.route('/customer/<int:customer_id>/monthly-reports')
 def customer_monthly_reports(customer_id):

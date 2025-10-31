@@ -481,9 +481,22 @@
                                                       text-shadow: 0 0 8px rgba(255,255,255,0.3);
                                                       font-weight: 600;
                                                       padding: 0.25rem 0.75rem;
-                                                      font-size: 0.75rem;">
+                                                      font-size: 0.75rem;
+                                                      margin-right: 0.5rem;">
                                                 {{ t('view_details') }}
                                             </a>
+                                            <button 
+                                               class="btn btn-sm"
+                                               onclick="openEditModal({{ stmt['statement_id'] }}, '{{ stmt['customer_name'] }}', '{{ stmt['bank_abbr'] }}', '{{ stmt['statement_date'][:7] }}', {{ stmt['prev_bal'] }}, {{ stmt['owner_os_bal'] }}, {{ stmt['infinite_os_bal'] }}, {{ stmt['owner_expenses'] }}, {{ stmt['owner_payments'] }}, {{ stmt['infinite_expenses'] }}, {{ stmt['infinite_payments'] }}, {{ stmt['closing_balance'] }})"
+                                               style="background: linear-gradient(135deg, #322446 0%, #4a3268 100%); 
+                                                      border: 2px solid #FF007F; 
+                                                      color: #FFFFFF;
+                                                      text-shadow: 0 0 8px rgba(255,255,255,0.3);
+                                                      font-weight: 600;
+                                                      padding: 0.25rem 0.75rem;
+                                                      font-size: 0.75rem;">
+                                                <i class="bi bi-pencil-square"></i> Edit
+                                            </button>
                                         </td>
                                     </tr>
                                     {% endfor %}
@@ -860,5 +873,203 @@ document.addEventListener('DOMContentLoaded', function() {
         exportTableToExcel('ccStatementsTable', 'Credit_Card_Statements.csv');
     });
 });
+
+function openEditModal(stmtId, customerName, bank, month, prevBal, ownerBal, gzBal, ownerExp, ownerPay, gzExp, gzPay, closingBal) {
+    // Fill modal with statement info
+    document.getElementById('edit_statement_id').value = stmtId;
+    document.getElementById('modal_customer_name').textContent = customerName;
+    document.getElementById('modal_bank').textContent = bank;
+    document.getElementById('modal_month').textContent = month;
+    
+    // Fill editable fields
+    document.getElementById('edit_prev_bal').value = prevBal.toFixed(2);
+    document.getElementById('edit_owner_bal').value = ownerBal.toFixed(2);
+    document.getElementById('edit_gz_bal').value = gzBal.toFixed(2);
+    document.getElementById('edit_owner_expenses').value = ownerExp.toFixed(2);
+    document.getElementById('edit_owner_payments').value = Math.abs(ownerPay).toFixed(2);
+    document.getElementById('edit_gz_expenses').value = gzExp.toFixed(2);
+    document.getElementById('edit_gz_payments').value = Math.abs(gzPay).toFixed(2);
+    document.getElementById('edit_closing_bal').value = closingBal.toFixed(2);
+    
+    // Show modal
+    var editModal = new bootstrap.Modal(document.getElementById('editStatementModal'));
+    editModal.show();
+}
+
+function saveStatementEdit() {
+    const stmtId = document.getElementById('edit_statement_id').value;
+    const formData = {
+        previous_balance: parseFloat(document.getElementById('edit_prev_bal').value),
+        owner_balance: parseFloat(document.getElementById('edit_owner_bal').value),
+        gz_balance: parseFloat(document.getElementById('edit_gz_bal').value),
+        owner_expenses: parseFloat(document.getElementById('edit_owner_expenses').value),
+        owner_payments: -Math.abs(parseFloat(document.getElementById('edit_owner_payments').value)),
+        gz_expenses: parseFloat(document.getElementById('edit_gz_expenses').value),
+        gz_payments: -Math.abs(parseFloat(document.getElementById('edit_gz_payments').value)),
+        closing_balance: parseFloat(document.getElementById('edit_closing_bal').value)
+    };
+    
+    // Send update request
+    fetch('/monthly_statement/' + stmtId + '/edit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('✅ ' + data.message);
+            location.reload(); // Reload page to show updated values
+        } else {
+            alert('❌ ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('❌ 更新失败，请稍后重试。');
+    });
+}
 </script>
+
+<!-- Edit Statement Modal -->
+<div class="modal fade" id="editStatementModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background: #1a1a1a; border: 2px solid #FF007F;">
+            <div class="modal-header" style="border-bottom: 2px solid #FF007F;">
+                <h5 class="modal-title" style="color: #FF007F; font-weight: 700;">
+                    <i class="bi bi-pencil-square"></i> 编辑月度账单 / Edit Monthly Statement
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="color: #FFFEF0;">
+                <form id="editStatementForm">
+                    <input type="hidden" id="edit_statement_id" name="statement_id">
+                    
+                    <!-- Statement Info -->
+                    <div class="mb-4 p-3" style="background: rgba(255,0,127,0.1); border: 1px solid #FF007F; border-radius: 8px;">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong style="color: #FF007F;">客户 / Customer:</strong><br>
+                                <span id="modal_customer_name"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <strong style="color: #FF007F;">银行 / Bank:</strong><br>
+                                <span id="modal_bank"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <strong style="color: #FF007F;">账单月 / Month:</strong><br>
+                                <span id="modal_month"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Editable Fields -->
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" style="color: #FFFEF0; font-weight: 600;">
+                                <i class="bi bi-arrow-left-circle"></i> Previous Balance / 前期余额
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background: #322446; color: #FFFEF0; border-color: #FF007F;">RM</span>
+                                <input type="number" step="0.01" class="form-control" id="edit_prev_bal" name="previous_balance" 
+                                       style="background: #0f0f0f; color: #FFFEF0; border-color: #FF007F;" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label" style="color: #FFFEF0; font-weight: 600;">
+                                <i class="bi bi-check-circle"></i> Closing Balance / 期末余额
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background: #322446; color: #FFFEF0; border-color: #FF007F;">RM</span>
+                                <input type="number" step="0.01" class="form-control" id="edit_closing_bal" name="closing_balance" 
+                                       style="background: #0f0f0f; color: #FFFEF0; border-color: #FF007F;" required>
+                            </div>
+                        </div>
+
+                        <div class="col-12"><hr style="border-color: rgba(255,0,127,0.3);"></div>
+
+                        <div class="col-md-6">
+                            <label class="form-label" style="color: #FF007F; font-weight: 600;">
+                                💳 OWNER Expenses / OWNER消费
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background: #322446; color: #FF007F; border-color: #FF007F;">RM</span>
+                                <input type="number" step="0.01" class="form-control" id="edit_owner_expenses" name="owner_expenses" 
+                                       style="background: #0f0f0f; color: #FF007F; border-color: #FF007F;" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label" style="color: #FF007F; font-weight: 600;">
+                                💰 OWNER Payments / OWNER还款
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background: #322446; color: #FF007F; border-color: #FF007F;">RM</span>
+                                <input type="number" step="0.01" class="form-control" id="edit_owner_payments" name="owner_payments" 
+                                       style="background: #0f0f0f; color: #FF007F; border-color: #FF007F;" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label" style="color: #FFFEF0; font-weight: 600;">
+                                🏢 INFINITE Expenses / INFINITE消费
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background: #322446; color: #FFFEF0; border-color: #322446;">RM</span>
+                                <input type="number" step="0.01" class="form-control" id="edit_gz_expenses" name="gz_expenses" 
+                                       style="background: #0f0f0f; color: #FFFEF0; border-color: #322446;" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label" style="color: #FFFEF0; font-weight: 600;">
+                                💵 INFINITE Payments / INFINITE还款
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background: #322446; color: #FFFEF0; border-color: #322446;">RM</span>
+                                <input type="number" step="0.01" class="form-control" id="edit_gz_payments" name="gz_payments" 
+                                       style="background: #0f0f0f; color: #FFFEF0; border-color: #322446;" required>
+                            </div>
+                        </div>
+
+                        <div class="col-12"><hr style="border-color: rgba(255,0,127,0.3);"></div>
+
+                        <div class="col-md-6">
+                            <label class="form-label" style="color: #FF007F; font-weight: 600;">
+                                📊 OWNER Balance / OWNER余额
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background: #322446; color: #FF007F; border-color: #FF007F;">RM</span>
+                                <input type="number" step="0.01" class="form-control" id="edit_owner_bal" name="owner_balance" 
+                                       style="background: #0f0f0f; color: #FF007F; border-color: #FF007F;" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label" style="color: #FFFEF0; font-weight: 600;">
+                                📈 INFINITE Balance / INFINITE余额
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background: #322446; color: #FFFEF0; border-color: #322446;">RM</span>
+                                <input type="number" step="0.01" class="form-control" id="edit_gz_bal" name="gz_balance" 
+                                       style="background: #0f0f0f; color: #FFFEF0; border-color: #322446;" required>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" style="border-top: 2px solid #FF007F;">
+                <button type="button" class="btn" style="background: #322446; color: #FFFEF0; border: 1px solid #999;" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> 取消 / Cancel
+                </button>
+                <button type="button" class="btn" style="background: linear-gradient(135deg, #FF007F 0%, #c9005f 100%); color: #FFFFFF; border: none;" onclick="saveStatementEdit()">
+                    <i class="bi bi-save"></i> 保存 / Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
