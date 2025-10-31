@@ -10,21 +10,38 @@ from ..models import BankStatement, JournalEntry, JournalEntryLine, ChartOfAccou
 
 
 # 关键词匹配规则（与种子数据的account_code对应）
+# 注意：顺序很重要！优先级高的规则应放在前面
 MATCHING_RULES = {
+    # 工资支付（优先级最高）
+    'payout': {'debit': 'salary_expense', 'credit': 'bank'},
+    'infinite.gz': {'debit': 'salary_expense', 'credit': 'bank'},
     'salary': {'debit': 'salary_expense', 'credit': 'bank'},
     'gaji': {'debit': 'salary_expense', 'credit': 'bank'},
+    
+    # 法定缴纳
+    'kumpulan wang simpanan pekerja': {'debit': 'epf_payable', 'credit': 'bank'},
+    'kwsp': {'debit': 'epf_payable', 'credit': 'bank'},
     'epf': {'debit': 'epf_payable', 'credit': 'bank'},
+    'pertubuhan keselamatan sosial': {'debit': 'socso_payable', 'credit': 'bank'},
+    'perkeso': {'debit': 'socso_payable', 'credit': 'bank'},
     'socso': {'debit': 'socso_payable', 'credit': 'bank'},
+    
+    # 支出类
     'rental': {'debit': 'rent_expense', 'credit': 'bank'},
     'rent': {'debit': 'rent_expense', 'credit': 'bank'},
     'utilities': {'debit': 'utilities_expense', 'credit': 'bank'},
     'util': {'debit': 'utilities_expense', 'credit': 'bank'},
     'supplier': {'debit': 'purchase_expense', 'credit': 'bank'},
     'payment': {'debit': 'purchase_expense', 'credit': 'bank'},
+    'stock': {'debit': 'purchase_expense', 'credit': 'bank'},
+    
+    # 收入类
     'service': {'debit': 'bank', 'credit': 'service_income'},
     'deposit': {'debit': 'bank', 'credit': 'deposit_income'},
-    'transfer': {'category': 'transfer'},  # 内部转账，不生成费用分录
+    
+    # 其他
     'fee': {'debit': 'bank_charges', 'credit': 'bank'},
+    'transfer': {'category': 'transfer'},  # 内部转账，优先级最低
 }
 
 
