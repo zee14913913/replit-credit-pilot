@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>测试编辑功能</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #000; color: #fff; padding: 40px; }
+        .test-btn { 
+            background: linear-gradient(135deg, #322446 0%, #4a3268 100%); 
+            border: 2px solid #FF007F; 
+            color: #FFFFFF;
+            font-weight: 600;
+            padding: 12px 24px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="color: #FF007F;">✏️ 编辑功能测试</h1>
+        <p>点击下面的按钮测试编辑功能：</p>
+        
+        <button class="btn test-btn" onclick="testEditModal()">
+            <i class="bi bi-pencil-square"></i> 点击这里测试编辑功能
+        </button>
+        
+        <div id="result" class="mt-4"></div>
+    </div>
+
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="editStatementModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background: #1a1a1a; border: 2px solid #FF007F;">
+                <div class="modal-header" style="border-bottom: 2px solid #FF007F;">
+                    <h5 class="modal-title" style="color: #FF007F; font-weight: 700;">
+                        ✏️ 编辑月度账单 / Edit Monthly Statement
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="color: #FFFEF0;">
+                    <form id="editStatementForm">
+                        <!-- Statement Info -->
+                        <div class="mb-4 p-3" style="background: rgba(255,0,127,0.1); border: 1px solid #FF007F; border-radius: 8px;">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <strong style="color: #FF007F;">客户 / Customer:</strong><br>
+                                    <span id="modal_customer_name">CHEOK JUN YOON</span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong style="color: #FF007F;">银行 / Bank:</strong><br>
+                                    <span id="modal_bank">AmBank</span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong style="color: #FF007F;">账单月 / Month:</strong><br>
+                                    <span id="modal_month">2025-05</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Editable Fields -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" style="color: #FFFEF0; font-weight: 600;">
+                                    Previous Balance / 前期余额
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: #322446; color: #FFFEF0; border-color: #FF007F;">RM</span>
+                                    <input type="number" step="0.01" class="form-control" id="edit_prev_bal" value="861.17"
+                                           style="background: #0f0f0f; color: #FFFEF0; border-color: #FF007F;">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" style="color: #FF007F; font-weight: 600;">
+                                    OWNER Expenses / OWNER消费
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: #322446; color: #FF007F; border-color: #FF007F;">RM</span>
+                                    <input type="number" step="0.01" class="form-control" id="edit_owner_expenses" value="0.00"
+                                           style="background: #0f0f0f; color: #FF007F; border-color: #FF007F;">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" style="color: #FFFFFF; font-weight: 600;">
+                                    INFINITE Expenses / INFINITE消费
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: #322446; color: #FFFFFF; border-color: #322446;">RM</span>
+                                    <input type="number" step="0.01" class="form-control" id="edit_gz_expenses" value="0.00"
+                                           style="background: #0f0f0f; color: #FFFFFF; border-color: #322446;">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" style="color: #FFFFFF; font-weight: 600;">
+                                    INFINITE Balance / INFINITE余额
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: #322446; color: #FFFFFF; border-color: #322446;">RM</span>
+                                    <input type="number" step="0.01" class="form-control" id="edit_gz_bal" value="1538.16"
+                                           style="background: #0f0f0f; color: #FFFFFF; border-color: #322446;">
+                                </div>
+                                <small style="color: #FF007F;">👈 您可以在这里修改INFINITE余额！</small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="border-top: 2px solid #FF007F;">
+                    <button type="button" class="btn" style="background: #322446; color: #FFFEF0;" data-bs-dismiss="modal">
+                        取消 / Cancel
+                    </button>
+                    <button type="button" class="btn" style="background: linear-gradient(135deg, #FF007F 0%, #c9005f 100%); color: #FFFFFF;" onclick="saveTest()">
+                        保存 / Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function testEditModal() {
+            var editModal = new bootstrap.Modal(document.getElementById('editStatementModal'));
+            editModal.show();
+            document.getElementById('result').innerHTML = '<div class="alert alert-success">✅ 模态框已打开！您现在可以修改输入框中的数值了。</div>';
+        }
+        
+        function saveTest() {
+            const gzBal = document.getElementById('edit_gz_bal').value;
+            const prevBal = document.getElementById('edit_prev_bal').value;
+            document.getElementById('result').innerHTML = `
+                <div class="alert alert-success">
+                    <h5>✅ 测试成功！</h5>
+                    <p>您修改的数据：</p>
+                    <ul>
+                        <li>Previous Balance: RM ${prevBal}</li>
+                        <li>INFINITE Balance: RM ${gzBal}</li>
+                    </ul>
+                    <p>在真实系统中，这些数据会被保存到数据库。</p>
+                </div>
+            `;
+            var editModal = bootstrap.Modal.getInstance(document.getElementById('editStatementModal'));
+            editModal.hide();
+        }
+    </script>
+</body>
+</html>
