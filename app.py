@@ -4678,3 +4678,67 @@ if __name__ == '__main__':
         start_scheduler()
     
     app.run(host='0.0.0.0', port=port, debug=debug_mode)
+
+# ===== INPUT TEST ROUTE =====
+@app.route('/test_input')
+def test_input():
+    """简单的输入框测试页面"""
+    return '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Input Test</title>
+    <style>
+        body { background: #000; color: #fff; padding: 50px; font-family: Arial; }
+        .test-input { 
+            width: 300px; 
+            padding: 15px; 
+            font-size: 18px;
+            background: white !important;
+            color: black !important;
+            border: 3px solid #FF007F !important;
+            margin: 10px 0;
+        }
+        .result { 
+            background: rgba(0,255,0,0.2); 
+            padding: 20px; 
+            margin: 20px 0;
+            border: 2px solid #0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: #FF007F;">输入框测试页面 / Input Test Page</h1>
+    
+    <div class="result">
+        <strong>请按以下步骤测试：</strong><br>
+        1. 点击下面的白色输入框<br>
+        2. 尝试输入数字或文字<br>
+        3. 如果可以输入，说明浏览器支持输入<br>
+        4. 如果不能输入，可能是浏览器/环境限制
+    </div>
+    
+    <h2>测试1：普通文本输入框</h2>
+    <input type="text" class="test-input" placeholder="请在这里输入文字..." value="测试文本">
+    
+    <h2>测试2：数字输入框</h2>
+    <input type="number" class="test-input" placeholder="请在这里输入数字..." value="123.45">
+    
+    <h2>测试3：带事件的输入框</h2>
+    <input type="text" class="test-input" id="test3" placeholder="输入后下方会显示..." value="">
+    <div id="output" style="color: #0f0; margin-top: 10px;"></div>
+    
+    <script>
+        document.getElementById('test3').addEventListener('input', function(e) {
+            document.getElementById('output').innerHTML = '✅ 输入成功！您输入了: ' + e.target.value;
+        });
+        
+        // 自动聚焦第一个输入框
+        document.querySelector('.test-input').focus();
+    </script>
+    
+    <hr style="margin: 40px 0; border-color: #FF007F;">
+    <a href="/admin" style="color: #FF007F; font-size: 18px;">← 返回 Admin Dashboard</a>
+</body>
+</html>
+    '''
