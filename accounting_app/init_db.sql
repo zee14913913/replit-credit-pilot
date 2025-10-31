@@ -347,3 +347,131 @@ COMMENT ON TABLE journal_entries IS '总账分录 - 所有会计记录的核心'
 COMMENT ON TABLE suppliers IS '供应商管理 - 用于Suppliers Aging报表';
 COMMENT ON TABLE customers IS '客户管理 - 用于应收账款台账';
 COMMENT ON TABLE tax_adjustments IS '税务调整 - 生成银行贷款报表时的合法调整';
+
+-- ============================================================
+-- 默认会计科目种子数据（Standard Chart of Accounts）
+-- 这些科目代码与bank_matcher.py的自动匹配逻辑对应
+-- ============================================================
+
+-- 插入默认公司（如果不存在）
+INSERT INTO companies (company_code, company_name, registration_number, status)
+VALUES ('DEFAULT', '默认公司 (Default Company)', 'DEMO001', 'active')
+ON CONFLICT (company_code) DO NOTHING;
+
+-- 为DEFAULT公司创建会计科目（使用动态company_id查询）
+-- ASSET 资产类
+INSERT INTO chart_of_accounts (company_id, account_code, account_name, account_type, description)
+SELECT (SELECT id FROM companies WHERE company_code = 'DEFAULT'), 'bank', '银行存款 (Bank)', 'asset', '公司银行账户余额'
+WHERE NOT EXISTS (
+    SELECT 1 FROM chart_of_accounts c 
+    WHERE c.account_code = 'bank' 
+    AND c.company_id = (SELECT id FROM companies WHERE company_code = 'DEFAULT')
+);
+
+INSERT INTO chart_of_accounts (company_id, account_code, account_name, account_type, description)
+SELECT (SELECT id FROM companies WHERE company_code = 'DEFAULT'), 'accounts_receivable', '应收账款 (Accounts Receivable)', 'asset', '客户欠款'
+WHERE NOT EXISTS (
+    SELECT 1 FROM chart_of_accounts c 
+    WHERE c.account_code = 'accounts_receivable' 
+    AND c.company_id = (SELECT id FROM companies WHERE company_code = 'DEFAULT')
+);
+
+-- LIABILITY 负债类
+INSERT INTO chart_of_accounts (company_id, account_code, account_name, account_type, description)
+SELECT (SELECT id FROM companies WHERE company_code = 'DEFAULT'), 'accounts_payable', '应付账款 (Accounts Payable)', 'liability', '供应商欠款'
+WHERE NOT EXISTS (
+    SELECT 1 FROM chart_of_accounts c 
+    WHERE c.account_code = 'accounts_payable' 
+    AND c.company_id = (SELECT id FROM companies WHERE company_code = 'DEFAULT')
+);
+
+INSERT INTO chart_of_accounts (company_id, account_code, account_name, account_type, description)
+SELECT (SELECT id FROM companies WHERE company_code = 'DEFAULT'), 'epf_payable', 'EPF应付款 (EPF Payable)', 'liability', '雇员公积金'
+WHERE NOT EXISTS (
+    SELECT 1 FROM chart_of_accounts c 
+    WHERE c.account_code = 'epf_payable' 
+    AND c.company_id = (SELECT id FROM companies WHERE company_code = 'DEFAULT')
+);
+
+INSERT INTO chart_of_accounts (company_id, account_code, account_name, account_type, description)
+SELECT (SELECT id FROM companies WHERE company_code = 'DEFAULT'), 'socso_payable', 'SOCSO应付款 (SOCSO Payable)', 'liability', '社会保险'
+WHERE NOT EXISTS (
+    SELECT 1 FROM chart_of_accounts c 
+    WHERE c.account_code = 'socso_payable' 
+    AND c.company_id = (SELECT id FROM companies WHERE company_code = 'DEFAULT')
+);
+
+-- EXPENSE 费用类
+INSERT INTO chart_of_accounts (company_id, account_code, account_name, account_type, description)
+SELECT (SELECT id FROM companies WHERE company_code = 'DEFAULT'), 'salary_expense', '工资支出 (Salary Expense)', 'expense', '员工工资'
+WHERE NOT EXISTS (
+    SELECT 1 FROM chart_of_accounts c 
+    WHERE c.account_code = 'salary_expense' 
+    AND c.company_id = (SELECT id FROM companies WHERE company_code = 'DEFAULT')
+);
+
+INSERT INTO chart_of_accounts (company_id, account_code, account_name, account_type, description)
+SELECT (SELECT id FROM companies WHERE company_code = 'DEFAULT'), 'rent_expense', '租金支出 (Rent Expense)', 'expense', '办公室或仓库租金'
+WHERE NOT EXISTS (
+    SELECT 1 FROM chart_of_accounts c 
+    WHERE c.account_code = 'rent_expense' 
+    AND c.company_id = (SELECT id FROM companies WHERE company_code = 'DEFAULT')
+);
+
+INSERT INTO chart_of_accounts (company_id, account_code, account_name, account_type, description)
+SELECT (SELECT id FROM companies WHERE company_code = 'DEFAULT'), 'utilities_expense', '水电支出 (Utilities Expense)', 'expense', '水费、电费、网费等'
+WHERE NOT EXISTS (
+    SELECT 1 FROM chart_of_accounts c 
+    WHERE c.account_code = 'utilities_expense' 
+    AND c.company_id = (SELECT id FROM companies WHERE company_code = 'DEFAULT')
+);
+
+INSERT INTO chart_of_accounts (company_id, account_code, account_name, account_type, description)
+SELECT (SELECT id FROM companies WHERE company_code = 'DEFAULT'), 'purchase_expense', '采购支出 (Purchase Expense)', 'expense', '供应商采购'
+WHERE NOT EXISTS (
+    SELECT 1 FROM chart_of_accounts c 
+    WHERE c.account_code = 'purchase_expense' 
+    AND c.company_id = (SELECT id FROM companies WHERE company_code = 'DEFAULT')
+);
+
+INSERT INTO chart_of_accounts (company_id, account_code, account_name, account_type, description)
+SELECT (SELECT id FROM companies WHERE company_code = 'DEFAULT'), 'bank_charges', '银行手续费 (Bank Charges)', 'expense', '银行服务费、转账费等'
+WHERE NOT EXISTS (
+    SELECT 1 FROM chart_of_accounts c 
+    WHERE c.account_code = 'bank_charges' 
+    AND c.company_id = (SELECT id FROM companies WHERE company_code = 'DEFAULT')
+);
+
+-- INCOME 收入类
+INSERT INTO chart_of_accounts (company_id, account_code, account_name, account_type, description)
+SELECT (SELECT id FROM companies WHERE company_code = 'DEFAULT'), 'service_income', '服务收入 (Service Income)', 'income', '提供服务所得收入'
+WHERE NOT EXISTS (
+    SELECT 1 FROM chart_of_accounts c 
+    WHERE c.account_code = 'service_income' 
+    AND c.company_id = (SELECT id FROM companies WHERE company_code = 'DEFAULT')
+);
+
+INSERT INTO chart_of_accounts (company_id, account_code, account_name, account_type, description)
+SELECT (SELECT id FROM companies WHERE company_code = 'DEFAULT'), 'sales_income', '销售收入 (Sales Income)', 'income', '产品销售收入'
+WHERE NOT EXISTS (
+    SELECT 1 FROM chart_of_accounts c 
+    WHERE c.account_code = 'sales_income' 
+    AND c.company_id = (SELECT id FROM companies WHERE company_code = 'DEFAULT')
+);
+
+INSERT INTO chart_of_accounts (company_id, account_code, account_name, account_type, description)
+SELECT (SELECT id FROM companies WHERE company_code = 'DEFAULT'), 'deposit_income', '客户押金 (Customer Deposit)', 'income', '客户预付款项'
+WHERE NOT EXISTS (
+    SELECT 1 FROM chart_of_accounts c 
+    WHERE c.account_code = 'deposit_income' 
+    AND c.company_id = (SELECT id FROM companies WHERE company_code = 'DEFAULT')
+);
+
+-- ============================================================
+-- 完成提示
+-- ============================================================
+
+-- ============================================================
+-- 初始化完成
+-- 默认会计科目已准备就绪
+-- ============================================================

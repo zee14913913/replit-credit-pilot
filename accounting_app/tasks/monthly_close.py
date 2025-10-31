@@ -3,11 +3,11 @@
 在Replit上通过外部定时器触发（因为没有原生cron）
 """
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, and_
 from datetime import datetime
 from decimal import Decimal
 
-from ..models import BankStatement, Company
+from ..models import BankStatement, Company, JournalEntry, JournalEntryLine, ChartOfAccounts
 from ..routes.invoices import auto_generate_invoices
 from ..schemas import AutoInvoiceGenerate
 
@@ -62,15 +62,73 @@ def run_monthly_close(db: Session, company_id: int, month: str):
 
 def calculate_trial_balance(db: Session, company_id: int, month: str):
     """
-    计算试算表
+    计算试算表 - 从真实的journal_entry_lines汇总
     
-    TODO: 实际应从journal_entry_lines汇总
-    这里返回简化版示例
+    返回：
+    - 每个会计科目的借方、贷方、余额
+    - 总借方、总贷方
+    - 是否平衡
     """
+    # 解析月份范围（YYYY-MM）
+    year, month_num = map(int, month.split('-'))
+    start_date = datetime(year, month_num, 1)
+    if month_num == 12:
+        end_date = datetime(year + 1, 1, 1)
+    else:
+        end_date = datetime(year, month_num + 1, 1)
+    
+    # 查询本月所有的journal_entry_lines
+    lines = db.query(
+        JournalEntryLine.account_id,
+        ChartOfAccounts.account_code,
+        ChartOfAccounts.account_name,
+        func.sum(JournalEntryLine.debit_amount).label('total_debit'),
+        func.sum(JournalEntryLine.credit_amount).label('total_credit')
+    ).join(
+        JournalEntry, JournalEntryLine.journal_entry_id == JournalEntry.id
+    ).join(
+        ChartOfAccounts, JournalEntryLine.account_id == ChartOfAccounts.id
+    ).filter(
+        and_(
+            JournalEntry.company_id == company_id,
+            JournalEntry.entry_date >= start_date,
+            JournalEntry.entry_date < end_date
+        )
+    ).group_by(
+        JournalEntryLine.account_id,
+        ChartOfAccounts.account_code,
+        ChartOfAccounts.account_name
+    ).all()
+    
+    # 汇总账户余额
+    accounts = []
+    total_debits = Decimal('0.00')
+    total_credits = Decimal('0.00')
+    
+    for line in lines:
+        debit = Decimal(str(line.total_debit or 0))
+        credit = Decimal(str(line.total_credit or 0))
+        balance = debit - credit
+        
+        accounts.append({
+            "account_code": line.account_code,
+            "account_name": line.account_name,
+            "debit": float(debit),
+            "credit": float(credit),
+            "balance": float(balance)
+        })
+        
+        total_debits += debit
+        total_credits += credit
+    
+    # 检查借贷平衡
+    is_balanced = abs(total_debits - total_credits) < Decimal('0.01')
+    
     return {
         "period": month,
-        "total_debits": 100000.00,
-        "total_credits": 100000.00,
-        "balanced": True,
-        "note": "Trial balance calculation is simplified in this version"
+        "accounts": accounts,
+        "total_debits": float(total_debits),
+        "total_credits": float(total_credits),
+        "balanced": is_balanced,
+        "variance": float(total_debits - total_credits)
     }

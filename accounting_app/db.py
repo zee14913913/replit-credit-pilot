@@ -55,20 +55,16 @@ def init_database():
 def execute_sql_file(sql_file_path: str):
     """
     执行SQL文件（用于初始化会计科目等）
+    使用单一事务，允许IF NOT EXISTS等语句
     """
     with open(sql_file_path, 'r', encoding='utf-8') as f:
         sql_script = f.read()
     
-    with engine.connect() as conn:
-        # 分割SQL语句并执行
-        for statement in sql_script.split(';'):
-            statement = statement.strip()
-            if statement and not statement.startswith('--') and not statement.startswith('COMMENT'):
-                try:
-                    conn.execute(text(statement))
-                    conn.commit()
-                except Exception as e:
-                    print(f"警告：SQL执行失败: {str(e)[:100]}")
-                    continue
-    
-    print("✅ SQL文件执行完成")
+    with engine.begin() as conn:
+        try:
+            # 使用单一事务执行整个脚本
+            conn.execute(text(sql_script))
+            print("✅ SQL文件执行完成")
+        except Exception as e:
+            print(f"⚠️ SQL执行警告（表可能已存在）: {str(e)[:200]}")
+            # 不抛出异常，允许系统继续运行

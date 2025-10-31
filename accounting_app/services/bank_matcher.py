@@ -9,17 +9,22 @@ from datetime import datetime
 from ..models import BankStatement, JournalEntry, JournalEntryLine, ChartOfAccounts
 
 
-# 关键词匹配规则（简化版）
+# 关键词匹配规则（与种子数据的account_code对应）
 MATCHING_RULES = {
     'salary': {'debit': 'salary_expense', 'credit': 'bank'},
     'gaji': {'debit': 'salary_expense', 'credit': 'bank'},
-    'epf': {'debit': 'epf_expense', 'credit': 'bank'},
-    'socso': {'debit': 'socso_expense', 'credit': 'bank'},
-    'rental': {'debit': 'rental_expense', 'credit': 'bank'},
-    'rent': {'debit': 'rental_expense', 'credit': 'bank'},
+    'epf': {'debit': 'epf_payable', 'credit': 'bank'},
+    'socso': {'debit': 'socso_payable', 'credit': 'bank'},
+    'rental': {'debit': 'rent_expense', 'credit': 'bank'},
+    'rent': {'debit': 'rent_expense', 'credit': 'bank'},
+    'utilities': {'debit': 'utilities_expense', 'credit': 'bank'},
+    'util': {'debit': 'utilities_expense', 'credit': 'bank'},
+    'supplier': {'debit': 'purchase_expense', 'credit': 'bank'},
+    'payment': {'debit': 'purchase_expense', 'credit': 'bank'},
+    'service': {'debit': 'bank', 'credit': 'service_income'},
+    'deposit': {'debit': 'bank', 'credit': 'deposit_income'},
     'transfer': {'category': 'transfer'},  # 内部转账，不生成费用分录
-    'deposit': {'debit': 'bank', 'credit': 'owner_capital'},
-    'withdrawal': {'debit': 'owner_drawings', 'credit': 'bank'},
+    'fee': {'debit': 'bank_charges', 'credit': 'bank'},
 }
 
 
@@ -74,8 +79,34 @@ def auto_match_transactions(db: Session, company_id: int, statement_month: str) 
 
 def create_journal_entry_from_rule(db: Session, bank_stmt: BankStatement, rule: dict):
     """
-    根据规则创建会计分录
+    根据规则创建会计分录 - 使用真实的chart_of_accounts
     """
+    # 获取会计科目account_code
+    debit_account_code = rule.get('debit')
+    credit_account_code = rule.get('credit')
+    
+    if not debit_account_code or not credit_account_code:
+        raise ValueError(f"规则缺少借方或贷方科目: {rule}")
+    
+    # 从数据库查询真实的account_id
+    debit_account = db.query(ChartOfAccounts).filter(
+        ChartOfAccounts.company_id == bank_stmt.company_id,
+        ChartOfAccounts.account_code == debit_account_code,
+        ChartOfAccounts.is_active == True
+    ).first()
+    
+    credit_account = db.query(ChartOfAccounts).filter(
+        ChartOfAccounts.company_id == bank_stmt.company_id,
+        ChartOfAccounts.account_code == credit_account_code,
+        ChartOfAccounts.is_active == True
+    ).first()
+    
+    if not debit_account or not credit_account:
+        raise ValueError(
+            f"会计科目不存在。需要: {debit_account_code}, {credit_account_code}。"
+            f"找到: debit={debit_account}, credit={credit_account}"
+        )
+    
     # 生成分录号
     entry_number = f"JE-{datetime.now().strftime('%Y%m%d-%H%M%S')}-{bank_stmt.id}"
     
@@ -92,18 +123,13 @@ def create_journal_entry_from_rule(db: Session, bank_stmt: BankStatement, rule: 
     db.add(journal_entry)
     db.flush()  # 获取ID
     
-    # 获取会计科目（简化版，实际应从chart_of_accounts查询）
-    # 这里假设已经有默认会计科目
-    debit_account_code = rule.get('debit')
-    credit_account_code = rule.get('credit')
-    
     # 确定金额
     amount = bank_stmt.debit_amount if bank_stmt.debit_amount > 0 else bank_stmt.credit_amount
     
     # 创建借方分录
     debit_line = JournalEntryLine(
         journal_entry_id=journal_entry.id,
-        account_id=1,  # TODO: 从chart_of_accounts查询真实account_id
+        account_id=debit_account.id,
         description=bank_stmt.description,
         debit_amount=amount,
         credit_amount=0,
@@ -114,7 +140,7 @@ def create_journal_entry_from_rule(db: Session, bank_stmt: BankStatement, rule: 
     # 创建贷方分录
     credit_line = JournalEntryLine(
         journal_entry_id=journal_entry.id,
-        account_id=2,  # TODO: 从chart_of_accounts查询真实account_id
+        account_id=credit_account.id,
         description=bank_stmt.description,
         debit_amount=0,
         credit_amount=amount,
