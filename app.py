@@ -1261,7 +1261,7 @@ def admin_dashboard():
 
 @app.route('/savings-admin')
 def savings_admin_dashboard():
-    """储蓄账户管理中心 Dashboard - Public access"""
+    """储蓄账户管理中心 Dashboard - Public access - 按月份排列所有savings账单"""
     
     with get_db() as conn:
         cursor = conn.cursor()
@@ -1283,7 +1283,7 @@ def savings_admin_dashboard():
         cursor.execute("SELECT COUNT(*) as total_transactions FROM savings_transactions")
         total_transactions = cursor.fetchone()['total_transactions']
         
-        # 获取最近的月结单（前30条）
+        # 获取所有月结单，按月份排序（像Admin页面的Credit Card Statements那样）
         cursor.execute("""
             SELECT 
                 ss.id as statement_id,
@@ -1291,21 +1291,24 @@ def savings_admin_dashboard():
                 ss.total_transactions,
                 ss.verification_status,
                 ss.verified_at,
+                sa.id as savings_account_id,
                 sa.bank_name,
                 sa.account_number_last4,
                 c.id as customer_id,
                 c.name as customer_name,
-                COALESCE(SUM(CASE WHEN st.transaction_type = 'credit' THEN ABS(st.amount) ELSE 0 END), 0) as total_credit,
-                COALESCE(SUM(CASE WHEN st.transaction_type = 'debit' THEN ABS(st.amount) ELSE 0 END), 0) as total_debit,
-                MAX(st.balance) as closing_balance
+                COALESCE(SUM(CASE WHEN st.transaction_type = 'credit' THEN ABS(st.amount) ELSE 0 END), 0) as monthly_credit,
+                COALESCE(SUM(CASE WHEN st.transaction_type = 'debit' THEN ABS(st.amount) ELSE 0 END), 0) as monthly_debit,
+                MAX(st.balance) as closing_bal,
+                COALESCE(SUM(CASE WHEN st.description LIKE '%PAYMENT%' OR st.description LIKE '%FPX%' THEN ABS(st.amount) ELSE 0 END), 0) as cc_sum_payment,
+                COALESCE(SUM(CASE WHEN st.transaction_type = 'debit' AND (st.description LIKE '%Transfer%' OR st.description LIKE '%IBG%' OR st.description LIKE '%GIRO%') THEN ABS(st.amount) ELSE 0 END), 0) as total_transfer
             FROM savings_statements ss
             JOIN savings_accounts sa ON ss.savings_account_id = sa.id
             JOIN customers c ON sa.customer_id = c.id
             LEFT JOIN savings_transactions st ON ss.id = st.savings_statement_id
             GROUP BY ss.id, ss.statement_date, ss.total_transactions, ss.verification_status, 
-                     ss.verified_at, sa.bank_name, sa.account_number_last4, c.id, c.name
-            ORDER BY ss.statement_date DESC, c.name ASC
-            LIMIT 30
+                     ss.verified_at, sa.id, sa.bank_name, sa.account_number_last4, c.id, c.name
+            ORDER BY ss.statement_date DESC, c.name ASC, sa.bank_name ASC
+            LIMIT 200
         """)
         statements = [dict(row) for row in cursor.fetchall()]
     
