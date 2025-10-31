@@ -1,0 +1,126 @@
+我现在要构建一套给客户用的「面向银行贷款合规的会计/财务管理子系统」，请你先完全理解业务目标，然后再生成项目骨架和代码。请按下面的说明一步一步来，不要自作简化。
+
+⸻
+
+① 先理解业务目标
+我要的不是普通记账软件，而是一个「把客户的真实银行月结单 → 转成会计分录 → 自动出报表 → 再生成银行能看的贷款资料包」的系统。它必须支持：
+	1.	银行月结单导入（CSV/Excel）
+	2.	自动或半自动匹配会计科目，生成分录
+	3.	Suppliers Aging（应付账款账龄）
+	4.	Customer Ledger / AR（应收账款台账）
+	5.	Yearly / Monthly 的 Profit & Loss + Balance Sheet
+	6.	总账 / 明细账（General Ledger / Suppliers Ledger）
+	7.	Payroll 分录（工资、EPF、SOCSO 等预留）
+	8.	自动生成 Invoices（固定收费的客户）
+	9.	合法税务调整记录与报表整合
+	10.	最终可以打包成一个给银行看的报表包，用来申请最低利息的贷款
+
+这一套要为我现实中的业务服务：我是一家帮客户做银行贷款/资金周转/财务梳理的咨询服务，所以系统的设计优先级要围绕「报表能不能让银行看得懂、能不能证明现金流是真的、能不能做调整」来排。
+
+⸻
+
+② 先回答一个架构问题
+在开始生成代码之前，你先分析并回答我这个问题（然后再继续往下做）：
+
+现在我已经有其他功能性的 app（可能是客户管理、文件上传、收费、后台管理）。请你根据下面我要做的财务模块的复杂度，判断：
+	•	方案A：继续在现有 app 里加一个 “Accounting/Finance” 模块是否合适？
+	•	方案B：新建一个独立的 “loan-ready-accounting” 服务（独立数据库 + 独立API），然后用 API / webhook 的方式跟我现有 app 打通，是否更稳？
+
+判断标准请说明白：数据隔离（账务不能乱）、性能（导入银行流水时不会拖慢现有系统）、安全性（财务数据分层）、未来能不能多租户（我一个账号要管理很多客户公司）、以及以后我要不要对外卖这套系统。
+
+分析完请你给出推荐方案（A 或 B），并说明原因，然后再按下面的要求生成代码。
+
+⸻
+
+③ 技术栈与结构要求
+	1.	后端用 Python + FastAPI。
+	2.	数据库用 PostgreSQL，连接从环境变量 DATABASE_URL 读取，不能用 Replit 内置 DB。
+	3.	目录结构请用这种：
+	•	app/main.py
+	•	app/db.py
+	•	app/models.py
+	•	app/schemas.py
+	•	app/routes/
+	•	app/services/
+	•	app/tasks/
+	4.	所有业务表都要有 company_id 字段，预设这是一个多公司（multi-tenant）系统。
+	5.	生成 .env.example，里面写：DATABASE_URL=postgresql://user:pass@host:5432/dbname
+
+⸻
+
+④ 要创建的核心数据表（请先输出 SQL）
+请先生成建表 SQL，再给代码。
+	1.	companies（客户公司）
+	2.	chart_of_accounts（会计科目，含科目类型：asset, liability, equity, income, expense）
+	3.	bank_statements（银行月结单逐笔导入：日期、描述、金额、余额、是否已匹配）
+	4.	journal_entries / journal_entry_lines（总账分录）
+	5.	suppliers, purchase_invoices, supplier_payments（用来做 Suppliers Aging）
+	6.	customers, sales_invoices, customer_receipts（用来做 Customer Ledger / AR）
+	7.	financial_report_mapping（把科目映射到 P&L / Balance Sheet）
+	8.	employees, payroll_runs, payroll_items（工资分录）
+	9.	tax_adjustments（合法税务调整：period, description, amount, direction, reason）
+
+⸻
+
+⑤ 业务流程要求
+请为下面这些功能生成对应的 FastAPI 路由 + service 函数示例：
+	1.	银行月结单导入
+	•	路由：POST /import/bank-statement
+	•	接受 csv
+	•	写入 bank_statements
+	•	导入后自动调用一个规则匹配函数，把常见描述（salary/gaji/epf/rental/transfer）自动变成会计分录，写入 journal_entries 和 journal_entry_lines
+	•	匹配不到的标记为 matched=false
+	2.	Suppliers Aging 报表
+	•	路由：GET /reports/suppliers-aging?company_id=...
+	•	按 0-30 / 31-60 / 61-90 / 90+ 输出
+	3.	Customer Ledger / 应收账款
+	•	路由：GET /reports/customer-ledger?customer_id=...
+	4.	P&L / Balance Sheet
+	•	路由：
+	•	GET /reports/pnl?year=2025&month=1
+	•	GET /reports/balance-sheet?date=2025-01-31
+	•	生成报表时要把 journal_entry_lines + financial_report_mapping 组合起来
+	•	也要能把 tax_adjustments 加进去，形成“银行版报表”
+	5.	发票自动生成
+	•	路由：POST /invoices/auto-generate
+	•	场景：固定每月对客户开一张管理费/咨询费发票
+	•	自动写销售发票 + 自动生成分录
+	6.	贷款资料包生成
+	•	路由：GET /reports/bank-package?company_id=...
+	•	返回 JSON，包含：最近12个月P&L、最新资产负债表、AR/AP Aging、银行流水汇总、税务调整
+	•	先做 JSON，PDF 只留 TODO
+
+⸻
+
+⑥ 自动化要求
+请增加一个可以被定时任务调用的模块 app/tasks/monthly_close.py，功能：
+	1.	检查本月是否还有未匹配的银行流水（matched=false）
+	2.	自动生成本月的 trial balance
+	3.	根据自动发票规则生成当月发票
+
+并请告诉我在 Replit 上如果没有原生 cron，要怎么用外部 ping（例如 curl / UptimeRobot）来定时触发这个任务。
+
+⸻
+
+⑦ 前端最简要求
+请同时生成一个最简前端/模板页面（可以内嵌在 FastAPI，也可以生成一个简单的 React/Vite 项目示例），至少要能做到：
+	1.	上传银行单
+	2.	查看 Suppliers Aging
+	3.	查看 P&L
+
+界面不需要漂亮，我后面会接到现有的客户系统里。
+
+⸻
+
+⑧ 输出格式要求
+请按下面顺序给我结果：
+	1.	你对「是整合进现有 app 还是做独立服务」的分析和推荐
+	2.	数据库建表 SQL
+	3.	FastAPI 项目目录结构
+	4.	关键路由示例代码
+	5.	Replit 里我要手动配置的环境变量说明
+
+不要跳过其中任何一部分，不要只给一半示例代码。
+
+⸻
+以上这就是完整要求，请按这个来生成项目。
