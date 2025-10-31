@@ -12,25 +12,28 @@
     </div>
 
     <!-- 上传信用卡账单区域 -->
-    <div class="professional-card mb-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 style="color: var(--text-primary); margin: 0; font-size: 1.4rem;">
+    <div class="professional-card mb-4" style="padding: 2.5rem 3rem;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 style="color: #E8E8E8; margin: 0; font-size: 1.8rem; font-weight: 700;">
+                <i class="bi bi-cloud-upload-fill" style="color: #FF007F; margin-right: 0.8rem;"></i>
                 {{ t('upload_credit_card_statement') }}
             </h3>
-            <button class="btn-professional" onclick="toggleUploadForm()" style="background: #FF007F;">
+            <button class="btn-professional" onclick="toggleUploadForm()" style="background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%); padding: 0.7rem 1.8rem; font-size: 1rem; font-weight: 600;">
+                <i class="bi bi-plus-circle-fill" style="margin-right: 0.5rem;"></i>
                 <span id="upload-toggle-text">{{ t('show_upload_form') }}</span>
             </button>
         </div>
         
         <div id="upload-form-section" style="display: none;">
-            <div class="divider-professional mb-4"></div>
+            <div class="divider-professional mb-5" style="margin-top: 1.5rem;"></div>
             <form method="POST" action="{{ url_for('credit_card_ledger') }}" enctype="multipart/form-data">
-                <div class="row g-3">
+                <div class="row g-4">
                     <div class="col-md-6">
-                        <label class="form-label" style="color: var(--text-primary); font-weight: 600;">
+                        <label class="form-label" style="color: #E8E8E8; font-weight: 600; font-size: 1.05rem; margin-bottom: 0.8rem; display: block;">
+                            <i class="bi bi-credit-card-2-front" style="color: #FF007F; margin-right: 0.5rem;"></i>
                             {{ t('select_credit_card') }}
                         </label>
-                        <select name="card_id" class="form-control-professional" required>
+                        <select name="card_id" class="form-control-professional" required style="font-size: 1rem; padding: 0.9rem 1.2rem;">
                             <option value="" selected disabled>{{ t('choose_credit_card') }}</option>
                             {% for card in all_cards %}
                             <option value="{{ card.id }}">
@@ -41,21 +44,24 @@
                     </div>
                     
                     <div class="col-md-6">
-                        <label class="form-label" style="color: var(--text-primary); font-weight: 600;">
+                        <label class="form-label" style="color: #E8E8E8; font-weight: 600; font-size: 1.05rem; margin-bottom: 0.8rem; display: block;">
+                            <i class="bi bi-file-earmark-pdf" style="color: #FF007F; margin-right: 0.5rem;"></i>
                             {{ t('statement_file') }}
                         </label>
                         <div class="custom-file-upload">
                             <input type="file" name="statement_file" id="statement_file" class="file-input-hidden" accept=".pdf,.xlsx,.xls" required>
-                            <button type="button" class="btn-professional-outline" onclick="document.getElementById('statement_file').click()">
+                            <button type="button" class="btn-professional-outline" onclick="document.getElementById('statement_file').click()" style="padding: 0.9rem 1.5rem; font-size: 1rem;">
+                                <i class="bi bi-upload" style="margin-right: 0.5rem;"></i>
                                 {{ t('choose_file') }}
                             </button>
-                            <span id="file-name" style="color: var(--text-secondary); margin-left: 1rem;">{{ t('no_file_chosen') }}</span>
+                            <span id="file-name" style="color: #999; margin-left: 1.2rem; font-size: 0.95rem;">{{ t('no_file_chosen') }}</span>
                         </div>
                     </div>
                 </div>
                 
-                <div class="d-grid gap-2 mt-4">
-                    <button type="submit" class="btn-professional" style="background: linear-gradient(135deg, #FF007F 0%, #330066 100%);">
+                <div class="d-grid gap-2 mt-5">
+                    <button type="submit" class="btn-professional" style="background: linear-gradient(135deg, #FF007F 0%, #330066 100%); padding: 1rem 2rem; font-size: 1.1rem; font-weight: 700;">
+                        <i class="bi bi-check-circle-fill" style="margin-right: 0.6rem;"></i>
                         {{ t('upload_parse_statement') }}
                     </button>
                 </div>
