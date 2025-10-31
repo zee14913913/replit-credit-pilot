@@ -66,7 +66,7 @@
                                 <h3 style="color: #FF007F; margin-bottom: 0.75rem; font-size: 1.5rem; font-weight: 700;">
                                     {{ account.bank_name }}
                                 </h3>
-                                <p style="color: var(--text-secondary); margin: 0; font-size: 1.1rem; letter-spacing: 0.05em;">
+                                <p style="color: #C0C0C0; margin: 0; font-size: 1.1rem; letter-spacing: 0.05em;">
                                     ****{{ account.account_number_last4 }}
                                 </p>
                             </div>
@@ -77,7 +77,7 @@
                                     <!-- Statement Count -->
                                     <div class="col-md-3">
                                         <div style="text-align: center; padding: 1rem; background: rgba(255, 255, 255, 0.03); border-radius: 8px; border: 1px solid rgba(192, 192, 192, 0.1);">
-                                            <div style="color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
+                                            <div style="color: #C0C0C0; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
                                                 Statements
                                             </div>
                                             <div style="color: #FF007F; font-weight: 700; font-size: 1.8rem;">
@@ -89,10 +89,10 @@
                                     <!-- Total Debit -->
                                     <div class="col-md-3">
                                         <div style="text-align: center; padding: 1rem; background: rgba(255, 255, 255, 0.03); border-radius: 8px; border: 1px solid rgba(192, 192, 192, 0.1);">
-                                            <div style="color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
+                                            <div style="color: #C0C0C0; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
                                                 Total Debit
                                             </div>
-                                            <div style="color: var(--text-primary); font-weight: 600; font-size: 1.2rem;">
+                                            <div style="color: #E8E8E8; font-weight: 600; font-size: 1.2rem;">
                                                 RM {{ "{:,.2f}".format(account.total_debit or 0) }}
                                             </div>
                                         </div>
@@ -101,10 +101,10 @@
                                     <!-- Total Credit -->
                                     <div class="col-md-3">
                                         <div style="text-align: center; padding: 1rem; background: rgba(255, 255, 255, 0.03); border-radius: 8px; border: 1px solid rgba(192, 192, 192, 0.1);">
-                                            <div style="color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
+                                            <div style="color: #C0C0C0; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
                                                 Total Credit
                                             </div>
-                                            <div style="color: var(--text-primary); font-weight: 600; font-size: 1.2rem;">
+                                            <div style="color: #E8E8E8; font-weight: 600; font-size: 1.2rem;">
                                                 RM {{ "{:,.2f}".format(account.total_credit or 0) }}
                                             </div>
                                         </div>
@@ -113,10 +113,10 @@
                                     <!-- Transactions -->
                                     <div class="col-md-3">
                                         <div style="text-align: center; padding: 1rem; background: rgba(255, 255, 255, 0.03); border-radius: 8px; border: 1px solid rgba(192, 192, 192, 0.1);">
-                                            <div style="color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
+                                            <div style="color: #C0C0C0; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
                                                 Transactions
                                             </div>
-                                            <div style="color: var(--text-primary); font-weight: 700; font-size: 1.8rem;">
+                                            <div style="color: #E8E8E8; font-weight: 700; font-size: 1.8rem;">
                                                 {{ account.total_transactions or 0 }}
                                             </div>
                                         </div>
