@@ -826,7 +826,7 @@ def parse_hsbc_statement(file_path):
 
 
 def parse_standard_chartered_statement(file_path):
-    """Standard Chartered Bank (SCB) - Malaysia"""
+    """Standard Chartered Bank (SCB) - Malaysia - Table-based extraction"""
     transactions, info = [], {"statement_date": None, "total": 0.0, "card_last4": None, "previous_balance": 0.0}
     try:
         if file_path.endswith(".pdf"):
@@ -835,12 +835,14 @@ def parse_standard_chartered_statement(file_path):
                 
                 # Extract statement date - "Statement Date / Tarikh Penyata: 14 May 2025"
                 date_match = re.search(r"Statement\s+Date[^\:]*:\s*(\d{1,2}\s+[A-Za-z]{3}\s+\d{4})", full_text, re.IGNORECASE)
+                statement_year = None
                 if date_match:
                     try:
                         from datetime import datetime
                         date_str = date_match.group(1).strip()
                         parsed_date = datetime.strptime(date_str, "%d %b %Y")
                         info["statement_date"] = parsed_date.strftime("%Y-%m-%d")
+                        statement_year = parsed_date.year
                     except:
                         pass
                 
@@ -849,8 +851,7 @@ def parse_standard_chartered_statement(file_path):
                 if card_match:
                     info["card_last4"] = card_match.group(2)
                 
-                # Extract Previous Balance - "Previous Balance - Payments - Credits + Purchases + Cash Advance + Charges = New Balance"
-                # Format: "0.00 1,250.00 0.00 1,799.36 0.00 0.00 549.36" or "BALANCE FROM PREVIOUS 0.00"
+                # Extract Previous Balance
                 prev_bal_match = re.search(r"(?:BALANCE\s+FROM\s+PREVIOUS|Previous\s+Balance)[^\d]+([\d,]+\.\d{2})", full_text, re.IGNORECASE)
                 if prev_bal_match:
                     info["previous_balance"] = float(prev_bal_match.group(1).replace(",", ""))
@@ -860,40 +861,60 @@ def parse_standard_chartered_statement(file_path):
                 if total_match:
                     info["total"] = float(total_match.group(1).replace(",", ""))
                 
-                # Extract transactions - Pattern: "07 May       DUITNOW PAY-TO-ACCOUNT       1,250.00CR"
-                # Use greedy match to get the last amount on each line
-                pattern = r'(\d{1,2}\s+[A-Za-z]{3})\s+(.+)\s+([\-]?\d{1,3}(?:,\d{3})*\.\d{2})(?:CR)?$'
+                # Extract transactions using simple regex on full text
+                # SCB format: Two dates followed by description and amount
+                # Pattern: "07 May  07 May  DUITNOW PAY-TO-ACCOUNT Txn Ref: xxx  1,250.00CR"
                 
-                for match in re.finditer(pattern, full_text, re.MULTILINE | re.IGNORECASE):
-                    trans_date = match.group(1).strip()
-                    trans_desc = match.group(2).strip()
-                    trans_amount = abs(float(match.group(3).replace(",", "")))
+                # Extract line by line looking for transaction pattern
+                pattern = r'(\d{1,2}\s+[A-Za-z]{3})\s+(\d{1,2}\s+[A-Za-z]{3})\s+(.+?)\s+([\d,]+\.\d{2})(CR)?\s*$'
+                
+                for match in re.finditer(pattern, full_text, re.MULTILINE):
+                    posting_date = match.group(1).strip()
+                    transaction_date = match.group(2).strip()
+                    description = match.group(3).strip()
+                    amount_str = match.group(4).strip()
+                    is_credit = match.group(5) is not None
                     
                     # Filter out header/summary lines
-                    skip_keywords = ['previous balance', 'new balance', 'minimum payment', 'payment due', 
-                                   'baki', 'jumlah', 'pembayaran', 'statement', 'total']
-                    if any(kw in trans_desc.lower() for kw in skip_keywords):
+                    skip_keywords = ['BALANCE FROM PREVIOUS', 'NEW BALANCE', 'MINIMUM PAYMENT', 
+                                   'Baki dari penyata', 'Baki Baru', 'Pembayaran Minima',
+                                   'Previous Balance', 'New Balance', 'Posting Date', 'Transaction Date',
+                                   'Tarikh Bil', 'Diterima', 'Transaksi']
+                    
+                    if any(kw.lower() in description.lower() for kw in skip_keywords):
                         continue
                     
-                    # Skip if description is too short or just numbers
-                    if len(trans_desc) < 5 or re.match(r'^[\d\s,\.]+$', trans_desc):
+                    # Skip if description is too short
+                    if len(description) < 5:
                         continue
                     
-                    # CR means credit/repayment
-                    trans_type = "credit" if 'CR' in match.group(0).upper() else "debit"
+                    # Parse amount
+                    try:
+                        trans_amount = abs(float(amount_str.replace(',', '')))
+                    except:
+                        continue
+                    
+                    # Skip zero amounts without meaningful description
+                    if trans_amount == 0.0 and len(description) < 10:
+                        continue
+                    
+                    # Complete the date with year
+                    trans_date = transaction_date.strip()
+                    if statement_year and re.match(r'^\d{1,2}\s+[A-Za-z]{3}$', trans_date):
+                        trans_date = f"{trans_date} {statement_year}"
                     
                     transactions.append({
                         "date": trans_date,
-                        "description": trans_desc,
+                        "description": description,
                         "amount": trans_amount,
-                        "type": trans_type
+                        "type": "credit" if is_credit else "debit"
                     })
         else:
             df = pd.read_excel(file_path)
             for _, r in df.iterrows():
                 transactions.append({"date": str(r.get("Date", "")), "description": str(r.get("Description", "")), "amount": float(r.get("Amount", 0))})
         
-        if info["total"] == 0.0:
+        if info["total"] == 0.0 and transactions:
             info["total"] = sum(t["amount"] for t in transactions)
         
         print(f"✅ Standard Chartered parsed {len(transactions)} transactions. Card: ****{info.get('card_last4', 'N/A')}, Date: {info.get('statement_date', 'N/A')}")
