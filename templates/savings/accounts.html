@@ -30,7 +30,7 @@
                 </p>
             </div>
             <div class="text-end">
-                <span class="badge-professional badge-info-pro" style="font-size: 1.1rem; padding: 0.5rem 1rem;">
+                <span style="background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%); color: #000; font-size: 1.1rem; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 700;">
                     {{ accounts|length }} SAVINGS ACCOUNT{{ 'S' if accounts|length != 1 else '' }}
                 </span>
             </div>
@@ -53,7 +53,6 @@
     <!-- Savings Accounts List -->
     <div class="mb-5">
         <h2 class="section-title mb-3">{{ t('my_savings_accounts') }}</h2>
-        <p class="section-subtitle mb-4">{{ t('view_account_details') }}</p>
         
         {% if accounts %}
         <div class="row g-4">
@@ -148,49 +147,6 @@
         </div>
         {% endif %}
     </div>
-
-    <!-- Transfer Payment Summary -->
-    {% if recipients %}
-    <div class="divider-professional mb-5"></div>
-    
-    <div class="mb-5">
-        <h2 class="section-title mb-3">{{ t('transfer_payment_summary') }}</h2>
-        <p class="section-subtitle mb-4">{{ t('transfer_summary_desc') }}</p>
-        
-        <div class="row g-4">
-            {% for recipient in recipients %}
-            <div class="col-md-6 col-lg-4">
-                <div class="professional-card" style="border-left: 3px solid #FF007F;">
-                    <!-- Recipient Info -->
-                    <div class="mb-3">
-                        <h3 style="color: #FF007F; margin-bottom: 0.5rem; font-size: 1.1rem; font-weight: 700;">
-                            {{ recipient.recipient_name }}
-                        </h3>
-                        <p style="color: var(--text-secondary); margin: 0; font-size: 0.9rem;">
-                            {{ recipient.bank_name }}
-                        </p>
-                    </div>
-
-                    <div class="divider-professional mb-3"></div>
-
-                    <!-- Transfer Statistics -->
-                    <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 8px; text-align: center;">
-                        <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">
-                            {{ t('amount') }}
-                        </div>
-                        <div style="color: #FF007F; font-weight: 700; font-size: 1.5rem;">
-                            RM {{ "{:,.2f}".format(recipient.total_amount) }}
-                        </div>
-                        <div style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.75rem;">
-                            {{ recipient.transaction_count }} {{ t('transactions') }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
 
 </div>
 {% endblock %}
