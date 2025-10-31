@@ -1799,9 +1799,9 @@ def monthly_statement_detail(monthly_statement_id):
         
         # Get all cards included in this monthly statement
         cursor.execute('''
-            SELECT cc.card_number_last4, cc.credit_limit
+            SELECT cc.card_number_last4, cc.credit_limit, cc.bank_name, cc.card_type
             FROM monthly_statement_cards msc
-            JOIN credit_cards cc ON msc.credit_card_id = cc.id
+            JOIN credit_cards cc ON msc.card_id = cc.id
             WHERE msc.monthly_statement_id = ?
         ''', (monthly_statement_id,))
         
