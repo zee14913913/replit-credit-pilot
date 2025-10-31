@@ -925,25 +925,67 @@ function testEditFunction() {
 }
 
 function openEditModal(stmtId, customerName, bank, month, prevBal, ownerBal, gzBal, ownerExp, ownerPay, gzExp, gzPay, closingBal) {
-    // Fill modal with statement info
-    document.getElementById('edit_statement_id').value = stmtId;
-    document.getElementById('modal_customer_name').textContent = customerName;
-    document.getElementById('modal_bank').textContent = bank;
-    document.getElementById('modal_month').textContent = month;
+    const debugDiv = document.getElementById('edit_debug_info');
     
-    // Fill editable fields
-    document.getElementById('edit_prev_bal').value = prevBal.toFixed(2);
-    document.getElementById('edit_owner_bal').value = ownerBal.toFixed(2);
-    document.getElementById('edit_gz_bal').value = gzBal.toFixed(2);
-    document.getElementById('edit_owner_expenses').value = ownerExp.toFixed(2);
-    document.getElementById('edit_owner_payments').value = Math.abs(ownerPay).toFixed(2);
-    document.getElementById('edit_gz_expenses').value = gzExp.toFixed(2);
-    document.getElementById('edit_gz_payments').value = Math.abs(gzPay).toFixed(2);
-    document.getElementById('edit_closing_bal').value = closingBal.toFixed(2);
-    
-    // Show modal
-    var editModal = new bootstrap.Modal(document.getElementById('editStatementModal'));
-    editModal.show();
+    try {
+        // Fill modal with statement info
+        document.getElementById('edit_statement_id').value = stmtId;
+        document.getElementById('modal_customer_name').textContent = customerName;
+        document.getElementById('modal_bank').textContent = bank;
+        document.getElementById('modal_month').textContent = month;
+        
+        // Fill editable fields
+        const inputs = {
+            'edit_prev_bal': prevBal.toFixed(2),
+            'edit_owner_bal': ownerBal.toFixed(2),
+            'edit_gz_bal': gzBal.toFixed(2),
+            'edit_owner_expenses': ownerExp.toFixed(2),
+            'edit_owner_payments': Math.abs(ownerPay).toFixed(2),
+            'edit_gz_expenses': gzExp.toFixed(2),
+            'edit_gz_payments': Math.abs(gzPay).toFixed(2),
+            'edit_closing_bal': closingBal.toFixed(2)
+        };
+        
+        // Fill each input and remove any blocking attributes
+        for (const [id, value] of Object.entries(inputs)) {
+            const input = document.getElementById(id);
+            if (input) {
+                input.value = value;
+                // Force enable editing
+                input.removeAttribute('readonly');
+                input.removeAttribute('disabled');
+                input.style.pointerEvents = 'auto';
+                input.style.userSelect = 'text';
+                input.style.cursor = 'text';
+            }
+        }
+        
+        // Show modal
+        var editModal = new bootstrap.Modal(document.getElementById('editStatementModal'));
+        editModal.show();
+        
+        // Debug: Try to focus first input after modal is shown
+        setTimeout(() => {
+            const firstInput = document.getElementById('edit_prev_bal');
+            if (firstInput) {
+                firstInput.focus();
+                firstInput.select();
+                
+                if (debugDiv) {
+                    debugDiv.style.display = 'block';
+                    debugDiv.innerHTML = `✅ Modal opened! Input focused. Value: ${firstInput.value}<br>
+                                          请尝试输入数字。如果不能输入，请按F12打开浏览器控制台查看错误。`;
+                }
+            }
+        }, 300);
+        
+    } catch (error) {
+        if (debugDiv) {
+            debugDiv.style.display = 'block';
+            debugDiv.innerHTML = '❌ 错误: ' + error.message;
+        }
+        console.error('Error opening edit modal:', error);
+    }
 }
 
 function saveStatementEdit() {
@@ -995,7 +1037,10 @@ function saveStatementEdit() {
             </div>
             <div class="modal-body" style="color: #FFFEF0;">
                 <div class="alert alert-info" style="background: rgba(255,0,127,0.15); border: 1px solid #FF007F; color: #FFFFFF;">
-                    <strong>📝 提示：</strong> 请直接点击下面的输入框，然后输入新的数值。输入框背景是深色的，点击后会有白色光标闪烁。
+                    <strong>📝 提示：</strong> 点击白色输入框即可修改数值。所有输入框都是白色背景，黑色文字。
+                </div>
+                <div id="edit_debug_info" style="background: rgba(255,255,0,0.1); padding: 10px; margin-bottom: 10px; color: yellow; font-size: 12px; display: none;">
+                    Debug: 等待测试...
                 </div>
                 <form id="editStatementForm">
                     <input type="hidden" id="edit_statement_id" name="statement_id">
