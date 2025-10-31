@@ -20,3 +20,10 @@ python-dateutil
 openai
 pymupdf
 pymupdf
+fastapi
+psycopg2-binary
+pydantic[email]
+python-dotenv
+python-multipart
+sqlalchemy
+uvicorn

@@ -19,6 +19,10 @@ author = "agent"
 task = "workflow.run"
 args = "Server"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Accounting API"
+
 [[workflows.workflow]]
 name = "Server"
 author = "agent"
@@ -31,9 +35,25 @@ waitForPort = 5000
 [workflows.workflow.metadata]
 outputType = "webview"
 
+[[workflows.workflow]]
+name = "Accounting API"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "uvicorn accounting_app.main:app --host 0.0.0.0 --port 8000 --reload"
+waitForPort = 8000
+
+[workflows.workflow.metadata]
+outputType = "console"
+
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 8000
+externalPort = 8000
 
 [[ports]]
 localPort = 8080
@@ -66,6 +86,10 @@ externalPort = 3001
 [[ports]]
 localPort = 38745
 externalPort = 8000
+
+[[ports]]
+localPort = 38809
+externalPort = 8099
 
 [[ports]]
 localPort = 39619

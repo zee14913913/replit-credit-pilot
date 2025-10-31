@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>财务会计系统 - 管理后台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .header p {
+            color: #666;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+        .api-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .api-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .api-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏦 银行贷款合规会计系统</h1>
+            <p>将银行月结单转换为会计分录，生成银行贷款所需的财务报表</p>
+            <div class="api-links">
+                <a href="/docs" target="_blank">📚 API文档</a>
+                <a href="/" target="_blank">🏠 首页</a>
+            </div>
+        </div>
+
+        <div class="cards">
+            <!-- 上传银行月结单 -->
+            <div class="card">
+                <h2>📤 上传银行月结单</h2>
+                <form id="uploadForm">
+                    <div class="form-group">
+                        <label>公司ID</label>
+                        <input type="number" id="companyId" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>银行名称</label>
+                        <input type="text" id="bankName" placeholder="例如: Maybank" required>
+                    </div>
+                    <div class="form-group">
+                        <label>账户号码</label>
+                        <input type="text" id="accountNumber" placeholder="例如: 1234567890" required>
+                    </div>
+                    <div class="form-group">
+                        <label>月份 (YYYY-MM)</label>
+                        <input type="text" id="statementMonth" value="2025-01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>CSV文件</label>
+                        <input type="file" id="csvFile" accept=".csv" required>
+                    </div>
+                    <button type="submit" class="btn">上传并导入</button>
+                </form>
+                <div id="uploadResult" class="result"></div>
+            </div>
+
+            <!-- 查看Suppliers Aging -->
+            <div class="card">
+                <h2>📊 供应商账龄报表</h2>
+                <form id="agingForm">
+                    <div class="form-group">
+                        <label>公司ID</label>
+                        <input type="number" id="agingCompanyId" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>截止日期 (可选)</label>
+                        <input type="date" id="asOfDate">
+                    </div>
+                    <button type="submit" class="btn">查看报表</button>
+                </form>
+                <div id="agingResult" class="result"></div>
+            </div>
+
+            <!-- 查看P&L -->
+            <div class="card">
+                <h2>💰 损益表 (P&L)</h2>
+                <form id="pnlForm">
+                    <div class="form-group">
+                        <label>公司ID</label>
+                        <input type="number" id="pnlCompanyId" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>年份</label>
+                        <input type="number" id="year" value="2025" required>
+                    </div>
+                    <div class="form-group">
+                        <label>月份</label>
+                        <input type="number" id="month" value="1" min="1" max="12" required>
+                    </div>
+                    <button type="submit" class="btn">查看报表</button>
+                </form>
+                <div id="pnlResult" class="result"></div>
+            </div>
+
+            <!-- 生成贷款资料包 -->
+            <div class="card">
+                <h2>📦 银行贷款资料包</h2>
+                <form id="packageForm">
+                    <div class="form-group">
+                        <label>公司ID</label>
+                        <input type="number" id="packageCompanyId" value="1" required>
+                    </div>
+                    <button type="submit" class="btn">生成资料包</button>
+                </form>
+                <div id="packageResult" class="result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '';
+
+        // 上传银行月结单
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('file', document.getElementById('csvFile').files[0]);
+            
+            const companyId = document.getElementById('companyId').value;
+            const bankName = document.getElementById('bankName').value;
+            const accountNumber = document.getElementById('accountNumber').value;
+            const statementMonth = document.getElementById('statementMonth').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/import/bank-statement?company_id=${companyId}&bank_name=${bankName}&account_number=${accountNumber}&statement_month=${statementMonth}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                showResult('uploadResult', data, response.ok);
+            } catch (error) {
+                showResult('uploadResult', {error: error.message}, false);
+            }
+        });
+
+        // 查看Suppliers Aging
+        document.getElementById('agingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const companyId = document.getElementById('agingCompanyId').value;
+            const asOfDate = document.getElementById('asOfDate').value;
+            
+            let url = `${API_BASE}/api/reports/suppliers-aging?company_id=${companyId}`;
+            if (asOfDate) url += `&as_of_date=${asOfDate}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                showResult('agingResult', data, response.ok);
+            } catch (error) {
+                showResult('agingResult', {error: error.message}, false);
+            }
+        });
+
+        // 查看P&L
+        document.getElementById('pnlForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const companyId = document.getElementById('pnlCompanyId').value;
+            const year = document.getElementById('year').value;
+            const month = document.getElementById('month').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/reports/pnl?company_id=${companyId}&year=${year}&month=${month}`);
+                const data = await response.json();
+                showResult('pnlResult', data, response.ok);
+            } catch (error) {
+                showResult('pnlResult', {error: error.message}, false);
+            }
+        });
+
+        // 生成贷款资料包
+        document.getElementById('packageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const companyId = document.getElementById('packageCompanyId').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/reports/bank-package?company_id=${companyId}`);
+                const data = await response.json();
+                showResult('packageResult', data, response.ok);
+            } catch (error) {
+                showResult('packageResult', {error: error.message}, false);
+            }
+        });
+
+        function showResult(elementId, data, success) {
+            const resultDiv = document.getElementById(elementId);
+            resultDiv.className = `result ${success ? 'success' : 'error'}`;
+            resultDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
