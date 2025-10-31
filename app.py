@@ -4697,6 +4697,131 @@ document.querySelector('.test-input').focus();
 </body></html>'''
     return html
 
+@app.route('/accounting/<path:path>')
+def accounting_api_proxy(path=''):
+    """代理到会计系统API (端口8000) - 使用iframe嵌入"""
+    target_url = f'http://localhost:8000/{path}'
+    
+    html = f'''<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>会计系统 - {path}</title>
+    <style>
+        body, html {{
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }}
+        iframe {{
+            width: 100%;
+            height: 100%;
+            border: none;
+        }}
+        .header {{
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            font-family: Arial;
+        }}
+        .header a {{
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+        }}
+    </style>
+</head>
+<body>
+    <div class="header">
+        🏦 财务会计系统 | <a href="/">← 返回首页</a> | <a href="/accounting_test_results">🧪 测试报告</a>
+    </div>
+    <iframe src="{target_url}"></iframe>
+</body>
+</html>'''
+    return html
+
+@app.route('/accounting_test_results')
+def accounting_test_results():
+    """显示会计系统测试结果"""
+    import subprocess
+    try:
+        result = subprocess.run(
+            ['python3', 'test_accounting_system.py'],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            cwd='/home/runner/workspace'
+        )
+        output = result.stdout
+    except Exception as e:
+        output = f"测试执行失败: {str(e)}"
+    
+    html = f'''<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>会计系统测试报告</title>
+    <style>
+        body {{
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            padding: 2rem;
+            line-height: 1.6;
+        }}
+        .container {{
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #1a1a1a;
+            padding: 2rem;
+            border: 2px solid #FF007F;
+            border-radius: 10px;
+        }}
+        h1 {{
+            color: #FF007F;
+            text-align: center;
+            margin-bottom: 2rem;
+        }}
+        pre {{
+            background: #000;
+            padding: 1.5rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            border: 1px solid #322446;
+        }}
+        .btn {{
+            display: inline-block;
+            padding: 10px 20px;
+            background: #FF007F;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 5px;
+        }}
+        .btn:hover {{
+            background: #322446;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 会计系统自动化测试报告</h1>
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <a href="/" class="btn">← 返回首页</a>
+            <a href="javascript:location.reload()" class="btn">🔄 刷新测试</a>
+            <a href="http://localhost:8000/docs" target="_blank" class="btn">📚 API文档</a>
+        </div>
+        <pre>{output}</pre>
+    </div>
+</body>
+</html>'''
+    return html
+
 
 
 if __name__ == '__main__':

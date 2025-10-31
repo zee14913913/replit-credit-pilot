@@ -11,17 +11,22 @@
                 <h4 style="color: white; margin-bottom: 0.8rem;">🏦 财务会计系统 (Accounting System)</h4>
                 <p class="mb-3" style="opacity: 0.95;">银行月结单 → 会计分录 → 财务报表（用于银行贷款申请）</p>
                 <div class="d-flex gap-3 flex-wrap">
-                    <a href="http://{{ request.host.split(':')[0] }}:8000/docs" 
+                    <a href="{{ url_for('accounting_api_proxy', path='docs') }}" 
                        class="btn btn-light btn-lg" 
                        target="_blank"
                        style="font-weight: bold;">
                         📚 API文档
                     </a>
-                    <a href="http://{{ request.host.split(':')[0] }}:8000/accounting" 
+                    <a href="{{ url_for('accounting_api_proxy', path='accounting') }}" 
                        class="btn btn-warning btn-lg" 
                        target="_blank"
                        style="font-weight: bold; background: #FF007F; border: none; color: white;">
                         💼 管理后台
+                    </a>
+                    <a href="{{ url_for('accounting_test_results') }}" 
+                       class="btn btn-success btn-lg" 
+                       style="font-weight: bold;">
+                        🧪 系统测试报告
                     </a>
                 </div>
             </div>
