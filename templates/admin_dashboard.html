@@ -4,6 +4,14 @@
 
 {% block content %}
 <div class="container-fluid" style="max-width: 98%; padding: 2rem;">
+    <!-- DEBUG TEST BUTTON -->
+    <div class="alert" style="background: rgba(255,0,127,0.2); border: 2px solid #FF007F; margin-bottom: 20px; padding: 20px;">
+        <button onclick="testEditFunction()" class="btn" style="background: #FF007F; color: white; font-weight: 700; padding: 15px 30px; font-size: 18px;">
+            🧪 点击这里测试编辑功能 / CLICK TO TEST EDIT
+        </button>
+        <p id="test_result" style="color: white; margin-top: 10px; font-weight: 600; font-size: 16px;"></p>
+    </div>
+    
     <div class="section-header">
         <h1 class="section-title" style="color: #FF007F; font-weight: 700;">📊 {{ t('admin_dashboard') }}</h1>
         <p class="section-description" style="color: #FF007F;">{{ t('system_overview_subtitle') }}</p>
@@ -873,6 +881,48 @@ document.addEventListener('DOMContentLoaded', function() {
         exportTableToExcel('ccStatementsTable', 'Credit_Card_Statements.csv');
     });
 });
+
+// TEST FUNCTION
+function testEditFunction() {
+    const resultDiv = document.getElementById('test_result');
+    resultDiv.innerHTML = '⏳ 正在测试...';
+    
+    try {
+        // Test 1: Check if modal exists
+        const modalElement = document.getElementById('editStatementModal');
+        if (!modalElement) {
+            resultDiv.innerHTML = '❌ 错误：找不到编辑对话框元素！';
+            return;
+        }
+        
+        // Test 2: Try to open modal
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+        
+        // Test 3: Fill test data
+        setTimeout(() => {
+            document.getElementById('edit_prev_bal').value = '123.45';
+            document.getElementById('edit_gz_bal').value = '678.90';
+            
+            // Test 4: Try to focus on input
+            const input = document.getElementById('edit_prev_bal');
+            input.focus();
+            
+            resultDiv.innerHTML = `
+                ✅ <strong>测试成功！</strong><br>
+                - 对话框已弹出<br>
+                - 输入框已填充测试数据<br>
+                - 输入框已聚焦<br>
+                <br>
+                <strong style="color: #FF007F;">👉 请尝试在输入框中输入数字！</strong><br>
+                <small>如果还是无法输入，请告诉我您看到了什么。</small>
+            `;
+        }, 500);
+        
+    } catch (error) {
+        resultDiv.innerHTML = '❌ 错误：' + error.message;
+    }
+}
 
 function openEditModal(stmtId, customerName, bank, month, prevBal, ownerBal, gzBal, ownerExp, ownerPay, gzExp, gzPay, closingBal) {
     // Fill modal with statement info
