@@ -867,6 +867,8 @@ p {
     border-radius: var(--radius-lg);
     overflow: hidden;
     border: 1px solid var(--glass-border);
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
 .table-professional thead {
@@ -880,13 +882,20 @@ p {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    padding: var(--space-md);
+    padding: 1rem 1.5rem;
     border-bottom: 2px solid var(--gold-primary);
+    border-right: 1px solid rgba(192, 192, 192, 0.2);
     text-shadow: var(--glow-soft);
+    white-space: nowrap;
+    min-width: 100px;
+}
+
+.table-professional thead th:last-child {
+    border-right: none;
 }
 
 .table-professional tbody tr {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(192, 192, 192, 0.15);
     transition: all 0.2s ease;
 }
 
@@ -897,7 +906,13 @@ p {
 
 .table-professional tbody td {
     color: var(--text-dim);
-    padding: var(--space-md);
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+    border-right: 1px solid rgba(192, 192, 192, 0.1);
+}
+
+.table-professional tbody td:last-child {
+    border-right: none;
 }
 
 /* ========================================
