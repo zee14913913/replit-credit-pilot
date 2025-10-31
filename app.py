@@ -1807,14 +1807,26 @@ def monthly_statement_detail(monthly_statement_id):
         
         cards = [dict(row) for row in cursor.fetchall()]
         
-        # Get all transactions for this monthly statement
+        # Get all transactions for this monthly statement with bank info
         cursor.execute('''
-            SELECT * FROM transactions
-            WHERE monthly_statement_id = ?
-            ORDER BY transaction_date DESC
+            SELECT t.*, 
+                   s.bank_name,
+                   cc.bank_name as card_bank,
+                   cc.card_number_last4 as full_card_last4
+            FROM transactions t
+            LEFT JOIN statements s ON t.statement_id = s.id
+            LEFT JOIN credit_cards cc ON s.credit_card_id = cc.id
+            WHERE t.monthly_statement_id = ?
+            ORDER BY t.transaction_date ASC, t.id ASC
         ''', (monthly_statement_id,))
         
         transactions = [dict(row) for row in cursor.fetchall()]
+        
+        # Calculate running balance for each transaction
+        running_balance = monthly_stmt['previous_balance_total']
+        for txn in transactions:
+            running_balance += txn['amount']
+            txn['running_balance'] = running_balance
         
         # Calculate summary by owner_flag
         owner_transactions = [t for t in transactions if t.get('owner_flag') == 'own']
