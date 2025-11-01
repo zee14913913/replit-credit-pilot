@@ -3,12 +3,15 @@ Phase 2-1 修复 + 增强：正确的RBAC中间件实现
 - 基础：使用FastAPI依赖注入系统，避免强制注入参数导致的TypeError
 - 增强：多公司角色绑定（Multi-tenant Role Binding）
 - Phase 2-2 Task 4: IP/User-Agent审计日志增强
+- Phase 2-2 Task 7: Flask Session桥接支持
 """
-from typing import Optional
+from typing import Optional, Dict
 from datetime import datetime
 from fastapi import Header, HTTPException, Cookie, Depends, Request
 from sqlalchemy.orm import Session
 import logging
+import os
+import psycopg2
 
 from ..db import get_db
 from ..models import User, Permission, AuditLog
@@ -492,3 +495,70 @@ def get_user_company_role(company_id: int):
         return get_user_role_for_company(db, current_user, company_id)
     
     return get_role
+
+
+# ============================================================
+# Phase 2-2 Task 7: Flask Session桥接支持
+# ============================================================
+
+def get_flask_session_user(request: Request) -> Optional[Dict]:
+    """
+    从FastAPI Request中提取Flask session并验证用户
+    
+    用于API密钥管理等需要Flask session认证的路由
+    
+    Args:
+        request: FastAPI Request对象
+    
+    Returns:
+        dict: 用户信息字典 {'id', 'username', 'role', 'company_id'}
+        None: 如果session无效或用户未登录
+    """
+    try:
+        # 从Cookie中获取session
+        session_cookie = request.cookies.get('session')
+        if not session_cookie:
+            logger.debug("No Flask session cookie found")
+            return None
+        
+        # 解析Flask session获取user_id
+        # Flask session的格式: session cookie包含加密数据
+        # 我们需要从PostgreSQL直接验证flask_rbac_user_id
+        
+        # 简化方案：直接从cookie中获取flask_rbac_user_id
+        # 注意：这需要Flask session使用server-side storage或shared secret
+        
+        # 暂时返回None，因为我们需要实现完整的Flask session解析
+        # 或者使用共享数据库来存储session信息
+        logger.warning("Flask session parsing not fully implemented yet")
+        return None
+        
+    except Exception as e:
+        logger.error(f"Failed to parse Flask session: {e}")
+        return None
+
+
+def require_flask_session_user(request: Request) -> Dict:
+    """
+    FastAPI依赖函数：要求有效的Flask session
+    
+    用于API密钥管理路由等需要Flask认证的端点
+    
+    Args:
+        request: FastAPI Request对象
+    
+    Returns:
+        dict: 用户信息字典
+    
+    Raises:
+        HTTPException: 401/403 如果未登录或session无效
+    """
+    user = get_flask_session_user(request)
+    
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Unauthorized: Flask session required. Please log in through the admin interface."
+        )
+    
+    return user
