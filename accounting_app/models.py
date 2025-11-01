@@ -568,3 +568,39 @@ class FileIndex(Base):
         CheckConstraint("status IN ('active', 'archived', 'deleted')"),
         CheckConstraint("file_type IN ('original', 'generated')"),
     )
+
+
+class AuditLog(Base):
+    """
+    Phase 1-4: 审计日志表
+    追踪所有敏感操作：导出、删除、修改规则、手工分录
+    """
+    __tablename__ = "audit_logs"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='SET NULL'), index=True)
+    user_id = Column(Integer)  # 预留：关联users表
+    username = Column(String(100))  # 操作人姓名或邮箱
+    action_type = Column(String(50), nullable=False, index=True)  # export, delete, rule_change, manual_entry, etc.
+    entity_type = Column(String(50), index=True)  # bank_statement, invoice, auto_posting_rule, journal_entry, file
+    entity_id = Column(Integer)  # 被操作实体的ID
+    description = Column(Text, nullable=False)  # 操作描述
+    reason = Column(Text)  # 操作原因（手工改账必须填写）
+    ip_address = Column(String(45))  # IP地址（IPv4/IPv6）
+    user_agent = Column(Text)  # 浏览器UA
+    request_method = Column(String(10))  # GET, POST, PUT, DELETE
+    request_path = Column(String(500))  # API路径
+    old_value = Column(JSON)  # 修改前的值（JSON格式）
+    new_value = Column(JSON)  # 修改后的值（JSON格式）
+    success = Column(Boolean, default=True)  # 操作是否成功
+    error_message = Column(Text)  # 失败时的错误信息
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), index=True)
+    
+    __table_args__ = (
+        CheckConstraint(
+            "action_type IN ('export', 'delete', 'rule_change', 'manual_entry', 'file_upload', "
+            "'config_change', 'batch_import', 'reconciliation', 'period_close', 'restore')"
+        ),
+        Index('idx_audit_logs_company_action', 'company_id', 'action_type'),
+        Index('idx_audit_logs_entity_lookup', 'entity_type', 'entity_id'),
+    )

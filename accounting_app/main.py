@@ -53,7 +53,8 @@ from .routes import (
     exceptions,
     posting_rules,
     export_templates,
-    file_index
+    file_index,
+    audit_logs
 )
 
 # 注册路由
@@ -73,6 +74,7 @@ app.include_router(exceptions.router, prefix="/api", tags=["Exception Center"])
 app.include_router(posting_rules.router, prefix="/api", tags=["Auto Posting Rules"])
 app.include_router(export_templates.router, prefix="/api", tags=["Export Templates"])
 app.include_router(file_index.router, tags=["File Index"])  # Phase 1-3: 统一文件索引
+app.include_router(audit_logs.router, tags=["Audit Logs"])  # Phase 1-4: 审计日志系统
 
 
 # 启动事件：初始化数据库
