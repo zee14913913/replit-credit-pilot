@@ -46,7 +46,8 @@ from .routes import (
     files,
     smart_import,
     management_reports,
-    csv_export
+    csv_export,
+    supplier_invoices
 )
 
 # 注册路由
@@ -59,6 +60,7 @@ app.include_router(tasks_routes.router, prefix="/api/tasks", tags=["Scheduled Ta
 app.include_router(files.router, prefix="/api/files", tags=["File Management"])
 app.include_router(management_reports.router, prefix="/api", tags=["Management Reports"])
 app.include_router(csv_export.router, prefix="/api", tags=["CSV Export"])
+app.include_router(supplier_invoices.router, prefix="/api", tags=["Supplier Invoices"])
 
 
 # 启动事件：初始化数据库
