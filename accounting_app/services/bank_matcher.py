@@ -1,12 +1,21 @@
 """
 银行交易自动匹配服务
 根据描述关键词自动生成会计分录
+
+✨ 升级为Rule Engine驱动（表驱动化）
+- 优先使用RuleEngine.match_transaction()从数据库匹配规则
+- 保留MATCHING_RULES作为向后兼容fallback
 """
 from sqlalchemy.orm import Session
 from decimal import Decimal
 from datetime import datetime
+import logging
 
 from ..models import BankStatement, JournalEntry, JournalEntryLine, ChartOfAccounts
+from .rule_engine import RuleEngine
+from .exception_manager import ExceptionManager
+
+logger = logging.getLogger(__name__)
 
 
 # 关键词匹配规则（与种子数据的account_code对应）
@@ -49,6 +58,11 @@ def auto_match_transactions(db: Session, company_id: int, statement_month: str) 
     """
     自动匹配银行流水并生成会计分录
     
+    ✨ 升级说明：
+    1. 优先使用RuleEngine从数据库匹配规则（表驱动）
+    2. 如果数据库无匹配，fallback到硬编码MATCHING_RULES（向后兼容）
+    3. 匹配失败记录Exception Center
+    
     返回：成功匹配的交易数量
     """
     # 获取未匹配的银行流水
@@ -59,38 +73,84 @@ def auto_match_transactions(db: Session, company_id: int, statement_month: str) 
     ).all()
     
     matched_count = 0
+    engine = RuleEngine(db, company_id)
+    exception_mgr = ExceptionManager(db, company_id)
     
     for stmt in unmatched:
         description_lower = stmt.description.lower()
         
-        # 尝试匹配关键词
-        matched_rule = None
+        # ✅ 优先使用Rule Engine匹配
+        matched_rule_obj = engine.match_transaction(
+            description=stmt.description,
+            source_type='bank_import'
+        )
+        
+        if matched_rule_obj:
+            # ✅ 使用数据库规则生成分录
+            logger.info(f"✅ RuleEngine匹配成功: {matched_rule_obj.rule_name} | 交易: {stmt.description[:50]}")
+            try:
+                # 使用RuleEngine生成会计分录
+                journal_entry = engine.apply_rule_to_bank_statement(matched_rule_obj, stmt)
+                stmt.matched = True
+                stmt.matched_journal_id = journal_entry.id
+                stmt.auto_category = matched_rule_obj.rule_name
+                matched_count += 1
+                
+                # 更新规则匹配统计
+                engine.update_match_stats(matched_rule_obj.id)
+                
+                logger.info(f"✅ 会计分录已生成: {journal_entry.entry_number}")
+                continue
+                
+            except Exception as e:
+                logger.error(f"❌ RuleEngine生成分录失败: {e}")
+                exception_mgr.record_posting_error(
+                    source_type='bank_import',
+                    source_id=stmt.id,
+                    error_message=str(e),
+                    context={'description': stmt.description, 'rule_id': matched_rule_obj.id}
+                )
+                continue
+        
+        # ⚠️ Fallback：使用硬编码规则（向后兼容）
+        matched_legacy_rule = None
         for keyword, rule in MATCHING_RULES.items():
             if keyword in description_lower:
-                matched_rule = rule
+                matched_legacy_rule = rule
                 stmt.auto_category = keyword
+                logger.warning(f"⚠️ 使用硬编码规则匹配: {keyword} | 交易: {stmt.description[:50]}")
                 break
         
-        if not matched_rule:
+        if not matched_legacy_rule:
+            # 完全无法匹配
+            logger.debug(f"⏭️ 无匹配规则，跳过: {stmt.description[:50]}")
             continue
         
         # 如果是transfer，不生成分录
-        if matched_rule.get('category') == 'transfer':
+        if matched_legacy_rule.get('category') == 'transfer':
             stmt.matched = True
             stmt.notes = "内部转账，无需会计分录"
             matched_count += 1
             continue
         
-        # 生成会计分录
+        # 生成会计分录（使用旧方法）
         try:
-            create_journal_entry_from_rule(db, stmt, matched_rule)
+            create_journal_entry_from_rule(db, stmt, matched_legacy_rule)
             stmt.matched = True
             matched_count += 1
+            logger.info(f"✅ 使用legacy规则生成分录: {stmt.description[:50]}")
         except Exception as e:
-            print(f"生成分录失败: {e}")
+            logger.error(f"❌ 生成分录失败: {e}")
+            exception_mgr.record_posting_error(
+                source_type='bank_import',
+                source_id=stmt.id,
+                error_message=str(e),
+                context={'description': stmt.description, 'legacy_rule': matched_legacy_rule}
+            )
             continue
     
     db.commit()
+    logger.info(f"📊 自动匹配完成: {matched_count}/{len(unmatched)} 笔交易")
     return matched_count
 
 

@@ -683,6 +683,270 @@ if exception_summary["critical"] > 0:
 
 ---
 
+### 7. **Auto Posting Rules API** (`/api/posting-rules`)
+
+自动记账规则引擎 - 表驱动化规则管理系统，替代硬编码匹配逻辑。
+
+#### ✨ 核心特性
+- **表驱动规则**: 所有匹配规则存储在数据库，支持动态CRUD
+- **优先级排序**: 按priority字段排序（数字越小优先级越高）
+- **多源类型支持**: bank_import, supplier_invoice, sales_invoice, general
+- **模式匹配**: 支持关键字（case-insensitive）和正则表达式
+- **匹配统计**: 自动记录match_count和last_matched_at
+- **异常集成**: 科目不存在或分录生成失败自动记录Exception Center
+
+#### 📋 规则列表（分页+过滤）
+```http
+GET /api/posting-rules/?skip=0&limit=10&source_type=bank_import&is_active=true&search=salary
+```
+
+**查询参数：**
+- `skip`: 跳过记录数（分页）
+- `limit`: 返回记录数（分页）
+- `source_type`: 过滤source_type（可选）
+- `is_active`: 过滤启用状态（可选）
+- `search`: 搜索rule_name或pattern（可选）
+
+**返回示例：**
+```json
+{
+  "total": 20,
+  "skip": 0,
+  "limit": 10,
+  "rules": [
+    {
+      "id": 1,
+      "company_id": 1,
+      "rule_name": "工资支付 - Payout",
+      "source_type": "bank_import",
+      "pattern": "payout",
+      "is_regex": false,
+      "priority": 10,
+      "debit_account_code": "salary_expense",
+      "credit_account_code": "bank",
+      "is_active": true,
+      "match_count": 127,
+      "last_matched_at": "2025-11-01T14:25:30",
+      "created_at": "2025-11-01T10:00:00"
+    }
+  ]
+}
+```
+
+#### 🆕 创建规则
+```http
+POST /api/posting-rules/
+Content-Type: application/json
+```
+
+**请求体：**
+```json
+{
+  "rule_name": "银行利息收入",
+  "source_type": "bank_import",
+  "pattern": "interest.*credit",
+  "is_regex": true,
+  "priority": 50,
+  "debit_account_code": "bank",
+  "credit_account_code": "interest_income",
+  "description": "银行利息收入自动识别"
+}
+```
+
+**验证规则：**
+- ✅ `company_id`自动注入（从get_current_company_id）
+- ✅ 会计科目存在性验证（debit_account_code和credit_account_code）
+- ✅ source_type必须是：bank_import, supplier_invoice, sales_invoice, general
+- ✅ CRUD后自动清除缓存
+
+**返回：** 创建成功的规则对象（RuleResponse）
+
+#### ✏️ 更新规则
+```http
+PUT /api/posting-rules/{rule_id}
+Content-Type: application/json
+```
+
+**请求体：**（所有字段可选，仅更新提供的字段）
+```json
+{
+  "rule_name": "工资支付（更新）",
+  "priority": 5,
+  "is_active": false
+}
+```
+
+**安全特性：**
+- ✅ 双重过滤：rule_id + company_id（防止跨租户修改）
+- ✅ 会计科目验证（如果修改了debit/credit_account_code）
+- ✅ 更新后清除缓存
+
+#### 🗑️ 删除规则
+```http
+DELETE /api/posting-rules/{rule_id}
+```
+
+**返回：**
+```json
+{
+  "message": "Rule '工资支付 - Payout' deleted successfully"
+}
+```
+
+**安全特性：**
+- ✅ 双重过滤：rule_id + company_id
+- ✅ 删除后清除缓存
+
+#### 🧪 测试规则匹配
+```http
+POST /api/posting-rules/test
+Content-Type: application/json
+```
+
+**请求体：**
+```json
+{
+  "description": "PAYOUT TO EMPLOYEE - SALARY NOVEMBER",
+  "source_type": "bank_import"
+}
+```
+
+**返回：**
+```json
+{
+  "matched": true,
+  "rule": {
+    "id": 1,
+    "rule_name": "工资支付 - Payout",
+    "pattern": "payout",
+    "priority": 10,
+    "debit_account_code": "salary_expense",
+    "credit_account_code": "bank"
+  },
+  "test_description": "PAYOUT TO EMPLOYEE - SALARY NOVEMBER"
+}
+```
+
+**未匹配返回：**
+```json
+{
+  "matched": false,
+  "rule": null,
+  "test_description": "UNKNOWN TRANSACTION"
+}
+```
+
+#### 🔄 银行导入集成
+
+Rules API已集成到`accounting_app/services/bank_matcher.py`：
+
+**匹配流程：**
+1. ✅ **优先使用Rule Engine**：从数据库按优先级匹配规则
+2. ✅ **自动生成分录**：调用`RuleEngine.apply_rule_to_bank_statement()`
+3. ✅ **更新统计**：自动更新match_count和last_matched_at
+4. ⚠️ **Fallback机制**：如果数据库无匹配，使用硬编码MATCHING_RULES（向后兼容）
+5. ❌ **异常记录**：失败自动记录Exception Center (posting_error)
+
+**日志示例：**
+```
+✅ RuleEngine匹配成功: 工资支付 - Payout | 交易: PAYOUT TO EMPLOYEE
+✅ 会计分录已生成: JE-20251101-142530-1234
+⚠️ 使用硬编码规则匹配: salary | 交易: SALARY PAYMENT (fallback)
+⏭️ 无匹配规则，跳过: UNKNOWN TRANSACTION
+```
+
+#### 📊 规则优先级设计
+
+**推荐优先级范围：**
+- **1-50**: 高优先级（工资、法定缴纳）
+- **50-200**: 中优先级（EPF, SOCSO, 租金）
+- **200-500**: 普通优先级（日常支出、收入）
+- **500+**: 低优先级（杂项、通用规则）
+
+**示例：**
+```sql
+-- 优先级10: 最高
+INSERT INTO auto_posting_rules (..., priority) VALUES (..., 10);  -- 工资支付
+
+-- 优先级50: 法定缴纳
+INSERT INTO auto_posting_rules (..., priority) VALUES (..., 50);  -- EPF
+
+-- 优先级200: 日常支出
+INSERT INTO auto_posting_rules (..., priority) VALUES (..., 200); -- 租金
+
+-- 优先级900: 最低
+INSERT INTO auto_posting_rules (..., priority) VALUES (..., 900); -- 银行手续费
+```
+
+#### 💾 种子数据
+
+系统启动时自动加载20条预定义规则（`seed_posting_rules.sql`）：
+
+| 优先级 | 规则名称 | 模式 | 会计分录 |
+|--------|----------|------|----------|
+| 10 | 工资支付 - Payout | payout | salary_expense → bank |
+| 20 | 工资支付 - Infinite.GZ | infinite.gz | salary_expense → bank |
+| 50 | EPF缴纳 - KWSP | kumpulan wang simpanan pekerja | epf_payable → bank |
+| 200 | 租金支出 - Rental | rental | rent_expense → bank |
+| 400 | 服务收入 - Service | service | bank → service_income |
+| 900 | 银行手续费 - Fee | fee | bank_charges → bank |
+
+**查看所有规则：**
+```sql
+SELECT priority, rule_name, pattern, 
+       debit_account_code || ' → ' || credit_account_code as entry
+FROM auto_posting_rules
+WHERE company_id = (SELECT id FROM companies WHERE company_code = 'DEFAULT')
+ORDER BY priority;
+```
+
+#### 🛡️ 安全特性
+
+**多租户隔离：**
+- ✅ 所有端点使用`Depends(get_current_company_id)`
+- ✅ CREATE端点强制使用注入的company_id（不接受用户输入）
+- ✅ 单记录操作双重过滤（id + company_id）
+
+**缓存管理：**
+- ✅ 按source_type隔离缓存（防止跨类型规则混淆）
+- ✅ CRUD操作后自动清除缓存（确保新规则立即生效）
+- ✅ 并发安全（每请求独立RuleEngine实例）
+
+**数据验证：**
+- ✅ 会计科目存在性验证
+- ✅ CHECK约束限制source_type值域
+- ✅ 优先级排序确保确定性匹配
+
+#### 📝 Python调用示例
+
+```python
+import requests
+
+# 1. 创建规则
+response = requests.post('http://localhost:8000/api/posting-rules/', json={
+    "rule_name": "银行利息收入",
+    "source_type": "bank_import",
+    "pattern": "interest",
+    "is_regex": false,
+    "priority": 50,
+    "debit_account_code": "bank",
+    "credit_account_code": "interest_income"
+})
+
+# 2. 测试匹配
+response = requests.post('http://localhost:8000/api/posting-rules/test', json={
+    "description": "INTEREST CREDITED TO ACCOUNT",
+    "source_type": "bank_import"
+})
+print(response.json()['matched'])  # True
+
+# 3. 查询规则列表
+response = requests.get('http://localhost:8000/api/posting-rules/?source_type=bank_import')
+print(f"Total rules: {response.json()['total']}")
+```
+
+---
+
 ## 📝 开发指南
 
 ### 添加新的报表类型

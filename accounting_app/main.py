@@ -88,6 +88,15 @@ async def startup_event():
         except Exception as e:
             print(f"⚠️ SQL初始化失败: {e}")
     
+    # 执行规则引擎种子数据（仅在首次启动时）
+    seed_file_path = os.path.join(os.path.dirname(__file__), 'seed_posting_rules.sql')
+    if os.path.exists(seed_file_path):
+        try:
+            execute_sql_file(seed_file_path)
+            print("✅ 规则引擎种子数据已加载")
+        except Exception as e:
+            print(f"⚠️ 规则种子数据加载失败: {e}")
+    
     print("✅ 财务会计系统启动成功！")
     print("📊 API文档: http://localhost:8000/docs")
 
