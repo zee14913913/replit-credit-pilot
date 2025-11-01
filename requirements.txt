@@ -27,3 +27,6 @@ python-dotenv
 python-multipart
 sqlalchemy
 uvicorn
+openpyxl
+pandas
+xlrd

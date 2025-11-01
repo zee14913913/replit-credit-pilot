@@ -65,11 +65,13 @@ class InvoiceProcessor:
                 "details": parsed_data
             }
         
-        # 2. 检测重复发票
+        # 2. 检测重复发票（双层检测：发票号 + 复合指纹）
         duplicate_check = self._check_duplicate_invoice(
             company_id,
             parsed_data.get("invoice_number"),
-            parsed_data.get("supplier_name")
+            parsed_data.get("supplier_name"),
+            parsed_data.get("invoice_date"),
+            parsed_data.get("total_amount")
         )
         
         if duplicate_check["is_duplicate"]:
@@ -189,18 +191,124 @@ class InvoiceProcessor:
                 }
         
         elif file_type == 'excel':
-            # TODO: Excel解析
-            return {
-                "success": False,
-                "stage": "pending",
-                "error": "Excel解析尚未实现"
-            }
+            # Excel/CSV解析
+            try:
+                import io
+                import pandas as pd
+                
+                # 智能判断文件类型（使用magic bytes和扩展名）
+                # .xlsx: PK (zip), .xls: D0CF11E0 (OLE), .csv: 文本
+                if file_content.startswith(b'PK'):
+                    # .xlsx (Office Open XML)
+                    df = pd.read_excel(io.BytesIO(file_content), engine='openpyxl')
+                elif file_content.startswith(b'\xd0\xcf\x11\xe0'):
+                    # .xls (OLE2/BIFF)
+                    df = pd.read_excel(io.BytesIO(file_content), engine='xlrd')
+                else:
+                    # .csv (默认)
+                    df = pd.read_csv(io.BytesIO(file_content))
+                
+                # 提取发票信息（假设第一行是header，第二行是数据）
+                if len(df) == 0:
+                    return {
+                        "success": False,
+                        "stage": "pending",
+                        "error": "Excel文件为空"
+                    }
+                
+                # 智能匹配列名
+                extracted_data = self._extract_from_dataframe(df)
+                return {
+                    "success": True,
+                    "stage": "excel_parsed",
+                    **extracted_data
+                }
+            except Exception as e:
+                logger.error(f"Excel解析失败: {str(e)}")
+                return {
+                    "success": False,
+                    "stage": "pending",
+                    "error": f"Excel解析失败: {str(e)}"
+                }
         
         else:
             return {
                 "success": False,
                 "error": f"不支持的文件类型: {file_type}"
             }
+    
+    def _extract_from_dataframe(self, df) -> Dict:
+        """
+        从DataFrame中提取发票字段
+        
+        智能匹配常见列名
+        """
+        import pandas as pd
+        
+        extracted = {
+            "invoice_number": None,
+            "invoice_date": None,
+            "due_date": None,
+            "total_amount": None,
+            "supplier_name": None,
+            "supplier_info": {}
+        }
+        
+        # 列名映射（不区分大小写）
+        column_mapping = {
+            'invoice_number': ['invoice number', 'invoice no', 'inv no', 'invoice_no', 'number'],
+            'invoice_date': ['invoice date', 'date', 'inv date', 'invoice_date'],
+            'due_date': ['due date', 'payment due', 'due_date'],
+            'total_amount': ['total', 'amount', 'total amount', 'grand total', 'invoice amount'],
+            'supplier_name': ['supplier', 'vendor', 'supplier name', 'vendor name', 'from']
+        }
+        
+        # 标准化列名（转小写）
+        df.columns = [str(col).lower().strip() for col in df.columns]
+        
+        # 匹配字段
+        for field, possible_names in column_mapping.items():
+            for col_name in possible_names:
+                if col_name in df.columns and not df[col_name].empty:
+                    value = df[col_name].iloc[0]
+                    
+                    if pd.notna(value):
+                        if field in ['invoice_date', 'due_date']:
+                            # 日期字段
+                            try:
+                                extracted[field] = pd.to_datetime(value).date()
+                            except:
+                                pass
+                        elif field == 'total_amount':
+                            # 金额字段
+                            try:
+                                # 移除货币符号和逗号
+                                amount_str = str(value).replace('RM', '').replace(',', '').strip()
+                                extracted[field] = Decimal(amount_str)
+                            except:
+                                pass
+                        else:
+                            # 文本字段
+                            extracted[field] = str(value).strip()[:200]
+                    break
+        
+        # 默认值
+        if not extracted["invoice_number"]:
+            extracted["invoice_number"] = f"EXCEL-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+        
+        if not extracted["invoice_date"]:
+            extracted["invoice_date"] = date.today()
+        
+        if not extracted["due_date"]:
+            extracted["due_date"] = extracted["invoice_date"] + timedelta(days=30)
+        
+        if not extracted["total_amount"]:
+            extracted["total_amount"] = Decimal('0.00')
+        
+        if not extracted["supplier_name"]:
+            extracted["supplier_name"] = "Unknown Supplier"
+        
+        return extracted
     
     def _extract_invoice_fields(self, text: str) -> Dict:
         """
@@ -297,35 +405,64 @@ class InvoiceProcessor:
         self,
         company_id: int,
         invoice_number: Optional[str],
-        supplier_name: Optional[str]
+        supplier_name: Optional[str],
+        invoice_date: Optional[date] = None,
+        total_amount: Optional[Decimal] = None
     ) -> Dict:
         """
-        检测重复发票
+        检测重复发票（双层检测）
         
-        规则：
-        1. 相同公司 + 相同发票号 = 重复
-        2. 如果发票号是AUTO-生成的（解析失败），跳过重复检测
+        策略1：如果有真实发票号（非AUTO-），检查发票号是否重复
+        策略2：如果是AUTO-号或无发票号，使用复合指纹（supplier+date+amount）
         
-        注意：AUTO-xxx号码表示解析失败，允许通过以便人工审核
+        这样可以：
+        - 防止真实发票号重复
+        - 防止OCR失败时同一张发票被重复上传
         """
-        if not invoice_number or invoice_number.startswith("AUTO-"):
-            # AUTO-xxx 是解析失败的临时号码，允许通过
-            return {"is_duplicate": False}
+        # 策略1：真实发票号检测
+        if invoice_number and not invoice_number.startswith(("AUTO-", "EXCEL-")):
+            existing = self.db.query(PurchaseInvoice).filter(
+                PurchaseInvoice.company_id == company_id,
+                PurchaseInvoice.invoice_number == invoice_number
+            ).first()
+            
+            if existing:
+                return {
+                    "is_duplicate": True,
+                    "detection_method": "invoice_number",
+                    "existing_invoice_id": existing.id,
+                    "existing_invoice_number": existing.invoice_number,
+                    "existing_invoice_date": existing.invoice_date.isoformat(),
+                    "message": f"发票号 {invoice_number} 已存在"
+                }
         
-        # 查询是否存在相同发票号
-        existing = self.db.query(PurchaseInvoice).filter(
-            PurchaseInvoice.company_id == company_id,
-            PurchaseInvoice.invoice_number == invoice_number
-        ).first()
-        
-        if existing:
-            return {
-                "is_duplicate": True,
-                "existing_invoice_id": existing.id,
-                "existing_invoice_number": existing.invoice_number,
-                "existing_invoice_date": existing.invoice_date.isoformat(),
-                "message": f"发票号 {invoice_number} 已存在"
-            }
+        # 策略2：复合指纹检测（supplier + date + amount）
+        # 防止OCR失败时的重复上传
+        if supplier_name and invoice_date and total_amount:
+            # 查找供应商
+            supplier = self.db.query(Supplier).filter(
+                Supplier.company_id == company_id,
+                Supplier.supplier_name == supplier_name
+            ).first()
+            
+            if supplier:
+                # 检查是否存在相同的 supplier + date + amount
+                existing = self.db.query(PurchaseInvoice).filter(
+                    PurchaseInvoice.company_id == company_id,
+                    PurchaseInvoice.supplier_id == supplier.id,
+                    PurchaseInvoice.invoice_date == invoice_date,
+                    PurchaseInvoice.total_amount == total_amount
+                ).first()
+                
+                if existing:
+                    return {
+                        "is_duplicate": True,
+                        "detection_method": "composite_fingerprint",
+                        "existing_invoice_id": existing.id,
+                        "existing_invoice_number": existing.invoice_number,
+                        "existing_invoice_date": existing.invoice_date.isoformat(),
+                        "message": f"已存在相同供应商、日期和金额的发票 (ID: {existing.id})"
+                    }
         
         return {"is_duplicate": False}
     
@@ -361,7 +498,7 @@ class InvoiceProcessor:
         )
         
         self.db.add(supplier)
-        self.db.commit()
+        self.db.flush()  # 使用flush而非commit，保持事务
         self.db.refresh(supplier)
         
         logger.info(f"创建新供应商: {supplier_code} - {supplier_name}")
@@ -406,7 +543,7 @@ class InvoiceProcessor:
         )
         
         self.db.add(invoice)
-        self.db.commit()
+        self.db.flush()  # 使用flush而非commit，保持事务
         self.db.refresh(invoice)
         
         return invoice
@@ -467,7 +604,7 @@ class InvoiceProcessor:
         
         self.db.add(debit_line)
         self.db.add(credit_line)
-        self.db.commit()
+        self.db.flush()  # 使用flush而非commit，保持事务
         self.db.refresh(journal_entry)
         
         logger.info(f"生成会计分录: {entry_number}, 金额: {invoice.total_amount}")
@@ -534,7 +671,7 @@ class InvoiceProcessor:
         )
         
         self.db.add(account)
-        self.db.commit()
+        self.db.flush()  # 使用flush而非commit，保持事务
         self.db.refresh(account)
         
         return account
@@ -546,10 +683,12 @@ class InvoiceProcessor:
         根据due_date自动更新status：
         - 未到期：unpaid
         - 已逾期：overdue
+        
+        注意：不commit，由外层事务统一提交
         """
         if invoice.balance_amount > 0 and invoice.due_date < date.today():
             invoice.status = 'overdue'
-            self.db.commit()
+            # 不commit，由外层事务统一处理
 
 
 # ========== 便捷函数 ==========

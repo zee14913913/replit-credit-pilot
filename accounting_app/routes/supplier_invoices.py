@@ -62,6 +62,7 @@ async def upload_supplier_invoice(
     ## 支持的文件格式
     - PDF (文本PDF或扫描件，自动OCR)
     - JPG/PNG (自动OCR)
+    - Excel/CSV (结构化数据直接提取)
     
     ## 自动处理流程
     1. **解析发票内容**：自动识别发票号、日期、金额、供应商
@@ -90,11 +91,11 @@ async def upload_supplier_invoice(
         logger.info(f"收到发票上传: company_id={company_id}, file={file.filename}")
         
         # 验证文件类型
-        if not (file.filename.lower().endswith('.pdf') or 
-                file.filename.lower().endswith(('.jpg', '.jpeg', '.png'))):
+        supported_extensions = ('.pdf', '.jpg', '.jpeg', '.png', '.xlsx', '.xls', '.csv')
+        if not file.filename.lower().endswith(supported_extensions):
             raise HTTPException(
                 status_code=415, 
-                detail="不支持的文件类型。仅支持 PDF, JPG, PNG 格式"
+                detail=f"不支持的文件类型。支持格式: {', '.join(supported_extensions)}"
             )
         
         # 读取文件内容
