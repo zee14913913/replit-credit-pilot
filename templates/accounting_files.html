@@ -264,9 +264,13 @@
         
         <div class="header-actions">
             <a href="/" class="btn btn-secondary">← 返回首页</a>
+            <button onclick="document.getElementById('fileUpload').click()" class="btn btn-primary">📤 智能上传CSV</button>
             <button onclick="refreshFiles()" class="btn btn-primary">🔄 刷新列表</button>
             <a href="/accounting_test_results" class="btn btn-primary">🧪 运行新测试</a>
         </div>
+        
+        <!-- 隐藏的文件上传输入 -->
+        <input type="file" id="fileUpload" accept=".csv" style="display: none;" onchange="handleFileUpload(event)">
         
         <div class="stats" id="stats">
             <div class="stat-card">
@@ -467,6 +471,59 @@
             if (event.target == modal) {
                 modal.style.display = 'none';
             }
+        }
+        
+        // 文件上传处理
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!file.name.endsWith('.csv')) {
+                alert('请上传CSV文件');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            // 显示上传提示
+            const filesList = document.getElementById('files-list');
+            filesList.innerHTML = '<div class="loading">📤 正在智能分析并上传文件...</div>';
+            
+            try {
+                const response = await fetch('/api/proxy/files/smart-upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // 显示识别结果
+                    let message = `✅ ${result.message}\n\n`;
+                    message += `📊 智能识别结果：\n`;
+                    message += `• 银行: ${result.identified_info.bank_name}\n`;
+                    message += `• 账号: ${result.identified_info.account_number}\n`;
+                    message += `• 月份: ${result.identified_info.statement_month}\n`;
+                    message += `• 导入交易: ${result.imported} 笔\n`;
+                    message += `• 自动匹配: ${result.matched} 笔\n\n`;
+                    message += `📁 文件已保存至:\n${result.file_saved}`;
+                    
+                    alert(message);
+                    
+                    // 刷新文件列表
+                    refreshFiles();
+                } else {
+                    alert(`❌ 上传失败：${result.message}`);
+                    loadFiles();
+                }
+            } catch (error) {
+                alert(`❌ 上传失败: ${error.message}`);
+                loadFiles();
+            }
+            
+            // 清空文件输入
+            event.target.value = '';
         }
         
         // 页面加载时获取文件列表

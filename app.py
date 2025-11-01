@@ -4753,7 +4753,23 @@ def proxy_files_api(subpath):
     """代理文件管理API请求到端口8000"""
     import requests
     
-    # 构建目标URL
+    # 特殊处理smart-upload（需要转发文件）
+    if subpath == 'smart-upload' and request.method == 'POST':
+        target_url = 'http://localhost:8000/api/smart-import/smart-upload'
+        
+        # 转发multipart/form-data
+        files = {}
+        if 'file' in request.files:
+            uploaded_file = request.files['file']
+            files['file'] = (uploaded_file.filename, uploaded_file.stream, uploaded_file.content_type)
+        
+        try:
+            response = requests.post(target_url, files=files, data=request.form)
+            return response.content, response.status_code, {'Content-Type': response.headers.get('Content-Type', 'application/json')}
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    
+    # 普通请求
     target_url = f'http://localhost:8000/api/files/{subpath}'
     
     try:

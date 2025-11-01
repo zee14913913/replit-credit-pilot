@@ -43,12 +43,14 @@ from .routes import (
     invoices,
     companies,
     tasks_routes,
-    files
+    files,
+    smart_import
 )
 
 # 注册路由
 app.include_router(companies.router, prefix="/api/companies", tags=["Companies"])
 app.include_router(bank_import.router, prefix="/api/import", tags=["Bank Import"])
+app.include_router(smart_import.router, prefix="/api/smart-import", tags=["Smart Import"])
 app.include_router(reports.router, prefix="/api/reports", tags=["Reports"])
 app.include_router(invoices.router, prefix="/api/invoices", tags=["Invoices"])
 app.include_router(tasks_routes.router, prefix="/api/tasks", tags=["Scheduled Tasks"])
