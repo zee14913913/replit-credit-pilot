@@ -10,7 +10,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 from db.database import get_db, log_audit, get_all_customers, get_customer, get_customer_cards, get_card_statements, get_statement_transactions
-from auth.flask_rbac_bridge import require_flask_auth, require_flask_permission, write_flask_audit_log, verify_flask_user
+from auth.flask_rbac_bridge import require_flask_auth, require_flask_permission, write_flask_audit_log, verify_flask_user, extract_flask_request_info
 from ingest.statement_parser import parse_statement_auto
 from validate.categorizer import categorize_transaction, validate_statement, get_spending_summary
 from validate.transaction_validator import validate_transactions, generate_validation_report
@@ -652,6 +652,7 @@ def export_transactions(customer_id, format):
             return redirect(request.referrer or url_for('index'))
         
         # 写入审计日志（防御性）
+        request_info = extract_flask_request_info()
         write_flask_audit_log(
             user_id=user.get('id', 0),
             username=user.get('username', 'unknown'),
@@ -660,12 +661,15 @@ def export_transactions(customer_id, format):
             entity_type='transaction',
             description=f"导出客户交易记录: customer_id={customer_id}, format={format}",
             success=True,
-            new_value={'customer_id': customer_id, 'format': format, 'filters': filters}
+            new_value={'customer_id': customer_id, 'format': format, 'filters': filters},
+            ip_address=request_info['ip_address'],
+            user_agent=request_info['user_agent']
         )
         
         return send_file(filepath, as_attachment=True)
     except Exception as e:
         # 写入审计日志（失败）
+        request_info = extract_flask_request_info()
         write_flask_audit_log(
             user_id=user.get('id', 0),
             username=user.get('username', 'unknown'),
@@ -674,7 +678,9 @@ def export_transactions(customer_id, format):
             entity_type='transaction',
             description=f"导出客户交易记录失败: customer_id={customer_id}, format={format}",
             success=False,
-            new_value={'customer_id': customer_id, 'format': format, 'error': str(e)}
+            new_value={'customer_id': customer_id, 'format': format, 'error': str(e)},
+            ip_address=request_info['ip_address'],
+            user_agent=request_info['user_agent']
         )
         
         flash(f'Export failed: {str(e)}', 'error')
@@ -1918,6 +1924,7 @@ def export_statement_transactions(statement_id, format):
             output.seek(0)
             
             # 写入审计日志（防御性）
+            request_info = extract_flask_request_info()
             write_flask_audit_log(
                 user_id=user.get('id', 0),
                 username=user.get('username', 'unknown'),
@@ -1926,7 +1933,9 @@ def export_statement_transactions(statement_id, format):
                 entity_type='statement',
                 description=f"导出月结单交易记录: statement_id={statement_id}, format=excel",
                 success=True,
-                new_value={'statement_id': statement_id, 'format': 'excel', 'count': len(transactions)}
+                new_value={'statement_id': statement_id, 'format': 'excel', 'count': len(transactions)},
+                ip_address=request_info['ip_address'],
+                user_agent=request_info['user_agent']
             )
             
             return send_file(output, 
@@ -1939,6 +1948,7 @@ def export_statement_transactions(statement_id, format):
             output.seek(0)
             
             # 写入审计日志（防御性）
+            request_info = extract_flask_request_info()
             write_flask_audit_log(
                 user_id=user.get('id', 0),
                 username=user.get('username', 'unknown'),
@@ -1947,7 +1957,9 @@ def export_statement_transactions(statement_id, format):
                 entity_type='statement',
                 description=f"导出月结单交易记录: statement_id={statement_id}, format=csv",
                 success=True,
-                new_value={'statement_id': statement_id, 'format': 'csv', 'count': len(transactions)}
+                new_value={'statement_id': statement_id, 'format': 'csv', 'count': len(transactions)},
+                ip_address=request_info['ip_address'],
+                user_agent=request_info['user_agent']
             )
             
             return send_file(output, 
@@ -1957,6 +1969,7 @@ def export_statement_transactions(statement_id, format):
     
     except Exception as e:
         # 写入审计日志（失败）
+        request_info = extract_flask_request_info()
         write_flask_audit_log(
             user_id=user.get('id', 0),
             username=user.get('username', 'unknown'),
@@ -1965,7 +1978,9 @@ def export_statement_transactions(statement_id, format):
             entity_type='statement',
             description=f"导出月结单交易记录失败: statement_id={statement_id}",
             success=False,
-            new_value={'statement_id': statement_id, 'format': format, 'error': str(e)}
+            new_value={'statement_id': statement_id, 'format': format, 'error': str(e)},
+            ip_address=request_info['ip_address'],
+            user_agent=request_info['user_agent']
         )
         
         flash(f'Export failed: {str(e)}', 'error')
@@ -4967,6 +4982,7 @@ def admin_login():
             session['flask_rbac_user'] = user
             
             # 写入审计日志（登录成功）
+            request_info = extract_flask_request_info()
             write_flask_audit_log(
                 user_id=user['id'],
                 username=user['username'],
@@ -4975,7 +4991,9 @@ def admin_login():
                 entity_type='session',
                 description=f"管理员登录成功: role={user['role']}",
                 success=True,
-                new_value={'role': user['role'], 'company_id': user['company_id']}
+                new_value={'role': user['role'], 'company_id': user['company_id']},
+                ip_address=request_info['ip_address'],
+                user_agent=request_info['user_agent']
             )
             
             flash(f'欢迎回来，{user["username"]}！', 'success')
@@ -4987,6 +5005,7 @@ def admin_login():
                 return redirect(url_for('index'))
         else:
             # 写入审计日志（登录失败）
+            request_info = extract_flask_request_info()
             write_flask_audit_log(
                 user_id=0,
                 username=username,
@@ -4995,7 +5014,9 @@ def admin_login():
                 entity_type='session',
                 description=f"管理员登录失败: {result['error']}",
                 success=False,
-                new_value={'username': username, 'error': result['error']}
+                new_value={'username': username, 'error': result['error']},
+                ip_address=request_info['ip_address'],
+                user_agent=request_info['user_agent']
             )
             
             flash(f'登录失败：{result["error"]}', 'error')
@@ -5012,6 +5033,7 @@ def admin_logout():
     
     # 写入审计日志（登出）
     if user:
+        request_info = extract_flask_request_info()
         write_flask_audit_log(
             user_id=user.get('id', 0),
             username=user.get('username', 'unknown'),
@@ -5019,7 +5041,9 @@ def admin_logout():
             action_type='logout',
             entity_type='session',
             description=f"管理员登出",
-            success=True
+            success=True,
+            ip_address=request_info['ip_address'],
+            user_agent=request_info['user_agent']
         )
     
     session.clear()

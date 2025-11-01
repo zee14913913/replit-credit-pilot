@@ -1,8 +1,9 @@
 """
 PDF财务报表API路由
 Phase 2-2: 添加导出分级控制（Export-Level Permissions）
+Phase 2-2 Task 4: IP/User-Agent审计日志增强
 """
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from typing import Optional
@@ -13,7 +14,7 @@ from ..services.pdf_report_generator import create_pdf_generator
 from ..services.management_report_generator import ManagementReportGenerator
 from ..services.file_storage_manager import AccountingFileStorageManager
 from ..models import Company, User, AuditLog
-from ..middleware.rbac_fixed import require_permission
+from ..middleware.rbac_fixed import require_permission, extract_request_info
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
@@ -23,6 +24,7 @@ router = APIRouter(prefix="/api/reports/pdf", tags=["PDF Reports"])
 
 @router.get("/balance-sheet")
 async def get_balance_sheet_pdf(
+    request: Request,
     company_id: int = Query(1, description="公司ID"),
     period: str = Query(..., description="期间（YYYY-MM-DD），例如：2025-11-30"),
     current_user: User = Depends(require_permission('export:management_reports', 'read')),
@@ -76,6 +78,9 @@ async def get_balance_sheet_pdf(
         
         # 写入审计日志（防御性）
         try:
+            # 提取Request信息（IP + User-Agent）
+            request_info = extract_request_info(request)
+            
             audit_log = AuditLog(
                 company_id=company_id,
                 user_id=current_user.id,
@@ -84,6 +89,8 @@ async def get_balance_sheet_pdf(
                 entity_type='report',
                 description=f"导出资产负债表PDF: period={period}",
                 new_value={'period': period, 'report_type': 'balance_sheet', 'format': 'pdf'},
+                ip_address=request_info['ip_address'],
+                user_agent=request_info['user_agent'],
                 success=True
             )
             db.add(audit_log)
@@ -110,6 +117,7 @@ async def get_balance_sheet_pdf(
 
 @router.get("/profit-loss")
 async def get_profit_loss_pdf(
+    request: Request,
     company_id: int = Query(1, description="公司ID"),
     period: str = Query(..., description="期间（YYYY-MM），例如：2025-11"),
     current_user: User = Depends(require_permission('export:management_reports', 'read')),
@@ -168,6 +176,9 @@ async def get_profit_loss_pdf(
         
         # 写入审计日志（防御性）
         try:
+            # 提取Request信息（IP + User-Agent）
+            request_info = extract_request_info(request)
+            
             audit_log = AuditLog(
                 company_id=company_id,
                 user_id=current_user.id,
@@ -176,6 +187,8 @@ async def get_profit_loss_pdf(
                 entity_type='report',
                 description=f"导出损益表PDF: period={period}",
                 new_value={'period': period, 'report_type': 'profit_loss', 'format': 'pdf'},
+                ip_address=request_info['ip_address'],
+                user_agent=request_info['user_agent'],
                 success=True
             )
             db.add(audit_log)
@@ -202,6 +215,7 @@ async def get_profit_loss_pdf(
 
 @router.get("/bank-package")
 async def get_bank_package_pdf(
+    request: Request,
     company_id: int = Query(1, description="公司ID"),
     period: str = Query(..., description="期间（YYYY-MM），例如：2025-11"),
     current_user: User = Depends(require_permission('export:management_reports', 'read')),
@@ -265,6 +279,9 @@ async def get_bank_package_pdf(
         
         # 写入审计日志（防御性）
         try:
+            # 提取Request信息（IP + User-Agent）
+            request_info = extract_request_info(request)
+            
             audit_log = AuditLog(
                 company_id=company_id,
                 user_id=current_user.id,
@@ -273,6 +290,8 @@ async def get_bank_package_pdf(
                 entity_type='report',
                 description=f"导出银行贷款包PDF: period={period}",
                 new_value={'period': period, 'report_type': 'bank_package', 'format': 'pdf'},
+                ip_address=request_info['ip_address'],
+                user_agent=request_info['user_agent'],
                 success=True
             )
             db.add(audit_log)

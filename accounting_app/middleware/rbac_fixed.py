@@ -2,10 +2,11 @@
 Phase 2-1 修复 + 增强：正确的RBAC中间件实现
 - 基础：使用FastAPI依赖注入系统，避免强制注入参数导致的TypeError
 - 增强：多公司角色绑定（Multi-tenant Role Binding）
+- Phase 2-2 Task 4: IP/User-Agent审计日志增强
 """
 from typing import Optional
 from datetime import datetime
-from fastapi import Header, HTTPException, Cookie, Depends
+from fastapi import Header, HTTPException, Cookie, Depends, Request
 from sqlalchemy.orm import Session
 import logging
 
@@ -14,6 +15,44 @@ from ..models import User, Permission, AuditLog
 from ..services.auth_service import get_user_by_token, get_user_role_for_company
 
 logger = logging.getLogger(__name__)
+
+
+# ========== Phase 2-2 Task 4: Request信息提取辅助函数 ==========
+
+def extract_request_info(request: Request) -> dict:
+    """
+    从FastAPI Request中提取IP地址和User-Agent
+    
+    Args:
+        request: FastAPI Request对象
+    
+    Returns:
+        dict: {'ip_address': str, 'user_agent': str}
+    """
+    ip_address = None
+    user_agent = None
+    
+    try:
+        # 提取IP地址（优先从X-Forwarded-For获取真实IP）
+        if request.client:
+            ip_address = request.client.host
+        
+        # 如果有代理，从X-Forwarded-For头获取真实IP
+        forwarded_for = request.headers.get('X-Forwarded-For')
+        if forwarded_for:
+            # X-Forwarded-For可能包含多个IP，取第一个
+            ip_address = forwarded_for.split(',')[0].strip()
+        
+        # 提取User-Agent
+        user_agent = request.headers.get('User-Agent')
+    
+    except Exception as e:
+        logger.warning(f"提取Request信息失败: {e}")
+    
+    return {
+        'ip_address': ip_address,
+        'user_agent': user_agent
+    }
 
 
 # 定义角色层级（数字越大权限越高）

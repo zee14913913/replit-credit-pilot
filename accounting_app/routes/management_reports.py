@@ -2,8 +2,9 @@
 Management Report API路由
 提供月度管理报表查询和导出功能
 Phase 2-2: 添加导出分级控制（Export-Level Permissions）
+Phase 2-2 Task 4: IP/User-Agent审计日志增强
 """
-from fastapi import APIRouter, Depends, Query, Response, HTTPException
+from fastapi import APIRouter, Depends, Query, Response, HTTPException, Request
 from sqlalchemy.orm import Session
 from typing import Literal, Optional
 import logging
@@ -11,7 +12,7 @@ import logging
 from ..services.management_report_generator import generate_management_report
 from ..utils.report_renderer import render_report
 from ..middleware.multi_tenant import get_current_company_id
-from ..middleware.rbac_fixed import require_permission
+from ..middleware.rbac_fixed import require_permission, extract_request_info
 from ..models import User, AuditLog
 from ..db import get_db
 
@@ -25,6 +26,7 @@ logger = logging.getLogger(__name__)
 
 @router.get("/{period}")
 def get_management_report(
+    request: Request,
     period: str,
     format: Literal['json', 'pdf'] = Query(default='json', description="输出格式：json或pdf"),
     include_details: bool = Query(default=True, description="是否包含详细数据"),
@@ -106,6 +108,9 @@ def get_management_report(
             
             # 写入审计日志（防御性）
             try:
+                # 提取Request信息（IP + User-Agent）
+                request_info = extract_request_info(request)
+                
                 audit_log = AuditLog(
                     company_id=company_id,
                     user_id=current_user.id,
@@ -114,6 +119,8 @@ def get_management_report(
                     entity_type='report',
                     description=f"导出管理报表PDF: period={period}",
                     new_value={'period': period, 'report_type': 'management', 'format': 'pdf', 'include_details': include_details},
+                    ip_address=request_info['ip_address'],
+                    user_agent=request_info['user_agent'],
                     success=True
                 )
                 db.add(audit_log)

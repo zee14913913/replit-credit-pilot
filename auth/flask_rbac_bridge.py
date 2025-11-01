@@ -6,6 +6,10 @@ Phase 2-2 Task 3: Flask与FastAPI权限统一
 - 提供Flask装饰器：require_flask_auth, require_flask_permission
 - 查询PostgreSQL的users和permissions表
 - 防御性审计日志写入
+
+Phase 2-2 Task 4: IP/User-Agent审计日志增强
+- 从Flask Request提取IP地址和User-Agent
+- 审计日志记录客户端信息
 """
 from functools import wraps
 from flask import session, redirect, url_for, flash, request, abort
@@ -20,6 +24,38 @@ logger = logging.getLogger(__name__)
 def get_pg_connection():
     """获取PostgreSQL连接（FastAPI数据库）"""
     return psycopg2.connect(os.environ.get('DATABASE_URL'))
+
+
+# ========== Phase 2-2 Task 4: Request信息提取辅助函数 ==========
+
+def extract_flask_request_info() -> dict:
+    """
+    从Flask Request中提取IP地址和User-Agent
+    
+    Returns:
+        dict: {'ip_address': str, 'user_agent': str}
+    """
+    ip_address = None
+    user_agent = None
+    
+    try:
+        # 提取IP地址（优先从X-Forwarded-For获取真实IP）
+        if request.environ.get('HTTP_X_FORWARDED_FOR'):
+            # X-Forwarded-For可能包含多个IP，取第一个
+            ip_address = request.environ.get('HTTP_X_FORWARDED_FOR').split(',')[0].strip()
+        else:
+            ip_address = request.environ.get('REMOTE_ADDR')
+        
+        # 提取User-Agent
+        user_agent = request.environ.get('HTTP_USER_AGENT')
+    
+    except Exception as e:
+        logger.warning(f"提取Flask Request信息失败: {e}")
+    
+    return {
+        'ip_address': ip_address,
+        'user_agent': user_agent
+    }
 
 
 def verify_flask_user(username: str = None, password: str = None, user_id: int = None):
@@ -131,9 +167,11 @@ def check_flask_permission(user_id: int, resource: str, action: str):
 
 def write_flask_audit_log(user_id: int, username: str, company_id: int, action_type: str, 
                           entity_type: str, description: str, success: bool, 
-                          old_value: dict = None, new_value: dict = None) -> None:
+                          old_value: dict = None, new_value: dict = None,
+                          ip_address: str = None, user_agent: str = None) -> None:
     """
     写入Flask审计日志到PostgreSQL（防御性）
+    Phase 2-2 Task 4: 支持IP地址和User-Agent记录
     
     Args:
         user_id: 用户ID
@@ -145,6 +183,8 @@ def write_flask_audit_log(user_id: int, username: str, company_id: int, action_t
         success: 操作是否成功
         old_value: 旧值（JSON）
         new_value: 新值（JSON）
+        ip_address: 客户端IP地址（可选）
+        user_agent: 客户端User-Agent（可选）
     """
     conn = None
     try:
@@ -155,14 +195,16 @@ def write_flask_audit_log(user_id: int, username: str, company_id: int, action_t
         cursor.execute("""
             INSERT INTO audit_logs (
                 company_id, user_id, username, action_type, entity_type,
-                description, old_value, new_value, success, created_at
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+                description, old_value, new_value, success, ip_address, user_agent, created_at
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
         """, (
             company_id, user_id, username, action_type, entity_type,
             description, 
             json.dumps(old_value) if old_value else None,
             json.dumps(new_value) if new_value else None,
-            success
+            success,
+            ip_address,
+            user_agent
         ))
         
         conn.commit()

@@ -2,15 +2,16 @@
 CSV导出API路由
 支持多种会计软件格式
 Phase 2-2: 添加导出分级控制（Export-Level Permissions）
+Phase 2-2 Task 4: IP/User-Agent审计日志增强
 """
-from fastapi import APIRouter, Depends, Query, Response, HTTPException
+from fastapi import APIRouter, Depends, Query, Response, HTTPException, Request
 from sqlalchemy.orm import Session
 from typing import Literal, Optional
 import logging
 
 from ..services.csv_exporter import export_to_csv, CSVExporter
 from ..middleware.multi_tenant import get_current_company_id
-from ..middleware.rbac_fixed import require_auth, require_permission
+from ..middleware.rbac_fixed import require_auth, require_permission, extract_request_info
 from ..models import User, AuditLog
 from ..db import get_db
 
@@ -24,6 +25,7 @@ logger = logging.getLogger(__name__)
 
 @router.get("/journal/csv")
 def export_journal_entries_csv(
+    request: Request,
     period: str = Query(..., description="期间，格式：YYYY-MM (例如: 2025-08)"),
     template_id: Optional[int] = Query(None, description="模板ID（优先使用数据库模板）"),
     template: Optional[Literal['generic_v1', 'sqlacc_v1', 'autocount_v1']] = Query(
@@ -104,6 +106,9 @@ def export_journal_entries_csv(
         
         # 写入审计日志（防御性）
         try:
+            # 提取Request信息（IP + User-Agent）
+            request_info = extract_request_info(request)
+            
             audit_log = AuditLog(
                 company_id=company_id,
                 user_id=current_user.id,
@@ -112,6 +117,8 @@ def export_journal_entries_csv(
                 entity_type='journal_entry',
                 description=f"导出会计分录: period={period}, template={template_id or template}",
                 new_value={'period': period, 'template': template_id or template, 'format': 'csv'},
+                ip_address=request_info['ip_address'],
+                user_agent=request_info['user_agent'],
                 success=True
             )
             db.add(audit_log)
@@ -143,6 +150,7 @@ def export_journal_entries_csv(
 
 @router.get("/bank-statements/csv")
 def export_bank_statements_csv(
+    request: Request,
     period: str = Query(..., description="期间，格式：YYYY-MM"),
     bank_name: Optional[str] = Query(None, description="银行名称（可选）"),
     company_id: int = Depends(get_current_company_id),
@@ -196,6 +204,9 @@ def export_bank_statements_csv(
         
         # 写入审计日志（防御性）
         try:
+            # 提取Request信息（IP + User-Agent）
+            request_info = extract_request_info(request)
+            
             audit_log = AuditLog(
                 company_id=company_id,
                 user_id=current_user.id,
@@ -204,6 +215,8 @@ def export_bank_statements_csv(
                 entity_type='bank_statement',
                 description=f"导出银行流水: period={period}, bank={bank_name or 'all'}",
                 new_value={'period': period, 'bank': bank_name, 'format': 'csv'},
+                ip_address=request_info['ip_address'],
+                user_agent=request_info['user_agent'],
                 success=True
             )
             db.add(audit_log)
