@@ -87,20 +87,55 @@ def main():
         for account in trial_balance['accounts'][:10]:  # 显示前10个
             print(f"   {account['account_code']:20s} | 借方: RM {account['debit']:>10,.2f} | 贷方: RM {account['credit']:>10,.2f} | 余额: RM {account['balance']:>10,.2f}")
         
-        # 测试8：交易明细
-        print("\n✅ 测试8：银行交易明细（前10笔）")
+        # 测试8：交易明细（完整列表）
+        print("\n✅ 测试8：银行交易明细（2024-07月份完整列表）")
+        print("=" * 120)
+        
+        # 获取全部交易
         results = db.execute(text(f"""
-            SELECT transaction_date, description, debit_amount, matched, auto_category
+            SELECT 
+                transaction_date, 
+                description, 
+                debit_amount, 
+                matched, 
+                auto_category
             FROM bank_statements
             WHERE company_id = {company_id} AND statement_month = '2024-07'
-            ORDER BY transaction_date
-            LIMIT 10
+            ORDER BY transaction_date, id
         """)).fetchall()
         
-        for row in results:
+        print(f"   共 {len(results)} 笔交易\n")
+        print(f"   {'序号':<4} {'日期':<12} {'描述':<50} {'金额(RM)':<12} {'状态':<12} {'分类':<30}")
+        print("   " + "-" * 118)
+        
+        matched_count = 0
+        total_amount = 0
+        category_summary = {}
+        
+        for idx, row in enumerate(results, 1):
             status = "✅ 已匹配" if row[3] else "⏳ 未匹配"
-            category = f"({row[4]})" if row[4] else ""
-            print(f"   {row[0]} | {row[1][:50]:50s} | RM {row[2]:>10,.2f} | {status} {category}")
+            category = row[4] if row[4] else "未分类"
+            
+            # 统计
+            if row[3]:
+                matched_count += 1
+            total_amount += float(row[2])
+            category_summary[category] = category_summary.get(category, 0) + 1
+            
+            # 显示交易
+            desc_short = row[1][:48] if len(row[1]) > 48 else row[1]
+            print(f"   {idx:<4} {row[0]:<12} {desc_short:<50} RM {row[2]:>10,.2f} {status:<12} {category:<30}")
+        
+        print("   " + "-" * 118)
+        print(f"\n   📊 交易统计汇总：")
+        print(f"      • 总交易数: {len(results)} 笔")
+        print(f"      • 已匹配: {matched_count} 笔 ({matched_count/len(results)*100:.1f}%)")
+        print(f"      • 未匹配: {len(results) - matched_count} 笔")
+        print(f"      • 总金额: RM {total_amount:,.2f}")
+        
+        print(f"\n   📁 分类统计：")
+        for cat, count in sorted(category_summary.items(), key=lambda x: x[1], reverse=True):
+            print(f"      • {cat:30s}: {count:2d} 笔")
         
         print("\n" + "=" * 80)
         print("🎉 所有测试完成！")
