@@ -114,25 +114,25 @@ def sample_chart_of_accounts(test_db, sample_company):
             company_id=sample_company.id,
             account_code="1100",
             account_name="Bank - Maybank",
-            account_type="Asset"
+            account_type="asset"
         ),
         ChartOfAccounts(
             company_id=sample_company.id,
             account_code="2100",
             account_name="Accounts Payable",
-            account_type="Liability"
+            account_type="liability"
         ),
         ChartOfAccounts(
             company_id=sample_company.id,
             account_code="4100",
             account_name="Sales Revenue",
-            account_type="Revenue"
+            account_type="income"
         ),
         ChartOfAccounts(
             company_id=sample_company.id,
             account_code="5100",
             account_name="Operating Expenses",
-            account_type="Expense"
+            account_type="expense"
         ),
     ]
     
