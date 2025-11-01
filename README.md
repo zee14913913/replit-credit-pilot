@@ -115,3 +115,110 @@ python app.py
 ---
 
 **最后更新**：2025年10月26日
+
+---
+
+## 🏢 Enterprise Features - Accounting API (Port 8000)
+
+### Enterprise-3: 表驱动规则引擎 (Auto-Posting Rules)
+
+**核心功能**：将硬编码的交易匹配逻辑转换为数据库驱动的规则引擎
+
+#### 📍 API端点
+
+```
+POST   /api/posting-rules          # 创建规则
+GET    /api/posting-rules          # 获取规则列表（分页+过滤）
+GET    /api/posting-rules/{id}     # 获取单条规则
+PUT    /api/posting-rules/{id}     # 更新规则
+DELETE /api/posting-rules/{id}     # 删除规则
+POST   /api/posting-rules/test     # 测试规则匹配
+```
+
+#### 🔑 核心字段
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `rule_name` | string | 规则名称（公司内唯一）|
+| `source_type` | string | 数据源类型（bank_import, supplier_invoice, pos_report）|
+| `match_pattern` | string | 匹配模式（关键词或正则）|
+| `is_regex` | boolean | 是否为正则表达式 |
+| `priority` | integer | 优先级（1-100，数字越大优先级越高）|
+| `debit_account_code` | string | 借方科目代码 |
+| `credit_account_code` | string | 贷方科目代码 |
+
+#### 📦 预装规则（20条）
+
+涵盖常见交易场景：工资、EPF、SOCSO、租金、水电、销售、采购等
+
+#### 🚀 技术特性
+
+- **智能缓存**：按source_type缓存，自动失效
+- **优先级排序**：支持1-100优先级
+- **正则支持**：支持关键词和正则表达式
+- **租户隔离**：自动注入company_id
+- **审计追踪**：记录创建者、时间和使用统计
+
+---
+
+### Enterprise-4: 表驱动导出模板系统 (CSV Export Templates)
+
+**核心功能**：将硬编码的CSV导出格式转换为数据库驱动的模板系统
+
+#### 📍 API端点
+
+```
+POST   /api/export-templates          # 创建模板
+GET    /api/export-templates          # 获取模板列表
+GET    /api/export-templates/{id}     # 获取单个模板
+PUT    /api/export-templates/{id}     # 更新模板
+DELETE /api/export-templates/{id}     # 删除模板
+POST   /api/export-templates/test     # 测试模板导出
+```
+
+#### 🔑 核心字段
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `template_name` | string | 模板名称（公司内唯一）|
+| `software_name` | string | 目标软件（SQL Account, AutoCount, UBS, Generic）|
+| `export_type` | string | 导出类型（general_ledger, journal_entry）|
+| `column_mappings` | JSONB | 字段映射配置 |
+| `date_format` | string | 日期格式 |
+| `decimal_places` | integer | 小数位数 |
+
+#### 📦 预装模板（8个）
+
+| 软件 | 类型 | 模板名称 |
+|------|------|----------|
+| SQL Account | general_ledger | SQL Account - General Ledger |
+| SQL Account | journal_entry | SQL Account - Journal Entry |
+| AutoCount | general_ledger | AutoCount - General Ledger |
+| AutoCount | trial_balance | AutoCount - Trial Balance |
+| UBS | general_ledger | UBS - General Ledger |
+| Generic | general_ledger | Generic - General Ledger |
+| Generic | chart_of_accounts | Generic - Chart of Accounts |
+
+#### 🚀 使用示例
+
+**使用模板导出CSV**：
+```bash
+GET /api/export/journal/csv?period=2025-10&template_id=5
+```
+
+---
+
+## 🔐 Enterprise安全特性
+
+### 多租户隔离
+- 所有API自动注入`company_id`
+- 双重过滤：`id` + `company_id`
+- 数据完全隔离
+
+### 审计追踪
+- 创建者（created_by）
+- 创建时间（created_at）
+- 更新时间（updated_at）
+- 使用统计（match_count / usage_count）
+
+---

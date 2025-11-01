@@ -51,7 +51,8 @@ from .routes import (
     pos_reports,
     pdf_reports,
     exceptions,
-    posting_rules
+    posting_rules,
+    export_templates
 )
 
 # 注册路由
@@ -69,6 +70,7 @@ app.include_router(pos_reports.router, tags=["POS Reports"])
 app.include_router(pdf_reports.router, tags=["PDF Reports"])
 app.include_router(exceptions.router, prefix="/api", tags=["Exception Center"])
 app.include_router(posting_rules.router, prefix="/api", tags=["Auto Posting Rules"])
+app.include_router(export_templates.router, prefix="/api", tags=["Export Templates"])
 
 
 # 启动事件：初始化数据库
@@ -96,6 +98,15 @@ async def startup_event():
             print("✅ 规则引擎种子数据已加载")
         except Exception as e:
             print(f"⚠️ 规则种子数据加载失败: {e}")
+    
+    # 执行导出模板种子数据
+    template_seed_path = os.path.join(os.path.dirname(__file__), 'seed_export_templates.sql')
+    if os.path.exists(template_seed_path):
+        try:
+            execute_sql_file(template_seed_path)
+            print("✅ 导出模板种子数据已加载")
+        except Exception as e:
+            print(f"⚠️ 导出模板种子数据加载失败: {e}")
     
     print("✅ 财务会计系统启动成功！")
     print("📊 API文档: http://localhost:8000/docs")

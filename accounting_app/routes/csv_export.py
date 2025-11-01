@@ -22,9 +22,10 @@ logger = logging.getLogger(__name__)
 @router.get("/journal/csv")
 def export_journal_entries_csv(
     period: str = Query(..., description="期间，格式：YYYY-MM (例如: 2025-08)"),
-    template: Literal['generic_v1', 'sqlacc_v1', 'autocount_v1'] = Query(
+    template_id: Optional[int] = Query(None, description="模板ID（优先使用数据库模板）"),
+    template: Optional[Literal['generic_v1', 'sqlacc_v1', 'autocount_v1']] = Query(
         default='generic_v1',
-        description="导出模板：generic_v1(通用), sqlacc_v1(SQL Account), autocount_v1(AutoCount)"
+        description="导出模板：generic_v1(通用), sqlacc_v1(SQL Account), autocount_v1(AutoCount) - fallback"
     ),
     company_id: int = Depends(get_current_company_id),
     db: Session = Depends(get_db)
@@ -87,17 +88,18 @@ def export_journal_entries_csv(
     try:
         logger.info(f"导出会计分录CSV: company_id={company_id}, period={period}, template={template}")
         
-        # 导出CSV
+        # 导出CSV（支持template_id优先）
         csv_data = export_to_csv(
             db=db,
             company_id=company_id,
             period=period,
+            template_id=template_id,
             template_name=template,
             export_type='journal'
         )
         
         # 确定文件名
-        filename = f"journal_entries_{period}_{template}.csv"
+        filename = f"journal_entries_{period}_{'template' + str(template_id) if template_id else template}.csv"
         
         # 返回CSV文件
         return Response(
@@ -163,9 +165,8 @@ def export_bank_statements_csv(
     try:
         logger.info(f"导出银行流水CSV: company_id={company_id}, period={period}, bank={bank_name}")
         
-        exporter = CSVExporter(db)
+        exporter = CSVExporter(db, company_id)
         csv_data = exporter.export_bank_statements(
-            company_id=company_id,
             period=period,
             bank_name=bank_name
         )

@@ -1,6 +1,7 @@
 """
 CSV导出服务
 支持多种会计软件格式的分录导出
+集成TemplateEngine实现表驱动导出
 """
 from typing import List, Dict, Any, Optional
 from sqlalchemy.orm import Session
@@ -10,6 +11,9 @@ import csv
 import io
 import logging
 
+from ..models import ExportTemplate
+from .template_engine import TemplateEngine
+
 logger = logging.getLogger(__name__)
 
 
@@ -18,61 +22,145 @@ class CSVExporter:
     CSV分录导出器
     
     支持的模板：
-    - generic_v1: 通用格式
-    - sqlacc_v1: SQL Account格式
-    - autocount_v1: AutoCount格式
+    - 数据库动态模板（推荐）：通过TemplateEngine使用export_templates表
+    - 硬编码模板（兼容）：generic_v1, sqlacc_v1, autocount_v1
     """
     
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, company_id: int):
         self.db = db
+        self.company_id = company_id
+        self.template_engine = TemplateEngine(db, company_id)
     
     def export_journal_entries(
         self,
-        company_id: int,
         period: str,  # 'YYYY-MM'
-        template_name: str = 'generic_v1',
+        template_id: Optional[int] = None,
+        template_name: Optional[str] = None,
         output_format: str = 'string'  # 'string' or 'bytes'
-    ) -> Any:
+    ) -> str:
         """
-        导出会计分录为CSV
+        导出会计分录为CSV（表驱动化）
         
         Args:
-            company_id: 公司ID
             period: 期间（例如: '2025-08'）
-            template_name: 模板名称（generic_v1, sqlacc_v1, autocount_v1）
+            template_id: 模板ID（优先使用）
+            template_name: 模板名称（fallback兼容旧系统）
             output_format: 输出格式 ('string' 或 'bytes')
         
         Returns:
             CSV字符串或bytes
         """
-        logger.info(f"导出CSV: company_id={company_id}, period={period}, template={template_name}")
+        logger.info(f"导出CSV: company_id={self.company_id}, period={period}, template_id={template_id}, template_name={template_name}")
         
-        # 1. 获取模板配置
-        template = self._get_template(template_name)
-        if not template:
-            raise ValueError(f"模板 {template_name} 不存在")
-        
-        # 2. 获取分录数据
-        entries = self._get_journal_entries(company_id, period)
-        
-        # 3. 转换为模板格式
-        rows = self._transform_to_template(entries, template)
-        
-        # 4. 生成CSV
-        csv_output = self._generate_csv(rows, template)
+        # 1. 获取模板（优先数据库模板）
+        if template_id:
+            template_obj = self.db.query(ExportTemplate).filter(
+                ExportTemplate.id == template_id,
+                ExportTemplate.company_id == self.company_id,
+                ExportTemplate.is_active == True
+            ).first()
+            
+            if not template_obj:
+                raise ValueError(f"模板ID {template_id} 不存在或已禁用")
+            
+            # 2. 获取分录数据
+            entries = self._get_journal_entries(period)
+            
+            # 3. 使用TemplateEngine生成CSV
+            csv_output = self.template_engine.apply_template(template_obj, entries)
+            
+            # 4. 更新使用统计
+            self.template_engine.update_usage_stats(template_id)
+            
+        else:
+            # Fallback: 使用旧的硬编码模板系统
+            template = self._get_template(template_name or 'generic_v1')
+            if not template:
+                raise ValueError(f"模板 {template_name} 不存在")
+            
+            entries = self._get_journal_entries(period)
+            rows = self._transform_to_template(entries, template)
+            csv_output = self._generate_csv(rows, template)
         
         if output_format == 'bytes':
-            return csv_output.encode(template.get('encoding', 'UTF-8'))
+            encoding = template_obj.encoding if template_id else 'UTF-8'
+            return csv_output.encode(encoding)
         else:
             return csv_output
     
+    def _get_journal_entries(self, period: str) -> List[Dict[str, Any]]:
+        """
+        获取指定期间的会计分录
+        
+        Args:
+            period: 'YYYY-MM'
+        
+        Returns:
+            分录数据列表（字典格式）
+        """
+        from ..models import JournalEntry, JournalEntryLine, ChartOfAccounts
+        
+        # 解析期间
+        year, month = map(int, period.split('-'))
+        
+        # 查询分录
+        query = self.db.query(
+            JournalEntryLine,
+            JournalEntry,
+            ChartOfAccounts
+        ).join(
+            JournalEntry, JournalEntryLine.entry_id == JournalEntry.id
+        ).join(
+            ChartOfAccounts, JournalEntryLine.account_code == ChartOfAccounts.account_code
+        ).filter(
+            JournalEntry.company_id == self.company_id,
+            JournalEntry.entry_date.between(
+                date(year, month, 1),
+                date(year, month, 28 if month == 2 else 30 if month in [4, 6, 9, 11] else 31)
+            )
+        ).order_by(JournalEntry.entry_date, JournalEntry.id, JournalEntryLine.line_number)
+        
+        # 转换为字典列表
+        entries = []
+        for line, entry, account in query.all():
+            entries.append({
+                'entry_number': entry.entry_number,
+                'entry_date': entry.entry_date,
+                'account_code': line.account_code,
+                'account_name': account.account_name,
+                'description': line.description or entry.description,
+                'debit_amount': float(line.debit_amount) if line.debit_amount else 0,
+                'credit_amount': float(line.credit_amount) if line.credit_amount else 0,
+                'reference_number': entry.reference_number,
+                'entry_type': entry.entry_type
+            })
+        
+        logger.info(f"查询到 {len(entries)} 条分录")
+        return entries
+    
     def _get_template(self, template_name: str) -> Optional[Dict]:
         """
-        从数据库获取模板配置
+        从数据库获取模板配置（兼容旧系统）
         
         如果数据库中没有，使用内置模板
         """
-        # TODO: 从export_templates表中查询
+        # 尝试从数据库获取
+        db_template = self.db.query(ExportTemplate).filter(
+            ExportTemplate.company_id == self.company_id,
+            ExportTemplate.template_name == template_name,
+            ExportTemplate.is_active == True
+        ).first()
+        
+        if db_template:
+            return {
+                'columns': list(db_template.column_mappings.keys()),
+                'field_mapping': db_template.column_mappings,
+                'delimiter': db_template.delimiter,
+                'date_format': db_template.date_format,
+                'encoding': db_template.encoding
+            }
+        
+        # Fallback: 内置模板
         # 目前使用内置模板
         
         built_in_templates = {
@@ -127,56 +215,6 @@ class CSVExporter:
         }
         
         return built_in_templates.get(template_name)
-    
-    def _get_journal_entries(self, company_id: int, period: str) -> List[Dict]:
-        """
-        获取指定期间的会计分录
-        
-        Returns:
-            分录列表，每个分录包含借贷行
-        """
-        from ..models import JournalEntry, JournalEntryLine, ChartOfAccounts
-        
-        # 解析期间
-        year, month = map(int, period.split('-'))
-        period_start = date(year, month, 1)
-        if month == 12:
-            period_end = date(year + 1, 1, 1)
-        else:
-            period_end = date(year, month + 1, 1)
-        
-        # 查询分录
-        journal_entries = self.db.query(JournalEntry).filter(
-            JournalEntry.company_id == company_id,
-            JournalEntry.entry_date >= period_start,
-            JournalEntry.entry_date < period_end
-        ).all()
-        
-        result = []
-        
-        for entry in journal_entries:
-            # 获取分录行
-            lines = self.db.query(JournalEntryLine).filter(
-                JournalEntryLine.journal_entry_id == entry.id
-            ).all()
-            
-            for line in lines:
-                # 获取会计科目
-                account = self.db.query(ChartOfAccounts).filter(
-                    ChartOfAccounts.id == line.account_id
-                ).first()
-                
-                result.append({
-                    'entry_date': entry.entry_date,
-                    'account_code': account.account_code if account else 'UNKNOWN',
-                    'account_name': account.account_name if account else 'Unknown Account',
-                    'description': line.description or entry.description,
-                    'debit_amount': line.debit_amount if line.debit_amount else Decimal('0.00'),
-                    'credit_amount': line.credit_amount if line.credit_amount else Decimal('0.00'),
-                    'reference_no': entry.reference_number or ''
-                })
-        
-        return result
     
     def _transform_to_template(self, entries: List[Dict], template: Dict) -> List[Dict]:
         """
@@ -250,7 +288,6 @@ class CSVExporter:
     
     def export_bank_statements(
         self,
-        company_id: int,
         period: str,
         bank_name: Optional[str] = None,
         template_name: str = 'generic_v1'
@@ -264,7 +301,7 @@ class CSVExporter:
         
         # 查询银行流水
         query = self.db.query(BankStatement).filter(
-            BankStatement.company_id == company_id,
+            BankStatement.company_id == self.company_id,
             BankStatement.statement_month == period
         )
         
@@ -314,21 +351,23 @@ def export_to_csv(
     db: Session,
     company_id: int,
     period: str,
+    template_id: Optional[int] = None,
     template_name: str = 'generic_v1',
     export_type: str = 'journal'  # 'journal' or 'bank'
 ) -> str:
     """
-    便捷函数：导出CSV
+    便捷函数：导出CSV（支持模板引擎）
     
     使用示例:
+    csv_data = export_to_csv(db, company_id=1, period='2025-08', template_id=5)
     csv_data = export_to_csv(db, company_id=1, period='2025-08', template_name='sqlacc_v1')
     """
-    exporter = CSVExporter(db)
+    exporter = CSVExporter(db, company_id)
     
     if export_type == 'journal':
-        return exporter.export_journal_entries(company_id, period, template_name)
+        return exporter.export_journal_entries(period, template_id, template_name)
     elif export_type == 'bank':
-        return exporter.export_bank_statements(company_id, period, template_name=template_name)
+        return exporter.export_bank_statements(period, template_name=template_name)
     else:
         raise ValueError(f"不支持的导出类型: {export_type}")
 
