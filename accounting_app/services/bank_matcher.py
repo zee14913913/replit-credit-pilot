@@ -74,7 +74,8 @@ def auto_match_transactions(db: Session, company_id: int, statement_month: str) 
     
     matched_count = 0
     engine = RuleEngine(db, company_id)
-    exception_mgr = ExceptionManager(db, company_id)
+    # ExceptionManager不需要实例化，直接使用类方法
+    # exception_mgr = ExceptionManager(db, company_id)
     
     for stmt in unmatched:
         description_lower = stmt.description.lower()
@@ -104,7 +105,9 @@ def auto_match_transactions(db: Session, company_id: int, statement_month: str) 
                 
             except Exception as e:
                 logger.error(f"❌ RuleEngine生成分录失败: {e}")
-                exception_mgr.record_posting_error(
+                ExceptionManager.record_posting_error(
+                    db=db,
+                    company_id=company_id,
                     source_type='bank_import',
                     source_id=stmt.id,
                     error_message=str(e),
@@ -141,7 +144,9 @@ def auto_match_transactions(db: Session, company_id: int, statement_month: str) 
             logger.info(f"✅ 使用legacy规则生成分录: {stmt.description[:50]}")
         except Exception as e:
             logger.error(f"❌ 生成分录失败: {e}")
-            exception_mgr.record_posting_error(
+            ExceptionManager.record_posting_error(
+                db=db,
+                company_id=company_id,
                 source_type='bank_import',
                 source_id=stmt.id,
                 error_message=str(e),
