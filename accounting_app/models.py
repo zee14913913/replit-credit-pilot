@@ -604,3 +604,50 @@ class AuditLog(Base):
         Index('idx_audit_logs_company_action', 'company_id', 'action_type'),
         Index('idx_audit_logs_entity_lookup', 'entity_type', 'entity_id'),
     )
+
+
+class User(Base):
+    """
+    Phase 2-1: 用户表（RBAC权限系统）
+    支持5种角色：admin, accountant, viewer, data_entry, loan_officer
+    """
+    __tablename__ = "users"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=False, index=True)
+    username = Column(String(100), nullable=False)
+    email = Column(String(255), nullable=False, index=True)
+    password_hash = Column(String(255), nullable=False)  # SHA-256 hashed
+    full_name = Column(String(200))
+    role = Column(String(20), nullable=False, default='viewer')  # admin/accountant/viewer/data_entry/loan_officer
+    is_active = Column(Boolean, default=True, index=True)
+    last_login = Column(DateTime(timezone=True))
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
+    
+    __table_args__ = (
+        Index('idx_users_company_username', 'company_id', 'username', unique=True),
+        Index('idx_users_company_email', 'company_id', 'email', unique=True),
+        Index('idx_users_company_role', 'company_id', 'role'),
+    )
+
+
+class Permission(Base):
+    """
+    Phase 2-1: 权限矩阵表（资源级权限控制）
+    控制每个角色对不同资源的操作权限
+    """
+    __tablename__ = "permissions"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    role = Column(String(20), nullable=False)  # admin/accountant/viewer/data_entry/loan_officer
+    resource = Column(String(100), nullable=False)  # 资源名称，* 表示所有资源
+    action = Column(String(50), nullable=False)  # 操作类型，* 表示所有操作
+    allowed = Column(Boolean, default=True)
+    description = Column(Text)
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_permissions_role_resource_action', 'role', 'resource', 'action', unique=True),
+        Index('idx_permissions_role_resource', 'role', 'resource'),
+    )

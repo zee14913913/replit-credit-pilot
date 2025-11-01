@@ -14,6 +14,8 @@ schemas_file = Path(__file__).parent.parent / "schemas.py"
 
 # 动态加载schemas.py模块
 spec = importlib.util.spec_from_file_location("old_schemas", schemas_file)
+if spec is None or spec.loader is None:
+    raise ImportError(f"无法加载schemas.py from {schemas_file}")
 old_schemas = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(old_schemas)
 
