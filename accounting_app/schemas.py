@@ -317,3 +317,59 @@ class ExceptionSummary(BaseModel):
     by_status: dict  # {new: 5, in_progress: 2, resolved: 1}
     critical_count: int
     high_count: int
+
+
+# ==================== Auto Posting Rules Schemas ====================
+class RuleBase(BaseModel):
+    rule_name: str
+    source_type: str  # bank_import, supplier_invoice, sales_invoice, general
+    pattern: str  # 匹配模式（关键字或正则表达式）
+    is_regex: bool = False
+    priority: int = 100  # 优先级（数字越小优先级越高）
+    debit_account_code: str
+    credit_account_code: str
+    description: Optional[str] = None
+    is_active: bool = True
+
+class RuleCreate(RuleBase):
+    pass  # company_id通过Depends(get_current_company_id)注入
+
+class RuleUpdate(BaseModel):
+    rule_name: Optional[str] = None
+    source_type: Optional[str] = None
+    pattern: Optional[str] = None
+    is_regex: Optional[bool] = None
+    priority: Optional[int] = None
+    debit_account_code: Optional[str] = None
+    credit_account_code: Optional[str] = None
+    description: Optional[str] = None
+    is_active: Optional[bool] = None
+
+class RuleResponse(RuleBase):
+    id: int
+    company_id: int
+    match_count: int
+    last_matched_at: Optional[datetime] = None
+    created_by: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class RuleListResponse(BaseModel):
+    total: int
+    page: int
+    page_size: int
+    rules: List[RuleResponse]
+
+class RuleTestRequest(BaseModel):
+    """测试规则匹配请求"""
+    description: str  # 要测试的交易描述
+    source_type: str = "bank_import"
+
+class RuleTestResponse(BaseModel):
+    """测试规则匹配响应"""
+    matched: bool
+    rule: Optional[RuleResponse] = None
+    reason: Optional[str] = None
