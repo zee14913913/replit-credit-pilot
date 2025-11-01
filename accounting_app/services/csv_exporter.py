@@ -3,7 +3,7 @@ CSV导出服务
 支持多种会计软件格式的分录导出
 集成TemplateEngine实现表驱动导出
 """
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union
 from sqlalchemy.orm import Session
 from datetime import date, datetime
 from decimal import Decimal
@@ -37,7 +37,7 @@ class CSVExporter:
         template_id: Optional[int] = None,
         template_name: Optional[str] = None,
         output_format: str = 'string'  # 'string' or 'bytes'
-    ) -> str:
+    ) -> Union[str, bytes]:
         """
         导出会计分录为CSV（表驱动化）
         
@@ -81,10 +81,17 @@ class CSVExporter:
             entries = self._get_journal_entries(period)
             rows = self._transform_to_template(entries, template)
             csv_output = self._generate_csv(rows, template)
+            encoding = template.get('encoding', 'UTF-8')
         
+            if output_format == 'bytes':
+                return csv_output.encode(encoding)
+            else:
+                return csv_output
+        
+        # For template_id path
         if output_format == 'bytes':
-            encoding = template_obj.encoding if template_id else 'UTF-8'
-            return csv_output.encode(encoding)
+            encoding_str: str = str(template_obj.encoding) if template_obj.encoding is not None else 'utf-8'
+            return csv_output.encode(encoding_str)
         else:
             return csv_output
     
@@ -313,17 +320,29 @@ class CSVExporter:
         # 转换为字典列表
         data = []
         for stmt in statements:
+            # 提取值并进行类型转换（避免SQLAlchemy Column类型问题）
+            bank_val: str = str(stmt.bank_name) if stmt.bank_name is not None else ''
+            account_val: str = str(stmt.account_number) if stmt.account_number is not None else ''
+            desc_val: str = str(stmt.description) if stmt.description is not None else ''
+            ref_val: str = str(stmt.reference_number) if stmt.reference_number is not None else ''
+            # type: ignore用于SQLAlchemy Column类型推断问题
+            debit_val: float = float(stmt.debit_amount if stmt.debit_amount is not None else 0)  # type: ignore
+            credit_val: float = float(stmt.credit_amount if stmt.credit_amount is not None else 0)  # type: ignore
+            balance_val: float = float(stmt.balance if stmt.balance is not None else 0)  # type: ignore
+            matched_val: bool = bool(stmt.matched) if stmt.matched is not None else False
+            category_val: str = str(stmt.auto_category) if stmt.auto_category is not None else ''
+            
             data.append({
                 'date': stmt.transaction_date.strftime('%Y-%m-%d'),
-                'bank': stmt.bank_name,
-                'account': stmt.account_number,
-                'description': stmt.description,
-                'reference': stmt.reference_number or '',
-                'debit': f"{float(stmt.debit_amount):.2f}" if stmt.debit_amount else '0.00',
-                'credit': f"{float(stmt.credit_amount):.2f}" if stmt.credit_amount else '0.00',
-                'balance': f"{float(stmt.balance):.2f}" if stmt.balance else '',
-                'matched': 'Yes' if stmt.matched else 'No',
-                'category': stmt.auto_category or ''
+                'bank': bank_val,
+                'account': account_val,
+                'description': desc_val,
+                'reference': ref_val,
+                'debit': f"{debit_val:.2f}",
+                'credit': f"{credit_val:.2f}",
+                'balance': f"{balance_val:.2f}" if balance_val != 0.0 else '',
+                'matched': 'Yes' if matched_val else 'No',
+                'category': category_val
             })
         
         # 生成CSV
@@ -354,7 +373,7 @@ def export_to_csv(
     template_id: Optional[int] = None,
     template_name: str = 'generic_v1',
     export_type: str = 'journal'  # 'journal' or 'bank'
-) -> str:
+) -> Union[str, bytes]:
     """
     便捷函数：导出CSV（支持模板引擎）
     

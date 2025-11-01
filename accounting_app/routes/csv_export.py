@@ -94,7 +94,7 @@ def export_journal_entries_csv(
             company_id=company_id,
             period=period,
             template_id=template_id,
-            template_name=template,
+            template_name=template or 'generic_v1',
             export_type='journal'
         )
         
