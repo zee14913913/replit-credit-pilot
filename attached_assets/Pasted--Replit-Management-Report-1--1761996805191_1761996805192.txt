@@ -1,0 +1,145 @@
+▶️ 给 Replit 的补充优化建议
+
+下面是对你刚才产出的《文件解析 + 自动记账 + Management Report 系统架构分析》的补充，请一并纳入设计，不要省略。
+
+1. 多租户隔离要更严格
+	•	现在的设计只是“有 company_id 字段”，但还需要：
+	•	所有查询必须默认加 WHERE company_id = :current_company_id
+	•	做一个统一的 dependency / middleware 去注入当前公司ID，避免忘记写条件
+	•	文件路径里已经有 {company_id}，数据库里也要加 唯一索引，例如：
+
+CREATE UNIQUE INDEX ux_files_company_path
+ON file_index (company_id, storage_path);
+
+
+	•	这样不同客户不会读到彼此的文件。
+
+2. PDF 解析必须是“可降级”的
+请加一条明确规则到代码里：
+	1.	尝试文本PDF解析
+	2.	不行 → 尝试 OCR
+	3.	再不行 → 丢进 pending_documents
+	4.	并给出 待办原因 字段（比如：ocr_failed, layout_unsupported, bank_template_unknown）
+
+这样前端能告诉用户“这张单你要自己key”。不要只放一个大字符串。
+
+3. 规则匹配引擎要做成可配置，而不是写死
+现在的设计里提到了“规则匹配引擎”，请把它拆出来做成表驱动：
+	•	新增表：auto_posting_rules
+
+CREATE TABLE auto_posting_rules (
+  id SERIAL PRIMARY KEY,
+  company_id INT NOT NULL,
+  pattern TEXT NOT NULL,           -- 例如 'salary','gaji','epf'
+  target_account_code VARCHAR(50) NOT NULL,
+  posting_type VARCHAR(20) NOT NULL,  -- debit / credit / split
+  tax_flag BOOLEAN DEFAULT FALSE,
+  is_active BOOLEAN DEFAULT TRUE
+);
+
+
+	•	这样我以后不用改代码就能加新规则
+	•	同时要支持 bank-specific rules（不同银行描述不一样）
+
+4. CSV 导出要支持“多模板”
+你写的 /export/journal/csv 现在是单一格式，我要你改成这样：
+	•	路由：GET /export/journal/csv?company_id=...&period=2025-01&template=sqlacc_v1
+	•	系统内置几种模板：
+	•	generic_v1
+	•	sqlacc_v1
+	•	autocount_v1
+	•	每个模板的字段顺序/标题从一张配置表里读：
+
+CREATE TABLE export_templates (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) UNIQUE,
+  description TEXT,
+  columns JSONB        -- 例如 ["date","account_code","description","debit","credit","ref_no"]
+);
+
+
+
+这样你后面换会计软件或者客户要别的格式，你不用再改代码。
+
+5. 文件索引表里要写清楚“原件 vs 成品”
+现在的目录设计是对的，但数据库里也要分：
+
+CREATE TABLE file_index (
+  id SERIAL PRIMARY KEY,
+  company_id INT NOT NULL,
+  module VARCHAR(50) NOT NULL,         -- bank, supplier, pos, reports, mgmt
+  file_type VARCHAR(20) NOT NULL,      -- original / generated
+  storage_path TEXT NOT NULL,
+  related_doc_id INT,                  -- 可关联到 bank_statements / purchase_invoices / sales_invoices
+  created_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
+这样以后我能查：
+	•	某个银行交易 → 原始PDF是哪一张
+	•	某个月的 management report → 最新版本是哪一个
+
+6. Management Report 要加“数据可信度段落”
+请把管理报表的输出加一节固定字段：
+	•	data_freshness：本报表基于的最后数据日期（例如：2025-08-31）
+	•	unreconciled_count：未匹配笔数
+	•	estimated_revenue_gap：因为未匹配可能遗漏的收入估算（可选）
+	•	source_modules：本期包含的模块（bank / pos / supplier / manual）
+
+银行会看这一段的，你帮我写进去。
+
+7. 定时任务要有“幂等性”
+现在你设计了 /tasks/run-daily 之类的路由，请再补上这个要求：
+	•	每个任务执行时，要先判断今天是不是已经跑过
+	•	可以建一张 task_runs 表记录：
+
+CREATE TABLE task_runs (
+  id SERIAL PRIMARY KEY,
+  task_name VARCHAR(100) NOT NULL,
+  run_date DATE NOT NULL,
+  status VARCHAR(20) NOT NULL,
+  details TEXT,
+  UNIQUE (task_name, run_date)
+);
+
+
+	•	不然外部 ping 多几次就会生成多份报表、多张发票。
+
+8. 报表生成要前后端都能调
+请加一句：所有报表接口都要支持 JSON + PDF 两种；JSON 是给前端渲染用的，PDF 是导出用的。不要只给 PDF。你前面已经这样写了，但要它在代码里统一做一个 helper，比如：
+
+def render_report(data, format="json"):
+    ...
+
+不然它会每个报表都写一堆重复代码。
+
+9. 安全性要加 Token
+你已经设计了 /tasks/run-daily 这种公开路由，请加这一条：
+	•	所有任务触发路由都要带一个简单的 header token：X-TASK-TOKEN: <value-from-env>
+	•	Token 从环境变量里读，避免别人乱触发。
+
+10. 日志要能查“哪一个PDF失败”
+让它在 processing_logs 里多加这几个字段：
+	•	original_filename
+	•	error_stage（upload / parse / ocr / mapping / posting）
+	•	error_detail
+	•	related_file_id
+
+这样你团队看后台的时候就能一眼看出是哪张银行单识别不到。
+
+⸻
+
+📦 你可以直接贴给 Replit 的版本
+
+请在现有架构分析的基础上，按下面几点再调整一次方案，不要省略：
+	1.	所有业务查询都要强制带 company_id，并做成统一的依赖/中间件，避免漏过滤。
+	2.	把“规则匹配引擎”做成表驱动（auto_posting_rules），而不是写死在代码里，支持不同银行描述、不同公司规则。
+	3.	/export/journal/csv 要支持多模板输出，用一张配置表（export_templates）定义列顺序，路由加上 template= 参数。
+	4.	file_index 表里要区分 file_type = original | generated，并记录 module，这样以后能从交易反查原始PDF。
+	5.	Management Report 里要固定增加一个 “Data Quality / Unreconciled Items” 小节，把 pending_documents 里的记录数量写进去。
+	6.	所有定时任务路由(/tasks/run-*) 都要做幂等性控制，用一张 task_runs 表记录当天是否已跑过。
+	7.	所有任务/报表触发路由都要支持 header token，比如 X-TASK-TOKEN，token 从环境变量里读。
+	8.	PDF 解析流程要显式写成三段：文本→OCR→pending，不能只写一个解析函数。
+	9.	日志表(processing_logs)请加 error_stage 和 original_filename 字段，方便排查是哪一张文件失败。
+	10.	请在文档里写明：未来文件存储可以从本地目录无缝换成 S3/MinIO，只要保持你现在定义的路径规则即可。
+
+⸻
