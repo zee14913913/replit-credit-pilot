@@ -249,9 +249,11 @@ class ManagementReportGenerator:
                 equity_total += equity_amount
                 equity_details[account_name] = float(equity_amount)
         
-        # 查询AR和AP余额（更准确，传入as_of_date）
-        ar_balance = self._get_accounts_receivable_balance(as_of_date)
-        ap_balance = self._get_accounts_payable_balance(as_of_date)
+        # 从asset_details中提取AR余额（基于account_name关键词匹配）
+        ar_balance = self._extract_ar_balance_from_details(asset_details)
+        
+        # 从liability_details中提取AP余额（基于account_name关键词匹配）
+        ap_balance = self._extract_ap_balance_from_details(liability_details)
         
         # 查询银行余额
         bank_total = self._get_total_bank_balance(as_of_date)
@@ -450,7 +452,7 @@ class ManagementReportGenerator:
             balances.append({
                 "bank_name": stmt.bank_name,
                 "account_number": stmt.account_number,
-                "balance": float(stmt.balance or 0),
+                "balance": float(stmt.balance) if stmt.balance is not None else 0.0,
                 "last_updated": stmt.transaction_date.isoformat()
             })
         
@@ -555,47 +557,45 @@ class ManagementReportGenerator:
     
     # ========== 辅助方法 ==========
     
-    def _get_accounts_receivable_balance(self, as_of_date: date) -> float:
+    def _extract_ar_balance_from_details(self, asset_details: Dict[str, float]) -> float:
         """
-        获取应收账款总余额（基于journal entry_date，确保与总账一致）
+        从asset_details中提取AR余额（基于account_name关键词匹配）
         
-        只计算已过账且entry_date < as_of_date的发票余额
+        这是正确的做法：从journal_entry_lines汇总的余额已经是time-sliced的，
+        而不是使用invoice.balance_amount（它是当前余额，不保留历史）
         """
-        result = (
-            self.db.query(func.sum(SalesInvoice.balance_amount))
-            .join(JournalEntry, SalesInvoice.journal_entry_id == JournalEntry.id)
-            .filter(
-                SalesInvoice.company_id == self.company_id,
-                SalesInvoice.balance_amount > 0,
-                JournalEntry.entry_date < as_of_date,  # 基于entry_date而非invoice_date
-                JournalEntry.status == 'posted'
-            )
-            .scalar()
-        )
-        return float(result or 0)
+        ar_keywords = [
+            'Receivable', 'receivable', 'AR', 'A/R',
+            '应收', '应收账款', 'Accounts Receivable'
+        ]
+        ar_balance = 0.0
+        for account_name, balance in asset_details.items():
+            if any(keyword in account_name for keyword in ar_keywords):
+                ar_balance += balance
+        return ar_balance
     
-    def _get_accounts_payable_balance(self, as_of_date: date) -> float:
+    def _extract_ap_balance_from_details(self, liability_details: Dict[str, float]) -> float:
         """
-        获取应付账款总余额（基于journal entry_date，确保与总账一致）
+        从liability_details中提取AP余额（基于account_name关键词匹配）
         
-        只计算已过账且entry_date < as_of_date的发票余额
+        这是正确的做法：从journal_entry_lines汇总的余额已经是time-sliced的，
+        而不是使用invoice.balance_amount（它是当前余额，不保留历史）
         """
-        result = (
-            self.db.query(func.sum(PurchaseInvoice.balance_amount))
-            .join(JournalEntry, PurchaseInvoice.journal_entry_id == JournalEntry.id)
-            .filter(
-                PurchaseInvoice.company_id == self.company_id,
-                PurchaseInvoice.balance_amount > 0,
-                JournalEntry.entry_date < as_of_date,  # 基于entry_date而非invoice_date
-                JournalEntry.status == 'posted'
-            )
-            .scalar()
-        )
-        return float(result or 0)
+        ap_keywords = [
+            'Payable', 'payable', 'AP', 'A/P',
+            '应付', '应付账款', 'Accounts Payable'
+        ]
+        ap_balance = 0.0
+        for account_name, balance in liability_details.items():
+            if any(keyword in account_name for keyword in ap_keywords):  # 修复：使用ap_keywords
+                ap_balance += balance
+        return ap_balance
     
     def _get_total_bank_balance(self, as_of_date: date) -> Decimal:
         """获取所有银行账户余额总和"""
         balances = self._generate_bank_balances(as_of_date)
+        if not balances:
+            return Decimal('0')
         total = sum(Decimal(str(b['balance'])) for b in balances)
         return total
 
