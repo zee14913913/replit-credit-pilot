@@ -3,111 +3,6 @@
 ## Overview
 The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. Its core purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation, guaranteeing 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization suggestions (debt consolidation, balance transfers, loan refinancing), and a success-based fee model. The business vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
-## Recent Changes
-**2025-11-01**: Task Enterprise-2完成 - Exception Center异常中心（Architect审查通过）
-- **核心功能**:
-  - 集中管理5类异常：pdf_parse, ocr_error, customer_mismatch, supplier_mismatch, posting_error
-  - 4级严重程度：low, medium, high, critical
-  - 完整生命周期管理：new → in_progress → resolved/ignored
-- **API端点（7个）**:
-  - GET /api/exceptions/summary - 异常摘要统计
-  - GET /api/exceptions/ - 异常列表（分页+过滤）
-  - GET /api/exceptions/{id} - 异常详情
-  - POST /api/exceptions/ - 创建异常
-  - PUT /api/exceptions/{id}/resolve - 标记为已解决
-  - PUT /api/exceptions/{id}/ignore - 忽略异常
-  - DELETE /api/exceptions/{id} - 删除异常
-- **租户隔离修复**:
-  - 所有端点使用Depends(get_current_company_id)依赖注入
-  - CREATE端点不接受用户伪造的company_id
-  - 单记录操作双重过滤（id + company_id）
-  - Architect验证通过：符合"银行可信任"安全要求
-- **ExceptionManager服务**:
-  - 通用方法：record_exception()
-  - 快捷方法：record_pdf_parse_error(), record_ocr_error(), record_customer_mismatch(), record_supplier_mismatch(), record_posting_error()
-  - 摘要方法：get_exception_summary()
-- **Management Report集成**:
-  - exception_summary字段自动包含在月度报表中
-  - 显示critical_count和high_count用于警告
-- **文档完善**:
-  - README.md添加Exception Center API完整文档
-
-**2025-11-01**: Task Enterprise-1完成 - AR/AP Aging业务视图（Architect审查通过）
-- **新增API端点**:
-  - GET /reports/ar-aging/view - 应收账款账龄报表（按客户分组，0-30/31-60/61-90/90+天）
-  - GET /reports/ap-aging/view - 应付账款账龄报表（按供应商分组，0-30/31-60/61-90/90+天）
-- **统一计算服务**:
-  - 创建AgingCalculator服务（accounting_app/services/aging_calculator.py）
-  - 提供calculate_ar_aging()、calculate_ap_aging()方法
-  - Management Report引用同一服务（避免重复逻辑）
-- **关键修复**:
-  - 添加invoice_date < as_of_date过滤条件（排除未来发票）
-  - 确保aging快照准确反映截止日期状态
-  - Architect验证通过：符合"银行可信任"要求
-- **架构设计**:
-  - 采用共享服务模式（而非HTTP自调用）
-  - 单一真实数据源（Single Source of Truth）
-  - API路由和Management Report均调用AgingCalculator
-- **文档完善**:
-  - README.md添加AR/AP Aging API完整文档
-  - 包含请求/响应示例和业务用途说明
-
-**2025-11-01**: Task 11完成 - 测试框架与完整API文档
-- **测试基础设施**:
-  - 配置pytest测试框架（pytest.ini + conftest.py）
-  - 创建8个共享fixtures（test_db, client, sample_company, sample_chart_of_accounts等）
-  - 独立测试数据库（SQLite），每次测试自动清理
-- **单元测试**:
-  - FileStorageManager: 12个测试100%通过（包括安全测试）
-  - ManagementReportGenerator: 5个测试（报表结构、计算验证）
-- **集成测试**:
-  - Files API: 5个测试100%通过
-  - PDF Reports API: 测试框架完成
-  - Monthly Close API: 测试框架完成
-- **关键安全测试通过**:
-  - 跨租户访问防护验证
-  - 路径遍历攻击防护验证
-  - 前缀匹配漏洞修复验证（commonpath实现）
-- **API文档**:
-  - 完整README.md（accounting_app/README.md）
-  - 5个核心API模块文档（Management Reports, PDF Reports, Files, Monthly Close, Bank Import）
-  - Python + cURL调用示例
-  - FastAPI自动文档（/docs）已完善
-- **修复问题**:
-  - ChartOfAccounts fixture使用小写account_type（符合CHECK constraint）
-  - Files API路径对齐实际路由（path parameters而非query parameters）
-
-**2025-11-01**: Task 9-10完成 - FileStorageManager + PDF自动归档
-- **Task 9 - Unified File Storage Manager**:
-  - 创建AccountingFileStorageManager服务，多租户隔离和标准化路径生成
-  - 目录结构：/accounting_data/companies/{company_id}/[bank_statements|pos_reports|invoices|reports]/...
-  - 安全特性：validate_path_security()使用commonpath防止跨租户访问（修复prefix-matching漏洞）
-  - files.py提供公司级文件列表、存储统计、下载、删除和查看功能
-- **Task 10 - 自动化任务扩展**:
-  - PDF报表自动归档：Balance Sheet, P&L, Bank Package全部生成后自动保存到FileStorageManager
-  - bank_import.py自动保存银行月结单CSV
-  - 标准化文件命名：company{id}_{type}_{details}_{timestamp}.ext
-  - 日志记录：所有文件保存操作均记录到logger
-
-**2025-10-30**: CHEOK JUN YOON 5-9月详细月结报告完成
-- 时间范围：2025年5月-9月（5个月）
-- 已识别Supplier：AI SMART TECH, HUAWEI, PUCHONG HERBS, RIMAN, GUARDIAN, SHOPEE等
-- Supplier消费总额：RM 144,719.54（42笔交易）
-- 手续费(1%)：RM 1,447.20
-- 应收总额：RM 146,166.74
-- 实际付款总额：RM 82,784.49（从5个账户的转账记录）
-- 净余额（客户欠款）：RM 63,382.25
-- 报告包含每笔交易的完整明细：消费日期、银行、卡号、Supplier名称、付款描述等
-- **缺失数据**：RAUB SYC HAINAN和PASARAYA的交易在数据库中不存在，可能账单未导入
-
-**2025-10-30**: Public Bank活期账户导入完成
-- 成功导入AI SMART TECH SDN. BHD.的Public Bank Islamic账户#3824549009
-- 时间跨度：2025年3月 - 2025年9月（7个月结单）
-- 总交易笔数：328笔
-- 数据准确性：100%（Balance-Change验证、月度余额连续性验证、交易数量匹配验证全部通过）
-- 修复Public Bank解析器：添加日期继承逻辑，正确拼接多行描述，过滤参考号码行
-- 完全符合用户要求："100%准确，一个不少，无删减、无添加、无更改的1比1导入"
-
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 Design requirements: Premium, sophisticated, high-end - suitable for professional client demonstrations.
@@ -128,12 +23,12 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 
 ### Feature Specifications
 **Core Features:**
-- **Statement Ingestion:** PDF parsing (with OCR via `pdfplumber`) and Excel support, regex-based transaction extraction, batch upload for 15 major Malaysian banks.
+- **Statement Ingestion:** PDF parsing (with OCR), Excel support, regex-based transaction extraction, batch upload for 15 major Malaysian banks.
 - **Savings Account Tracking System:** Records all transactions from savings account statements with customer search for prepayment settlement.
 - **Transaction Categorization:** Keyword-based system with predefined categories and Malaysia-specific merchant recognition.
 - **Statement Validation (Dual Verification):** Ensures 100% data accuracy.
 - **Revenue-Generating Advisory Services:** AI-powered credit card recommendations, financial optimization engine, success-based fee system.
-- **Data Export & Reporting:** Professional Excel/CSV export and PDF report generation (using ReportLab).
+- **Data Export & Reporting:** Professional Excel/CSV export and PDF report generation.
 - **Batch Operations:** Multi-file upload and batch job management.
 - **Reminder System:** Scheduled payment reminders via email.
 - **Authentication & Authorization:** Multi-role permission system (Admin/Customer) with secure SHA-256 hashing.
@@ -144,6 +39,10 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Receipt Management System:** OCR-powered receipt upload system supporting JPG/PNG images with intelligent matching to customers and credit cards.
 - **OWNER vs INFINITE Classification System:** Advanced dual-classification system for credit card transactions with 1% supplier fee tracking. Classifies expenses and payments into OWNER (customer personal spending/payments) vs INFINITE (7 configurable supplier merchants with 1% fee / third-party payer payments). Features first-statement baseline initialization and independent statement-level reconciliation.
 - **Credit Card Ledger (3-Layer Navigation):** Professional hierarchical navigation system for OWNER vs INFINITE analysis.
+- **Rule Engine:** Table-driven rule engine for transaction matching and accounting entry generation, supporting keyword and regex patterns with priority-based matching. Includes caching and tenant isolation.
+- **Exception Center:** Centralized management for 5 types of exceptions (pdf_parse, ocr_error, customer_mismatch, supplier_mismatch, posting_error) with 4 severity levels and lifecycle management.
+- **AR/AP Aging Business Views:** Provides accounts receivable and payable aging reports grouped by customer/supplier, with aging buckets (0-30/31-60/61-90/90+ days).
+- **Unified File Storage Manager:** Multi-tenant isolated storage for accounting data with standardized paths and security features.
 
 **AI Advanced Analytics System:**
 - **Financial Health Scoring System:** 0-100 score with optimization suggestions.
