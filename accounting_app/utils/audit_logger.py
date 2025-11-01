@@ -16,10 +16,29 @@ class AuditLogger:
     """
     审计日志记录器
     负责记录所有敏感操作到audit_logs表
+    
+    Phase 1-4修复：使用独立Session，避免破坏业务事务
     """
     
     def __init__(self, db: Session):
         self.db = db
+        self._independent_session = None  # 独立Session，用于审计日志
+    
+    def _get_independent_session(self) -> Session:
+        """
+        获取独立的Session用于审计日志
+        确保审计日志的写入不影响业务事务
+        """
+        if not self._independent_session:
+            from ..db import SessionLocal
+            self._independent_session = SessionLocal()
+        return self._independent_session
+    
+    def close(self):
+        """关闭独立Session"""
+        if self._independent_session:
+            self._independent_session.close()
+            self._independent_session = None
     
     def log(
         self,
@@ -71,6 +90,9 @@ class AuditLogger:
                 "这是审计合规的强制要求。"
             )
         
+        # Phase 1-4修复：使用独立Session写入审计日志，避免破坏业务事务
+        independent_db = self._get_independent_session()
+        
         # 创建审计日志记录
         audit_log = AuditLog(
             company_id=company_id,
@@ -91,9 +113,21 @@ class AuditLogger:
             error_message=error_message
         )
         
-        self.db.add(audit_log)
-        self.db.commit()
-        self.db.refresh(audit_log)
+        try:
+            # 使用独立Session提交审计日志
+            independent_db.add(audit_log)
+            independent_db.commit()
+            independent_db.refresh(audit_log)
+        except Exception as e:
+            # 审计日志写入失败不应该影响业务操作
+            independent_db.rollback()
+            # 记录到系统日志（不抛出异常）
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Failed to write audit log: {e}")
+        finally:
+            # 保持独立Session打开，以便复用
+            pass
         
         return audit_log
     
@@ -279,37 +313,43 @@ def log_audit(
                 error_msg = str(e)
                 raise
             finally:
-                # 记录审计日志
+                # Phase 1-4修复：在finally块中记录审计日志
+                # 使用独立Session，确保不影响业务事务
                 if db:
-                    logger = AuditLogger(db)
+                    audit_logger = AuditLogger(db)
                     
-                    # 提取请求信息
-                    ip_addr = None
-                    user_agent = None
-                    req_method = None
-                    req_path = None
-                    
-                    if request:
-                        ip_addr = request.client.host if request.client else None
-                        user_agent = request.headers.get('user-agent')
-                        req_method = request.method
-                        req_path = str(request.url.path)
-                    
-                    logger.log(
-                        action_type=action_type,
-                        description=f"{func.__name__} 操作",
-                        company_id=company_id,
-                        username=username,
-                        entity_type=entity_type,
-                        entity_id=entity_id,
-                        reason=reason,
-                        ip_address=ip_addr,
-                        user_agent=user_agent,
-                        request_method=req_method,
-                        request_path=req_path,
-                        success=success,
-                        error_message=error_msg
-                    )
+                    try:
+                        # 提取请求信息
+                        ip_addr = None
+                        user_agent = None
+                        req_method = None
+                        req_path = None
+                        
+                        if request:
+                            ip_addr = request.client.host if request.client else None
+                            user_agent = request.headers.get('user-agent')
+                            req_method = request.method
+                            req_path = str(request.url.path)
+                        
+                        # 记录审计日志（使用独立Session）
+                        audit_logger.log(
+                            action_type=action_type,
+                            description=f"{func.__name__} 操作",
+                            company_id=company_id,
+                            username=username,
+                            entity_type=entity_type,
+                            entity_id=entity_id,
+                            reason=reason,
+                            ip_address=ip_addr,
+                            user_agent=user_agent,
+                            request_method=req_method,
+                            request_path=req_path,
+                            success=success,
+                            error_message=error_msg
+                        )
+                    finally:
+                        # 关闭独立Session
+                        audit_logger.close()
             
             return result
         
