@@ -1293,6 +1293,14 @@ def admin_dashboard():
                          invoices_count=invoices_count,
                          invoices_total=invoices_total)
 
+
+@app.route('/admin/api-keys')
+@require_flask_auth
+def api_keys_management():
+    """API密钥管理页面 - 需要登录认证"""
+    return render_template('api_keys_management.html')
+
+
 @app.route('/savings-admin')
 def savings_admin_dashboard():
     """储蓄账户管理中心 Dashboard - Public access - 按月份排列所有savings账单"""

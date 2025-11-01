@@ -1,0 +1,473 @@
+{% extends "base.html" %}
+
+{% block title %}API密钥管理 - {{ t('system_name') }}{% endblock %}
+
+{% block content %}
+<div class="galaxy-container">
+    <div class="galaxy-header">
+        <h1 class="galaxy-title">
+            <i class="bi bi-key-fill"></i> API密钥管理
+        </h1>
+        <p class="galaxy-subtitle">管理程序化API访问的安全密钥</p>
+    </div>
+
+    <!-- 创建API密钥按钮 -->
+    <div class="mb-4">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createApiKeyModal">
+            <i class="bi bi-plus-circle"></i> 创建新密钥
+        </button>
+        <button class="btn btn-outline-secondary ms-2" onclick="refreshApiKeys()">
+            <i class="bi bi-arrow-clockwise"></i> 刷新
+        </button>
+    </div>
+
+    <!-- API密钥列表 -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-list-ul"></i> 密钥列表
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="showInactive" onchange="refreshApiKeys()">
+                <label class="form-check-label" for="showInactive">
+                    显示已撤销的密钥
+                </label>
+            </div>
+
+            <div id="apiKeysContainer">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">加载中...</span>
+                    </div>
+                    <p class="mt-2">正在加载API密钥...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 创建API密钥模态框 -->
+<div class="modal fade" id="createApiKeyModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-key-fill"></i> 创建新的API密钥
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createApiKeyForm">
+                    <div class="mb-3">
+                        <label for="keyName" class="form-label">密钥名称 *</label>
+                        <input type="text" class="form-control" id="keyName" required 
+                               placeholder="例如：Production API Key">
+                        <div class="form-text">为密钥提供一个易于识别的名称</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="keyEnvironment" class="form-label">环境 *</label>
+                        <select class="form-select" id="keyEnvironment" required>
+                            <option value="live">Live（生产环境）</option>
+                            <option value="test" selected>Test（测试环境）</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">权限 *</label>
+                        <div class="border rounded p-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="export:bank_statements" id="perm1">
+                                <label class="form-check-label" for="perm1">
+                                    导出银行结单
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="export:invoices" id="perm2">
+                                <label class="form-check-label" for="perm2">
+                                    导出发票
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="export:journal_entries" id="perm3">
+                                <label class="form-check-label" for="perm3">
+                                    导出会计分录
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="read:audit_logs" id="perm4">
+                                <label class="form-check-label" for="perm4">
+                                    读取审计日志
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="rateLimit" class="form-label">速率限制（请求/分钟）*</label>
+                        <input type="number" class="form-control" id="rateLimit" value="60" min="1" max="1000" required>
+                        <div class="form-text">每分钟允许的最大请求数</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="expiresInDays" class="form-label">有效期（天）</label>
+                        <input type="number" class="form-control" id="expiresInDays" placeholder="留空表示永不过期" min="1">
+                        <div class="form-text">密钥的有效天数，留空表示永久有效</div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <strong>重要提示：</strong>密钥明文仅在创建时显示一次，请妥善保存！
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="createApiKey()">
+                    <i class="bi bi-plus-circle"></i> 创建密钥
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 显示新创建的API密钥模态框 -->
+<div class="modal fade" id="showApiKeyModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-check-circle-fill"></i> API密钥创建成功
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <strong>请立即复制并保存此密钥！</strong>密钥明文将仅显示此一次，关闭后将无法再次查看。
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">API密钥：</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control font-monospace" id="newApiKey" readonly>
+                        <button class="btn btn-outline-primary" onclick="copyApiKey()">
+                            <i class="bi bi-clipboard"></i> 复制
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">密钥名称：</label>
+                    <p id="newApiKeyName" class="mb-0"></p>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">环境：</label>
+                    <p id="newApiKeyEnv" class="mb-0"></p>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">速率限制：</label>
+                    <p id="newApiKeyRate" class="mb-0"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="refreshApiKeys()">
+                    我已保存，关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 撤销API密钥模态框 -->
+<div class="modal fade" id="revokeApiKeyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-x-circle-fill"></i> 撤销API密钥
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>确定要撤销密钥 <strong id="revokeKeyName"></strong> 吗？</p>
+                <p class="text-danger">撤销后，使用此密钥的API调用将立即失败。此操作不可撤销。</p>
+
+                <div class="mb-3">
+                    <label for="revokeReason" class="form-label">撤销原因 *</label>
+                    <textarea class="form-control" id="revokeReason" rows="3" required 
+                              placeholder="请说明撤销此密钥的原因..."></textarea>
+                    <div class="form-text">此信息将记录在审计日志中</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" onclick="confirmRevokeApiKey()">
+                    <i class="bi bi-x-circle"></i> 确认撤销
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 全局变量
+let currentRevokeKeyId = null;
+
+// API Base URL (从环境变量或默认localhost)
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : `${window.location.protocol}//${window.location.hostname}:8000`;
+
+// 页面加载时获取API密钥列表
+document.addEventListener('DOMContentLoaded', function() {
+    refreshApiKeys();
+});
+
+// 刷新API密钥列表
+async function refreshApiKeys() {
+    const container = document.getElementById('apiKeysContainer');
+    const includeInactive = document.getElementById('showInactive').checked;
+    
+    container.innerHTML = `
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">加载中...</span>
+            </div>
+            <p class="mt-2">正在加载API密钥...</p>
+        </div>
+    `;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/api-keys/?include_inactive=${includeInactive}`, {
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const keys = await response.json();
+
+        if (keys.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-key" style="font-size: 3rem;"></i>
+                    <p class="mt-3">暂无API密钥</p>
+                    <p>点击"创建新密钥"按钮开始</p>
+                </div>
+            `;
+            return;
+        }
+
+        // 渲染密钥列表
+        let html = '<div class="table-responsive"><table class="table table-hover">';
+        html += `
+            <thead class="table-dark">
+                <tr>
+                    <th>名称</th>
+                    <th>密钥前缀</th>
+                    <th>环境</th>
+                    <th>权限</th>
+                    <th>速率限制</th>
+                    <th>状态</th>
+                    <th>最后使用</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+        `;
+
+        keys.forEach(key => {
+            const statusBadge = key.is_active 
+                ? '<span class="badge bg-success">活跃</span>' 
+                : '<span class="badge bg-secondary">已撤销</span>';
+            
+            const lastUsed = key.last_used_at 
+                ? new Date(key.last_used_at).toLocaleString('zh-CN')
+                : '<span class="text-muted">从未使用</span>';
+
+            const createdAt = new Date(key.created_at).toLocaleString('zh-CN');
+
+            const permissions = key.permissions.join(', ') || '<span class="text-muted">无</span>';
+
+            const envBadge = key.environment === 'live'
+                ? '<span class="badge bg-danger">Live</span>'
+                : '<span class="badge bg-info">Test</span>';
+
+            const actions = key.is_active
+                ? `<button class="btn btn-sm btn-danger" onclick="showRevokeModal(${key.id}, '${key.name}')">
+                       <i class="bi bi-x-circle"></i> 撤销
+                   </button>`
+                : '<span class="text-muted">已撤销</span>';
+
+            html += `
+                <tr>
+                    <td><strong>${key.name}</strong></td>
+                    <td><code class="text-primary">${key.key_prefix}...</code></td>
+                    <td>${envBadge}</td>
+                    <td><small>${permissions}</small></td>
+                    <td>${key.rate_limit}/分钟</td>
+                    <td>${statusBadge}</td>
+                    <td><small>${lastUsed}</small></td>
+                    <td><small>${createdAt}</small></td>
+                    <td>${actions}</td>
+                </tr>
+            `;
+        });
+
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+
+    } catch (error) {
+        console.error('Failed to load API keys:', error);
+        container.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <strong>加载失败：</strong>${error.message}
+            </div>
+        `;
+    }
+}
+
+// 创建API密钥
+async function createApiKey() {
+    // 收集权限
+    const permissions = [];
+    document.querySelectorAll('#createApiKeyForm input[type="checkbox"]:checked').forEach(checkbox => {
+        permissions.push(checkbox.value);
+    });
+
+    if (permissions.length === 0) {
+        alert('请至少选择一项权限');
+        return;
+    }
+
+    const data = {
+        name: document.getElementById('keyName').value,
+        environment: document.getElementById('keyEnvironment').value,
+        permissions: permissions,
+        rate_limit: parseInt(document.getElementById('rateLimit').value),
+        expires_in_days: document.getElementById('expiresInDays').value 
+            ? parseInt(document.getElementById('expiresInDays').value) 
+            : null
+    };
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/api-keys/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || `HTTP ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        // 关闭创建模态框
+        const createModal = bootstrap.Modal.getInstance(document.getElementById('createApiKeyModal'));
+        createModal.hide();
+
+        // 显示新密钥
+        document.getElementById('newApiKey').value = result.api_key;
+        document.getElementById('newApiKeyName').textContent = result.name;
+        document.getElementById('newApiKeyEnv').textContent = result.environment === 'live' ? 'Live（生产环境）' : 'Test（测试环境）';
+        document.getElementById('newApiKeyRate').textContent = `${data.rate_limit} 请求/分钟`;
+
+        const showModal = new bootstrap.Modal(document.getElementById('showApiKeyModal'));
+        showModal.show();
+
+        // 重置表单
+        document.getElementById('createApiKeyForm').reset();
+
+    } catch (error) {
+        alert(`创建失败：${error.message}`);
+    }
+}
+
+// 复制API密钥到剪贴板
+function copyApiKey() {
+    const input = document.getElementById('newApiKey');
+    input.select();
+    document.execCommand('copy');
+    
+    // 显示复制成功提示
+    const btn = event.target.closest('button');
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-check"></i> 已复制';
+    btn.classList.remove('btn-outline-primary');
+    btn.classList.add('btn-success');
+    
+    setTimeout(() => {
+        btn.innerHTML = originalHTML;
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-outline-primary');
+    }, 2000);
+}
+
+// 显示撤销模态框
+function showRevokeModal(keyId, keyName) {
+    currentRevokeKeyId = keyId;
+    document.getElementById('revokeKeyName').textContent = keyName;
+    document.getElementById('revokeReason').value = '';
+    
+    const modal = new bootstrap.Modal(document.getElementById('revokeApiKeyModal'));
+    modal.show();
+}
+
+// 确认撤销API密钥
+async function confirmRevokeApiKey() {
+    const reason = document.getElementById('revokeReason').value.trim();
+    
+    if (!reason) {
+        alert('请填写撤销原因');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/api-keys/${currentRevokeKeyId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({ reason: reason })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || `HTTP ${response.status}`);
+        }
+
+        // 关闭模态框
+        const modal = bootstrap.Modal.getInstance(document.getElementById('revokeApiKeyModal'));
+        modal.hide();
+
+        // 刷新列表
+        refreshApiKeys();
+
+        alert('API密钥已成功撤销');
+
+    } catch (error) {
+        alert(`撤销失败：${error.message}`);
+    }
+}
+</script>
+
+<style>
+.font-monospace {
+    font-family: 'Courier New', monospace;
+}
+</style>
+
+{% endblock %}
