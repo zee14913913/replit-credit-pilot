@@ -44,7 +44,8 @@ from .routes import (
     companies,
     tasks_routes,
     files,
-    smart_import
+    smart_import,
+    management_reports
 )
 
 # 注册路由
@@ -55,6 +56,7 @@ app.include_router(reports.router, prefix="/api/reports", tags=["Reports"])
 app.include_router(invoices.router, prefix="/api/invoices", tags=["Invoices"])
 app.include_router(tasks_routes.router, prefix="/api/tasks", tags=["Scheduled Tasks"])
 app.include_router(files.router, prefix="/api/files", tags=["File Management"])
+app.include_router(management_reports.router, prefix="/api", tags=["Management Reports"])
 
 
 # 启动事件：初始化数据库
