@@ -1,6 +1,7 @@
 """
 Management Report API路由
 提供月度管理报表查询和导出功能
+Phase 2-2: 添加导出分级控制（Export-Level Permissions）
 """
 from fastapi import APIRouter, Depends, Query, Response, HTTPException
 from sqlalchemy.orm import Session
@@ -10,6 +11,8 @@ import logging
 from ..services.management_report_generator import generate_management_report
 from ..utils.report_renderer import render_report
 from ..middleware.multi_tenant import get_current_company_id
+from ..middleware.rbac_fixed import require_permission
+from ..models import User, AuditLog
 from ..db import get_db
 
 router = APIRouter(
@@ -26,6 +29,7 @@ def get_management_report(
     format: Literal['json', 'pdf'] = Query(default='json', description="输出格式：json或pdf"),
     include_details: bool = Query(default=True, description="是否包含详细数据"),
     company_id: int = Depends(get_current_company_id),
+    current_user: User = Depends(require_permission('export:management_reports', 'read')),
     db: Session = Depends(get_db)
 ):
     """
@@ -100,6 +104,24 @@ def get_management_report(
                 company_name=f"Company {company_id}"  # TODO: 从数据库获取真实公司名
             )
             
+            # 写入审计日志（防御性）
+            try:
+                audit_log = AuditLog(
+                    company_id=company_id,
+                    user_id=current_user.id,
+                    username=current_user.username,
+                    action_type='export',
+                    entity_type='report',
+                    description=f"导出管理报表PDF: period={period}",
+                    new_value={'period': period, 'report_type': 'management', 'format': 'pdf', 'include_details': include_details},
+                    success=True
+                )
+                db.add(audit_log)
+                db.commit()
+            except Exception as e:
+                logger.error(f"审计日志写入失败（导出管理报表PDF）：{e}")
+                db.rollback()
+            
             # 返回PDF文件
             return Response(
                 content=pdf_bytes,
@@ -109,6 +131,7 @@ def get_management_report(
                 }
             )
         else:
+            # JSON格式不记录审计日志（查看操作，非导出）
             # 返回JSON数据
             return report_data
     

@@ -1,5 +1,6 @@
 """
 PDF财务报表API路由
+Phase 2-2: 添加导出分级控制（Export-Level Permissions）
 """
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import Response
@@ -11,7 +12,8 @@ from ..db import get_db
 from ..services.pdf_report_generator import create_pdf_generator
 from ..services.management_report_generator import ManagementReportGenerator
 from ..services.file_storage_manager import AccountingFileStorageManager
-from ..models import Company
+from ..models import Company, User, AuditLog
+from ..middleware.rbac_fixed import require_permission
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
@@ -23,6 +25,7 @@ router = APIRouter(prefix="/api/reports/pdf", tags=["PDF Reports"])
 async def get_balance_sheet_pdf(
     company_id: int = Query(1, description="公司ID"),
     period: str = Query(..., description="期间（YYYY-MM-DD），例如：2025-11-30"),
+    current_user: User = Depends(require_permission('export:management_reports', 'read')),
     db: Session = Depends(get_db)
 ):
     """
@@ -71,6 +74,24 @@ async def get_balance_sheet_pdf(
         AccountingFileStorageManager.save_file_content(pdf_path, pdf_bytes)
         logger.info(f"Balance Sheet PDF已保存到: {pdf_path}")
         
+        # 写入审计日志（防御性）
+        try:
+            audit_log = AuditLog(
+                company_id=company_id,
+                user_id=current_user.id,
+                username=current_user.username,
+                action_type='export',
+                entity_type='report',
+                description=f"导出资产负债表PDF: period={period}",
+                new_value={'period': period, 'report_type': 'balance_sheet', 'format': 'pdf'},
+                success=True
+            )
+            db.add(audit_log)
+            db.commit()
+        except Exception as e:
+            logger.error(f"审计日志写入失败（导出资产负债表）：{e}")
+            db.rollback()
+        
         # 返回PDF
         return Response(
             content=pdf_bytes,
@@ -91,6 +112,7 @@ async def get_balance_sheet_pdf(
 async def get_profit_loss_pdf(
     company_id: int = Query(1, description="公司ID"),
     period: str = Query(..., description="期间（YYYY-MM），例如：2025-11"),
+    current_user: User = Depends(require_permission('export:management_reports', 'read')),
     db: Session = Depends(get_db)
 ):
     """
@@ -144,6 +166,24 @@ async def get_profit_loss_pdf(
         AccountingFileStorageManager.save_file_content(pdf_path, pdf_bytes)
         logger.info(f"P&L PDF已保存到: {pdf_path}")
         
+        # 写入审计日志（防御性）
+        try:
+            audit_log = AuditLog(
+                company_id=company_id,
+                user_id=current_user.id,
+                username=current_user.username,
+                action_type='export',
+                entity_type='report',
+                description=f"导出损益表PDF: period={period}",
+                new_value={'period': period, 'report_type': 'profit_loss', 'format': 'pdf'},
+                success=True
+            )
+            db.add(audit_log)
+            db.commit()
+        except Exception as e:
+            logger.error(f"审计日志写入失败（导出损益表）：{e}")
+            db.rollback()
+        
         # 返回PDF
         return Response(
             content=pdf_bytes,
@@ -164,6 +204,7 @@ async def get_profit_loss_pdf(
 async def get_bank_package_pdf(
     company_id: int = Query(1, description="公司ID"),
     period: str = Query(..., description="期间（YYYY-MM），例如：2025-11"),
+    current_user: User = Depends(require_permission('export:management_reports', 'read')),
     db: Session = Depends(get_db)
 ):
     """
@@ -221,6 +262,24 @@ async def get_bank_package_pdf(
         )
         AccountingFileStorageManager.save_file_content(pdf_path, pdf_bytes)
         logger.info(f"Bank Package PDF已保存到: {pdf_path}")
+        
+        # 写入审计日志（防御性）
+        try:
+            audit_log = AuditLog(
+                company_id=company_id,
+                user_id=current_user.id,
+                username=current_user.username,
+                action_type='export',
+                entity_type='report',
+                description=f"导出银行贷款包PDF: period={period}",
+                new_value={'period': period, 'report_type': 'bank_package', 'format': 'pdf'},
+                success=True
+            )
+            db.add(audit_log)
+            db.commit()
+        except Exception as e:
+            logger.error(f"审计日志写入失败（导出银行贷款包）：{e}")
+            db.rollback()
         
         # 返回PDF
         return Response(

@@ -1,6 +1,7 @@
 """
 CSV导出API路由
 支持多种会计软件格式
+Phase 2-2: 添加导出分级控制（Export-Level Permissions）
 """
 from fastapi import APIRouter, Depends, Query, Response, HTTPException
 from sqlalchemy.orm import Session
@@ -9,6 +10,8 @@ import logging
 
 from ..services.csv_exporter import export_to_csv, CSVExporter
 from ..middleware.multi_tenant import get_current_company_id
+from ..middleware.rbac_fixed import require_auth, require_permission
+from ..models import User, AuditLog
 from ..db import get_db
 
 router = APIRouter(
@@ -28,6 +31,7 @@ def export_journal_entries_csv(
         description="导出模板：generic_v1(通用), sqlacc_v1(SQL Account), autocount_v1(AutoCount) - fallback"
     ),
     company_id: int = Depends(get_current_company_id),
+    current_user: User = Depends(require_permission('export:journal_entries', 'read')),
     db: Session = Depends(get_db)
 ):
     """
@@ -86,7 +90,7 @@ def export_journal_entries_csv(
     ```
     """
     try:
-        logger.info(f"导出会计分录CSV: company_id={company_id}, period={period}, template={template}")
+        logger.info(f"导出会计分录CSV: company_id={company_id}, period={period}, template={template}, user={current_user.username}")
         
         # 导出CSV（支持template_id优先）
         csv_data = export_to_csv(
@@ -97,6 +101,24 @@ def export_journal_entries_csv(
             template_name=template or 'generic_v1',
             export_type='journal'
         )
+        
+        # 写入审计日志（防御性）
+        try:
+            audit_log = AuditLog(
+                company_id=company_id,
+                user_id=current_user.id,
+                username=current_user.username,
+                action_type='export',
+                entity_type='journal_entry',
+                description=f"导出会计分录: period={period}, template={template_id or template}",
+                new_value={'period': period, 'template': template_id or template, 'format': 'csv'},
+                success=True
+            )
+            db.add(audit_log)
+            db.commit()
+        except Exception as e:
+            logger.error(f"审计日志写入失败（导出会计分录）：{e}")
+            db.rollback()
         
         # 确定文件名
         filename = f"journal_entries_{period}_{'template' + str(template_id) if template_id else template}.csv"
@@ -124,6 +146,7 @@ def export_bank_statements_csv(
     period: str = Query(..., description="期间，格式：YYYY-MM"),
     bank_name: Optional[str] = Query(None, description="银行名称（可选）"),
     company_id: int = Depends(get_current_company_id),
+    current_user: User = Depends(require_permission('export:bank_statements', 'read')),
     db: Session = Depends(get_db)
 ):
     """
@@ -163,13 +186,31 @@ def export_bank_statements_csv(
     ```
     """
     try:
-        logger.info(f"导出银行流水CSV: company_id={company_id}, period={period}, bank={bank_name}")
+        logger.info(f"导出银行流水CSV: company_id={company_id}, period={period}, bank={bank_name}, user={current_user.username}")
         
         exporter = CSVExporter(db, company_id)
         csv_data = exporter.export_bank_statements(
             period=period,
             bank_name=bank_name
         )
+        
+        # 写入审计日志（防御性）
+        try:
+            audit_log = AuditLog(
+                company_id=company_id,
+                user_id=current_user.id,
+                username=current_user.username,
+                action_type='export',
+                entity_type='bank_statement',
+                description=f"导出银行流水: period={period}, bank={bank_name or 'all'}",
+                new_value={'period': period, 'bank': bank_name, 'format': 'csv'},
+                success=True
+            )
+            db.add(audit_log)
+            db.commit()
+        except Exception as e:
+            logger.error(f"审计日志写入失败（导出银行流水）：{e}")
+            db.rollback()
         
         # 文件名
         if bank_name:
