@@ -4,6 +4,34 @@
 The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. Its core purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation, guaranteeing 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization suggestions (debt consolidation, balance transfers, loan refinancing), and a success-based fee model. The business vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
 ## Recent Changes
+**2025-11-01**: Task Enterprise-2完成 - Exception Center异常中心（Architect审查通过）
+- **核心功能**:
+  - 集中管理5类异常：pdf_parse, ocr_error, customer_mismatch, supplier_mismatch, posting_error
+  - 4级严重程度：low, medium, high, critical
+  - 完整生命周期管理：new → in_progress → resolved/ignored
+- **API端点（7个）**:
+  - GET /api/exceptions/summary - 异常摘要统计
+  - GET /api/exceptions/ - 异常列表（分页+过滤）
+  - GET /api/exceptions/{id} - 异常详情
+  - POST /api/exceptions/ - 创建异常
+  - PUT /api/exceptions/{id}/resolve - 标记为已解决
+  - PUT /api/exceptions/{id}/ignore - 忽略异常
+  - DELETE /api/exceptions/{id} - 删除异常
+- **租户隔离修复**:
+  - 所有端点使用Depends(get_current_company_id)依赖注入
+  - CREATE端点不接受用户伪造的company_id
+  - 单记录操作双重过滤（id + company_id）
+  - Architect验证通过：符合"银行可信任"安全要求
+- **ExceptionManager服务**:
+  - 通用方法：record_exception()
+  - 快捷方法：record_pdf_parse_error(), record_ocr_error(), record_customer_mismatch(), record_supplier_mismatch(), record_posting_error()
+  - 摘要方法：get_exception_summary()
+- **Management Report集成**:
+  - exception_summary字段自动包含在月度报表中
+  - 显示critical_count和high_count用于警告
+- **文档完善**:
+  - README.md添加Exception Center API完整文档
+
 **2025-11-01**: Task Enterprise-1完成 - AR/AP Aging业务视图（Architect审查通过）
 - **新增API端点**:
   - GET /reports/ar-aging/view - 应收账款账龄报表（按客户分组，0-30/31-60/61-90/90+天）
