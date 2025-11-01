@@ -52,7 +52,8 @@ from .routes import (
     pdf_reports,
     exceptions,
     posting_rules,
-    export_templates
+    export_templates,
+    file_index
 )
 
 # 注册路由
@@ -71,6 +72,7 @@ app.include_router(pdf_reports.router, tags=["PDF Reports"])
 app.include_router(exceptions.router, prefix="/api", tags=["Exception Center"])
 app.include_router(posting_rules.router, prefix="/api", tags=["Auto Posting Rules"])
 app.include_router(export_templates.router, prefix="/api", tags=["Export Templates"])
+app.include_router(file_index.router, tags=["File Index"])  # Phase 1-3: 统一文件索引
 
 
 # 启动事件：初始化数据库

@@ -531,3 +531,40 @@ class MigrationLog(Base):
         CheckConstraint("status IN ('success', 'failed', 'skipped')"),
         CheckConstraint("module IN ('credit-card', 'bank', 'savings', 'pos', 'supplier', 'reports', 'management', 'temp')"),
     )
+
+
+class FileIndex(Base):
+    """
+    Phase 1-3: 统一文件索引表
+    Flask和FastAPI共用一套文件索引，支持软删除和回收站
+    """
+    __tablename__ = "file_index"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=False, index=True)
+    file_category = Column(String, nullable=False)  # bank_statement, invoice, receipt, report
+    file_type = Column(String, nullable=False)  # original | generated
+    filename = Column(String, nullable=False)
+    file_path = Column(String, nullable=False)
+    file_size_kb = Column(Integer)
+    file_extension = Column(String)
+    mime_type = Column(String)
+    related_entity_type = Column(String)  # bank_statement_id, invoice_id, pos_report_id, credit_card_statement_id
+    related_entity_id = Column(Integer)  # 关联业务记录ID
+    period = Column(String)  # YYYY-MM
+    transaction_date = Column(Date)
+    upload_by = Column(String)
+    upload_date = Column(DateTime(timezone=True), server_default=func.now())
+    description = Column(Text)
+    tags = Column(String)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    module = Column(String)  # credit-card | bank | savings | pos | supplier | reports
+    original_filename = Column(String)
+    deleted_at = Column(DateTime(timezone=True))  # Phase 1-3: 软删除时间戳
+    status = Column(String(20), default='active', index=True)  # Phase 1-3: active | archived | deleted
+    
+    __table_args__ = (
+        CheckConstraint("status IN ('active', 'archived', 'deleted')"),
+        CheckConstraint("file_type IN ('original', 'generated')"),
+    )
