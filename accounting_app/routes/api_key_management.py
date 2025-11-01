@@ -15,7 +15,7 @@ from datetime import datetime
 import logging
 
 from accounting_app.services.api_key_service import APIKeyService
-from accounting_app.middleware.rbac_fixed import require_flask_session_user
+from accounting_app.middleware.api_key_auth import verify_session_or_api_key
 from accounting_app.utils.audit_logger import AuditLogger, extract_request_info
 from accounting_app.db import get_db
 from accounting_app.models import User
@@ -86,33 +86,24 @@ async def create_api_key(
     key_request: APIKeyCreateRequest,
     req: Request,
     db: Session = Depends(get_db),
-    current_user: Optional[Dict] = None
+    auth_info: Dict = Depends(verify_session_or_api_key)
 ):
     """
-    创建新的API密钥
+    创建新的API密钥 - Phase 2-2 Task 8 完整版
     
     **⚠️ 重要：明文密钥仅在创建时返回一次，请妥善保存！**
     
     权限要求：admin 或 accountant 角色
     
-    **临时测试模式**：如果没有Flask session，使用默认admin用户进行测试
+    **认证方式**：支持Flask Session或API Key（Bearer token）
     """
-    # 临时测试：如果没有current_user，尝试从数据库获取admin用户
-    if not current_user:
-        logger.warning("No Flask session found, using test admin user")
-        admin_user = db.query(User).filter(User.username == "admin", User.is_active == True).first()
-        if admin_user:
-            current_user = {
-                "id": admin_user.id,
-                "username": admin_user.username,
-                "role": admin_user.role,
-                "company_id": admin_user.company_id
-            }
-        else:
-            raise HTTPException(
-                status_code=401,
-                detail="No Flask session and no admin user found for testing"
-            )
+    # Phase 2-2 Task 8: 统一认证信息提取（Flask Session或API Key）
+    current_user = {
+        "id": auth_info["user_id"],
+        "username": auth_info["username"],
+        "role": auth_info["role"],
+        "company_id": auth_info["company_id"]
+    }
     
     # 1. 权限检查（仅admin和accountant可创建API密钥）
     if current_user.get("role") not in ["admin", "accountant"]:
@@ -243,34 +234,25 @@ async def create_api_key(
 async def list_api_keys(
     include_inactive: bool = False,
     db: Session = Depends(get_db),
-    current_user: Optional[Dict] = None
+    auth_info: Dict = Depends(verify_session_or_api_key)
 ):
     """
-    列出当前用户的API密钥
+    列出当前用户的API密钥 - Phase 2-2 Task 8 完整版
     
     权限要求：所有已认证用户
     
     Args:
         include_inactive: 是否包含已撤销的密钥
     
-    **临时测试模式**：如果没有Flask session，使用默认admin用户进行测试
+    **认证方式**：支持Flask Session或API Key（Bearer token）
     """
-    # 临时测试：如果没有current_user，尝试从数据库获取admin用户
-    if not current_user:
-        logger.warning("No Flask session found, using test admin user")
-        admin_user = db.query(User).filter(User.username == "admin", User.is_active == True).first()
-        if admin_user:
-            current_user = {
-                "id": admin_user.id,
-                "username": admin_user.username,
-                "role": admin_user.role,
-                "company_id": admin_user.company_id
-            }
-        else:
-            raise HTTPException(
-                status_code=401,
-                detail="No Flask session and no admin user found for testing"
-            )
+    # Phase 2-2 Task 8: 统一认证信息提取
+    current_user = {
+        "id": auth_info["user_id"],
+        "username": auth_info["username"],
+        "role": auth_info["role"],
+        "company_id": auth_info["company_id"]
+    }
     
     try:
         api_key_service = APIKeyService()
@@ -305,31 +287,22 @@ async def revoke_api_key(
     revoke_request: APIKeyRevokeRequest,
     req: Request,
     db: Session = Depends(get_db),
-    current_user: Optional[Dict] = None
+    auth_info: Dict = Depends(verify_session_or_api_key)
 ):
     """
-    撤销API密钥
+    撤销API密钥 - Phase 2-2 Task 8 完整版
     
     权限要求：密钥所有者 或 admin角色
     
-    **临时测试模式**：如果没有Flask session，使用默认admin用户进行测试
+    **认证方式**：支持Flask Session或API Key（Bearer token）
     """
-    # 临时测试：如果没有current_user，尝试从数据库获取admin用户
-    if not current_user:
-        logger.warning("No Flask session found, using test admin user")
-        admin_user = db.query(User).filter(User.username == "admin", User.is_active == True).first()
-        if admin_user:
-            current_user = {
-                "id": admin_user.id,
-                "username": admin_user.username,
-                "role": admin_user.role,
-                "company_id": admin_user.company_id
-            }
-        else:
-            raise HTTPException(
-                status_code=401,
-                detail="No Flask session and no admin user found for testing"
-            )
+    # Phase 2-2 Task 8: 统一认证信息提取
+    current_user = {
+        "id": auth_info["user_id"],
+        "username": auth_info["username"],
+        "role": auth_info["role"],
+        "company_id": auth_info["company_id"]
+    }
     
     try:
         api_key_service = APIKeyService()
@@ -490,31 +463,22 @@ async def revoke_api_key(
 async def get_api_key_details(
     key_id: int,
     db: Session = Depends(get_db),
-    current_user: Optional[Dict] = None
+    auth_info: Dict = Depends(verify_session_or_api_key)
 ):
     """
-    获取API密钥详情
+    获取API密钥详情 - Phase 2-2 Task 8 完整版
     
     权限要求：密钥所有者 或 admin角色
     
-    **临时测试模式**：如果没有Flask session，使用默认admin用户进行测试
+    **认证方式**：支持Flask Session或API Key（Bearer token）
     """
-    # 临时测试：如果没有current_user，尝试从数据库获取admin用户
-    if not current_user:
-        logger.warning("No Flask session found, using test admin user")
-        admin_user = db.query(User).filter(User.username == "admin", User.is_active == True).first()
-        if admin_user:
-            current_user = {
-                "id": admin_user.id,
-                "username": admin_user.username,
-                "role": admin_user.role,
-                "company_id": admin_user.company_id
-            }
-        else:
-            raise HTTPException(
-                status_code=401,
-                detail="No Flask session and no admin user found for testing"
-            )
+    # Phase 2-2 Task 8: 统一认证信息提取
+    current_user = {
+        "id": auth_info["user_id"],
+        "username": auth_info["username"],
+        "role": auth_info["role"],
+        "company_id": auth_info["company_id"]
+    }
     
     try:
         api_key_service = APIKeyService()

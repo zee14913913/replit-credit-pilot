@@ -35,3 +35,4 @@ pytest-asyncio
 bcrypt
 passlib
 python-jose
+itsdangerous

@@ -7,7 +7,7 @@ Phase 2-2 Task 5: API密钥认证中间件
 3. 速率限制（基于密钥配置）
 4. 审计日志记录
 """
-from fastapi import HTTPException, Request, status
+from fastapi import HTTPException, Request, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Optional, List
 import time
@@ -17,6 +17,7 @@ from datetime import datetime, timedelta
 import logging
 
 from accounting_app.services.api_key_service import APIKeyService
+from accounting_app.utils.flask_session_parser import parse_flask_session_from_request
 
 logger = logging.getLogger(__name__)
 
@@ -210,14 +211,14 @@ def require_api_permission(required_permission: str):
 
 async def verify_session_or_api_key(
     request: Request,
-    credentials: Optional[HTTPAuthorizationCredentials] = None
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer(auto_error=False))
 ) -> dict:
     """
-    支持Session认证或API Key认证（二选一）
+    支持Session认证或API Key认证（二选一）- Phase 2-2 Task 8完整实现
     
     优先级：
     1. 如果有Authorization头 -> 使用API Key认证
-    2. 否则检查Session -> 使用Session认证
+    2. 否则检查Session -> 使用Flask Session认证（完整session解析）
     3. 两者都没有 -> 401错误
     
     Returns:
@@ -225,6 +226,8 @@ async def verify_session_or_api_key(
             "auth_type": "api_key" 或 "session",
             "user_id": 用户ID,
             "company_id": 公司ID,
+            "username": 用户名,
+            "role": 角色,
             ...
         }
     """
@@ -233,16 +236,42 @@ async def verify_session_or_api_key(
         try:
             api_key_info = await verify_api_key(credentials)
             api_key_info["auth_type"] = "api_key"
+            logger.info(f"✅ API Key认证成功: user_id={api_key_info['user_id']}")
             return api_key_info
         except HTTPException:
+            logger.debug("API Key认证失败，尝试Session认证")
             pass
     
-    # 2. 尝试Session认证（检查Flask session）
-    # 注意：这需要与Flask的session共享机制
-    # 暂时简化处理，实际项目中需要实现session共享
+    # 2. 尝试Flask Session认证（Phase 2-2 Task 8新增）
+    session_data = await parse_flask_session_from_request(request)
     
-    # 3. 两者都失败
+    if session_data:
+        # 验证必需字段（安全加固 - 禁止默认company_id）
+        user_id = session_data.get('user_id')
+        company_id = session_data.get('company_id')
+        
+        if not user_id:
+            logger.warning("Flask session缺少user_id字段，拒绝认证")
+            session_data = None  # 标记为无效session
+        elif not company_id:
+            logger.warning(f"Flask session缺少company_id字段 (user_id={user_id})，拒绝认证以保护多租户隔离")
+            session_data = None  # 标记为无效session
+        else:
+            # Session认证成功，返回统一格式
+            logger.info(f"✅ Flask Session认证成功: user_id={user_id}, company_id={company_id}")
+            return {
+                "auth_type": "session",
+                "user_id": user_id,
+                "username": session_data.get('username', f"user_{user_id}"),
+                "role": session_data.get('role', 'user'),
+                "company_id": company_id,
+                "permissions": []  # Session用户默认继承role权限，不限制特定permissions
+            }
+    
+    # 3. 两者都失败 - 返回401错误
+    logger.warning("认证失败：既无有效API Key也无有效Session")
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Authentication required. Provide API key or login session."
+        detail="Authentication required. Provide API key (Authorization: Bearer sk_xxx) or login session.",
+        headers={"WWW-Authenticate": "Bearer"}
     )
