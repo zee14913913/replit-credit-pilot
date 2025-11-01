@@ -556,26 +556,38 @@ class ManagementReportGenerator:
     # ========== 辅助方法 ==========
     
     def _get_accounts_receivable_balance(self, as_of_date: date) -> float:
-        """获取应收账款总余额（截止到as_of_date，不包含当天）"""
+        """
+        获取应收账款总余额（基于journal entry_date，确保与总账一致）
+        
+        只计算已过账且entry_date < as_of_date的发票余额
+        """
         result = (
             self.db.query(func.sum(SalesInvoice.balance_amount))
+            .join(JournalEntry, SalesInvoice.journal_entry_id == JournalEntry.id)
             .filter(
                 SalesInvoice.company_id == self.company_id,
                 SalesInvoice.balance_amount > 0,
-                SalesInvoice.invoice_date < as_of_date  # 严格小于
+                JournalEntry.entry_date < as_of_date,  # 基于entry_date而非invoice_date
+                JournalEntry.status == 'posted'
             )
             .scalar()
         )
         return float(result or 0)
     
     def _get_accounts_payable_balance(self, as_of_date: date) -> float:
-        """获取应付账款总余额（截止到as_of_date，不包含当天）"""
+        """
+        获取应付账款总余额（基于journal entry_date，确保与总账一致）
+        
+        只计算已过账且entry_date < as_of_date的发票余额
+        """
         result = (
             self.db.query(func.sum(PurchaseInvoice.balance_amount))
+            .join(JournalEntry, PurchaseInvoice.journal_entry_id == JournalEntry.id)
             .filter(
                 PurchaseInvoice.company_id == self.company_id,
                 PurchaseInvoice.balance_amount > 0,
-                PurchaseInvoice.invoice_date < as_of_date  # 严格小于
+                JournalEntry.entry_date < as_of_date,  # 基于entry_date而非invoice_date
+                JournalEntry.status == 'posted'
             )
             .scalar()
         )
