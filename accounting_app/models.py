@@ -1,8 +1,8 @@
 """
 SQLAlchemy ORM 模型
-对应init_db.sql中的19个核心表
+对应init_db.sql中的核心表 + Phase 1-1新增的1:1原件保护表
 """
-from sqlalchemy import Column, Integer, String, Numeric, Boolean, Date, DateTime, ForeignKey, Text, CheckConstraint, JSON
+from sqlalchemy import Column, Integer, String, Numeric, Boolean, Date, DateTime, ForeignKey, Text, CheckConstraint, JSON, BigInteger
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from .db import Base
@@ -65,6 +65,7 @@ class BankStatement(Base):
     matched_journal_id = Column(Integer)
     auto_category = Column(String(100))
     notes = Column(Text)
+    raw_line_id = Column(Integer, ForeignKey('raw_lines.id', ondelete='SET NULL'), index=True)  # Phase 1-2: 防虚构交易
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -98,6 +99,7 @@ class JournalEntryLine(Base):
     debit_amount = Column(Numeric(15,2), default=0)
     credit_amount = Column(Numeric(15,2), default=0)
     line_number = Column(Integer, nullable=False)
+    raw_line_id = Column(Integer, ForeignKey('raw_lines.id', ondelete='SET NULL'), index=True)  # Phase 1-2: 防虚构交易
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -132,6 +134,7 @@ class PurchaseInvoice(Base):
     status = Column(String(20), default='unpaid')  # unpaid, partial, paid, overdue
     journal_entry_id = Column(Integer, ForeignKey('journal_entries.id'))
     notes = Column(Text)
+    raw_line_id = Column(Integer, ForeignKey('raw_lines.id', ondelete='SET NULL'), index=True)  # Phase 1-2: 防虚构交易
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -194,6 +197,7 @@ class SalesInvoice(Base):
     journal_entry_id = Column(Integer, ForeignKey('journal_entries.id'))
     auto_generated = Column(Boolean, default=False)
     notes = Column(Text)
+    raw_line_id = Column(Integer, ForeignKey('raw_lines.id', ondelete='SET NULL'), index=True)  # Phase 1-2: 防虚构交易
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -450,4 +454,80 @@ class ExportTemplate(Base):
     __table_args__ = (
         CheckConstraint("export_type IN ('general_ledger', 'journal_entry', 'trial_balance', 'chart_of_accounts', 'customer_list', 'supplier_list')"),
         CheckConstraint("software_name IN ('SQL Account', 'AutoCount', 'UBS', 'QuickBooks', 'Xero', 'Generic')"),
+    )
+
+
+class RawDocument(Base):
+    """
+    Phase 1-1: 原件必存表
+    所有上传文件的元数据，不管能否解析都要写入
+    用途：确保1:1原件保护，防止数据丢失
+    """
+    __tablename__ = "raw_documents"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=False, index=True)
+    file_name = Column(Text, nullable=False)
+    file_hash = Column(Text, nullable=False, index=True)  # 分块SHA256，避免大文件超时
+    file_size = Column(BigInteger, nullable=False)  # 文件大小（字节）
+    storage_path = Column(Text, nullable=False)
+    uploaded_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    uploaded_by = Column(Integer)  # 预留：关联users表
+    source_engine = Column(String(20), nullable=False)  # flask | fastapi
+    module = Column(String(50), nullable=False, index=True)  # credit-card | bank | savings | pos | supplier | reports
+    status = Column(String(20), nullable=False, default='uploaded', index=True)  # uploaded | parsed | failed | reconciled
+    total_lines = Column(Integer)  # PDF/CSV总行数（用于对账）
+    parsed_lines = Column(Integer)  # 成功解析行数（用于对账）
+    reconciliation_status = Column(String(20))  # match | mismatch | pending
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    
+    __table_args__ = (
+        CheckConstraint("source_engine IN ('flask', 'fastapi')"),
+        CheckConstraint("module IN ('credit-card', 'bank', 'savings', 'pos', 'supplier', 'reports', 'management', 'temp')"),
+        CheckConstraint("status IN ('uploaded', 'parsed', 'failed', 'reconciled')"),
+        CheckConstraint("reconciliation_status IN ('match', 'mismatch', 'pending')"),
+    )
+
+
+class RawLine(Base):
+    """
+    Phase 1-1: 逐行原文表
+    PDF/CSV的每一行原始内容，用于防虚构交易
+    规则：业务表记录必须关联raw_line_id，否则进异常中心
+    """
+    __tablename__ = "raw_lines"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    raw_document_id = Column(Integer, ForeignKey('raw_documents.id', ondelete='CASCADE'), nullable=False, index=True)
+    line_no = Column(Integer, nullable=False)  # 行号（1-based）
+    page_no = Column(Integer)  # 页码（PDF专用）
+    raw_text = Column(Text, nullable=False)  # 原始文本内容
+    parser_version = Column(String(50))  # 解析器版本号
+    is_parsed = Column(Boolean, default=False)  # 是否已解析成业务记录
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class MigrationLog(Base):
+    """
+    Phase 1-1: 文件迁移日志表
+    记录旧路径到新路径的迁移过程，支持分批回滚
+    """
+    __tablename__ = "migration_logs"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='SET NULL'))
+    src_path = Column(Text, nullable=False)  # 原路径
+    dest_path = Column(Text)  # 目标路径
+    module = Column(String(50))  # credit-card | bank | savings | pos | supplier
+    batch_id = Column(String(50), index=True)  # 批次ID，格式：COMPANY-{company_id}-{YYYYMM}
+    run_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    run_by = Column(String(100))  # 执行人
+    status = Column(String(20), nullable=False, index=True)  # success | failed | skipped
+    error_message = Column(Text)
+    file_hash = Column(Text)  # 迁移前后hash校验
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    
+    __table_args__ = (
+        CheckConstraint("status IN ('success', 'failed', 'skipped')"),
+        CheckConstraint("module IN ('credit-card', 'bank', 'savings', 'pos', 'supplier', 'reports', 'management', 'temp')"),
     )
