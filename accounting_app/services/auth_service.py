@@ -9,7 +9,7 @@ from typing import Optional, List, Dict
 from sqlalchemy.orm import Session
 import logging
 
-from ..models import User, UserCompanyRole, Company
+from ..models import User, UserCompanyRole, Company, AuditLog
 from ..utils.password import hash_password, verify_password
 
 logger = logging.getLogger(__name__)
@@ -387,13 +387,45 @@ def assign_user_to_company(
     ).first()
     
     if existing_ucr:
-        # 更新角色
-        existing_ucr.role = role
-        existing_ucr.updated_at = datetime.now()
+        # 更新角色（审计日志）
+        old_role = existing_ucr.role
+        
+        # 正确的更新方式（直接使用query.update）
+        db.query(UserCompanyRole).filter(
+            UserCompanyRole.id == existing_ucr.id
+        ).update({
+            'role': role,
+            'updated_at': datetime.now()
+        }, synchronize_session=False)
         db.commit()
-        db.refresh(existing_ucr)
-        logger.info(f"更新用户 {user.username} 在公司 {company.company_name} 的角色为 {role}")
-        return existing_ucr
+        
+        # 重新查询获取更新后的对象
+        updated_ucr = db.query(UserCompanyRole).filter(
+            UserCompanyRole.id == existing_ucr.id
+        ).first()
+        
+        # 写入审计日志（防御性）
+        try:
+            audit_log = AuditLog(
+                company_id=company_id,
+                user_id=created_by if created_by else None,
+                username=user.username,
+                action_type='role_change',
+                entity_type='user_company_role',
+                entity_id=existing_ucr.id,
+                description=f"更新用户 {user.username} 在公司 {company.company_name} 的角色",
+                old_value={'role': old_role},
+                new_value={'role': role},
+                success=True
+            )
+            db.add(audit_log)
+            db.commit()
+        except Exception as e:
+            logger.error(f"审计日志写入失败（角色更新）：{e}")
+            db.rollback()
+        
+        logger.info(f"更新用户 {user.username} 在公司 {company.company_name} 的角色：{old_role} → {role}")
+        return updated_ucr
     else:
         # 创建新关联
         new_ucr = UserCompanyRole(
@@ -405,18 +437,44 @@ def assign_user_to_company(
         db.add(new_ucr)
         db.commit()
         db.refresh(new_ucr)
+        
+        # 写入审计日志（防御性）
+        try:
+            audit_log = AuditLog(
+                company_id=company_id,
+                user_id=created_by if created_by else None,
+                username=user.username,
+                action_type='role_change',
+                entity_type='user_company_role',
+                entity_id=new_ucr.id,
+                description=f"将用户 {user.username} 分配到公司 {company.company_name}",
+                new_value={'role': role, 'company_id': company_id},
+                success=True
+            )
+            db.add(audit_log)
+            db.commit()
+        except Exception as e:
+            logger.error(f"审计日志写入失败（角色分配）：{e}")
+            db.rollback()
+        
         logger.info(f"将用户 {user.username} 分配到公司 {company.company_name}，角色为 {role}")
         return new_ucr
 
 
-def remove_user_from_company(db: Session, user_id: int, company_id: int) -> bool:
+def remove_user_from_company(
+    db: Session, 
+    user_id: int, 
+    company_id: int,
+    removed_by: Optional[int] = None
+) -> bool:
     """
-    移除用户对某个公司的访问权限
+    移除用户对某个公司的访问权限（写入审计日志）
     
     Args:
         db: 数据库session
         user_id: 用户ID
         company_id: 公司ID
+        removed_by: 执行移除操作的管理员ID（可选）
     
     Returns:
         bool: 是否成功移除
@@ -430,8 +488,30 @@ def remove_user_from_company(db: Session, user_id: int, company_id: int) -> bool
         user = db.query(User).filter(User.id == user_id).first()
         company = db.query(Company).filter(Company.id == company_id).first()
         
+        old_role = ucr.role
+        
+        # 删除关联
         db.delete(ucr)
         db.commit()
+        
+        # 写入审计日志（防御性）
+        try:
+            audit_log = AuditLog(
+                company_id=company_id,
+                user_id=removed_by if removed_by else None,
+                username=user.username if user else f"User#{user_id}",
+                action_type='delete',
+                entity_type='user_company_role',
+                entity_id=ucr.id,
+                description=f"移除用户 {user.username if user else user_id} 对公司 {company.company_name if company else company_id} 的访问权限",
+                old_value={'role': old_role, 'company_id': company_id},
+                success=True
+            )
+            db.add(audit_log)
+            db.commit()
+        except Exception as e:
+            logger.error(f"审计日志写入失败（移除权限）：{e}")
+            db.rollback()
         
         logger.info(f"移除用户 {user.username if user else user_id} 对公司 {company.company_name if company else company_id} 的访问权限")
         return True

@@ -1,15 +1,17 @@
 """
-Phase 2-1 修复：正确的RBAC中间件实现
-使用FastAPI依赖注入系统，避免强制注入参数导致的TypeError
+Phase 2-1 修复 + 增强：正确的RBAC中间件实现
+- 基础：使用FastAPI依赖注入系统，避免强制注入参数导致的TypeError
+- 增强：多公司角色绑定（Multi-tenant Role Binding）
 """
 from typing import Optional
+from datetime import datetime
 from fastapi import Header, HTTPException, Cookie, Depends
 from sqlalchemy.orm import Session
 import logging
 
 from ..db import get_db
-from ..models import User, Permission
-from ..services.auth_service import get_user_by_token
+from ..models import User, Permission, AuditLog
+from ..services.auth_service import get_user_by_token, get_user_role_for_company
 
 logger = logging.getLogger(__name__)
 
@@ -288,3 +290,166 @@ def check_role_hierarchy(user_role: str, required_role: str) -> bool:
     required_level = ROLE_HIERARCHY.get(required_role, 999)
     
     return user_level >= required_level
+
+
+# ============================================================
+# Phase 2-1 增强：多公司角色绑定权限检查
+# ============================================================
+
+def require_company_access(company_id: int, min_role: Optional[str] = None):
+    """
+    FastAPI依赖函数工厂：要求用户有权访问指定公司
+    
+    使用方式：
+    ```python
+    @router.post("/api/companies/{company_id}/upload")
+    async def upload_statement(
+        company_id: int,
+        user: User = Depends(require_company_access(company_id, min_role='data_entry')),
+        db: Session = Depends(get_db)
+    ):
+        # 用户已通过公司访问权限检查
+        pass
+    ```
+    
+    Args:
+        company_id: 要求访问的公司ID
+        min_role: 最低角色要求（可选），如：'data_entry'表示至少需要data_entry权限
+    
+    Returns:
+        依赖函数
+    
+    Raises:
+        HTTPException: 403 用户无权访问该公司
+    """
+    def check_company_access(
+        current_user: User = Depends(require_auth),
+        db: Session = Depends(get_db)
+    ) -> User:
+        # 获取用户在该公司的角色
+        user_role = get_user_role_for_company(db, current_user, company_id)
+        
+        if not user_role:
+            # 写入审计日志：访问被拒绝
+            try:
+                audit_log = AuditLog(
+                    company_id=company_id,
+                    user_id=current_user.id,
+                    username=current_user.username,
+                    action_type='config_change',
+                    entity_type='company_access',
+                    entity_id=company_id,
+                    description=f"用户尝试访问无权限的公司（Company ID: {company_id}）",
+                    success=False,
+                    error_message="用户无权访问该公司"
+                )
+                db.add(audit_log)
+                db.commit()
+            except Exception as e:
+                logger.error(f"审计日志写入失败（访问被拒绝）：{e}")
+                db.rollback()
+            
+            logger.warning(
+                f"公司访问权限检查失败：用户 {current_user.username} "
+                f"无权访问公司ID {company_id}"
+            )
+            raise HTTPException(
+                status_code=403,
+                detail=f"权限不足：您无权访问该公司（Company ID: {company_id}）"
+            )
+        
+        # 如果有最低角色要求，检查角色层级
+        if min_role:
+            if not check_role_hierarchy(user_role, min_role):
+                # 写入审计日志：角色权限不足
+                try:
+                    audit_log = AuditLog(
+                        company_id=company_id,
+                        user_id=current_user.id,
+                        username=current_user.username,
+                        action_type='config_change',
+                        entity_type='company_access',
+                        entity_id=company_id,
+                        description=f"用户在公司{company_id}的角色（{user_role}）不满足要求（需要至少{min_role}）",
+                        success=False,
+                        error_message=f"角色权限不足：{user_role} < {min_role}"
+                    )
+                    db.add(audit_log)
+                    db.commit()
+                except Exception as e:
+                    logger.error(f"审计日志写入失败（角色权限不足）：{e}")
+                    db.rollback()
+                
+                logger.warning(
+                    f"公司角色权限不足：用户 {current_user.username} "
+                    f"在公司 {company_id} 的角色是 {user_role}，需要至少 {min_role}"
+                )
+                raise HTTPException(
+                    status_code=403,
+                    detail=f"权限不足：您在该公司的角色（{user_role}）不满足要求（需要至少{min_role}）"
+                )
+        
+        # 写入审计日志：访问成功
+        try:
+            audit_log = AuditLog(
+                company_id=company_id,
+                user_id=current_user.id,
+                username=current_user.username,
+                action_type='config_change',
+                entity_type='company_access',
+                entity_id=company_id,
+                description=f"用户以{user_role}角色访问公司{company_id}",
+                success=True
+            )
+            db.add(audit_log)
+            db.commit()
+        except Exception as e:
+            logger.error(f"审计日志写入失败（访问成功）：{e}")
+            db.rollback()
+        
+        logger.info(
+            f"公司访问权限检查通过：{current_user.username} ({user_role}) "
+            f"访问公司 {company_id}"
+        )
+        
+        return current_user
+    
+    return check_company_access
+
+
+def get_user_company_role(company_id: int):
+    """
+    FastAPI依赖函数工厂：获取用户在指定公司的角色（不抛出异常）
+    
+    使用方式：
+    ```python
+    @router.get("/api/companies/{company_id}/info")
+    async def get_company_info(
+        company_id: int,
+        user_role: Optional[str] = Depends(get_user_company_role(company_id)),
+        current_user: User = Depends(require_auth),
+        db: Session = Depends(get_db)
+    ):
+        if not user_role:
+            return {"message": "您无权访问该公司"}
+        
+        # 根据角色返回不同数据
+        if user_role in ['admin', 'accountant']:
+            return {"full_data": True}
+        else:
+            return {"limited_data": True}
+    ```
+    
+    Args:
+        company_id: 公司ID
+    
+    Returns:
+        依赖函数，返回角色字符串或None
+    """
+    def get_role(
+        current_user: User = Depends(require_auth),
+        db: Session = Depends(get_db)
+    ) -> Optional[str]:
+        return get_user_role_for_company(db, current_user, company_id)
+    
+    return get_role
