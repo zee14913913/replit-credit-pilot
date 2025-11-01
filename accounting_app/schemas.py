@@ -160,6 +160,28 @@ class SuppliersAgingReport(BaseModel):
     grand_total: Decimal
 
 
+# ==================== Customers Aging Report Schemas (AR) ====================
+class CustomerAgingDetail(BaseModel):
+    customer_id: int
+    customer_code: str
+    customer_name: str
+    aging_0_30: Decimal
+    aging_31_60: Decimal
+    aging_61_90: Decimal
+    aging_90_plus: Decimal
+    total_outstanding: Decimal
+
+class CustomersAgingReport(BaseModel):
+    company_id: int
+    report_date: date
+    customers: List[CustomerAgingDetail]
+    total_0_30: Decimal
+    total_31_60: Decimal
+    total_61_90: Decimal
+    total_90_plus: Decimal
+    grand_total: Decimal
+
+
 # ==================== Customer Ledger Schemas ====================
 class CustomerTransactionDetail(BaseModel):
     transaction_date: date

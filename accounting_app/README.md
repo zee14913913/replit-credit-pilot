@@ -77,6 +77,57 @@ GET /api/reports/management/{period}?format=json&include_details=true
 }
 ```
 
+#### 📊 应收账款账龄视图（AR Aging）
+```http
+GET /api/reports/ar-aging/view?company_id=1&as_of_date=2025-11-30
+```
+
+**按客户分组，账龄分类：**
+- 0-30 days
+- 31-60 days
+- 61-90 days
+- 90+ days
+
+**用途：** 银行贷款审批、客户风险管理
+
+**返回示例：**
+```json
+{
+  "company_id": 1,
+  "report_date": "2025-11-30",
+  "customers": [
+    {
+      "customer_id": 1,
+      "customer_code": "C001",
+      "customer_name": "ABC Corp",
+      "aging_0_30": 15000.00,
+      "aging_31_60": 5000.00,
+      "aging_61_90": 2000.00,
+      "aging_90_plus": 1000.00,
+      "total_outstanding": 23000.00
+    }
+  ],
+  "total_0_30": 15000.00,
+  "total_31_60": 5000.00,
+  "total_61_90": 2000.00,
+  "total_90_plus": 1000.00,
+  "grand_total": 23000.00
+}
+```
+
+#### 📊 应付账款账龄视图（AP Aging）
+```http
+GET /api/reports/ap-aging/view?company_id=1&as_of_date=2025-11-30
+```
+
+**按供应商分组，账龄分类：**
+- 0-30 days
+- 31-60 days
+- 61-90 days
+- 90+ days
+
+**用途：** 银行贷款审批、现金流管理
+
 ---
 
 ### 2. **PDF Reports API** (`/api/reports/pdf`)

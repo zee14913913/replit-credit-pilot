@@ -13,12 +13,74 @@ from ..db import get_db
 from ..models import *
 from ..schemas import (
     SuppliersAgingReport, SupplierAgingDetail,
+    CustomersAgingReport, CustomerAgingDetail,
     CustomerLedgerReport, CustomerTransactionDetail,
     ProfitLossReport, BalanceSheetReport,
     BankPackageReport
 )
+from ..services.aging_calculator import AgingCalculator
 
 router = APIRouter()
+
+
+@router.get("/ar-aging/view", response_model=CustomersAgingReport)
+def get_ar_aging_view(company_id: int, as_of_date: Optional[str] = None, db: Session = Depends(get_db)):
+    """
+    应收账款账龄报表业务视图（AR Aging View）
+    
+    按客户分组，账龄分类：0-30, 31-60, 61-90, 90+ 天
+    用于银行贷款审批和客户风险管理
+    
+    ✅ 使用AgingCalculator统一计算逻辑
+    """
+    if not as_of_date:
+        as_of_date = date.today()
+    else:
+        as_of_date = date.fromisoformat(as_of_date)
+    
+    # 调用统一的Aging计算服务
+    result = AgingCalculator.calculate_ar_aging(db, company_id, as_of_date)
+    
+    return CustomersAgingReport(
+        company_id=company_id,
+        report_date=as_of_date,
+        customers=[CustomerAgingDetail(**c) for c in result["customers"]],
+        total_0_30=result["total_0_30"],
+        total_31_60=result["total_31_60"],
+        total_61_90=result["total_61_90"],
+        total_90_plus=result["total_90_plus"],
+        grand_total=result["grand_total"]
+    )
+
+
+@router.get("/ap-aging/view", response_model=SuppliersAgingReport)
+def get_ap_aging_view(company_id: int, as_of_date: Optional[str] = None, db: Session = Depends(get_db)):
+    """
+    应付账款账龄报表业务视图（AP Aging View）
+    
+    按供应商分组，账龄分类：0-30, 31-60, 61-90, 90+ 天
+    用于银行贷款审批和现金流管理
+    
+    ✅ 使用AgingCalculator统一计算逻辑
+    """
+    if not as_of_date:
+        as_of_date = date.today()
+    else:
+        as_of_date = date.fromisoformat(as_of_date)
+    
+    # 调用统一的Aging计算服务
+    result = AgingCalculator.calculate_ap_aging(db, company_id, as_of_date)
+    
+    return SuppliersAgingReport(
+        company_id=company_id,
+        report_date=as_of_date,
+        suppliers=[SupplierAgingDetail(**s) for s in result["suppliers"]],
+        total_0_30=result["total_0_30"],
+        total_31_60=result["total_31_60"],
+        total_61_90=result["total_61_90"],
+        total_90_plus=result["total_90_plus"],
+        grand_total=result["grand_total"]
+    )
 
 
 @router.get("/suppliers-aging", response_model=SuppliersAgingReport)
@@ -26,66 +88,11 @@ def get_suppliers_aging(company_id: int, as_of_date: Optional[str] = None, db: S
     """
     供应商账龄报表（Suppliers Aging）
     按 0-30, 31-60, 61-90, 90+ 分类
+    
+    ✅ 使用AgingCalculator统一计算逻辑
     """
-    if not as_of_date:
-        as_of_date = date.today()
-    else:
-        as_of_date = date.fromisoformat(as_of_date)
-    
-    # 获取所有未付清的采购发票
-    invoices = db.query(PurchaseInvoice).join(Supplier).filter(
-        PurchaseInvoice.company_id == company_id,
-        PurchaseInvoice.balance_amount > 0
-    ).all()
-    
-    # 按供应商分组计算账龄
-    supplier_aging = {}
-    
-    for inv in invoices:
-        days_overdue = (as_of_date - inv.due_date).days
-        
-        if inv.supplier_id not in supplier_aging:
-            supplier_aging[inv.supplier_id] = {
-                'supplier_id': inv.supplier_id,
-                'supplier_code': inv.supplier.supplier_code if inv.supplier else '',
-                'supplier_name': inv.supplier.supplier_name if inv.supplier else '',
-                'aging_0_30': Decimal(0),
-                'aging_31_60': Decimal(0),
-                'aging_61_90': Decimal(0),
-                'aging_90_plus': Decimal(0),
-                'total_outstanding': Decimal(0)
-            }
-        
-        amount = inv.balance_amount
-        
-        if days_overdue <= 30:
-            supplier_aging[inv.supplier_id]['aging_0_30'] += amount
-        elif days_overdue <= 60:
-            supplier_aging[inv.supplier_id]['aging_31_60'] += amount
-        elif days_overdue <= 90:
-            supplier_aging[inv.supplier_id]['aging_61_90'] += amount
-        else:
-            supplier_aging[inv.supplier_id]['aging_90_plus'] += amount
-        
-        supplier_aging[inv.supplier_id]['total_outstanding'] += amount
-    
-    # 计算总计
-    total_0_30 = sum(s['aging_0_30'] for s in supplier_aging.values())
-    total_31_60 = sum(s['aging_31_60'] for s in supplier_aging.values())
-    total_61_90 = sum(s['aging_61_90'] for s in supplier_aging.values())
-    total_90_plus = sum(s['aging_90_plus'] for s in supplier_aging.values())
-    grand_total = total_0_30 + total_31_60 + total_61_90 + total_90_plus
-    
-    return SuppliersAgingReport(
-        company_id=company_id,
-        report_date=as_of_date,
-        suppliers=[SupplierAgingDetail(**s) for s in supplier_aging.values()],
-        total_0_30=total_0_30,
-        total_31_60=total_31_60,
-        total_61_90=total_61_90,
-        total_90_plus=total_90_plus,
-        grand_total=grand_total
-    )
+    # 直接调用AP aging view（避免代码重复）
+    return get_ap_aging_view(company_id, as_of_date, db)
 
 
 @router.get("/customer-ledger", response_model=CustomerLedgerReport)

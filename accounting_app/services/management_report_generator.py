@@ -14,6 +14,7 @@ from ..models import (
     SalesInvoice, PurchaseInvoice, BankStatement,
     POSReport, Customer, Supplier
 )
+from .aging_calculator import AgingCalculator
 
 logger = logging.getLogger(__name__)
 
@@ -310,107 +311,41 @@ class ManagementReportGenerator:
     
     def _generate_aging_summary(self, as_of_date: date) -> Dict:
         """
-        生成Aging摘要 - 从真实发票表计算账龄
+        生成Aging摘要 - 调用AgingCalculator统一服务
+        
+        ✅ 重构后：使用AgingCalculator确保与API一致的计算逻辑
         
         包括：
         - AR账龄（Accounts Receivable from sales_invoices）
         - AP账龄（Accounts Payable from purchase_invoices）
         """
-        logger.info(f"计算Aging数据: company_id={self.company_id}, as_of={as_of_date}")
+        logger.info(f"计算Aging数据（使用AgingCalculator）: company_id={self.company_id}, as_of={as_of_date}")
         
-        # 查询AR - 未付清的销售发票（严格小于as_of_date）
-        ar_invoices = (
-            self.db.query(SalesInvoice)
-            .filter(
-                SalesInvoice.company_id == self.company_id,
-                SalesInvoice.balance_amount > 0,
-                SalesInvoice.invoice_date < as_of_date  # 严格小于
-            )
-            .all()
+        # 调用统一的Aging计算服务
+        result = AgingCalculator.calculate_aging_summary_for_management_report(
+            self.db, 
+            self.company_id, 
+            as_of_date
         )
         
-        # 按账龄分类AR
-        ar_current = Decimal('0')
-        ar_1_30 = Decimal('0')
-        ar_31_60 = Decimal('0')
-        ar_61_90 = Decimal('0')
-        ar_over_90 = Decimal('0')
+        # 转换为Management Report格式
+        ar = result["accounts_receivable"]
+        ap = result["accounts_payable"]
         
-        for invoice in ar_invoices:
-            balance = Decimal(str(invoice.balance_amount))
-            days_overdue = (as_of_date - invoice.due_date).days
-            
-            if days_overdue < 0:
-                ar_current += balance
-            elif days_overdue <= 30:
-                ar_1_30 += balance
-            elif days_overdue <= 60:
-                ar_31_60 += balance
-            elif days_overdue <= 90:
-                ar_61_90 += balance
-            else:
-                ar_over_90 += balance
-        
-        ar_total = ar_current + ar_1_30 + ar_31_60 + ar_61_90 + ar_over_90
-        
-        # 查询AP - 未付清的采购发票（严格小于as_of_date）
-        ap_invoices = (
-            self.db.query(PurchaseInvoice)
-            .filter(
-                PurchaseInvoice.company_id == self.company_id,
-                PurchaseInvoice.balance_amount > 0,
-                PurchaseInvoice.invoice_date < as_of_date  # 严格小于
-            )
-            .all()
-        )
-        
-        # 按账龄分类AP
-        ap_current = Decimal('0')
-        ap_1_30 = Decimal('0')
-        ap_31_60 = Decimal('0')
-        ap_61_90 = Decimal('0')
-        ap_over_90 = Decimal('0')
-        
-        for invoice in ap_invoices:
-            balance = Decimal(str(invoice.balance_amount))
-            days_overdue = (as_of_date - invoice.due_date).days
-            
-            if days_overdue < 0:
-                ap_current += balance
-            elif days_overdue <= 30:
-                ap_1_30 += balance
-            elif days_overdue <= 60:
-                ap_31_60 += balance
-            elif days_overdue <= 90:
-                ap_61_90 += balance
-            else:
-                ap_over_90 += balance
-        
-        ap_total = ap_current + ap_1_30 + ap_31_60 + ap_61_90 + ap_over_90
-        
-        ar_aging = {
-            "ar_current": float(ar_current),
-            "ar_1_30": float(ar_1_30),  # 添加1-30天
-            "ar_31_60": float(ar_31_60),
-            "ar_61_90": float(ar_61_90),
-            "ar_over_90": float(ar_over_90),
-            "total_ar": float(ar_total)
-        }
-        
-        ap_aging = {
-            "ap_current": float(ap_current),
-            "ap_1_30": float(ap_1_30),  # 添加1-30天
-            "ap_31_60": float(ap_31_60),
-            "ap_61_90": float(ap_61_90),
-            "ap_over_90": float(ap_over_90),
-            "total_ap": float(ap_total)
-        }
-        
-        # 合并返回（兼容PDF生成器）
         return {
-            **ar_aging,
-            **ap_aging,
-            "as_of_date": as_of_date.isoformat()
+            "ar_current": ar["current"],
+            "ar_1_30": ar["1_30_days"],
+            "ar_31_60": ar["31_60_days"],
+            "ar_61_90": ar["61_90_days"],
+            "ar_over_90": ar["over_90_days"],
+            "total_ar": ar["total"],
+            "ap_current": ap["current"],
+            "ap_1_30": ap["1_30_days"],
+            "ap_31_60": ap["31_60_days"],
+            "ap_61_90": ap["61_90_days"],
+            "ap_over_90": ap["over_90_days"],
+            "total_ap": ap["total"],
+            "as_of_date": result["as_of_date"]
         }
     
     def _generate_bank_balances(self, as_of_date: date) -> List[Dict]:
