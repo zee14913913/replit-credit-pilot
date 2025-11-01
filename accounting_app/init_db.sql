@@ -468,6 +468,58 @@ WHERE NOT EXISTS (
 );
 
 -- ============================================================
+-- 19. 异常中心表（Exception Center）
+-- ============================================================
+CREATE TABLE IF NOT EXISTS exceptions (
+    id SERIAL PRIMARY KEY,
+    company_id INTEGER NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    exception_type VARCHAR(50) NOT NULL CHECK (exception_type IN ('pdf_parse', 'ocr_error', 'customer_mismatch', 'supplier_mismatch', 'posting_error')),
+    severity VARCHAR(20) NOT NULL CHECK (severity IN ('low', 'medium', 'high', 'critical')),
+    source_type VARCHAR(50),
+    source_id INTEGER,
+    error_message TEXT NOT NULL,
+    raw_data TEXT,
+    status VARCHAR(20) DEFAULT 'new' CHECK (status IN ('new', 'in_progress', 'resolved', 'ignored')),
+    resolved_by VARCHAR(100),
+    resolved_at TIMESTAMP,
+    resolution_notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX idx_exceptions_company ON exceptions(company_id);
+CREATE INDEX idx_exceptions_type ON exceptions(exception_type);
+CREATE INDEX idx_exceptions_severity ON exceptions(severity);
+CREATE INDEX idx_exceptions_status ON exceptions(status);
+CREATE INDEX idx_exceptions_created ON exceptions(created_at);
+
+-- ============================================================
+-- 20. 自动记账规则表（Auto Posting Rules）
+-- 规则引擎表驱动化，替代硬编码规则
+-- ============================================================
+CREATE TABLE IF NOT EXISTS auto_posting_rules (
+    id SERIAL PRIMARY KEY,
+    company_id INTEGER NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    rule_name VARCHAR(200) NOT NULL,
+    source_type VARCHAR(50) NOT NULL CHECK (source_type IN ('bank_import', 'supplier_invoice', 'sales_invoice', 'general')),
+    pattern TEXT NOT NULL,
+    is_regex BOOLEAN DEFAULT false,
+    priority INTEGER DEFAULT 100,
+    debit_account_code VARCHAR(50) NOT NULL,
+    credit_account_code VARCHAR(50) NOT NULL,
+    description TEXT,
+    is_active BOOLEAN DEFAULT true,
+    match_count INTEGER DEFAULT 0,
+    last_matched_at TIMESTAMP,
+    created_by VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX idx_rules_company ON auto_posting_rules(company_id);
+CREATE INDEX idx_rules_source_type ON auto_posting_rules(source_type);
+CREATE INDEX idx_rules_priority ON auto_posting_rules(priority);
+CREATE INDEX idx_rules_active ON auto_posting_rules(is_active);
+
+-- ============================================================
 -- 完成提示
 -- ============================================================
 

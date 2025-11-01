@@ -389,3 +389,32 @@ class Exception(Base):
         CheckConstraint("severity IN ('low', 'medium', 'high', 'critical')"),
         CheckConstraint("status IN ('new', 'in_progress', 'resolved', 'ignored')"),
     )
+
+
+class AutoPostingRule(Base):
+    """
+    自动记账规则表 - 表驱动化配置
+    替代硬编码的MATCHING_RULES，支持用户自定义规则
+    """
+    __tablename__ = "auto_posting_rules"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=False, index=True)
+    rule_name = Column(String(200), nullable=False)  # 规则名称（便于识别）
+    source_type = Column(String(50), nullable=False, index=True)  # bank_import, supplier_invoice, sales_invoice
+    pattern = Column(Text, nullable=False)  # 匹配模式（关键字或正则表达式）
+    is_regex = Column(Boolean, default=False)  # 是否为正则表达式
+    priority = Column(Integer, default=100, index=True)  # 优先级（数字越小优先级越高）
+    debit_account_code = Column(String(50), nullable=False)  # 借方科目代码
+    credit_account_code = Column(String(50), nullable=False)  # 贷方科目代码
+    description = Column(Text)  # 规则说明
+    is_active = Column(Boolean, default=True, index=True)  # 是否启用
+    match_count = Column(Integer, default=0)  # 匹配次数统计
+    last_matched_at = Column(DateTime(timezone=True))  # 最后匹配时间
+    created_by = Column(String(100))  # 创建人
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    __table_args__ = (
+        CheckConstraint("source_type IN ('bank_import', 'supplier_invoice', 'sales_invoice', 'general')"),
+    )
