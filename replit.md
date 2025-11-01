@@ -4,6 +4,26 @@
 The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. Its core purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation, guaranteeing 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization suggestions (debt consolidation, balance transfers, loan refinancing), and a success-based fee model. The business vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
 ## Recent Changes
+**2025-11-01**: Task Enterprise-1完成 - AR/AP Aging业务视图（Architect审查通过）
+- **新增API端点**:
+  - GET /reports/ar-aging/view - 应收账款账龄报表（按客户分组，0-30/31-60/61-90/90+天）
+  - GET /reports/ap-aging/view - 应付账款账龄报表（按供应商分组，0-30/31-60/61-90/90+天）
+- **统一计算服务**:
+  - 创建AgingCalculator服务（accounting_app/services/aging_calculator.py）
+  - 提供calculate_ar_aging()、calculate_ap_aging()方法
+  - Management Report引用同一服务（避免重复逻辑）
+- **关键修复**:
+  - 添加invoice_date < as_of_date过滤条件（排除未来发票）
+  - 确保aging快照准确反映截止日期状态
+  - Architect验证通过：符合"银行可信任"要求
+- **架构设计**:
+  - 采用共享服务模式（而非HTTP自调用）
+  - 单一真实数据源（Single Source of Truth）
+  - API路由和Management Report均调用AgingCalculator
+- **文档完善**:
+  - README.md添加AR/AP Aging API完整文档
+  - 包含请求/响应示例和业务用途说明
+
 **2025-11-01**: Task 11完成 - 测试框架与完整API文档
 - **测试基础设施**:
   - 配置pytest测试框架（pytest.ini + conftest.py）
