@@ -111,6 +111,60 @@ def delete_file(file_type: str, filename: str):
     }
 
 
+@router.get("/view/{file_type}/{filename}")
+def view_file_content(file_type: str, filename: str):
+    """
+    查看文件内容（返回纯文本或解析后的数据）
+    """
+    if file_type == "bank_statement":
+        file_path = os.path.join(STATEMENTS_DIR, filename)
+    elif file_type == "test_report":
+        file_path = os.path.join(REPORTS_DIR, filename)
+    else:
+        raise HTTPException(status_code=400, detail="Invalid file type")
+    
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="File not found")
+    
+    # 安全检查
+    if not os.path.abspath(file_path).startswith(STORAGE_BASE):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    # 读取文件内容
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # 如果是CSV，解析为结构化数据
+        if filename.endswith('.csv'):
+            import csv
+            import io
+            
+            csv_reader = csv.DictReader(io.StringIO(content))
+            rows = list(csv_reader)
+            
+            return {
+                "filename": filename,
+                "type": file_type,
+                "format": "csv",
+                "headers": list(rows[0].keys()) if rows else [],
+                "rows": rows,
+                "row_count": len(rows),
+                "raw_content": content
+            }
+        else:
+            # 纯文本文件
+            return {
+                "filename": filename,
+                "type": file_type,
+                "format": "text",
+                "content": content,
+                "line_count": len(content.split('\n'))
+            }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error reading file: {str(e)}")
+
+
 @router.get("/storage-info")
 def get_storage_info():
     """

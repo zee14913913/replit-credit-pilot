@@ -166,6 +166,96 @@
             color: #666;
             font-size: 1.2rem;
         }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            overflow: auto;
+        }
+        
+        .modal-content {
+            background: #1a1a1a;
+            margin: 2% auto;
+            padding: 2rem;
+            border: 2px solid #FF007F;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 1400px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #322446;
+        }
+        
+        .modal-title {
+            color: #FF007F;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .close {
+            color: #999;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .close:hover {
+            color: #FF007F;
+        }
+        
+        .file-viewer {
+            background: #000;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #322446;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        
+        .csv-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .csv-table th {
+            background: #FF007F;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+        
+        .csv-table td {
+            padding: 8px;
+            border-bottom: 1px solid #333;
+            color: #fff;
+        }
+        
+        .csv-table tr:hover {
+            background: #2d2d2d;
+        }
     </style>
 </head>
 <body>
@@ -196,6 +286,19 @@
         <div class="files-section">
             <h2 class="section-title">📂 所有文件</h2>
             <div id="files-list" class="loading">正在加载文件列表...</div>
+        </div>
+    </div>
+    
+    <!-- 文件查看模态框 -->
+    <div id="fileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">文件查看</div>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalBody" class="file-viewer">
+                加载中...
+            </div>
         </div>
     </div>
     
@@ -247,6 +350,7 @@
                             <td>${file.size_mb} MB</td>
                             <td>${file.modified_at}</td>
                             <td>
+                                <button onclick="viewFile('${file.type}', '${file.filename}')" class="btn btn-primary btn-small">👁️ 查看</button>
                                 <button onclick="downloadFile('${file.type}', '${file.filename}')" class="btn btn-primary btn-small">📥 下载</button>
                                 <button onclick="deleteFile('${file.type}', '${file.filename}')" class="btn btn-secondary btn-small">🗑️ 删除</button>
                             </td>
@@ -292,6 +396,77 @@
         function refreshFiles() {
             document.getElementById('files-list').innerHTML = '<div class="loading">正在刷新...</div>';
             loadFiles();
+        }
+        
+        async function viewFile(type, filename) {
+            const modal = document.getElementById('fileModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            modal.style.display = 'block';
+            modalTitle.textContent = `📄 ${filename}`;
+            modalBody.innerHTML = '<div class="loading">正在加载文件内容...</div>';
+            
+            try {
+                const response = await fetch(`http://localhost:8000/api/files/view/${type}/${filename}`);
+                const data = await response.json();
+                
+                if (data.format === 'csv') {
+                    // CSV文件：显示表格
+                    let html = `
+                        <div style="color: #0f0; margin-bottom: 1rem;">
+                            📊 CSV数据 | 总行数: ${data.row_count} | 列数: ${data.headers.length}
+                        </div>
+                        <table class="csv-table">
+                            <thead>
+                                <tr>
+                    `;
+                    
+                    // 表头
+                    data.headers.forEach(header => {
+                        html += `<th>${header}</th>`;
+                    });
+                    html += '</tr></thead><tbody>';
+                    
+                    // 数据行
+                    data.rows.forEach((row, idx) => {
+                        html += '<tr>';
+                        data.headers.forEach(header => {
+                            html += `<td>${row[header] || ''}</td>`;
+                        });
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table>';
+                    modalBody.innerHTML = html;
+                    
+                } else {
+                    // 文本文件：显示原始内容
+                    modalBody.innerHTML = `
+                        <div style="color: #0f0; margin-bottom: 1rem;">
+                            📝 文本内容 | 总行数: ${data.line_count}
+                        </div>
+                        <div class="file-viewer" style="color: #0f0;">
+                            ${data.content.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                modalBody.innerHTML = `<div class="empty">加载失败: ${error.message}</div>`;
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('fileModal').style.display = 'none';
+        }
+        
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modal = document.getElementById('fileModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
         }
         
         // 页面加载时获取文件列表
