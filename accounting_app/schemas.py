@@ -266,3 +266,54 @@ class AutoInvoiceResult(BaseModel):
     invoices_generated: int
     invoice_numbers: List[str]
     total_amount: Decimal
+
+
+# ==================== Exception Center Schemas ====================
+class ExceptionBase(BaseModel):
+    exception_type: str  # pdf_parse, ocr_error, customer_mismatch, supplier_mismatch, posting_error
+    severity: str  # low, medium, high, critical
+    source_type: Optional[str] = None
+    source_id: Optional[int] = None
+    error_message: str
+    raw_data: Optional[str] = None
+
+class ExceptionCreate(ExceptionBase):
+    pass  # company_id通过Depends(get_current_company_id)注入，不接受用户输入
+
+class ExceptionUpdate(BaseModel):
+    status: Optional[str] = None  # new, in_progress, resolved, ignored
+    resolved_by: Optional[str] = None
+    resolution_notes: Optional[str] = None
+
+class ExceptionResponse(BaseModel):
+    id: int
+    company_id: int
+    exception_type: str
+    severity: str
+    source_type: Optional[str]
+    source_id: Optional[int]
+    error_message: str
+    raw_data: Optional[str]
+    status: str
+    resolved_by: Optional[str]
+    resolved_at: Optional[datetime]
+    resolution_notes: Optional[str]
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class ExceptionListResponse(BaseModel):
+    total: int
+    page: int
+    page_size: int
+    exceptions: List[ExceptionResponse]
+
+class ExceptionSummary(BaseModel):
+    total: int
+    by_type: dict  # {pdf_parse: 5, ocr_error: 3, ...}
+    by_severity: dict  # {low: 2, medium: 3, high: 2, critical: 1}
+    by_status: dict  # {new: 5, in_progress: 2, resolved: 1}
+    critical_count: int
+    high_count: int

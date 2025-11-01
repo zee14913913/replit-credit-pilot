@@ -49,7 +49,8 @@ from .routes import (
     csv_export,
     supplier_invoices,
     pos_reports,
-    pdf_reports
+    pdf_reports,
+    exceptions
 )
 
 # 注册路由
@@ -65,6 +66,7 @@ app.include_router(csv_export.router, prefix="/api", tags=["CSV Export"])
 app.include_router(supplier_invoices.router, prefix="/api", tags=["Supplier Invoices"])
 app.include_router(pos_reports.router, tags=["POS Reports"])
 app.include_router(pdf_reports.router, tags=["PDF Reports"])
+app.include_router(exceptions.router, prefix="/api", tags=["Exception Center"])
 
 
 # 启动事件：初始化数据库

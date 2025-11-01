@@ -15,6 +15,7 @@ from ..models import (
     POSReport, Customer, Supplier
 )
 from .aging_calculator import AgingCalculator
+from .exception_manager import ExceptionManager
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +77,10 @@ class ManagementReportGenerator:
         # 5. 数据质量指标
         data_quality = self._generate_data_quality_metrics(period_start, period_end)
         
-        # 6. 未匹配项目详细列表
+        # 6. 异常摘要（Exception Center集成）
+        exception_summary = ExceptionManager.get_exception_summary(self.db, self.company_id, status_filter='new')
+        
+        # 7. 未匹配项目详细列表
         unreconciled_details = []
         if include_details and data_quality['unreconciled_count'] > 0:
             unreconciled_details = self._get_unreconciled_details()
@@ -97,6 +101,9 @@ class ManagementReportGenerator:
             
             # 数据质量（重要！银行会看）
             "data_quality": data_quality,
+            
+            # 异常中心摘要（✅ 新增）
+            "exception_summary": exception_summary,
             
             # 未匹配项目
             "unreconciled_details": unreconciled_details,

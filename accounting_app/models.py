@@ -364,3 +364,28 @@ class AutoInvoiceRule(Base):
     __table_args__ = (
         CheckConstraint("frequency IN ('monthly', 'quarterly', 'yearly')"),
     )
+
+
+class Exception(Base):
+    __tablename__ = "exceptions"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=False)
+    exception_type = Column(String(50), nullable=False, index=True)  # pdf_parse, ocr_error, customer_mismatch, supplier_mismatch, posting_error
+    severity = Column(String(20), nullable=False, index=True)  # low, medium, high, critical
+    source_type = Column(String(50))  # bank_statement, pos_report, sales_invoice, purchase_invoice, journal_entry
+    source_id = Column(Integer)  # 来源记录ID
+    error_message = Column(Text, nullable=False)
+    raw_data = Column(Text)  # JSON格式的原始数据
+    status = Column(String(20), default='new', index=True)  # new, in_progress, resolved, ignored
+    resolved_by = Column(String(100))
+    resolved_at = Column(DateTime(timezone=True))
+    resolution_notes = Column(Text)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    __table_args__ = (
+        CheckConstraint("exception_type IN ('pdf_parse', 'ocr_error', 'customer_mismatch', 'supplier_mismatch', 'posting_error')"),
+        CheckConstraint("severity IN ('low', 'medium', 'high', 'critical')"),
+        CheckConstraint("status IN ('new', 'in_progress', 'resolved', 'ignored')"),
+    )

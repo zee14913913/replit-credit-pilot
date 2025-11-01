@@ -494,6 +494,195 @@ curl -X POST "http://localhost:8000/api/tasks/monthly-close?company_id=1&month=2
 
 ---
 
+### 6. **Exception Center API** (`/api/exceptions`)
+
+集中管理所有系统异常，包括PDF解析失败、OCR错误、客户/供应商未匹配、记账失败等。
+
+#### 🚨 获取异常摘要
+```http
+GET /api/exceptions/summary?company_id=1&status_filter=new
+```
+
+**参数：**
+- `company_id`: 公司ID（必填）
+- `status_filter`: 状态过滤（可选：`new`, `in_progress`, `resolved`, `ignored`）
+
+**返回示例：**
+```json
+{
+  "total": 15,
+  "by_type": {
+    "pdf_parse": 3,
+    "ocr_error": 2,
+    "customer_mismatch": 5,
+    "supplier_mismatch": 4,
+    "posting_error": 1
+  },
+  "by_severity": {
+    "low": 4,
+    "medium": 6,
+    "high": 4,
+    "critical": 1
+  },
+  "by_status": {
+    "new": 10,
+    "in_progress": 3,
+    "resolved": 2
+  },
+  "critical_count": 1,
+  "high_count": 4
+}
+```
+
+#### 🚨 获取异常列表（分页）
+```http
+GET /api/exceptions/?company_id=1&exception_type=customer_mismatch&severity=high&status=new&page=1&page_size=50
+```
+
+**过滤参数：**
+- `exception_type`: 异常类型
+  - `pdf_parse`: PDF解析失败
+  - `ocr_error`: OCR识别错误
+  - `customer_mismatch`: 客户未匹配
+  - `supplier_mismatch`: 供应商未匹配
+  - `posting_error`: 记账失败
+- `severity`: 严重程度（`low`, `medium`, `high`, `critical`）
+- `status`: 状态（`new`, `in_progress`, `resolved`, `ignored`）
+
+**返回示例：**
+```json
+{
+  "total": 5,
+  "page": 1,
+  "page_size": 50,
+  "exceptions": [
+    {
+      "id": 1,
+      "company_id": 1,
+      "exception_type": "customer_mismatch",
+      "severity": "high",
+      "source_type": "sales_invoice",
+      "source_id": 123,
+      "error_message": "客户未找到: ABC Company",
+      "raw_data": "{\"customer_name\": \"ABC Company\"}",
+      "status": "new",
+      "created_at": "2025-11-01T10:30:00Z"
+    }
+  ]
+}
+```
+
+#### 🚨 获取单个异常详情
+```http
+GET /api/exceptions/1
+```
+
+#### 🚨 标记异常为已解决
+```http
+PUT /api/exceptions/1/resolve
+Content-Type: application/json
+
+{
+  "resolved_by": "admin@example.com",
+  "resolution_notes": "手动创建客户后重新导入"
+}
+```
+
+#### 🚨 忽略异常
+```http
+PUT /api/exceptions/1/ignore
+Content-Type: application/json
+
+{
+  "resolved_by": "admin@example.com",
+  "resolution_notes": "已确认可忽略"
+}
+```
+
+#### 🚨 删除异常（谨慎使用）
+```http
+DELETE /api/exceptions/1
+```
+
+**注意：** 建议使用"忽略"而非删除，以保留审计记录。
+
+#### 📋 Python调用示例
+```python
+import requests
+
+# 获取未解决的异常摘要
+response = requests.get(
+    "http://localhost:8000/api/exceptions/summary",
+    params={"company_id": 1, "status_filter": "new"}
+)
+summary = response.json()
+print(f"严重异常数量: {summary['critical_count']}")
+
+# 列出所有客户未匹配的异常
+response = requests.get(
+    "http://localhost:8000/api/exceptions/",
+    params={
+        "company_id": 1,
+        "exception_type": "customer_mismatch",
+        "status": "new",
+        "page": 1,
+        "page_size": 50
+    }
+)
+exceptions = response.json()
+
+# 解决异常
+requests.put(
+    "http://localhost:8000/api/exceptions/1/resolve",
+    json={
+        "resolved_by": "admin@example.com",
+        "resolution_notes": "已处理"
+    }
+)
+```
+
+#### 🔧 Management Report集成
+
+Exception Center已自动集成到Management Report中：
+
+```python
+# Management Report会自动包含exception_summary字段
+response = requests.get(
+    "http://localhost:8000/api/reports/management/2025-11"
+)
+report = response.json()
+
+# 检查异常摘要
+exception_summary = report.get("exception_summary", {})
+if exception_summary["critical"] > 0:
+    print(f"⚠️ 警告：有 {exception_summary['critical']} 个严重异常需要处理！")
+```
+
+**Management Report返回示例：**
+```json
+{
+  "period": "2025-11",
+  "pnl_summary": {...},
+  "balance_sheet_summary": {...},
+  "exception_summary": {
+    "total": 15,
+    "critical": 2,
+    "high": 5,
+    "by_type": {
+      "pdf_parse": 3,
+      "customer_mismatch": 7,
+      "posting_error": 5
+    },
+    "by_status": {
+      "new": 10,
+      "resolved": 5
+    }
+  }
+}
+```
+
+---
+
 ## 📝 开发指南
 
 ### 添加新的报表类型
