@@ -22,13 +22,14 @@ class PDFParseResult:
     
     def __init__(self):
         self.success = False
-        self.method = None  # 'text', 'ocr', 'hybrid'
+        self.method = None  # 'text', 'ocr', 'failed', 'error'
         self.confidence = 0.0
         self.text_content = ""
         self.tables = []
         self.extracted_data = {}
         self.error_message = None
         self.pages_processed = 0
+        self.failure_stage = None  # 'ocr_failed', 'layout_unsupported', 'bank_template_unknown', 'data_incomplete'
         
     def to_dict(self) -> Dict:
         return {
@@ -39,7 +40,8 @@ class PDFParseResult:
             "tables_count": len(self.tables),
             "extracted_data": self.extracted_data,
             "error_message": self.error_message,
-            "pages_processed": self.pages_processed
+            "pages_processed": self.pages_processed,
+            "failure_stage": self.failure_stage  # 明确的失败阶段
         }
 
 
@@ -53,35 +55,84 @@ class PDFParser:
         
     def parse(self, pdf_path: str) -> PDFParseResult:
         """
-        解析PDF文件
-        先尝试文本提取，失败则使用OCR
+        解析PDF文件 - 明确的三段式流程
+        
+        阶段1: 文本型PDF解析
+        阶段2: OCR扫描件解析
+        阶段3: 解析失败 → 进入pending_documents
+        
+        每个阶段都有明确的失败原因，不假装100%成功
         """
         result = PDFParseResult()
+        failure_reasons = []
         
         try:
-            # 先尝试文本型PDF
+            # ========== 阶段1: 文本型PDF解析 ==========
+            logger.info(f"阶段1: 尝试文本PDF解析: {pdf_path}")
             result = self._parse_text_pdf(pdf_path)
             
             if result.success and result.confidence > 0.5:
-                logger.info(f"文本PDF解析成功: {pdf_path}")
+                logger.info(f"✅ 阶段1成功: 文本PDF解析完成，置信度: {result.confidence:.2f}")
+                result.method = 'text'
                 return result
+            else:
+                failure_reasons.append(f"文本解析失败或置信度低: {result.confidence:.2f}")
+                logger.warning(f"⚠️ 阶段1失败: {failure_reasons[-1]}")
             
-            # 如果文本提取失败或置信度低，尝试OCR
+            # ========== 阶段2: OCR扫描件解析 ==========
             if self.enable_ocr:
-                logger.info(f"尝试OCR解析: {pdf_path}")
+                logger.info(f"阶段2: 尝试OCR解析: {pdf_path}")
                 ocr_result = self._parse_ocr_pdf(pdf_path)
                 
-                if ocr_result.success and ocr_result.confidence > result.confidence:
-                    logger.info(f"OCR解析成功: {pdf_path}")
+                if ocr_result.success and ocr_result.confidence > 0.3:
+                    logger.info(f"✅ 阶段2成功: OCR解析完成，置信度: {ocr_result.confidence:.2f}")
+                    ocr_result.method = 'ocr'
                     return ocr_result
+                else:
+                    failure_reasons.append(f"OCR解析失败或置信度低: {ocr_result.confidence:.2f}")
+                    logger.warning(f"⚠️ 阶段2失败: {failure_reasons[-1]}")
+            else:
+                failure_reasons.append("OCR功能未启用")
+                logger.info("OCR功能未启用，跳过阶段2")
+            
+            # ========== 阶段3: 解析失败，需要人工处理 ==========
+            logger.error(f"❌ 所有解析阶段失败: {pdf_path}")
+            result.success = False
+            result.method = 'failed'
+            result.error_message = "PDF解析失败，需要人工确认。" + " | ".join(failure_reasons)
+            
+            # 设置详细的失败阶段（供pending_documents使用）
+            result.failure_stage = self._determine_failure_stage(result, failure_reasons)
             
             return result
             
         except Exception as e:
-            logger.error(f"PDF解析失败: {pdf_path}, 错误: {str(e)}")
+            logger.error(f"PDF解析异常: {pdf_path}, 错误: {str(e)}")
             result.success = False
-            result.error_message = str(e)
+            result.method = 'error'
+            result.error_message = f"系统错误: {str(e)}"
+            result.failure_stage = 'system_error'
             return result
+    
+    def _determine_failure_stage(self, result: PDFParseResult, reasons: List[str]) -> str:
+        """
+        确定失败阶段，返回具体原因
+        用于前端提示用户
+        """
+        if 'OCR解析失败' in ' '.join(reasons):
+            if 'pytesseract' in result.error_message or 'tesseract' in result.error_message.lower():
+                return 'ocr_service_unavailable'
+            return 'ocr_failed'
+        
+        if '文本解析失败' in ' '.join(reasons):
+            if result.confidence < 0.1:
+                return 'layout_unsupported'
+            return 'text_extraction_failed'
+        
+        if '置信度低' in ' '.join(reasons):
+            return 'low_confidence'
+        
+        return 'unknown_error'
     
     def _parse_text_pdf(self, pdf_path: str) -> PDFParseResult:
         """解析文本型PDF"""
