@@ -76,32 +76,52 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">权限 *</label>
+                        <label class="form-label">权限 * <small class="text-muted">（补充改进④：默认仅上传权限）</small></label>
                         <div class="border rounded p-3">
+                            <!-- 补充改进④：默认权限 - 上传 -->
+                            <div class="bg-light p-2 mb-2 rounded">
+                                <strong>基础权限（默认授予）</strong>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="upload:bank_statements" id="perm0" checked disabled>
+                                <label class="form-check-label" for="perm0">
+                                    <i class="bi bi-upload"></i> 上传银行结单 <span class="badge bg-success">默认</span>
+                                </label>
+                            </div>
+                            
+                            <hr class="my-2">
+                            
+                            <!-- 补充改进④：需要单独授权的权限 - 导出 -->
+                            <div class="bg-light p-2 mb-2 rounded">
+                                <strong>高级权限（需单独授权）</strong>
+                            </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="export:bank_statements" id="perm1">
                                 <label class="form-check-label" for="perm1">
-                                    导出银行结单
+                                    <i class="bi bi-download"></i> 导出银行结单 <span class="badge bg-warning">需授权</span>
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="export:invoices" id="perm2">
                                 <label class="form-check-label" for="perm2">
-                                    导出发票
+                                    <i class="bi bi-download"></i> 导出发票
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="export:journal_entries" id="perm3">
                                 <label class="form-check-label" for="perm3">
-                                    导出会计分录
+                                    <i class="bi bi-download"></i> 导出会计分录
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="read:audit_logs" id="perm4">
                                 <label class="form-check-label" for="perm4">
-                                    读取审计日志
+                                    <i class="bi bi-eye"></i> 读取审计日志
                                 </label>
                             </div>
+                        </div>
+                        <div class="form-text">
+                            <i class="bi bi-info-circle"></i> 补充改进④：API密钥默认仅有上传权限，导出等高级功能需单独授权
                         </div>
                     </div>
 
@@ -335,16 +355,18 @@ async function refreshApiKeys() {
 
 // 创建API密钥
 async function createApiKey() {
-    // 收集权限
-    const permissions = [];
-    document.querySelectorAll('#createApiKeyForm input[type="checkbox"]:checked').forEach(checkbox => {
-        permissions.push(checkbox.value);
+    // 补充改进④：收集权限，始终包含默认的上传权限
+    const permissions = ['upload:bank_statements'];  // 默认权限
+    
+    // 收集用户勾选的额外权限
+    document.querySelectorAll('#createApiKeyForm input[type="checkbox"]:checked:not([disabled])').forEach(checkbox => {
+        if (!permissions.includes(checkbox.value)) {
+            permissions.push(checkbox.value);
+        }
     });
 
-    if (permissions.length === 0) {
-        alert('请至少选择一项权限');
-        return;
-    }
+    // 权限列表现在至少包含默认的upload:bank_statements
+    console.log('补充改进④ - API密钥权限:', permissions);
 
     const data = {
         name: document.getElementById('keyName').value,

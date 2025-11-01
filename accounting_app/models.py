@@ -479,6 +479,9 @@ class RawDocument(Base):
     total_lines = Column(Integer)  # PDF/CSV总行数（用于对账）
     parsed_lines = Column(Integer)  # 成功解析行数（用于对账）
     reconciliation_status = Column(String(20))  # match | mismatch | pending
+    validation_status = Column(String(20), default='pending', index=True)  # 补充改进③：行数对账结果标记 - passed | failed | pending
+    validation_failed_at = Column(DateTime(timezone=True))  # 补充改进③：失败时间戳
+    validation_error_message = Column(Text)  # 补充改进③：失败原因详情
     created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
     
     __table_args__ = (
@@ -486,6 +489,7 @@ class RawDocument(Base):
         CheckConstraint("module IN ('credit-card', 'bank', 'savings', 'pos', 'supplier', 'reports', 'management', 'temp')"),
         CheckConstraint("status IN ('uploaded', 'parsed', 'failed', 'reconciled')"),
         CheckConstraint("reconciliation_status IN ('match', 'mismatch', 'pending')"),
+        CheckConstraint("validation_status IN ('passed', 'failed', 'pending')"),  # 补充改进③：验证状态约束
     )
 
 

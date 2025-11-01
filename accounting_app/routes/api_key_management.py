@@ -31,7 +31,10 @@ class APIKeyCreateRequest(BaseModel):
     """创建API密钥请求"""
     name: str = Field(..., min_length=1, max_length=255, description="密钥名称（如：Production API Key）")
     environment: str = Field(default="live", description="环境：live 或 test")
-    permissions: List[str] = Field(default_factory=list, description="权限列表")
+    permissions: List[str] = Field(
+        default_factory=lambda: ["upload:bank_statements"], 
+        description="权限列表 - 补充改进④：默认仅上传权限，导出需单独授权"
+    )
     rate_limit: int = Field(default=100, ge=1, le=10000, description="每分钟请求限制")
     expires_in_days: Optional[int] = Field(default=None, ge=1, le=365, description="过期天数（None=永不过期）")
     
@@ -40,7 +43,7 @@ class APIKeyCreateRequest(BaseModel):
             "example": {
                 "name": "Production API Key",
                 "environment": "live",
-                "permissions": ["export:bank_statements", "read:transactions"],
+                "permissions": ["upload:bank_statements"],  # 补充改进④：默认仅上传
                 "rate_limit": 100,
                 "expires_in_days": 365
             }

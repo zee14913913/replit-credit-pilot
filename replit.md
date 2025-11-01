@@ -43,6 +43,11 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Exception Center:** Centralized management for 5 types of exceptions (pdf_parse, ocr_error, customer_mismatch, supplier_mismatch, posting_error) with 4 severity levels and lifecycle management.
 - **AR/AP Aging Business Views:** Provides accounts receivable and payable aging reports grouped by customer/supplier, with aging buckets (0-30/31-60/61-90/90+ days).
 - **Unified File Storage Manager:** Multi-tenant isolated storage for accounting data with standardized paths and security features.
+- **Data Integrity Validation System (补充改进①-④):** Four-layer data protection ensuring 100% source-document traceability:
+  - ① **Completeness Field**: raw_line_id foreign key on all transaction tables linking to source PDF text
+  - ② **Business Layer Gate**: DataIntegrityValidator service blocks records with missing raw_line_id from entering reports
+  - ③ **Validation Status Tracking**: raw_documents.validation_status marks line-count reconciliation results (passed/failed/pending)
+  - ④ **API Key Permission Model**: Default permissions restricted to upload only; export operations require explicit authorization
 
 **AI Advanced Analytics System:**
 - **Financial Health Scoring System:** 0-100 score with optimization suggestions.

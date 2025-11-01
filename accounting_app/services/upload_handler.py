@@ -272,7 +272,27 @@ class UploadHandler:
                 f"{error_msg}"
             )
             
+            # 补充改进③：标记raw_document为验证失败
+            raw_doc = self.db.query(RawDocument).filter(
+                RawDocument.id == raw_document_id
+            ).first()
+            if raw_doc:
+                raw_doc.validation_status = 'failed'
+                raw_doc.validation_failed_at = datetime.now()  # Timezone-aware via sqlalchemy.func.now()
+                raw_doc.validation_error_message = error_msg
+                self.db.commit()
+                logger.info(f"❌ MARKED as validation_status='failed' - raw_document_id={raw_document_id}")
+            
             return False, error_msg
+        
+        # 补充改进③：标记raw_document为验证通过
+        raw_doc = self.db.query(RawDocument).filter(
+            RawDocument.id == raw_document_id
+        ).first()
+        if raw_doc:
+            raw_doc.validation_status = 'passed'
+            self.db.commit()
+            logger.info(f"✅ MARKED as validation_status='passed' - raw_document_id={raw_document_id}")
         
         logger.info(
             f"✅ LINE COUNT VERIFIED - "
