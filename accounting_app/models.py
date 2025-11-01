@@ -197,6 +197,42 @@ class SalesInvoice(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
+class POSReport(Base):
+    __tablename__ = "pos_reports"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=False)
+    report_number = Column(String(100), nullable=False)
+    report_date = Column(Date, nullable=False, index=True)
+    total_sales = Column(Numeric(15,2), nullable=False)
+    total_transactions = Column(Integer, default=0)
+    payment_method = Column(String(50))  # cash, card, online, mixed
+    reference_number = Column(String(100))
+    file_path = Column(String(500))
+    parse_status = Column(String(20), default='parsed')  # parsed, pending, failed
+    auto_generated_invoices = Column(Boolean, default=False)
+    notes = Column(Text)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class POSTransaction(Base):
+    __tablename__ = "pos_transactions"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    pos_report_id = Column(Integer, ForeignKey('pos_reports.id', ondelete='CASCADE'), nullable=False)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=False)
+    customer_id = Column(Integer, ForeignKey('customers.id'), nullable=True)  # 可空，待匹配
+    transaction_time = Column(DateTime, nullable=False)
+    transaction_amount = Column(Numeric(15,2), nullable=False)
+    payment_method = Column(String(50))
+    customer_name_raw = Column(String(200))  # 原始客户名（用于匹配）
+    reference_number = Column(String(100))
+    sales_invoice_id = Column(Integer, ForeignKey('sales_invoices.id'))  # 生成的发票ID
+    matched = Column(Boolean, default=False, index=True)
+    notes = Column(Text)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
 class CustomerReceipt(Base):
     __tablename__ = "customer_receipts"
     
