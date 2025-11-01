@@ -1298,7 +1298,11 @@ def admin_dashboard():
 @require_flask_auth
 def api_keys_management():
     """API密钥管理页面 - 需要登录认证"""
-    return render_template('api_keys_management.html')
+    # 从环境变量读取API_BASE_URL
+    # 默认为空字符串，使用same-origin相对路径（生产环境推荐）
+    # 开发环境可设置: export API_BASE_URL="http://localhost:8000"
+    api_base_url = os.environ.get('API_BASE_URL', '')
+    return render_template('api_keys_management.html', api_base_url=api_base_url)
 
 
 @app.route('/savings-admin')

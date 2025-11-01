@@ -217,10 +217,9 @@
 // 全局变量
 let currentRevokeKeyId = null;
 
-// API Base URL (从环境变量或默认localhost)
-const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:8000'
-    : `${window.location.protocol}//${window.location.hostname}:8000`;
+// API Base URL (从服务器端传递，支持生产环境配置)
+// 使用tojson过滤器确保安全的JSON编码
+const API_BASE_URL = {{ api_base_url|tojson }};
 
 // 页面加载时获取API密钥列表
 document.addEventListener('DOMContentLoaded', function() {
@@ -242,7 +241,7 @@ async function refreshApiKeys() {
     `;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/api/api-keys/?include_inactive=${includeInactive}`, {
+        const response = await fetch(`${API_BASE_URL || ''}/api/api-keys/?include_inactive=${includeInactive}`, {
             credentials: 'include'
         });
 
@@ -358,7 +357,7 @@ async function createApiKey() {
     };
 
     try {
-        const response = await fetch(`${API_BASE_URL}/api/api-keys/`, {
+        const response = await fetch(`${API_BASE_URL || ''}/api/api-keys/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -435,7 +434,7 @@ async function confirmRevokeApiKey() {
     }
 
     try {
-        const response = await fetch(`${API_BASE_URL}/api/api-keys/${currentRevokeKeyId}`, {
+        const response = await fetch(`${API_BASE_URL || ''}/api/api-keys/${currentRevokeKeyId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
