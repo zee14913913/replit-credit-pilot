@@ -14,6 +14,7 @@ from ..models import BankStatement, JournalEntry, JournalEntryLine, ChartOfAccou
 from ..schemas import BankStatementResponse
 from ..services.bank_matcher import auto_match_transactions
 from ..services.statement_analyzer import analyze_csv_content, suggest_customer_match
+from ..services.file_storage_manager import AccountingFileStorageManager
 
 router = APIRouter()
 
@@ -41,20 +42,17 @@ async def import_bank_statement(
     content = await file.read()
     csv_content = content.decode('utf-8')
     
-    # 保存上传的CSV文件到统一位置
-    import os
-    from datetime import datetime
-    storage_dir = "/home/runner/workspace/accounting_data/statements"
-    os.makedirs(storage_dir, exist_ok=True)
-    
-    # 生成文件名：公司ID_银行_账号_月份_上传时间.csv
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    safe_filename = f"company{company_id}_{bank_name}_{account_number}_{statement_month}_{timestamp}.csv"
-    file_path = os.path.join(storage_dir, safe_filename)
+    # 使用FileStorageManager保存CSV文件（多租户隔离）
+    file_path = AccountingFileStorageManager.generate_bank_statement_path(
+        company_id=company_id,
+        bank_name=bank_name,
+        account_number=account_number,
+        statement_month=statement_month,
+        file_extension='csv'
+    )
     
     # 保存文件
-    with open(file_path, 'w', encoding='utf-8') as f:
-        f.write(csv_content)
+    AccountingFileStorageManager.save_text_content(file_path, csv_content)
     
     csv_reader = csv.DictReader(io.StringIO(csv_content))
     

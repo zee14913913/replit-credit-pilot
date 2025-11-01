@@ -10,7 +10,9 @@ import logging
 from ..db import get_db
 from ..services.pdf_report_generator import create_pdf_generator
 from ..services.management_report_generator import ManagementReportGenerator
+from ..services.file_storage_manager import AccountingFileStorageManager
 from ..models import Company
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -58,6 +60,16 @@ async def get_balance_sheet_pdf(
             bs_data=report_data['balance_sheet_summary'],
             period=period
         )
+        
+        # 自动保存PDF到FileStorageManager（归档）
+        as_of_date = datetime.strptime(period, '%Y-%m-%d').date()
+        pdf_path = AccountingFileStorageManager.generate_balance_sheet_path(
+            company_id=company_id,
+            as_of_date=as_of_date,
+            file_extension='pdf'
+        )
+        AccountingFileStorageManager.save_file_content(pdf_path, pdf_bytes)
+        logger.info(f"Balance Sheet PDF已保存到: {pdf_path}")
         
         # 返回PDF
         return Response(
