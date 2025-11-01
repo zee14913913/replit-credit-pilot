@@ -4736,20 +4736,26 @@ def accounting_api_proxy(path=''):
 </head>
 <body>
     <div class="header">
-        🏦 财务会计系统 | <a href="/">← 返回首页</a> | <a href="/accounting_test_results">🧪 测试报告</a>
+        🏦 财务会计系统 | <a href="/">← 返回首页</a> | <a href="/accounting_test_results">🧪 测试报告</a> | <a href="/accounting_files">📁 文件管理</a>
     </div>
     <iframe src="{target_url}"></iframe>
 </body>
 </html>'''
     return html
 
+@app.route('/accounting_files')
+def accounting_files():
+    """文件管理页面"""
+    return render_template('accounting_files.html')
+
 @app.route('/accounting_test_results')
 def accounting_test_results():
     """显示会计系统测试结果"""
     import subprocess
     try:
+        # 使用--save参数保存报告
         result = subprocess.run(
-            ['python3', 'test_accounting_system.py'],
+            ['python3', 'test_accounting_system.py', '--save'],
             capture_output=True,
             text=True,
             timeout=30,

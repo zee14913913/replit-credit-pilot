@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件管理 - 会计系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #FF007F;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: #FF007F;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #cc0066;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #322446;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #4a3668;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid #322446;
+        }
+        
+        .stat-label {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            color: #FF007F;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .files-section {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 2px solid #322446;
+        }
+        
+        .section-title {
+            color: #FF007F;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #322446;
+            padding-bottom: 0.5rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+        
+        th {
+            background: #322446;
+            color: #fff;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #333;
+        }
+        
+        tr:hover {
+            background: #2d2d2d;
+        }
+        
+        .file-type {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        
+        .type-statement {
+            background: #322446;
+            color: #fff;
+        }
+        
+        .type-report {
+            background: #FF007F;
+            color: #fff;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            margin: 0 4px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+        
+        .empty {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📁 文件管理中心</h1>
+        
+        <div class="header-actions">
+            <a href="/" class="btn btn-secondary">← 返回首页</a>
+            <button onclick="refreshFiles()" class="btn btn-primary">🔄 刷新列表</button>
+            <a href="/accounting_test_results" class="btn btn-primary">🧪 运行新测试</a>
+        </div>
+        
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-label">📊 月结单文件</div>
+                <div class="stat-value" id="statements-count">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">📝 测试报告</div>
+                <div class="stat-value" id="reports-count">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">💾 总存储空间</div>
+                <div class="stat-value" id="total-size">-- MB</div>
+            </div>
+        </div>
+        
+        <div class="files-section">
+            <h2 class="section-title">📂 所有文件</h2>
+            <div id="files-list" class="loading">正在加载文件列表...</div>
+        </div>
+    </div>
+    
+    <script>
+        async function loadFiles() {
+            try {
+                const response = await fetch('http://localhost:8000/api/files/list');
+                const data = await response.json();
+                
+                // 更新统计
+                document.getElementById('statements-count').textContent = data.statements_count;
+                document.getElementById('reports-count').textContent = data.reports_count;
+                
+                // 获取存储信息
+                const storageResponse = await fetch('http://localhost:8000/api/files/storage-info');
+                const storageData = await storageResponse.json();
+                document.getElementById('total-size').textContent = storageData.total_size_mb + ' MB';
+                
+                // 显示文件列表
+                const filesList = document.getElementById('files-list');
+                
+                if (data.files.length === 0) {
+                    filesList.innerHTML = '<div class="empty">暂无文件</div>';
+                    return;
+                }
+                
+                let html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>类型</th>
+                                <th>文件名</th>
+                                <th>大小</th>
+                                <th>修改时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                data.files.forEach(file => {
+                    const typeClass = file.type === 'bank_statement' ? 'type-statement' : 'type-report';
+                    const typeName = file.type === 'bank_statement' ? '📊 月结单' : '📝 报告';
+                    
+                    html += `
+                        <tr>
+                            <td><span class="file-type ${typeClass}">${typeName}</span></td>
+                            <td>${file.filename}</td>
+                            <td>${file.size_mb} MB</td>
+                            <td>${file.modified_at}</td>
+                            <td>
+                                <button onclick="downloadFile('${file.type}', '${file.filename}')" class="btn btn-primary btn-small">📥 下载</button>
+                                <button onclick="deleteFile('${file.type}', '${file.filename}')" class="btn btn-secondary btn-small">🗑️ 删除</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                filesList.innerHTML = html;
+                
+            } catch (error) {
+                document.getElementById('files-list').innerHTML = 
+                    `<div class="empty">加载失败: ${error.message}</div>`;
+            }
+        }
+        
+        function downloadFile(type, filename) {
+            window.location.href = `http://localhost:8000/api/files/download/${type}/${filename}`;
+        }
+        
+        async function deleteFile(type, filename) {
+            if (!confirm(`确定要删除文件 "${filename}" 吗？`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:8000/api/files/delete/${type}/${filename}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('文件已删除');
+                    refreshFiles();
+                } else {
+                    alert('删除失败');
+                }
+            } catch (error) {
+                alert('删除失败: ' + error.message);
+            }
+        }
+        
+        function refreshFiles() {
+            document.getElementById('files-list').innerHTML = '<div class="loading">正在刷新...</div>';
+            loadFiles();
+        }
+        
+        // 页面加载时获取文件列表
+        loadFiles();
+    </script>
+</body>
+</html>

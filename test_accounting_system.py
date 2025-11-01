@@ -10,8 +10,11 @@ from accounting_app.db import SessionLocal
 from accounting_app.services.bank_matcher import auto_match_transactions
 from accounting_app.tasks.monthly_close import calculate_trial_balance
 from sqlalchemy import text
+import os
+from datetime import datetime
+import io
 
-def main():
+def main(save_report=True):
     print("=" * 80)
     print("🧪 会计系统自动化测试")
     print("=" * 80)
@@ -158,4 +161,32 @@ def main():
         db.close()
 
 if __name__ == "__main__":
-    main()
+    # 捕获输出到文件
+    if len(sys.argv) > 1 and sys.argv[1] == '--save':
+        # 重定向stdout到StringIO
+        from io import StringIO
+        old_stdout = sys.stdout
+        sys.stdout = StringIO()
+        
+        main(save_report=True)
+        
+        # 获取输出内容
+        output = sys.stdout.getvalue()
+        sys.stdout = old_stdout
+        
+        # 保存到文件
+        storage_dir = "/home/runner/workspace/accounting_data/reports"
+        os.makedirs(storage_dir, exist_ok=True)
+        
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        report_filename = f"test_report_{timestamp}.txt"
+        report_path = os.path.join(storage_dir, report_filename)
+        
+        with open(report_path, 'w', encoding='utf-8') as f:
+            f.write(output)
+        
+        # 打印到控制台
+        print(output)
+        print(f"\n📁 报告已保存至: {report_path}")
+    else:
+        main(save_report=False)

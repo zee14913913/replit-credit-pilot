@@ -39,6 +39,22 @@ async def import_bank_statement(
     # 读取CSV文件
     content = await file.read()
     csv_content = content.decode('utf-8')
+    
+    # 保存上传的CSV文件到统一位置
+    import os
+    from datetime import datetime
+    storage_dir = "/home/runner/workspace/accounting_data/statements"
+    os.makedirs(storage_dir, exist_ok=True)
+    
+    # 生成文件名：公司ID_银行_账号_月份_上传时间.csv
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    safe_filename = f"company{company_id}_{bank_name}_{account_number}_{statement_month}_{timestamp}.csv"
+    file_path = os.path.join(storage_dir, safe_filename)
+    
+    # 保存文件
+    with open(file_path, 'w', encoding='utf-8') as f:
+        f.write(csv_content)
+    
     csv_reader = csv.DictReader(io.StringIO(csv_content))
     
     imported_count = 0
@@ -85,7 +101,8 @@ async def import_bank_statement(
         "success": True,
         "imported": imported_count,
         "matched": matched_count,
-        "message": f"成功导入 {imported_count} 笔银行流水，自动匹配 {matched_count} 笔"
+        "file_saved": file_path,
+        "message": f"成功导入 {imported_count} 笔银行流水，自动匹配 {matched_count} 笔。文件已保存至: {file_path}"
     }
 
 
