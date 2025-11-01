@@ -1,14 +1,15 @@
 """
-Phase 2-1 修复：简单的session认证服务
-临时token认证系统（生产环境需要JWT）
+Phase 2-1 修复 + 增强：Session认证服务
+- 基础：临时token认证系统（生产环境需要JWT）
+- 增强：多公司角色绑定（Multi-tenant Role Binding）
 """
 import secrets
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, List, Dict
 from sqlalchemy.orm import Session
 import logging
 
-from ..models import User
+from ..models import User, UserCompanyRole, Company
 from ..utils.password import hash_password, verify_password
 
 logger = logging.getLogger(__name__)
@@ -254,3 +255,185 @@ def cleanup_expired_sessions():
     
     if expired_tokens:
         logger.info(f"清理了 {len(expired_tokens)} 个过期session")
+
+
+# ============================================================
+# Phase 2-1 增强：多公司角色绑定功能
+# ============================================================
+
+def get_user_companies(db: Session, user: User) -> List[Dict]:
+    """
+    获取用户可访问的所有公司及其对应角色
+    
+    Args:
+        db: 数据库session
+        user: User对象
+    
+    Returns:
+        List[Dict]: [
+            {
+                'company_id': 1,
+                'company_code': 'GZ001',
+                'company_name': 'XX有限公司',
+                'role': 'accountant',
+                'created_at': '2025-01-01T10:00:00'
+            },
+            ...
+        ]
+    """
+    # 查询用户在所有公司的角色
+    company_roles = db.query(UserCompanyRole).filter(
+        UserCompanyRole.user_id == user.id
+    ).all()
+    
+    result = []
+    for ucr in company_roles:
+        company = db.query(Company).filter(Company.id == ucr.company_id).first()
+        if company:
+            result.append({
+                'company_id': ucr.company_id,
+                'company_code': company.company_code,
+                'company_name': company.company_name,
+                'role': ucr.role,
+                'created_at': ucr.created_at.isoformat()
+            })
+    
+    # 如果user_company_roles表没有数据，回退到users表的company_id（向后兼容）
+    if not result and user.company_id:
+        company = db.query(Company).filter(Company.id == user.company_id).first()
+        if company:
+            result.append({
+                'company_id': user.company_id,
+                'company_code': company.company_code,
+                'company_name': company.company_name,
+                'role': user.role,
+                'created_at': user.created_at.isoformat()
+            })
+            logger.warning(f"用户 {user.username} 在user_company_roles表无数据，使用users表的company_id回退")
+    
+    return result
+
+
+def get_user_role_for_company(db: Session, user: User, company_id: int) -> Optional[str]:
+    """
+    获取用户在特定公司的角色
+    
+    Args:
+        db: 数据库session
+        user: User对象
+        company_id: 公司ID
+    
+    Returns:
+        str: 角色名称（admin/accountant/viewer/data_entry/loan_officer）
+        None: 用户在该公司无权限
+    """
+    # 先查询user_company_roles表
+    ucr = db.query(UserCompanyRole).filter(
+        UserCompanyRole.user_id == user.id,
+        UserCompanyRole.company_id == company_id
+    ).first()
+    
+    if ucr:
+        return ucr.role
+    
+    # 回退到users表（向后兼容）
+    if user.company_id == company_id:
+        return user.role
+    
+    # 用户对该公司无权限
+    return None
+
+
+def assign_user_to_company(
+    db: Session,
+    user_id: int,
+    company_id: int,
+    role: str,
+    created_by: Optional[int] = None
+) -> UserCompanyRole:
+    """
+    将用户分配到公司并授予角色
+    
+    Args:
+        db: 数据库session
+        user_id: 用户ID
+        company_id: 公司ID
+        role: 角色（admin/accountant/viewer/data_entry/loan_officer）
+        created_by: 授权人ID（可选）
+    
+    Returns:
+        UserCompanyRole对象
+    
+    Raises:
+        ValueError: 用户或公司不存在
+    """
+    # 验证用户和公司是否存在
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise ValueError(f"用户ID {user_id} 不存在")
+    
+    company = db.query(Company).filter(Company.id == company_id).first()
+    if not company:
+        raise ValueError(f"公司ID {company_id} 不存在")
+    
+    valid_roles = ['admin', 'accountant', 'viewer', 'data_entry', 'loan_officer']
+    if role not in valid_roles:
+        raise ValueError(f"无效的角色：{role}，必须是 {', '.join(valid_roles)} 之一")
+    
+    # 检查是否已存在
+    existing_ucr = db.query(UserCompanyRole).filter(
+        UserCompanyRole.user_id == user_id,
+        UserCompanyRole.company_id == company_id
+    ).first()
+    
+    if existing_ucr:
+        # 更新角色
+        existing_ucr.role = role
+        existing_ucr.updated_at = datetime.now()
+        db.commit()
+        db.refresh(existing_ucr)
+        logger.info(f"更新用户 {user.username} 在公司 {company.company_name} 的角色为 {role}")
+        return existing_ucr
+    else:
+        # 创建新关联
+        new_ucr = UserCompanyRole(
+            user_id=user_id,
+            company_id=company_id,
+            role=role,
+            created_by=created_by
+        )
+        db.add(new_ucr)
+        db.commit()
+        db.refresh(new_ucr)
+        logger.info(f"将用户 {user.username} 分配到公司 {company.company_name}，角色为 {role}")
+        return new_ucr
+
+
+def remove_user_from_company(db: Session, user_id: int, company_id: int) -> bool:
+    """
+    移除用户对某个公司的访问权限
+    
+    Args:
+        db: 数据库session
+        user_id: 用户ID
+        company_id: 公司ID
+    
+    Returns:
+        bool: 是否成功移除
+    """
+    ucr = db.query(UserCompanyRole).filter(
+        UserCompanyRole.user_id == user_id,
+        UserCompanyRole.company_id == company_id
+    ).first()
+    
+    if ucr:
+        user = db.query(User).filter(User.id == user_id).first()
+        company = db.query(Company).filter(Company.id == company_id).first()
+        
+        db.delete(ucr)
+        db.commit()
+        
+        logger.info(f"移除用户 {user.username if user else user_id} 对公司 {company.company_name if company else company_id} 的访问权限")
+        return True
+    
+    return False

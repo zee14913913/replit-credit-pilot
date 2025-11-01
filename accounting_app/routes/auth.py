@@ -13,7 +13,8 @@ from ..services.auth_service import (
     authenticate_user,
     create_session,
     revoke_session,
-    create_user
+    create_user,
+    get_user_companies  # Phase 2-1 增强：多公司角色
 )
 import logging
 
@@ -223,17 +224,26 @@ async def get_current_user_info(
     db: Session = Depends(get_db)
 ):
     """
-    ## 👤 获取当前登录用户信息
+    ## 👤 获取当前登录用户信息（Phase 2-1 增强版）
     
     **权限要求**：已登录
     
     **响应**：
     - 用户基本信息
+    - 用户可访问的所有公司及角色（多租户支持）
     - 角色权限
+    
+    **重要变更**：
+    - 新增 `companies` 字段：返回用户可访问的所有公司列表
+    - 每个公司包含：company_id, company_code, company_name, role
+    - 支持同一用户在不同公司拥有不同角色
     """
     from ..models import Permission
     
-    # 查询当前用户的权限
+    # Phase 2-1 增强：获取用户可访问的所有公司
+    user_companies = get_user_companies(db, current_user)
+    
+    # 查询当前用户的权限（基于主要角色）
     permissions = db.query(Permission).filter(
         Permission.role == current_user.role,
         Permission.allowed == True
@@ -246,12 +256,14 @@ async def get_current_user_info(
             "username": current_user.username,
             "email": current_user.email,
             "full_name": current_user.full_name,
-            "role": current_user.role,
-            "company_id": current_user.company_id,
+            "role": current_user.role,  # 主要角色（向后兼容）
+            "company_id": current_user.company_id,  # 主要公司（向后兼容）
             "is_active": current_user.is_active,
             "last_login": current_user.last_login.isoformat() if current_user.last_login else None,
             "created_at": current_user.created_at.isoformat()
         },
+        "companies": user_companies,  # 【新增】用户可访问的所有公司及角色
+        "total_companies": len(user_companies),  # 【新增】可访问公司数量
         "permissions": [
             {
                 "resource": p.resource,

@@ -651,3 +651,36 @@ class Permission(Base):
         Index('idx_permissions_role_resource_action', 'role', 'resource', 'action', unique=True),
         Index('idx_permissions_role_resource', 'role', 'resource'),
     )
+
+
+class UserCompanyRole(Base):
+    """
+    Phase 2-1 增强：用户-公司-角色关系表（多租户角色绑定）
+    
+    支持同一用户在不同公司拥有不同角色
+    示例：张三在A公司是accountant，在B公司是viewer
+    
+    重要：这是对现有 users.role 字段的增强，不是替换
+    - users.role 保留用于向后兼容
+    - 新系统应优先使用此表查询用户权限
+    """
+    __tablename__ = "user_company_roles"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=False, index=True)
+    role = Column(String(30), nullable=False)  # admin/accountant/viewer/data_entry/loan_officer
+    
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    created_by = Column(Integer, ForeignKey('users.id'))  # 谁授权的
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
+    
+    __table_args__ = (
+        Index('idx_ucr_user_company', 'user_id', 'company_id', unique=True),
+        Index('idx_ucr_company_id', 'company_id'),
+        Index('idx_ucr_role', 'role'),
+        CheckConstraint(
+            "role IN ('admin', 'accountant', 'viewer', 'data_entry', 'loan_officer')",
+            name='check_ucr_valid_role'
+        ),
+    )
