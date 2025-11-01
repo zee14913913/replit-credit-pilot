@@ -305,7 +305,7 @@
     <script>
         async function loadFiles() {
             try {
-                const response = await fetch('http://localhost:8000/api/files/list');
+                const response = await fetch('/api/proxy/files/list');
                 const data = await response.json();
                 
                 // 更新统计
@@ -313,7 +313,7 @@
                 document.getElementById('reports-count').textContent = data.reports_count;
                 
                 // 获取存储信息
-                const storageResponse = await fetch('http://localhost:8000/api/files/storage-info');
+                const storageResponse = await fetch('/api/proxy/files/storage-info');
                 const storageData = await storageResponse.json();
                 document.getElementById('total-size').textContent = storageData.total_size_mb + ' MB';
                 
@@ -368,7 +368,7 @@
         }
         
         function downloadFile(type, filename) {
-            window.location.href = `http://localhost:8000/api/files/download/${type}/${filename}`;
+            window.location.href = `/api/proxy/files/download/${type}/${filename}`;
         }
         
         async function deleteFile(type, filename) {
@@ -377,7 +377,7 @@
             }
             
             try {
-                const response = await fetch(`http://localhost:8000/api/files/delete/${type}/${filename}`, {
+                const response = await fetch(`/api/proxy/files/delete/${type}/${filename}`, {
                     method: 'DELETE'
                 });
                 const data = await response.json();
@@ -408,7 +408,7 @@
             modalBody.innerHTML = '<div class="loading">正在加载文件内容...</div>';
             
             try {
-                const response = await fetch(`http://localhost:8000/api/files/view/${type}/${filename}`);
+                const response = await fetch(`/api/proxy/files/view/${type}/${filename}`);
                 const data = await response.json();
                 
                 if (data.format === 'csv') {

@@ -4748,6 +4748,30 @@ def accounting_files():
     """文件管理页面"""
     return render_template('accounting_files.html')
 
+@app.route('/api/proxy/files/<path:subpath>', methods=['GET', 'POST', 'DELETE'])
+def proxy_files_api(subpath):
+    """代理文件管理API请求到端口8000"""
+    import requests
+    
+    # 构建目标URL
+    target_url = f'http://localhost:8000/api/files/{subpath}'
+    
+    try:
+        # 转发请求
+        if request.method == 'GET':
+            response = requests.get(target_url, params=request.args)
+        elif request.method == 'POST':
+            response = requests.post(target_url, json=request.get_json())
+        elif request.method == 'DELETE':
+            response = requests.delete(target_url)
+        else:
+            return jsonify({"error": "Method not supported"}), 405
+        
+        # 返回响应
+        return response.content, response.status_code, {'Content-Type': response.headers.get('Content-Type', 'application/json')}
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/accounting_test_results')
 def accounting_test_results():
     """显示会计系统测试结果"""
