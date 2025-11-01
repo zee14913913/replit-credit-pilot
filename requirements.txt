@@ -32,3 +32,6 @@ pandas
 xlrd
 pytest
 pytest-asyncio
+bcrypt
+passlib
+python-jose
