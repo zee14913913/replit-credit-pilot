@@ -10,6 +10,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 from db.database import get_db, log_audit, get_all_customers, get_customer, get_customer_cards, get_card_statements, get_statement_transactions
+from auth.flask_rbac_bridge import require_flask_auth, require_flask_permission, write_flask_audit_log, verify_flask_user
 from ingest.statement_parser import parse_statement_auto
 from validate.categorizer import categorize_transaction, validate_statement, get_spending_summary
 from validate.transaction_validator import validate_transactions, generate_validation_report
@@ -628,14 +629,17 @@ def analytics(customer_id):
 # ========== NEW FEATURES ==========
 
 @app.route('/export/<int:customer_id>/<format>')
+@require_flask_permission('export:bank_statements', 'read')
 def export_transactions(customer_id, format):
-    """Export transactions to Excel or CSV"""
+    """Export transactions to Excel or CSV (RBAC protected)"""
     filters = {
         'start_date': request.args.get('start_date'),
         'end_date': request.args.get('end_date'),
         'category': request.args.get('category')
     }
     filters = {k: v for k, v in filters.items() if v}
+    
+    user = session.get('flask_rbac_user', {})
     
     try:
         if format == 'excel':
@@ -647,8 +651,32 @@ def export_transactions(customer_id, format):
             flash(translate('invalid_export_format', lang), 'error')
             return redirect(request.referrer or url_for('index'))
         
+        # 写入审计日志（防御性）
+        write_flask_audit_log(
+            user_id=user.get('id', 0),
+            username=user.get('username', 'unknown'),
+            company_id=user.get('company_id', 1),
+            action_type='export',
+            entity_type='transaction',
+            description=f"导出客户交易记录: customer_id={customer_id}, format={format}",
+            success=True,
+            new_value={'customer_id': customer_id, 'format': format, 'filters': filters}
+        )
+        
         return send_file(filepath, as_attachment=True)
     except Exception as e:
+        # 写入审计日志（失败）
+        write_flask_audit_log(
+            user_id=user.get('id', 0),
+            username=user.get('username', 'unknown'),
+            company_id=user.get('company_id', 1),
+            action_type='export',
+            entity_type='transaction',
+            description=f"导出客户交易记录失败: customer_id={customer_id}, format={format}",
+            success=False,
+            new_value={'customer_id': customer_id, 'format': format, 'error': str(e)}
+        )
+        
         flash(f'Export failed: {str(e)}', 'error')
         return redirect(request.referrer or url_for('index'))
 
@@ -1859,43 +1887,89 @@ def monthly_statement_detail(monthly_statement_id):
                          customer_id=customer_id)
 
 @app.route('/export_statement_transactions/<int:statement_id>/<format>')
+@require_flask_permission('export:bank_statements', 'read')
 def export_statement_transactions(statement_id, format):
-    """导出单个statement的交易记录"""
+    """导出单个statement的交易记录（RBAC protected）"""
     import pandas as pd
     from io import BytesIO
     
-    with get_db() as conn:
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            SELECT t.*, s.statement_date, cc.bank_name
-            FROM transactions t
-            JOIN statements s ON t.statement_id = s.id
-            JOIN credit_cards cc ON s.card_id = cc.id
-            WHERE t.statement_id = ?
-        ''', (statement_id,))
-        
-        transactions = [dict(row) for row in cursor.fetchall()]
+    user = session.get('flask_rbac_user', {})
     
-    # Create DataFrame
-    df = pd.DataFrame(transactions)
+    try:
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                SELECT t.*, s.statement_date, cc.bank_name
+                FROM transactions t
+                JOIN statements s ON t.statement_id = s.id
+                JOIN credit_cards cc ON s.card_id = cc.id
+                WHERE t.statement_id = ?
+            ''', (statement_id,))
+            
+            transactions = [dict(row) for row in cursor.fetchall()]
+        
+        # Create DataFrame
+        df = pd.DataFrame(transactions)
+        
+        if format == 'excel':
+            output = BytesIO()
+            df.to_excel(output, index=False, engine='openpyxl')  # type: ignore
+            output.seek(0)
+            
+            # 写入审计日志（防御性）
+            write_flask_audit_log(
+                user_id=user.get('id', 0),
+                username=user.get('username', 'unknown'),
+                company_id=user.get('company_id', 1),
+                action_type='export',
+                entity_type='statement',
+                description=f"导出月结单交易记录: statement_id={statement_id}, format=excel",
+                success=True,
+                new_value={'statement_id': statement_id, 'format': 'excel', 'count': len(transactions)}
+            )
+            
+            return send_file(output, 
+                            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                            as_attachment=True,
+                            download_name=f'Statement_{statement_id}_Transactions.xlsx')
+        else:
+            output = BytesIO()
+            df.to_csv(output, index=False)
+            output.seek(0)
+            
+            # 写入审计日志（防御性）
+            write_flask_audit_log(
+                user_id=user.get('id', 0),
+                username=user.get('username', 'unknown'),
+                company_id=user.get('company_id', 1),
+                action_type='export',
+                entity_type='statement',
+                description=f"导出月结单交易记录: statement_id={statement_id}, format=csv",
+                success=True,
+                new_value={'statement_id': statement_id, 'format': 'csv', 'count': len(transactions)}
+            )
+            
+            return send_file(output, 
+                            mimetype='text/csv',
+                            as_attachment=True,
+                            download_name=f'Statement_{statement_id}_Transactions.csv')
     
-    if format == 'excel':
-        output = BytesIO()
-        df.to_excel(output, index=False, engine='openpyxl')  # type: ignore
-        output.seek(0)
-        return send_file(output, 
-                        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                        as_attachment=True,
-                        download_name=f'Statement_{statement_id}_Transactions.xlsx')
-    else:
-        output = BytesIO()
-        df.to_csv(output, index=False)
-        output.seek(0)
-        return send_file(output, 
-                        mimetype='text/csv',
-                        as_attachment=True,
-                        download_name=f'Statement_{statement_id}_Transactions.csv')
+    except Exception as e:
+        # 写入审计日志（失败）
+        write_flask_audit_log(
+            user_id=user.get('id', 0),
+            username=user.get('username', 'unknown'),
+            company_id=user.get('company_id', 1),
+            action_type='export',
+            entity_type='statement',
+            description=f"导出月结单交易记录失败: statement_id={statement_id}",
+            success=False,
+            new_value={'statement_id': statement_id, 'format': format, 'error': str(e)}
+        )
+        
+        flash(f'Export failed: {str(e)}', 'error')
+        return redirect(request.referrer or url_for('index'))
 
 # Edit Monthly Statement Route (for Admin corrections)
 @app.route('/monthly_statement/<int:monthly_statement_id>/edit', methods=['POST'])
@@ -4868,6 +4942,89 @@ def accounting_test_results():
 </html>'''
     return html
 
+
+# ========== ADMIN RBAC LOGIN (Phase 2-2 Task 3) ==========
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    """Admin login using PostgreSQL users table"""
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+        
+        if not username or not password:
+            flash('请输入用户名和密码', 'error')
+            return render_template('admin_login.html')
+        
+        # 使用Flask RBAC桥接模块验证用户
+        result = verify_flask_user(username=username, password=password)
+        
+        if result['success']:
+            user = result['user']
+            
+            # 设置session
+            session['flask_rbac_user_id'] = user['id']
+            session['flask_rbac_user'] = user
+            
+            # 写入审计日志（登录成功）
+            write_flask_audit_log(
+                user_id=user['id'],
+                username=user['username'],
+                company_id=user['company_id'],
+                action_type='login',
+                entity_type='session',
+                description=f"管理员登录成功: role={user['role']}",
+                success=True,
+                new_value={'role': user['role'], 'company_id': user['company_id']}
+            )
+            
+            flash(f'欢迎回来，{user["username"]}！', 'success')
+            
+            # 根据角色跳转到不同页面
+            if user['role'] in ['admin', 'accountant']:
+                return redirect(url_for('admin'))
+            else:
+                return redirect(url_for('index'))
+        else:
+            # 写入审计日志（登录失败）
+            write_flask_audit_log(
+                user_id=0,
+                username=username,
+                company_id=1,
+                action_type='login',
+                entity_type='session',
+                description=f"管理员登录失败: {result['error']}",
+                success=False,
+                new_value={'username': username, 'error': result['error']}
+            )
+            
+            flash(f'登录失败：{result["error"]}', 'error')
+            return render_template('admin_login.html')
+    
+    # GET request - 显示登录表单
+    return render_template('admin_login.html')
+
+
+@app.route('/admin/logout')
+def admin_logout():
+    """Admin logout"""
+    user = session.get('flask_rbac_user', {})
+    
+    # 写入审计日志（登出）
+    if user:
+        write_flask_audit_log(
+            user_id=user.get('id', 0),
+            username=user.get('username', 'unknown'),
+            company_id=user.get('company_id', 1),
+            action_type='logout',
+            entity_type='session',
+            description=f"管理员登出",
+            success=True
+        )
+    
+    session.clear()
+    flash('您已成功登出', 'success')
+    return redirect(url_for('admin_login'))
 
 
 if __name__ == '__main__':

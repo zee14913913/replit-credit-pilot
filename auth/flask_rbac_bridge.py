@@ -22,7 +22,7 @@ def get_pg_connection():
     return psycopg2.connect(os.environ.get('DATABASE_URL'))
 
 
-def verify_flask_user(username: str, password: str = None, user_id: int = None):
+def verify_flask_user(username: str = None, password: str = None, user_id: int = None):
     """
     验证Flask用户身份（从PostgreSQL的users表）
     
@@ -34,6 +34,7 @@ def verify_flask_user(username: str, password: str = None, user_id: int = None):
     Returns:
         dict: {'success': bool, 'user': dict, 'error': str}
     """
+    conn = None
     try:
         conn = get_pg_connection()
         cursor = conn.cursor()
@@ -130,7 +131,7 @@ def check_flask_permission(user_id: int, resource: str, action: str):
 
 def write_flask_audit_log(user_id: int, username: str, company_id: int, action_type: str, 
                           entity_type: str, description: str, success: bool, 
-                          old_value: dict = None, new_value: dict = None):
+                          old_value: dict = None, new_value: dict = None) -> None:
     """
     写入Flask审计日志到PostgreSQL（防御性）
     
@@ -145,6 +146,7 @@ def write_flask_audit_log(user_id: int, username: str, company_id: int, action_t
         old_value: 旧值（JSON）
         new_value: 新值（JSON）
     """
+    conn = None
     try:
         import json
         conn = get_pg_connection()
@@ -169,11 +171,12 @@ def write_flask_audit_log(user_id: int, username: str, company_id: int, action_t
     
     except Exception as e:
         logger.error(f"Flask审计日志写入失败: {e}")
-        try:
-            conn.rollback()
-            conn.close()
-        except:
-            pass
+        if conn:
+            try:
+                conn.rollback()
+                conn.close()
+            except:
+                pass
 
 
 def require_flask_auth(f):
