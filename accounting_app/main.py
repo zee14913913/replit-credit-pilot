@@ -39,6 +39,7 @@ app.add_middleware(
 # 导入路由模块
 from .routes import (
     bank_import,
+    bank_import_v2,  # Phase 1-5: 新版上传接口
     reports,
     invoices,
     companies,
@@ -60,6 +61,7 @@ from .routes import (
 # 注册路由
 app.include_router(companies.router, prefix="/api/companies", tags=["Companies"])
 app.include_router(bank_import.router, prefix="/api/import", tags=["Bank Import"])
+app.include_router(bank_import_v2.router, tags=["Bank Import V2"])  # Phase 1-5: 集成raw_documents保护
 app.include_router(smart_import.router, prefix="/api/smart-import", tags=["Smart Import"])
 app.include_router(reports.router, prefix="/api/reports", tags=["Reports"])
 app.include_router(invoices.router, prefix="/api/invoices", tags=["Invoices"])
