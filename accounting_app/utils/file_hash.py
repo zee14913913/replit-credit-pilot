@@ -47,7 +47,7 @@ def calculate_file_hash_chunked(file_path: Union[str, Path, None] = None, file_o
     return sha256_hash.hexdigest()
 
 
-def _hash_file_chunks(file_obj: BinaryIO, hash_obj: hashlib._Hash, chunk_size: int):
+def _hash_file_chunks(file_obj: BinaryIO, hash_obj, chunk_size: int):
     """
     内部函数：分块读取文件并更新hash
     

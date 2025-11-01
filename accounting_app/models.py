@@ -2,7 +2,7 @@
 SQLAlchemy ORM 模型
 对应init_db.sql中的核心表 + Phase 1-1新增的1:1原件保护表
 """
-from sqlalchemy import Column, Integer, String, Numeric, Boolean, Date, DateTime, ForeignKey, Text, CheckConstraint, JSON, BigInteger
+from sqlalchemy import Column, Integer, String, Numeric, Boolean, Date, DateTime, ForeignKey, Text, CheckConstraint, JSON, BigInteger, Index
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from .db import Base
