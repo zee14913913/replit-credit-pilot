@@ -10,6 +10,12 @@ from decimal import Decimal
 from ..models import BankStatement, Company, JournalEntry, JournalEntryLine, ChartOfAccounts
 from ..routes.invoices import auto_generate_invoices
 from ..schemas import AutoInvoiceGenerate
+from ..services.management_report_generator import ManagementReportGenerator
+from ..services.file_storage_manager import AccountingFileStorageManager
+import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def run_monthly_close(db: Session, company_id: int, month: str):
@@ -48,6 +54,40 @@ def run_monthly_close(db: Session, company_id: int, month: str):
     except Exception as e:
         invoice_result = {"error": str(e)}
     
+    # 4. 生成并保存Management Report（新增自动化任务）
+    management_report_result = None
+    try:
+        logger.info(f"月结任务：开始生成Management Report (company_id={company_id}, month={month})")
+        
+        report_generator = ManagementReportGenerator(db, company_id)
+        report_data = report_generator.generate_monthly_report(month, include_details=True)
+        
+        # 保存Management Report JSON到FileStorageManager
+        report_path = AccountingFileStorageManager.generate_management_report_path(
+            company_id=company_id,
+            report_month=month,
+            file_extension='json'
+        )
+        
+        report_json = json.dumps(report_data, indent=2, ensure_ascii=False)
+        success = AccountingFileStorageManager.save_text_content(report_path, report_json)
+        
+        if success:
+            logger.info(f"Management Report已保存到: {report_path}")
+            management_report_result = {
+                "success": True,
+                "report_path": report_path,
+                "balance_sheet_balanced": report_data.get('balance_sheet_summary', {}).get('balance_check') == 0,
+                "total_revenue": report_data.get('pnl_summary', {}).get('total_revenue'),
+                "total_expenses": report_data.get('pnl_summary', {}).get('total_expenses')
+            }
+        else:
+            management_report_result = {"success": False, "error": "文件保存失败"}
+            
+    except Exception as e:
+        logger.error(f"生成Management Report失败: {str(e)}", exc_info=True)
+        management_report_result = {"success": False, "error": str(e)}
+    
     return {
         "success": True,
         "company_id": company_id,
@@ -56,7 +96,8 @@ def run_monthly_close(db: Session, company_id: int, month: str):
         "completed_at": datetime.now().isoformat(),
         "unmatched_transactions": unmatched_count,
         "trial_balance": trial_balance,
-        "auto_invoices": invoice_result
+        "auto_invoices": invoice_result,
+        "management_report": management_report_result
     }
 
 

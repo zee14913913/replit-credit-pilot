@@ -126,6 +126,24 @@ async def get_profit_loss_pdf(
             period=period
         )
         
+        # 自动保存PDF到FileStorageManager（归档）
+        from datetime import date as date_class
+        year, month = period.split('-')
+        period_start = date_class(int(year), int(month), 1)
+        # 使用月末作为period_end
+        import calendar
+        last_day = calendar.monthrange(int(year), int(month))[1]
+        period_end = date_class(int(year), int(month), last_day)
+        
+        pdf_path = AccountingFileStorageManager.generate_profit_loss_path(
+            company_id=company_id,
+            period_start=period_start,
+            period_end=period_end,
+            file_extension='pdf'
+        )
+        AccountingFileStorageManager.save_file_content(pdf_path, pdf_bytes)
+        logger.info(f"P&L PDF已保存到: {pdf_path}")
+        
         # 返回PDF
         return Response(
             content=pdf_bytes,
@@ -188,6 +206,21 @@ async def get_bank_package_pdf(
             report_data=report_data,
             period=period
         )
+        
+        # 自动保存PDF到FileStorageManager（归档）
+        from datetime import date as date_class
+        year, month = period.split('-')
+        import calendar
+        last_day = calendar.monthrange(int(year), int(month))[1]
+        package_date = date_class(int(year), int(month), last_day)
+        
+        pdf_path = AccountingFileStorageManager.generate_bank_package_path(
+            company_id=company_id,
+            package_date=package_date,
+            file_extension='pdf'
+        )
+        AccountingFileStorageManager.save_file_content(pdf_path, pdf_bytes)
+        logger.info(f"Bank Package PDF已保存到: {pdf_path}")
         
         # 返回PDF
         return Response(

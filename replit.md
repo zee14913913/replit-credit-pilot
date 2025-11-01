@@ -4,14 +4,17 @@
 The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. Its core purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation, guaranteeing 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization suggestions (debt consolidation, balance transfers, loan refinancing), and a success-based fee model. The business vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
 ## Recent Changes
-**2025-11-01**: Task 9 - Unified File Storage Manager完成
-- 创建了AccountingFileStorageManager服务，提供多租户隔离和标准化路径生成
-- 目录结构：/accounting_data/companies/{company_id}/[bank_statements|pos_reports|invoices|reports]/...
-- 支持文件类型：bank_statement, pos_report, supplier/purchase/sales_invoice, management_report, balance_sheet, profit_loss, bank_package, aging_report等
-- 已集成到bank_import.py（银行月结单上传）和pdf_reports.py（Balance Sheet PDF自动归档）
-- 新files.py路由提供公司级文件列表、存储统计、下载、删除和查看功能
-- 安全特性：路径遍历防护（validate_path_security）、多租户隔离
-- 标准化文件命名：company{id}_{type}_{details}_{timestamp}.ext
+**2025-11-01**: Task 9-10完成 - FileStorageManager + PDF自动归档
+- **Task 9 - Unified File Storage Manager**:
+  - 创建AccountingFileStorageManager服务，多租户隔离和标准化路径生成
+  - 目录结构：/accounting_data/companies/{company_id}/[bank_statements|pos_reports|invoices|reports]/...
+  - 安全特性：validate_path_security()使用commonpath防止跨租户访问（修复prefix-matching漏洞）
+  - files.py提供公司级文件列表、存储统计、下载、删除和查看功能
+- **Task 10 - 自动化任务扩展**:
+  - PDF报表自动归档：Balance Sheet, P&L, Bank Package全部生成后自动保存到FileStorageManager
+  - bank_import.py自动保存银行月结单CSV
+  - 标准化文件命名：company{id}_{type}_{details}_{timestamp}.ext
+  - 日志记录：所有文件保存操作均记录到logger
 
 **2025-10-30**: CHEOK JUN YOON 5-9月详细月结报告完成
 - 时间范围：2025年5月-9月（5个月）
