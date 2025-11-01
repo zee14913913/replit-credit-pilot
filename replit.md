@@ -4,6 +4,31 @@
 The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. Its core purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation, guaranteeing 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization suggestions (debt consolidation, balance transfers, loan refinancing), and a success-based fee model. The business vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
 ## Recent Changes
+**2025-11-01**: Task 11完成 - 测试框架与完整API文档
+- **测试基础设施**:
+  - 配置pytest测试框架（pytest.ini + conftest.py）
+  - 创建8个共享fixtures（test_db, client, sample_company, sample_chart_of_accounts等）
+  - 独立测试数据库（SQLite），每次测试自动清理
+- **单元测试**:
+  - FileStorageManager: 12个测试100%通过（包括安全测试）
+  - ManagementReportGenerator: 5个测试（报表结构、计算验证）
+- **集成测试**:
+  - Files API: 5个测试100%通过
+  - PDF Reports API: 测试框架完成
+  - Monthly Close API: 测试框架完成
+- **关键安全测试通过**:
+  - 跨租户访问防护验证
+  - 路径遍历攻击防护验证
+  - 前缀匹配漏洞修复验证（commonpath实现）
+- **API文档**:
+  - 完整README.md（accounting_app/README.md）
+  - 5个核心API模块文档（Management Reports, PDF Reports, Files, Monthly Close, Bank Import）
+  - Python + cURL调用示例
+  - FastAPI自动文档（/docs）已完善
+- **修复问题**:
+  - ChartOfAccounts fixture使用小写account_type（符合CHECK constraint）
+  - Files API路径对齐实际路由（path parameters而非query parameters）
+
 **2025-11-01**: Task 9-10完成 - FileStorageManager + PDF自动归档
 - **Task 9 - Unified File Storage Manager**:
   - 创建AccountingFileStorageManager服务，多租户隔离和标准化路径生成
