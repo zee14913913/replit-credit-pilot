@@ -7,7 +7,8 @@ Phase 2-2 Task 5: API密钥管理路由
 3. 撤销密钥
 4. 更新密钥权限
 """
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
+from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from datetime import datetime
@@ -15,6 +16,8 @@ import logging
 
 from accounting_app.services.api_key_service import APIKeyService
 from accounting_app.middleware.rbac_fixed import get_current_user
+from accounting_app.utils.audit_logger import AuditLogger, extract_request_info
+from accounting_app.db import get_db
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +83,9 @@ class APIKeyRevokeRequest(BaseModel):
 @router.post("/", response_model=APIKeyResponse, status_code=status.HTTP_201_CREATED)
 async def create_api_key(
     request: APIKeyCreateRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    req: Request = None,
+    db: Session = Depends(get_db)
 ):
     """
     创建新的API密钥
@@ -91,6 +96,24 @@ async def create_api_key(
     """
     # 1. 权限检查（仅admin和accountant可创建API密钥）
     if current_user["role"] not in ["admin", "accountant"]:
+        # 记录权限失败审计日志
+        audit_logger = AuditLogger(db)
+        try:
+            req_info = extract_request_info(req) if req else {}
+            audit_logger.log(
+                action_type="config_change",
+                description=f"创建API密钥失败: 权限不足 (role={current_user['role']})",
+                company_id=current_user["company_id"],
+                user_id=current_user["id"],
+                username=current_user["username"],
+                entity_type="api_key",
+                success=False,
+                error_message=f"Insufficient permissions: {current_user['role']}",
+                **req_info
+            )
+        finally:
+            audit_logger.close()
+        
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only admin and accountant roles can create API keys"
@@ -98,6 +121,24 @@ async def create_api_key(
     
     # 2. 验证环境值
     if request.environment not in ["live", "test"]:
+        # 记录验证失败审计日志
+        audit_logger = AuditLogger(db)
+        try:
+            req_info = extract_request_info(req) if req else {}
+            audit_logger.log(
+                action_type="config_change",
+                description=f"创建API密钥失败: 无效环境值 (environment={request.environment})",
+                company_id=current_user["company_id"],
+                user_id=current_user["id"],
+                username=current_user["username"],
+                entity_type="api_key",
+                success=False,
+                error_message=f"Invalid environment: {request.environment}",
+                **req_info
+            )
+        finally:
+            audit_logger.close()
+        
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid environment. Must be 'live' or 'test'"
@@ -117,8 +158,29 @@ async def create_api_key(
             created_by=current_user["id"]
         )
         
-        # 4. TODO: 写入审计日志（Task 5稍后实现）
-        # await write_audit_log(...)
+        # 4. 写入审计日志
+        audit_logger = AuditLogger(db)
+        try:
+            req_info = extract_request_info(req) if req else {}
+            audit_logger.log(
+                action_type="config_change",
+                description=f"创建API密钥: {request.name} (environment={request.environment})",
+                company_id=current_user["company_id"],
+                user_id=current_user["id"],
+                username=current_user["username"],
+                entity_type="api_key",
+                entity_id=result["id"],
+                success=True,
+                new_value={
+                    "name": request.name,
+                    "environment": request.environment,
+                    "permissions": request.permissions,
+                    "rate_limit": request.rate_limit
+                },
+                **req_info
+            )
+        finally:
+            audit_logger.close()
         
         logger.info(
             f"API密钥创建成功: id={result['id']}, "
@@ -127,11 +189,29 @@ async def create_api_key(
         
         return APIKeyResponse(**result)
     
+    except HTTPException:
+        # HTTPException直接向上抛出（不记录重复审计日志）
+        raise
     except Exception as e:
         logger.error(f"创建API密钥失败: {e}")
         
-        # TODO: 写入失败审计日志（Task 5稍后实现）
-        # await write_audit_log(...)
+        # 写入失败审计日志
+        audit_logger = AuditLogger(db)
+        try:
+            req_info = extract_request_info(req) if req else {}
+            audit_logger.log(
+                action_type="config_change",
+                description=f"创建API密钥失败: {request.name}",
+                company_id=current_user["company_id"],
+                user_id=current_user["id"],
+                username=current_user["username"],
+                entity_type="api_key",
+                success=False,
+                error_message=str(e),
+                **req_info
+            )
+        finally:
+            audit_logger.close()
         
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -183,7 +263,9 @@ async def list_api_keys(
 async def revoke_api_key(
     key_id: int,
     request: APIKeyRevokeRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    req: Request = None,
+    db: Session = Depends(get_db)
 ):
     """
     撤销API密钥
@@ -202,6 +284,26 @@ async def revoke_api_key(
         target_key = next((k for k in keys if k["id"] == key_id), None)
         
         if not target_key:
+            # 记录密钥不存在审计日志
+            audit_logger = AuditLogger(db)
+            try:
+                req_info = extract_request_info(req) if req else {}
+                audit_logger.log(
+                    action_type="config_change",
+                    description=f"撤销API密钥失败: 密钥不存在或已撤销 (key_id={key_id})",
+                    company_id=current_user["company_id"],
+                    user_id=current_user["id"],
+                    username=current_user["username"],
+                    entity_type="api_key",
+                    entity_id=key_id,
+                    reason=request.reason,
+                    success=False,
+                    error_message="API key not found or already revoked",
+                    **req_info
+                )
+            finally:
+                audit_logger.close()
+            
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="API key not found or already revoked"
@@ -209,6 +311,26 @@ async def revoke_api_key(
         
         # 2. 权限检查（仅密钥所有者或admin可撤销）
         if current_user["role"] != "admin" and target_key["user_id"] != current_user["id"]:
+            # 记录权限不足审计日志
+            audit_logger = AuditLogger(db)
+            try:
+                req_info = extract_request_info(req) if req else {}
+                audit_logger.log(
+                    action_type="config_change",
+                    description=f"撤销API密钥失败: 权限不足 (key_id={key_id}, owner_id={target_key['user_id']})",
+                    company_id=current_user["company_id"],
+                    user_id=current_user["id"],
+                    username=current_user["username"],
+                    entity_type="api_key",
+                    entity_id=key_id,
+                    reason=request.reason,
+                    success=False,
+                    error_message="Insufficient permissions to revoke this API key",
+                    **req_info
+                )
+            finally:
+                audit_logger.close()
+            
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="You can only revoke your own API keys"
@@ -222,13 +344,51 @@ async def revoke_api_key(
         )
         
         if not success:
+            # 记录撤销失败审计日志
+            audit_logger = AuditLogger(db)
+            try:
+                req_info = extract_request_info(req) if req else {}
+                audit_logger.log(
+                    action_type="config_change",
+                    description=f"撤销API密钥失败: 操作失败 (key_id={key_id})",
+                    company_id=current_user["company_id"],
+                    user_id=current_user["id"],
+                    username=current_user["username"],
+                    entity_type="api_key",
+                    entity_id=key_id,
+                    reason=request.reason,
+                    success=False,
+                    error_message="Failed to revoke API key",
+                    **req_info
+                )
+            finally:
+                audit_logger.close()
+            
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="API key not found or already revoked"
             )
         
-        # 4. TODO: 写入审计日志（Task 5稍后实现）
-        # await write_audit_log(...)
+        # 4. 写入审计日志
+        audit_logger = AuditLogger(db)
+        try:
+            req_info = extract_request_info(req) if req else {}
+            audit_logger.log(
+                action_type="config_change",
+                description=f"撤销API密钥: {target_key['name']}",
+                company_id=current_user["company_id"],
+                user_id=current_user["id"],
+                username=current_user["username"],
+                entity_type="api_key",
+                entity_id=key_id,
+                reason=request.reason,
+                success=True,
+                old_value={"is_active": True},
+                new_value={"is_active": False, "revoked_reason": request.reason},
+                **req_info
+            )
+        finally:
+            audit_logger.close()
         
         logger.info(
             f"API密钥已撤销: id={key_id}, "
@@ -242,8 +402,24 @@ async def revoke_api_key(
     except Exception as e:
         logger.error(f"撤销API密钥失败: {e}")
         
-        # TODO: 写入失败审计日志（Task 5稍后实现）
-        # await write_audit_log(...)
+        # 写入失败审计日志
+        audit_logger = AuditLogger(db)
+        try:
+            req_info = extract_request_info(req) if req else {}
+            audit_logger.log(
+                action_type="config_change",
+                description=f"撤销API密钥失败: key_id={key_id}",
+                company_id=current_user["company_id"],
+                user_id=current_user["id"],
+                username=current_user["username"],
+                entity_type="api_key",
+                entity_id=key_id,
+                success=False,
+                error_message=str(e),
+                **req_info
+            )
+        finally:
+            audit_logger.close()
         
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
