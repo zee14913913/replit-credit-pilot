@@ -520,6 +520,37 @@ CREATE INDEX idx_rules_priority ON auto_posting_rules(priority);
 CREATE INDEX idx_rules_active ON auto_posting_rules(is_active);
 
 -- ============================================================
+-- 18. CSV导出模板表 (export_templates)
+-- 表驱动化CSV导出格式，支持不同会计软件
+-- ============================================================
+CREATE TABLE IF NOT EXISTS export_templates (
+    id SERIAL PRIMARY KEY,
+    company_id INTEGER NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+    template_name VARCHAR(200) NOT NULL,
+    software_name VARCHAR(100) NOT NULL CHECK (software_name IN ('SQL Account', 'AutoCount', 'UBS', 'QuickBooks', 'Xero', 'Generic')),
+    export_type VARCHAR(50) NOT NULL CHECK (export_type IN ('general_ledger', 'journal_entry', 'trial_balance', 'chart_of_accounts', 'customer_list', 'supplier_list')),
+    column_mappings JSONB NOT NULL,
+    delimiter VARCHAR(10) DEFAULT ',',
+    date_format VARCHAR(50) DEFAULT 'YYYY-MM-DD',
+    decimal_places INTEGER DEFAULT 2,
+    include_header BOOLEAN DEFAULT true,
+    encoding VARCHAR(20) DEFAULT 'utf-8',
+    description TEXT,
+    is_default BOOLEAN DEFAULT false,
+    is_active BOOLEAN DEFAULT true,
+    usage_count INTEGER DEFAULT 0,
+    last_used_at TIMESTAMP,
+    created_by VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX idx_templates_company ON export_templates(company_id);
+CREATE INDEX idx_templates_software ON export_templates(software_name);
+CREATE INDEX idx_templates_type ON export_templates(export_type);
+CREATE INDEX idx_templates_default ON export_templates(is_default);
+CREATE INDEX idx_templates_active ON export_templates(is_active);
+
+-- ============================================================
 -- 完成提示
 -- ============================================================
 

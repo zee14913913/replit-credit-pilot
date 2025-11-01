@@ -373,3 +373,76 @@ class RuleTestResponse(BaseModel):
     matched: bool
     rule: Optional[RuleResponse] = None
     reason: Optional[str] = None
+
+
+# ============================================================
+# Export Template Schemas (CSV导出模板)
+# ============================================================
+
+class TemplateBase(BaseModel):
+    """导出模板基础Schema"""
+    template_name: str
+    software_name: str  # "SQL Account", "AutoCount", "UBS", "QuickBooks", "Xero", "Generic"
+    export_type: str  # "general_ledger", "journal_entry", "trial_balance", etc
+    column_mappings: dict  # JSONB字段映射配置
+    delimiter: str = ","
+    date_format: str = "YYYY-MM-DD"
+    decimal_places: int = 2
+    include_header: bool = True
+    encoding: str = "utf-8"
+    description: Optional[str] = None
+
+class TemplateCreate(TemplateBase):
+    """创建导出模板"""
+    pass
+
+class TemplateUpdate(BaseModel):
+    """更新导出模板（所有字段可选）"""
+    template_name: Optional[str] = None
+    software_name: Optional[str] = None
+    export_type: Optional[str] = None
+    column_mappings: Optional[dict] = None
+    delimiter: Optional[str] = None
+    date_format: Optional[str] = None
+    decimal_places: Optional[int] = None
+    include_header: Optional[bool] = None
+    encoding: Optional[str] = None
+    description: Optional[str] = None
+    is_default: Optional[bool] = None
+    is_active: Optional[bool] = None
+
+class TemplateResponse(TemplateBase):
+    """导出模板响应"""
+    id: int
+    company_id: int
+    is_default: bool
+    is_active: bool
+    usage_count: int
+    last_used_at: Optional[datetime] = None
+    created_by: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class TemplateListResponse(BaseModel):
+    """导出模板列表响应"""
+    total: int
+    skip: int
+    limit: int
+    templates: List[TemplateResponse]
+
+class TemplateTestRequest(BaseModel):
+    """测试模板导出请求"""
+    template_id: int
+    sample_data: List[dict]  # 样本数据
+    preview_rows: int = 5  # 预览行数
+
+class TemplateTestResponse(BaseModel):
+    """测试模板导出响应"""
+    success: bool
+    preview_csv: str  # CSV预览内容
+    row_count: int
+    column_count: int
+    errors: Optional[List[str]] = None

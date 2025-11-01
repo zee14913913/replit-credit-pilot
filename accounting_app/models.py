@@ -1,8 +1,8 @@
 """
 SQLAlchemy ORM 模型
-对应init_db.sql中的18个核心表
+对应init_db.sql中的19个核心表
 """
-from sqlalchemy import Column, Integer, String, Numeric, Boolean, Date, DateTime, ForeignKey, Text, CheckConstraint
+from sqlalchemy import Column, Integer, String, Numeric, Boolean, Date, DateTime, ForeignKey, Text, CheckConstraint, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from .db import Base
@@ -417,4 +417,37 @@ class AutoPostingRule(Base):
     
     __table_args__ = (
         CheckConstraint("source_type IN ('bank_import', 'supplier_invoice', 'sales_invoice', 'general')"),
+    )
+
+
+class ExportTemplate(Base):
+    """
+    CSV导出模板表 - 表驱动化配置
+    支持不同会计软件的导出格式（SQL Account, AutoCount, UBS等）
+    """
+    __tablename__ = "export_templates"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=False, index=True)
+    template_name = Column(String(200), nullable=False)  # "SQL Account - General Ledger"
+    software_name = Column(String(100), nullable=False, index=True)  # "SQL Account", "AutoCount", "UBS"
+    export_type = Column(String(50), nullable=False, index=True)  # "general_ledger", "journal_entry", "trial_balance"
+    column_mappings = Column(JSON, nullable=False)  # JSONB字段映射配置
+    delimiter = Column(String(10), default=',')  # CSV分隔符
+    date_format = Column(String(50), default='YYYY-MM-DD')  # 日期格式
+    decimal_places = Column(Integer, default=2)  # 小数位数
+    include_header = Column(Boolean, default=True)  # 是否包含列标题
+    encoding = Column(String(20), default='utf-8')  # 文件编码
+    description = Column(Text)  # 模板说明
+    is_default = Column(Boolean, default=False, index=True)  # 是否为默认模板
+    is_active = Column(Boolean, default=True, index=True)  # 是否启用
+    usage_count = Column(Integer, default=0)  # 使用次数统计
+    last_used_at = Column(DateTime(timezone=True))  # 最后使用时间
+    created_by = Column(String(100))  # 创建人
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    __table_args__ = (
+        CheckConstraint("export_type IN ('general_ledger', 'journal_entry', 'trial_balance', 'chart_of_accounts', 'customer_list', 'supplier_list')"),
+        CheckConstraint("software_name IN ('SQL Account', 'AutoCount', 'UBS', 'QuickBooks', 'Xero', 'Generic')"),
     )
