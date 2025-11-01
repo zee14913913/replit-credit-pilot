@@ -50,7 +50,8 @@ from .routes import (
     supplier_invoices,
     pos_reports,
     pdf_reports,
-    exceptions
+    exceptions,
+    posting_rules
 )
 
 # 注册路由
@@ -67,6 +68,7 @@ app.include_router(supplier_invoices.router, prefix="/api", tags=["Supplier Invo
 app.include_router(pos_reports.router, tags=["POS Reports"])
 app.include_router(pdf_reports.router, tags=["PDF Reports"])
 app.include_router(exceptions.router, prefix="/api", tags=["Exception Center"])
+app.include_router(posting_rules.router, prefix="/api", tags=["Auto Posting Rules"])
 
 
 # 启动事件：初始化数据库

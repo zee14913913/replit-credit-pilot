@@ -29,9 +29,26 @@ class RuleEngine:
     def __init__(self, db: Session, company_id: int):
         self.db = db
         self.company_id = company_id
-        self._rules_cache: Optional[List[AutoPostingRule]] = None
+        # 修复缓存bug：使用字典缓存，key为source_type
+        self._rules_cache: dict[Optional[str], List[AutoPostingRule]] = {}
     
-    def get_all_rules(self, source_type: str = None, force_refresh: bool = False) -> List[AutoPostingRule]:
+    def clear_cache(self, source_type: Optional[str] = None):
+        """
+        清除缓存
+        
+        Args:
+            source_type: 指定source_type清除，None则清除全部缓存
+        """
+        if source_type is None:
+            # 清除所有缓存
+            self._rules_cache.clear()
+            logger.debug(f"✅ 清除所有规则缓存 (Company: {self.company_id})")
+        elif source_type in self._rules_cache:
+            # 清除指定source_type的缓存
+            del self._rules_cache[source_type]
+            logger.debug(f"✅ 清除规则缓存: {source_type} (Company: {self.company_id})")
+    
+    def get_all_rules(self, source_type: Optional[str] = None, force_refresh: bool = False) -> List[AutoPostingRule]:
         """
         获取所有启用的规则（按优先级排序）
         
@@ -41,8 +58,12 @@ class RuleEngine:
         
         Returns:
             规则列表（按priority升序）
+        
+        ⚠️ 修复：缓存现在基于source_type隔离，防止跨类型规则混淆
         """
-        if self._rules_cache is None or force_refresh:
+        cache_key = source_type  # None也是合法的cache key
+        
+        if cache_key not in self._rules_cache or force_refresh:
             query = self.db.query(AutoPostingRule).filter(
                 AutoPostingRule.company_id == self.company_id,
                 AutoPostingRule.is_active == True
@@ -52,9 +73,9 @@ class RuleEngine:
                 query = query.filter(AutoPostingRule.source_type == source_type)
             
             # 按优先级排序（数字越小优先级越高）
-            self._rules_cache = query.order_by(AutoPostingRule.priority.asc()).all()
+            self._rules_cache[cache_key] = query.order_by(AutoPostingRule.priority.asc()).all()
         
-        return self._rules_cache
+        return self._rules_cache[cache_key]
     
     def match_transaction(self, description: str, source_type: str = "bank_import") -> Optional[AutoPostingRule]:
         """
@@ -150,10 +171,8 @@ class RuleEngine:
             ExceptionManager.record_posting_error(
                 self.db,
                 self.company_id,
-                source_type="bank_statement",
-                source_id=bank_stmt.id,
-                description=bank_stmt.description,
-                error_message=f"规则'{rule.rule_name}': {error_msg}"
+                f"规则'{rule.rule_name}': {error_msg}",
+                f"BankStatement ID: {bank_stmt.id}, Description: {bank_stmt.description}"
             )
             return None
         
@@ -230,10 +249,8 @@ class RuleEngine:
             ExceptionManager.record_posting_error(
                 self.db,
                 self.company_id,
-                source_type="bank_statement",
-                source_id=bank_stmt.id,
-                description=bank_stmt.description,
-                error_message=f"应用规则'{rule.rule_name}'时失败: {str(e)}"
+                f"应用规则'{rule.rule_name}'时失败: {str(e)}",
+                f"BankStatement ID: {bank_stmt.id}, Description: {bank_stmt.description}"
             )
             return None
     
