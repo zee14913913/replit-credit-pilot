@@ -283,6 +283,29 @@ class UploadHandler:
                 self.db.commit()
                 logger.info(f"❌ MARKED as validation_status='failed' - raw_document_id={raw_document_id}")
             
+            # 补充改进⑥：同步写入异常中心表
+            from ..models import Exception as ExceptionModel
+            exception_record = ExceptionModel(
+                company_id=self.company_id,
+                exception_type='ingest_validation_failed',
+                severity='high',
+                source_type='raw_document',
+                source_id=raw_document_id,
+                message=f"文件验证失败: {error_msg}",
+                context_data={
+                    'raw_document_id': raw_document_id,
+                    'file_name': raw_doc.file_name if raw_doc else 'unknown',
+                    'raw_line_count': raw_line_count,
+                    'parsed_record_count': parsed_record_count,
+                    'missing_count': raw_line_count - parsed_record_count
+                },
+                status='pending',
+                created_at=datetime.now()
+            )
+            self.db.add(exception_record)
+            self.db.commit()
+            logger.info(f"✅ 补充改进⑥ - 验证失败已进入异常中心: exception_type=ingest_validation_failed")
+            
             return False, error_msg
         
         # 补充改进③：标记raw_document为验证通过

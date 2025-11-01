@@ -99,19 +99,25 @@ class CSVExporter:
         """
         获取指定期间的会计分录
         
+        补充改进⑤：强制使用 DataIntegrityValidator 过滤无效数据
+        
         Args:
             period: 'YYYY-MM'
         
         Returns:
-            分录数据列表（字典格式）
+            分录数据列表（字典格式，仅包含已验证数据）
         """
         from ..models import JournalEntry, JournalEntryLine, ChartOfAccounts
+        from ..services.data_integrity_validator import DataIntegrityValidator
+        
+        # 补充改进⑤：创建验证器
+        validator = DataIntegrityValidator(self.db, self.company_id)
         
         # 解析期间
         year, month = map(int, period.split('-'))
         
         # 查询分录
-        query = self.db.query(
+        results = self.db.query(
             JournalEntryLine,
             JournalEntry,
             ChartOfAccounts
@@ -125,11 +131,20 @@ class CSVExporter:
                 date(year, month, 1),
                 date(year, month, 28 if month == 2 else 30 if month in [4, 6, 9, 11] else 31)
             )
-        ).order_by(JournalEntry.entry_date, JournalEntry.id, JournalEntryLine.line_number)
+        ).order_by(JournalEntry.entry_date, JournalEntry.id, JournalEntryLine.line_number).all()
+        
+        # 补充改进⑤：过滤出有效的分录行
+        total_count = len(results)
+        valid_results = []
+        for line, entry, account in results:
+            if validator.validate_record_integrity(line.id, 'journal_entry_lines', auto_create_exception=True):
+                valid_results.append((line, entry, account))
+        
+        logger.info(f"📊 补充改进⑤ - 数据完整性过滤: 总数={total_count}, 有效={len(valid_results)}, 拦截={total_count - len(valid_results)}")
         
         # 转换为字典列表
         entries = []
-        for line, entry, account in query.all():
+        for line, entry, account in valid_results:
             entries.append({
                 'entry_number': entry.entry_number,
                 'entry_date': entry.entry_date,
@@ -142,7 +157,6 @@ class CSVExporter:
                 'entry_type': entry.entry_type
             })
         
-        logger.info(f"查询到 {len(entries)} 条分录")
         return entries
     
     def _get_template(self, template_name: str) -> Optional[Dict]:

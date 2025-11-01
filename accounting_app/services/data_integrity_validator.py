@@ -2,6 +2,8 @@
 补充改进②：业务层数据完整性验证器
 Data Integrity Validator - Business Layer
 
+版本：v1.0.0 (2025-11-01)  # 补充改进⑧：版本号追踪
+
 核心原则：
 1. raw_line_id IS NULL的记录禁止进入报表
 2. validation_status='failed'的raw_document禁止用于报表
@@ -20,7 +22,13 @@ if not validator.validate_record_integrity(record_id, 'bank_statement_lines'):
 # 验证并过滤查询结果
 clean_records = validator.filter_valid_records(query_results, 'bank_statement_lines')
 ```
+
+版本历史：
+- v1.0.0 (2025-11-01): 初始版本，实现4层数据保护机制
 """
+
+# 补充改进⑧：版本号常量
+DATA_INTEGRITY_VALIDATOR_VERSION = "v1.0.0"
 import logging
 from typing import List, Dict, Any, Optional
 from datetime import datetime
