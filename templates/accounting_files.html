@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="{{ current_lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文件管理 - 会计系统</title>
+    <title>{{ t('accounting_file_management') }} - {{ t('accounting_system') }}</title>
     <style>
         * {
             margin: 0;
@@ -306,16 +306,67 @@
     
     <!-- Toast通知组件 -->
     <script src="/static/js/toast.js"></script>
+    
+    <!-- 全局翻译对象 -->
+    <script>
+        window.i18n = {
+            file_name: "{{ t('file_name') }}",
+            module: "{{ t('module') }}",
+            status_validation: "{{ t('status_validation') }}",
+            next_action: "{{ t('next_action') }}",
+            file_size_kb: "{{ t('file_size_kb') }}",
+            upload_time: "{{ t('upload_time') }}",
+            operations: "{{ t('operations') }}",
+            loading: "{{ t('loading') }}",
+            no_files_yet: "{{ t('no_files_yet') }}",
+            upload_first_file: "{{ t('upload_first_file') }}",
+            status_uploaded: "{{ t('status_uploaded') }}",
+            status_active: "{{ t('status_active') }}",
+            status_validated: "{{ t('status_validated') }}",
+            status_posted: "{{ t('status_posted') }}",
+            status_exception: "{{ t('status_exception') }}",
+            status_processing: "{{ t('status_processing') }}",
+            status_failed: "{{ t('status_failed') }}",
+            status_archived: "{{ t('status_archived') }}",
+            validation_passed: "{{ t('validation_passed') }}",
+            validation_failed: "{{ t('validation_failed') }}",
+            validation_pending: "{{ t('validation_pending') }}",
+            view_details: "{{ t('view_details') }}",
+            validate: "{{ t('validate') }}",
+            post_to_ledger: "{{ t('post_to_ledger') }}",
+            set_as_primary: "{{ t('set_as_primary') }}",
+            delete: "{{ t('delete') }}",
+            confirm_delete: "{{ t('confirm_delete') }}",
+            load_failed: "{{ t('load_failed') }}",
+            upload_csv_pdf_only: "{{ t('upload_csv_pdf_only') }}",
+            pdf_converted_success: "{{ t('pdf_converted_success') }}",
+            smart_analyzing_uploading: "{{ t('smart_analyzing_uploading') }}",
+            upload_success: "{{ t('upload_success') }}",
+            upload_failed: "{{ t('upload_failed') }}",
+            action_validate_data: "{{ t('action_validate_data') }}",
+            action_generate_entries: "{{ t('action_generate_entries') }}",
+            action_set_primary: "{{ t('action_set_primary') }}",
+            action_completed: "{{ t('action_completed') }}",
+            delete_failed: "{{ t('delete_failed') }}",
+            operation_failed: "{{ t('operation_failed') }}",
+            module_bank: "{{ t('module_bank') }}",
+            module_credit_card: "{{ t('module_credit_card') }}",
+            module_pos: "{{ t('module_pos') }}",
+            module_supplier: "{{ t('module_supplier') }}",
+            module_reports: "{{ t('module_reports') }}",
+            module_management: "{{ t('module_management') }}"
+        };
+    </script>
 </head>
 <body>
     <div class="container">
-        <h1>📁 文件管理中心</h1>
+        <h1>📁 {{ t('file_management_center') }}</h1>
         
         <div class="header-actions">
-            <a href="/" class="btn btn-secondary">← 返回首页</a>
-            <button onclick="document.getElementById('fileUpload').click()" class="btn btn-primary">📤 智能上传CSV/PDF</button>
-            <button onclick="refreshFiles()" class="btn btn-primary">🔄 刷新列表</button>
-            <a href="/accounting_test_results" class="btn btn-primary">🧪 运行新测试</a>
+            <a href="/" class="btn btn-secondary">← {{ t('back_to_home') }}</a>
+            <button onclick="document.getElementById('fileUpload').click()" class="btn btn-primary">📤 {{ t('smart_upload_csv_pdf') }}</button>
+            <button onclick="refreshFiles()" class="btn btn-primary">🔄 {{ t('refresh_list') }}</button>
+            <a href="/accounting_test_results" class="btn btn-primary">🧪 {{ t('run_new_test') }}</a>
         </div>
         
         <!-- 隐藏的文件上传输入 -->
@@ -462,7 +513,7 @@
                 const filesList = document.getElementById('files-list');
                 
                 if (files.length === 0) {
-                    filesList.innerHTML = '<div class="empty">暂无文件</div>';
+                    filesList.innerHTML = `<div class="empty">${window.i18n.no_files_yet}<br/><small>${window.i18n.upload_first_file}</small></div>`;
                     return;
                 }
                 
@@ -474,14 +525,14 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>模块</th>
-                                <th>文件名</th>
-                                <th>状态</th>
-                                <th>状态说明</th>
-                                <th>下一步动作</th>
-                                <th>大小(KB)</th>
-                                <th>上传时间</th>
-                                <th>操作</th>
+                                <th>${window.i18n.module}</th>
+                                <th>${window.i18n.file_name}</th>
+                                <th>${window.i18n.status_validation}</th>
+                                <th>${window.i18n.status_validation}</th>
+                                <th>${window.i18n.next_action}</th>
+                                <th>${window.i18n.file_size_kb}</th>
+                                <th>${window.i18n.upload_time}</th>
+                                <th>${window.i18n.operations}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -497,22 +548,22 @@
                     const status = file.status || 'active';
                     const statusClass = `status-${status}`;
                     const statusText = {
-                        'uploaded': '📤 已上传',
-                        'active': '✅ 活跃',
-                        'validated': '✓ 已验证',
-                        'posted': '📊 已入账',
-                        'exception': '⚠️ 异常',
-                        'processing': '⏳ 处理中',
-                        'failed': '❌ 失败',
-                        'archived': '📦 归档'
+                        'uploaded': '📤 ' + window.i18n.status_uploaded,
+                        'active': '✅ ' + window.i18n.status_active,
+                        'validated': '✓ ' + window.i18n.status_validated,
+                        'posted': '📊 ' + window.i18n.status_posted,
+                        'exception': '⚠️ ' + window.i18n.status_exception,
+                        'processing': '⏳ ' + window.i18n.status_processing,
+                        'failed': '❌ ' + window.i18n.status_failed,
+                        'archived': '📦 ' + window.i18n.status_archived
                     }[status] || status;
                     
                     // 验证状态
                     const validationStatus = file.validation_status || 'pending';
                     const validationBadge = {
-                        'passed': '✓ 通过',
-                        'failed': '✗ 失败',
-                        'pending': '⋯ 待验证'
+                        'passed': '✓ ' + window.i18n.validation_passed,
+                        'failed': '✗ ' + window.i18n.validation_failed,
+                        'pending': '⋯ ' + window.i18n.validation_pending
                     }[validationStatus] || validationStatus;
                     
                     // 模块图标
@@ -579,9 +630,9 @@
                 filesList.innerHTML = html;
                 
             } catch (error) {
-                console.error('加载失败:', error);
+                console.error(window.i18n.load_failed + ':', error);
                 document.getElementById('files-list').innerHTML = 
-                    `<div class="empty">加载失败: ${error.message}</div>`;
+                    `<div class="empty">${window.i18n.load_failed}: ${error.message}</div>`;
             }
         }
         
@@ -592,7 +643,7 @@
         }
         
         async function deleteFile(filePath, filename, companyId) {
-            if (!confirm(`确定要删除文件 "${filename}" 吗？`)) {
+            if (!confirm(window.i18n.confirm_delete)) {
                 return;
             }
             
@@ -864,9 +915,9 @@
             const fileName = file.name.toLowerCase();
             if (!fileName.endsWith('.csv') && !fileName.endsWith('.pdf')) {
                 if (window.Toast) {
-                    Toast.error('请上传CSV或PDF格式的银行月结单文件');
+                    Toast.error(window.i18n.upload_csv_pdf_only);
                 } else {
-                    alert('请上传CSV或PDF格式的银行月结单文件');
+                    alert(window.i18n.upload_csv_pdf_only);
                 }
                 return;
             }

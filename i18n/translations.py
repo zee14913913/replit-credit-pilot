@@ -1583,6 +1583,198 @@ TRANSLATIONS = {
         'discrepancy_placeholder': '请描述PDF原件与系统记录之间的差异...',
         'back_to_account': '返回账户',
         'view_verification': '查看验证',
+        
+        # Accounting System - File Management
+        'accounting_file_management': '文件管理',
+        'accounting_system': '会计系统',
+        'file_management_center': '文件管理中心',
+        'back_to_home': '返回首页',
+        'smart_upload_csv_pdf': '智能上传CSV/PDF',
+        'refresh_list': '刷新列表',
+        'run_new_test': '运行新测试',
+        'file_name': '文件名',
+        'module': '模块',
+        'status_validation': '状态/验证',
+        'next_action': '下一步动作',
+        'file_size_kb': '大小(KB)',
+        'upload_time': '上传时间',
+        'operations': '操作',
+        'loading': '加载中...',
+        'no_files_yet': '暂无文件',
+        'upload_first_file': '点击上方按钮上传您的第一个文件',
+        
+        # File Status
+        'status_uploaded': '已上传',
+        'status_active': '活跃',
+        'status_validated': '已验证',
+        'status_posted': '已入账',
+        'status_exception': '异常',
+        'status_processing': '处理中',
+        'status_failed': '失败',
+        'status_archived': '归档',
+        
+        # Validation Status
+        'validation_passed': '通过',
+        'validation_failed': '失败',
+        'validation_pending': '待验证',
+        
+        # Action Buttons
+        'view_details': '查看详情',
+        'validate': '验证',
+        'post_to_ledger': '入账',
+        'set_as_primary': '设为主账单',
+        'delete': '删除',
+        'confirm_delete': '确定删除此文件吗？',
+        
+        # File Details Modal
+        'file_details': '文件详情',
+        'close': '关闭',
+        'company_id': '公司ID',
+        'file_category': '文件分类',
+        'file_type': '文件类型',
+        'file_path': '文件路径',
+        'uploader': '上传者',
+        'from_engine': '来源引擎',
+        'validation_status_label': '验证状态',
+        
+        # Upload Process
+        'upload_please_wait': '上传中，请稍候...',
+        'upload_csv_pdf_only': '请上传CSV或PDF格式的银行月结单文件',
+        'pdf_conversion_failed': 'PDF转换失败',
+        'pdf_converted_success': 'PDF已转换为CSV',
+        'smart_analyzing_uploading': '正在智能分析并上传...',
+        'upload_success': '上传成功',
+        'upload_failed': '上传失败',
+        'analyzing_file': '正在分析文件...',
+        
+        # Next Actions
+        'action_validate_data': '验证数据 - 确保行数正确、客户供应商匹配',
+        'action_generate_entries': '生成会计分录 - 把这份月结单真正入账到账册',
+        'action_set_primary': '设为主账单 - 标记为该月份的主要账单',
+        'action_completed': '已完成',
+        
+        # Error Messages  
+        'load_failed': '加载失败',
+        'delete_failed': '删除失败',
+        'update_failed': '更新失败',
+        'operation_failed': '操作失败',
+        'please_enter_validation_status': '请输入验证状态 (passed/failed/pending)',
+        
+        # Module Names
+        'module_bank': '银行账单',
+        'module_credit_card': '信用卡账单',
+        'module_pos': 'POS收款',
+        'module_supplier': '供应商发票',
+        'module_reports': '报表',
+        'module_management': '管理文件',
+    },
+    'en': {
+        # Navigation
+        'nav_dashboard': 'Dashboard',
+        'nav_upload': 'Upload',
+        'nav_cc_ledger': 'CC',
+        'nav_savings': 'Savings',
+        'nav_loan_matcher': 'Loans',
+        'nav_receipts': 'Receipts',
+        'nav_invoices': 'Invoices',
+        'nav_monthly_summary': 'Reports',
+        'nav_reminders': 'Reminders',
+        'nav_news': 'News',
+        'nav_admin': 'Admin',
+        'nav_admin_news': 'News Management',
+        'nav_advisory': 'Financial Advisory',
+        'nav_analytics': 'Analytics',
+        'nav_services': 'Services',
+        'nav_account': 'Account',
+        
+        # Common
+        'company_name': 'INFINITE GZ SDN BHD',
+        'system_name': 'Smart Credit & Loan Manager',
+        'language': 'Language',
+        
+        # Accounting System - File Management
+        'accounting_file_management': 'File Management',
+        'accounting_system': 'Accounting System',
+        'file_management_center': 'File Management Center',
+        'back_to_home': 'Back to Home',
+        'smart_upload_csv_pdf': 'Smart Upload CSV/PDF',
+        'refresh_list': 'Refresh List',
+        'run_new_test': 'Run New Test',
+        'file_name': 'File Name',
+        'module': 'Module',
+        'status_validation': 'Status/Validation',
+        'next_action': 'Next Action',
+        'file_size_kb': 'Size (KB)',
+        'upload_time': 'Upload Time',
+        'operations': 'Operations',
+        'loading': 'Loading...',
+        'no_files_yet': 'No Files Yet',
+        'upload_first_file': 'Click the button above to upload your first file',
+        
+        # File Status
+        'status_uploaded': 'Uploaded',
+        'status_active': 'Active',
+        'status_validated': 'Validated',
+        'status_posted': 'Posted',
+        'status_exception': 'Exception',
+        'status_processing': 'Processing',
+        'status_failed': 'Failed',
+        'status_archived': 'Archived',
+        
+        # Validation Status
+        'validation_passed': 'Passed',
+        'validation_failed': 'Failed',
+        'validation_pending': 'Pending',
+        
+        # Action Buttons
+        'view_details': 'View Details',
+        'validate': 'Validate',
+        'post_to_ledger': 'Post to Ledger',
+        'set_as_primary': 'Set as Primary',
+        'delete': 'Delete',
+        'confirm_delete': 'Are you sure you want to delete this file?',
+        
+        # File Details Modal
+        'file_details': 'File Details',
+        'close': 'Close',
+        'company_id': 'Company ID',
+        'file_category': 'File Category',
+        'file_type': 'File Type',
+        'file_path': 'File Path',
+        'uploader': 'Uploader',
+        'from_engine': 'From Engine',
+        'validation_status_label': 'Validation Status',
+        
+        # Upload Process
+        'upload_please_wait': 'Uploading, please wait...',
+        'upload_csv_pdf_only': 'Please upload CSV or PDF format bank statement files',
+        'pdf_conversion_failed': 'PDF conversion failed',
+        'pdf_converted_success': 'PDF converted to CSV',
+        'smart_analyzing_uploading': 'Smart analyzing and uploading...',
+        'upload_success': 'Upload successful',
+        'upload_failed': 'Upload failed',
+        'analyzing_file': 'Analyzing file...',
+        
+        # Next Actions
+        'action_validate_data': 'Validate Data - Ensure row count & customer/supplier matching',
+        'action_generate_entries': 'Generate Journal Entries - Post this statement to ledger',
+        'action_set_primary': 'Set as Primary - Mark as primary statement for this period',
+        'action_completed': 'Completed',
+        
+        # Error Messages
+        'load_failed': 'Load failed',
+        'delete_failed': 'Delete failed',
+        'update_failed': 'Update failed',
+        'operation_failed': 'Operation failed',
+        'please_enter_validation_status': 'Please enter validation status (passed/failed/pending)',
+        
+        # Module Names
+        'module_bank': 'Bank Statement',
+        'module_credit_card': 'Credit Card',
+        'module_pos': 'POS Receipts',
+        'module_supplier': 'Supplier Invoice',
+        'module_reports': 'Reports',
+        'module_management': 'Management Files',
     }
 }
 
