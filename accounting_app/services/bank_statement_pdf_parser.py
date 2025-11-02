@@ -110,11 +110,6 @@ class BankStatementPDFParser:
                     result["error_message"] = "PDF无法提取文本或表格数据。如果是扫描件，请使用CSV格式上传。"
                     return result
                 
-                # 如果有文本但没有表格，尝试从文本解析
-                if not all_tables:
-                    result["error_message"] = "PDF未包含表格数据。建议使用CSV格式上传，或确保PDF包含交易明细表格。"
-                    return result
-                
                 # 识别银行信息
                 result["bank_name"] = self._extract_bank_name(all_text)
                 result["account_number"] = self._extract_account_number(all_text)
@@ -123,6 +118,9 @@ class BankStatementPDFParser:
                 # 从表格提取交易记录
                 if all_tables:
                     result["transactions"] = self._extract_transactions_from_tables(all_tables)
+                else:
+                    # 如果没有表格，尝试从文本解析交易
+                    result["transactions"] = self._extract_transactions_from_ocr_text(all_text)
                 
                 # 计算置信度
                 confidence = 0
@@ -150,10 +148,69 @@ class BankStatementPDFParser:
         result = {
             "success": False,
             "method": "ocr",
-            "confidence": 0,
-            "error_message": "您的PDF是扫描件/图片格式。请使用以下方法之一：\n1. 从网银导出CSV格式\n2. 使用PDF转CSV工具\n3. 手动输入交易数据"
+            "bank_name": None,
+            "account_number": None,
+            "statement_month": None,
+            "transactions": [],
+            "confidence": 0
         }
-        return result
+        
+        try:
+            from pdf2image import convert_from_path
+            import pytesseract
+            from PIL import Image
+            
+            # 转换PDF为图片
+            images = convert_from_path(pdf_path, dpi=300)
+            
+            all_text = ""
+            all_tables_text = []
+            
+            for i, image in enumerate(images):
+                # OCR识别
+                ocr_text = pytesseract.image_to_string(image, lang='eng')
+                all_text += ocr_text + "\n"
+                
+                # 尝试识别表格结构
+                ocr_data = pytesseract.image_to_data(image, output_type=pytesseract.Output.DICT)
+                all_tables_text.append(ocr_data)
+            
+            if not all_text.strip():
+                result["error_message"] = "OCR无法识别PDF内容"
+                return result
+            
+            # 识别银行信息
+            result["bank_name"] = self._extract_bank_name(all_text)
+            result["account_number"] = self._extract_account_number(all_text)
+            result["statement_month"] = self._extract_statement_month(all_text)
+            
+            # 从OCR文本提取交易记录
+            result["transactions"] = self._extract_transactions_from_ocr_text(all_text)
+            
+            # 计算置信度
+            confidence = 0
+            if result["bank_name"]:
+                confidence += 0.3
+            if result["account_number"]:
+                confidence += 0.3
+            if result["statement_month"]:
+                confidence += 0.2
+            if len(result["transactions"]) > 0:
+                confidence += 0.2
+            
+            result["confidence"] = round(confidence, 2)
+            result["success"] = confidence > 0.3  # 降低阈值，OCR准确度较低
+            
+            return result
+            
+        except ImportError as e:
+            logger.error(f"OCR依赖缺失: {str(e)}")
+            result["error_message"] = f"OCR功能需要安装依赖: {str(e)}"
+            return result
+        except Exception as e:
+            logger.error(f"OCR解析失败: {str(e)}")
+            result["error_message"] = f"OCR解析错误: {str(e)}"
+            return result
     
     def _extract_bank_name(self, text: str) -> Optional[str]:
         """从文本提取银行名称"""
@@ -339,3 +396,43 @@ class BankStatementPDFParser:
             pass
         
         return None
+    
+    def _extract_transactions_from_ocr_text(self, text: str) -> List[Dict]:
+        """从OCR识别的文本中提取交易记录"""
+        transactions = []
+        
+        # 按行分割
+        lines = text.split('\n')
+        
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+            
+            # 尝试匹配交易行模式：日期 描述 金额
+            # 示例：07-12-2024 Transfer 1000.00
+            pattern = r'(\d{1,2}[-/]\d{1,2}[-/]\d{4})\s+(.+?)\s+([\d,]+\.\d{2})'
+            match = re.search(pattern, line)
+            
+            if match:
+                date_str, description, amount_str = match.groups()
+                parsed_date = self._parse_date(date_str)
+                
+                if parsed_date:
+                    transaction = {
+                        "date": parsed_date,
+                        "description": description.strip(),
+                        "debit": 0,
+                        "credit": 0
+                    }
+                    
+                    # 判断借方还是贷方（简单规则：如果描述包含关键词）
+                    amount = float(self._parse_amount(amount_str) or 0)
+                    if any(kw in description.lower() for kw in ['deposit', 'credit', 'transfer in', 'receipt']):
+                        transaction["credit"] = amount
+                    else:
+                        transaction["debit"] = amount
+                    
+                    transactions.append(transaction)
+        
+        return transactions
