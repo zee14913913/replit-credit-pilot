@@ -107,7 +107,12 @@ class BankStatementPDFParser:
                         all_tables.extend(tables)
                 
                 if not all_text and not all_tables:
-                    result["error_message"] = "PDF无可提取文本"
+                    result["error_message"] = "PDF无法提取文本或表格数据。如果是扫描件，请使用CSV格式上传。"
+                    return result
+                
+                # 如果有文本但没有表格，尝试从文本解析
+                if not all_tables:
+                    result["error_message"] = "PDF未包含表格数据。建议使用CSV格式上传，或确保PDF包含交易明细表格。"
                     return result
                 
                 # 识别银行信息
@@ -146,7 +151,7 @@ class BankStatementPDFParser:
             "success": False,
             "method": "ocr",
             "confidence": 0,
-            "error_message": "OCR功能暂未完全实现，建议转换为CSV"
+            "error_message": "您的PDF是扫描件/图片格式。请使用以下方法之一：\n1. 从网银导出CSV格式\n2. 使用PDF转CSV工具\n3. 手动输入交易数据"
         }
         return result
     
