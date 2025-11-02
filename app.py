@@ -9,6 +9,12 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+# ==================== FEATURE TOGGLES ====================
+# 功能开关配置（环境变量控制，默认关闭）
+FEATURE_ADVANCED_ANALYTICS = os.getenv('FEATURE_ADVANCED_ANALYTICS', 'false').lower() == 'true'
+FEATURE_CUSTOMER_TIER = os.getenv('FEATURE_CUSTOMER_TIER', 'false').lower() == 'true'
+# ==================== END FEATURE TOGGLES ====================
+
 from db.database import get_db, log_audit, get_all_customers, get_customer, get_customer_cards, get_card_statements, get_statement_transactions
 from auth.flask_rbac_bridge import require_flask_auth, require_flask_permission, write_flask_audit_log, verify_flask_user, extract_flask_request_info
 from ingest.statement_parser import parse_statement_auto
@@ -1655,31 +1661,42 @@ def api_portfolio_revenue():
 
 # ==================== ADVANCED ANALYTICS FEATURES ====================
 
-# Import new analytics modules
-from analytics.financial_health_score import FinancialHealthScore
-from analytics.cashflow_predictor import CashflowPredictor
-from analytics.customer_tier_system import CustomerTierSystem
-from analytics.anomaly_detector import AnomalyDetector
-from analytics.recommendation_engine import RecommendationEngine
+# Import new analytics modules (仅当功能开启时初始化)
+if FEATURE_ADVANCED_ANALYTICS:
+    from analytics.financial_health_score import FinancialHealthScore
+    from analytics.cashflow_predictor import CashflowPredictor
+    from analytics.anomaly_detector import AnomalyDetector
+    from analytics.recommendation_engine import RecommendationEngine
+    
+    # Initialize analytics services
+    health_score_service = FinancialHealthScore()
+    cashflow_service = CashflowPredictor()
+    anomaly_service = AnomalyDetector()
+    recommendation_service = RecommendationEngine()
 
-# Initialize analytics services
-health_score_service = FinancialHealthScore()
-cashflow_service = CashflowPredictor()
-tier_service = CustomerTierSystem()
-anomaly_service = AnomalyDetector()
-recommendation_service = RecommendationEngine()
+if FEATURE_CUSTOMER_TIER:
+    from analytics.customer_tier_system import CustomerTierSystem
+    tier_service = CustomerTierSystem()
 
 @app.route('/advanced-analytics/<int:customer_id>')
 def advanced_analytics(customer_id):
-    """高级财务分析仪表板"""
+    """高级财务分析仪表板（Beta功能，需开关开启）"""
+    # 检查功能开关
+    if not FEATURE_ADVANCED_ANALYTICS:
+        flash('Advanced Analytics feature is currently disabled. Contact administrator to enable.', 'warning')
+        return redirect(url_for('index'))
+    
     lang = session.get('language', 'en')
     
     # 财务健康评分
     health_score = health_score_service.calculate_score(customer_id)
     score_trend = health_score_service.get_score_trend(customer_id, months=6)
     
-    # 客户等级
-    tier_info = tier_service.calculate_customer_tier(customer_id)
+    # 客户等级（仅当功能开启时计算）
+    if FEATURE_CUSTOMER_TIER:
+        tier_info = tier_service.calculate_customer_tier(customer_id)
+    else:
+        tier_info = None  # 功能未开启，模板需处理None
     
     # 异常检测
     anomalies = anomaly_service.detect_anomalies(customer_id)
@@ -1703,6 +1720,8 @@ def advanced_analytics(customer_id):
 @app.route('/api/cashflow-prediction/<int:customer_id>')
 def api_cashflow_prediction(customer_id):
     """API: 获取现金流预测数据"""
+    if not FEATURE_ADVANCED_ANALYTICS:
+        return jsonify({'error': 'Feature disabled'}), 403
     months = request.args.get('months', 12, type=int)
     prediction = cashflow_service.predict_cashflow(customer_id, months)
     return jsonify(prediction)
@@ -1710,30 +1729,41 @@ def api_cashflow_prediction(customer_id):
 @app.route('/api/financial-score/<int:customer_id>')
 def api_financial_score(customer_id):
     """API: 获取财务健康评分"""
+    if not FEATURE_ADVANCED_ANALYTICS:
+        return jsonify({'error': 'Feature disabled'}), 403
     score_data = health_score_service.calculate_score(customer_id)
     return jsonify(score_data)
 
 @app.route('/api/anomalies/<int:customer_id>')
 def api_anomalies(customer_id):
     """API: 获取财务异常"""
+    if not FEATURE_ADVANCED_ANALYTICS:
+        return jsonify({'error': 'Feature disabled'}), 403
     anomalies = anomaly_service.get_active_anomalies(customer_id)
     return jsonify({'anomalies': anomalies})
 
 @app.route('/api/recommendations/<int:customer_id>')
 def api_recommendations(customer_id):
     """API: 获取个性化推荐"""
+    if not FEATURE_ADVANCED_ANALYTICS:
+        return jsonify({'error': 'Feature disabled'}), 403
     recommendations = recommendation_service.generate_recommendations(customer_id)
     return jsonify(recommendations)
 
 @app.route('/api/tier-info/<int:customer_id>')
 def api_tier_info(customer_id):
     """API: 获取客户等级信息"""
+    if not FEATURE_CUSTOMER_TIER:
+        return jsonify({'error': 'Feature disabled'}), 403
     tier_info = tier_service.calculate_customer_tier(customer_id)
     return jsonify(tier_info)
 
 @app.route('/resolve-anomaly/<int:anomaly_id>', methods=['POST'])
 def resolve_anomaly_route(anomaly_id):
     """解决财务异常"""
+    if not FEATURE_ADVANCED_ANALYTICS:
+        flash('Advanced Analytics feature is currently disabled.', 'warning')
+        return redirect(url_for('index'))
     resolution_note = request.form.get('resolution_note', '')
     anomaly_service.resolve_anomaly(anomaly_id, resolution_note)
     lang = session.get('language', 'en')
