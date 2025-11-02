@@ -36,3 +36,4 @@ bcrypt
 passlib
 python-jose
 itsdangerous
+sendgrid

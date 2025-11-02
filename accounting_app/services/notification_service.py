@@ -1,5 +1,6 @@
 """
 通知服务：管理系统通知（上传指引 + 日报摘要）
+增强版：支持邮件、SMS和Web Push通知
 """
 
 import logging
@@ -9,6 +10,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_
 
 from ..models import Notification, NotificationPreference, User
+from .email_notification_service import email_notification_service
 
 
 logger = logging.getLogger(__name__)
@@ -80,6 +82,15 @@ def create_upload_notification(
     db.refresh(notification)
     
     logger.info(f"Created {notification_type} notification for user {user_id}")
+    
+    # 自动发送邮件/SMS通知（基于用户偏好）
+    _send_multi_channel_notification(
+        db=db,
+        user_id=user_id,
+        notification_type=notification_type,
+        title=title,
+        message=message
+    )
     
     return notification
 
@@ -353,3 +364,62 @@ def delete_old_notifications(db: Session, days_old: int = 90) -> int:
     logger.info(f"Deleted {deleted_count} old notifications (>{days_old} days)")
     
     return deleted_count
+
+
+def _send_multi_channel_notification(
+    db: Session,
+    user_id: int,
+    notification_type: str,
+    title: str,
+    message: str
+) -> None:
+    """
+    根据用户偏好发送多渠道通知（邮件+SMS+Push）
+    
+    Args:
+        db: 数据库session
+        user_id: 用户ID
+        notification_type: 通知类型
+        title: 通知标题
+        message: 通知消息
+    """
+    
+    # 获取用户信息和偏好设置
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        logger.warning(f"User {user_id} not found, skipping multi-channel notification")
+        return
+    
+    preferences = get_notification_preferences(db, user_id)
+    
+    # 如果没有偏好设置，创建默认偏好（开启应用内和邮件，关闭SMS）
+    if not preferences:
+        preferences = create_or_update_preferences(db, user_id, {
+            'email_enabled': True,
+            'sms_enabled': False,
+            'push_enabled': True
+        })
+    
+    # 获取用户联系方式
+    user_email = preferences.user_email if preferences.user_email else user.email
+    user_phone = preferences.user_phone
+    
+    # 发送邮件和SMS通知
+    try:
+        send_result = email_notification_service.send_notification(
+            notification_type=notification_type,
+            title=title,
+            message=message,
+            user_email=user_email,
+            user_phone=user_phone,
+            send_email=preferences.email_enabled if preferences else False,
+            send_sms=preferences.sms_enabled if preferences else False
+        )
+        
+        if send_result.get('email'):
+            logger.info(f"✅ Email sent to {user_email}")
+        if send_result.get('sms'):
+            logger.info(f"✅ SMS sent to {user_phone}")
+            
+    except Exception as e:
+        logger.error(f"Failed to send multi-channel notification: {e}")
