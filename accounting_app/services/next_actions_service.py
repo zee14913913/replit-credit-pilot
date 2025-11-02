@@ -65,7 +65,7 @@ class NextActionsService:
                 actions.append({
                     "code": "set_primary",
                     "label": "⚠️ 设为本月主对账单（本月有多份）",
-                    "endpoint": f"/api/files/{file_record.id}/set-primary",
+                    "endpoint": f"/files/{file_record.id}/set-primary",
                     "method": "POST",
                     "priority": 1,
                     "icon": "⚠️",
@@ -74,7 +74,7 @@ class NextActionsService:
                 actions.append({
                     "code": "merge_duplicates",
                     "label": "🔀 合并同月对账单",
-                    "endpoint": f"/api/files/{file_record.id}/merge-duplicates",
+                    "endpoint": f"/files/{file_record.id}/merge-duplicates",
                     "method": "POST",
                     "priority": 2,
                     "icon": "🔀",
@@ -85,7 +85,7 @@ class NextActionsService:
             actions.append({
                 "code": "validate_statement",
                 "label": "👉 验证数据（行数/客户/供应商）",
-                "endpoint": f"/api/files/{file_record.id}/validate",
+                "endpoint": f"/files/{file_record.id}/validate",
                 "method": "POST",
                 "priority": 1 if not has_duplicates else 3,
                 "icon": "✅",
@@ -109,7 +109,7 @@ class NextActionsService:
             actions.append({
                 "code": "generate_entries",
                 "label": "👉 生成会计分录",
-                "endpoint": f"/api/files/{file_record.id}/generate-entries",
+                "endpoint": f"/files/{file_record.id}/generate-entries",
                 "method": "POST",
                 "priority": 1,
                 "icon": "📝",
@@ -120,7 +120,7 @@ class NextActionsService:
             actions.append({
                 "code": "view_details",
                 "label": "📊 查看明细数据",
-                "endpoint": f"/api/files/{file_record.id}/details",
+                "endpoint": f"/files/{file_record.id}/details",
                 "method": "GET",
                 "priority": 3,
                 "icon": "📊",
@@ -154,7 +154,7 @@ class NextActionsService:
             actions.append({
                 "code": "archive",
                 "label": "📦 归档文件",
-                "endpoint": f"/api/files/{file_record.id}/archive",
+                "endpoint": f"/files/{file_record.id}/archive",
                 "method": "POST",
                 "priority": 4,
                 "icon": "📦",
@@ -178,7 +178,7 @@ class NextActionsService:
             actions.append({
                 "code": "revalidate",
                 "label": "🔄 重新验证",
-                "endpoint": f"/api/files/{file_record.id}/validate",
+                "endpoint": f"/files/{file_record.id}/validate",
                 "method": "POST",
                 "priority": 2,
                 "icon": "🔄",
@@ -190,7 +190,7 @@ class NextActionsService:
             actions.append({
                 "code": "view_progress",
                 "label": "⏳ 查看处理进度",
-                "endpoint": f"/api/files/{file_record.id}/progress",
+                "endpoint": f"/files/{file_record.id}/progress",
                 "method": "GET",
                 "priority": 1,
                 "icon": "⏳",
@@ -202,7 +202,7 @@ class NextActionsService:
             actions.append({
                 "code": "view_error",
                 "label": "❌ 查看错误详情",
-                "endpoint": f"/api/files/{file_record.id}/error-log",
+                "endpoint": f"/files/{file_record.id}/error-log",
                 "method": "GET",
                 "priority": 1,
                 "icon": "❌",
@@ -212,7 +212,7 @@ class NextActionsService:
             actions.append({
                 "code": "retry",
                 "label": "🔄 重试处理",
-                "endpoint": f"/api/files/{file_record.id}/retry",
+                "endpoint": f"/files/{file_record.id}/retry",
                 "method": "POST",
                 "priority": 2,
                 "icon": "🔄",
@@ -224,7 +224,7 @@ class NextActionsService:
             actions.append({
                 "code": "restore",
                 "label": "↩️ 恢复到Active",
-                "endpoint": f"/api/files/{file_record.id}/restore",
+                "endpoint": f"/files/{file_record.id}/restore",
                 "method": "POST",
                 "priority": 1,
                 "icon": "↩️",

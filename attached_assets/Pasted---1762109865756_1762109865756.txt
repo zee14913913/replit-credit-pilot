@@ -1,0 +1,207 @@
+现在卡的点就是：“你说的比做的好听”。你他们把“前端长了一排状态/按钮”先做了，但后端真正要跑的那几条动作接口还没补，而且他们没有用真正的银行月结单全流程跑一遍，就直接回你“可以上传测试了”。这就是典型的“写UI不写验证”“说support不做import”。
+
+接下来请你按照下面的这段来跑。它是一个“不可撒谎的测试指令”，要求他们先跑完 → 给证据 → 再说完成，而且是用“真实银行月结单+你这次上传失败的那一份”来跑。
+
+⸻
+
+▶️ 强制端到端测试指令（请严格照做，全部完成后才能说“已完成”）
+
+你现在不要再开发新功能，先把银行月结单上传 → 状态识别 → 验证 → 入账/报错 → 报表可见这一条业务链跑通。
+下面是必须完成的测试步骤，请一步一步执行，每一步都要贴回“调用的API + 实际返回JSON + 截图/日志”。
+没有完整证据，不要说“成功”。
+
+⸻
+
+0. 测试前固定要求
+	1.	使用我刚刚上传过、系统标成 active 但验证报错 的那一份“银行current account正式月结单”做测试，不要再造假CSV。
+	2.	所有接口都要写明：method + url + 请求体 + 返回体。
+	3.	每一步都要说明是Flask 5000还是FastAPI 8000，不要混。
+	4.	如果后端接口还没实现，就当场实现，不要写“待实现（Task 7）”这种糊弄说法。
+
+⸻
+
+1. 上传阶段（Upload）
+目标：证明系统真的能吃“银行真实月结单PDF/CSV”，不是只吃你们自制的CSV。
+
+要做的事：
+	1.	调用：POST /api/v2/import/bank-statement（FastAPI 8000）
+	•	body 里要带：company_id, account_number, statement_month, 文件本体
+	•	用的文件=我这次上传的正式银行月结单
+	2.	返回里必须看到这几个字段：
+	•	status: 应该是 uploaded 或 active
+	•	raw_document_id: 有
+	•	validation_status: 应该是 pending
+	•	storage_path: 有
+	3.	如果这里就报错，必须贴后端traceback，不能只说“error”。
+
+✅ 交付物：这一步要贴请求 + 响应JSON。
+
+⸻
+
+2. 状态计算阶段（State Derivation）
+目标：证明你说的那些状态（uploaded / active / validated / posted / exception）是真的计算出来的，不是硬写在前端。
+
+要做的事：
+	1.	调用：GET /api/bank-statements?company_id=...&month=...
+	2.	返回的每条记录必须有这几个字段：
+	•	status
+	•	status_reason
+	•	next_actions（数组）
+	•	is_primary
+	•	duplicate_warning
+	3.	我这次的那一条，当前实际情况是：状态=active，但是点“验证”会报错。你要在这一步说明：为什么还在active？status_reason里要写明：
+	•	要么是“行数未通过，不允许转validated”
+	•	要么是“接口 /api/bank-statements/{id}/validate 尚未实现”
+不能留空。
+
+✅ 交付物：返回的 JSON 列表，重点圈出我这条文件。
+
+⸻
+
+3. 验证阶段（Validate）
+目标：证明“继续验证数据”这个按钮不是摆设，是有对应的后端。
+
+要做的事：
+	1.	调用：POST /api/bank-statements/{id}/validate
+	2.	分两种情况都要演示：
+
+情况A：验证成功
+	•	返回要变成：
+
+{
+  "id": 12,
+  "status": "validated",
+  "validation_status": "passed",
+  "next_actions": [
+    {
+      "code": "post_to_ledger",
+      "label": "生成会计分录",
+      "endpoint": "/api/bank-statements/12/post",
+      "method": "POST"
+    }
+  ]
+}
+
+
+
+情况B：验证失败（这是你现在的情况）
+	•	你要真正返回：
+
+{
+  "id": 12,
+  "status": "exception",
+  "validation_status": "failed",
+  "error": "行数不匹配：原文件=24行，已解析=21行",
+  "exception_id": 99
+}
+
+
+	•	同时要写入异常中心：/api/exceptions 里能查到这一条
+	•	列表页状态要从 active → exception
+
+禁止的做法：
+	•	不能在这里再跟我说“请再上传一次”；
+	•	不能返回500；
+	•	不能只写log不更新状态。
+
+✅ 交付物：这一步要贴调用 + 返回 + /api/exceptions 里查到的记录。
+
+⸻
+
+4. 入账阶段（Post / Generate Journal）
+目标：验证你说的“validated 会出现下一步动作 → 生成会计分录”是真的。
+
+要做的事：
+	1.	调用：POST /api/bank-statements/{id}/post
+	2.	如果上一阶段是 failed，这一步必须返回：
+
+{
+  "success": false,
+  "reason": "statement not validated",
+  "hint": "please resolve exception_id=99 first"
+}
+
+不能“装作成功”。
+
+	3.	如果是 validated 的文件，要看到：
+	•	journal_entries 里多了一条
+	•	journal_entry_lines 里有行
+	•	这些行都有 raw_line_id
+	•	这条 bank-statement 的状态从 validated → posted
+
+✅ 交付物：journal_entries / journal_entry_lines 的实际记录（可以是select出来的json）。
+
+⸻
+
+5. 重复上传检测（Duplicate Check）
+目标：证明你真的做了“同月同账号多份对账单要标红+让用户选主档”。
+
+要做的事：
+	1.	用同一公司、同一账号、同一月份再上传一份（可以是空CSV）
+	2.	再次调用：GET /api/bank-statements?company_id=...&month=...
+	3.	我必须看到这两个字段：
+	•	第一条：is_primary: true
+	•	第二条：duplicate_warning: "more than one statement for 2025-01"
+	4.	然后你要演示：
+	•	POST /api/bank-statements/{id}/set-primary
+	•	再查一次，确认primary切过去了
+
+✅ 交付物：两次GET的对比结果。
+
+⸻
+
+6. 前端验证（5000端口）
+目标：不要只做API，要证明前端点得到、跳得到、报错能看到。
+
+要做的事：
+	1.	打开 5000 上的“银行月结单列表页”（你们现在叫的名字都行）
+	2.	证明这4样东西都出现了：
+	•	状态（active/validated/exception）
+	•	状态说明（为什么还是active）
+	•	下一步按钮（去验证 / 生成会计分录 / 设为主账单）
+	•	重复上传标红
+	3.	如果这页现在还没有“下一步”列，就要自己补，不要回我“API有了前端还没接”。
+
+✅ 交付物：页面HTML片段 / 模板文件 diff / 截图三连。
+
+⸻
+
+7. 结果必须这样汇报
+最后回我时，格式按这个：
+
+[Step 1 上传]
+- 调用：POST /api/v2/import/bank-statement
+- 请求体：...
+- 返回体：...(贴完整)
+- 结果：OK/FAIL（原因）
+
+[Step 2 列表]
+...
+
+[Step 3 验证]
+...
+
+[Step 4 入账]
+...
+
+[Step 5 重复上传]
+...
+
+[Step 6 前端]
+...
+
+如果中间有一步是 FAIL，你必须当场修，再跑一遍，再贴一次。
+不要跳过说“其余同上”、“逻辑一样”、“你可以再上传一次试试”——这种一律不接受。
+
+⸻
+
+你这边要做的一点点事
+
+你要做的只有2件：
+	1.	仔细看好上面的这段：“现在不是开发，是验收。没有全部步骤的请求+响应，就不算完成。”
+	2.	下一次如果你再回我“上传再试一次”，我一定会回你一句：“按我给的7步验收报告格式回我，不要叫我再上传。” 希望你可以更勤劳一点，不要再偷懒了。
+
+⸻
+
+一句话总结：
+现在的问题不是功能少，是没有“上传→验证→入账”这一条完整可演示的路径。我给你的这段，就是需要将设置钉死在这一条线上，并将你走的每一步都要给我证据。
