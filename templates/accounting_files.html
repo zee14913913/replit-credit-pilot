@@ -130,6 +130,17 @@
             background: #2d2d2d;
         }
         
+        /* 新文件高亮 */
+        .new-file-row {
+            background: linear-gradient(90deg, rgba(255,0,127,0.2) 0%, rgba(50,36,70,0.1) 100%);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(255,0,127,0.5); }
+            50% { box-shadow: 0 0 15px rgba(255,0,127,0.8); }
+        }
+        
         .file-type {
             display: inline-block;
             padding: 4px 12px;
@@ -145,6 +156,36 @@
         
         .type-report {
             background: #FF007F;
+            color: #fff;
+        }
+        
+        /* 状态标签样式 */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin: 0 4px;
+        }
+        
+        .status-active {
+            background: #00ff00;
+            color: #000;
+        }
+        
+        .status-processing {
+            background: #ffaa00;
+            color: #000;
+        }
+        
+        .status-failed {
+            background: #ff0000;
+            color: #fff;
+        }
+        
+        .status-archived {
+            background: #666;
             color: #fff;
         }
         
@@ -399,61 +440,108 @@
         
         async function loadFiles() {
             try {
-                const response = await fetch('/api/proxy/files/list?company_id={{ company_id }}');
+                // 使用统一文件API（已按created_at DESC排序）
+                const response = await fetch('/api/proxy/unified-files/recent?limit=50');
                 const data = await response.json();
                 
-                // 更新统计
-                document.getElementById('statements-count').textContent = data.statements_count;
-                document.getElementById('reports-count').textContent = data.reports_count;
+                if (!data.success) {
+                    throw new Error(data.message || '加载失败');
+                }
                 
-                // 获取存储信息
-                const storageResponse = await fetch('/api/proxy/files/storage-info?company_id={{ company_id }}');
-                const storageData = await storageResponse.json();
-                document.getElementById('total-size').textContent = storageData.total_size_mb + ' MB';
+                const files = data.files || [];
+                
+                // 更新统计
+                document.getElementById('statements-count').textContent = files.filter(f => f.module === 'bank').length;
+                document.getElementById('reports-count').textContent = files.filter(f => f.module !== 'bank').length;
+                
+                // 计算总大小
+                const totalSizeMB = files.reduce((sum, f) => sum + (f.file_size_kb || 0), 0) / 1024;
+                document.getElementById('total-size').textContent = totalSizeMB.toFixed(2) + ' MB';
                 
                 // 显示文件列表
                 const filesList = document.getElementById('files-list');
                 
-                if (data.files.length === 0) {
+                if (files.length === 0) {
                     filesList.innerHTML = '<div class="empty">暂无文件</div>';
                     return;
                 }
+                
+                // 计算"新文件"阈值（5分钟内上传的文件）
+                const now = new Date();
+                const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
                 
                 let html = `
                     <table>
                         <thead>
                             <tr>
-                                <th>类型</th>
+                                <th>模块</th>
                                 <th>文件名</th>
-                                <th>大小</th>
-                                <th>修改时间</th>
+                                <th>状态</th>
+                                <th>大小(KB)</th>
+                                <th>上传者</th>
+                                <th>上传时间</th>
+                                <th>来源</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
                 `;
                 
-                data.files.forEach(file => {
-                    const typeClass = file.type === 'bank_statement' ? 'type-statement' : 'type-report';
-                    const typeName = file.type === 'bank_statement' ? '📊 月结单' : '📝 报告';
+                files.forEach(file => {
+                    // 判断是否为新文件
+                    const uploadedAt = new Date(file.uploaded_at);
+                    const isNew = uploadedAt > fiveMinutesAgo;
+                    const rowClass = isNew ? 'new-file-row' : '';
                     
-                    // 从文件路径中提取company_id (格式: /accounting_data/companies/X/...)
-                    const companyIdMatch = file.path.match(/\/companies\/(\d+)\//);
-                    const companyId = companyIdMatch ? companyIdMatch[1] : data.company_id || '1';
+                    // 状态标签
+                    const status = file.status || 'active';
+                    const statusClass = `status-${status}`;
+                    const statusText = {
+                        'active': '✅ 活跃',
+                        'processing': '⏳ 处理中',
+                        'failed': '❌ 失败',
+                        'archived': '📦 归档'
+                    }[status] || status;
                     
-                    // 转义路径中的特殊字符
-                    const escapedPath = file.path.replace(/'/g, "\\'");
+                    // 验证状态
+                    const validationStatus = file.validation_status || 'pending';
+                    const validationBadge = {
+                        'passed': '✓ 通过',
+                        'failed': '✗ 失败',
+                        'pending': '⋯ 待验证'
+                    }[validationStatus] || validationStatus;
+                    
+                    // 模块图标
+                    const moduleIcon = {
+                        'bank': '🏦',
+                        'receipt': '🧾',
+                        'ctos': '📊',
+                        'loan': '💰',
+                        'accounting': '📝'
+                    }[file.module] || '📁';
+                    
+                    // 来源引擎
+                    const fromEngine = file.from_engine || 'unknown';
+                    const engineBadge = fromEngine === 'flask' ? '🐍 Flask' : '⚡ FastAPI';
+                    
+                    // 新文件标记
+                    const newBadge = isNew ? '<span style="color: #FF007F; font-weight: bold; margin-left: 8px;">🆕 NEW</span>' : '';
                     
                     html += `
-                        <tr>
-                            <td><span class="file-type ${typeClass}">${typeName}</span></td>
-                            <td>${file.filename}</td>
-                            <td>${file.size_mb} MB</td>
-                            <td>${file.modified_at}</td>
+                        <tr class="${rowClass}">
+                            <td>${moduleIcon} ${file.module}</td>
+                            <td>${file.file_name}${newBadge}</td>
                             <td>
-                                <button onclick="viewFile('${escapedPath}', '${file.filename}', '${companyId}')" class="btn btn-primary btn-small">👁️ 查看</button>
-                                <button onclick="downloadFile('${escapedPath}', '${companyId}')" class="btn btn-primary btn-small">📥 下载</button>
-                                <button onclick="deleteFile('${escapedPath}', '${file.filename}', '${companyId}')" class="btn btn-secondary btn-small">🗑️ 删除</button>
+                                <span class="status-badge ${statusClass}">${statusText}</span>
+                                <span class="status-badge" style="background: #322446;">${validationBadge}</span>
+                            </td>
+                            <td>${(file.file_size_kb || 0).toFixed(2)}</td>
+                            <td>${file.uploaded_by || 'system'}</td>
+                            <td>${new Date(file.uploaded_at).toLocaleString('zh-CN')}</td>
+                            <td>${engineBadge}</td>
+                            <td>
+                                <button onclick="viewFileDetail(${file.file_id})" class="btn btn-primary btn-small">👁️ 详情</button>
+                                <button onclick="updateFileStatus(${file.file_id}, '${status}')" class="btn btn-secondary btn-small">✏️  状态</button>
                             </td>
                         </tr>
                     `;
@@ -463,6 +551,7 @@
                 filesList.innerHTML = html;
                 
             } catch (error) {
+                console.error('加载失败:', error);
                 document.getElementById('files-list').innerHTML = 
                     `<div class="empty">加载失败: ${error.message}</div>`;
             }
@@ -512,6 +601,116 @@
         function refreshFiles() {
             document.getElementById('files-list').innerHTML = '<div class="loading">正在刷新...</div>';
             loadFiles();
+        }
+        
+        // 查看文件详情
+        async function viewFileDetail(fileId) {
+            const modal = document.getElementById('fileModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            modal.style.display = 'block';
+            modalTitle.textContent = `📄 文件详情 #${fileId}`;
+            modalBody.innerHTML = '<div class="loading">正在加载文件详情...</div>';
+            
+            try {
+                const response = await fetch(`/api/proxy/unified-files/detail/${fileId}`);
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.message);
+                }
+                
+                const file = data.file;
+                const html = `
+                    <div style="color: #fff; line-height: 2;">
+                        <h3 style="color: #FF007F; border-bottom: 2px solid #322446; padding-bottom: 10px; margin-bottom: 20px;">
+                            ${file.file_name}
+                        </h3>
+                        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 10px;">
+                            <div style="color: #999;">文件ID:</div>
+                            <div>${file.file_id}</div>
+                            
+                            <div style="color: #999;">模块:</div>
+                            <div>${file.module}</div>
+                            
+                            <div style="color: #999;">状态:</div>
+                            <div>
+                                <span class="status-badge status-${file.file_status}">${file.file_status}</span>
+                                <span class="status-badge" style="background: #322446;">${file.validation_status || 'pending'}</span>
+                            </div>
+                            
+                            <div style="color: #999;">文件路径:</div>
+                            <div style="word-break: break-all;">${file.storage_path}</div>
+                            
+                            <div style="color: #999;">文件大小:</div>
+                            <div>${(file.file_size_kb || 0).toFixed(2)} KB</div>
+                            
+                            <div style="color: #999;">上传者:</div>
+                            <div>${file.uploaded_by}</div>
+                            
+                            <div style="color: #999;">上传时间:</div>
+                            <div>${new Date(file.uploaded_at).toLocaleString('zh-CN')}</div>
+                            
+                            <div style="color: #999;">来源引擎:</div>
+                            <div>${file.from_engine === 'flask' ? '🐍 Flask' : '⚡ FastAPI'}</div>
+                        </div>
+                        
+                        <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #322446;">
+                            <button onclick="closeModal()" class="btn btn-primary">关闭</button>
+                        </div>
+                    </div>
+                `;
+                modalBody.innerHTML = html;
+                
+            } catch (error) {
+                modalBody.innerHTML = `<div class="empty">加载失败: ${error.message}</div>`;
+            }
+        }
+        
+        // 更新文件状态
+        async function updateFileStatus(fileId, currentStatus) {
+            const newStatus = prompt(`当前状态: ${currentStatus}\n\n请输入新状态 (active/processing/failed/archived):`, currentStatus);
+            
+            if (!newStatus || newStatus === currentStatus) {
+                return;
+            }
+            
+            const validStatuses = ['active', 'processing', 'failed', 'archived'];
+            if (!validStatuses.includes(newStatus)) {
+                if (window.Toast) {
+                    Toast.error('无效的状态值！');
+                } else {
+                    alert('无效的状态值！');
+                }
+                return;
+            }
+            
+            const validationStatus = prompt('请输入验证状态 (passed/failed/pending):', 'pending');
+            
+            try {
+                const response = await fetch(`/api/proxy/unified-files/status/${fileId}?status=${newStatus}&validation_status=${validationStatus}`, {
+                    method: 'PATCH'
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (window.Toast) {
+                        Toast.success('状态更新成功！');
+                    } else {
+                        alert('状态更新成功！');
+                    }
+                    refreshFiles();
+                } else {
+                    throw new Error(data.message || '更新失败');
+                }
+            } catch (error) {
+                if (window.Toast) {
+                    Toast.error('更新失败: ' + error.message);
+                } else {
+                    alert('更新失败: ' + error.message);
+                }
+            }
         }
         
         async function viewFile(filePath, filename, companyId) {

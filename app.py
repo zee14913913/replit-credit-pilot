@@ -4994,6 +4994,9 @@ def accounting_files():
     user = session.get('flask_rbac_user', {})
     company_id = user.get('company_id', 1)
     
+    # 存储company_id到session供代理使用
+    session['current_company_id'] = company_id
+    
     return render_template('accounting_files.html', company_id=company_id)
 
 @app.route('/api/proxy/files/<path:subpath>', methods=['GET', 'POST', 'DELETE'])
@@ -5047,6 +5050,80 @@ def proxy_files_api(subpath):
         return response.content, response.status_code, {'Content-Type': response.headers.get('Content-Type', 'application/json')}
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/api/proxy/unified-files/<path:subpath>', methods=['GET', 'POST', 'PATCH', 'DELETE'])
+def proxy_unified_files_api(subpath):
+    """代理统一文件管理API请求到端口8000（带自动认证）"""
+    import requests
+    
+    # 构建目标URL
+    target_url = f'http://localhost:8000/api/files/{subpath}'
+    
+    # 获取当前租户的company_id（支持多租户隔离）
+    current_company_id = session.get('current_company_id', 1)
+    
+    # 为每个company_id维护独立的session token
+    token_key = f'fastapi_session_token_company_{current_company_id}'
+    session_token = session.get(token_key)
+    
+    if not session_token:
+        # 自动登录到FastAPI获取token（使用内部代理服务账户）
+        proxy_password = os.getenv('PROXY_SERVICE_PASSWORD')
+        
+        if not proxy_password:
+            # 开发环境fallback（生产环境必须设置环境变量）
+            print(f"⚠️ 警告：PROXY_SERVICE_PASSWORD未设置，使用开发默认值")
+            proxy_password = 'ProxyService2024!'
+        
+        try:
+            # 使用专用proxy_service账户登录（指定当前租户的company_id）
+            login_response = requests.post(
+                'http://localhost:8000/api/auth/login',
+                json={
+                    "username": "proxy_service",
+                    "password": proxy_password,
+                    "company_id": current_company_id
+                },
+                timeout=5
+            )
+            
+            if login_response.status_code == 200:
+                login_data = login_response.json()
+                session_token = login_data.get('token')
+                session[token_key] = session_token
+            else:
+                print(f"代理服务登录失败(company {current_company_id}): HTTP {login_response.status_code}")
+                return jsonify({"success": False, "message": "代理服务认证失败"}), 500
+        except Exception as e:
+            print(f"代理服务登录失败(company {current_company_id}): {e}")
+            return jsonify({"success": False, "message": "代理服务连接失败"}), 500
+    
+    # 构建请求头和cookies
+    headers = {'Content-Type': 'application/json'}
+    cookies = {'session_token': session_token} if session_token else {}
+    
+    try:
+        # 根据HTTP方法转发请求
+        if request.method == 'GET':
+            response = requests.get(target_url, params=request.args, headers=headers, cookies=cookies)
+        elif request.method == 'POST':
+            response = requests.post(target_url, json=request.get_json(), params=request.args, headers=headers, cookies=cookies)
+        elif request.method == 'PATCH':
+            response = requests.patch(target_url, json=request.get_json() if request.get_json() else None, params=request.args, headers=headers, cookies=cookies)
+        elif request.method == 'DELETE':
+            response = requests.delete(target_url, params=request.args, headers=headers, cookies=cookies)
+        else:
+            return jsonify({"success": False, "message": "Method not supported"}), 405
+        
+        # 如果返回401，清除对应租户的token并要求刷新
+        if response.status_code == 401 and session_token:
+            session.pop(token_key, None)  # 删除正确的token_key
+            return jsonify({"success": False, "message": "认证失败，请刷新页面"}), 401
+        
+        # 返回响应（保留原始状态码）
+        return response.content, response.status_code, {'Content-Type': response.headers.get('Content-Type', 'application/json')}
+    except Exception as e:
+        return jsonify({"success": False, "message": f"代理请求失败: {str(e)}"}), 500
 
 @app.route('/accounting_test_results')
 def accounting_test_results():
