@@ -4990,7 +4990,11 @@ def accounting_api_proxy(path=''):
 @app.route('/accounting_files')
 def accounting_files():
     """文件管理页面"""
-    return render_template('accounting_files.html')
+    # 获取当前用户的company_id，默认为1
+    user = session.get('flask_rbac_user', {})
+    company_id = user.get('company_id', 1)
+    
+    return render_template('accounting_files.html', company_id=company_id)
 
 @app.route('/api/proxy/files/<path:subpath>', methods=['GET', 'POST', 'DELETE'])
 def proxy_files_api(subpath):
