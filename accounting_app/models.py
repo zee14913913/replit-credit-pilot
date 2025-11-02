@@ -574,6 +574,8 @@ class FileIndex(Base):
     duplicate_warning = Column(Boolean, default=False)  # 是否存在同月多份对账单警告
     status_reason = Column(Text)  # 状态说明：解释为什么还是当前状态
     account_number = Column(String(100))  # 银行账号（用于检测同月重复上传）
+    raw_document_id = Column(Integer, ForeignKey('raw_documents.id'))  # 关联的原始文档ID
+    bank_statement_id = Column(Integer)  # 关联的银行对账单ID（如果是银行模块）
     
     __table_args__ = (
         CheckConstraint("status IN ('uploaded', 'active', 'validated', 'posted', 'exception', 'archived', 'processing', 'failed')"),

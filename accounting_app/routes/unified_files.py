@@ -92,27 +92,12 @@ def validate_file(
 ):
     """
     验证文件数据（行数对账、客户匹配等）
+    修复版：直接使用file_id调用，不依赖related_entity_id
     """
-    from ..routes.bank_statements import validate_statement as bank_validate
-    from ..models import FileIndex
+    from ..routes.bank_statements import validate_file as bank_validate
     
-    company_id = current_user.company_id
-    
-    # 查找文件记录
-    file_record = db.query(FileIndex).filter(
-        FileIndex.id == file_id,
-        FileIndex.company_id == company_id
-    ).first()
-    
-    if not file_record:
-        raise HTTPException(status_code=404, detail="File not found")
-    
-    # 根据模块类型调用对应的验证逻辑
-    if file_record.module == 'bank':
-        # 使用related_entity_id（bank_statement_id）调用验证
-        return bank_validate(file_record.related_entity_id, db, current_user)
-    else:
-        raise HTTPException(status_code=400, detail="Validation not supported for this module")
+    # 直接调用bank_statements的validate_file函数（它已经接收file_id）
+    return bank_validate(file_id, db, current_user)
 
 
 @router.post("/{file_id}/generate-entries")
@@ -123,26 +108,12 @@ def generate_journal_entries(
 ):
     """
     生成会计分录（入账）
+    修复版：直接使用file_id调用
     """
-    from ..routes.bank_statements import post_to_ledger
-    from ..models import FileIndex
+    from ..routes.bank_statements import generate_entries
     
-    company_id = current_user.company_id
-    
-    # 查找文件记录
-    file_record = db.query(FileIndex).filter(
-        FileIndex.id == file_id,
-        FileIndex.company_id == company_id
-    ).first()
-    
-    if not file_record:
-        raise HTTPException(status_code=404, detail="File not found")
-    
-    # 根据模块类型调用对应的入账逻辑
-    if file_record.module == 'bank':
-        return post_to_ledger(file_record.related_entity_id, db, current_user)
-    else:
-        raise HTTPException(status_code=400, detail="Entry generation not supported for this module")
+    # 直接调用bank_statements的generate_entries函数
+    return generate_entries(file_id, db, current_user)
 
 
 @router.post("/{file_id}/set-primary")
@@ -153,26 +124,12 @@ def set_file_as_primary(
 ):
     """
     设为主对账单（同月多份对账单时）
+    修复版：直接使用file_id调用
     """
     from ..routes.bank_statements import set_as_primary
-    from ..models import FileIndex
     
-    company_id = current_user.company_id
-    
-    # 查找文件记录
-    file_record = db.query(FileIndex).filter(
-        FileIndex.id == file_id,
-        FileIndex.company_id == company_id
-    ).first()
-    
-    if not file_record:
-        raise HTTPException(status_code=404, detail="File not found")
-    
-    # 根据模块类型调用对应的逻辑
-    if file_record.module == 'bank':
-        return set_as_primary(file_record.related_entity_id, db, current_user)
-    else:
-        raise HTTPException(status_code=400, detail="Set primary not supported for this module")
+    # 直接调用bank_statements的set_as_primary函数
+    return set_as_primary(file_id, db, current_user)
 
 
 @router.get("/detail/{file_id}")

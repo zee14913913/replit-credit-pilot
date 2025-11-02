@@ -30,20 +30,24 @@ class UnifiedFileService:
         file_size_kb: int = None,
         validation_status: str = 'pending',
         status: str = 'processing',
-        metadata: Dict = None
+        metadata: Dict = None,
+        period: str = None,  # ✅ 新增：明确传递period
+        account_number: str = None,  # ✅ 新增：银行账号
+        raw_document_id: int = None  # ✅ 新增：关联的raw_document_id
     ) -> FileIndex:
         """
         注册文件到统一索引表
         所有上传（Flask和FastAPI）都要调用这个方法
+        
+        ✅ 修复版：正确接收period、account_number、raw_document_id
         """
         try:
             # 提取文件信息
             file_extension = os.path.splitext(filename)[1].lower()
             original_filename = filename
             
-            # 从路径推断period (YYYY-MM)
-            period = None
-            if '/202' in file_path:
+            # 从路径推断period (YYYY-MM) - 如果未明确传递
+            if not period and '/202' in file_path:
                 parts = file_path.split('/')
                 for i, part in enumerate(parts):
                     if part.startswith('202') and len(part) == 4 and i + 1 < len(parts):
@@ -69,7 +73,9 @@ class UnifiedFileService:
                 upload_by=uploaded_by,
                 upload_date=datetime.utcnow(),
                 original_filename=original_filename,
-                period=period,
+                period=period,  # ✅ 使用传递的period
+                account_number=account_number,  # ✅ 新增
+                raw_document_id=raw_document_id,  # ✅ 新增
                 is_active=True
             )
             

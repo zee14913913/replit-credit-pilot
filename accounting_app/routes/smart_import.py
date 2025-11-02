@@ -136,10 +136,33 @@ async def smart_upload_statement(
     with open(file_path, 'w', encoding='utf-8') as f:
         f.write(csv_content)
     
+    # ✅ 修复：创建RawDocument记录（确保raw_document_id不为NULL）
+    from ..models import RawDocument
+    import hashlib
+    
+    file_hash = hashlib.sha256(csv_content.encode('utf-8')).hexdigest()
+    file_size = os.path.getsize(file_path)
+    
+    raw_doc = RawDocument(
+        company_id=company_id,
+        file_name=safe_filename,
+        file_hash=file_hash,
+        file_size=file_size,
+        storage_path=file_path,
+        source_engine='fastapi',
+        module='bank',
+        status='uploaded',
+        validation_status='pending'
+    )
+    db.add(raw_doc)
+    db.flush()  # 获取raw_doc.id
+    
+    logger.info(f"✅ Created RawDocument: ID={raw_doc.id}")
+    
     # 注册文件到统一索引（Flask→FastAPI同步机制）
     try:
-        file_size_kb = int(os.path.getsize(file_path) / 1024)
-        UnifiedFileService.register_file(
+        file_size_kb = int(file_size / 1024)
+        file_record = UnifiedFileService.register_file(
             db=db,
             company_id=company_id,
             filename=safe_filename,
@@ -149,9 +172,12 @@ async def smart_upload_statement(
             uploaded_by=current_user.username if current_user else 'anonymous',
             file_size_kb=file_size_kb,
             validation_status='passed',  # 已通过智能识别验证
-            status='active'  # 活动状态
+            status='active',  # 活动状态
+            period=statement_month,  # ✅ 新增：传递period
+            account_number=account_number,  # ✅ 新增：传递account_number
+            raw_document_id=raw_doc.id  # ✅ 新增：关联raw_document_id
         )
-        logger.info(f"✅ File registered to unified index: {safe_filename}")
+        logger.info(f"✅ File registered to unified index: {safe_filename} (file_id={file_record.id}, raw_doc_id={raw_doc.id})")
     except Exception as e:
         logger.error(f"❌ Failed to register file to unified index: {e}")
         # 不中断主流程，仅记录错误
@@ -159,6 +185,10 @@ async def smart_upload_statement(
     # 导入到数据库
     csv_reader = csv.DictReader(io.StringIO(csv_content))
     imported_count = 0
+    line_no = 1  # CSV行号（不含header）
+    
+    # ✅ 新增：导入raw_lines以支持验证
+    from ..models import RawLine
     
     # 导入辅助函数
     def parse_flexible_date(date_str: str):
@@ -181,6 +211,16 @@ async def smart_upload_statement(
         return None
     
     for row in csv_reader:
+        # ✅ 新增：保存原始行数据到raw_lines
+        raw_line = RawLine(
+            raw_document_id=raw_doc.id,
+            line_no=line_no,
+            raw_text=str(row),
+            is_parsed=False
+        )
+        db.add(raw_line)
+        db.flush()  # 获取raw_line.id
+        line_no += 1
         try:
             # 使用灵活日期解析
             date_str = row.get('Date', '').strip()
@@ -227,9 +267,23 @@ async def smart_upload_statement(
             db.add(bank_stmt)
             imported_count += 1
             
+            # ✅ 标记raw_line为已解析
+            raw_line.is_parsed = True
+            
         except Exception as e:
             print(f"跳过无效行: {row}, 错误: {e}")
             continue
+    
+    # ✅ 新增：更新raw_document的行数统计
+    raw_doc.total_lines = line_no - 1  # 总行数
+    raw_doc.parsed_lines = imported_count  # 成功解析的行数
+    
+    if raw_doc.total_lines == raw_doc.parsed_lines:
+        raw_doc.status = 'validated'
+        raw_doc.validation_status = 'passed'
+    else:
+        raw_doc.status = 'partial'
+        raw_doc.validation_status = 'warning'
     
     db.commit()
     
