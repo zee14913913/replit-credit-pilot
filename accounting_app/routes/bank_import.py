@@ -12,6 +12,7 @@ from decimal import Decimal
 from ..db import get_db
 from ..models import BankStatement, JournalEntry, JournalEntryLine, ChartOfAccounts
 from ..schemas import BankStatementResponse
+from ..schemas.validators import validate_yyyy_mm
 from ..services.bank_matcher import auto_match_transactions
 from ..services.statement_analyzer import analyze_csv_content, suggest_customer_match
 from ..services.file_storage_manager import AccountingFileStorageManager
@@ -34,7 +35,16 @@ async def import_bank_statement(
     CSV格式要求:
     Date,Description,Debit,Credit,Balance
     2025-01-01,SALARY PAYMENT,5000.00,0.00,15000.00
+    
+    参数:
+        statement_month: 月份格式必须为 YYYY-MM，例如 2025-01
     """
+    # 验证月份格式
+    try:
+        statement_month = validate_yyyy_mm(statement_month)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
     if not file.filename.endswith('.csv'):
         raise HTTPException(status_code=400, detail="Only CSV files are supported")
     
@@ -114,7 +124,17 @@ def get_bank_statements(
 ) -> List[BankStatementResponse]:
     """
     获取银行流水
+    
+    参数:
+        statement_month: 月份格式必须为 YYYY-MM，例如 2025-01（可选）
     """
+    # 如果提供了statement_month，验证格式
+    if statement_month:
+        try:
+            statement_month = validate_yyyy_mm(statement_month)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+    
     query = db.query(BankStatement).filter(BankStatement.company_id == company_id)
     
     if statement_month:

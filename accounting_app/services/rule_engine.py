@@ -169,10 +169,12 @@ class RuleEngine:
         if not is_valid:
             logger.error(f"规则验证失败: {error_msg}")
             ExceptionManager.record_posting_error(
-                self.db,
-                self.company_id,
-                f"规则'{rule.rule_name}': {error_msg}",
-                f"BankStatement ID: {bank_stmt.id}, Description: {bank_stmt.description}"
+                db=self.db,
+                company_id=self.company_id,
+                error_message=f"规则'{rule.rule_name}': {error_msg}",
+                source_type='bank_import',
+                source_id=bank_stmt.id,
+                context={'description': bank_stmt.description, 'rule_id': rule.id}
             )
             return None
         
@@ -247,10 +249,12 @@ class RuleEngine:
         except Exception as e:
             logger.error(f"生成分录失败: {str(e)}")
             ExceptionManager.record_posting_error(
-                self.db,
-                self.company_id,
-                f"应用规则'{rule.rule_name}'时失败: {str(e)}",
-                f"BankStatement ID: {bank_stmt.id}, Description: {bank_stmt.description}"
+                db=self.db,
+                company_id=self.company_id,
+                error_message=f"应用规则'{rule.rule_name}'时失败: {str(e)}",
+                source_type='bank_import',
+                source_id=bank_stmt.id,
+                context={'description': bank_stmt.description, 'rule_id': rule.id, 'error': str(e)}
             )
             return None
     

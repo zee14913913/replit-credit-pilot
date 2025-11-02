@@ -211,15 +211,26 @@ class ExceptionManager:
         db: Session,
         company_id: int,
         error_message: str,
-        journal_entry_data: Optional[Dict] = None,
+        source_type: Optional[str] = None,
+        source_id: Optional[int] = None,
+        context: Optional[Dict] = None,
         severity: str = 'critical'
     ) -> ExceptionModel:
         """
         记录记账失败异常（快捷方法）
+        
+        Args:
+            db: 数据库会话
+            company_id: 公司ID
+            error_message: 错误信息
+            source_type: 来源类型 (bank_import, sales_invoice, purchase_invoice等)
+            source_id: 来源记录ID
+            context: 上下文数据（字典）
+            severity: 严重程度
         """
         raw_data = {}
-        if journal_entry_data:
-            raw_data['journal_entry_data'] = journal_entry_data
+        if context:
+            raw_data.update(context)
         
         return ExceptionManager.record_exception(
             db=db,
@@ -227,7 +238,8 @@ class ExceptionManager:
             exception_type='posting_error',
             severity=severity,
             error_message=error_message,
-            source_type='journal_entry',
+            source_type=source_type or 'journal_entry',
+            source_id=source_id,
             raw_data=raw_data
         )
     

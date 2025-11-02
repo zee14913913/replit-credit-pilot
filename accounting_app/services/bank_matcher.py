@@ -91,16 +91,17 @@ def auto_match_transactions(db: Session, company_id: int, statement_month: str) 
             logger.info(f"✅ RuleEngine匹配成功: {matched_rule_obj.rule_name} | 交易: {stmt.description[:50]}")
             try:
                 # 使用RuleEngine生成会计分录
-                journal_entry = engine.apply_rule_to_bank_statement(matched_rule_obj, stmt)
-                stmt.matched = True
-                stmt.matched_journal_id = journal_entry.id
-                stmt.auto_category = matched_rule_obj.rule_name
-                matched_count += 1
-                
-                # 更新规则匹配统计
-                engine.update_match_stats(matched_rule_obj.id)
-                
-                logger.info(f"✅ 会计分录已生成: {journal_entry.entry_number}")
+                journal_entry = engine.apply_rule_to_bank_statement(stmt, matched_rule_obj)
+                if journal_entry:
+                    stmt.matched = True
+                    stmt.matched_journal_id = journal_entry.id
+                    stmt.auto_category = matched_rule_obj.rule_name
+                    matched_count += 1
+                    
+                    # 更新规则匹配统计（传入规则对象，不是ID）
+                    engine.update_match_stats(matched_rule_obj)
+                    
+                    logger.info(f"✅ 会计分录已生成: {journal_entry.entry_number}")
                 continue
                 
             except Exception as e:
