@@ -668,6 +668,7 @@
     <script>
         // Notification System
         let notificationCheckInterval;
+        const API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:8000`;
         
         // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
@@ -692,7 +693,7 @@
         // 检查未读通知
         async function checkNotifications() {
             try {
-                const response = await fetch('http://localhost:8000/api/notifications/unread-count', {
+                const response = await fetch(`${API_BASE_URL}/api/notifications/unread-count`, {
                     credentials: 'include'
                 });
                 
@@ -732,7 +733,7 @@
         // 加载通知列表
         async function loadNotifications() {
             try {
-                const response = await fetch('http://localhost:8000/api/notifications/list', {
+                const response = await fetch(`${API_BASE_URL}/api/notifications/list`, {
                     credentials: 'include'
                 });
                 
@@ -774,7 +775,7 @@
         async function handleNotificationClick(notificationId, actionUrl) {
             try {
                 // 标记为已读
-                await fetch('http://localhost:8000/api/notifications/mark-as-read', {
+                await fetch(`${API_BASE_URL}/api/notifications/mark-as-read`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
@@ -796,7 +797,7 @@
         // 全部标记为已读
         async function markAllAsRead() {
             try {
-                await fetch('http://localhost:8000/api/notifications/mark-all-as-read', {
+                await fetch(`${API_BASE_URL}/api/notifications/mark-all-as-read`, {
                     method: 'POST',
                     credentials: 'include'
                 });

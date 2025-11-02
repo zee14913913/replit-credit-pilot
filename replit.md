@@ -44,6 +44,13 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **AR/AP Aging Business Views:** Provides accounts receivable and payable aging reports.
 - **Unified File Storage Manager:** Multi-tenant isolated storage for accounting data.
 - **Data Integrity Validation System:** Four-layer data protection ensuring 100% source-document traceability.
+- **Multi-Channel Notification System:** Comprehensive notification infrastructure with in-app, email (SendGrid), and SMS (Twilio) delivery channels.
+  - **In-App Notifications:** Real-time notification center with unread badges and action buttons.
+  - **Email Notifications:** Template-based email delivery via SendGrid with automatic fallback.
+  - **SMS Notifications:** Emergency alerts via Twilio with international number support.
+  - **Notification History:** Full-featured history page with filtering by status (all/read/unread).
+  - **Notification Settings:** User preference management for selecting notification channels.
+  - **Auto-Delivery:** Automatic multi-channel notification dispatch based on user preferences and priority levels.
 
 **AI Advanced Analytics System:**
 - **Financial Health Scoring System:** 0-100 score with optimization suggestions.
@@ -63,17 +70,20 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 ## External Dependencies
 
 ### Third-Party Libraries
-- **Core Framework**: `flask`
+- **Core Framework**: `flask`, `fastapi`, `uvicorn`
 - **PDF Processing**: `pdfplumber`, `reportlab`, `pdf.js` (client-side)
 - **OCR**: `pytesseract`, `Pillow`
 - **Data Processing**: `pandas`, `schedule`
 - **HTTP Requests**: `requests`
 - **Visualization**: `plotly.js` (CDN)
 - **UI Framework**: `bootstrap@5.3.0` (CDN), `bootstrap-icons@1.11.0` (CDN)
+- **Notification Services**: `sendgrid` (email), `twilio` (SMS), `py-vapid` & `pywebpush` (Web Push)
 
-### External APIs
+### External APIs & Integrations
 - **Bank Negara Malaysia Public API**: `https://api.bnm.gov.my` for fetching current interest rates.
-- **FastAPI**: Used for backend services including audit logging and notifications.
+- **SendGrid API**: Email delivery service for transactional notifications (requires SENDGRID_API_KEY).
+- **Twilio API**: SMS delivery service for urgent alerts (auto-configured via Replit integration).
+- **FastAPI Backend (Port 8000)**: Handles audit logging, notifications, and real-time API endpoints.
 
 ### Database
 - **SQLite**: File-based relational database (`db/smart_loan_manager.db`) with WAL mode.

@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from ..db import get_db
 from ..models import User
 from ..services import notification_service
-from ..middleware.rbac_fixed import get_current_user
+from ..middleware.rbac_fixed import require_auth
 
 
 router = APIRouter()
@@ -40,20 +40,13 @@ class MarkAsReadRequest(BaseModel):
 
 @router.get("/unread-count", response_model=UnreadCountResponse)
 def get_unread_count(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_auth),
     db: Session = Depends(get_db)
 ):
     """
     获取当前用户未读通知数量
     用于显示通知角标
     """
-    # 开发环境：如果未认证，使用默认admin用户（user_id=1）
-    if not current_user:
-        from ..models import User
-        current_user = db.query(User).filter(User.id == 1).first()
-        if not current_user:
-            raise HTTPException(status_code=401, detail="未认证且无默认用户")
-    
     unread_count = notification_service.get_unread_count(db, current_user.id)
     
     return {"unread_count": unread_count}
@@ -62,19 +55,12 @@ def get_unread_count(
 @router.get("/list", response_model=List[NotificationResponse])
 def list_notifications(
     limit: int = 50,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_auth),
     db: Session = Depends(get_db)
 ):
     """
     获取当前用户未读通知列表
     """
-    # 开发环境：如果未认证，使用默认admin用户（user_id=1）
-    if not current_user:
-        from ..models import User
-        current_user = db.query(User).filter(User.id == 1).first()
-        if not current_user:
-            raise HTTPException(status_code=401, detail="未认证且无默认用户")
-    
     notifications = notification_service.get_unread_notifications(
         db, current_user.id, limit
     )
@@ -98,19 +84,12 @@ def list_notifications(
 @router.post("/mark-as-read")
 def mark_notification_as_read(
     request: MarkAsReadRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_auth),
     db: Session = Depends(get_db)
 ):
     """
     标记通知为已读
     """
-    # 开发环境：如果未认证，使用默认admin用户（user_id=1）
-    if not current_user:
-        from ..models import User
-        current_user = db.query(User).filter(User.id == 1).first()
-        if not current_user:
-            raise HTTPException(status_code=401, detail="未认证且无默认用户")
-    
     notification = notification_service.mark_as_read(
         db, request.notification_id, current_user.id
     )
@@ -123,19 +102,12 @@ def mark_notification_as_read(
 
 @router.post("/mark-all-as-read")
 def mark_all_notifications_as_read(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_auth),
     db: Session = Depends(get_db)
 ):
     """
     标记所有通知为已读
     """
-    # 开发环境：如果未认证，使用默认admin用户（user_id=1）
-    if not current_user:
-        from ..models import User
-        current_user = db.query(User).filter(User.id == 1).first()
-        if not current_user:
-            raise HTTPException(status_code=401, detail="未认证且无默认用户")
-    
     updated_count = notification_service.mark_all_as_read(db, current_user.id)
     
     return {
@@ -150,7 +122,7 @@ def get_notification_history(
     status: str = "all",
     limit: int = 100,
     offset: int = 0,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_auth),
     db: Session = Depends(get_db)
 ):
     """
@@ -161,16 +133,7 @@ def get_notification_history(
         limit: 返回数量限制
         offset: 分页偏移量
     """
-    # 开发环境：如果未认证，使用默认admin用户（user_id=1）
-    if not current_user:
-        from ..models import User
-        current_user = db.query(User).filter(User.id == 1).first()
-        if not current_user:
-            raise HTTPException(status_code=401, detail="未认证且无默认用户")
-    
     from ..models import Notification
-    from sqlalchemy import and_, or_
-    from datetime import datetime
     
     # 构建查询
     query = db.query(Notification).filter(
