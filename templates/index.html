@@ -3,43 +3,76 @@
 {% block title %}{{ t('nav_dashboard') }} - {{ t('company_name') }}{% endblock %}
 
 {% block content %}
+<style>
+@keyframes sparkle {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+.galaxy-title {
+    position: relative;
+    display: inline-block;
+    color: #322446;
+    font-weight: 900;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    text-transform: capitalize;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.galaxy-title::before {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    background: linear-gradient(45deg, 
+        rgba(192, 192, 192, 0.4) 0%, 
+        rgba(255, 255, 255, 0.9) 25%,
+        rgba(192, 192, 192, 0.4) 50%,
+        rgba(255, 255, 255, 0.9) 75%,
+        rgba(192, 192, 192, 0.4) 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: sparkle 3s ease-in-out infinite;
+}
+
+.capitalize-words {
+    text-transform: capitalize;
+}
+</style>
+
 <div class="fade-in">
     <!-- 会计系统快捷入口 -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="alert" role="alert" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 15px; padding: 2.5rem;">
-                <h2 style="color: #322446; 
-                           margin-bottom: 1rem; 
-                           font-weight: 800; 
-                           font-size: 2.5rem;
-                           text-shadow: 0 0 10px rgba(255, 192, 203, 0.8), 
-                                        0 0 20px rgba(255, 192, 203, 0.6),
-                                        0 0 30px rgba(192, 192, 192, 0.4),
-                                        1px 1px 2px rgba(255, 255, 255, 0.9);
-                           filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));">
+                <h2 class="galaxy-title" data-text="{{ t('accounting_system_title') }}">
                     {{ t('accounting_system_title') }}
                 </h2>
                 <p class="mb-4" style="color: #FFFFFF; font-weight: 700; font-size: 1.1rem;">{{ t('accounting_system_subtitle') }}</p>
                 <div class="d-flex gap-3 flex-wrap">
                     <a href="{{ url_for('accounting_api_proxy', path='docs') }}" 
-                       class="btn btn-lg" 
+                       class="btn btn-lg capitalize-words" 
                        target="_blank"
                        style="font-weight: 700; background: #FFFFFF; color: #000000; border: 2px solid #000000;">
                         {{ t('api_documentation') }}
                     </a>
                     <a href="{{ url_for('accounting_api_proxy', path='accounting') }}" 
-                       class="btn btn-lg" 
+                       class="btn btn-lg capitalize-words" 
                        target="_blank"
                        style="font-weight: 700; background: #FF007F; border: 2px solid #FFFFFF; color: #FFFFFF;">
                         {{ t('management_console') }}
                     </a>
                     <a href="{{ url_for('accounting_files') }}" 
-                       class="btn btn-lg" 
+                       class="btn btn-lg capitalize-words" 
                        style="font-weight: 700; background: #322446; border: 2px solid #FFFFFF; color: #FFFFFF;">
                         {{ t('file_management') }}
                     </a>
                     <a href="{{ url_for('accounting_test_results') }}" 
-                       class="btn btn-lg" 
+                       class="btn btn-lg capitalize-words" 
                        style="font-weight: 700; background: #000000; border: 2px solid #FF007F; color: #FFFFFF;">
                         {{ t('system_test_report') }}
                     </a>
