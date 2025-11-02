@@ -14,7 +14,7 @@ class ReceiptMatcher:
     
     def match_receipt(self, receipt_data: Dict) -> Dict:
         """
-        智能匹配收据到客户和信用卡
+        智能匹配收据到客户和信用卡（已禁用自动匹配，需人工确认）
         
         Args:
             receipt_data: {
@@ -26,7 +26,7 @@ class ReceiptMatcher:
         
         Returns:
             dict: {
-                'status': 'auto_matched' | 'no_match' | 'multiple_matches',
+                'status': 'manual_review_required' | 'no_match' | 'multiple_matches',
                 'customer_id': int,
                 'card_id': int,
                 'matched_transaction_id': int (可选),
@@ -55,11 +55,11 @@ class ReceiptMatcher:
             return result
         
         if len(cards) == 1:
-            # 唯一匹配
+            # 唯一匹配 - 但需要人工确认（不再自动匹配）
             card = cards[0]
             result['customer_id'] = card['customer_id']
             result['card_id'] = card['card_id']
-            result['status'] = 'auto_matched'
+            result['status'] = 'manual_review_required'  # 改为需要人工审核
             result['confidence'] = 0.8
             
             # 步骤2: 尝试匹配到具体交易
@@ -78,18 +78,18 @@ class ReceiptMatcher:
             return result
         
         else:
-            # 多个匹配 - 需要进一步判断
-            result['status'] = 'multiple_matches'
+            # 多个匹配 - 需要人工选择（禁用自动匹配）
+            result['status'] = 'manual_review_required'  # 改为需要人工审核
             result['candidates'] = cards
             
-            # 如果有日期和金额，尝试精确匹配
+            # 如果有日期和金额，找到最佳匹配候选（但不自动应用）
             if receipt_data.get('transaction_date') and receipt_data.get('amount'):
                 best_match = self._find_best_match(cards, receipt_data)
                 if best_match and best_match['confidence'] >= 0.9:
-                    result['customer_id'] = best_match['customer_id']
-                    result['card_id'] = best_match['card_id']
-                    result['matched_transaction_id'] = best_match.get('transaction_id')
-                    result['status'] = 'auto_matched'
+                    # 提供建议但不自动匹配
+                    result['suggested_customer_id'] = best_match['customer_id']
+                    result['suggested_card_id'] = best_match['card_id']
+                    result['suggested_transaction_id'] = best_match.get('transaction_id')
                     result['confidence'] = best_match['confidence']
             
             return result
