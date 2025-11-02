@@ -1,0 +1,5 @@
+Date,Description,Debit,Credit,Balance
+2025-04-01,Valid Transaction,100.00,0,1000.00
+,Missing Date Transaction,50.00,0,950.00
+2025-04-03,,30.00,0,920.00
+2025-04-04,Another Valid,0,200.00,1120.00

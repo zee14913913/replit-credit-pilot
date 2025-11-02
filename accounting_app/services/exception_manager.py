@@ -244,6 +244,46 @@ class ExceptionManager:
         )
     
     @staticmethod
+    def record_validation_error(
+        db: Session,
+        company_id: int,
+        source_type: str,
+        source_id: int,
+        message: str,
+        context: Optional[Dict] = None,
+        severity: str = 'high'
+    ) -> ExceptionModel:
+        """
+        记录数据验证失败异常（快捷方法）
+        
+        用于记录CSV/PDF等文件数据验证失败
+        内部使用'pdf_parse'类型（因为验证失败本质上是解析失败）
+        
+        Args:
+            db: 数据库会话
+            company_id: 公司ID
+            source_type: 来源类型 (bank_import, invoice_import等)
+            source_id: raw_document的ID
+            message: 错误信息
+            context: 上下文数据（包含详细错误列表）
+            severity: 严重程度
+        """
+        raw_data = {}
+        if context:
+            raw_data.update(context)
+        
+        return ExceptionManager.record_exception(
+            db=db,
+            company_id=company_id,
+            exception_type='pdf_parse',  # 使用pdf_parse类型表示文件解析/验证失败
+            severity=severity,
+            error_message=message,
+            source_type=source_type,
+            source_id=source_id,
+            raw_data=raw_data
+        )
+    
+    @staticmethod
     def get_exception_summary(
         db: Session,
         company_id: int,
