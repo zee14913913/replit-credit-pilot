@@ -113,4 +113,4 @@ externalPort = 6000
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["sh", "-c", "gunicorn --bind=0.0.0.0:5000 --workers=4 --timeout=120 --reuse-port app:app"]
+run = ["sh", "-c", "uvicorn accounting_app.main:app --host 0.0.0.0 --port 8000 & gunicorn --bind=0.0.0.0:5000 --workers=4 --timeout=120 --reuse-port app:app"]
