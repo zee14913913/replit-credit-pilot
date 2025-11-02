@@ -208,8 +208,51 @@ def serve_uploaded_file(filename):
 
 @app.route('/')
 def index():
-    """Dashboard - Public access, show all customers"""
-    customers = get_all_customers()
+    """Dashboard - 权限过滤：验证后才加载数据，确保安全"""
+    # 导入验证辅助函数
+    from auth.admin_auth_helper import verify_user_with_accounting_api
+    
+    # 默认：未验证，不加载任何数据
+    customers = []
+    is_admin_verified = False
+    
+    # 步骤1：如果有admin session，先验证（在加载数据之前）
+    if session.get('flask_rbac_user_id'):
+        auth_result = verify_user_with_accounting_api()
+        
+        if auth_result['success'] and auth_result['user']['role'] in ['admin', 'accountant']:
+            # ✅ Admin/Accountant验证通过
+            is_admin_verified = True
+        else:
+            # ❌ 验证失败或非admin角色：清除session
+            session.pop('flask_rbac_user_id', None)
+            session.pop('flask_rbac_user', None)
+    
+    # 步骤2：根据验证结果加载数据（验证后才加载）
+    if is_admin_verified:
+        # Admin/Accountant：加载所有客户
+        customers = get_all_customers()
+    elif session.get('customer_token'):
+        # Customer：验证token并只加载自己
+        verification = verify_session(session['customer_token'])
+        
+        if verification['success']:
+            customer_id = verification['customer_id']
+            with get_db() as conn:
+                cursor = conn.cursor()
+                # 只查询verified的customer_id，确保活跃状态
+                cursor.execute('SELECT * FROM customers WHERE id = ? AND is_active = 1', (customer_id,))
+                customer_row = cursor.fetchone()
+                if customer_row:
+                    customers = [dict(customer_row)]
+                else:
+                    # 账户不存在或被禁用
+                    session.pop('customer_token', None)
+        else:
+            # Token无效
+            session.pop('customer_token', None)
+    
+    # 步骤3：返回结果（未登录 = 空列表）
     return render_template('index.html', customers=customers)
 
 @app.route('/add_customer_page')
@@ -3387,8 +3430,9 @@ def tag_savings_transaction(transaction_id):
     return redirect(request.referrer or url_for('savings_search'))
 
 @app.route('/savings/export-transaction/<int:transaction_id>')
+@require_admin_or_accountant
 def export_transaction_image(transaction_id):
-    """导出单个交易在原始PDF中的截图"""
+    """导出单个交易在原始PDF中的截图（限admin/accountant）"""
     from pdf2image import convert_from_path
     from PIL import Image
     from io import BytesIO
