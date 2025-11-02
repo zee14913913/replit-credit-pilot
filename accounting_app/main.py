@@ -31,8 +31,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5000",
-        "http://0.0.0.0:5000",
-        "*"  # 开发环境允许所有，生产环境要改
+        "http://127.0.0.1:5000",
+        "http://0.0.0.0:5000"
     ],
     allow_credentials=True,
     allow_methods=["*"],
