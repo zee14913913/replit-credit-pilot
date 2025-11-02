@@ -617,8 +617,8 @@
                 const response = await fetch(`/api/proxy/unified-files/detail/${fileId}`);
                 const data = await response.json();
                 
-                if (!data.success) {
-                    throw new Error(data.message);
+                if (data.status !== 'found') {
+                    throw new Error(data.message || '文件不存在');
                 }
                 
                 const file = data.file;
