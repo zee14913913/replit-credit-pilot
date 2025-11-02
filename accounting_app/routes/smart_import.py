@@ -272,8 +272,8 @@ async def smart_upload_statement(
                         },
                         priority="normal",
                         status="unread",
-                        action_url=f"/company/{company_id}/bank-statements?month={statement_month}",
-                        action_label="查看账单",
+                        action_url="/accounting_files",
+                        action_label="查看账单列表",
                         expires_at=datetime.utcnow() + timedelta(days=30)
                     )
                     db.add(admin_notification)

@@ -636,11 +636,9 @@
                         ⏳ 正在跳转到账单详情页...
                     </div>`;
                     
-                    // 3秒后跳转到账单详情页
+                    // 3秒后刷新页面显示新上传的文件
                     setTimeout(() => {
-                        const companyId = result.identified_info.company_id || 1;
-                        const statementMonth = result.identified_info.statement_month;
-                        window.location.href = `/company/${companyId}/bank-statements?month=${statementMonth}`;
+                        window.location.reload();
                     }, 3000);
                 } else {
                     // 显示详细错误信息
