@@ -47,8 +47,8 @@ def create_upload_notification(
             f"导入交易: {upload_result.get('transaction_count', 0)} 笔"
         )
         notification_type = "upload_success"
-        action_url = f"/company/{company_id}/bank-statements"
-        action_label = "查看账单详情"
+        action_url = "/accounting_files"
+        action_label = "查看账单列表"
         priority = "normal"
     else:
         title = "❌ 文件上传失败"
@@ -58,8 +58,8 @@ def create_upload_notification(
             f"建议: {upload_result.get('suggestion', '请联系技术支持')}"
         )
         notification_type = "upload_failure"
-        action_url = f"/company/{company_id}/files"
-        action_label = "重新上传"
+        action_url = "/accounting_files"
+        action_label = "返回文件列表"
         priority = "high"
     
     # 创建通知记录
