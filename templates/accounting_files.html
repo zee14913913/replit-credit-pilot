@@ -623,8 +623,25 @@
                         message += `\n\n💡 提示: PDF已自动转换为CSV格式并通过系统验证导入`;
                     }
                     
+                    message += `\n\n🔔 您已收到上传成功通知，管理员也已收到通知`;
+                    message += `\n\n⏳ 3秒后将自动跳转到账单详情页...`;
+                    
                     alert(message);
-                    refreshFiles();
+                    
+                    // 显示跳转提示
+                    filesList.innerHTML = `<div class="loading">
+                        ✅ 上传成功！<br>
+                        📊 ${result.identified_info.bank_name} - ${result.identified_info.statement_month}<br>
+                        📈 导入 ${result.imported} 笔交易<br><br>
+                        ⏳ 正在跳转到账单详情页...
+                    </div>`;
+                    
+                    // 3秒后跳转到账单详情页
+                    setTimeout(() => {
+                        const companyId = result.identified_info.company_id || 1;
+                        const statementMonth = result.identified_info.statement_month;
+                        window.location.href = `/company/${companyId}/bank-statements?month=${statementMonth}`;
+                    }, 3000);
                 } else {
                     // 显示详细错误信息
                     let errorMessage = `❌ 上传失败：${result.message}\n\n`;
