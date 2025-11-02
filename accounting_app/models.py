@@ -6,6 +6,7 @@ from sqlalchemy import Column, Integer, String, Numeric, Boolean, Date, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from .db import Base
+import uuid
 
 
 class Company(Base):
