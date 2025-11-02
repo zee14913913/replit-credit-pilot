@@ -116,15 +116,15 @@ class CSVExporter:
         # 解析期间
         year, month = map(int, period.split('-'))
         
-        # 查询分录
+        # 查询分录（修复：使用account_id而非account_code）
         results = self.db.query(
             JournalEntryLine,
             JournalEntry,
             ChartOfAccounts
         ).join(
-            JournalEntry, JournalEntryLine.entry_id == JournalEntry.id
+            JournalEntry, JournalEntryLine.journal_entry_id == JournalEntry.id
         ).join(
-            ChartOfAccounts, JournalEntryLine.account_code == ChartOfAccounts.account_code
+            ChartOfAccounts, JournalEntryLine.account_id == ChartOfAccounts.id
         ).filter(
             JournalEntry.company_id == self.company_id,
             JournalEntry.entry_date.between(
@@ -142,13 +142,13 @@ class CSVExporter:
         
         logger.info(f"📊 补充改进⑤ - 数据完整性过滤: 总数={total_count}, 有效={len(valid_results)}, 拦截={total_count - len(valid_results)}")
         
-        # 转换为字典列表
+        # 转换为字典列表（修复：使用account.account_code）
         entries = []
         for line, entry, account in valid_results:
             entries.append({
                 'entry_number': entry.entry_number,
                 'entry_date': entry.entry_date,
-                'account_code': line.account_code,
+                'account_code': account.account_code,  # 修复：从ChartOfAccounts获取
                 'account_name': account.account_name,
                 'description': line.description or entry.description,
                 'debit_amount': float(line.debit_amount) if line.debit_amount else 0,
