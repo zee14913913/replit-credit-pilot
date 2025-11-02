@@ -3,26 +3,32 @@
 """
 from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
 from sqlalchemy.orm import Session
+from typing import Optional
 import csv
 import io
 from datetime import datetime
 from decimal import Decimal
+import logging
 
 from ..db import get_db
-from ..models import BankStatement, Company
+from ..models import BankStatement, Company, User
 from ..services.bank_matcher import auto_match_transactions
 from ..services.statement_analyzer import analyze_csv_content, analyze_pdf_content
 from ..services.file_storage_manager import AccountingFileStorageManager
+from ..services import notification_service
+from ..middleware.rbac_fixed import get_current_user
 import os
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @router.post("/smart-upload")
 async def smart_upload_statement(
     file: UploadFile = File(...),
     company_id: int = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user)
 ):
     """
     智能上传银行月结单
@@ -70,6 +76,25 @@ async def smart_upload_statement(
         analysis = analyze_csv_content(csv_content)
     
     if analysis["confidence"] < 0.2:  # 降低阈值从0.3到0.2
+        # 创建失败通知
+        if current_user:
+            try:
+                notification_service.create_upload_notification(
+                    db=db,
+                    company_id=company_id or 1,  # 使用默认公司ID如果未指定
+                    user_id=current_user.id,
+                    success=False,
+                    upload_result={
+                        "error_message": "无法识别文件信息，置信度过低",
+                        "confidence": analysis["confidence"],
+                        "suggestion": "请使用手动上传功能，指定公司ID、银行名称、账号和月份",
+                        "filename": file.filename
+                    }
+                )
+                logger.info(f"Created upload failure notification for user {current_user.id}")
+            except Exception as e:
+                logger.error(f"Failed to create notification: {e}")
+        
         return {
             "success": False,
             "message": "无法识别文件信息，置信度过低",
@@ -187,6 +212,28 @@ async def smart_upload_statement(
     
     # 自动匹配交易
     matched_count = auto_match_transactions(db, company_id, statement_month)
+    
+    # 创建成功通知
+    if current_user:
+        try:
+            notification_service.create_upload_notification(
+                db=db,
+                company_id=company_id,
+                user_id=current_user.id,
+                success=True,
+                upload_result={
+                    "bank_name": bank_name,
+                    "account_number": account_number,
+                    "statement_month": statement_month,
+                    "transaction_count": imported_count,
+                    "matched_count": matched_count,
+                    "file_path": file_path,
+                    "filename": file.filename
+                }
+            )
+            logger.info(f"Created upload success notification for user {current_user.id}")
+        except Exception as e:
+            logger.error(f"Failed to create notification: {e}")
     
     return {
         "success": True,
