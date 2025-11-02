@@ -60,7 +60,8 @@ from .routes import (
     file_index,
     audit_logs,
     auth,  # Phase 2-1: 认证与RBAC系统
-    api_key_management  # Phase 2-2 Task 5: API密钥管理
+    api_key_management,  # Phase 2-2 Task 5: API密钥管理
+    notifications  # 通知系统
 )
 
 # 注册路由
@@ -84,6 +85,7 @@ app.include_router(file_index.router, tags=["File Index"])  # Phase 1-3: 统一�
 app.include_router(audit_logs.router, tags=["Audit Logs"])  # Phase 1-4: 审计日志系统
 app.include_router(auth.router, tags=["Authentication"])  # Phase 2-1: 认证与RBAC系统
 app.include_router(api_key_management.router, tags=["API Key Management"])  # Phase 2-2 Task 5: API密钥管理
+app.include_router(notifications.router, prefix="/api/notifications", tags=["Notifications"])  # 通知系统
 
 
 # 启动事件：初始化数据库
