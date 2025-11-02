@@ -262,6 +262,9 @@
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     </script>
+    
+    <!-- Toast通知组件 -->
+    <script src="/static/js/toast.js"></script>
 </head>
 <body>
     <div class="container">
@@ -484,13 +487,25 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert('文件已删除');
+                    if (window.Toast) {
+                        Toast.success('文件已删除');
+                    } else {
+                        alert('文件已删除');
+                    }
                     refreshFiles();
                 } else {
-                    alert('删除失败');
+                    if (window.Toast) {
+                        Toast.error('删除失败');
+                    } else {
+                        alert('删除失败');
+                    }
                 }
             } catch (error) {
-                alert('删除失败: ' + error.message);
+                if (window.Toast) {
+                    Toast.error('删除失败: ' + error.message);
+                } else {
+                    alert('删除失败: ' + error.message);
+                }
             }
         }
         
@@ -579,7 +594,11 @@
             // 检查文件类型：支持CSV和PDF
             const fileName = file.name.toLowerCase();
             if (!fileName.endsWith('.csv') && !fileName.endsWith('.pdf')) {
-                alert('请上传CSV或PDF格式的银行月结单文件');
+                if (window.Toast) {
+                    Toast.error('请上传CSV或PDF格式的银行月结单文件');
+                } else {
+                    alert('请上传CSV或PDF格式的银行月结单文件');
+                }
                 return;
             }
             
@@ -593,7 +612,12 @@
                 const conversionResult = await convertPDFToCSV(file);
                 
                 if (!conversionResult.success) {
-                    alert(`❌ PDF转换失败: ${conversionResult.error}\n\n建议：\n1. 确保PDF是文本格式（非扫描件）\n2. 或直接从网银下载CSV格式月结单`);
+                    const errorMsg = `PDF转换失败: ${conversionResult.error}。建议：1. 确保PDF是文本格式（非扫描件） 2. 或直接从网银下载CSV格式月结单`;
+                    if (window.Toast) {
+                        Toast.error(errorMsg);
+                    } else {
+                        alert('❌ ' + errorMsg);
+                    }
                     loadFiles();
                     event.target.value = '';
                     return;
@@ -621,56 +645,39 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    let message = `✅ ${result.message}\n\n`;
-                    message += `📊 智能识别结果：\n`;
-                    message += `• 银行: ${result.identified_info.bank_name}\n`;
-                    message += `• 账号: ${result.identified_info.account_number}\n`;
-                    message += `• 月份: ${result.identified_info.statement_month}\n`;
-                    message += `• 导入交易: ${result.imported} 笔\n`;
-                    message += `• 自动匹配: ${result.matched} 笔\n\n`;
-                    message += `📁 文件已保存至:\n${result.file_saved}`;
+                    const successMsg = `上传成功！${result.identified_info.bank_name} - ${result.identified_info.statement_month} | 导入 ${result.imported} 笔交易，自动匹配 ${result.matched} 笔`;
                     
-                    if (fileName.endsWith('.pdf')) {
-                        message += `\n\n💡 提示: PDF已自动转换为CSV格式并通过系统验证导入`;
+                    if (window.Toast) {
+                        Toast.success(successMsg);
                     }
                     
-                    message += `\n\n🔔 您已收到上传成功通知，管理员也已收到通知`;
-                    message += `\n\n⏳ 3秒后将自动跳转到账单详情页...`;
-                    
-                    alert(message);
-                    
-                    // 显示跳转提示
-                    filesList.innerHTML = `<div class="loading">
-                        ✅ 上传成功！<br>
-                        📊 ${result.identified_info.bank_name} - ${result.identified_info.statement_month}<br>
-                        📈 导入 ${result.imported} 笔交易<br><br>
-                        ⏳ 正在跳转到账单详情页...
-                    </div>`;
-                    
-                    // 3秒后刷新页面显示新上传的文件
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 3000);
+                    // 立即刷新页面显示新文件
+                    window.location.reload();
                 } else {
                     // 显示详细错误信息
-                    let errorMessage = `❌ 上传失败：${result.message}\n\n`;
+                    let errorMessage = `上传失败：${result.message}`;
                     
                     if (result.analysis && result.analysis.analysis) {
-                        errorMessage += `📋 分析结果：\n`;
-                        result.analysis.analysis.forEach(item => {
-                            errorMessage += `• ${item}\n`;
-                        });
+                        errorMessage += ` | 分析: ${result.analysis.analysis.join(', ')}`;
                     }
                     
                     if (result.suggestion) {
-                        errorMessage += `\n💡 建议：\n${result.suggestion}`;
+                        errorMessage += ` | 建议: ${result.suggestion}`;
                     }
                     
-                    alert(errorMessage);
+                    if (window.Toast) {
+                        Toast.error(errorMessage);
+                    } else {
+                        alert('❌ ' + errorMessage);
+                    }
                     loadFiles();
                 }
             } catch (error) {
-                alert(`❌ 上传失败: ${error.message}`);
+                if (window.Toast) {
+                    Toast.error(`上传失败: ${error.message}`);
+                } else {
+                    alert(`❌ 上传失败: ${error.message}`);
+                }
                 loadFiles();
             }
             
