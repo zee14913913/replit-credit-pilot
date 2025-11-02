@@ -70,8 +70,20 @@
                 <h1 class="section-title capitalize-words">{{ t('dashboard_title') }}</h1>
                 <p class="section-subtitle capitalize-words" style="color: #FF007F; font-weight: 700;">{{ t('dashboard_subtitle') }}</p>
             </div>
-            <a href="{{ url_for('add_customer_page') }}" class="btn-white-glow capitalize-words">
-                <i class="bi bi-person-plus"></i> {{ t('add_customer') }}
+            <a href="{{ url_for('add_customer_page') }}" 
+               class="capitalize-words" 
+               style="background: #FF007F; 
+                      color: #FFFFFF; 
+                      font-weight: 800;
+                      padding: 0.75rem 2rem;
+                      border-radius: 8px;
+                      text-decoration: none;
+                      border: none;
+                      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+                                   0 0 20px rgba(255, 255, 255, 0.5);
+                      box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
+                      transition: all 0.3s ease;">
+                {{ t('add_customer') }}
             </a>
         </div>
     </div>
