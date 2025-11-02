@@ -478,8 +478,10 @@
             const file = event.target.files[0];
             if (!file) return;
             
-            if (!file.name.endsWith('.csv')) {
-                alert('请上传CSV文件');
+            // 检查文件类型：支持CSV和PDF
+            const fileName = file.name.toLowerCase();
+            if (!fileName.endsWith('.csv') && !fileName.endsWith('.pdf')) {
+                alert('请上传CSV或PDF格式的银行月结单文件');
                 return;
             }
             
@@ -488,7 +490,8 @@
             
             // 显示上传提示
             const filesList = document.getElementById('files-list');
-            filesList.innerHTML = '<div class="loading">📤 正在智能分析并上传文件...</div>';
+            const fileType = fileName.endsWith('.pdf') ? 'PDF' : 'CSV';
+            filesList.innerHTML = `<div class="loading">📤 正在智能分析${fileType}文件并上传...</div>`;
             
             try {
                 const response = await fetch('/api/proxy/files/smart-upload', {
