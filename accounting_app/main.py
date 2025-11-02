@@ -61,7 +61,9 @@ from .routes import (
     audit_logs,
     auth,  # Phase 2-1: 认证与RBAC系统
     api_key_management,  # Phase 2-2 Task 5: API密钥管理
-    notifications  # 通知系统
+    notifications,  # 通知系统
+    unified_files,  # 统一文件管理API
+    self_test  # 自测接口
 )
 
 # 注册路由
@@ -86,6 +88,8 @@ app.include_router(audit_logs.router, tags=["Audit Logs"])  # Phase 1-4: 审计�
 app.include_router(auth.router, tags=["Authentication"])  # Phase 2-1: 认证与RBAC系统
 app.include_router(api_key_management.router, tags=["API Key Management"])  # Phase 2-2 Task 5: API密钥管理
 app.include_router(notifications.router, prefix="/api/notifications", tags=["Notifications"])  # 通知系统
+app.include_router(unified_files.router, tags=["Unified File Management"])  # 统一文件管理（Flask+FastAPI双引擎）
+app.include_router(self_test.router, tags=["Self Test"])  # 自测接口（验收标准）
 
 
 # 启动事件：初始化数据库

@@ -830,5 +830,9 @@
     </script>
     
     {% block scripts %}{% endblock %}
+    
+    <!-- 全局组件：Toast通知和NextActions面板 -->
+    <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/next-actions.js') }}"></script>
 </body>
 </html>

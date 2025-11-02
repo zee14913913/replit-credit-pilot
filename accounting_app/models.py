@@ -568,9 +568,11 @@ class FileIndex(Base):
     original_filename = Column(String)
     deleted_at = Column(DateTime(timezone=True))  # Phase 1-3: 软删除时间戳
     status = Column(String(20), default='active', index=True)  # Phase 1-3: active | archived | deleted
+    from_engine = Column(String(10), default='flask')  # 流程改造：flask | fastapi
+    validation_status = Column(String(20), default='pending')  # 流程改造：passed | failed | pending
     
     __table_args__ = (
-        CheckConstraint("status IN ('active', 'archived', 'deleted')"),
+        CheckConstraint("status IN ('active', 'archived', 'deleted', 'processing', 'failed')"),
         CheckConstraint("file_type IN ('original', 'generated')"),
     )
 
