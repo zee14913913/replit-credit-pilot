@@ -5014,8 +5014,16 @@ def proxy_files_api(subpath):
         except Exception as e:
             return jsonify({"error": str(e)}), 500
     
-    # 普通请求
-    target_url = f'http://localhost:8000/api/files/{subpath}'
+    # 特殊处理需要company_id的端点
+    company_id = request.args.get('company_id', '1')  # 默认使用公司ID=1
+    
+    if subpath == 'list':
+        target_url = f'http://localhost:8000/api/files/list/{company_id}'
+    elif subpath == 'storage-info':
+        target_url = f'http://localhost:8000/api/files/storage-stats/{company_id}'
+    else:
+        # 普通请求
+        target_url = f'http://localhost:8000/api/files/{subpath}'
     
     try:
         # 转发请求
