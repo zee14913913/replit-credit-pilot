@@ -11,12 +11,14 @@ from decimal import Decimal
 import logging
 
 from ..db import get_db
-from ..models import BankStatement, Company, User
+from ..models import BankStatement, Company, User, Notification
 from ..services.bank_matcher import auto_match_transactions
 from ..services.statement_analyzer import analyze_csv_content, analyze_pdf_content
 from ..services.file_storage_manager import AccountingFileStorageManager
 from ..services import notification_service
 from ..middleware.rbac_fixed import get_current_user
+from sqlalchemy import and_
+from datetime import timedelta
 import os
 
 router = APIRouter()
@@ -213,27 +215,76 @@ async def smart_upload_statement(
     # 自动匹配交易
     matched_count = auto_match_transactions(db, company_id, statement_month)
     
-    # 创建成功通知
+    # 创建成功通知（用户通知 + 管理员通知）
+    upload_result_data = {
+        "bank_name": bank_name,
+        "account_number": account_number,
+        "statement_month": statement_month,
+        "transaction_count": imported_count,
+        "matched_count": matched_count,
+        "file_path": file_path,
+        "filename": file.filename
+    }
+    
     if current_user:
         try:
+            # 1. 通知上传用户
             notification_service.create_upload_notification(
                 db=db,
                 company_id=company_id,
                 user_id=current_user.id,
                 success=True,
-                upload_result={
-                    "bank_name": bank_name,
-                    "account_number": account_number,
-                    "statement_month": statement_month,
-                    "transaction_count": imported_count,
-                    "matched_count": matched_count,
-                    "file_path": file_path,
-                    "filename": file.filename
-                }
+                upload_result=upload_result_data
             )
             logger.info(f"Created upload success notification for user {current_user.id}")
+            
+            # 2. 通知所有管理员
+            admin_users = db.query(User).filter(
+                and_(
+                    User.company_id == company_id,
+                    User.role == 'admin',
+                    User.is_active == True,
+                    User.id != current_user.id  # 不重复通知上传者（如果是管理员）
+                )
+            ).all()
+            
+            for admin in admin_users:
+                try:
+                    admin_notification = Notification(
+                        company_id=company_id,
+                        user_id=admin.id,
+                        notification_type="upload_success",
+                        title=f"📥 客户上传新账单",
+                        message=(
+                            f"客户 {current_user.full_name or current_user.username} 上传了新的银行账单\n\n"
+                            f"📊 分析结果：\n"
+                            f"• 银行: {bank_name}\n"
+                            f"• 账号: {account_number}\n"
+                            f"• 月份: {statement_month}\n"
+                            f"• 交易数: {imported_count} 笔\n"
+                            f"• 自动匹配: {matched_count} 笔\n\n"
+                            f"文件已保存至系统，请查看详情"
+                        ),
+                        payload={
+                            **upload_result_data,
+                            "uploader_name": current_user.full_name or current_user.username,
+                            "uploader_id": current_user.id
+                        },
+                        priority="normal",
+                        status="unread",
+                        action_url=f"/company/{company_id}/bank-statements?month={statement_month}",
+                        action_label="查看账单",
+                        expires_at=datetime.utcnow() + timedelta(days=30)
+                    )
+                    db.add(admin_notification)
+                    logger.info(f"Created admin notification for user {admin.id}")
+                except Exception as e:
+                    logger.error(f"Failed to create admin notification for {admin.id}: {e}")
+            
+            db.commit()
+            
         except Exception as e:
-            logger.error(f"Failed to create notification: {e}")
+            logger.error(f"Failed to create notifications: {e}")
     
     return {
         "success": True,
