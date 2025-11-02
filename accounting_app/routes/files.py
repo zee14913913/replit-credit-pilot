@@ -25,6 +25,22 @@ def list_company_files(
     """
     files = AccountingFileStorageManager.list_company_files(company_id, file_type)
     
+    # 增强文件信息：添加type和size_mb字段
+    for file in files:
+        # 根据路径推断文件类型
+        path = file['path']
+        if '/bank_statements/' in path:
+            file['type'] = 'bank_statement'
+        elif '/pos_reports/' in path:
+            file['type'] = 'pos_report'
+        elif '/management_reports/' in path:
+            file['type'] = 'management_report'
+        else:
+            file['type'] = 'other'
+        
+        # 添加MB格式的大小
+        file['size_mb'] = round(file['size'] / 1024 / 1024, 2) if file['size'] > 0 else 0
+    
     return {
         "company_id": company_id,
         "file_type": file_type or "all",

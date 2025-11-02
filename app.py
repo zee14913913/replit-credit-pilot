@@ -5021,18 +5021,21 @@ def proxy_files_api(subpath):
         target_url = f'http://localhost:8000/api/files/list/{company_id}'
     elif subpath == 'storage-info':
         target_url = f'http://localhost:8000/api/files/storage-stats/{company_id}'
+    elif subpath in ['view', 'download', 'delete']:
+        # 这些端点使用query参数
+        target_url = f'http://localhost:8000/api/files/{subpath}'
     else:
         # 普通请求
         target_url = f'http://localhost:8000/api/files/{subpath}'
     
     try:
-        # 转发请求
+        # 转发请求，保留所有query参数
         if request.method == 'GET':
             response = requests.get(target_url, params=request.args)
         elif request.method == 'POST':
-            response = requests.post(target_url, json=request.get_json())
+            response = requests.post(target_url, json=request.get_json(), params=request.args)
         elif request.method == 'DELETE':
-            response = requests.delete(target_url)
+            response = requests.delete(target_url, params=request.args)
         else:
             return jsonify({"error": "Method not supported"}), 405
         

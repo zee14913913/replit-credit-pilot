@@ -434,6 +434,13 @@
                     const typeClass = file.type === 'bank_statement' ? 'type-statement' : 'type-report';
                     const typeName = file.type === 'bank_statement' ? '📊 月结单' : '📝 报告';
                     
+                    // 从文件路径中提取company_id (格式: /accounting_data/companies/X/...)
+                    const companyIdMatch = file.path.match(/\/companies\/(\d+)\//);
+                    const companyId = companyIdMatch ? companyIdMatch[1] : data.company_id || '1';
+                    
+                    // 转义路径中的特殊字符
+                    const escapedPath = file.path.replace(/'/g, "\\'");
+                    
                     html += `
                         <tr>
                             <td><span class="file-type ${typeClass}">${typeName}</span></td>
@@ -441,9 +448,9 @@
                             <td>${file.size_mb} MB</td>
                             <td>${file.modified_at}</td>
                             <td>
-                                <button onclick="viewFile('${file.type}', '${file.filename}')" class="btn btn-primary btn-small">👁️ 查看</button>
-                                <button onclick="downloadFile('${file.type}', '${file.filename}')" class="btn btn-primary btn-small">📥 下载</button>
-                                <button onclick="deleteFile('${file.type}', '${file.filename}')" class="btn btn-secondary btn-small">🗑️ 删除</button>
+                                <button onclick="viewFile('${escapedPath}', '${file.filename}', '${companyId}')" class="btn btn-primary btn-small">👁️ 查看</button>
+                                <button onclick="downloadFile('${escapedPath}', '${companyId}')" class="btn btn-primary btn-small">📥 下载</button>
+                                <button onclick="deleteFile('${escapedPath}', '${file.filename}', '${companyId}')" class="btn btn-secondary btn-small">🗑️ 删除</button>
                             </td>
                         </tr>
                     `;
@@ -458,17 +465,20 @@
             }
         }
         
-        function downloadFile(type, filename) {
-            window.location.href = `/api/proxy/files/download/${type}/${filename}`;
+        function downloadFile(filePath, companyId) {
+            // 使用query参数传递file_path和正确的company_id
+            const url = `/api/proxy/files/download?company_id=${companyId}&file_path=${encodeURIComponent(filePath)}`;
+            window.location.href = url;
         }
         
-        async function deleteFile(type, filename) {
+        async function deleteFile(filePath, filename, companyId) {
             if (!confirm(`确定要删除文件 "${filename}" 吗？`)) {
                 return;
             }
             
             try {
-                const response = await fetch(`/api/proxy/files/delete/${type}/${filename}`, {
+                const url = `/api/proxy/files/delete?company_id=${companyId}&file_path=${encodeURIComponent(filePath)}`;
+                const response = await fetch(url, {
                     method: 'DELETE'
                 });
                 const data = await response.json();
@@ -489,7 +499,7 @@
             loadFiles();
         }
         
-        async function viewFile(type, filename) {
+        async function viewFile(filePath, filename, companyId) {
             const modal = document.getElementById('fileModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalBody = document.getElementById('modalBody');
@@ -499,7 +509,8 @@
             modalBody.innerHTML = '<div class="loading">正在加载文件内容...</div>';
             
             try {
-                const response = await fetch(`/api/proxy/files/view/${type}/${filename}`);
+                const url = `/api/proxy/files/view?company_id=${companyId}&file_path=${encodeURIComponent(filePath)}`;
+                const response = await fetch(url);
                 const data = await response.json();
                 
                 if (data.format === 'csv') {
