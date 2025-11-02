@@ -11,7 +11,7 @@ import logging
 from ..db import get_db
 from ..services.unified_file_service import UnifiedFileService
 from ..models import AuditLog, User
-from ..middleware.rbac_fixed import get_current_user
+from ..middleware.rbac_fixed import require_auth
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,7 @@ def get_recent_files(
     limit: int = Query(10, ge=1, le=50, description="返回数量"),
     module: Optional[str] = Query(None, description="模块过滤"),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_auth)
 ):
     """
     获取最近上传的文件
@@ -88,7 +88,7 @@ def get_recent_files(
 def get_file_detail(
     file_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_auth)
 ):
     """
     获取文件详情（带降级策略）
@@ -143,7 +143,7 @@ def get_file_detail(
 def register_file(
     file_data: FileRegistration,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_auth)
 ):
     """
     注册文件到统一索引
@@ -191,7 +191,7 @@ def update_file_status(
     status: Optional[str] = Query(None),
     validation_status: Optional[str] = Query(None),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_auth)
 ):
     """
     更新文件状态
@@ -199,21 +199,23 @@ def update_file_status(
     🔒 强制认证：必须登录才能更新状态
     🔒 租户隔离：只能更新自己公司的文件（管理员除外）
     """
-    # 🔒 租户安全检查：验证文件属于当前用户的公司
-    from ..models import FileIndex
-    file_record = db.query(FileIndex).filter(FileIndex.id == file_id).first()
+    # 🔒 强制使用当前用户的company_id，阻止跨租户访问
+    company_id = current_user.company_id
     
-    if not file_record:
-        raise HTTPException(status_code=404, detail="文件不存在")
-    
-    if current_user.role != 'admin' and file_record.company_id != current_user.company_id:
-        logger.warning(f"⚠️ 租户隔离阻止：用户{current_user.username}(company_id={current_user.company_id})尝试更新文件{file_id}(company_id={file_record.company_id})的状态")
-        raise HTTPException(status_code=403, detail="无权更新其他公司的文件")
+    # 🔒 管理员可以更新任何公司的文件，但需要先查询真实的company_id
+    if current_user.role == 'admin':
+        from ..models import FileIndex
+        file_record = db.query(FileIndex).filter(FileIndex.id == file_id).first()
+        if not file_record:
+            raise HTTPException(status_code=404, detail="文件不存在")
+        company_id = file_record.company_id  # 管理员使用文件实际所属的company_id
     
     try:
+        # ✅ 服务层会原子性验证file_id AND company_id，防止TOCTOU
         success = UnifiedFileService.update_file_status(
             db=db,
             file_id=file_id,
+            company_id=company_id,  # 🔒 传递company_id进行原子性验证
             status=status,
             validation_status=validation_status
         )

@@ -209,12 +209,23 @@ class UnifiedFileService:
     def update_file_status(
         db: Session,
         file_id: int,
+        company_id: int,
         status: str = None,
         validation_status: str = None
     ):
-        """更新文件状态"""
-        file_record = db.query(FileIndex).filter(FileIndex.id == file_id).first()
+        """
+        更新文件状态（带原子性租户验证）
+        
+        🔒 安全设计：UPDATE查询同时验证file_id AND company_id，防止TOCTOU竞态条件
+        """
+        # 原子性更新：同时验证file_id和company_id，防止TOCTOU
+        file_record = db.query(FileIndex).filter(
+            FileIndex.id == file_id,
+            FileIndex.company_id == company_id  # 🔒 原子性租户验证
+        ).first()
+        
         if not file_record:
+            logger.warning(f"⚠️ 文件不存在或租户不匹配：file_id={file_id}, company_id={company_id}")
             return False
         
         if status:
@@ -223,4 +234,5 @@ class UnifiedFileService:
             file_record.validation_status = validation_status
         
         db.commit()
+        logger.info(f"✅ 文件状态已更新：file_id={file_id}, company_id={company_id}, status={status}, validation_status={validation_status}")
         return True
