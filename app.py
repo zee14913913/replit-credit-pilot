@@ -777,12 +777,23 @@ def search_transactions(customer_id):
 def batch_upload(customer_id):
     """Batch upload statements with auto-create credit cards"""
     if request.method == 'POST':
+        # Phase 2-3 Task 2: Import audit helper
+        from utils.upload_audit import record_upload_event_async
+        
         files = request.files.getlist('statement_files')
         
         if not files:
             lang = session.get('language', 'en')
             flash(translate('select_files_upload', lang), 'error')
             return redirect(request.url)
+        
+        # Get customer info for audit logging
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT customer_code, name FROM customers WHERE id = ?', (customer_id,))
+            customer_row = cursor.fetchone()
+            customer_code = customer_row['customer_code'] if customer_row else None
+            customer_name = customer_row['name'] if customer_row else None
         
         batch_id = batch_service.create_batch_job('upload', customer_id, len(files))
         
@@ -791,10 +802,17 @@ def batch_upload(customer_id):
         created_cards = []
         
         for file in files:
+            file_upload_success = False
+            file_upload_error = None
+            saved_file_path = None
+            file_size = 0
+            
             try:
                 filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(file_path)
+                saved_file_path = file_path
+                file_size = os.path.getsize(file_path)
                 
                 result = parse_statement_auto(file_path)
                 
@@ -808,9 +826,11 @@ def batch_upload(customer_id):
                         
                         if not card_last4 or not card_last4.isdigit() or len(card_last4) != 4:
                             print(f"❌ Skipped {file.filename}: Cannot extract valid 4-digit card number (got: {card_last4})")
+                            file_upload_error = f"Cannot extract valid 4-digit card number (got: {card_last4})"
                             failed += 1
                         elif bank_name == 'Unknown':
                             print(f"❌ Skipped {file.filename}: Cannot detect bank")
+                            file_upload_error = "Cannot detect bank"
                             failed += 1
                         else:
                             with get_db() as conn:
@@ -841,16 +861,37 @@ def batch_upload(customer_id):
                                 conn.commit()
                             
                             processed += 1
+                            file_upload_success = True
                     else:
                         failed += 1
+                        file_upload_error = "Failed to parse statement data"
                 else:
                     failed += 1
+                    file_upload_error = "Failed to extract statement info"
                     
                 batch_service.update_batch_progress(batch_id, processed, failed)
             except Exception as e:
                 print(f"❌ Batch upload error: {e}")
                 failed += 1
+                file_upload_error = str(e)
                 batch_service.update_batch_progress(batch_id, processed, failed)
+            
+            # Phase 2-3 Task 2: Record upload event to audit log (non-blocking)
+            try:
+                record_upload_event_async(
+                    customer_id=customer_id,
+                    customer_code=customer_code,
+                    customer_name=customer_name,
+                    upload_type='credit_card_statement_batch',
+                    filename=file.filename,
+                    file_size=file_size,
+                    file_path=saved_file_path,
+                    success=file_upload_success,
+                    error_message=file_upload_error,
+                    additional_info={'batch_id': batch_id}
+                )
+            except:
+                pass  # Audit failure should never block upload
         
         batch_service.complete_batch_job(batch_id, 'completed')
         
