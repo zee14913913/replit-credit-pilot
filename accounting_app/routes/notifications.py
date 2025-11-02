@@ -143,3 +143,62 @@ def mark_all_notifications_as_read(
         "message": f"已标记 {updated_count} 条通知为已读",
         "updated_count": updated_count
     }
+
+
+@router.get("/history", response_model=List[NotificationResponse])
+def get_notification_history(
+    status: str = "all",
+    limit: int = 100,
+    offset: int = 0,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    获取用户通知历史（包含已读和未读）
+    
+    Args:
+        status: 过滤条件 ('all', 'read', 'unread')
+        limit: 返回数量限制
+        offset: 分页偏移量
+    """
+    # 开发环境：如果未认证，使用默认admin用户（user_id=1）
+    if not current_user:
+        from ..models import User
+        current_user = db.query(User).filter(User.id == 1).first()
+        if not current_user:
+            raise HTTPException(status_code=401, detail="未认证且无默认用户")
+    
+    from ..models import Notification
+    from sqlalchemy import and_, or_
+    from datetime import datetime
+    
+    # 构建查询
+    query = db.query(Notification).filter(
+        Notification.user_id == current_user.id
+    )
+    
+    # 状态过滤
+    if status == "read":
+        query = query.filter(Notification.status == 'read')
+    elif status == "unread":
+        query = query.filter(Notification.status == 'unread')
+    
+    # 按创建时间倒序排列
+    notifications = query.order_by(
+        Notification.created_at.desc()
+    ).limit(limit).offset(offset).all()
+    
+    return [
+        {
+            "id": n.id,
+            "notification_type": n.notification_type,
+            "title": n.title,
+            "message": n.message,
+            "priority": n.priority,
+            "status": n.status,
+            "action_url": n.action_url,
+            "action_label": n.action_label,
+            "created_at": n.created_at.isoformat() if n.created_at else None
+        }
+        for n in notifications
+    ]

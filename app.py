@@ -571,6 +571,16 @@ def mark_paid_route(reminder_id):
     flash(translate('payment_completed', lang), 'success')
     return redirect(url_for('reminders'))
 
+@app.route('/notifications-history')
+def notifications_history():
+    """通知历史页面"""
+    return render_template('notifications_history.html')
+
+@app.route('/notification-settings')
+def notification_settings():
+    """通知偏好设置页面"""
+    return render_template('notification_settings.html')
+
 @app.route('/loan_evaluation/<int:customer_id>')
 def loan_evaluation(customer_id):
     with get_db() as conn:

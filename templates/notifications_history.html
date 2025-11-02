@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block title %}通知历史 - {{ t('system_name') }}{% endblock %}
+
+{% block content %}
+<div class="container-professional" style="max-width: 1000px; margin: 40px auto;">
+    <div class="card-professional">
+        <div class="card-header-pro">
+            <h2><i class="bi bi-clock-history"></i> 通知历史</h2>
+            <p style="margin: 8px 0 0 0; opacity: 0.8;">查看所有历史通知记录</p>
+        </div>
+        
+        <div class="card-body-pro">
+            <!-- 过滤器 -->
+            <div style="margin-bottom: 20px; display: flex; gap: 12px; align-items: center;">
+                <button class="btn-action" onclick="loadNotifications('all')" id="btn-all">
+                    <i class="bi bi-list"></i> 全部
+                </button>
+                <button class="btn-secondary" onclick="loadNotifications('unread')" id="btn-unread">
+                    <i class="bi bi-envelope"></i> 未读
+                </button>
+                <button class="btn-secondary" onclick="loadNotifications('read')" id="btn-read">
+                    <i class="bi bi-envelope-open"></i> 已读
+                </button>
+            </div>
+            
+            <!-- 通知列表 -->
+            <div id="notificationsList" style="min-height: 300px;">
+                <div class="text-center" style="padding: 60px 20px; color: var(--text-muted);">
+                    <i class="bi bi-hourglass-split" style="font-size: 48px;"></i>
+                    <p style="margin-top: 16px;">正在加载通知...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .notification-card {
+        padding: 16px;
+        border: 1px solid rgba(255, 0, 127, 0.2);
+        border-radius: 8px;
+        margin-bottom: 12px;
+        background: rgba(255, 0, 127, 0.03);
+        transition: all 0.2s;
+    }
+    
+    .notification-card:hover {
+        background: rgba(255, 0, 127, 0.08);
+        border-color: rgba(255, 0, 127, 0.4);
+    }
+    
+    .notification-card.read {
+        opacity: 0.6;
+        background: rgba(50, 36, 70, 0.05);
+        border-color: rgba(50, 36, 70, 0.2);
+    }
+    
+    .notification-title {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+    }
+    
+    .notification-message {
+        color: var(--text-secondary);
+        font-size: 14px;
+        white-space: pre-line;
+        margin-bottom: 12px;
+    }
+    
+    .notification-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+    
+    .priority-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    
+    .priority-high {
+        background: #DC3545;
+        color: white;
+    }
+    
+    .priority-normal {
+        background: #FF007F;
+        color: white;
+    }
+    
+    .priority-low {
+        background: #6C757D;
+        color: white;
+    }
+</style>
+
+<script>
+    let currentFilter = 'all';
+    
+    // 页面加载时获取所有通知
+    document.addEventListener('DOMContentLoaded', function() {
+        loadNotifications('all');
+    });
+    
+    // 加载通知列表
+    async function loadNotifications(filter) {
+        currentFilter = filter;
+        
+        // 更新按钮状态
+        document.querySelectorAll('.btn-action, .btn-secondary').forEach(btn => {
+            btn.classList.remove('btn-action');
+            btn.classList.add('btn-secondary');
+        });
+        document.getElementById(`btn-${filter}`).classList.remove('btn-secondary');
+        document.getElementById(`btn-${filter}`).classList.add('btn-action');
+        
+        const container = document.getElementById('notificationsList');
+        container.innerHTML = '<div class="text-center" style="padding: 40px;"><i class="bi bi-hourglass-split"></i> 加载中...</div>';
+        
+        try {
+            const response = await fetch(`http://localhost:8000/api/notifications/history?status=${filter}&limit=100`, {
+                credentials: 'include'
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to load notifications');
+            }
+            
+            const notifications = await response.json();
+            displayNotifications(notifications);
+            
+        } catch (error) {
+            console.error('Failed to load notifications:', error);
+            container.innerHTML = `
+                <div class="text-center" style="padding: 40px; color: var(--text-muted);">
+                    <i class="bi bi-exclamation-triangle" style="font-size: 48px; color: #DC3545;"></i>
+                    <p style="margin-top: 16px;">加载失败，请稍后重试</p>
+                </div>
+            `;
+        }
+    }
+    
+    // 显示通知列表
+    function displayNotifications(notifications) {
+        const container = document.getElementById('notificationsList');
+        
+        if (notifications.length === 0) {
+            container.innerHTML = `
+                <div class="text-center" style="padding: 60px 20px; color: var(--text-muted);">
+                    <i class="bi bi-inbox" style="font-size: 48px;"></i>
+                    <p style="margin-top: 16px;">暂无通知</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = notifications.map(n => `
+            <div class="notification-card ${n.status === 'read' ? 'read' : ''}">
+                <div class="notification-title">${n.title}</div>
+                <div class="notification-message">${n.message}</div>
+                <div class="notification-footer">
+                    <div>
+                        <span class="priority-badge priority-${n.priority || 'normal'}">
+                            ${n.priority === 'high' ? '高优先级' : n.priority === 'low' ? '低优先级' : '普通'}
+                        </span>
+                        <span style="margin-left: 12px;">${formatTime(n.created_at)}</span>
+                    </div>
+                    ${n.action_url ? `<a href="${n.action_url}" class="btn-sm btn-action">${n.action_label || '查看详情'}</a>` : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    // 格式化时间
+    function formatTime(isoString) {
+        const date = new Date(isoString);
+        const now = new Date();
+        const diff = now - date;
+        
+        const minutes = Math.floor(diff / 60000);
+        if (minutes < 1) return '刚刚';
+        if (minutes < 60) return `${minutes}分钟前`;
+        
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours}小时前`;
+        
+        const days = Math.floor(hours / 24);
+        if (days < 7) return `${days}天前`;
+        
+        return date.toLocaleString('zh-CN');
+    }
+</script>
+{% endblock %}
