@@ -10,7 +10,8 @@ import logging
 
 from ..db import get_db
 from ..services.unified_file_service import UnifiedFileService
-from ..models import AuditLog
+from ..models import AuditLog, User
+from ..middleware.rbac_fixed import get_current_user
 
 logger = logging.getLogger(__name__)
 
@@ -32,14 +33,17 @@ class FileRegistration(BaseModel):
 
 @router.get("/recent")
 def get_recent_files(
-    company_id: int = Query(..., description="公司ID"),
     limit: int = Query(10, ge=1, le=50, description="返回数量"),
     module: Optional[str] = Query(None, description="模块过滤"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
     获取最近上传的文件
     前端首页只用这个接口
+    
+    🔒 强制认证：必须登录才能访问（current_user强制要求）
+    🔒 租户隔离：自动使用当前用户的company_id，阻止跨租户访问
     
     返回格式：
     [
@@ -57,6 +61,9 @@ def get_recent_files(
       }
     ]
     """
+    # 🔒 强制使用当前用户的company_id，阻止跨租户访问
+    company_id = current_user.company_id
+    
     try:
         files = UnifiedFileService.get_recent_files(
             db=db,
@@ -80,17 +87,23 @@ def get_recent_files(
 @router.get("/detail/{file_id}")
 def get_file_detail(
     file_id: int,
-    company_id: int = Query(..., description="公司ID"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
     获取文件详情（带降级策略）
+    
+    🔒 强制认证：必须登录才能访问
+    🔒 租户隔离：只能查看自己公司的文件
     
     降级策略：
     1. 按新目录找
     2. 按旧目录找  
     3. 返回缺失提示
     """
+    # 🔒 强制使用当前用户的company_id，阻止跨租户访问
+    company_id = current_user.company_id
+    
     try:
         result = UnifiedFileService.get_file_with_fallback(
             db=db,
@@ -129,16 +142,28 @@ def get_file_detail(
 @router.post("/register")
 def register_file(
     file_data: FileRegistration,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
     注册文件到统一索引
     Flask上传成功后要调用这个接口
+    
+    🔒 强制认证：必须登录才能注册文件
+    🔒 租户隔离：只能注册到自己的公司，阻止跨租户注册
     """
+    # 🔒 强制使用当前用户的company_id，覆盖请求中的company_id
+    if current_user.role != 'admin' and file_data.company_id != current_user.company_id:
+        logger.warning(f"⚠️ 租户隔离阻止：用户{current_user.username}(company_id={current_user.company_id})尝试注册文件到company_id={file_data.company_id}")
+        raise HTTPException(status_code=403, detail="无权向其他公司注册文件")
+    
+    # 管理员可以为任何公司注册文件，普通用户强制使用自己的company_id
+    final_company_id = file_data.company_id if current_user.role == 'admin' else current_user.company_id
+    
     try:
         file_record = UnifiedFileService.register_file(
             db=db,
-            company_id=file_data.company_id,
+            company_id=final_company_id,  # 使用验证后的company_id
             filename=file_data.filename,
             file_path=file_data.file_path,
             module=file_data.module,
@@ -165,9 +190,26 @@ def update_file_status(
     file_id: int,
     status: Optional[str] = Query(None),
     validation_status: Optional[str] = Query(None),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    """更新文件状态"""
+    """
+    更新文件状态
+    
+    🔒 强制认证：必须登录才能更新状态
+    🔒 租户隔离：只能更新自己公司的文件（管理员除外）
+    """
+    # 🔒 租户安全检查：验证文件属于当前用户的公司
+    from ..models import FileIndex
+    file_record = db.query(FileIndex).filter(FileIndex.id == file_id).first()
+    
+    if not file_record:
+        raise HTTPException(status_code=404, detail="文件不存在")
+    
+    if current_user.role != 'admin' and file_record.company_id != current_user.company_id:
+        logger.warning(f"⚠️ 租户隔离阻止：用户{current_user.username}(company_id={current_user.company_id})尝试更新文件{file_id}(company_id={file_record.company_id})的状态")
+        raise HTTPException(status_code=403, detail="无权更新其他公司的文件")
+    
     try:
         success = UnifiedFileService.update_file_status(
             db=db,
