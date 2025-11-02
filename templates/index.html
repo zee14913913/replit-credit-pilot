@@ -4,44 +4,27 @@
 
 {% block content %}
 <style>
-@keyframes sparkle {
-    0% { background-position: 200% center; }
-    100% { background-position: -200% center; }
-}
-
 .galaxy-title {
     position: relative;
     display: inline-block;
-    color: #322446 !important;
     font-weight: 900 !important;
     font-size: 3rem !important;
     margin-bottom: 1rem !important;
     text-transform: capitalize !important;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
     letter-spacing: 1px !important;
-}
-
-.galaxy-title::before {
-    content: attr(data-text);
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 10;
-    background: linear-gradient(90deg, 
-        transparent 0%, 
-        rgba(255, 255, 255, 0.9) 10%,
-        transparent 20%,
-        rgba(192, 192, 192, 0.7) 40%,
-        transparent 50%,
-        rgba(255, 255, 255, 0.9) 70%,
-        transparent 80%,
-        rgba(192, 192, 192, 0.5) 90%,
-        transparent 100%);
-    background-size: 200% 100%;
+    background: linear-gradient(135deg, 
+        #1a0f2e 0%,
+        #322446 25%,
+        #c0c0c0 45%,
+        #ffffff 50%,
+        #c0c0c0 55%,
+        #322446 75%,
+        #1a0f2e 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: sparkle 2.5s linear infinite;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+    text-shadow: none;
 }
 
 .capitalize-words {
@@ -54,7 +37,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="alert" role="alert" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 15px; padding: 2.5rem;">
-                <h2 class="galaxy-title" data-text="{{ t('accounting_system_title') }}">
+                <h2 class="galaxy-title">
                     {{ t('accounting_system_title') }}
                 </h2>
                 <p class="mb-4" style="color: #FFFFFF; font-weight: 700; font-size: 1.1rem;">{{ t('accounting_system_subtitle') }}</p>
