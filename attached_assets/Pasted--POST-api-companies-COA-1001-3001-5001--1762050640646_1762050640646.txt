@@ -1,0 +1,92 @@
+① 新公司自动灌一份马来西亚标准科目表
+
+目标：POST /api/companies/ 成功后，马上自动插入一批默认会计科目（COA），这样你就不用每次自己建 1001/3001/5001 了，规则也不会因为“没这个科目”报错。
+
+请完成以下的这段补充的设置细节：
+
+请在公司创建成功后自动初始化一套“马来西亚标准会计科目表（minimal）”到该公司的 chart_of_accounts 里。要求：
+	1.	触发点：POST /api/companies/ 成功、拿到 company_id 之后立刻执行。
+	2.	插入时要先查：如果这个公司已经有科目了（count>0）就不要重复灌。
+	3.	最少要有这些科目：
+	•	1001 银行存款（asset）
+	•	1101 应收账款（asset）
+	•	1201 存货（asset）
+	•	2001 应付账款（liability）
+	•	2101 银行短期贷款（liability）
+	•	3001 实收资本 / Paid-up Capital（equity）
+	•	3101 留存收益（equity）
+	•	4001 销售收入 / Revenue（income）
+	•	5001 管理费用 / Admin Expenses（expense）
+	•	5101 薪资 / Staff Cost（expense）
+	•	预留税：6001 SST Payable（liability）
+	4.	请把这段逻辑写在一个独立服务里，比如：accounting_app/services/coa_initializer.py，函数叫 init_default_coa(db, company_id).
+	5.	在创建公司接口里这样调用：
+
+company = company_service.create_company(data)
+coa_initializer.init_default_coa(db, company.id)
+return company
+
+
+	6.	插入时要写上 created_by='system'，方便审计。
+	7.	请把这套“默认COA”写进文档，标注是“Malaysia SME default template”。
+
+这样做完，以后你建客户就不用再手动建 1001 / 3001 了，自动过账也有科目可用。
+
+⸻
+
+② 月份格式先校验再拆
+
+目标：所有接受 period=、month=、statement_month= 的接口，在真正做事之前，先确认是不是 YYYY-MM，不是就直接 400，别等到会计分录那里才炸。
+
+你给 Replit 贴这段👇
+
+请为所有报表/导入相关的 Pydantic schema 增加统一的月份校验函数，要求如下：
+	1.	新建一个公共校验器文件：accounting_app/schemas/validators.py
+	2.	写一个函数：
+
+from datetime import datetime
+from pydantic import validator
+
+def validate_yyyy_mm(v: str) -> str:
+    try:
+        # 必须是 YYYY-MM
+        dt = datetime.strptime(v, "%Y-%m")
+    except Exception:
+        raise ValueError("period / month must be in 'YYYY-MM' format, e.g. 2025-01")
+    return v
+
+
+	3.	在以下请求模型里都用这个校验器：
+	•	导入银行单：ImportBankStatementRequest
+	•	导出分录：ExportJournalCsvRequest
+	•	生成报表：BalanceSheetRequest, PnLRequest, ManagementReportRequest
+	•	月结任务：RunMonthlyTaskRequest
+	4.	示例：
+
+class ManagementReportRequest(BaseModel):
+    company_id: int
+    period: str
+
+    _check_period = validator("period", allow_reuse=True)(validate_yyyy_mm)
+
+
+	5.	如果校验失败，请返回 HTTP 400，响应内容要写清楚是“格式错”不是“业务错”，比如：
+
+{
+  "detail": "statement_month must be in 'YYYY-MM', e.g. 2025-01"
+}
+
+
+	6.	请在 Swagger 里标注这一点，避免前端传 2025/01 或 2025-1 进来。
+	7.	这样做完后，后面的代码就可以放心写：
+
+year, month = period.split("-")
+
+不用再多做防守。
+
+⸻
+
+小结给你
+	•	“自动灌科目”= 解决每次都要建 1001/3001的问题
+	•	“先校验再拆”= 解决奇怪月份格式把异常中心搞脏的问题
+
