@@ -16,6 +16,7 @@ from ..services.bank_matcher import auto_match_transactions
 from ..services.statement_analyzer import analyze_csv_content, analyze_pdf_content
 from ..services.file_storage_manager import AccountingFileStorageManager
 from ..services import notification_service
+from ..services.unified_file_service import UnifiedFileService
 from ..middleware.rbac_fixed import get_current_user
 from sqlalchemy import and_
 from datetime import timedelta
@@ -134,6 +135,26 @@ async def smart_upload_statement(
     
     with open(file_path, 'w', encoding='utf-8') as f:
         f.write(csv_content)
+    
+    # 注册文件到统一索引（Flask→FastAPI同步机制）
+    try:
+        file_size_kb = int(os.path.getsize(file_path) / 1024)
+        UnifiedFileService.register_file(
+            db=db,
+            company_id=company_id,
+            filename=safe_filename,
+            file_path=file_path,
+            module='bank',  # 银行账单模块
+            from_engine='fastapi',  # 来自FastAPI引擎
+            uploaded_by=current_user.username if current_user else 'anonymous',
+            file_size_kb=file_size_kb,
+            validation_status='passed',  # 已通过智能识别验证
+            status='active'  # 活动状态
+        )
+        logger.info(f"✅ File registered to unified index: {safe_filename}")
+    except Exception as e:
+        logger.error(f"❌ Failed to register file to unified index: {e}")
+        # 不中断主流程，仅记录错误
     
     # 导入到数据库
     csv_reader = csv.DictReader(io.StringIO(csv_content))
