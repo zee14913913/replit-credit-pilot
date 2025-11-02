@@ -626,7 +626,21 @@
                     alert(message);
                     refreshFiles();
                 } else {
-                    alert(`❌ 上传失败：${result.message}`);
+                    // 显示详细错误信息
+                    let errorMessage = `❌ 上传失败：${result.message}\n\n`;
+                    
+                    if (result.analysis && result.analysis.analysis) {
+                        errorMessage += `📋 分析结果：\n`;
+                        result.analysis.analysis.forEach(item => {
+                            errorMessage += `• ${item}\n`;
+                        });
+                    }
+                    
+                    if (result.suggestion) {
+                        errorMessage += `\n💡 建议：\n${result.suggestion}`;
+                    }
+                    
+                    alert(errorMessage);
                     loadFiles();
                 }
             } catch (error) {
