@@ -688,3 +688,74 @@ class UserCompanyRole(Base):
             name='check_ucr_valid_role'
         ),
     )
+
+
+class Notification(Base):
+    """
+    通知系统：记录所有系统通知（客户上传后指引 + 管理员日报摘要）
+    """
+    __tablename__ = "notifications"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), index=True)
+    
+    notification_type = Column(String(50), nullable=False, index=True)  # upload_success, upload_failure, daily_digest, system_alert
+    title = Column(String(200), nullable=False)
+    message = Column(Text, nullable=False)
+    
+    payload = Column(JSON)  # 额外数据：上传结果详情、建议操作、链接等
+    
+    priority = Column(String(20), default='normal')  # low, normal, high, urgent
+    status = Column(String(20), default='unread', index=True)  # unread, read, archived
+    
+    action_url = Column(String(500))  # 点击通知后跳转的URL
+    action_label = Column(String(100))  # 操作按钮文字：查看报告、修复错误、联系支持
+    
+    read_at = Column(DateTime(timezone=True))
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), index=True)
+    expires_at = Column(DateTime(timezone=True))  # 过期时间（可选）
+    
+    __table_args__ = (
+        CheckConstraint(
+            "notification_type IN ('upload_success', 'upload_failure', 'daily_digest', 'system_alert', 'reminder')",
+            name='check_notification_type'
+        ),
+        CheckConstraint(
+            "priority IN ('low', 'normal', 'high', 'urgent')",
+            name='check_notification_priority'
+        ),
+        CheckConstraint(
+            "status IN ('unread', 'read', 'archived')",
+            name='check_notification_status'
+        ),
+        Index('idx_notifications_user_status', 'user_id', 'status'),
+        Index('idx_notifications_company_type', 'company_id', 'notification_type'),
+    )
+
+
+class NotificationPreference(Base):
+    """
+    通知偏好设置：用户可配置通知渠道和频率
+    """
+    __tablename__ = "notification_preferences"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False, unique=True, index=True)
+    
+    enable_in_app = Column(Boolean, default=True)  # 系统内通知
+    enable_email = Column(Boolean, default=True)  # 邮件通知
+    enable_sms = Column(Boolean, default=False)  # 短信通知（Twilio）
+    
+    email_address = Column(String(255))  # 通知邮箱（可能与登录邮箱不同）
+    phone_number = Column(String(50))  # 短信号码
+    
+    daily_digest_enabled = Column(Boolean, default=True)  # 是否接收每日摘要
+    daily_digest_time = Column(String(5), default='09:00')  # 每日摘要发送时间 HH:MM
+    
+    upload_notifications = Column(Boolean, default=True)  # 上传通知
+    system_alerts = Column(Boolean, default=True)  # 系统警告
+    reminders = Column(Boolean, default=True)  # 提醒通知
+    
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
