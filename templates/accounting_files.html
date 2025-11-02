@@ -111,23 +111,80 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 2rem;
+            border: 2px solid #322446;
         }
         
         th {
             background: #322446;
             color: #fff;
-            padding: 12px;
+            padding: 16px 20px;
             text-align: left;
             font-weight: bold;
+            border: 1px solid #444;
+            white-space: nowrap;
+            font-size: 0.95rem;
         }
         
         td {
-            padding: 12px;
-            border-bottom: 1px solid #333;
+            padding: 14px 18px;
+            border: 1px solid #333;
+            vertical-align: middle;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         tr:hover {
             background: #2d2d2d;
+        }
+        
+        /* 列宽优化 */
+        table th:nth-child(1),
+        table td:nth-child(1) {
+            width: 10%;
+            min-width: 100px;
+        }
+        
+        table th:nth-child(2),
+        table td:nth-child(2) {
+            width: 25%;
+            min-width: 200px;
+        }
+        
+        table th:nth-child(3),
+        table td:nth-child(3) {
+            width: 10%;
+            min-width: 100px;
+        }
+        
+        table th:nth-child(4),
+        table td:nth-child(4) {
+            width: 15%;
+            min-width: 120px;
+        }
+        
+        table th:nth-child(5),
+        table td:nth-child(5) {
+            width: 20%;
+            min-width: 180px;
+        }
+        
+        table th:nth-child(6),
+        table td:nth-child(6) {
+            width: 8%;
+            min-width: 80px;
+        }
+        
+        table th:nth-child(7),
+        table td:nth-child(7) {
+            width: 12%;
+            min-width: 140px;
+        }
+        
+        table th:nth-child(8),
+        table td:nth-child(8) {
+            width: auto;
+            min-width: 250px;
         }
         
         /* 新文件高亮 */
@@ -360,13 +417,13 @@
 </head>
 <body>
     <div class="container">
-        <h1>📁 {{ t('file_management_center') }}</h1>
+        <h1>{{ t('file_management_center') }}</h1>
         
         <div class="header-actions">
             <a href="/" class="btn btn-secondary">← {{ t('back_to_home') }}</a>
-            <button onclick="document.getElementById('fileUpload').click()" class="btn btn-primary">📤 {{ t('smart_upload_csv_pdf') }}</button>
-            <button onclick="refreshFiles()" class="btn btn-primary">🔄 {{ t('refresh_list') }}</button>
-            <a href="/accounting_test_results" class="btn btn-primary">🧪 {{ t('run_new_test') }}</a>
+            <button onclick="document.getElementById('fileUpload').click()" class="btn btn-primary">{{ t('smart_upload_csv_pdf') }}</button>
+            <button onclick="refreshFiles()" class="btn btn-primary">{{ t('refresh_list') }}</button>
+            <a href="/accounting_test_results" class="btn btn-primary">{{ t('run_new_test') }}</a>
         </div>
         
         <!-- 隐藏的文件上传输入 -->
@@ -374,21 +431,21 @@
         
         <div class="stats" id="stats">
             <div class="stat-card">
-                <div class="stat-label">📊 {{ t('stat_statement_files') }}</div>
+                <div class="stat-label">{{ t('stat_statement_files') }}</div>
                 <div class="stat-value" id="statements-count">--</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">📝 {{ t('stat_test_reports') }}</div>
+                <div class="stat-label">{{ t('stat_test_reports') }}</div>
                 <div class="stat-value" id="reports-count">--</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">💾 {{ t('stat_total_storage') }}</div>
+                <div class="stat-label">{{ t('stat_total_storage') }}</div>
                 <div class="stat-value" id="total-size">-- MB</div>
             </div>
         </div>
         
         <div class="files-section">
-            <h2 class="section-title">📂 {{ t('stat_all_files') }}</h2>
+            <h2 class="section-title">{{ t('stat_all_files') }}</h2>
             <div id="files-list" class="loading">{{ t('loading') }}</div>
         </div>
     </div>
@@ -548,39 +605,40 @@
                     const status = file.status || 'active';
                     const statusClass = `status-${status}`;
                     const statusText = {
-                        'uploaded': '📤 ' + window.i18n.status_uploaded,
-                        'active': '✅ ' + window.i18n.status_active,
-                        'validated': '✓ ' + window.i18n.status_validated,
-                        'posted': '📊 ' + window.i18n.status_posted,
-                        'exception': '⚠️ ' + window.i18n.status_exception,
-                        'processing': '⏳ ' + window.i18n.status_processing,
-                        'failed': '❌ ' + window.i18n.status_failed,
-                        'archived': '📦 ' + window.i18n.status_archived
+                        'uploaded': window.i18n.status_uploaded,
+                        'active': window.i18n.status_active,
+                        'validated': window.i18n.status_validated,
+                        'posted': window.i18n.status_posted,
+                        'exception': window.i18n.status_exception,
+                        'processing': window.i18n.status_processing,
+                        'failed': window.i18n.status_failed,
+                        'archived': window.i18n.status_archived
                     }[status] || status;
                     
                     // 验证状态
                     const validationStatus = file.validation_status || 'pending';
                     const validationBadge = {
-                        'passed': '✓ ' + window.i18n.validation_passed,
-                        'failed': '✗ ' + window.i18n.validation_failed,
-                        'pending': '⋯ ' + window.i18n.validation_pending
+                        'passed': window.i18n.validation_passed,
+                        'failed': window.i18n.validation_failed,
+                        'pending': window.i18n.validation_pending
                     }[validationStatus] || validationStatus;
                     
-                    // 模块图标
-                    const moduleIcon = {
-                        'bank': '🏦',
-                        'receipt': '🧾',
-                        'ctos': '📊',
-                        'loan': '💰',
-                        'accounting': '📝'
-                    }[file.module] || '📁';
+                    // 模块名称（无图标）
+                    const moduleName = {
+                        'bank': window.i18n.module_bank,
+                        'credit-card': window.i18n.module_credit_card,
+                        'pos': window.i18n.module_pos,
+                        'supplier': window.i18n.module_supplier,
+                        'reports': window.i18n.module_reports,
+                        'management': window.i18n.module_management
+                    }[file.module] || file.module;
                     
                     // 新文件标记
-                    const newBadge = isNew ? '<span style="color: #FF007F; font-weight: bold; margin-left: 8px;">🆕 NEW</span>' : '';
+                    const newBadge = isNew ? '<span style="color: #FF007F; font-weight: bold; margin-left: 8px;">NEW</span>' : '';
                     
                     // 重复警告标记
                     const duplicateWarning = file.duplicate_warning ? 
-                        '<span style="color: #ff6600; font-weight: bold; margin-left: 8px;">⚠️ 本月有多份</span>' : '';
+                        '<span style="color: #ff6600; font-weight: bold; margin-left: 8px;">' + (window.i18n.current_lang === 'zh' ? '本月有多份' : 'Duplicate') + '</span>' : '';
                     
                     // 状态说明
                     const statusReason = file.status_reason || '无说明';
@@ -609,7 +667,7 @@
                     
                     html += `
                         <tr class="${rowClass}" style="${file.duplicate_warning ? 'background: rgba(255, 102, 0, 0.1);' : ''}">
-                            <td>${moduleIcon} ${file.module}</td>
+                            <td>${moduleName}</td>
                             <td>${file.file_name}${newBadge}${duplicateWarning}</td>
                             <td>
                                 <span class="status-badge ${statusClass}">${statusText}</span>
