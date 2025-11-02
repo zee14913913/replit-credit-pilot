@@ -1,12 +1,13 @@
 """
 银行月结单智能分析器
-自动识别CSV文件的银行、账号、月份等信息
+自动识别CSV和PDF文件的银行、账号、月份等信息
 """
 import csv
 import io
 import re
 from datetime import datetime
 from typing import Dict, Optional, List
+from .bank_statement_pdf_parser import BankStatementPDFParser
 
 
 def analyze_csv_content(csv_content: str) -> Dict:
@@ -52,11 +53,12 @@ def analyze_csv_content(csv_content: str) -> Dict:
         for row in rows:
             date_str = row.get('Date', '')
             if date_str:
-                try:
-                    date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+                # 清理Excel公式格式
+                date_str = _clean_excel_formula(date_str)
+                # 尝试多种日期格式
+                date_obj = _parse_date_flexible(date_str)
+                if date_obj:
                     dates.append(date_obj)
-                except:
-                    pass
         
         if dates:
             dates.sort()
@@ -76,8 +78,15 @@ def analyze_csv_content(csv_content: str) -> Dict:
         # 计算总金额
         for row in rows:
             try:
-                debit = float(row.get('Debit', 0) or 0)
-                credit = float(row.get('Credit', 0) or 0)
+                # 清理Excel公式格式
+                debit_str = _clean_excel_formula(row.get('Debit', '') or '')
+                credit_str = _clean_excel_formula(row.get('Credit', '') or '')
+                withdrawal_str = _clean_excel_formula(row.get('Withdrawal', '') or '')
+                deposit_str = _clean_excel_formula(row.get('Deposit', '') or '')
+                
+                # 支持Debit/Credit或Withdrawal/Deposit列名
+                debit = float(debit_str or withdrawal_str or 0)
+                credit = float(credit_str or deposit_str or 0)
                 result["total_debit"] += debit
                 result["total_credit"] += credit
             except:
@@ -182,3 +191,93 @@ def suggest_customer_match(analysis: Dict, db) -> Optional[Dict]:
     suggestions.sort(key=lambda x: x['match_score'], reverse=True)
     
     return suggestions[0] if suggestions else None
+
+
+def analyze_pdf_content(pdf_path: str) -> Dict:
+    """
+    分析PDF银行月结单内容
+    
+    返回与analyze_csv_content相同的格式
+    """
+    parser = BankStatementPDFParser()
+    pdf_result = parser.parse_bank_statement(pdf_path)
+    
+    if not pdf_result["success"]:
+        return {
+            "bank_name": None,
+            "account_number": None,
+            "statement_month": None,
+            "transaction_count": 0,
+            "date_range": {"start": None, "end": None},
+            "total_debit": 0,
+            "total_credit": 0,
+            "confidence": 0,
+            "analysis": [f"PDF解析失败: {pdf_result.get('error_message', '未知错误')}"],
+            "transactions": []
+        }
+    
+    # 转换为统一格式
+    transactions = pdf_result.get("transactions", [])
+    
+    # 计算日期范围
+    dates = [txn["date"] for txn in transactions if "date" in txn]
+    date_range = {
+        "start": min(dates) if dates else None,
+        "end": max(dates) if dates else None
+    }
+    
+    # 计算总金额
+    total_debit = sum(txn.get("debit", 0) for txn in transactions)
+    total_credit = sum(txn.get("credit", 0) for txn in transactions)
+    
+    return {
+        "bank_name": pdf_result.get("bank_name"),
+        "account_number": pdf_result.get("account_number"),
+        "statement_month": pdf_result.get("statement_month"),
+        "transaction_count": len(transactions),
+        "date_range": date_range,
+        "total_debit": total_debit,
+        "total_credit": total_credit,
+        "confidence": pdf_result.get("confidence", 0),
+        "analysis": [f"PDF解析成功，识别{len(transactions)}笔交易"],
+        "transactions": transactions  # 传递交易数据供后续使用
+    }
+
+
+def _clean_excel_formula(value: str) -> str:
+    """清理Excel公式格式 =""value"" """
+    if not value or not isinstance(value, str):
+        return value or ''
+    
+    # 移除Excel公式格式
+    cleaned = re.sub(r'^="(.*)"$', r'\1', value.strip())
+    return cleaned
+
+
+def _parse_date_flexible(date_str: str) -> Optional[datetime]:
+    """
+    支持多种日期格式的解析
+    - YYYY-MM-DD
+    - DD-MM-YYYY
+    - DD/MM/YYYY
+    - DD MMM YYYY
+    """
+    if not date_str:
+        return None
+    
+    date_formats = [
+        '%Y-%m-%d',
+        '%d-%m-%Y',
+        '%d/%m/%Y',
+        '%Y/%m/%d',
+        '%d %b %Y',
+        '%d %B %Y'
+    ]
+    
+    for fmt in date_formats:
+        try:
+            return datetime.strptime(date_str, fmt)
+        except:
+            continue
+    
+    return None

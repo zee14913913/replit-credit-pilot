@@ -11,7 +11,8 @@ from decimal import Decimal
 from ..db import get_db
 from ..models import BankStatement, Company
 from ..services.bank_matcher import auto_match_transactions
-from ..services.statement_analyzer import analyze_csv_content
+from ..services.statement_analyzer import analyze_csv_content, analyze_pdf_content
+from ..services.file_storage_manager import AccountingFileStorageManager
 import os
 
 router = APIRouter()
@@ -25,24 +26,52 @@ async def smart_upload_statement(
 ):
     """
     智能上传银行月结单
+    支持CSV和PDF格式
     自动识别银行、账号、月份等信息
     """
-    if not file.filename.endswith('.csv'):
-        raise HTTPException(status_code=400, detail="只支持CSV文件")
+    # 检查文件格式
+    if not (file.filename.endswith('.csv') or file.filename.endswith('.pdf')):
+        raise HTTPException(status_code=400, detail="只支持CSV和PDF文件")
     
     # 读取文件内容
     content = await file.read()
-    csv_content = content.decode('utf-8')
     
-    # 智能分析CSV内容
-    analysis = analyze_csv_content(csv_content)
+    # 根据文件类型选择解析方式
+    is_pdf = file.filename.endswith('.pdf')
+    csv_content = None  # 用于后续导入
     
-    if analysis["confidence"] < 0.3:
+    if is_pdf:
+        # PDF文件 - 保存后解析
+        temp_dir = "/tmp/pdf_uploads"
+        os.makedirs(temp_dir, exist_ok=True)
+        temp_path = os.path.join(temp_dir, file.filename)
+        
+        with open(temp_path, 'wb') as f:
+            f.write(content)
+        
+        # 智能分析PDF内容
+        analysis = analyze_pdf_content(temp_path)
+        
+        # 如果PDF解析成功，获取交易数据
+        if analysis.get("transactions"):
+            # 将PDF交易转换为CSV格式字符串（用于后续统一处理）
+            csv_content = _convert_pdf_transactions_to_csv(analysis["transactions"])
+        
+        # 清理临时文件
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+    else:
+        # CSV文件
+        csv_content = content.decode('utf-8')
+        # 智能分析CSV内容
+        analysis = analyze_csv_content(csv_content)
+    
+    if analysis["confidence"] < 0.2:  # 降低阈值从0.3到0.2
         return {
             "success": False,
             "message": "无法识别文件信息，置信度过低",
             "analysis": analysis,
-            "suggestion": "请手动指定公司ID、银行名称、账号和月份"
+            "suggestion": "请使用手动上传功能，指定公司ID、银行名称、账号和月份"
         }
     
     # 如果没有指定company_id，使用默认公司
@@ -125,3 +154,25 @@ async def smart_upload_statement(
             "statement_month": statement_month
         }
     }
+
+
+def _convert_pdf_transactions_to_csv(transactions: list) -> str:
+    """将PDF提取的交易转换为CSV格式字符串"""
+    import io
+    import csv as csv_module
+    
+    output = io.StringIO()
+    writer = csv_module.DictWriter(output, fieldnames=['Date', 'Description', 'Debit', 'Credit', 'Balance', 'Reference'])
+    writer.writeheader()
+    
+    for txn in transactions:
+        writer.writerow({
+            'Date': txn.get('date', ''),
+            'Description': txn.get('description', ''),
+            'Debit': txn.get('debit', 0),
+            'Credit': txn.get('credit', 0),
+            'Balance': txn.get('balance', ''),
+            'Reference': txn.get('reference', '')
+        })
+    
+    return output.getvalue()
