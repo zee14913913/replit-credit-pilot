@@ -494,7 +494,8 @@
             filesList.innerHTML = `<div class="loading">📤 正在智能分析${fileType}文件并上传...</div>`;
             
             try {
-                const response = await fetch('/api/proxy/files/smart-upload', {
+                // 添加company_id参数（默认使用公司1）
+                const response = await fetch('/api/proxy/files/smart-upload?company_id=1', {
                     method: 'POST',
                     body: formData
                 });

@@ -4998,7 +4998,8 @@ def proxy_files_api(subpath):
             files['file'] = (uploaded_file.filename, uploaded_file.stream, uploaded_file.content_type)
         
         try:
-            response = requests.post(target_url, files=files, data=request.form)
+            # 转发文件、表单数据和query参数
+            response = requests.post(target_url, files=files, data=request.form, params=request.args)
             return response.content, response.status_code, {'Content-Type': response.headers.get('Content-Type', 'application/json')}
         except Exception as e:
             return jsonify({"error": str(e)}), 500
