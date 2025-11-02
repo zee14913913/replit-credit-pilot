@@ -1,0 +1,21 @@
+Date,Transaction Description,Deposit,Withdrawal,Balance
+Date /,Tarikh,:,05-07-2025
+09-06-2025,CIB Instant Transfer at DIO,"1,000.00"
+09-06-2025,CIB Instant Transfer at DIO,"1,000.00"
+09-06-2025,CIB Instant Transfer at DIO,"16,000.00"
+09-06-2025,CIB Instant Transfer at DIO,"20,000.00"
+09-06-2025,Instant Transfer at KLM,"50,000.00","14,269.16"
+10-06-2025,Fund Transfer at DIO,"2,000.00"
+10-06-2025,Fund Transfer at DIO,"2,207.85"
+10-06-2025,Fund Transfer at DIO,"2,449.35"
+10-06-2025,Fund Transfer at DIO,"3,736.35"
+10-06-2025,CIB Instant Transfer at DIO,"3,800.00",75.61
+12-06-2025,Instant Transfer at KLM,"50,000.00","50,075.61"
+Date /,Tarikh,:,05-07-2025
+ 15-06-2025,CIB Instant Transfer at DIO,"30,000.00"
+15-06-2025,CIB Instant Transfer at DIO,"10,000.00"
+15-06-2025,CIB Instant Transfer at DIO,"5,500.00"
+15-06-2025,CIB Instant Transfer at DIO,"4,374.59",201.02
+02-07-2025,CIB Instant Transfer at DIO,"20,000.00"
+02-07-2025,Instant Transfer at KLM,"20,000.00",201.02
+ Total Withdrawals /,Jumlah Pengeluaran,:,14,"122,068.14",Date /,Tarikh,:,05-07-2025
