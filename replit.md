@@ -3,6 +3,25 @@
 ## Overview
 The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. Its core purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation, guaranteeing 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization suggestions (debt consolidation, balance transfers, loan refinancing), and a success-based fee model. The business vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
+## Recent Changes
+### Security Refactoring (2025-01-02)
+**System Hardening & Permission Tightening** - Completed 10 of 14 planned tasks (71%):
+1. ✅ Admin routes now require authentication via FastAPI `/api/auth/me`
+2. ✅ API Key creation restricted to Admin role only
+3. ✅ Export functions tiered: CSV/Excel for admin/accountant, PDF for all users
+4. ✅ Feature toggles added: `FEATURE_ADVANCED_ANALYTICS` and `FEATURE_CUSTOMER_TIER` (default: false)
+5. ✅ Homepage customer list filtered by role: Admin sees all, Customer sees self only
+6. ✅ Swagger documentation protected: requires login to access `/docs` and `/redoc`
+7. ✅ OCR receipt matching disabled: all matches require manual confirmation
+8. ✅ Upload failure messages clarified: explicitly states "file saved but validation failed"
+9. ✅ System operation manual updated with new permission model
+10. ✅ Workflows restarted and verified running without errors
+
+**Remaining Tasks** (architectural improvements, can be done later):
+- Task 2: Unify authentication source
+- Task 6: Merge batch upload logic
+- Task 8: Unify file paths to FILES_BASE_DIR
+
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 Design requirements: Premium, sophisticated, high-end - suitable for professional client demonstrations.
