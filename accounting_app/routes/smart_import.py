@@ -112,14 +112,55 @@ async def smart_upload_statement(
     csv_reader = csv.DictReader(io.StringIO(csv_content))
     imported_count = 0
     
+    # 导入辅助函数
+    def parse_flexible_date(date_str: str):
+        """支持多种日期格式的灵活解析"""
+        if not date_str:
+            return None
+        
+        date_formats = [
+            '%Y-%m-%d',
+            '%d-%m-%Y',
+            '%d/%m/%Y',
+            '%Y/%m/%d',
+        ]
+        
+        for fmt in date_formats:
+            try:
+                return datetime.strptime(date_str, fmt).date()
+            except:
+                continue
+        return None
+    
     for row in csv_reader:
         try:
-            transaction_date = datetime.strptime(row.get('Date', ''), '%Y-%m-%d').date()
-            description = row.get('Description', '').strip()
-            debit_amount = Decimal(row.get('Debit', '0') or '0')
-            credit_amount = Decimal(row.get('Credit', '0') or '0')
+            # 使用灵活日期解析
+            date_str = row.get('Date', '').strip()
+            transaction_date = parse_flexible_date(date_str)
+            
+            if not transaction_date:
+                print(f"跳过无效日期行: {date_str}")
+                continue
+            
+            # 支持多种列名
+            description = (
+                row.get('Description', '') or 
+                row.get('Transaction Description', '') or 
+                row.get('Particulars', '')
+            ).strip()
+            
+            if not description:
+                print(f"跳过无描述行: {row}")
+                continue
+            
+            # 支持Debit/Credit或Withdrawal/Deposit
+            debit_str = row.get('Debit', '') or row.get('Withdrawal', '') or '0'
+            credit_str = row.get('Credit', '') or row.get('Deposit', '') or '0'
+            
+            debit_amount = Decimal(debit_str or '0')
+            credit_amount = Decimal(credit_str or '0')
             balance = Decimal(row.get('Balance', '0') or '0') if row.get('Balance') else None
-            reference = row.get('Reference', '')
+            reference = row.get('Reference', '') or row.get('Ref. No.', '')
             
             bank_stmt = BankStatement(
                 company_id=company_id,
