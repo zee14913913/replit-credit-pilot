@@ -1667,6 +1667,12 @@ TRANSLATIONS = {
         'module_supplier': '供应商发票',
         'module_reports': '报表',
         'module_management': '管理文件',
+        
+        # Statistics Cards
+        'stat_statement_files': '月结单文件',
+        'stat_test_reports': '测试报告',
+        'stat_total_storage': '总存储空间',
+        'stat_all_files': '所有文件',
     },
     'en': {
         # Navigation
@@ -1775,6 +1781,12 @@ TRANSLATIONS = {
         'module_supplier': 'Supplier Invoice',
         'module_reports': 'Reports',
         'module_management': 'Management Files',
+        
+        # Statistics Cards
+        'stat_statement_files': 'Statement Files',
+        'stat_test_reports': 'Test Reports',
+        'stat_total_storage': 'Total Storage',
+        'stat_all_files': 'All Files',
     }
 }
 

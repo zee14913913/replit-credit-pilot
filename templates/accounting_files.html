@@ -374,22 +374,22 @@
         
         <div class="stats" id="stats">
             <div class="stat-card">
-                <div class="stat-label">📊 月结单文件</div>
+                <div class="stat-label">📊 {{ t('stat_statement_files') }}</div>
                 <div class="stat-value" id="statements-count">--</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">📝 测试报告</div>
+                <div class="stat-label">📝 {{ t('stat_test_reports') }}</div>
                 <div class="stat-value" id="reports-count">--</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">💾 总存储空间</div>
+                <div class="stat-label">💾 {{ t('stat_total_storage') }}</div>
                 <div class="stat-value" id="total-size">-- MB</div>
             </div>
         </div>
         
         <div class="files-section">
-            <h2 class="section-title">📂 所有文件</h2>
-            <div id="files-list" class="loading">正在加载文件列表...</div>
+            <h2 class="section-title">📂 {{ t('stat_all_files') }}</h2>
+            <div id="files-list" class="loading">{{ t('loading') }}</div>
         </div>
     </div>
     
