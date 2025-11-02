@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 import os
 from ..models import FileIndex, Company
 from ..services.file_storage_manager import AccountingFileStorageManager
+from ..services.next_actions_service import NextActionsService
 import logging
 
 logger = logging.getLogger(__name__)
@@ -110,6 +111,27 @@ class UnifiedFileService:
             # 判断是否是10分钟内的新文件
             is_new = (datetime.utcnow() - file.upload_date) < timedelta(minutes=10)
             
+            # 计算下一步动作和状态说明
+            next_actions = NextActionsService.get_next_actions(file, db)
+            status_reason = NextActionsService.get_status_reason(file, db)
+            
+            # 检测同月重复上传
+            duplicate_warning = False
+            if file.module == 'bank' and file.period and file.account_number:
+                from sqlalchemy import and_
+                duplicate_count = db.query(FileIndex).filter(
+                    and_(
+                        FileIndex.company_id == company_id,
+                        FileIndex.module == 'bank',
+                        FileIndex.period == file.period,
+                        FileIndex.account_number == file.account_number,
+                        FileIndex.status.in_(['uploaded', 'active', 'validated']),
+                        FileIndex.is_active == True,
+                        FileIndex.id != file.id
+                    )
+                ).count()
+                duplicate_warning = duplicate_count > 0
+            
             results.append({
                 "file_id": file.id,
                 "file_name": file.filename,
@@ -122,7 +144,11 @@ class UnifiedFileService:
                 "validation_status": file.validation_status,
                 "is_new": is_new,
                 "file_size_kb": file.file_size_kb,
-                "period": file.period
+                "period": file.period,
+                "next_actions": next_actions,  # ✨ 新增：下一步动作列表
+                "status_reason": status_reason,  # ✨ 新增：状态说明
+                "duplicate_warning": duplicate_warning,  # ✨ 新增：重复警告
+                "is_primary": file.is_primary if hasattr(file, 'is_primary') else False
             })
         
         return results

@@ -567,12 +567,16 @@ class FileIndex(Base):
     module = Column(String)  # credit-card | bank | savings | pos | supplier | reports
     original_filename = Column(String)
     deleted_at = Column(DateTime(timezone=True))  # Phase 1-3: 软删除时间戳
-    status = Column(String(20), default='active', index=True)  # Phase 1-3: active | archived | deleted
+    status = Column(String(20), default='active', index=True)  # Phase 1-3: uploaded | active | validated | posted | exception | archived | processing | failed
     from_engine = Column(String(10), default='flask')  # 流程改造：flask | fastapi
     validation_status = Column(String(20), default='pending')  # 流程改造：passed | failed | pending
+    is_primary = Column(Boolean, default=False)  # 是否为本月主对账单（当同月存在多份时）
+    duplicate_warning = Column(Boolean, default=False)  # 是否存在同月多份对账单警告
+    status_reason = Column(Text)  # 状态说明：解释为什么还是当前状态
+    account_number = Column(String(100))  # 银行账号（用于检测同月重复上传）
     
     __table_args__ = (
-        CheckConstraint("status IN ('active', 'archived', 'deleted', 'processing', 'failed')"),
+        CheckConstraint("status IN ('uploaded', 'active', 'validated', 'posted', 'exception', 'archived', 'processing', 'failed')"),
         CheckConstraint("file_type IN ('original', 'generated')"),
     )
 

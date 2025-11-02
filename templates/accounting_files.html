@@ -477,10 +477,10 @@
                                 <th>模块</th>
                                 <th>文件名</th>
                                 <th>状态</th>
+                                <th>状态说明</th>
+                                <th>下一步动作</th>
                                 <th>大小(KB)</th>
-                                <th>上传者</th>
                                 <th>上传时间</th>
-                                <th>来源</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
@@ -497,7 +497,11 @@
                     const status = file.status || 'active';
                     const statusClass = `status-${status}`;
                     const statusText = {
+                        'uploaded': '📤 已上传',
                         'active': '✅ 活跃',
+                        'validated': '✓ 已验证',
+                        'posted': '📊 已入账',
+                        'exception': '⚠️ 异常',
                         'processing': '⏳ 处理中',
                         'failed': '❌ 失败',
                         'archived': '📦 归档'
@@ -520,28 +524,52 @@
                         'accounting': '📝'
                     }[file.module] || '📁';
                     
-                    // 来源引擎
-                    const fromEngine = file.from_engine || 'unknown';
-                    const engineBadge = fromEngine === 'flask' ? '🐍 Flask' : '⚡ FastAPI';
-                    
                     // 新文件标记
                     const newBadge = isNew ? '<span style="color: #FF007F; font-weight: bold; margin-left: 8px;">🆕 NEW</span>' : '';
                     
+                    // 重复警告标记
+                    const duplicateWarning = file.duplicate_warning ? 
+                        '<span style="color: #ff6600; font-weight: bold; margin-left: 8px;">⚠️ 本月有多份</span>' : '';
+                    
+                    // 状态说明
+                    const statusReason = file.status_reason || '无说明';
+                    
+                    // 下一步动作按钮
+                    let nextActionsHtml = '';
+                    if (file.next_actions && file.next_actions.length > 0) {
+                        // 只显示优先级最高的1-2个动作
+                        const topActions = file.next_actions.slice(0, 2);
+                        topActions.forEach(action => {
+                            const buttonColor = action.priority === 1 ? '#FF007F' : '#322446';
+                            nextActionsHtml += `
+                                <button 
+                                    onclick="executeAction('${action.endpoint}', '${action.method}')"
+                                    class="btn btn-small"
+                                    style="background: ${buttonColor}; margin: 2px; font-size: 0.8rem;"
+                                    title="${action.description || ''}"
+                                >
+                                    ${action.icon} ${action.label.replace(/👉|✅|⚠️|📊|🔍|📝|📒|📦|❌|🔄|↩️|⏳/g, '')}
+                                </button>
+                            `;
+                        });
+                    } else {
+                        nextActionsHtml = '<span style="color: #666;">无动作</span>';
+                    }
+                    
                     html += `
-                        <tr class="${rowClass}">
+                        <tr class="${rowClass}" style="${file.duplicate_warning ? 'background: rgba(255, 102, 0, 0.1);' : ''}">
                             <td>${moduleIcon} ${file.module}</td>
-                            <td>${file.file_name}${newBadge}</td>
+                            <td>${file.file_name}${newBadge}${duplicateWarning}</td>
                             <td>
                                 <span class="status-badge ${statusClass}">${statusText}</span>
                                 <span class="status-badge" style="background: #322446;">${validationBadge}</span>
                             </td>
+                            <td style="font-size: 0.9rem; color: #999;">${statusReason}</td>
+                            <td>${nextActionsHtml}</td>
                             <td>${(file.file_size_kb || 0).toFixed(2)}</td>
-                            <td>${file.uploaded_by || 'system'}</td>
                             <td>${new Date(file.uploaded_at).toLocaleString('zh-CN')}</td>
-                            <td>${engineBadge}</td>
                             <td>
                                 <button onclick="viewFileDetail(${file.file_id})" class="btn btn-primary btn-small">👁️ 详情</button>
-                                <button onclick="updateFileStatus(${file.file_id}, '${status}')" class="btn btn-secondary btn-small">✏️  状态</button>
                             </td>
                         </tr>
                     `;
@@ -713,6 +741,48 @@
             }
         }
         
+        // 执行下一步动作
+        async function executeAction(endpoint, method) {
+            // 显示确认对话框
+            const confirmMessage = `确定要执行此操作吗？\n端点: ${endpoint}\n方法: ${method}`;
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            try {
+                // 构建完整URL（通过proxy转发）
+                const url = `/api/proxy${endpoint}`;
+                
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                
+                const response = await fetch(url, options);
+                const data = await response.json();
+                
+                if (data.success || response.ok) {
+                    if (window.Toast) {
+                        Toast.success('操作执行成功！');
+                    } else {
+                        alert('操作执行成功！');
+                    }
+                    // 刷新文件列表
+                    refreshFiles();
+                } else {
+                    throw new Error(data.message || '操作失败');
+                }
+            } catch (error) {
+                if (window.Toast) {
+                    Toast.error('操作失败: ' + error.message);
+                } else {
+                    alert('操作失败: ' + error.message);
+                }
+            }
+        }
+        
         async function viewFile(filePath, filename, companyId) {
             const modal = document.getElementById('fileModal');
             const modalTitle = document.getElementById('modalTitle');
@@ -844,14 +914,28 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    const successMsg = `上传成功！${result.identified_info.bank_name} - ${result.identified_info.statement_month} | 导入 ${result.imported} 笔交易，自动匹配 ${result.matched} 笔`;
+                    // ✨ 新增：上传成功后的引导文案
+                    const successMsg = `
+📤 银行月结单已成功上传并存为 Active
+
+✅ 已识别：${result.identified_info.bank_name} - ${result.identified_info.statement_month}
+📊 导入 ${result.imported} 笔交易，自动匹配 ${result.matched} 笔
+
+📋 下一步请选择：
+1️⃣ 【验证数据】- 确保行数正确、客户供应商匹配
+2️⃣ 【生成会计分录】- 把这份月结单真正入账到账册
+3️⃣ 若这是重复上传的同月份账单，请在列表中设定哪一份是主账单
+
+👇 请查看下方文件列表中的"下一步动作"列`;
                     
                     if (window.Toast) {
-                        Toast.success(successMsg);
+                        Toast.success(successMsg, 15000);  // 显示15秒
+                    } else {
+                        alert(successMsg);
                     }
                     
                     // 立即刷新页面显示新文件
-                    window.location.reload();
+                    setTimeout(() => window.location.reload(), 1500);
                 } else {
                     // 显示详细错误信息
                     let errorMessage = `上传失败：${result.message}`;
