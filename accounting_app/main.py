@@ -3,11 +3,12 @@ FastAPI Main Application
 银行贷款合规会计系统 - 主入口
 """
 import os
-from fastapi import FastAPI, Depends, Request
+from fastapi import FastAPI, Depends, Request, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from sqlalchemy.orm import Session
 
 from .db import get_db, init_database, execute_sql_file
@@ -16,11 +17,13 @@ from . import models
 # 配置模板目录
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "templates"))
 
-# 创建FastAPI应用
+# 创建FastAPI应用（🔒 禁用默认公开文档，改为需要登录）
 app = FastAPI(
     title="Loan-Ready Accounting System",
     description="银行贷款合规会计系统 - 将银行月结单转换为会计分录，生成银行贷款所需的财务报表",
-    version="1.0.0"
+    version="1.0.0",
+    docs_url=None,  # 禁用默认 /docs
+    redoc_url=None  # 禁用默认 /redoc
 )
 
 # CORS配置（允许Flask系统调用）
@@ -222,6 +225,277 @@ async def health_check(db: Session = Depends(get_db)):
             "database": "disconnected",
             "error": str(e)
         }
+
+# 🔒 需要登录的API文档（Swagger UI）
+@app.get("/docs", include_in_schema=False)
+async def get_documentation(request: Request, db: Session = Depends(get_db)):
+    """
+    Swagger UI 文档（需要登录且验证有效）
+    调用/api/auth/me验证token的有效性
+    """
+    import requests as http_requests
+    
+    # 1. 检查认证凭据是否存在
+    auth_header = request.headers.get("Authorization")
+    session_cookie = request.cookies.get("session_token")
+    
+    if not auth_header and not session_cookie:
+        return HTMLResponse(
+            content="""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>需要登录</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        margin: 0;
+                    }
+                    .card {
+                        background: white;
+                        padding: 2rem;
+                        border-radius: 10px;
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                        text-align: center;
+                    }
+                    h1 { color: #333; }
+                    p { color: #666; }
+                    a {
+                        display: inline-block;
+                        margin-top: 1rem;
+                        padding: 10px 20px;
+                        background: #667eea;
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 5px;
+                    }
+                    a:hover { background: #764ba2; }
+                </style>
+            </head>
+            <body>
+                <div class="card">
+                    <h1>🔒 需要登录</h1>
+                    <p>API文档仅限登录用户访问</p>
+                    <p>请先登录后再访问此页面</p>
+                    <a href="/api/auth/login">前往登录</a>
+                </div>
+            </body>
+            </html>
+            """,
+            status_code=401
+        )
+    
+    # 2. 验证token的有效性（调用/api/auth/me）
+    try:
+        token = auth_header.replace("Bearer ", "") if auth_header else session_cookie
+        
+        # 调用自己的/api/auth/me端点验证
+        verify_response = http_requests.get(
+            "http://localhost:8000/api/auth/me",
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=5
+        )
+        
+        if verify_response.status_code != 200:
+            raise HTTPException(status_code=401, detail="Invalid or expired token")
+        
+        # 验证成功，显示Swagger UI
+        return get_swagger_ui_html(
+            openapi_url="/openapi.json",
+            title=f"{app.title} - Swagger UI"
+        )
+    
+    except Exception as e:
+        return HTMLResponse(
+            content=f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>认证失败</title>
+                <style>
+                    body {{
+                        font-family: Arial, sans-serif;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        margin: 0;
+                    }}
+                    .card {{
+                        background: white;
+                        padding: 2rem;
+                        border-radius: 10px;
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                        text-align: center;
+                    }}
+                    h1 {{ color: #333; }}
+                    p {{ color: #666; }}
+                    a {{
+                        display: inline-block;
+                        margin-top: 1rem;
+                        padding: 10px 20px;
+                        background: #667eea;
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 5px;
+                    }}
+                    a:hover {{ background: #764ba2; }}
+                </style>
+            </head>
+            <body>
+                <div class="card">
+                    <h1>❌ 认证失败</h1>
+                    <p>您的登录凭据无效或已过期</p>
+                    <p>请重新登录后再访问</p>
+                    <a href="/api/auth/login">重新登录</a>
+                </div>
+            </body>
+            </html>
+            """,
+            status_code=401
+        )
+
+
+# 🔒 需要登录的API文档（ReDoc）
+@app.get("/redoc", include_in_schema=False)
+async def get_redoc(request: Request, db: Session = Depends(get_db)):
+    """
+    ReDoc 文档（需要登录且验证有效）
+    """
+    import requests as http_requests
+    
+    # 1. 检查认证凭据是否存在
+    auth_header = request.headers.get("Authorization")
+    session_cookie = request.cookies.get("session_token")
+    
+    if not auth_header and not session_cookie:
+        return HTMLResponse(
+            content="""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>需要登录</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        margin: 0;
+                    }
+                    .card {
+                        background: white;
+                        padding: 2rem;
+                        border-radius: 10px;
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                        text-align: center;
+                    }
+                    h1 { color: #333; }
+                    p { color: #666; }
+                    a {
+                        display: inline-block;
+                        margin-top: 1rem;
+                        padding: 10px 20px;
+                        background: #667eea;
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 5px;
+                    }
+                    a:hover { background: #764ba2; }
+                </style>
+            </head>
+            <body>
+                <div class="card">
+                    <h1>🔒 需要登录</h1>
+                    <p>API文档仅限登录用户访问</p>
+                    <p>请先登录后再访问此页面</p>
+                    <a href="/api/auth/login">前往登录</a>
+                </div>
+            </body>
+            </html>
+            """,
+            status_code=401
+        )
+    
+    # 2. 验证token的有效性
+    try:
+        token = auth_header.replace("Bearer ", "") if auth_header else session_cookie
+        
+        # 调用自己的/api/auth/me端点验证
+        verify_response = http_requests.get(
+            "http://localhost:8000/api/auth/me",
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=5
+        )
+        
+        if verify_response.status_code != 200:
+            raise HTTPException(status_code=401, detail="Invalid or expired token")
+        
+        # 验证成功，显示ReDoc
+        return get_redoc_html(
+            openapi_url="/openapi.json",
+            title=f"{app.title} - ReDoc"
+        )
+    
+    except Exception as e:
+        return HTMLResponse(
+            content=f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>认证失败</title>
+                <style>
+                    body {{
+                        font-family: Arial, sans-serif;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        margin: 0;
+                    }}
+                    .card {{
+                        background: white;
+                        padding: 2rem;
+                        border-radius: 10px;
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                        text-align: center;
+                    }}
+                    h1 {{ color: #333; }}
+                    p {{ color: #666; }}
+                    a {{
+                        display: inline-block;
+                        margin-top: 1rem;
+                        padding: 10px 20px;
+                        background: #667eea;
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 5px;
+                    }}
+                    a:hover {{ background: #764ba2; }}
+                </style>
+            </head>
+            <body>
+                <div class="card">
+                    <h1>❌ 认证失败</h1>
+                    <p>您的登录凭据无效或已过期</p>
+                    <p>请重新登录后再访问</p>
+                    <a href="/api/auth/login">重新登录</a>
+                </div>
+            </body>
+            </html>
+            """,
+            status_code=401
+        )
+
 
 # 前端管理界面
 @app.get("/accounting", response_class=HTMLResponse)

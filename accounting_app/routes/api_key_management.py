@@ -108,8 +108,8 @@ async def create_api_key(
         "company_id": auth_info["company_id"]
     }
     
-    # 1. 权限检查（仅admin和accountant可创建API密钥）
-    if current_user.get("role") not in ["admin", "accountant"]:
+    # 1. 权限检查（🔒 收紧：仅admin可创建API密钥，会计人员也不行）
+    if current_user.get("role") != "admin":
         # 记录权限失败审计日志
         audit_logger = AuditLogger(db)
         try:
@@ -122,7 +122,7 @@ async def create_api_key(
                 username=current_user["username"],
                 entity_type="api_key",
                 success=False,
-                error_message=f"Insufficient permissions: {current_user['role']}",
+                error_message=f"Insufficient permissions: only admin allowed, current role={current_user['role']}",
                 **req_info
             )
         finally:
@@ -130,7 +130,7 @@ async def create_api_key(
         
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only admin and accountant roles can create API keys"
+            detail="权限不足：只有超级管理员可以创建API密钥（客户和会计人员请联系管理员）"
         )
     
     # 2. 验证环境值

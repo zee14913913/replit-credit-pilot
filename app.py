@@ -48,6 +48,16 @@ from auth.customer_auth import (
     get_customer_data_summary
 )
 
+# Admin认证辅助模块（统一调用8000端口验证）
+from auth.admin_auth_helper import (
+    require_admin_or_accountant,
+    require_admin_only,
+    verify_user_with_accounting_api,
+    get_current_user,
+    is_admin,
+    is_admin_or_accountant
+)
+
 # Admin Portfolio Management
 from admin.portfolio_manager import PortfolioManager
 
@@ -1129,8 +1139,9 @@ def customer_download_statement(statement_id):
 # ==================== ADMIN AUTHENTICATION ====================
 
 @app.route('/admin')
+@require_admin_or_accountant
 def admin_dashboard():
-    """Admin dashboard route - Public access"""
+    """Admin dashboard route - 仅管理员和会计可见"""
     
     with get_db() as conn:
         cursor = conn.cursor()
@@ -1295,9 +1306,9 @@ def admin_dashboard():
 
 
 @app.route('/admin/api-keys')
-@require_flask_auth
+@require_admin_or_accountant
 def api_keys_management():
-    """API密钥管理页面 - 需要登录认证"""
+    """API密钥管理页面 - 仅管理员和会计可见"""
     # 从环境变量读取API_BASE_URL
     # 默认为空字符串，使用same-origin相对路径（生产环境推荐）
     # 开发环境可设置: export API_BASE_URL="http://localhost:8000"
@@ -1306,8 +1317,9 @@ def api_keys_management():
 
 
 @app.route('/savings-admin')
+@require_admin_or_accountant
 def savings_admin_dashboard():
-    """储蓄账户管理中心 Dashboard - Public access - 按月份排列所有savings账单"""
+    """储蓄账户管理中心 Dashboard - 仅管理员和会计可见"""
     
     with get_db() as conn:
         cursor = conn.cursor()
@@ -1368,8 +1380,9 @@ def savings_admin_dashboard():
 # ==================== END SAVINGS ADMIN AUTHENTICATION ====================
 
 @app.route('/admin/customers-cards')
+@require_admin_or_accountant
 def admin_customers_cards():
-    """Admin page showing all customers and their credit cards - Public access"""
+    """Admin page showing all customers and their credit cards - 仅管理员和会计可见"""
     
     with get_db() as conn:
         cursor = conn.cursor()
@@ -1548,8 +1561,9 @@ def notify_admin_consultation_request(customer_name, service_type):
 # ==================== ADMIN PORTFOLIO MANAGEMENT ====================
 
 @app.route('/admin/portfolio')
+@require_admin_or_accountant
 def admin_portfolio():
-    """管理员Portfolio管理仪表板 - 核心运营工具"""
+    """管理员Portfolio管理仪表板 - 核心运营工具 - 仅管理员和会计可见"""
     portfolio_mgr = PortfolioManager()
     
     # 获取总览数据
@@ -1571,8 +1585,9 @@ def admin_portfolio():
                          revenue_breakdown=revenue_breakdown)
 
 @app.route('/admin/portfolio/client/<int:customer_id>')
+@require_admin_or_accountant
 def admin_client_detail(customer_id):
-    """查看单个客户完整workflow详情"""
+    """查看单个客户完整workflow详情 - 仅管理员和会计可见"""
     portfolio_mgr = PortfolioManager()
     client_detail = portfolio_mgr.get_client_detail(customer_id)
     
@@ -2642,6 +2657,7 @@ def list_business_plans(customer_id):
 # ============================================================================
 
 @app.route('/admin/test-generate-reports')
+@require_admin_or_accountant
 def admin_test_generate_reports():
     """
     管理员测试：手动触发批量生成所有客户的月度报表
@@ -2658,6 +2674,7 @@ def admin_test_generate_reports():
 
 
 @app.route('/admin/test-send-reports')
+@require_admin_or_accountant
 def admin_test_send_reports():
     """
     管理员测试：手动触发批量发送月度报表邮件
@@ -2674,6 +2691,7 @@ def admin_test_send_reports():
 
 
 @app.route('/admin/automation-status')
+@require_admin_or_accountant
 def admin_automation_status():
     """查看自动化系统状态"""
     with get_db() as conn:
