@@ -13,10 +13,10 @@ BEGIN
         ALTER TABLE file_index ADD COLUMN status VARCHAR(20) DEFAULT 'active';
     END IF;
     
-    -- 添加约束
+    -- 添加约束（支持所有业务状态）
     BEGIN
         ALTER TABLE file_index ADD CONSTRAINT chk_file_index_status 
-        CHECK (status IN ('active', 'archived', 'deleted'));
+        CHECK (status IN ('active', 'processing', 'failed', 'archived', 'deleted'));
     EXCEPTION
         WHEN duplicate_object THEN NULL;
     END;
