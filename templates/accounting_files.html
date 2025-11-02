@@ -419,19 +419,17 @@
                     headers = ['Date', 'Description', 'Debit', 'Credit', 'Balance'];
                 }
                 
-                // 生成CSV
+                // 生成CSV（100%保留原始数据，不做任何修改）
                 let csvContent = headers.join(',') + '\n';
                 allRows.forEach(row => {
-                    // 清理并转义CSV字段
+                    // 仅进行CSV格式转义，完全保留原始内容（包括空格）
                     const cleanedRow = row.map(cell => {
-                        let cleaned = (cell || '').toString().trim();
-                        // 移除Excel公式前缀
-                        cleaned = cleaned.replace(/^=+/, '');
-                        // 如果包含逗号或引号，需要用引号包围
-                        if (cleaned.includes(',') || cleaned.includes('"')) {
-                            cleaned = '"' + cleaned.replace(/"/g, '""') + '"';
+                        let value = (cell || '').toString();
+                        // 如果包含逗号或引号，需要用引号包围（CSV标准格式要求）
+                        if (value.includes(',') || value.includes('"')) {
+                            value = '"' + value.replace(/"/g, '""') + '"';
                         }
-                        return cleaned;
+                        return value;
                     });
                     csvContent += cleanedRow.join(',') + '\n';
                 });
