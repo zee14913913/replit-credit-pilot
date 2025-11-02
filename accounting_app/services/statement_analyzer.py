@@ -38,12 +38,33 @@ def analyze_csv_content(csv_content: str) -> Dict:
     }
     
     try:
+        # 预处理CSV：检测并跳过账号标题行
+        lines = csv_content.strip().split('\n')
+        if not lines:
+            result["analysis"].append("CSV文件为空")
+            return result
+        
+        # 如果第一行包含"ACCOUNT STATEMENT"之类的标题，跳过它
+        start_index = 0
+        if 'ACCOUNT' in lines[0].upper() or 'STATEMENT' in lines[0].upper():
+            start_index = 1
+            result["analysis"].append("检测到账号标题行，已跳过")
+            
+            # 从第一行提取账号
+            account_match = re.search(r'\d{10,16}', lines[0])
+            if account_match:
+                result["account_number"] = account_match.group(0)
+                result["analysis"].append(f"从标题提取账号: {result['account_number']}")
+        
+        # 重组CSV内容
+        processed_csv = '\n'.join(lines[start_index:])
+        
         # 解析CSV
-        csv_reader = csv.DictReader(io.StringIO(csv_content))
+        csv_reader = csv.DictReader(io.StringIO(processed_csv))
         rows = list(csv_reader)
         
         if not rows:
-            result["analysis"].append("CSV文件为空")
+            result["analysis"].append("CSV文件无有效数据行")
             return result
         
         result["transaction_count"] = len(rows)
@@ -252,6 +273,35 @@ def _clean_excel_formula(value: str) -> str:
     # 移除Excel公式格式
     cleaned = re.sub(r'^="(.*)"$', r'\1', value.strip())
     return cleaned
+
+
+def clean_csv_excel_format(csv_content: str) -> str:
+    """
+    清理整个CSV文件的Excel公式格式
+    将所有 ="value" 替换为 value
+    同时移除账号标题行（如果存在）
+    返回清理后的CSV字符串
+    """
+    import csv
+    import io
+    
+    # 解析CSV
+    lines = csv_content.strip().split('\n')
+    
+    # 检测并跳过账号标题行
+    start_index = 0
+    if lines and ('ACCOUNT' in lines[0].upper() or 'STATEMENT' in lines[0].upper()):
+        start_index = 1
+    
+    cleaned_lines = []
+    
+    for line in lines[start_index:]:
+        # 对每一行的所有单元格清理Excel格式
+        # 使用正则表达式全局替换
+        cleaned_line = re.sub(r'="([^"]*)"', r'\1', line)
+        cleaned_lines.append(cleaned_line)
+    
+    return '\n'.join(cleaned_lines)
 
 
 def _parse_date_flexible(date_str: str) -> Optional[datetime]:

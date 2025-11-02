@@ -62,7 +62,10 @@ async def smart_upload_statement(
             os.remove(temp_path)
     else:
         # CSV文件
-        csv_content = content.decode('utf-8')
+        from ..services.statement_analyzer import clean_csv_excel_format
+        raw_csv = content.decode('utf-8')
+        # 清理Excel公式格式（="value" -> value）
+        csv_content = clean_csv_excel_format(raw_csv)
         # 智能分析CSV内容
         analysis = analyze_csv_content(csv_content)
     
@@ -90,7 +93,11 @@ async def smart_upload_statement(
     if not statement_month:
         raise HTTPException(status_code=400, detail="无法识别月份，请确保CSV包含日期列")
     
-    # 保存原始CSV文件
+    # 检查csv_content是否有效
+    if not csv_content:
+        raise HTTPException(status_code=400, detail="文件解析失败，无有效数据")
+    
+    # 保存清理后的CSV文件
     storage_dir = "/home/runner/workspace/accounting_data/statements"
     os.makedirs(storage_dir, exist_ok=True)
     

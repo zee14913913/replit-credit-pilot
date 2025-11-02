@@ -264,13 +264,13 @@
         
         <div class="header-actions">
             <a href="/" class="btn btn-secondary">← 返回首页</a>
-            <button onclick="document.getElementById('fileUpload').click()" class="btn btn-primary">📤 智能上传CSV</button>
+            <button onclick="document.getElementById('fileUpload').click()" class="btn btn-primary">📤 智能上传CSV/PDF</button>
             <button onclick="refreshFiles()" class="btn btn-primary">🔄 刷新列表</button>
             <a href="/accounting_test_results" class="btn btn-primary">🧪 运行新测试</a>
         </div>
         
         <!-- 隐藏的文件上传输入 -->
-        <input type="file" id="fileUpload" accept=".csv" style="display: none;" onchange="handleFileUpload(event)">
+        <input type="file" id="fileUpload" accept=".csv,.pdf" style="display: none;" onchange="handleFileUpload(event)">
         
         <div class="stats" id="stats">
             <div class="stat-card">
