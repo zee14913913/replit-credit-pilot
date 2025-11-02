@@ -311,64 +311,8 @@
         </div>
     </div>
     
-    <!-- PDF转CSV预览验证模态框 -->
-    <div id="pdfPreviewModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">⚠️ PDF转CSV结果验证（必须人工确认）</div>
-                <span class="close" onclick="closePDFPreview()">&times;</span>
-            </div>
-            <div style="background: #2d2d2d; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
-                <h3 style="color: #FF007F; margin-bottom: 1rem;">🔍 数据完整性验证</h3>
-                <div style="color: #fff; line-height: 1.8;">
-                    <p><strong style="color: #FF007F;">❗ 重要提示：</strong>PDF转CSV是自动转换，<strong>必须100%验证准确性</strong></p>
-                    <p>• <strong>检查事项：</strong>无删减、无添加、无更改</p>
-                    <p>• <strong>验证方法：</strong>对比下方预览表格与原PDF文件</p>
-                    <p>• <strong>建议操作：</strong>点击"下载CSV"用Excel打开验证</p>
-                    <p>• <strong>确认后：</strong>点击"确认上传"才会导入系统</p>
-                </div>
-            </div>
-            
-            <div style="background: #1a1a1a; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
-                    <div>
-                        <span style="color: #999;">📄 原文件：</span>
-                        <span style="color: #FF007F; font-weight: bold;" id="previewOriginalFile">--</span>
-                    </div>
-                    <div>
-                        <span style="color: #999;">📊 识别行数：</span>
-                        <span style="color: #FF007F; font-weight: bold;" id="previewRowCount">--</span>
-                    </div>
-                    <div>
-                        <span style="color: #999;">📋 识别列数：</span>
-                        <span style="color: #FF007F; font-weight: bold;" id="previewColCount">--</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div style="margin-bottom: 1rem;">
-                <button onclick="downloadConvertedCSV()" class="btn btn-primary">📥 下载CSV文件（供人工验证）</button>
-            </div>
-            
-            <div style="max-height: 400px; overflow-y: auto; margin-bottom: 1.5rem; border: 2px solid #322446; border-radius: 8px;">
-                <table class="csv-table" id="previewTable">
-                    <thead id="previewTableHeader"></thead>
-                    <tbody id="previewTableBody"></tbody>
-                </table>
-            </div>
-            
-            <div style="display: flex; gap: 1rem; justify-content: center;">
-                <button onclick="confirmUploadCSV()" class="btn btn-primary" style="font-size: 1.2rem; padding: 16px 32px;">✅ 我已验证，确认上传</button>
-                <button onclick="closePDFPreview()" class="btn btn-secondary" style="font-size: 1.2rem; padding: 16px 32px;">❌ 取消</button>
-            </div>
-        </div>
-    </div>
     
     <script>
-        // 全局变量存储转换结果
-        let convertedCSVData = null;
-        let originalPDFName = null;
-        
         // PDF转CSV核心函数
         async function convertPDFToCSV(file) {
             try {
@@ -629,8 +573,9 @@
             }
             
             const filesList = document.getElementById('files-list');
+            let uploadFile = file;
             
-            // 如果是PDF文件，先转换为CSV并显示预览
+            // 如果是PDF文件，先转换为CSV（完全保留原始数据）
             if (fileName.endsWith('.pdf')) {
                 filesList.innerHTML = `<div class="loading">🔄 正在将PDF转换为CSV格式...</div>`;
                 
@@ -643,161 +588,18 @@
                     return;
                 }
                 
-                // 存储转换结果到全局变量
-                originalPDFName = file.name;
-                convertedCSVData = conversionResult;
+                // 创建CSV File对象（100%保留原始数据）
+                const csvBlob = new Blob([conversionResult.csvContent], { type: 'text/csv' });
+                uploadFile = new File([csvBlob], fileName.replace('.pdf', '.csv'), { type: 'text/csv' });
                 
-                // 显示预览模态框供用户验证
-                showPDFPreview(conversionResult, file.name);
-                
-                // 恢复文件列表
-                loadFiles();
+                filesList.innerHTML = `<div class="loading">✅ PDF已转换为CSV (${conversionResult.rowCount}行)\n📤 正在智能分析并上传...</div>`;
             } else {
-                // CSV文件直接上传
                 filesList.innerHTML = `<div class="loading">📤 正在智能分析CSV文件并上传...</div>`;
-                
-                const formData = new FormData();
-                formData.append('file', file);
-                
-                try {
-                    const response = await fetch('/api/proxy/files/smart-upload?company_id=1', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        let message = `✅ ${result.message}\n\n`;
-                        message += `📊 智能识别结果：\n`;
-                        message += `• 银行: ${result.identified_info.bank_name}\n`;
-                        message += `• 账号: ${result.identified_info.account_number}\n`;
-                        message += `• 月份: ${result.identified_info.statement_month}\n`;
-                        message += `• 导入交易: ${result.imported} 笔\n`;
-                        message += `• 自动匹配: ${result.matched} 笔\n\n`;
-                        message += `📁 文件已保存至:\n${result.file_saved}`;
-                        
-                        alert(message);
-                        refreshFiles();
-                    } else {
-                        alert(`❌ 上传失败：${result.message}`);
-                        loadFiles();
-                    }
-                } catch (error) {
-                    alert(`❌ 上传失败: ${error.message}`);
-                    loadFiles();
-                }
             }
             
-            // 清空文件输入
-            event.target.value = '';
-        }
-        
-        // 显示PDF转CSV预览模态框
-        function showPDFPreview(conversionResult, originalFileName) {
-            const modal = document.getElementById('pdfPreviewModal');
-            
-            // 更新统计信息
-            document.getElementById('previewOriginalFile').textContent = originalFileName;
-            document.getElementById('previewRowCount').textContent = conversionResult.rowCount;
-            document.getElementById('previewColCount').textContent = conversionResult.headers.length;
-            
-            // 生成预览表格
-            const headerRow = document.getElementById('previewTableHeader');
-            const bodyRows = document.getElementById('previewTableBody');
-            
-            // 清空
-            headerRow.innerHTML = '';
-            bodyRows.innerHTML = '';
-            
-            // 添加表头
-            let headerHTML = '<tr>';
-            conversionResult.headers.forEach(header => {
-                headerHTML += `<th>${header}</th>`;
-            });
-            headerHTML += '</tr>';
-            headerRow.innerHTML = headerHTML;
-            
-            // 解析CSV内容并显示
-            const csvLines = conversionResult.csvContent.split('\n');
-            for (let i = 1; i < csvLines.length; i++) {
-                const line = csvLines[i].trim();
-                if (!line) continue;
-                
-                const cells = parseCSVLine(line);
-                let rowHTML = '<tr>';
-                cells.forEach(cell => {
-                    rowHTML += `<td>${cell}</td>`;
-                });
-                rowHTML += '</tr>';
-                bodyRows.innerHTML += rowHTML;
-            }
-            
-            // 显示模态框
-            modal.style.display = 'block';
-        }
-        
-        // 简单CSV行解析（处理引号）
-        function parseCSVLine(line) {
-            const cells = [];
-            let currentCell = '';
-            let inQuotes = false;
-            
-            for (let i = 0; i < line.length; i++) {
-                const char = line[i];
-                
-                if (char === '"') {
-                    inQuotes = !inQuotes;
-                } else if (char === ',' && !inQuotes) {
-                    cells.push(currentCell);
-                    currentCell = '';
-                } else {
-                    currentCell += char;
-                }
-            }
-            cells.push(currentCell);
-            
-            return cells;
-        }
-        
-        // 下载转换后的CSV文件
-        function downloadConvertedCSV() {
-            if (!convertedCSVData) {
-                alert('没有可下载的CSV数据');
-                return;
-            }
-            
-            const blob = new Blob([convertedCSVData.csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            
-            link.setAttribute('href', url);
-            link.setAttribute('download', originalPDFName.replace('.pdf', '_转换.csv'));
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-        
-        // 确认上传CSV
-        async function confirmUploadCSV() {
-            if (!convertedCSVData) {
-                alert('没有可上传的CSV数据');
-                return;
-            }
-            
-            const filesList = document.getElementById('files-list');
-            filesList.innerHTML = `<div class="loading">✅ 验证通过\n📤 正在上传到系统...</div>`;
-            
-            // 关闭模态框
-            closePDFPreview();
-            
-            // 创建CSV File对象
-            const csvBlob = new Blob([convertedCSVData.csvContent], { type: 'text/csv' });
-            const csvFile = new File([csvBlob], originalPDFName.replace('.pdf', '.csv'), { type: 'text/csv' });
-            
+            // 统一上传流程（CSV和PDF转换后的CSV使用相同验证机制）
             const formData = new FormData();
-            formData.append('file', csvFile);
+            formData.append('file', uploadFile);
             
             try {
                 const response = await fetch('/api/proxy/files/smart-upload?company_id=1', {
@@ -816,7 +618,10 @@
                     message += `• 导入交易: ${result.imported} 笔\n`;
                     message += `• 自动匹配: ${result.matched} 笔\n\n`;
                     message += `📁 文件已保存至:\n${result.file_saved}`;
-                    message += `\n\n💡 提示: PDF已通过人工验证后转换导入`;
+                    
+                    if (fileName.endsWith('.pdf')) {
+                        message += `\n\n💡 提示: PDF已自动转换为CSV格式并通过系统验证导入`;
+                    }
                     
                     alert(message);
                     refreshFiles();
@@ -829,14 +634,8 @@
                 loadFiles();
             }
             
-            // 清空全局变量
-            convertedCSVData = null;
-            originalPDFName = null;
-        }
-        
-        // 关闭PDF预览模态框
-        function closePDFPreview() {
-            document.getElementById('pdfPreviewModal').style.display = 'none';
+            // 清空文件输入
+            event.target.value = '';
         }
         
         // 页面加载时获取文件列表
