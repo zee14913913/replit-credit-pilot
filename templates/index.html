@@ -7,31 +7,31 @@
     <!-- 会计系统快捷入口 -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="alert" role="alert" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; border-radius: 15px; padding: 1.5rem;">
-                <h4 style="color: white; margin-bottom: 0.8rem;">🏦 财务会计系统 (Accounting System)</h4>
-                <p class="mb-3" style="opacity: 0.95;">银行月结单 → 会计分录 → 财务报表（用于银行贷款申请）</p>
+            <div class="alert" role="alert" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 15px; padding: 1.5rem;">
+                <h4 style="color: #FFFFFF; margin-bottom: 0.8rem; font-weight: 700;">{{ t('accounting_system_title') }}</h4>
+                <p class="mb-3" style="color: #FFFFFF; opacity: 0.95; font-weight: 500;">{{ t('accounting_system_subtitle') }}</p>
                 <div class="d-flex gap-3 flex-wrap">
                     <a href="{{ url_for('accounting_api_proxy', path='docs') }}" 
-                       class="btn btn-light btn-lg" 
+                       class="btn btn-lg" 
                        target="_blank"
-                       style="font-weight: bold;">
-                        📚 API文档
+                       style="font-weight: 700; background: #FFFFFF; color: #000000; border: none;">
+                        {{ t('api_documentation') }}
                     </a>
                     <a href="{{ url_for('accounting_api_proxy', path='accounting') }}" 
-                       class="btn btn-warning btn-lg" 
+                       class="btn btn-lg" 
                        target="_blank"
-                       style="font-weight: bold; background: #FF007F; border: none; color: white;">
-                        💼 管理后台
+                       style="font-weight: 700; background: #FF007F; border: none; color: #FFFFFF;">
+                        {{ t('management_console') }}
                     </a>
                     <a href="{{ url_for('accounting_files') }}" 
-                       class="btn btn-success btn-lg" 
-                       style="font-weight: bold; background: #322446; border: none; color: white;">
-                        📁 文件管理
+                       class="btn btn-lg" 
+                       style="font-weight: 700; background: #322446; border: none; color: #FFFFFF;">
+                        {{ t('file_management') }}
                     </a>
                     <a href="{{ url_for('accounting_test_results') }}" 
-                       class="btn btn-success btn-lg" 
-                       style="font-weight: bold;">
-                        🧪 系统测试报告
+                       class="btn btn-lg" 
+                       style="font-weight: 700; background: #000000; border: 2px solid #FF007F; color: #FFFFFF;">
+                        {{ t('system_test_report') }}
                     </a>
                 </div>
             </div>
@@ -148,7 +148,7 @@ const translations = {
 
 function deleteCustomer(customerId, customerName) {
     // First confirmation dialog
-    const confirmMsg1 = `⚠️ ${translations.deleteWarning}\n\n` +
+    const confirmMsg1 = `${translations.deleteWarning}\n\n` +
                        `• ${translations.creditCards}\n` +
                        `• ${translations.statements}\n` +
                        `• ${translations.transactions}\n` +
@@ -158,11 +158,11 @@ function deleteCustomer(customerId, customerName) {
                        `• ${translations.consultationRequests}\n` +
                        `• ${translations.optimizationProposals}\n\n` +
                        translations.deleteConfirmQuestion.replace('{name}', customerName) + `\n\n` +
-                       `⚠️ ${translations.deleteCannotUndo}`;
+                       `${translations.deleteCannotUndo}`;
     
     if (confirm(confirmMsg1)) {
         // Final confirmation
-        const confirmMsg2 = `🔴 ${translations.deleteFinalConfirm.replace('{name}', customerName)}\n\n${translations.deleteNoRecovery}`;
+        const confirmMsg2 = `${translations.deleteFinalConfirm.replace('{name}', customerName)}\n\n${translations.deleteNoRecovery}`;
         
         if (confirm(confirmMsg2)) {
             // Send delete request
@@ -175,14 +175,14 @@ function deleteCustomer(customerId, customerName) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert(`✅ ${translations.deleteSuccess}`);
+                    alert(`${translations.deleteSuccess}`);
                     window.location.reload();
                 } else {
-                    alert(`❌ ${translations.deleteFailed}: ` + (data.error || 'Unknown error'));
+                    alert(`${translations.deleteFailed}: ` + (data.error || 'Unknown error'));
                 }
             })
             .catch(error => {
-                alert(`❌ ${translations.deleteFailed}: ` + error);
+                alert(`${translations.deleteFailed}: ` + error);
             });
         }
     }
