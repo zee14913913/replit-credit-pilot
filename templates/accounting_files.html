@@ -257,6 +257,11 @@
             background: #2d2d2d;
         }
     </style>
+    <!-- PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
 </head>
 <body>
     <div class="container">
@@ -307,6 +312,89 @@
     </div>
     
     <script>
+        // PDF转CSV核心函数
+        async function convertPDFToCSV(file) {
+            try {
+                // 读取PDF文件
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                
+                let allRows = [];
+                let headers = null;
+                
+                // 遍历所有页面
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const textContent = await page.getTextContent();
+                    
+                    // 按Y坐标分组文本项（识别行）
+                    const lines = {};
+                    textContent.items.forEach(item => {
+                        const y = Math.round(item.transform[5]);
+                        if (!lines[y]) lines[y] = [];
+                        lines[y].push({
+                            x: item.transform[4],
+                            text: item.str.trim()
+                        });
+                    });
+                    
+                    // 排序并合并每行
+                    Object.keys(lines).sort((a, b) => b - a).forEach(y => {
+                        const lineItems = lines[y].sort((a, b) => a.x - b.x);
+                        const lineText = lineItems.map(item => item.text).join(' ');
+                        
+                        // 尝试识别表格行（包含日期、金额等）
+                        if (lineText.match(/\d{2}[/-]\d{2}[/-]\d{4}|\d{4}[/-]\d{2}[/-]\d{2}/)) {
+                            // 可能是交易行
+                            const parts = lineText.split(/\s{2,}/);
+                            if (parts.length >= 3) {
+                                allRows.push(parts);
+                            }
+                        } else if (lineText.match(/Date|Transaction|Debit|Credit|Balance/i) && !headers) {
+                            // 可能是表头
+                            headers = lineText.split(/\s{2,}/);
+                        }
+                    });
+                }
+                
+                // 如果没找到表头，使用默认表头
+                if (!headers || headers.length === 0) {
+                    headers = ['Date', 'Description', 'Debit', 'Credit', 'Balance'];
+                }
+                
+                // 生成CSV
+                let csvContent = headers.join(',') + '\n';
+                allRows.forEach(row => {
+                    // 清理并转义CSV字段
+                    const cleanedRow = row.map(cell => {
+                        let cleaned = (cell || '').toString().trim();
+                        // 移除Excel公式前缀
+                        cleaned = cleaned.replace(/^=+/, '');
+                        // 如果包含逗号或引号，需要用引号包围
+                        if (cleaned.includes(',') || cleaned.includes('"')) {
+                            cleaned = '"' + cleaned.replace(/"/g, '""') + '"';
+                        }
+                        return cleaned;
+                    });
+                    csvContent += cleanedRow.join(',') + '\n';
+                });
+                
+                return {
+                    success: true,
+                    csvContent: csvContent,
+                    rowCount: allRows.length,
+                    headers: headers
+                };
+                
+            } catch (error) {
+                console.error('PDF转换失败:', error);
+                return {
+                    success: false,
+                    error: error.message
+                };
+            }
+        }
+        
         async function loadFiles() {
             try {
                 const response = await fetch('/api/proxy/files/list');
@@ -485,13 +573,45 @@
                 return;
             }
             
-            const formData = new FormData();
-            formData.append('file', file);
-            
-            // 显示上传提示
             const filesList = document.getElementById('files-list');
-            const fileType = fileName.endsWith('.pdf') ? 'PDF' : 'CSV';
-            filesList.innerHTML = `<div class="loading">📤 正在智能分析${fileType}文件并上传...</div>`;
+            let uploadFile = file;
+            let uploadFileName = fileName;
+            
+            // 如果是PDF文件，先转换为CSV
+            if (fileName.endsWith('.pdf')) {
+                filesList.innerHTML = `<div class="loading">🔄 正在将PDF转换为CSV格式...</div>`;
+                
+                const conversionResult = await convertPDFToCSV(file);
+                
+                if (!conversionResult.success) {
+                    alert(`❌ PDF转换失败: ${conversionResult.error}\n\n建议：\n1. 确保PDF是文本格式（非扫描件）\n2. 或直接从网银下载CSV格式月结单`);
+                    loadFiles();
+                    event.target.value = '';
+                    return;
+                }
+                
+                // 检查转换质量
+                if (conversionResult.rowCount < 1) {
+                    const retry = confirm(`⚠️ PDF转换结果可能不准确\n• 识别到 ${conversionResult.rowCount} 笔交易\n• 表头: ${conversionResult.headers.join(', ')}\n\n是否继续上传？`);
+                    if (!retry) {
+                        loadFiles();
+                        event.target.value = '';
+                        return;
+                    }
+                }
+                
+                // 创建CSV Blob
+                const csvBlob = new Blob([conversionResult.csvContent], { type: 'text/csv' });
+                uploadFile = new File([csvBlob], fileName.replace('.pdf', '.csv'), { type: 'text/csv' });
+                uploadFileName = fileName.replace('.pdf', '.csv');
+                
+                filesList.innerHTML = `<div class="loading">✅ PDF已转换为CSV (${conversionResult.rowCount}行)\n📤 正在上传...</div>`;
+            } else {
+                filesList.innerHTML = `<div class="loading">📤 正在智能分析CSV文件并上传...</div>`;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', uploadFile);
             
             try {
                 // 添加company_id参数（默认使用公司1）
@@ -512,6 +632,10 @@
                     message += `• 导入交易: ${result.imported} 笔\n`;
                     message += `• 自动匹配: ${result.matched} 笔\n\n`;
                     message += `📁 文件已保存至:\n${result.file_saved}`;
+                    
+                    if (fileName.endsWith('.pdf')) {
+                        message += `\n\n💡 提示: PDF已自动转换为CSV格式导入`;
+                    }
                     
                     alert(message);
                     
