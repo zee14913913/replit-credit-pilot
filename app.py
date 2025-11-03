@@ -8,6 +8,10 @@ import schedule
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import logging
+
+# Configure logger
+logger = logging.getLogger(__name__)
 
 # ==================== FEATURE TOGGLES ====================
 # 功能开关配置（环境变量控制，默认关闭）
