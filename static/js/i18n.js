@@ -111,11 +111,12 @@ let i18n;
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         i18n = new I18nManager();
+        window.i18n = i18n; // Re-export after DOMContentLoaded
     });
 } else {
     i18n = new I18nManager();
+    window.i18n = i18n;
 }
 
 // Export for global use
 window.I18nManager = I18nManager;
-window.i18n = i18n;
