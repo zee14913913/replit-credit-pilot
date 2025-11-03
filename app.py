@@ -5560,6 +5560,61 @@ def admin_login():
     return render_template('admin_login.html')
 
 
+@app.route('/admin/register', methods=['GET', 'POST'])
+def admin_register():
+    """Admin registration (first-time setup only)"""
+    if request.method == 'POST':
+        company_id = request.form.get('company_id', '1').strip()
+        username = request.form.get('username', '').strip()
+        email = request.form.get('email', '').strip()
+        full_name = request.form.get('full_name', '').strip()
+        password = request.form.get('password', '').strip()
+        confirm_password = request.form.get('confirm_password', '').strip()
+        
+        # 验证必填字段
+        if not all([company_id, username, email, password, confirm_password]):
+            flash('所有字段都必须填写', 'error')
+            return render_template('admin_register.html')
+        
+        # 验证密码匹配
+        if password != confirm_password:
+            flash('两次输入的密码不一致', 'error')
+            return render_template('admin_register.html')
+        
+        # 验证密码强度
+        if len(password) < 6:
+            flash('密码长度至少6个字符', 'error')
+            return render_template('admin_register.html')
+        
+        try:
+            # 使用FastAPI注册用户
+            from accounting_app.services.flask_rbac_bridge import register_flask_user
+            
+            result = register_flask_user(
+                company_id=int(company_id),
+                username=username,
+                email=email,
+                password=password,
+                full_name=full_name if full_name else username,
+                role='admin'
+            )
+            
+            if result['success']:
+                flash(f'管理员账户创建成功！请使用 {username} 登录', 'success')
+                return redirect(url_for('admin_login'))
+            else:
+                flash(f'注册失败：{result["error"]}', 'error')
+                return render_template('admin_register.html')
+                
+        except Exception as e:
+            logger.error(f"Admin registration error: {e}")
+            flash(f'注册失败：{str(e)}', 'error')
+            return render_template('admin_register.html')
+    
+    # GET request - 显示注册表单
+    return render_template('admin_register.html')
+
+
 @app.route('/admin/logout')
 def admin_logout():
     """Admin logout"""
