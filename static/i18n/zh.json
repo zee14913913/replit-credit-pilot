@@ -828,6 +828,7 @@
   "registration_successful_msg": "注册成功",
   "auth_failed_relogin": "认证失败，请重新登录",
   "insufficient_permissions": "权限不足：此页面仅限管理员和会计人员访问（当前角色：{role}）",
+  "insufficient_permissions_admin_only": "权限不足：此功能仅限超级管理员（当前角色：{role}）",
   "invalid_session": "会话无效",
   "session_invalidated": "会话已被注销",
   "no_session_token": "未找到会话令牌",

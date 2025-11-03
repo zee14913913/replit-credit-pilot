@@ -177,6 +177,7 @@
   "please_login_admin": "Please Login As Administrator First",
   "auth_failed_relogin": "Authentication Failed, Please Login Again",
   "insufficient_permissions": "Insufficient Permissions: This Page Is For Admins And Accountants Only (Current Role: {role})",
+  "insufficient_permissions_admin_only": "Insufficient Permissions: This Feature Is For Super Administrators Only (Current Role: {role})",
   "invalid_session": "Invalid Session",
   "session_expired": "Session Expired",
   "session_invalidated": "Session Has Been Invalidated",

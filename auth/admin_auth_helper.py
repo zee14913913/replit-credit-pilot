@@ -134,7 +134,9 @@ def require_admin_only(f):
         user = result['user']
         
         if user.get('role') != 'admin':
-            flash(f'权限不足：此功能仅限超级管理员（当前角色：{user.get("role")}）', 'error')
+            from i18n.translations import get_translation
+            lang = session.get('language', 'en')
+            flash(get_translation('insufficient_permissions_admin_only', lang).format(role=user.get("role")), 'error')
             return redirect(url_for('admin_dashboard'))
         
         session['current_user'] = user
