@@ -127,6 +127,58 @@ BANK_METADATA = {
 }
 
 
+def normalize_bank_name(bank_name: str) -> str:
+    """
+    规范化银行名称为标准bank_code
+    
+    Args:
+        bank_name: 任意格式的银行名称（如"Hong Leong Bank", "hong leong", "HLB"）
+    
+    Returns:
+        标准化的bank_code（如"hong_leong"），找不到返回原值的normalized版本
+    
+    Examples:
+        >>> normalize_bank_name("Hong Leong Bank")
+        'hong_leong'
+        >>> normalize_bank_name("hong leong")
+        'hong_leong'
+        >>> normalize_bank_name("HLB")
+        'hong_leong'
+    """
+    # Step 1: 清理和标准化输入
+    search_text = bank_name.lower().strip()
+    
+    # Step 2: 精确匹配bank_code
+    if search_text in BANK_CODES:
+        return search_text
+    
+    # Step 3: 去除常见后缀（bank, berhad, sdn bhd, bhd, malaysia等）
+    suffixes_to_remove = [" berhad", " sdn bhd", " bhd", " bank", " malaysia", " group"]
+    cleaned = search_text
+    for suffix in suffixes_to_remove:
+        if cleaned.endswith(suffix):
+            cleaned = cleaned[:-len(suffix)].strip()
+    
+    # Step 4: 再次精确匹配（去除后缀后）
+    if cleaned in BANK_CODES:
+        return cleaned
+    
+    # Step 5: 别名匹配（原始+清理版）
+    for bank_code, aliases in BANK_ALIASES.items():
+        lower_aliases = [a.lower() for a in aliases]
+        if search_text in lower_aliases or cleaned in lower_aliases:
+            return bank_code
+        # Partial match in aliases
+        for alias in lower_aliases:
+            if alias in search_text or search_text in alias:
+                return bank_code
+    
+    # Step 6: No match found - return cleaned version as fallback (for backward compatibility)
+    # Production systems should validate and reject unknown banks upstream
+    final = cleaned.replace(" ", "_")
+    return final if final in BANK_CODES else cleaned.replace(" ", "_")
+
+
 def detect_bank_code(filename: str = "", first_line: str = "", account_number: str = "") -> Optional[str]:
     """
     启发式银行代码检测

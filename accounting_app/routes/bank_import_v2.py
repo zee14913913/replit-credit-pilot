@@ -22,15 +22,19 @@ from ..services.upload_wrapper import BankStatementUploadWrapper
 from ..models import FileIndex, RawDocument
 from ..schemas.upload_responses import UploadResponse, get_next_actions
 
-# Phase 1-10: Import circuit breaker
+# Phase 1-10: Import circuit breaker + registry
 try:
-    from ..parsers import is_bank_available, record_parse_result
+    from ..parsers import is_bank_available, record_parse_result, normalize_bank_name, is_bank_enabled
 except ImportError:
     # Fallback if parsers module not found
     def is_bank_available(bank_code):
         return True, None
     def record_parse_result(bank_code, success):
         pass
+    def normalize_bank_name(bank_name):
+        return bank_name.lower().replace(" ", "_")
+    def is_bank_enabled(bank_code):
+        return True
 
 router = APIRouter(prefix="/api/v2/import", tags=["Bank Import V2 (Phase 1-10)"])
 logger = logging.getLogger(__name__)
@@ -90,10 +94,41 @@ async def import_bank_statement_v2(
         f"company_id={company_id}, bank={bank_name}, month={statement_month}"
     )
     
-    # Phase 1-10: 单银行熔断检查（early validation）
-    is_available, circuit_reason = is_bank_available(bank_name.lower().replace(" ", "_"))
+    # Phase 1-10: 规范化银行代码（统一标识符）
+    bank_code = normalize_bank_name(bank_name)
+    logger.info(f"📋 规范化银行代码: {bank_name} → {bank_code}")
+    
+    # Phase 1-10 Critical: 验证bank_code是否有效（防止typo创建无效代码）
+    from ..parsers import BANK_CODES
+    if bank_code not in BANK_CODES:
+        logger.warning(f"⚠️ 无效银行代码: {bank_code} (原始: {bank_name})")
+        return UploadResponse(
+            success=False,
+            status="failed",
+            status_reason=f"银行名称 '{bank_name}' 无法识别，请检查拼写或从支持列表中选择。",
+            next_actions=["view_supported_banks", "use_csv_template"],
+            warnings=[f"支持的银行代码: {', '.join(BANK_CODES[:5])}...（共{len(BANK_CODES)}家）"],
+            api_version="v2_phase1-10",
+            protection_enabled=True
+        )
+    
+    # Phase 1-10 Critical fix: 检查银行是否启用（环境变量控制）
+    if not is_bank_enabled(bank_code):
+        logger.warning(f"⚠️ 银行未启用: {bank_code}")
+        return UploadResponse(
+            success=False,
+            status="failed",
+            status_reason=f"银行 {bank_name} 暂未启用，请联系管理员或使用CSV模板导入。",
+            next_actions=["contact_admin", "use_csv_template"],
+            warnings=["该银行解析功能未启用"],
+            api_version="v2_phase1-10",
+            protection_enabled=True
+        )
+    
+    # Phase 1-10: 单银行熔断检查（自动保护）
+    is_available, circuit_reason = is_bank_available(bank_code)
     if not is_available:
-        logger.warning(f"⚡ 熔断触发: {bank_name} - {circuit_reason}")
+        logger.warning(f"⚡ 熔断触发: {bank_code} - {circuit_reason}")
         return UploadResponse(
             success=False,
             status="failed",
@@ -166,7 +201,7 @@ async def import_bank_statement_v2(
     )
     
     # Phase 1-10: 记录解析结果到熔断器（用于监控）
-    bank_code = bank_name.lower().replace(" ", "_")
+    # 注意：bank_code already normalized above
     parse_success = result.get("success", False)
     record_parse_result(bank_code, parse_success)
     if not parse_success:

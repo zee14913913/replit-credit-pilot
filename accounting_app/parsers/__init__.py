@@ -9,7 +9,8 @@ from .registry import (
     BANK_METADATA,
     detect_bank_code,
     get_supported_banks,
-    is_bank_enabled
+    is_bank_enabled,
+    normalize_bank_name
 )
 from .circuit_breaker import (
     BankCircuitBreaker,
@@ -25,6 +26,7 @@ __all__ = [
     "detect_bank_code",
     "get_supported_banks",
     "is_bank_enabled",
+    "normalize_bank_name",
     "BankCircuitBreaker",
     "get_circuit_breaker",
     "record_parse_result",
