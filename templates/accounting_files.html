@@ -98,8 +98,10 @@
         .files-section {
             background: #1a1a1a;
             border-radius: 12px;
-            padding: 2rem;
+            padding: 3rem;
             border: 2px solid #322446;
+            width: 100%;
+            max-width: 100%;
         }
         
         .section-title {
@@ -113,7 +115,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 2rem;
+            margin: 0 auto 2rem auto;
             border: 2px solid #322446;
         }
         
@@ -121,7 +123,7 @@
             background: #322446;
             color: #fff;
             padding: 16px 20px;
-            text-align: left;
+            text-align: center;
             font-weight: bold;
             border: 1px solid #444;
             white-space: nowrap;
@@ -135,6 +137,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            text-align: center;
         }
         
         tr:hover {
@@ -688,7 +691,7 @@
                                 <button 
                                     onclick="executeAction('${action.endpoint}', '${action.method}')"
                                     class="btn btn-small"
-                                    style="background: ${buttonColor}; margin: 2px; font-size: 0.8rem;"
+                                    style="background: ${buttonColor}; color: #FFFFFF; margin: 2px; font-size: 0.8rem; font-weight: bold;"
                                     title="${action.description || ''}"
                                 >
                                     ${cleanLabel}
