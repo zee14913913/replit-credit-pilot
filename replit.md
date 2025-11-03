@@ -3,6 +3,27 @@
 ## Overview
 The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. Its core purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation, ensuring 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization suggestions (debt consolidation, balance transfers, loan refinancing), and a success-based fee model. The business vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
+## Recent Changes (November 2025)
+
+### Evidence Archive System (Production-Ready)
+**Completion Date:** November 3, 2025  
+**Architect Status:** ✅ PASS (6 security iterations)
+
+**Implemented Features:**
+- **Option A - Automatic Rotation:** POST /tasks/evidence/rotate with 30-day retention + monthly archive strategy
+- **Option B - Evidence Archive Page:** GET /admin/evidence with admin-only RBAC, displaying all bundles with metadata (filename, size, SHA256, timestamp, source), per-file download, and delete capabilities
+- **Security Hardening:** Evidence bundles relocated from /static/downloads/ to private evidence_bundles/ directory, preventing unauthenticated access
+- **Per-File Download:** /downloads/evidence/file/<filename> with admin RBAC and audit logging
+- **Comprehensive Audit Trail:** All download/delete/rotation operations logged to audit_logs with IP address and user agent
+- **18 i18n Keys:** Complete bilingual support (EN/ZH) for all Evidence Archive UI elements
+- **3-Color Palette Compliance:** Strict enforcement of #FF007F, #322446, #000000
+
+**Security Posture:**
+- 100% admin-only RBAC enforcement on all 6 endpoints
+- X-TASK-TOKEN validation on rotation endpoint
+- Zero public access to evidence bundles
+- Comprehensive audit logging (IP, UA, operation details)
+
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 Design requirements: Premium, sophisticated, high-end - suitable for professional client demonstrations.

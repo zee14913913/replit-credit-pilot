@@ -1,0 +1,183 @@
+Here you go — a clean, professional English work order you can paste directly to Replit. It mirrors your Chinese brief 1:1, with precise wording for engineers.
+
+⸻
+
+▶️ Final Execution Work Order (Copy/Paste to Replit)
+
+Title: Enable Evidence Bundle Rotation & Evidence Archive Admin Page (Production Rollout)
+
+Scope (do not overreach)
+	•	Do not touch the main workflow: bank parsers, 7-state state machine, UploadResponse, circuit breaker, or the supported-banks matrix.
+	•	This change only covers: private storage for evidence bundles, Admin-controlled download/delete/rotation, full audit logging, /admin/evidence admin page, and i18n.
+	•	Do not modify anything that is already working.
+
+⸻
+
+1) Environment & Access (Required)
+
+Goal: Configure Secrets and ensure private directory + RBAC are effective.
+
+Actions
+	1.	Set environment variables (Secrets)
+	•	EVIDENCE_ROTATION_DAYS=30
+	•	EVIDENCE_KEEP_MONTHLY=1
+	•	TASK_SECRET_TOKEN=<existing value>
+	2.	Ensure a private, writeable directory exists: evidence_bundles/ (it must not be under /static).
+	3.	Confirm Admin can sign in; non-Admin requests to these routes must return 401/403.
+
+Acceptance Output
+	•	Screenshot of Secrets page.
+	•	Directory listing showing evidence_bundles/ exists with correct permissions.
+
+⸻
+
+2) Routes & RBAC Wiring (Required)
+
+Goal: Every operation must be Admin-only and audit-logged.
+
+Routes to verify (all Admin-only)
+	•	GET /admin/evidence (admin page)
+	•	GET /downloads/evidence/list (list current bundles)
+	•	GET /downloads/evidence/latest (download latest ZIP)
+	•	GET /downloads/evidence/file/<filename> (download by filename)
+	•	POST /downloads/evidence/delete (delete a single bundle)
+	•	POST /tasks/evidence/rotate (trigger rotation) — requires header X-TASK-TOKEN: <token>
+
+Acceptance Output
+	•	With Admin, all calls succeed; with non-Admin or missing token, calls fail (401/403).
+	•	Table audit_logs includes entries for evidence_download, evidence_delete, evidence_rotation (with IP, User-Agent, and details).
+
+⸻
+
+3) Admin Page & i18n (Required)
+
+Goal: /admin/evidence shows the full list and actions, with zero hard-coded strings and proper i18n.
+
+Checklist
+	•	Table columns: Filename / Created At / File Size / SHA256 Hash / Source / Actions (Download, Delete, Run Rotation).
+	•	All strings wired to i18n keys; switching EN/中文 reflects correctly.
+	•	UI palette strictly uses: Hot Pink #FF007F, Dark Purple #322446, Black #000000.
+
+Acceptance Output
+	•	Two screenshots of /admin/evidence (EN & ZH).
+	•	Confirm delete/rotation dialogs use i18n keys (no hard-coded literals).
+
+⸻
+
+4) Rotation Policy Integration (Required)
+
+Goal: 30-day retention + keep the first bundle of each month; all actions audit-logged.
+
+Actions
+	•	First, manually produce at least two evidence bundles (existing bundle generation flow via Download/Pack triggers).
+	•	Trigger rotation:
+
+POST /tasks/evidence/rotate
+Header: X-TASK-TOKEN: <token>
+
+
+	•	Expected JSON:
+
+{"success": true, "kept": [...], "deleted": [...]}
+
+
+
+Acceptance Output
+	•	The raw JSON response from rotation.
+	•	audit_logs contains a new evidence_rotation row with kept/deleted details.
+
+⸻
+
+5) Integrity Check (Required)
+
+Goal: After download, verify the SHA256 in manifest.json matches the actual file hash.
+
+Actions
+	1.	GET /downloads/evidence/latest to download the ZIP.
+	2.	Unzip and compute SHA256 for any file (pick one):
+	•	macOS/Linux:
+
+shasum -a 256 <file>
+
+
+	•	Windows PowerShell:
+
+Get-FileHash <file> -Algorithm SHA256
+
+
+	3.	Compare with the sha256 value in manifest.json.
+
+Acceptance Output
+	•	Screenshot or text showing the command output equals the value in manifest.json.
+
+⸻
+
+6) Audit Sampling SQL (Required)
+
+Actions (provide raw query results; redact sensitive values if needed)
+
+-- Last 50 evidence operations
+SELECT action, ip_address, user_agent, reason, created_at
+FROM audit_logs
+WHERE action IN ('evidence_download','evidence_delete','evidence_rotation')
+ORDER BY created_at DESC
+LIMIT 50;
+
+-- Last 5 rotation details
+SELECT *
+FROM audit_logs
+WHERE action='evidence_rotation'
+ORDER BY created_at DESC
+LIMIT 5;
+
+Acceptance Output
+	•	Result text for both queries.
+
+⸻
+
+7) Definition of Done (all must be “Yes”)
+	•	evidence_bundles/ is a private directory (no /static exposure).
+	•	All evidence routes are Admin-only and audit-logged.
+	•	/admin/evidence table renders and Download/Delete/Run Rotation work (both EN & ZH).
+	•	POST /tasks/evidence/rotate returns kept/deleted arrays.
+	•	After downloading latest ZIP, manifest.json SHA256 matches actual file hash.
+	•	audit_logs shows download/delete/rotation entries (with IP, UA, details).
+	•	Secrets effective (DAYS/KEEP_MONTHLY/TASK_TOKEN).
+	•	Non-Admin or missing token requests get 401/403 as expected.
+	•	3-color palette OK and no hard-coded strings (spot-check 3 i18n strings).
+	•	Main workflow (upload → detail redirect → state-driven buttons) remains intact.
+
+⸻
+
+8) Rollback Plan (if needed)
+	•	Temporarily hide the /admin/evidence menu item; keep APIs for internal export.
+	•	Keep all historical bundles; if exporting is needed, produce a single offline archive.
+	•	Rollback must not alter parsers / state machine / circuit breaker / matrix.
+
+⸻
+
+9) Final Delivery Package (report back exactly this)
+	•	A) Screenshots of Secrets & evidence_bundles/ directory.
+	•	B) AuthZ results: one Admin success and one non-Admin failure (401/403).
+	•	C) The JSON returned by rotation.
+	•	D) SHA256 verification for one file inside the latest ZIP (command result vs manifest.json).
+	•	E) Result text of the two SQL queries above.
+	•	F) The DoD checklist with Yes/No per line.
+
+If any item cannot be met, explain why and provide a fix ETA.
+Do not modify already working features. If a change is unavoidable, first state blast radius and rollback and wait for ZEE’s approval.
+
+⸻
+
+10) Optional Enhancements (Do not implement now)
+	•	Timestamp/Signature: Add RFC3161 or HMAC signature to manifest.json.
+	•	External read-only link: One-time, TTL-based token for third-party evidence access.
+	•	Capacity alert: Warn at ≥80% disk usage for evidence_bundles/ (Webhook/Slack).
+
+⸻
+
+Closing Notes
+	•	Paste this work order as-is.
+	•	Deliverables must follow section 9 exactly so ZEE can accept quickly without back-and-forth.
+
+If you also want a super-condensed one-page version for quick handoffs, say the word and I’ll provide it.
