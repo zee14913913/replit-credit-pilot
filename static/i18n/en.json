@@ -275,5 +275,8 @@
   "guide_need_help": "NEED HELP?",
   "guide_help_desc": "Contact System Administrator Or Consult Documentation.",
   "guide_dont_show": "Don't Show This Again",
-  "guide_got_it": "Got It"
+  "guide_got_it": "Got It",
+  "cc_ledger_subtitle": "Owner Vs Infinite Classification System",
+  "cc_ledger_analysis": "Owner Vs Infinite Ledger Analysis",
+  "owner_vs_infinite_summary": "Owner Vs Infinite Summary"
 }

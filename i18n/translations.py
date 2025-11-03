@@ -331,8 +331,8 @@ TRANSLATIONS = {
         
         # Credit Card Ledger
         'cc_ledger_title': 'CREDIT CARD LEDGER',
-        'cc_ledger_subtitle': 'Owner vs Infinite Classification System',
-        'cc_ledger_analysis': 'Owner vs Infinite Ledger Analysis',
+        'cc_ledger_subtitle': 'Owner Vs Infinite Classification System',
+        'cc_ledger_analysis': 'Owner Vs Infinite Ledger Analysis',
         'back_to_all_customers': 'Back to All Customers',
         'view_all_banks': 'View All Banks',
         'customer_overview': 'Customer Overview',
@@ -346,7 +346,7 @@ TRANSLATIONS = {
         'no_baseline_set': 'No Baseline Set - Process First Statement to Initialize',
         'owner': 'Owner',
         'infinite': 'Infinite',
-        'owner_vs_infinite_summary': 'Owner vs Infinite Summary',
+        'owner_vs_infinite_summary': 'Owner Vs Infinite Summary',
         'expenses': 'Expenses',
         'supplier_expenses': 'Supplier Expenses',
         'payments': 'Payments',
