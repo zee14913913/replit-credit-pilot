@@ -38,7 +38,8 @@ class FileIndexService:
         upload_by: Optional[str] = None,
         description: Optional[str] = None,
         tags: Optional[str] = None,
-        raw_document_id: Optional[int] = None  # Phase 1-3修复：强制关联raw_documents
+        raw_document_id: Optional[int] = None,  # Phase 1-3修复：强制关联raw_documents
+        account_number: Optional[str] = None  # Phase 3: duplicate检测所需
     ) -> FileIndex:
         """
         创建文件索引记录
@@ -112,7 +113,8 @@ class FileIndexService:
             tags=tags,
             status='active',
             is_active=True,
-            upload_date=datetime.now()
+            upload_date=datetime.now(),
+            account_number=account_number  # Phase 3: duplicate检测所需
         )
         
         self.db.add(file_index)

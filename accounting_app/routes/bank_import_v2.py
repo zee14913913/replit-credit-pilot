@@ -13,7 +13,7 @@ from sqlalchemy import and_, or_, text
 
 from ..db import get_db
 from ..services.upload_wrapper import BankStatementUploadWrapper
-from ..models import FileIndex, RawDocument
+from ..models import FileIndex, RawDocument  # FileIndex needed for duplicate detection
 
 router = APIRouter(prefix="/api/v2/import", tags=["Bank Import V2 (Phase 1-5)"])
 logger = logging.getLogger(__name__)
@@ -103,28 +103,25 @@ async def import_bank_statement_v2(
         statement_month=statement_month
     )
     
-    # 如果检测到重复，修改返回结果
+    # 如果检测到重复，修改返回结果并更新FileIndex状态
     if existing_file and result.get("success"):
+        # 更新新上传文件的status为duplicate
+        new_file = db.query(FileIndex).filter(
+            FileIndex.raw_document_id == result.get('raw_document_id')
+        ).first()
+        
+        if new_file:
+            new_file.status = 'duplicate'
+            new_file.duplicate_warning = f"已存在相同账号和月份的文件（ID: {existing_file.id}）"
+            db.commit()
+        
         result["status"] = "duplicate"
         result["duplicate_warning"] = f"当前公司/账号/月份已有主对账单（文件ID: {existing_file.id}）"
         result["existing_file_id"] = existing_file.id
+        result["file_id"] = result.get("raw_document_id")  # 确保file_id字段存在
         result["next_actions"] = [
-            {
-                "action": "set_as_primary",
-                "label": "设为主账单",
-                "endpoint": f"/api/files/set-primary/{result.get('raw_document_id')}",
-                "method": "POST",
-                "priority": 1,
-                "description": "将此文件设为主对账单"
-            },
-            {
-                "action": "view_other_files",
-                "label": "查看本月其他账单",
-                "endpoint": f"/accounting_files?company_id={company_id}&month={statement_month}&account={account_number}",
-                "method": "GET",
-                "priority": 2,
-                "description": "查看同一账号本月的所有账单"
-            }
+            "set_as_primary",
+            "view_other_files"
         ]
     
     # 根据结果返回相应的HTTP状态码

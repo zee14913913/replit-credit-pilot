@@ -58,7 +58,8 @@ class BankStatementUploadWrapper:
             related_entity_type='bank_statement',
             period=statement_month,
             description=f"{bank_name} - {account_number} - {statement_month}",
-            module='bank'
+            module='bank',
+            account_number=account_number  # Phase 3: duplicate检测所需
         )
         
         if not upload_result["success"]:
@@ -72,13 +73,46 @@ class BankStatementUploadWrapper:
             f"raw_document_id={raw_document_id}, path={file_path}"
         )
         
-        # Step 2: 解析CSV内容
+        # Step 2: 解析CSV内容 + 字段完整性验证
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 csv_content = f.read()
             
             csv_reader = csv.DictReader(io.StringIO(csv_content))
             csv_lines = list(csv_reader)
+            
+            # Phase 1-5: 字段完整性验证（必需字段）
+            required_fields = {'Date', 'Description', 'Debit', 'Credit', 'Balance', 'Reference'}
+            if csv_lines and csv_reader.fieldnames:
+                actual_fields = set(csv_reader.fieldnames)
+                missing_fields = required_fields - actual_fields
+                
+                if missing_fields:
+                    error_msg = f"CSV字段不完整，缺少必需字段: {', '.join(missing_fields)}"
+                    logger.error(f"❌ {error_msg}")
+                    
+                    # 进入异常中心
+                    self.upload_handler.handle_partial_success(
+                        raw_document_id=raw_document_id,
+                        raw_line_count=0,
+                        parsed_count=0,
+                        file_category='bank_statement',
+                        context={
+                            'error': error_msg,
+                            'missing_fields': list(missing_fields),
+                            'actual_fields': list(actual_fields)
+                        }
+                    )
+                    
+                    return {
+                        "success": False,
+                        "partial_success": True,
+                        "error_code": "INGEST_VALIDATION_FAILED",
+                        "error": error_msg,
+                        "raw_document_id": raw_document_id,
+                        "file_path": file_path,
+                        "message": "CSV字段验证失败，文件已封存但未入账"
+                    }
             
             logger.info(f"✅ Step 2: CSV解析完成 - total_lines={len(csv_lines)}")
             
@@ -189,6 +223,7 @@ class BankStatementUploadWrapper:
             return {
                 "success": False,
                 "partial_success": True,
+                "error_code": "INGEST_VALIDATION_FAILED",
                 "error": error_msg,
                 "raw_document_id": raw_document_id,
                 "file_path": file_path,

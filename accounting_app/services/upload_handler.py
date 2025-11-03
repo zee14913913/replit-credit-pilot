@@ -54,7 +54,8 @@ class UploadHandler:
         related_entity_id: Optional[int] = None,
         period: Optional[str] = None,
         description: Optional[str] = None,
-        module: str = "bank"
+        module: str = "bank",
+        account_number: Optional[str] = None
     ) -> Dict[str, Any]:
         """
         统一文件上传处理流程
@@ -137,7 +138,8 @@ class UploadHandler:
                 upload_by=self.username,
                 description=description,
                 module=module,
-                raw_document_id=raw_doc_id  # Phase 1-3强制要求
+                raw_document_id=raw_doc_id,  # Phase 1-3强制要求
+                account_number=account_number  # Phase 3: duplicate检测所需
             )
             
             logger.info(
@@ -284,6 +286,7 @@ class UploadHandler:
                 logger.info(f"❌ MARKED as validation_status='failed' - raw_document_id={raw_document_id}")
             
             # 补充改进⑥：同步写入异常中心表
+            import json
             from ..models import Exception as ExceptionModel
             exception_record = ExceptionModel(
                 company_id=self.company_id,
@@ -291,16 +294,15 @@ class UploadHandler:
                 severity='high',
                 source_type='raw_document',
                 source_id=raw_document_id,
-                message=f"文件验证失败: {error_msg}",
-                context_data={
+                error_message=f"文件验证失败: {error_msg}",
+                raw_data=json.dumps({
                     'raw_document_id': raw_document_id,
                     'file_name': raw_doc.file_name if raw_doc else 'unknown',
                     'raw_line_count': raw_line_count,
                     'parsed_record_count': parsed_record_count,
                     'missing_count': raw_line_count - parsed_record_count
-                },
-                status='pending',
-                created_at=datetime.now()
+                }),
+                status='new'  # 使用允许的status值
             )
             self.db.add(exception_record)
             self.db.commit()
@@ -348,18 +350,18 @@ class UploadHandler:
             context: 额外的上下文信息
         """
         # 使用通用Exception记录方法
+        import json
         from ..models import Exception as ExceptionModel
         
         exception_record = ExceptionModel(
             company_id=self.company_id,
-            exception_type='line_count_mismatch',
+            exception_type='ingest_validation_failed',  # 使用允许的类型
             severity='high',
             source_type='file_upload',
             source_id=raw_document_id,
-            message=f"行数对账失败: raw_lines={raw_line_count}, parsed={parsed_count}, missing={raw_line_count - parsed_count}",
-            context_data=context or {},
-            status='pending',
-            created_at=datetime.now()
+            error_message=f"行数对账失败: raw_lines={raw_line_count}, parsed={parsed_count}, missing={raw_line_count - parsed_count}",
+            raw_data=json.dumps(context or {}),
+            status='new'  # 使用允许的status值
         )
         
         self.db.add(exception_record)
