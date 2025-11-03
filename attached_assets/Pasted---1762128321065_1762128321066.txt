@@ -1,0 +1,367 @@
+──────────────────────────────
+▶️【统一开发指令 · 银行贷款 + 信用卡双引擎版（最终版）】
+
+目标：把当前“能跑但不连贯”的系统，提升为“对客户可演示、对银行可提交、对会计可追溯、对你可审计”的版本。以下所有条目都必须实现，不允许挑选。不允许只做后端不做前端。不允许只写文档不跑测试。不允许说“上传一份来我试试看”。做完必须按测试计划跑完“三个文件场景”，并把真实返回内容贴出来才算完成。
+
+================================================================
+一、系统范围（不得更改）
+	1.	引擎1（Flask 5000）：信用卡 / 储蓄 / CTOS / 前端界面 / 上传入口 / 客户可见页面
+	2.	引擎2（FastAPI 8000）：银行月结单 / 会计 / 报表 / 异常中心 / 多租户 / 文件索引 / 审计
+	3.	统一要求：
+	•	5000 负责“收文件 + 展示 + 引导下一步”
+	•	8000 负责“存档 + 验证 + 会计入账 + 报表 + 审计”
+	•	不允许两边各自存一套文件；Flask 上传后必须把文件元数据传去 FastAPI 建索引
+
+================================================================
+二、后端业务级加固（必须做）
+	1.	角色与权限（RBAC）
+
+	•	角色必须有：admin, accountant, viewer
+	•	预留角色：data-entry, loan-officer
+	•	权限矩阵：
+	•	admin：全部功能 + 删除文件 + 修改自动过账规则 + 管理导出模板 + 运行任务
+	•	accountant：上传(银行/供应商/POS) + 处理异常 + 手工分录 + 生成/下载报表；但不能删文件、不能改系统配置
+	•	viewer：只读，只能看/下载已生成 PDF/CSV，不能上传，不能月结
+	•	所有写入类接口（upload / import / update / rules/* / files/*）统一挂 require_role(…)
+	•	所有 /tasks/* 必须校验角色 + Header: X-TASK-TOKEN（值从 env 读取）
+
+	2.	审计日志
+建表：
+
+CREATE TABLE audit_logs (
+  id SERIAL PRIMARY KEY,
+  company_id INT NOT NULL,
+  user_id INT NOT NULL,
+  action VARCHAR(100) NOT NULL,
+  source_type VARCHAR(30),
+  ip_address TEXT,
+  user_agent TEXT,
+  reason TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
+必须写日志的动作：上传文件、导出PDF、导出CSV、生成Bank Package、修改自动过账规则、手工分录修改/反过账、删除/替换原始文件。
+Flask 上传时要把 ip + user_agent 一起传给 8000 记录。
+	3.	1:1 原件保护
+建表：
+
+CREATE TABLE raw_documents (
+  id SERIAL PRIMARY KEY,
+  company_id INT NOT NULL,
+  file_name TEXT NOT NULL,
+  file_hash TEXT NOT NULL,
+  storage_path TEXT NOT NULL,
+  uploaded_at TIMESTAMP NOT NULL DEFAULT now(),
+  uploaded_by INT,
+  source_engine VARCHAR(20),
+  validation_status VARCHAR(20) DEFAULT 'pending',
+  validation_failed_at TIMESTAMP,
+  validation_error_message TEXT
+);
+
+CREATE TABLE raw_lines (
+  id SERIAL PRIMARY KEY,
+  raw_document_id INT NOT NULL,
+  line_no INT NOT NULL,
+  page_no INT,
+  raw_text TEXT NOT NULL,
+  parser_version VARCHAR(50),
+  created_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
+硬性规则：
+	•	上传 → 必落 raw_documents
+	•	能不能解析 → 不影响落库
+	•	解析成功 → 每一行进 raw_lines
+	•	后续所有 parsed_transactions / journal_entry_lines / bank_statement_lines 都必须带 raw_line_id；没有就进异常中心，标 MISSING_SOURCE，禁止进报表
+
+	4.	业务表补 raw_line_id
+请实际对以下表执行 ALTER，并加索引：
+
+	•	bank_statement_lines / bank_statements
+	•	purchase_invoices
+	•	sales_invoices
+	•	journal_entry_lines
+	•	（如果有）ar_aging_lines / ap_aging_lines
+规则：SELECT / 导出 / 生成报表时，必须走 DataIntegrityValidator，把没有 raw_line_id 的行过滤掉，并把拦截条数写日志。
+
+	5.	报表版本化 + 期间锁定
+
+CREATE TABLE report_snapshots (
+  id SERIAL PRIMARY KEY,
+  company_id INT NOT NULL,
+  report_type VARCHAR(50) NOT NULL,
+  period VARCHAR(20) NOT NULL,
+  storage_path TEXT NOT NULL,
+  generated_at TIMESTAMP NOT NULL DEFAULT now(),
+  generated_by INT
+);
+
+CREATE TABLE period_closing (
+  id SERIAL PRIMARY KEY,
+  company_id INT NOT NULL,
+  period VARCHAR(20) NOT NULL,
+  closed_at TIMESTAMP NOT NULL DEFAULT now(),
+  closed_by INT
+);
+
+要求：
+	•	报表生成成功 → 必须写 report_snapshots
+	•	已月结期间 → 不得被重新覆盖，只能生成 v2/v3
+	•	/reports/* 路由优先读 snapshot，不得重算已锁定期间
+
+	6.	自动过账规则分层
+
+CREATE TABLE auto_posting_rules (
+  id SERIAL PRIMARY KEY,
+  company_id INT,        -- NULL = 全局
+  pattern TEXT NOT NULL,
+  target_account_code VARCHAR(50) NOT NULL,
+  posting_type VARCHAR(20) NOT NULL,
+  priority INT DEFAULT 100,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_by VARCHAR(100)
+);
+
+	•	生效优先级：公司专属 > 全局 > fallback
+	•	管理端必须分开显示“平台规则/全局规则”和“公司规则”
+	•	必须修复你们测试时暴露的两个问题：
+	•	rule_engine.apply 调错对象（要传规则对象不是 bank 对象）
+	•	ExceptionManager.record_posting_error 参数不匹配要能收 source_type，不能 500
+
+	7.	异常中心可行动化
+
+	•	异常表加字段：next_action, retryable
+	•	新增接口：POST /exceptions/{id}/retry → 按类型重跑解析/重过账
+	•	Management Report 如果本期有异常 >0 → 自动插入一句：
+	•	“Unreconciled items detected, please check Exception Center.”
+
+	8.	文件统一索引 + 旧路径迁移
+
+	•	所有上传（Flask + FastAPI）都写入同一张 file_index
+	•	字段必须有：
+	•	company_id
+	•	module (credit-card/bank/savings/pos/supplier/reports/management/temp)
+	•	file_type (original/generated)
+	•	storage_path
+	•	related_id
+	•	status (active/archived/deleted)
+	•	deleted_at
+	•	duplicate_warning
+	•	没 related_id → 先进 upload_staging
+	•	做迁移脚本：static/uploads/… → /files/{company_id}/{module}/{year}/{month}/…
+	•	迁移动作写 migration_logs，旧目录只读不写
+
+	9.	配置版本锁 + Architect 审查
+
+CREATE TABLE system_config_versions (
+  id SERIAL PRIMARY KEY,
+  version_no VARCHAR(50) NOT NULL,
+  changed_by INT,
+  change_reason TEXT,
+  diff JSONB,
+  arch_review_id VARCHAR(50),
+  architect_status VARCHAR(20),
+  created_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
+	•	所有和“解析规则/文件目录规则/报表生成逻辑”相关的改动必须写这个表
+	•	architect_status != ‘approved’ 的版本不允许被生产路由使用
+
+================================================================
+三、前端 / Flask 体验整改（必须做）
+	1.	顶部导航统一
+
+	•	所有页面共享一个 layout
+	•	必须包含：Dashboard｜Customers｜Credit Cards｜Savings｜Receipts｜Loan｜Accounting(到 :8000)｜Admin｜EN｜中文
+	•	上传后不允许落到无导航的裸页
+
+	2.	上传后必须看到“刚才那一份”
+
+	•	上传成功返回字段必须至少有：file_id, raw_document_id, company_id, statement_month, status, duplicate_warning
+	•	前端拿到后要立刻跳：/files/{company_id}/{file_id}
+	•	详情页必须显示：
+	•	当前状态（uploaded/active/failed/duplicate）
+	•	状态说明（status_reason）
+	•	可执行的下一步动作按钮
+	•	如果是重复月份 → 显示红条提示 + 【设为主账单】/【标记为补充文件】
+
+	3.	“下一步动作”按钮按状态显示
+
+	•	uploaded → 【去验证】/【查看原件】
+	•	active → 【生成报表】/【查看异常】
+	•	failed → 【查看异常】/【重新上传】
+	•	duplicate → 【设为主账单】/【查看本月其他账单】
+	•	按钮必须能点；没实现的接口要弹出“后端接口未实现：/api/… 请补全”，不能什么都不说
+
+	4.	列表页加“Next step / 下一步”列
+
+	•	uploaded → “请验证此文件”
+	•	active → “可生成报表”
+	•	failed → “请到异常中心查看原因”
+	•	duplicate → “请选择主账单”
+
+	5.	双语统一
+
+	•	建 lang/en.json, lang/zh.json
+	•	所有新文案都走语言包：状态、错误、按钮、提示
+	•	支持 ?lang=zh 强制中文
+	•	现有硬编码英文/中文要收口
+
+	6.	错误提示包装
+
+	•	后端 500 不得直接显示堆栈
+	•	显示：
+	•	中文：系统暂时无法验证，请稍后重试或联系管理员。
+	•	英文：System cannot validate now. Please retry or contact admin.
+	•	如果后端给出了业务原因（比如行数不一致），前端要显示 status_reason
+
+	7.	链式流程
+
+	•	上传成功 → 自动跳详情
+	•	详情=uploaded → 自动弹“是否验证”
+	•	验证成功 → 回列表并高亮这一条
+	•	生成报表成功 → 跳到报表列表并选中刚生成的
+
+================================================================
+四、测试要求（必须跑，不能让用户帮你测）
+
+你必须按下面 5 点，一条一条跑完，把真实返回内容贴给我，否则就当你没做。
+	1.	三个文件场景都要测
+
+	•	案例A（标准CSV）
+预期：能完整解析 → 状态=active → 前端出现【生成报表】
+	•	案例B（缺列/缺行CSV）
+预期：status=failed → 异常中心有一条 ingest_validation_failed → 前端提示“行数不一致”
+	•	案例C（同公司+同账号+同月份的第二份对账单）
+预期：status=duplicate → 前端红条 → 出现【设为主账单】
+
+	2.	每次上传必须回报 4 个事实
+
+	•	后端实际返回的JSON
+	•	前端是否跳到详情页
+	•	列表页是否高亮这一条
+	•	“下一步”按钮是不是正确的（写按钮文本）
+
+	3.	跳转检查
+
+	•	首页 → 客户 → 客户详情 → 上传信用卡账单 → 上传成功 → 回客户详情看到这份
+	•	首页 → Admin → 上传银行月结单 → 上传成功 → 列表出现的就是刚才那一份，不是旧的
+	•	异常中心 → 点回文件 → 能回到详情页（不能404）
+
+	4.	语言检查
+
+	•	?lang=zh 测一遍
+	•	?lang=en 再测一遍
+	•	检查新增状态有没有漏掉翻译
+
+	5.	报告格式（你必须这样回）
+
+	•	A. 标准CSV上传结果：……
+	•	B. 缺行CSV上传结果：……
+	•	C. 重复月份上传结果：……
+
+================================================================
+五、可选优化（有时间再做）
+	•	新公司创建时自动灌马来西亚标准科目：1001, 1101, 2001, 3001, 4001, 5001
+	•	statement_month 入参先做 YYYY-MM 格式校验，不对直接 400
+
+================================================================
+六、交付标准
+	•	新接口全部在 /docs 里能看到
+	•	前端能看到所有后端状态
+	•	没有 Python traceback 暴露给用户
+	•	Architect 审查时要跑：raw_documents、raw_lines、统一路径、禁止虚构记录、system_config_versions、报表走 snapshot
+
+================================================================
+七、必须回给我的三条“真实返回内容”模板（你必须贴成这样）
+
+⚠️说明：下面是格式模板，不是现在真实返回。你们必须用你们跑出来的真实数据把里面的值替换掉，再回给我；回不出这三条，就视为你们没测完。
+
+① 案例A：标准CSV上传（应成功 → active）
+
+{
+  "test_case": "A - standard bank CSV",
+  "request": {
+    "endpoint": "/api/v2/import/bank-statement",
+    "company_id": 1,
+    "bank_name": "Maybank",
+    "account_number": "1234567890",
+    "statement_month": "2025-01"
+  },
+  "response": {
+    "success": true,
+    "status": "active",
+    "imported": 35,
+    "matched": 20,
+    "raw_document_id": 42,
+    "file_id": 77,
+    "next_actions": ["generate_report", "view_file"]
+  },
+  "frontend": {
+    "redirected_to_detail": true,
+    "list_highlighted": true,
+    "next_button_texts": ["生成报表", "查看原件"]
+  }
+}
+
+② 案例B：缺行CSV上传（应失败 → failed + 异常中心有记录）
+
+{
+  "test_case": "B - missing lines CSV",
+  "request": {
+    "endpoint": "/api/v2/import/bank-statement",
+    "company_id": 1,
+    "bank_name": "Maybank",
+    "account_number": "1234567890",
+    "statement_month": "2025-01"
+  },
+  "response": {
+    "success": false,
+    "status": "failed",
+    "partial_success": true,
+    "error_code": "INGEST_VALIDATION_FAILED",
+    "status_reason": "行数对账失败：原始文件 45 行，入库成功 43 行",
+    "raw_document_id": 43,
+    "exception_id": 15
+  },
+  "frontend": {
+    "redirected_to_detail": true,
+    "list_highlighted": true,
+    "next_button_texts": ["查看异常", "重新上传"]
+  },
+  "exception_center": {
+    "found": true,
+    "exception_type": "ingest_validation_failed",
+    "raw_document_id": 43
+  }
+}
+
+③ 案例C：同月第二份对账单（应 → duplicate）
+
+{
+  "test_case": "C - duplicate month",
+  "request": {
+    "endpoint": "/api/v2/import/bank-statement",
+    "company_id": 1,
+    "bank_name": "Maybank",
+    "account_number": "1234567890",
+    "statement_month": "2025-01"
+  },
+  "response": {
+    "success": true,
+    "status": "duplicate",
+    "duplicate_warning": "当前公司/账号在2025-01已有主对账单（file_id=77）",
+    "file_id": 88,
+    "existing_file_id": 77,
+    "next_actions": ["set_as_primary", "view_other_files"]
+  },
+  "frontend": {
+    "redirected_to_detail": true,
+    "list_highlighted": true,
+    "next_button_texts": ["设为主账单", "查看本月其他账单"],
+    "show_red_banner": true
+  }
+}
+
+你若要是回不出上面这三条“实际跑出来的JSON+前端行为”，就不算完成，请继续修接口、补前端跳转、补语言包，再测一遍。
