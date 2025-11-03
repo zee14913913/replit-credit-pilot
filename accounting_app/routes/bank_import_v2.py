@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
 from sqlalchemy.orm import Session
 from typing import Optional
 import logging
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, text
 
 from ..db import get_db
 from ..services.upload_wrapper import BankStatementUploadWrapper
@@ -77,16 +77,15 @@ async def import_bank_statement_v2(
     if not file.filename or not file.filename.endswith('.csv'):
         raise HTTPException(status_code=400, detail="Only CSV files are supported")
     
-    # Phase 3: Duplicate检测 - 检查是否已有同公司+同账号+同月份的文件
-    existing_file = db.query(FileIndex).join(
-        RawDocument, FileIndex.raw_document_id == RawDocument.id
-    ).filter(
+    # Phase 3: Duplicate检测 - 简化版本（基于FileIndex的字段）
+    existing_file = db.query(FileIndex).filter(
         and_(
             FileIndex.company_id == company_id,
             FileIndex.status.in_(['active', 'validated', 'posted']),  # 只检查有效文件
             FileIndex.is_active == True,  # 未删除
-            RawDocument.metadata.like(f'%"account_number":"{account_number}"%'),
-            RawDocument.metadata.like(f'%"statement_month":"{statement_month}"%')
+            FileIndex.account_number == account_number,  # 使用FileIndex的account_number字段
+            FileIndex.period == statement_month,  # 期间字段（YYYY-MM格式）
+            FileIndex.module == 'bank'
         )
     ).first()
     
