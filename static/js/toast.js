@@ -10,7 +10,15 @@ class ToastManager {
     }
 
     init() {
-        // 创建Toast容器
+        // 创建Toast容器 - 确保document.body已加载
+        if (!document.body) {
+            // If body doesn't exist yet, wait for DOM ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => this.init());
+                return;
+            }
+        }
+        
         if (!document.getElementById('toast-container')) {
             const container = document.createElement('div');
             container.id = 'toast-container';
