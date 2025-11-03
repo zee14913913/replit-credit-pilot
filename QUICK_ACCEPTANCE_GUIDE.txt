@@ -1,0 +1,60 @@
+╔══════════════════════════════════════════════════════════════╗
+║  Evidence Archive - 快速验收指南（3分钟完成）                ║
+╚══════════════════════════════════════════════════════════════╝
+
+🔥 Step 1: 立即轮换密钥（30秒）
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+① Replit界面 → Tools → Secrets
+② 找到 TASK_SECRET_TOKEN
+③ 改为: sk_rotate_pYR4AWqQpk4Uwu1Jk49-uA
+④ Save → Stop → Start（重启服务）
+
+✅ Step 2: 登录Admin（10秒）
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+访问: /admin/login
+账户: infinitegz.reminder@gmail.com
+密码: Be_rich13
+
+📸 Step 3: 截图管理页（20秒）
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+访问: /admin/evidence
+截图完整页面（包含3个按钮+表格）
+→ 证据A ✅
+
+📋 Step 4: 执行轮转API（30秒）
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+F12 → Console → 粘贴并执行:
+
+fetch('/tasks/evidence/rotate', {
+  method: 'POST',
+  headers: {
+    'X-TASK-TOKEN': 'sk_rotate_pYR4AWqQpk4Uwu1Jk49-uA',
+    'Content-Type': 'application/json'
+  }
+}).then(r => r.json()).then(console.log)
+
+复制JSON输出 → 证据C ✅
+
+🔐 Step 5: 截图Secrets（20秒）
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Replit → Tools → Secrets
+显示这3个密钥存在即可（值打码）:
+  - TASK_SECRET_TOKEN
+  - EVIDENCE_ROTATION_DAYS
+  - EVIDENCE_KEEP_MONTHLY
+→ 证据B ✅
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ 已自动完成的证据:
+  D - ZIP SHA256完整性验证通过 ✅
+  E - 权限隔离测试通过（401/403）✅
+  F - 审计日志SQL查询完成 ✅
+
+📨 提交验收:
+将3项截图/JSON（A + B + C）发送即可！
+
+详细报告: EVIDENCE_PACKAGE_FINAL.md
+技术细节: ACCEPTANCE_TEST_REPORT.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
