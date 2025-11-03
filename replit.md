@@ -74,7 +74,14 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 
 **i18n Migration Status (Plan C - Critical Pages First):**
 - **Migration Scope:** 6 critical pages (index, dashboard, accounting_files, file_detail, customer_dashboard, admin_dashboard) fully migrated with 100% hardcoded text removal.
-- **Translation Resources:** 170 EN keys, 823 ZH keys in static/i18n/{en,zh}.json; i18n/translations.py serves as single source of truth.
+- **Translation Resources:** **193 EN keys, 843 ZH keys** in static/i18n/{en,zh}.json; i18n/translations.py serves as single source of truth.
+- **System Prompts i18n Completed (Nov 2025):** Unified 4 categories of system prompts (23 new keys):
+  - **Login/Auth Failures** (13 keys): all_fields_required, invalid_email_password, account_deactivated, insufficient_permissions, insufficient_permissions_admin_only, etc.
+  - **File Upload Errors** (4 keys): export_failed, customer_already_exists, customer_added_success, error_adding_customer.
+  - **Exception Center** (2 keys): feature_disabled, advanced_analytics_disabled.
+  - **Report Generation** (2 keys): report_generation_failed, report_not_found.
+  - **Credit Card Operations** (2 keys): credit_card_already_exists, credit_card_added_success.
+- **Migrated Files:** app.py (9 flash messages), auth/admin_auth_helper.py (7 flash messages), auth/customer_auth.py (6 error returns).
 - **Language Switcher:** Unified top-right switcher in layout.html with localStorage persistence, client-side i18n.js for real-time switching.
 - **Hybrid Strategy:** Preserves server-side {{ t('key') }} for existing pages, adds client-side i18n.js for instant language switching without page reload.
 - **Design Compliance:** 100% strict 3-color palette enforcement (#FF007F, #322446, #000000 + neutrals), English titles ALL CAPS, content Title Case.
