@@ -1,5 +1,5 @@
 """
-Phase 1-10: 银行月结单上传接口（V2版本 - 7状态机 + 统一响应格式）
+Phase 1-10: 银行月结单上传接口（V2版本 - 7状态机 + 统一响应格式 + 单银行熔断）
 
 Phase 1-5改进：
 - V1: 直接解析CSV并入库
@@ -9,6 +9,7 @@ Phase 1-10改进：
 - 统一UploadResponse格式（success & failure都返回）
 - 7状态机驱动next_actions
 - 扫描版PDF友好消息（bilingual）
+- 单银行熔断保护（per-bank circuit breaker）
 """
 from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
 from sqlalchemy.orm import Session
@@ -20,6 +21,16 @@ from ..db import get_db
 from ..services.upload_wrapper import BankStatementUploadWrapper
 from ..models import FileIndex, RawDocument
 from ..schemas.upload_responses import UploadResponse, get_next_actions
+
+# Phase 1-10: Import circuit breaker
+try:
+    from ..parsers import is_bank_available, record_parse_result
+except ImportError:
+    # Fallback if parsers module not found
+    def is_bank_available(bank_code):
+        return True, None
+    def record_parse_result(bank_code, success):
+        pass
 
 router = APIRouter(prefix="/api/v2/import", tags=["Bank Import V2 (Phase 1-10)"])
 logger = logging.getLogger(__name__)
@@ -78,6 +89,20 @@ async def import_bank_statement_v2(
         f"收到银行月结单上传请求 - "
         f"company_id={company_id}, bank={bank_name}, month={statement_month}"
     )
+    
+    # Phase 1-10: 单银行熔断检查（early validation）
+    is_available, circuit_reason = is_bank_available(bank_name.lower().replace(" ", "_"))
+    if not is_available:
+        logger.warning(f"⚡ 熔断触发: {bank_name} - {circuit_reason}")
+        return UploadResponse(
+            success=False,
+            status="failed",
+            status_reason=circuit_reason,
+            next_actions=["retry_later", "use_csv_template"],
+            warnings=["该银行解析暂时不可用，请稍后重试或使用CSV模板导入"],
+            api_version="v2_phase1-10",
+            protection_enabled=True
+        )
     
     # Phase 1-10: 验证文件类型 + 扫描版PDF友好消息
     # Critical fix: Return 200 + UploadResponse (not HTTPException) for unified contract
@@ -139,6 +164,13 @@ async def import_bank_statement_v2(
         account_number=account_number,
         statement_month=statement_month
     )
+    
+    # Phase 1-10: 记录解析结果到熔断器（用于监控）
+    bank_code = bank_name.lower().replace(" ", "_")
+    parse_success = result.get("success", False)
+    record_parse_result(bank_code, parse_success)
+    if not parse_success:
+        logger.warning(f"❌ 解析失败已记录: {bank_code} - {result.get('error', 'Unknown error')}")
     
     # Phase 1-10: 如果检测到重复，修改返回结果并更新FileIndex状态
     if existing_file and result.get("success"):
