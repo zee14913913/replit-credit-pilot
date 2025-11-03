@@ -182,6 +182,7 @@
   "session_expired": "Session Expired",
   "session_invalidated": "Session Has Been Invalidated",
   "no_session_token": "No Session Token Found",
+  "please_enter_credentials": "Please Enter Username And Password",
   "export_failed": "Export Failed: {error}",
   "customer_already_exists": "Customer With Email {email} Already Exists",
   "customer_added_success": "Customer {name} ({code}) Added Successfully! They Can Now Register And Login Using {email}",

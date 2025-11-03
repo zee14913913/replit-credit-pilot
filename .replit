@@ -5,7 +5,7 @@ integrations = ["twilio:1.0.0", "python_openai_ai_integrations:1.0.0"]
 
 [nix]
 channel = "stable-25_05"
-packages = ["cargo", "freetype", "glibcLocales", "gumbo", "harfbuzz", "jbig2dec", "lcms2", "libiconv", "libimagequant", "libjpeg", "libjpeg_turbo", "libtiff", "libwebp", "libxcrypt", "mupdf", "openjpeg", "poppler", "poppler_utils", "rustc", "swig", "tcl", "tesseract", "tk", "xcbuild", "zlib"]
+packages = ["cargo", "freetype", "glibcLocales", "gumbo", "harfbuzz", "jbig2dec", "lcms2", "libiconv", "libimagequant", "libjpeg", "libjpeg_turbo", "libtiff", "libwebp", "libxcrypt", "mupdf", "openjpeg", "poppler", "poppler_utils", "rustc", "swig", "tcl", "tesseract", "tk", "xcbuild", "xcodebuild", "zlib"]
 
 [workflows]
 runButton = "Project"
@@ -80,6 +80,10 @@ localPort = 33677
 externalPort = 9000
 
 [[ports]]
+localPort = 35683
+externalPort = 8099
+
+[[ports]]
 localPort = 36189
 externalPort = 3001
 
@@ -110,10 +114,6 @@ externalPort = 5173
 [[ports]]
 localPort = 44883
 externalPort = 6000
-
-[[ports]]
-localPort = 45475
-externalPort = 8099
 
 [deployment]
 deploymentTarget = "autoscale"

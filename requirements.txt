@@ -39,3 +39,5 @@ itsdangerous
 sendgrid
 py-vapid
 pywebpush
+beautifulsoup4
+lxml

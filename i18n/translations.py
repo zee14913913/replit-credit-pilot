@@ -1805,6 +1805,7 @@ TRANSLATIONS = {
         'session_expired': '会话已过期',
         'session_invalidated': '会话已被注销',
         'no_session_token': '未找到会话令牌',
+        'please_enter_credentials': '请输入用户名和密码',
         
         # System Messages - File Upload Failures
         'export_failed': '导出失败：{error}',
@@ -2069,6 +2070,7 @@ TRANSLATIONS = {
         'session_expired': 'Session Expired',
         'session_invalidated': 'Session Has Been Invalidated',
         'no_session_token': 'No Session Token Found',
+        'please_enter_credentials': 'Please Enter Username And Password',
         
         # System Messages - File Upload Failures
         'export_failed': 'Export Failed: {error}',

@@ -5224,7 +5224,8 @@ def admin_login():
         password = request.form.get('password', '').strip()
         
         if not username or not password:
-            flash('请输入用户名和密码', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('please_enter_credentials', lang), 'error')
             return render_template('admin_login.html')
         
         # 使用Flask RBAC桥接模块验证用户
