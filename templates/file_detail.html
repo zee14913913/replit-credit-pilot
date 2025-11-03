@@ -118,7 +118,7 @@
 {% if file.status == 'duplicate' or duplicate_warning %}
 <div class="alert alert-duplicate mb-4">
     <h5>{{ t('duplicate_warning_title') }}</h5>
-    <p>{{ t('duplicate_warning_text') }} <strong>{{ duplicate_count or 'N' }}</strong>{{ t('duplicate_warning_actions') }}</p>
+    <p>{{ t('duplicate_warning_text') }} <strong>{{ duplicate_count or t('fallback_na') }}</strong>{{ t('duplicate_warning_actions') }}</p>
     <ul>
         <li>{{ t('set_as_primary') }}</li>
         <li>{{ t('keep_as_backup') }}</li>
@@ -145,7 +145,7 @@
                     <span class="badge badge-{{ file.status }}">{{ t('status_' + file.status) }}</span>
                 </p>
                 <p><strong>{{ t('validation_status') }}：</strong> 
-                    <span class="badge badge-{{ file.validation_status }}">{{ file.validation_status }}</span>
+                    <span class="badge badge-{{ file.validation_status }}">{{ t('validation_' + file.validation_status) }}</span>
                 </p>
                 <p><strong>{{ t('upload_time') }}：</strong> {{ file.created_at }}</p>
                 <p><strong>{{ t('file_hash') }}：</strong> <code style="color: #aaa;">{{ file.file_hash[:16] }}...</code></p>
@@ -207,8 +207,8 @@
             {{ file.storage_path }}
         </code>
         
-        <p class="mt-3"><strong>{{ t('module') }}：</strong> {{ file.module or 'N/A' }}</p>
-        <p><strong>{{ t('source_engine') }}：</strong> {{ file.source_engine or 'N/A' }}</p>
+        <p class="mt-3"><strong>{{ t('module') }}：</strong> {{ file.module or t('fallback_na') }}</p>
+        <p><strong>{{ t('source_engine') }}：</strong> {{ file.source_engine or t('fallback_na') }}</p>
         
         {% if raw_lines_count %}
         <p><strong>{{ t('raw_lines_count') }}：</strong> {{ raw_lines_count }} {{ t('lines') }}</p>
@@ -220,11 +220,21 @@
 
 {% block extra_js %}
 <script>
+// i18n translations for JS
+const i18nStrings = {
+    alertBackendNotImplemented: "{{ t('alert_backend_not_implemented') }}",
+    alertFileId: "{{ t('alert_file_id') }}",
+    alertDownloadFunction: "{{ t('alert_download_function') }}",
+    alertDownloadEndpoint: "{{ t('alert_download_endpoint') }}",
+    confirmDeleteFile: "{{ t('confirm_delete_file') }}",
+    alertDeleteNotImplemented: "{{ t('alert_delete_not_implemented') }}"
+};
+
 function executeAction(action) {
     const fileId = {{ file.id }};
     
     if (['validate', 'generate_report', 'retry', 'set_primary', 'keep_backup'].includes(action)) {
-        alert('⚠️ Backend API Not Implemented\n\nFunction: ' + action + '\nFile ID: ' + fileId);
+        alert(i18nStrings.alertBackendNotImplemented + action + i18nStrings.alertFileId + fileId);
         return;
     }
     
@@ -233,12 +243,12 @@ function executeAction(action) {
 
 function downloadFile() {
     const filePath = "{{ file.storage_path }}";
-    alert('Download Function:\nFile Path: ' + filePath + '\n\nNeed to implement download endpoint');
+    alert(i18nStrings.alertDownloadFunction + filePath + i18nStrings.alertDownloadEndpoint);
 }
 
 function deleteFile() {
-    if (confirm('{{ t("delete_this_file") }}?')) {
-        alert('⚠️ Delete API Not Implemented');
+    if (confirm(i18nStrings.confirmDeleteFile)) {
+        alert(i18nStrings.alertDeleteNotImplemented);
     }
 }
 </script>

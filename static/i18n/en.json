@@ -161,5 +161,12 @@
   "storage_path": "Storage Path",
   "source_engine": "Source Engine",
   "raw_lines_count": "Raw Lines Count",
-  "lines": "Lines"
+  "lines": "Lines",
+  "alert_backend_not_implemented": "⚠️ Backend API Not Implemented\n\nFunction: ",
+  "alert_file_id": "\nFile ID: ",
+  "alert_download_function": "Download Function:\nFile Path: ",
+  "alert_download_endpoint": "\n\nNeed To Implement Download Endpoint",
+  "confirm_delete_file": "Are You Sure You Want To Delete This File? This Action Cannot Be Undone.",
+  "alert_delete_not_implemented": "⚠️ Delete API Not Implemented",
+  "fallback_na": "N/A"
 }

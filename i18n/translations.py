@@ -1776,6 +1776,20 @@ TRANSLATIONS = {
         'source_engine': '来源引擎',
         'raw_lines_count': '原始行数',
         'lines': '行',
+        
+        # JS Alerts & Confirmations
+        'alert_backend_not_implemented': '⚠️ 后端接口未实现\n\n功能：',
+        'alert_file_id': '\n文件ID：',
+        'alert_download_function': '下载功能：\n文件路径：',
+        'alert_download_endpoint': '\n\n需要实现文件下载端点',
+        'confirm_delete_file': '确定要删除此文件吗？此操作不可撤销。',
+        'alert_delete_not_implemented': '⚠️ 删除接口未实现',
+        'fallback_na': 'N/A',
+        
+        # Validation Status
+        'validation_pending': '待验证',
+        'validation_passed': '已通过',
+        'validation_failed': '验证失败',
     },
     'en': {
         # Navigation
@@ -1993,6 +2007,20 @@ TRANSLATIONS = {
         'source_engine': 'Source Engine',
         'raw_lines_count': 'Raw Lines Count',
         'lines': 'Lines',
+        
+        # JS Alerts & Confirmations
+        'alert_backend_not_implemented': '⚠️ Backend API Not Implemented\n\nFunction: ',
+        'alert_file_id': '\nFile ID: ',
+        'alert_download_function': 'Download Function:\nFile Path: ',
+        'alert_download_endpoint': '\n\nNeed To Implement Download Endpoint',
+        'confirm_delete_file': 'Are You Sure You Want To Delete This File? This Action Cannot Be Undone.',
+        'alert_delete_not_implemented': '⚠️ Delete API Not Implemented',
+        'fallback_na': 'N/A',
+        
+        # Validation Status
+        'validation_pending': 'Pending',
+        'validation_passed': 'Passed',
+        'validation_failed': 'Failed',
     }
 }
 
