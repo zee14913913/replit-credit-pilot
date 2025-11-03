@@ -64,7 +64,8 @@ from .routes import (
     api_key_management,  # Phase 2-2 Task 5: API密钥管理
     notifications,  # 通知系统
     unified_files,  # 统一文件管理API
-    self_test  # 自测接口
+    self_test,  # 自测接口
+    parsers  # Phase 1-10: 解析器注册表
 )
 
 # 注册路由
@@ -92,6 +93,7 @@ app.include_router(api_key_management.router, tags=["API Key Management"])  # Ph
 app.include_router(notifications.router, prefix="/api/notifications", tags=["Notifications"])  # 通知系统
 app.include_router(unified_files.router, tags=["Unified File Management"])  # 统一文件管理（Flask+FastAPI双引擎）
 app.include_router(self_test.router, tags=["Self Test"])  # 自测接口（验收标准）
+app.include_router(parsers.router, tags=["Parser Registry"])  # Phase 1-10: 解析器注册表（支持的银行列表）
 
 
 # 启动事件：初始化数据库
