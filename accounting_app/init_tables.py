@@ -110,6 +110,14 @@ if __name__ == "__main__":
     print("\n🔄 步骤2：迁移现有表...")
     migrate_existing_tables()
     
+    # 步骤3：初始化RBAC权限系统
+    print("\n🔄 步骤3：初始化RBAC权限系统...")
+    try:
+        from accounting_app.rbac import init_default_permissions
+        init_default_permissions()
+    except Exception as e:
+        print(f"⚠️ RBAC初始化警告: {str(e)[:200]}")
+    
     print("\n" + "=" * 60)
     print("  ✅ 数据库初始化完成！")
     print("=" * 60)
@@ -118,6 +126,8 @@ if __name__ == "__main__":
     print("  - period_closing (期间锁定)")
     print("  - system_config_versions (配置版本锁)")
     print("  - upload_staging (上传暂存区)")
+    print("  - permissions (权限定义)")
+    print("  - role_permissions (角色权限映射)")
     print("\n更新的表：")
     print("  - exceptions (添加 next_action, retryable 等字段)")
     print("  - auto_posting_rules (company_id 支持 NULL)")
