@@ -143,12 +143,16 @@ h1, h2, h3, h4, h5, h6,
     text-transform: uppercase !important;
 }
 
+/* 导航栏链接 - 全大写 (ALL CAPS) */
+.nav-link {
+    text-transform: uppercase !important;
+}
+
 /* 副标题和卡片内容 - 首字母大写 (Title Case) */
 .section-subtitle,
 .card-subtitle,
 .card-text,
 .btn,
-.nav-link,
 .dropdown-item,
 .list-group-item,
 .badge,
@@ -1133,13 +1137,46 @@ footer::before,
 }
 
 .footer-heading {
+    /* 卡片样式 - 黑色背景 + 莹白色文字 + 桃红色边框 */
     font-size: 1.35rem;
     font-weight: 900;
-    color: var(--text-pearl);
+    color: #FFFFFF;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     margin-bottom: 1.5rem;
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    
+    /* 卡片效果 */
+    background: #000000;
+    border: 3px solid #FF007F;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    
+    /* 莹白色发光文字效果 */
+    text-shadow: 
+        0 0 10px rgba(255, 255, 255, 0.8),
+        0 0 20px rgba(255, 255, 255, 0.4),
+        0 2px 4px rgba(0, 0, 0, 0.5);
+    
+    /* 卡片发光边框效果 */
+    box-shadow: 
+        0 0 15px rgba(255, 0, 127, 0.4),
+        0 0 30px rgba(255, 0, 127, 0.2),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    
+    /* 居中显示 */
+    text-align: center;
+    
+    /* 轻微过渡效果 */
+    transition: all 0.3s ease;
+}
+
+.footer-heading:hover {
+    /* 悬停增强发光 */
+    box-shadow: 
+        0 0 20px rgba(255, 0, 127, 0.6),
+        0 0 40px rgba(255, 0, 127, 0.3),
+        inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
 }
 
 .footer-menu {
