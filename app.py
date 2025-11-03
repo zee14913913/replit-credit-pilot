@@ -5591,8 +5591,8 @@ def admin_register():
             return render_template('admin_register.html')
         
         try:
-            # 使用FastAPI注册用户
-            from accounting_app.services.flask_rbac_bridge import register_flask_user
+            # 使用Flask RBAC Bridge注册用户
+            from auth.flask_rbac_bridge import register_flask_user
             
             result = register_flask_user(
                 company_id=int(company_id),

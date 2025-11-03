@@ -58,6 +58,75 @@ def extract_flask_request_info() -> dict:
     }
 
 
+def register_flask_user(company_id: int, username: str, email: str, password: str, 
+                        full_name: str = None, role: str = 'admin'):
+    """
+    注册新的Flask用户（写入PostgreSQL的users表）
+    
+    Args:
+        company_id: 公司ID
+        username: 用户名
+        email: 邮箱地址
+        password: 明文密码（将被SHA-256加密）
+        full_name: 全名（可选）
+        role: 角色（默认admin）
+    
+    Returns:
+        dict: {'success': bool, 'user_id': int, 'error': str}
+    """
+    conn = None
+    try:
+        # SHA-256加密密码
+        password_hash = f"SHA256:{hashlib.sha256(password.encode()).hexdigest()}"
+        
+        conn = get_pg_connection()
+        cursor = conn.cursor()
+        
+        # 检查用户名是否已存在
+        cursor.execute("""
+            SELECT id FROM users 
+            WHERE company_id = %s AND username = %s
+        """, (company_id, username))
+        
+        if cursor.fetchone():
+            conn.close()
+            return {'success': False, 'user_id': None, 'error': f'用户名 {username} 已存在'}
+        
+        # 检查邮箱是否已存在
+        cursor.execute("""
+            SELECT id FROM users 
+            WHERE company_id = %s AND email = %s
+        """, (company_id, email))
+        
+        if cursor.fetchone():
+            conn.close()
+            return {'success': False, 'user_id': None, 'error': f'邮箱 {email} 已被使用'}
+        
+        # 插入新用户
+        cursor.execute("""
+            INSERT INTO users (company_id, username, email, password_hash, full_name, role, is_active)
+            VALUES (%s, %s, %s, %s, %s, %s, TRUE)
+            RETURNING id
+        """, (company_id, username, email, password_hash, full_name, role))
+        
+        user_id = cursor.fetchone()[0]
+        conn.commit()
+        conn.close()
+        
+        logger.info(f"新用户注册成功: {username} (ID: {user_id}, Role: {role})")
+        return {'success': True, 'user_id': user_id, 'error': None}
+    
+    except Exception as e:
+        logger.error(f"Flask用户注册失败: {e}")
+        if conn:
+            try:
+                conn.rollback()
+                conn.close()
+            except:
+                pass
+        return {'success': False, 'user_id': None, 'error': str(e)}
+
+
 def verify_flask_user(username: str = None, password: str = None, user_id: int = None):
     """
     验证Flask用户身份（从PostgreSQL的users表）
@@ -105,10 +174,10 @@ def verify_flask_user(username: str = None, password: str = None, user_id: int =
             'is_active': user[5]
         }
         
-        # 如果提供了密码，验证密码
+        # 如果提供了密码，验证密码（SHA-256）
         if password:
-            import bcrypt
-            if not bcrypt.checkpw(password.encode('utf-8'), user_dict['password_hash'].encode('utf-8')):
+            password_hash = f"SHA256:{hashlib.sha256(password.encode()).hexdigest()}"
+            if password_hash != user_dict['password_hash']:
                 return {'success': False, 'user': None, 'error': '密码错误'}
         
         return {'success': True, 'user': user_dict, 'error': None}
