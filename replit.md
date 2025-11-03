@@ -72,6 +72,14 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Responsive Design:** Mobile-first CSS with @media queries, touch-friendly button sizes, table responsiveness.
 - **Accessibility (A11y):** ARIA labels auto-generation, keyboard navigation (Esc/Ctrl+S shortcuts), focus indicators with outline styling.
 
+**i18n Migration Status (Plan C - Critical Pages First):**
+- **Migration Scope:** 6 critical pages (index, dashboard, accounting_files, file_detail, customer_dashboard, admin_dashboard) fully migrated with 100% hardcoded text removal.
+- **Translation Resources:** 170 EN keys, 823 ZH keys in static/i18n/{en,zh}.json; i18n/translations.py serves as single source of truth.
+- **Language Switcher:** Unified top-right switcher in layout.html with localStorage persistence, client-side i18n.js for real-time switching.
+- **Hybrid Strategy:** Preserves server-side {{ t('key') }} for existing pages, adds client-side i18n.js for instant language switching without page reload.
+- **Design Compliance:** 100% strict 3-color palette enforcement (#FF007F, #322446, #000000 + neutrals), English titles ALL CAPS, content Title Case.
+- **Total Templates:** 44 files (6 migrated critical pages, 38 non-critical pages remain as-is per Plan C scope control).
+
 **AI Advanced Analytics System:**
 - **Financial Health Scoring System:** 0-100 score with optimization suggestions.
 - **Cash Flow Prediction Engine:** AI-powered 3/6/12-month cash flow forecast.
