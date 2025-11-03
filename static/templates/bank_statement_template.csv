@@ -1,0 +1,8 @@
+Date,Description,Reference,Debit,Credit,Balance
+2025-01-01,Opening Balance,,0.00,0.00,1000.00
+2025-01-05,Payment Received - Customer A,REF001,,500.00,1500.00
+2025-01-10,Office Supplies Purchase,REF002,150.00,,1350.00
+2025-01-15,Salary Payment - Employee,REF003,3000.00,,−1650.00
+2025-01-20,Sales Invoice Payment,REF004,,2000.00,350.00
+2025-01-25,Utility Bill Payment,REF005,200.00,,150.00
+2025-01-31,Closing Balance,,0.00,0.00,150.00

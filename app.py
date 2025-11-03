@@ -5151,6 +5151,32 @@ def proxy_unified_files_api(subpath):
     except Exception as e:
         return jsonify({"success": False, "message": f"代理请求失败: {str(e)}"}), 500
 
+@app.route('/api/parsers/<path:subpath>', methods=['GET'])
+@app.route('/api/metrics/<path:subpath>', methods=['GET'])
+def proxy_parsers_metrics_api(subpath):
+    """Phase 1-10: 代理parsers和metrics API到FastAPI（端口8000）"""
+    import requests
+    
+    # 确定API类型
+    if '/parsers/' in request.path:
+        api_prefix = 'parsers'
+    elif '/metrics/' in request.path:
+        api_prefix = 'metrics'
+    else:
+        return jsonify({"error": "Invalid API path"}), 400
+    
+    # 构建目标URL
+    target_url = f'http://localhost:8000/api/{api_prefix}/{subpath}'
+    
+    try:
+        # GET请求转发
+        response = requests.get(target_url, params=request.args, timeout=5)
+        
+        # 返回响应
+        return response.content, response.status_code, {'Content-Type': response.headers.get('Content-Type', 'application/json')}
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/accounting_test_results')
 def accounting_test_results():
     """显示会计系统测试结果"""
