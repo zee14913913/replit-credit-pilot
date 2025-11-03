@@ -213,5 +213,6 @@
   "auto_detect": "Auto Detect",
   "select_bank": "Select Bank",
   "bank_unavailable_temporarily": "This bank is temporarily unavailable. Please use the CSV template or try again later.",
-  "failed_to_load_supported_banks": "Failed to load supported banks"
+  "failed_to_load_supported_banks": "Failed to load supported banks",
+  "download_evidence_bundle": "Download Evidence Bundle"
 }

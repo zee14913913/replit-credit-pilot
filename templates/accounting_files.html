@@ -523,6 +523,9 @@
             <button onclick="document.getElementById('fileUpload').click()" class="btn btn-primary">{{ t('smart_upload_csv_pdf') }}</button>
             <button onclick="refreshFiles()" class="btn btn-primary">{{ t('refresh_list') }}</button>
             <a href="/accounting_test_results" class="btn btn-primary">{{ t('run_new_test') }}</a>
+            <a href="/downloads/evidence/latest" target="_blank" class="btn btn-outline" style="border: 1px solid #FF007F; color: #FF007F;">
+                <i class="bi bi-archive"></i> {{ t('download_evidence_bundle') }}
+            </a>
         </div>
         
         <!-- 隐藏的文件上传输入 -->

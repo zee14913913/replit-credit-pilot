@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file, session
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file, send_from_directory, session
 import os
 from datetime import datetime, timedelta
 import json
@@ -5257,6 +5257,25 @@ def accounting_test_results():
 </html>'''
     return html
 
+@app.route("/downloads/evidence/latest")
+def download_evidence_latest():
+    """下载最新的证据包ZIP"""
+    import glob
+    dl_dir = os.path.join(os.getcwd(), "static", "downloads")
+    os.makedirs(dl_dir, exist_ok=True)
+    zips = sorted(glob.glob(os.path.join(dl_dir, "evidence_bundle_*.zip")))
+    if not zips:
+        return jsonify({"success": False, "message": "No evidence bundle found."}), 404
+    latest = os.path.basename(zips[-1])
+    return send_from_directory(dl_dir, latest, as_attachment=True)
+
+@app.route("/downloads/evidence/list")
+def list_evidence_bundles():
+    """列出所有证据包"""
+    dl_dir = os.path.join(os.getcwd(), "static", "downloads")
+    os.makedirs(dl_dir, exist_ok=True)
+    zips = sorted([f for f in os.listdir(dl_dir) if f.startswith("evidence_bundle_")])
+    return jsonify({"success": True, "bundles": zips})
 
 # ========== ADMIN RBAC LOGIN (Phase 2-2 Task 3) ==========
 

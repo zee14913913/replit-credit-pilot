@@ -1,0 +1,127 @@
+可以。建议把这批证据做成「可下载、可校验、可追溯」的整包。我给你一套一贴到 Replit 就能执行的指令与脚本（不动现有主流程）。
+
+一键打包（发给 Replit，原样执行）
+
+目标：把 /tmp/evidence_*.json 等证据文件打包为一个 ZIP，附带 manifest.json（SHA256 校验、文件清单、生成时间）、README.md，并在 5000 端（Flask）提供下载链接。
+
+1) 生成打包物（Python inline 脚本）
+
+在 Replit Shell 执行：
+
+python3 - <<'PY'
+import os, glob, json, hashlib, zipfile, datetime, pathlib
+BASE_DIR = os.getcwd()
+static_dl = os.path.join(BASE_DIR, "static", "downloads")
+os.makedirs(static_dl, exist_ok=True)
+
+# 收集证据文件（你刚才列的11个JSON都匹配这个Pattern）
+files = sorted(glob.glob("/tmp/evidence_*.json")) + sorted(glob.glob("/tmp/upload_attempt_*.json"))
+if not files:
+    raise SystemExit("No evidence_* or upload_attempt_* JSON files found under /tmp")
+
+def sha256(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1<<20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+zip_name = f"evidence_bundle_{ts}.zip"
+zip_path = os.path.join(static_dl, zip_name)
+
+manifest = {
+    "bundle": zip_name,
+    "created_at": datetime.datetime.now().isoformat(),
+    "source": "finance-pilot (Replit)",
+    "count": len(files),
+    "files": []
+}
+
+for p in files:
+    try:
+        st = os.stat(p)
+        manifest["files"].append({
+            "path": p,
+            "bytes": st.st_size,
+            "sha256": sha256(p)
+        })
+    except FileNotFoundError:
+        pass
+
+readme = f"""# Evidence Bundle
+
+- Generated: {manifest["created_at"]}
+- Files: {manifest["count"]}
+- Purpose: Circuit-breaker demo & 3-scenario uploads (A/B/C) evidence
+- Notes:
+  - Use `manifest.json` to verify SHA256 checksums.
+  - All API responses follow UploadResponse schema (status/next_actions/raw_document_id).
+
+"""
+
+# 写 ZIP
+with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as z:
+    # 放入证据
+    for p in files:
+        arc = os.path.basename(p)
+        z.write(p, arcname=arc)
+    # 放入 manifest 与 README
+    z.writestr("manifest.json", json.dumps(manifest, ensure_ascii=False, indent=2))
+    z.writestr("README.md", readme)
+
+print(zip_path)
+PY
+
+预期输出：/home/runner/.../static/downloads/evidence_bundle_YYYYMMDD_HHMMSS.zip
+
+2) 暴露下载入口（Flask 5000）
+
+在 app.py（Flask）添加路由（放在其他路由后面即可）：
+
+from flask import send_from_directory, jsonify
+import os, glob
+
+@app.route("/downloads/evidence/latest")
+def download_evidence_latest():
+    dl_dir = os.path.join(os.getcwd(), "static", "downloads")
+    os.makedirs(dl_dir, exist_ok=True)
+    zips = sorted(glob.glob(os.path.join(dl_dir, "evidence_bundle_*.zip")))
+    if not zips:
+        return jsonify({"success": False, "message": "No evidence bundle found."}), 404
+    latest = os.path.basename(zips[-1])
+    return send_from_directory(dl_dir, latest, as_attachment=True)
+
+@app.route("/downloads/evidence/list")
+def list_evidence_bundles():
+    dl_dir = os.path.join(os.getcwd(), "static", "downloads")
+    os.makedirs(dl_dir, exist_ok=True)
+    zips = sorted(os.listdir(dl_dir))
+    return jsonify({"success": True, "bundles": zips})
+
+3) 在 Admin/Files 页面加一个下载按钮（可选）
+
+在 templates/accounting_files.html 任意合适位置加入：
+
+<a class="btn btn-primary" href="/downloads/evidence/latest" target="_blank">
+  {{ t('download_evidence_bundle') if t else 'Download Evidence Bundle' }}
+</a>
+
+并在 i18n 增补：
+	•	download_evidence_bundle: 下载证据包 / Download Evidence Bundle
+
+⸻
+
+验收要点（你检查这 3 点即可）
+	1.	访问 /downloads/evidence/list 能看到刚生成的 ZIP 名称。
+	2.	访问 /downloads/evidence/latest 浏览器开始下载。
+	3.	解压后有 manifest.json 和 README.md，manifest.json 里有每个 evidence JSON 的 SHA256 与大小。
+
+⸻
+
+说明
+	•	我没有动你现有的上传/跳详情/高亮/状态机/矩阵任何逻辑，只是**新增“证据打包 + 下载”**能力。
+	•	证据文件都保留在 /tmp 的原位；ZIP 在 static/downloads/，方便对外提供链接。
+	•	如果你要长期归档，可把 static/downloads 对接对象存储（S3/Cloudflare R2）。需要的话我再给你 S3 直传的最小改动方案。
+
+要我把这个按钮加到 Admin 菜单并同步英文键值吗？
