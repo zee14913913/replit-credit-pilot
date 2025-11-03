@@ -1722,6 +1722,26 @@ TRANSLATIONS = {
         'processing': '处理中...',
         'completed': '已完成',
         'failed': '失败',
+        
+        # File Status Values
+        'status_uploaded': '已上传',
+        'status_active': '活跃',
+        'status_failed': '失败',
+        'status_duplicate': '重复',
+        'status_validated': '已验证',
+        'status_archived': '已归档',
+        'status_processing': '处理中',
+        'status_parsed': '已解析',
+        
+        # Navigation Menu
+        'nav_dashboard': '仪表板',
+        'nav_customers': '客户管理',
+        'nav_credit_cards': '信用卡',
+        'nav_savings': '储蓄账户',
+        'nav_receipts': '收据管理',
+        'nav_loan': '贷款管理',
+        'nav_accounting': '会计系统',
+        'nav_files': '文件管理',
     },
     'en': {
         # Navigation
@@ -1885,6 +1905,26 @@ TRANSLATIONS = {
         'processing': 'Processing...',
         'completed': 'Completed',
         'failed': 'Failed',
+        
+        # File Status Values
+        'status_uploaded': 'Uploaded',
+        'status_active': 'Active',
+        'status_failed': 'Failed',
+        'status_duplicate': 'Duplicate',
+        'status_validated': 'Validated',
+        'status_archived': 'Archived',
+        'status_processing': 'Processing',
+        'status_parsed': 'Parsed',
+        
+        # Navigation Menu
+        'nav_dashboard': 'Dashboard',
+        'nav_customers': 'Customers',
+        'nav_credit_cards': 'Credit Cards',
+        'nav_savings': 'Savings',
+        'nav_receipts': 'Receipts',
+        'nav_loan': 'Loan',
+        'nav_accounting': 'Accounting',
+        'nav_files': 'Files',
     }
 }
 
