@@ -1195,6 +1195,7 @@ footer::before,
     font-weight: 600;
     transition: all 0.3s ease;
     position: relative;
+    text-transform: uppercase !important;
 }
 
 .footer-link::before {
