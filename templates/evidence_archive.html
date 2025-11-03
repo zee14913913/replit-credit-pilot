@@ -1,0 +1,175 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ t('evidence_archive_title') }}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/matrix.css') }}">
+<style>
+    .evidence-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 2rem;
+        background: rgba(50, 36, 70, 0.2);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .evidence-table thead {
+        background: #322446;
+        color: #FF007F;
+    }
+    
+    .evidence-table th,
+    .evidence-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #322446;
+    }
+    
+    .evidence-table tbody tr:hover {
+        background: rgba(255, 0, 127, 0.1);
+    }
+    
+    .evidence-table a {
+        color: #FF007F;
+        text-decoration: none;
+    }
+    
+    .evidence-table a:hover {
+        text-decoration: underline;
+    }
+    
+    .btn-delete {
+        background: transparent;
+        border: 1px solid #FF007F;
+        color: #FF007F;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+    
+    .btn-delete:hover {
+        background: #FF007F;
+        color: #000;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border: 1px solid #FF007F;
+        background: transparent;
+        color: #FF007F;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-action:hover {
+        background: #FF007F;
+        color: #000;
+    }
+    
+    .btn-action.admin-only {
+        border-color: #322446;
+        color: #322446;
+    }
+    
+    .btn-action.admin-only:hover {
+        background: #322446;
+        color: #FF007F;
+    }
+    
+    .sha256-hash {
+        font-family: 'Courier New', monospace;
+        font-size: 0.85rem;
+        color: #322446;
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .no-records {
+        text-align: center;
+        padding: 3rem;
+        color: #322446;
+        font-size: 1.2rem;
+    }
+    
+    .loading-skeleton {
+        background: linear-gradient(90deg, rgba(50,36,70,0.1) 25%, rgba(255,0,127,0.1) 50%, rgba(50,36,70,0.1) 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+        border-radius: 4px;
+        height: 20px;
+    }
+    
+    @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1400px; margin: 2rem auto; padding: 0 2rem;" data-user-role="{{ user.role }}">
+    <h1 style="color: #FF007F; margin-bottom: 1rem;">
+        <i class="bi bi-archive"></i> {{ t('evidence_archive_title') }}
+    </h1>
+    
+    <div class="action-buttons">
+        <a href="/downloads/evidence/latest" class="btn-action" target="_blank">
+            <i class="bi bi-download"></i>
+            <span data-i18n="download_latest">{{ t('download_latest') }}</span>
+        </a>
+        
+        {% if user.role == 'admin' %}
+        <button id="btn-run-rotation" class="btn-action admin-only">
+            <i class="bi bi-arrow-repeat"></i>
+            <span data-i18n="rotation_run_now">{{ t('rotation_run_now') }}</span>
+        </button>
+        {% endif %}
+        
+        <a href="/accounting_files" class="btn-action" style="border-color: #322446; color: #322446;">
+            <i class="bi bi-arrow-left"></i>
+            <span data-i18n="back_to_files">{{ t('back_to_files') }}</span>
+        </a>
+    </div>
+    
+    <table class="evidence-table" id="evidence-table">
+        <thead>
+            <tr>
+                <th data-i18n="file_name">{{ t('file_name') }}</th>
+                <th data-i18n="created_at">{{ t('created_at') }}</th>
+                <th data-i18n="size">{{ t('size') }}</th>
+                <th data-i18n="sha256">SHA256</th>
+                <th data-i18n="source">{{ t('source') }}</th>
+                <th data-i18n="actions">{{ t('actions') }}</th>
+            </tr>
+        </thead>
+        <tbody id="evidence-tbody">
+            <tr>
+                <td colspan="6">
+                    <div class="loading-skeleton"></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/evidence-archive.js') }}"></script>
+{% endblock %}

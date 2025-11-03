@@ -5259,23 +5259,237 @@ def accounting_test_results():
 
 @app.route("/downloads/evidence/latest")
 def download_evidence_latest():
-    """下载最新的证据包ZIP"""
+    """下载最新的证据包ZIP（非static目录，admin-only RBAC保护）"""
+    user = session.get('flask_rbac_user')
+    if not user:
+        return jsonify({"success": False, "error": "未登录"}), 401
+    
+    if user.get('role') != 'admin':
+        return jsonify({"success": False, "error": "权限不足：仅admin可下载"}), 403
+    
     import glob
-    dl_dir = os.path.join(os.getcwd(), "static", "downloads")
+    dl_dir = os.path.join(os.getcwd(), "evidence_bundles")
     os.makedirs(dl_dir, exist_ok=True)
     zips = sorted(glob.glob(os.path.join(dl_dir, "evidence_bundle_*.zip")))
     if not zips:
         return jsonify({"success": False, "message": "No evidence bundle found."}), 404
     latest = os.path.basename(zips[-1])
+    
+    request_info = extract_flask_request_info()
+    write_flask_audit_log(
+        user_id=user['id'],
+        username=user['username'],
+        company_id=user.get('company_id', 0),
+        action_type='download',
+        entity_type='evidence_bundle',
+        description=f"下载最新证据包: {latest}",
+        success=True,
+        ip_address=request_info['ip_address'],
+        user_agent=request_info['user_agent']
+    )
+    
     return send_from_directory(dl_dir, latest, as_attachment=True)
+
+@app.route("/downloads/evidence/file/<filename>")
+def download_evidence_file(filename):
+    """下载指定的证据包ZIP（非static目录，RBAC保护）"""
+    user = session.get('flask_rbac_user')
+    if not user:
+        return jsonify({"success": False, "error": "未登录"}), 401
+    
+    if user.get('role') != 'admin':
+        return jsonify({"success": False, "error": "权限不足：仅admin可下载"}), 403
+    
+    if not filename.startswith("evidence_bundle_"):
+        return jsonify({"success": False, "error": "无效的文件名"}), 400
+    
+    dl_dir = os.path.join(os.getcwd(), "evidence_bundles")
+    filepath = os.path.join(dl_dir, filename)
+    
+    if not os.path.exists(filepath):
+        return jsonify({"success": False, "error": "文件不存在"}), 404
+    
+    request_info = extract_flask_request_info()
+    write_flask_audit_log(
+        user_id=user['id'],
+        username=user['username'],
+        company_id=user.get('company_id', 0),
+        action_type='download',
+        entity_type='evidence_bundle',
+        description=f"下载证据包: {filename}",
+        success=True,
+        ip_address=request_info['ip_address'],
+        user_agent=request_info['user_agent']
+    )
+    
+    return send_from_directory(dl_dir, filename, as_attachment=True)
 
 @app.route("/downloads/evidence/list")
 def list_evidence_bundles():
-    """列出所有证据包"""
-    dl_dir = os.path.join(os.getcwd(), "static", "downloads")
+    """列出所有证据包（带metadata，非static目录）"""
+    import glob
+    import re
+    from datetime import datetime
+    
+    dl_dir = os.path.join(os.getcwd(), "evidence_bundles")
     os.makedirs(dl_dir, exist_ok=True)
-    zips = sorted([f for f in os.listdir(dl_dir) if f.startswith("evidence_bundle_")])
-    return jsonify({"success": True, "bundles": zips})
+    
+    bundles = []
+    for zip_path in sorted(glob.glob(os.path.join(dl_dir, "evidence_bundle_*.zip"))):
+        filename = os.path.basename(zip_path)
+        
+        match = re.search(r'evidence_bundle_(\d{8})_(\d{6})\.zip', filename)
+        created_at = match.group(1) + match.group(2) if match else 'Unknown'
+        
+        file_size = os.path.getsize(zip_path) if os.path.exists(zip_path) else 0
+        
+        bundles.append({
+            "filename": filename,
+            "created_at": created_at,
+            "size": file_size,
+            "sha256": "N/A",
+            "source": "finance-pilot"
+        })
+    
+    return jsonify({"success": True, "bundles": bundles})
+
+@app.route("/downloads/evidence/delete", methods=["POST"])
+def delete_evidence_bundle():
+    """删除指定证据包（仅admin，非static目录）"""
+    user = session.get('flask_rbac_user')
+    if not user or user.get('role') != 'admin':
+        return jsonify({"success": False, "error": "权限不足：仅admin可删除"}), 403
+    
+    filename = request.json.get('filename')
+    if not filename or not filename.startswith("evidence_bundle_"):
+        return jsonify({"success": False, "error": "无效的文件名"}), 400
+    
+    dl_dir = os.path.join(os.getcwd(), "evidence_bundles")
+    filepath = os.path.join(dl_dir, filename)
+    
+    if not os.path.exists(filepath):
+        return jsonify({"success": False, "error": "文件不存在"}), 404
+    
+    try:
+        os.remove(filepath)
+        
+        request_info = extract_flask_request_info()
+        write_flask_audit_log(
+            user_id=user['id'],
+            username=user['username'],
+            company_id=user.get('company_id', 0),
+            action_type='delete',
+            entity_type='evidence_bundle',
+            description=f"删除证据包: {filename}",
+            success=True,
+            ip_address=request_info['ip_address'],
+            user_agent=request_info['user_agent']
+        )
+        
+        return jsonify({"success": True, "message": f"已删除: {filename}"})
+    except Exception as e:
+        logger.error(f"删除证据包失败: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route("/admin/evidence")
+def admin_evidence_archive():
+    """Evidence Archive管理页面（Option B实施 - admin-only）"""
+    user = session.get('flask_rbac_user')
+    if not user:
+        flash('请先登录', 'warning')
+        return redirect(url_for('admin_login'))
+    
+    if user.get('role') != 'admin':
+        flash('权限不足：仅admin可访问证据归档', 'error')
+        return redirect(url_for('index'))
+    
+    return render_template('evidence_archive.html', user=user)
+
+@app.route("/tasks/evidence/rotate", methods=["POST"])
+def rotate_evidence_bundles():
+    """
+    自动轮转证据包（Option A实施）
+    - 保留最近N天的所有包
+    - 保留每月第一个包作为长期留存
+    - 需要X-TASK-TOKEN + admin角色
+    """
+    task_token = request.headers.get('X-TASK-TOKEN')
+    expected_token = os.environ.get('TASK_SECRET_TOKEN', 'dev-default-token')
+    
+    if task_token != expected_token:
+        return jsonify({"success": False, "error": "无效的TASK_SECRET_TOKEN"}), 401
+    
+    user = session.get('flask_rbac_user')
+    if not user or user.get('role') != 'admin':
+        return jsonify({"success": False, "error": "权限不足：仅admin可执行轮转"}), 403
+    
+    try:
+        dl_dir = os.path.join(os.getcwd(), "evidence_bundles")
+        os.makedirs(dl_dir, exist_ok=True)
+        
+        retention_days = int(os.environ.get('EVIDENCE_ROTATION_DAYS', '30'))
+        keep_monthly = int(os.environ.get('EVIDENCE_KEEP_MONTHLY', '1'))
+        
+        from datetime import datetime, timedelta
+        import glob
+        import re
+        
+        cutoff_date = datetime.now() - timedelta(days=retention_days)
+        
+        zips = glob.glob(os.path.join(dl_dir, "evidence_bundle_*.zip"))
+        
+        kept = []
+        deleted = []
+        monthly_kept = {}
+        
+        for zip_path in zips:
+            filename = os.path.basename(zip_path)
+            
+            match = re.search(r'evidence_bundle_(\d{8})_\d{6}\.zip', filename)
+            if not match:
+                kept.append(filename)
+                continue
+            
+            date_str = match.group(1)
+            file_date = datetime.strptime(date_str, '%Y%m%d')
+            year_month = file_date.strftime('%Y-%m')
+            
+            if file_date >= cutoff_date:
+                kept.append(filename)
+                continue
+            
+            if keep_monthly and year_month not in monthly_kept:
+                monthly_kept[year_month] = filename
+                kept.append(filename)
+                continue
+            
+            os.remove(zip_path)
+            deleted.append(filename)
+        
+        request_info = extract_flask_request_info()
+        write_flask_audit_log(
+            user_id=user['id'],
+            username=user['username'],
+            company_id=user.get('company_id', 0),
+            action_type='evidence_rotation',
+            entity_type='evidence_bundle',
+            description=f"轮转策略执行: 保留{len(kept)}个, 删除{len(deleted)}个",
+            success=True,
+            new_value={"kept": kept, "deleted": deleted, "retention_days": retention_days},
+            ip_address=request_info['ip_address'],
+            user_agent=request_info['user_agent']
+        )
+        
+        return jsonify({
+            "success": True,
+            "kept": kept,
+            "deleted": deleted,
+            "reason": f"Rotation policy applied: keep {retention_days} days + monthly first"
+        })
+    
+    except Exception as e:
+        logger.error(f"证据包轮转失败: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
 
 # ========== ADMIN RBAC LOGIN (Phase 2-2 Task 3) ==========
 
