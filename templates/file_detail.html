@@ -160,38 +160,9 @@
         <h4 style="margin: 0;">{{ t('available_actions') }}</h4>
     </div>
     <div class="card-body">
+        <!-- Phase 1-10: 7状态机驱动的动态按钮（由JavaScript渲染） -->
         <div class="d-flex gap-2 flex-wrap" id="action-buttons-container">
-            {% if file.status == 'uploaded' and file.validation_status == 'pending' %}
-                <button class="btn btn-pattern-1" onclick="executeAction('validate')">
-                    {{ t('validate_file') }}
-                </button>
-            {% elif file.status == 'parsed' and file.validation_status == 'passed' %}
-                <button class="btn btn-pattern-1" onclick="executeAction('generate_report')">
-                    {{ t('generate_report') }}
-                </button>
-            {% elif file.status == 'failed' or file.validation_status == 'failed' %}
-                <a href="/files/exceptions/{{ file.id }}" class="btn btn-pattern-2">
-                    {{ t('view_exceptions') }}
-                </a>
-                <button class="btn btn-pattern-2" onclick="executeAction('retry')">
-                    {{ t('retry_processing') }}
-                </button>
-            {% elif file.status == 'duplicate' %}
-                <button class="btn btn-pattern-1" onclick="executeAction('set_primary')">
-                    {{ t('set_primary_statement') }}
-                </button>
-                <button class="btn btn-pattern-5" onclick="executeAction('keep_backup')">
-                    {{ t('keep_backup') }}
-                </button>
-            {% endif %}
-            
-            <!-- 通用操作 -->
-            <button class="btn btn-pattern-5" onclick="downloadFile()">
-                {{ t('download_original') }}
-            </button>
-            <button class="btn btn-pattern-3" onclick="deleteFile()">
-                {{ t('delete_file') }}
-            </button>
+            <span style="color: #999;">{{ t('loading') }}...</span>
         </div>
     </div>
 </div>
@@ -220,6 +191,66 @@
 
 {% block extra_js %}
 <script>
+// Phase 1-10: 7-State Machine Mapping (client-side)
+const STATUS_NEXT_ACTIONS = {
+    "uploaded": ["validate", "view_original"],
+    "active": ["generate_report", "download_original"],
+    "failed": ["view_exceptions", "reprocess", "download_original"],
+    "duplicate": ["set_as_primary", "view_other_files", "download_original"],
+    "validated": ["generate_report", "download_original"],
+    "posted": ["view_report", "download_original"],
+    "archived": ["download_original"]
+};
+
+// Action button configuration (action → {label, btnClass, handler})
+const ACTION_CONFIG = {
+    "validate": {
+        label: "{{ t('validate_file') }}",
+        btnClass: "btn-pattern-1",
+        handler: "executeAction('validate')"
+    },
+    "view_original": {
+        label: "{{ t('view_original') }}",
+        btnClass: "btn-pattern-5",
+        handler: "viewOriginal()"
+    },
+    "generate_report": {
+        label: "{{ t('generate_report') }}",
+        btnClass: "btn-pattern-1",
+        handler: "executeAction('generate_report')"
+    },
+    "download_original": {
+        label: "{{ t('download_original') }}",
+        btnClass: "btn-pattern-5",
+        handler: "downloadFile()"
+    },
+    "view_exceptions": {
+        label: "{{ t('view_exceptions') }}",
+        btnClass: "btn-pattern-2",
+        handler: "viewExceptions()"
+    },
+    "reprocess": {
+        label: "{{ t('retry_processing') }}",
+        btnClass: "btn-pattern-2",
+        handler: "executeAction('reprocess')"
+    },
+    "set_as_primary": {
+        label: "{{ t('set_primary_statement') }}",
+        btnClass: "btn-pattern-1",
+        handler: "executeAction('set_primary')"
+    },
+    "view_other_files": {
+        label: "{{ t('view_other_files') }}",
+        btnClass: "btn-pattern-5",
+        handler: "viewOtherFiles()"
+    },
+    "view_report": {
+        label: "{{ t('view_report') }}",
+        btnClass: "btn-pattern-1",
+        handler: "viewReport()"
+    }
+};
+
 // i18n translations for JS
 const i18nStrings = {
     alertBackendNotImplemented: "{{ t('alert_backend_not_implemented') }}",
@@ -230,15 +261,38 @@ const i18nStrings = {
     alertDeleteNotImplemented: "{{ t('alert_delete_not_implemented') }}"
 };
 
+// Dynamically render action buttons based on file status
+function renderActionButtons() {
+    const fileStatus = "{{ file.status }}";
+    const container = document.getElementById('action-buttons-container');
+    
+    const nextActions = STATUS_NEXT_ACTIONS[fileStatus] || ["download_original"];
+    
+    let buttonsHTML = '';
+    nextActions.forEach(action => {
+        const config = ACTION_CONFIG[action];
+        if (config) {
+            buttonsHTML += `
+                <button class="btn ${config.btnClass}" onclick="${config.handler}">
+                    ${config.label}
+                </button>
+            `;
+        }
+    });
+    
+    // Always add delete button
+    buttonsHTML += `
+        <button class="btn btn-pattern-3" onclick="deleteFile()">
+            {{ t('delete_file') }}
+        </button>
+    `;
+    
+    container.innerHTML = buttonsHTML;
+}
+
 function executeAction(action) {
     const fileId = {{ file.id }};
-    
-    if (['validate', 'generate_report', 'retry', 'set_primary', 'keep_backup'].includes(action)) {
-        alert(i18nStrings.alertBackendNotImplemented + action + i18nStrings.alertFileId + fileId);
-        return;
-    }
-    
-    console.log('Executing action:', action, 'for file:', fileId);
+    alert(i18nStrings.alertBackendNotImplemented + action + i18nStrings.alertFileId + fileId);
 }
 
 function downloadFile() {
@@ -251,5 +305,26 @@ function deleteFile() {
         alert(i18nStrings.alertDeleteNotImplemented);
     }
 }
+
+function viewOriginal() {
+    alert('查看原始文件功能待实现');
+}
+
+function viewExceptions() {
+    window.location.href = '/files/exceptions/{{ file.id }}';
+}
+
+function viewOtherFiles() {
+    window.location.href = '/files/list';
+}
+
+function viewReport() {
+    alert('查看报表功能待实现');
+}
+
+// Initialize buttons on page load
+document.addEventListener('DOMContentLoaded', function() {
+    renderActionButtons();
+});
 </script>
 {% endblock %}

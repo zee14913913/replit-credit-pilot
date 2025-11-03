@@ -1,9 +1,14 @@
 """
-Phase 1-5: 银行月结单上传接口（V2版本 - 集成raw_documents保护）
+Phase 1-10: 银行月结单上传接口（V2版本 - 7状态机 + 统一响应格式）
 
-与V1的区别：
+Phase 1-5改进：
 - V1: 直接解析CSV并入库
 - V2: "先封存，再计算" - 封存原件 → 行数对账 → 验证通过才入库
+
+Phase 1-10改进：
+- 统一UploadResponse格式（success & failure都返回）
+- 7状态机驱动next_actions
+- 扫描版PDF友好消息（bilingual）
 """
 from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
 from sqlalchemy.orm import Session
@@ -13,9 +18,10 @@ from sqlalchemy import and_, or_, text
 
 from ..db import get_db
 from ..services.upload_wrapper import BankStatementUploadWrapper
-from ..models import FileIndex, RawDocument  # FileIndex needed for duplicate detection
+from ..models import FileIndex, RawDocument
+from ..schemas.upload_responses import UploadResponse, get_next_actions
 
-router = APIRouter(prefix="/api/v2/import", tags=["Bank Import V2 (Phase 1-5)"])
+router = APIRouter(prefix="/api/v2/import", tags=["Bank Import V2 (Phase 1-10)"])
 logger = logging.getLogger(__name__)
 
 
@@ -73,9 +79,40 @@ async def import_bank_statement_v2(
         f"company_id={company_id}, bank={bank_name}, month={statement_month}"
     )
     
-    # 验证文件类型
-    if not file.filename or not file.filename.endswith('.csv'):
-        raise HTTPException(status_code=400, detail="Only CSV files are supported")
+    # Phase 1-10: 验证文件类型 + 扫描版PDF友好消息
+    # Critical fix: Return 200 + UploadResponse (not HTTPException) for unified contract
+    if not file.filename:
+        return UploadResponse(
+            success=False,
+            status="failed",
+            status_reason="文件名为空，请重新选择文件。",
+            next_actions=[],
+            api_version="v2_phase1-10"
+        )
+    
+    if file.filename.lower().endswith('.pdf'):
+        # 扫描版PDF友好提示（bilingual）
+        return UploadResponse(
+            success=False,
+            status="failed",
+            status_reason="这是扫描版/图片对账单，请从网银下载 CSV/Excel 再上传。 | This is a scanned/image statement. Please download the CSV/Excel version from e-banking and re-upload.",
+            next_actions=[],
+            warnings=[
+                "系统仅支持文本格式的CSV文件",
+                "System only supports text-based CSV files"
+            ],
+            api_version="v2_phase1-10"
+        )
+    
+    if not file.filename.endswith('.csv'):
+        return UploadResponse(
+            success=False,
+            status="failed",
+            status_reason="仅支持CSV文件格式，请转换后重新上传。",
+            next_actions=[],
+            warnings=["支持格式: .csv"],
+            api_version="v2_phase1-10"
+        )
     
     # Phase 3: Duplicate检测 - 简化版本（基于FileIndex的字段）
     existing_file = db.query(FileIndex).filter(
@@ -103,54 +140,86 @@ async def import_bank_statement_v2(
         statement_month=statement_month
     )
     
-    # 如果检测到重复，修改返回结果并更新FileIndex状态
+    # Phase 1-10: 如果检测到重复，修改返回结果并更新FileIndex状态
     if existing_file and result.get("success"):
         # 更新新上传文件的status为duplicate
         new_file = db.query(FileIndex).filter(
             FileIndex.raw_document_id == result.get('raw_document_id')
         ).first()
         
+        new_file_id = None
         if new_file:
             new_file.status = 'duplicate'
             new_file.duplicate_warning = f"已存在相同账号和月份的文件（ID: {existing_file.id}）"
             db.commit()
+            new_file_id = new_file.id  # Critical fix: Use FileIndex id, not raw_document_id
         
-        result["status"] = "duplicate"
-        result["duplicate_warning"] = f"当前公司/账号/月份已有主对账单（文件ID: {existing_file.id}）"
-        result["existing_file_id"] = existing_file.id
-        result["file_id"] = result.get("raw_document_id")  # 确保file_id字段存在
-        result["next_actions"] = [
-            "set_as_primary",
-            "view_other_files"
-        ]
+        # 使用UploadResponse格式
+        return UploadResponse(
+            success=True,
+            status="duplicate",
+            raw_document_id=result.get("raw_document_id"),
+            file_id=new_file_id,  # Critical fix: Use FileIndex id for correct navigation
+            company_id=company_id,
+            statement_month=statement_month,
+            account_number=account_number,
+            existing_file_id=existing_file.id,
+            duplicate_warning=f"当前公司/账号/月份已有主对账单（文件ID: {existing_file.id}）",
+            next_actions=get_next_actions("duplicate"),
+            api_version="v2_phase1-10",
+            protection_enabled=True
+        )
     
-    # 根据结果返回相应的HTTP状态码
+    # Phase 1-10: 根据结果返回统一的UploadResponse格式
     if result["success"]:
-        return {
-            **result,
-            "api_version": "v2_phase1-5",
-            "protection_enabled": True
-        }
+        return UploadResponse(
+            success=True,
+            status="active",
+            raw_document_id=result.get("raw_document_id"),
+            file_id=result.get("raw_document_id"),
+            company_id=company_id,
+            statement_month=statement_month,
+            account_number=account_number,
+            message=result.get("message", "✅ 银行月结单上传成功"),
+            imported=result.get("imported"),
+            matched=result.get("matched"),
+            file_path=result.get("file_path"),
+            next_actions=get_next_actions("active"),
+            api_version="v2_phase1-10",
+            protection_enabled=True
+        )
     
     elif result.get("partial_success"):
-        # 部分成功：文件已封存但未入账
+        # 部分成功：文件已封存但验证失败
         raise HTTPException(
-            status_code=422,  # Unprocessable Entity
-            detail={
-                **result,
-                "api_version": "v2_phase1-5",
-                "protection_enabled": True,
-                "recommendation": "请前往异常中心检查并修复行数对账问题"
-            }
+            status_code=422,
+            detail=UploadResponse(
+                success=False,
+                status="failed",
+                raw_document_id=result.get("raw_document_id"),
+                file_id=result.get("raw_document_id"),
+                company_id=company_id,
+                statement_month=statement_month,
+                account_number=account_number,
+                status_reason=result.get("error", "CSV字段验证失败，文件已封存但未入账"),
+                warnings=["请前往异常中心检查并修复问题"],
+                next_actions=get_next_actions("failed"),
+                api_version="v2_phase1-10",
+                protection_enabled=True
+            ).dict()
         )
     
     else:
         # 完全失败
         raise HTTPException(
             status_code=500,
-            detail={
-                **result,
-                "api_version": "v2_phase1-5",
-                "protection_enabled": True
-            }
+            detail=UploadResponse(
+                success=False,
+                status="failed",
+                raw_document_id=result.get("raw_document_id"),
+                status_reason=result.get("error", "上传失败"),
+                next_actions=get_next_actions("failed"),
+                api_version="v2_phase1-10",
+                protection_enabled=True
+            ).dict()
         )

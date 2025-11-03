@@ -1108,36 +1108,24 @@
                 
                 const result = await response.json();
                 
-                // 只有成功时才跳转到详情页（带highlight参数）
-                if (response.ok && result.success) {
-                    const fileId = result.raw_document_id || result.file_id;
-                    if (fileId) {
-                        // 强制带highlight参数跳转
-                        window.location.href = `/files/detail/${fileId}?highlight=${fileId}`;
-                        return;
-                    }
+                // Phase 1-10: 统一跳转策略 - 无论成功/失败都跳转到detail页
+                // 只要有raw_document_id就跳转（文件已封存到vault）
+                const fileId = result.raw_document_id || result.file_id;
+                if (fileId) {
+                    // 成功/失败/duplicate都跳转到详情页，由详情页根据status显示对应按钮
+                    window.location.href = `/files/detail/${fileId}?highlight=${fileId}`;
+                    return;
                 }
                 
-                // 失败时显示错误信息
-                if (!result.success) {
-                    // 显示详细错误信息
-                    let errorMessage = `上传失败：${result.message}`;
-                    
-                    if (result.analysis && result.analysis.analysis) {
-                        errorMessage += ` | 分析: ${result.analysis.analysis.join(', ')}`;
-                    }
-                    
-                    if (result.suggestion) {
-                        errorMessage += ` | 建议: ${result.suggestion}`;
-                    }
-                    
-                    if (window.Toast) {
-                        Toast.error(errorMessage);
-                    } else {
-                        alert('❌ ' + errorMessage);
-                    }
-                    loadFiles();
+                // 仅当完全没有raw_document_id时（极早期验证失败），才显示Toast并留在列表页
+                const errorMessage = result.status_reason || result.message || result.error || '上传失败';
+                if (window.Toast) {
+                    Toast.error(errorMessage);
+                } else {
+                    alert('❌ ' + errorMessage);
                 }
+                loadFiles();
+                
             } catch (error) {
                 if (window.Toast) {
                     Toast.error(`上传失败: ${error.message}`);

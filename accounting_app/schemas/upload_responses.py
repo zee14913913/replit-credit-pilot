@@ -27,7 +27,7 @@ FileStatus = Literal[
 
 # Status → Next Actions Mapping Table
 STATUS_NEXT_ACTIONS = {
-    "uploaded": ["verify", "view_original"],
+    "uploaded": ["validate", "view_original"],
     "active": ["generate_report", "download_original"],
     "failed": ["view_exceptions", "reprocess", "download_original"],
     "duplicate": ["set_as_primary", "view_other_files", "download_original"],

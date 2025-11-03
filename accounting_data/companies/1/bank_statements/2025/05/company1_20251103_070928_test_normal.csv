@@ -1,0 +1,30 @@
+🔄 正在将PDF转换为CSV...
+📂 输入: test_pdfs/PDF-1-Normal-HongLeong-May2025.pdf
+  📄 处理第 1/8 页...
+    ✓ 第1行提取到 10 个日期记录
+  📄 处理第 2/8 页...
+    ✓ 第1行提取到 10 个日期记录
+  📄 处理第 3/8 页...
+    ✓ 第1行提取到 11 个日期记录
+  📄 处理第 4/8 页...
+    ✓ 第1行提取到 10 个日期记录
+  📄 处理第 5/8 页...
+    ✓ 第1行提取到 10 个日期记录
+  📄 处理第 6/8 页...
+    ✓ 第1行提取到 12 个日期记录
+  📄 处理第 7/8 页...
+    ✓ 第1行提取到 11 个日期记录
+  📄 处理第 8/8 页...
+    ✓ 第1行提取到 3 个日期记录
+    ✓ 第2行提取到 2 个日期记录
+    ✓ 第3行提取到 8 个日期记录
+    ✓ 第4行提取到 11 个日期记录
+✅ 成功提取 57 条交易记录
+📂 输出: test_pdfs/PDF-1-Normal-HongLeong-May2025.csv
+✅ CSV转换完成！
+
+📋 CSV前3行示例：
+  Date,Description,Reference,Debit,Credit,Balance
+  08-05-2025,Fund Transfer at DIO Salary Salary AHMAD DZAFRI BIN MOHD ZIN,TXN00001,2372.65,30000.00,18207.11
+  08-05-2025,Salary Salary AHMAD DZAFRI BIN MOHD ZIN,TXN00002,3908.95,,72.11
+  08-05-2025,Salary AHMAD DZAFRI BIN MOHD ZIN,TXN00003,4209.50,,
