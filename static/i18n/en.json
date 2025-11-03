@@ -1,10 +1,10 @@
 {
-  "nav_dashboard": "DASHBOARD",
+  "nav_dashboard": "Dashboard",
   "nav_upload": "UPLOAD",
   "nav_cc_ledger": "CC",
-  "nav_savings": "SAVINGS",
+  "nav_savings": "Savings",
   "nav_loan_matcher": "LOANS",
-  "nav_receipts": "RECEIPTS",
+  "nav_receipts": "Receipts",
   "nav_invoices": "INVOICES",
   "nav_monthly_summary": "REPORTS",
   "nav_reminders": "REMINDERS",
@@ -128,5 +128,12 @@
   "uploading": "Uploading...",
   "processing": "Processing...",
   "completed": "Completed",
-  "failed": "Failed"
+  "failed": "Failed",
+  "status_duplicate": "Duplicate",
+  "status_parsed": "Parsed",
+  "nav_customers": "Customers",
+  "nav_credit_cards": "Credit Cards",
+  "nav_loan": "Loan",
+  "nav_accounting": "Accounting",
+  "nav_files": "Files"
 }

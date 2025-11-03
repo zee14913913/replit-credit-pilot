@@ -709,7 +709,7 @@
   "status_exception": "异常",
   "status_processing": "处理中",
   "status_failed": "失败",
-  "status_archived": "归档",
+  "status_archived": "已归档",
   "validation_passed": "通过",
   "validation_failed": "失败",
   "validation_pending": "待验证",
@@ -783,5 +783,12 @@
   "view_exceptions": "查看异常",
   "uploading": "上传中...",
   "processing": "处理中...",
-  "failed": "失败"
+  "failed": "失败",
+  "status_duplicate": "重复",
+  "status_parsed": "已解析",
+  "nav_customers": "客户管理",
+  "nav_credit_cards": "信用卡",
+  "nav_loan": "贷款管理",
+  "nav_accounting": "会计系统",
+  "nav_files": "文件管理"
 }
