@@ -226,9 +226,21 @@
             animation: pulse 2s infinite;
         }
         
+        /* highlight参数指定的文件高亮（优先级更高） */
+        .highlighted-file-row {
+            background: linear-gradient(90deg, rgba(255, 0, 127, 0.3) 0%, rgba(50, 36, 70, 0.15) 100%) !important;
+            border-left: 4px solid #FF007F !important;
+            animation: highlight-pulse 2s ease-in-out 3;
+        }
+        
         @keyframes pulse {
             0%, 100% { box-shadow: 0 0 5px rgba(255,0,127,0.5); }
             50% { box-shadow: 0 0 15px rgba(255,0,127,0.8); }
+        }
+        
+        @keyframes highlight-pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 0, 127, 0.6); }
+            50% { box-shadow: 0 0 25px rgba(255, 0, 127, 0.9); }
         }
         
         .file-type {
@@ -644,6 +656,10 @@
                 const now = new Date();
                 const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
                 
+                // 读取URL参数highlight，用于高亮本次上传的文件
+                const urlParams = new URLSearchParams(window.location.search);
+                const highlightFileId = urlParams.get('highlight');
+                
                 let html = `
                     <div class="table-wrapper">
                         <table>
@@ -665,7 +681,10 @@
                     // 判断是否为新文件
                     const uploadedAt = new Date(file.uploaded_at);
                     const isNew = uploadedAt > fiveMinutesAgo;
-                    const rowClass = isNew ? 'new-file-row' : '';
+                    
+                    // 判断是否需要高亮（优先高亮highlight参数指定的文件）
+                    const isHighlighted = highlightFileId && String(file.file_id) === String(highlightFileId);
+                    const rowClass = isHighlighted ? 'highlighted-file-row' : (isNew ? 'new-file-row' : '');
                     
                     // 状态标签
                     const status = file.status || 'active';

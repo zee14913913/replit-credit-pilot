@@ -9,9 +9,11 @@ from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
 from sqlalchemy.orm import Session
 from typing import Optional
 import logging
+from sqlalchemy import and_, or_
 
 from ..db import get_db
 from ..services.upload_wrapper import BankStatementUploadWrapper
+from ..models import FileIndex, RawDocument
 
 router = APIRouter(prefix="/api/v2/import", tags=["Bank Import V2 (Phase 1-5)"])
 logger = logging.getLogger(__name__)
@@ -72,14 +74,27 @@ async def import_bank_statement_v2(
     )
     
     # 验证文件类型
-    if not file.filename.endswith('.csv'):
+    if not file.filename or not file.filename.endswith('.csv'):
         raise HTTPException(status_code=400, detail="Only CSV files are supported")
+    
+    # Phase 3: Duplicate检测 - 检查是否已有同公司+同账号+同月份的文件
+    existing_file = db.query(FileIndex).join(
+        RawDocument, FileIndex.raw_document_id == RawDocument.id
+    ).filter(
+        and_(
+            FileIndex.company_id == company_id,
+            FileIndex.status.in_(['active', 'validated', 'posted']),  # 只检查有效文件
+            FileIndex.is_active == True,  # 未删除
+            RawDocument.metadata.like(f'%"account_number":"{account_number}"%'),
+            RawDocument.metadata.like(f'%"statement_month":"{statement_month}"%')
+        )
+    ).first()
     
     # 使用Phase 1-5的上传包装器处理
     wrapper = BankStatementUploadWrapper(
         db=db,
         company_id=company_id,
-        username=username
+        username=username or "system"
     )
     
     result = await wrapper.process_csv_upload(
@@ -88,6 +103,30 @@ async def import_bank_statement_v2(
         account_number=account_number,
         statement_month=statement_month
     )
+    
+    # 如果检测到重复，修改返回结果
+    if existing_file and result.get("success"):
+        result["status"] = "duplicate"
+        result["duplicate_warning"] = f"当前公司/账号/月份已有主对账单（文件ID: {existing_file.id}）"
+        result["existing_file_id"] = existing_file.id
+        result["next_actions"] = [
+            {
+                "action": "set_as_primary",
+                "label": "设为主账单",
+                "endpoint": f"/api/files/set-primary/{result.get('raw_document_id')}",
+                "method": "POST",
+                "priority": 1,
+                "description": "将此文件设为主对账单"
+            },
+            {
+                "action": "view_other_files",
+                "label": "查看本月其他账单",
+                "endpoint": f"/accounting_files?company_id={company_id}&month={statement_month}&account={account_number}",
+                "method": "GET",
+                "priority": 2,
+                "description": "查看同一账号本月的所有账单"
+            }
+        ]
     
     # 根据结果返回相应的HTTP状态码
     if result["success"]:

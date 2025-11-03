@@ -1,0 +1,20 @@
+{
+  "upload_success": "Successfully Imported",
+  "upload_failed": "Import Failed",
+  "validation_failed": "Validation Failed",
+  "duplicate_upload": "Duplicate Upload",
+  "next_action": "Next Action",
+  "view_exception": "View Exceptions",
+  "generate_report": "Generate Report",
+  "set_as_primary": "Set as Primary",
+  "view_other_files": "View Other Files This Month",
+  "validate_data": "Validate Data",
+  "import_success_message": "Successfully imported {count} records",
+  "import_partial_success": "Partial Success: File saved, but validation errors exist",
+  "duplicate_warning": "Primary statement already exists for this company/account/month",
+  "file_saved": "File Saved",
+  "validation_error": "Validation Error",
+  "row_count_mismatch": "Row Count Mismatch",
+  "exception_center": "Exception Center",
+  "retry_import": "Retry Processing"
+}

@@ -1,0 +1,20 @@
+{
+  "upload_success": "成功导入",
+  "upload_failed": "导入失败",
+  "validation_failed": "验证失败",
+  "duplicate_upload": "重复上传",
+  "next_action": "下一步操作",
+  "view_exception": "查看异常",
+  "generate_report": "生成报表",
+  "set_as_primary": "设为主账单",
+  "view_other_files": "查看本月其他账单",
+  "validate_data": "验证数据",
+  "import_success_message": "成功导入 {count} 笔记录",
+  "import_partial_success": "部分成功：文件已保存，但存在验证错误",
+  "duplicate_warning": "当前公司/账号/月份已有主对账单",
+  "file_saved": "文件已保存",
+  "validation_error": "验证错误",
+  "row_count_mismatch": "行数对账失败",
+  "exception_center": "异常中心",
+  "retry_import": "重新处理"
+}

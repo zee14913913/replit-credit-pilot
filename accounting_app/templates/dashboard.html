@@ -239,11 +239,18 @@
                 });
                 const data = await response.json();
                 
-                // 成功后跳转到文件详情页（Flask端口5000）
-                if (response.ok && data.raw_document_id) {
-                    window.location.href = `http://localhost:5000/files/detail/${data.raw_document_id}`;
+                // FastAPI在422时返回的数据在detail字段中，200时在顶层
+                const detail = response.ok ? data : (data.detail || data);
+                
+                // 只要文件已保存（有raw_document_id或file_id），就跳转到详情页
+                // 不管是成功200还是业务失败422，只要有ID就要跳转
+                const fileId = detail.raw_document_id || detail.file_id;
+                if (fileId) {
+                    // 跳转时带上highlight参数，让列表页高亮本次上传的文件
+                    window.location.href = `/files/detail/${fileId}`;
                 } else {
-                    showResult('uploadResult', data, response.ok);
+                    // 只有完全没存下来的网络错误才留在当前页
+                    showResult('uploadResult', detail, response.ok);
                 }
             } catch (error) {
                 showResult('uploadResult', {error: error.message}, false);
