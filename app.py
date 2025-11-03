@@ -276,7 +276,8 @@ def add_customer():
         monthly_income = float(request.form.get('monthly_income', 0))
         
         if not all([name, email, phone]):
-            flash('All fields are required', 'error')
+            lang = session.get('language', 'en')
+            flash(translate('all_fields_required', lang), 'error')
             return redirect(url_for('index'))
         
         with get_db() as conn:
@@ -285,7 +286,8 @@ def add_customer():
             # Check if email already exists
             cursor.execute("SELECT id FROM customers WHERE email = ?", (email,))
             if cursor.fetchone():
-                flash(f'Customer with email {email} already exists', 'error')
+                lang = session.get('language', 'en')
+                flash(translate('customer_already_exists', lang).format(email=email), 'error')
                 return redirect(url_for('index'))
             
             # 自动生成customer_code（简化版，无序号）
@@ -306,11 +308,13 @@ def add_customer():
             customer_id = cursor.lastrowid
             conn.commit()
             
-            flash(f'Customer {name} ({customer_code}) added successfully! They can now register and login using {email}', 'success')
+            lang = session.get('language', 'en')
+            flash(translate('customer_added_success', lang).format(name=name, code=customer_code, email=email), 'success')
             return redirect(url_for('customer_dashboard', customer_id=customer_id))
             
     except Exception as e:
-        flash(f'Error adding customer: {str(e)}', 'error')
+        lang = session.get('language', 'en')
+        flash(translate('error_adding_customer', lang).format(error=str(e)), 'error')
         return redirect(url_for('index'))
 
 @app.route('/customer/<int:customer_id>')
@@ -471,7 +475,8 @@ def add_credit_card(customer_id):
             )
             
             if not is_new:
-                flash(f'⚠️ 该信用卡已存在：{bank_name} ****{card_number_last4}（卡ID: {card_id}）', 'error')
+                lang = session.get('language', 'en')
+                flash(translate('credit_card_already_exists', lang).format(bank_name=bank_name, last4=card_number_last4, card_id=card_id), 'error')
                 return redirect(request.url)
             
             # 更新due_date（get_or_create不包含此字段）
@@ -481,7 +486,8 @@ def add_credit_card(customer_id):
             
             conn.commit()
             
-            flash(f'✅ 信用卡添加成功：{bank_name} ****{card_number_last4}', 'success')
+            lang = session.get('language', 'en')
+            flash(translate('credit_card_added_success', lang).format(bank_name=bank_name, last4=card_number_last4), 'success')
             log_audit('credit_card_added', customer_id, 
                      f'添加信用卡：{bank_name} ****{card_number_last4}')
             
@@ -752,7 +758,8 @@ def export_transactions(customer_id, format):
             user_agent=request_info['user_agent']
         )
         
-        flash(f'Export failed: {str(e)}', 'error')
+        lang = session.get('language', 'en')
+        flash(translate('export_failed', lang).format(error=str(e)), 'error')
         return redirect(request.referrer or url_for('index'))
 
 @app.route('/search/<int:customer_id>', methods=['GET'])
@@ -1734,7 +1741,8 @@ def advanced_analytics(customer_id):
     """高级财务分析仪表板（Beta功能，需开关开启）"""
     # 检查功能开关
     if not FEATURE_ADVANCED_ANALYTICS:
-        flash('Advanced Analytics feature is currently disabled. Contact administrator to enable.', 'warning')
+        lang = session.get('language', 'en')
+        flash(translate('advanced_analytics_disabled', lang), 'warning')
         return redirect(url_for('index'))
     
     lang = session.get('language', 'en')

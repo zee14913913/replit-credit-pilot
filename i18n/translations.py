@@ -1790,6 +1790,38 @@ TRANSLATIONS = {
         'validation_pending': '待验证',
         'validation_passed': '已通过',
         'validation_failed': '验证失败',
+        
+        # System Messages - Login/Authentication Failures
+        'all_fields_required': '所有字段为必填项',
+        'invalid_email_password': '邮箱或密码错误',
+        'account_deactivated': '账户已被停用',
+        'email_already_registered': '该邮箱已注册',
+        'registration_successful_msg': '注册成功',
+        'please_login_admin': '请先登录管理员账号',
+        'auth_failed_relogin': '认证失败，请重新登录',
+        'insufficient_permissions': '权限不足：此页面仅限管理员和会计人员访问（当前角色：{role}）',
+        'invalid_session': '会话无效',
+        'session_expired': '会话已过期',
+        'session_invalidated': '会话已被注销',
+        'no_session_token': '未找到会话令牌',
+        
+        # System Messages - File Upload Failures
+        'export_failed': '导出失败：{error}',
+        'customer_already_exists': '客户邮箱 {email} 已存在',
+        'customer_added_success': '客户 {name} ({code}) 添加成功！现在可以使用 {email} 注册和登录',
+        'error_adding_customer': '添加客户时出错：{error}',
+        
+        # System Messages - Exception Center/Errors
+        'feature_disabled': '功能已禁用',
+        'advanced_analytics_disabled': '高级分析功能当前已禁用，请联系管理员启用',
+        
+        # System Messages - Report Generation Failures
+        'report_generation_failed': '报表生成失败：{error}',
+        'report_not_found': '未找到报表',
+        
+        # System Messages - Credit Card Operations
+        'credit_card_already_exists': '⚠️ 该信用卡已存在：{bank_name} ****{last4}（卡ID: {card_id}）',
+        'credit_card_added_success': '✅ 信用卡添加成功：{bank_name} ****{last4}',
     },
     'en': {
         # Navigation
@@ -2021,6 +2053,38 @@ TRANSLATIONS = {
         'validation_pending': 'Pending',
         'validation_passed': 'Passed',
         'validation_failed': 'Failed',
+        
+        # System Messages - Login/Authentication Failures
+        'all_fields_required': 'All Fields Are Required',
+        'invalid_email_password': 'Invalid Email Or Password',
+        'account_deactivated': 'Account Is Deactivated',
+        'email_already_registered': 'Email Already Registered',
+        'registration_successful_msg': 'Registration Successful',
+        'please_login_admin': 'Please Login As Administrator First',
+        'auth_failed_relogin': 'Authentication Failed, Please Login Again',
+        'insufficient_permissions': 'Insufficient Permissions: This Page Is For Admins And Accountants Only (Current Role: {role})',
+        'invalid_session': 'Invalid Session',
+        'session_expired': 'Session Expired',
+        'session_invalidated': 'Session Has Been Invalidated',
+        'no_session_token': 'No Session Token Found',
+        
+        # System Messages - File Upload Failures
+        'export_failed': 'Export Failed: {error}',
+        'customer_already_exists': 'Customer With Email {email} Already Exists',
+        'customer_added_success': 'Customer {name} ({code}) Added Successfully! They Can Now Register And Login Using {email}',
+        'error_adding_customer': 'Error Adding Customer: {error}',
+        
+        # System Messages - Exception Center/Errors
+        'feature_disabled': 'Feature Disabled',
+        'advanced_analytics_disabled': 'Advanced Analytics Feature Is Currently Disabled. Contact Administrator To Enable.',
+        
+        # System Messages - Report Generation Failures
+        'report_generation_failed': 'Report Generation Failed: {error}',
+        'report_not_found': 'Report Not Found',
+        
+        # System Messages - Credit Card Operations
+        'credit_card_already_exists': '⚠️ CREDIT CARD ALREADY EXISTS: {bank_name} ****{last4} (Card ID: {card_id})',
+        'credit_card_added_success': '✅ CREDIT CARD ADDED SUCCESSFULLY: {bank_name} ****{last4}',
     }
 }
 

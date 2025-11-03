@@ -71,14 +71,18 @@ def require_admin_or_accountant(f):
         session_token = session.get('session_token')
         
         if not session_token:
-            flash('请先登录管理员账号', 'error')
+            from i18n.translations import get_translation
+            lang = session.get('language', 'en')
+            flash(get_translation('please_login_admin', lang), 'error')
             return redirect(url_for('admin_login'))
         
         # 2. 调用FastAPI验证
         result = verify_user_with_accounting_api(session_token)
         
         if not result['success']:
-            flash('认证失败，请重新登录', 'error')
+            from i18n.translations import get_translation
+            lang = session.get('language', 'en')
+            flash(get_translation('auth_failed_relogin', lang), 'error')
             session.clear()
             return redirect(url_for('admin_login'))
         
@@ -87,7 +91,9 @@ def require_admin_or_accountant(f):
         allowed_roles = ['admin', 'accountant']
         
         if user.get('role') not in allowed_roles:
-            flash(f'权限不足：此页面仅限管理员和会计人员访问（当前角色：{user.get("role")}）', 'error')
+            from i18n.translations import get_translation
+            lang = session.get('language', 'en')
+            flash(get_translation('insufficient_permissions', lang).format(role=user.get("role")), 'error')
             return redirect(url_for('index'))
         
         # 4. 权限通过，保存用户信息到session
@@ -111,13 +117,17 @@ def require_admin_only(f):
         session_token = session.get('session_token')
         
         if not session_token:
-            flash('请先登录管理员账号', 'error')
+            from i18n.translations import get_translation
+            lang = session.get('language', 'en')
+            flash(get_translation('please_login_admin', lang), 'error')
             return redirect(url_for('admin_login'))
         
         result = verify_user_with_accounting_api(session_token)
         
         if not result['success']:
-            flash('认证失败，请重新登录', 'error')
+            from i18n.translations import get_translation
+            lang = session.get('language', 'en')
+            flash(get_translation('auth_failed_relogin', lang), 'error')
             session.clear()
             return redirect(url_for('admin_login'))
         

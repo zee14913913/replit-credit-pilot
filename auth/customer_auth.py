@@ -16,15 +16,17 @@ def verify_password(password: str, password_hash: str) -> bool:
     """Verify password against hash"""
     return hash_password(password) == password_hash
 
-def create_customer_login(customer_id: int, email: str, password: str) -> dict:
+def create_customer_login(customer_id: int, email: str, password: str, lang: str = 'en') -> dict:
     """Create login credentials for a customer"""
+    from i18n.translations import get_translation
+    
     with get_db() as conn:
         cursor = conn.cursor()
         
         # Check if email already exists
         cursor.execute("SELECT id FROM customer_logins WHERE email = ?", (email,))
         if cursor.fetchone():
-            return {"success": False, "error": "Email already registered"}
+            return {"success": False, "error": get_translation('email_already_registered', lang)}
         
         password_hash = hash_password(password)
         
@@ -34,10 +36,12 @@ def create_customer_login(customer_id: int, email: str, password: str) -> dict:
         """, (customer_id, email, password_hash))
         
         conn.commit()
-        return {"success": True, "message": "Registration successful"}
+        return {"success": True, "message": get_translation('registration_successful_msg', lang)}
 
-def authenticate_customer(email: str, password: str) -> dict:
+def authenticate_customer(email: str, password: str, lang: str = 'en') -> dict:
     """Authenticate customer and create session"""
+    from i18n.translations import get_translation
+    
     with get_db() as conn:
         cursor = conn.cursor()
         
@@ -51,15 +55,15 @@ def authenticate_customer(email: str, password: str) -> dict:
         result = cursor.fetchone()
         
         if not result:
-            return {"success": False, "error": "Invalid email or password"}
+            return {"success": False, "error": get_translation('invalid_email_password', lang)}
         
         login_id, customer_id, password_hash, is_active, customer_name = result
         
         if not is_active:
-            return {"success": False, "error": "Account is deactivated"}
+            return {"success": False, "error": get_translation('account_deactivated', lang)}
         
         if not verify_password(password, password_hash):
-            return {"success": False, "error": "Invalid email or password"}
+            return {"success": False, "error": get_translation('invalid_email_password', lang)}
         
         # Create session token
         session_token = secrets.token_urlsafe(32)
@@ -84,8 +88,10 @@ def authenticate_customer(email: str, password: str) -> dict:
             "customer_name": customer_name
         }
 
-def verify_session(session_token: str) -> dict:
+def verify_session(session_token: str, lang: str = 'en') -> dict:
     """Verify session token and return customer info"""
+    from i18n.translations import get_translation
+    
     with get_db() as conn:
         cursor = conn.cursor()
         
@@ -99,17 +105,17 @@ def verify_session(session_token: str) -> dict:
         result = cursor.fetchone()
         
         if not result:
-            return {"success": False, "error": "Invalid session"}
+            return {"success": False, "error": get_translation('invalid_session', lang)}
         
         customer_id, customer_name, expires_at, is_valid = result
         
         if not is_valid:
-            return {"success": False, "error": "Session has been invalidated"}
+            return {"success": False, "error": get_translation('session_invalidated', lang)}
         
         # Check if session expired
         expires_at_dt = datetime.fromisoformat(expires_at)
         if expires_at_dt < datetime.now():
-            return {"success": False, "error": "Session expired"}
+            return {"success": False, "error": get_translation('session_expired', lang)}
         
         return {
             "success": True,
