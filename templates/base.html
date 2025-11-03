@@ -196,167 +196,139 @@
             <div class="modal-content" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(30, 30, 30, 0.95)); border: 2px solid rgba(229, 228, 226, 0.3);">
                 <div class="modal-header" style="border-bottom: 1px solid rgba(229, 228, 226, 0.2);">
                     <h5 class="modal-title galaxy-gradient-text" id="userGuideModalLabel">
-                        <i class="bi bi-info-circle-fill me-2"></i>Welcome to Smart Credit & Loan Manager / 欢迎使用智能信贷与贷款管理系统
+                        <i class="bi bi-info-circle-fill me-2"></i><span data-i18n="guide_modal_title">{{ t('guide_modal_title') }}</span>
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" style="color: #e8e6e3;">
                     <div class="mb-4">
                         <h6 class="text-silver-pearl mb-3">
-                            <i class="bi bi-rocket-takeoff me-2"></i>Quick Start Guide / 快速开始指南
+                            <i class="bi bi-rocket-takeoff me-2"></i><span data-i18n="guide_quick_start">{{ t('guide_quick_start') }}</span>
                         </h6>
                         
-                        <!-- Admin Features / 管理员功能 -->
+                        <!-- Admin Features -->
                         <div class="guide-section mb-4">
                             <h6 class="text-golden">
-                                <i class="bi bi-shield-check me-2"></i>Admin Features / 管理员功能
+                                <i class="bi bi-shield-check me-2"></i><span data-i18n="guide_admin_features">{{ t('guide_admin_features') }}</span>
                             </h6>
-                            <ol class="guide-list bilingual-list">
+                            <ol class="guide-list">
                                 <li>
-                                    <strong>Login System / 登录系统:</strong>
-                                    <div class="en">Click "Admin" in top right → Use admin email and password</div>
-                                    <div class="cn">点击右上角"Admin" → 使用管理员邮箱和密码登录</div>
+                                    <strong data-i18n="guide_login_system">{{ t('guide_login_system') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_login_desc">{{ t('guide_login_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong>Upload Credit Card Statements / 上传信用卡账单:</strong>
-                                    <div class="en">Navigation bar → "CC Ledger" → Click "Show Upload Form" → Select card → Upload PDF (15 Malaysian banks supported)</div>
-                                    <div class="cn">导航栏点击"CC Ledger" → 点击"显示上传表单" → 选择信用卡 → 上传PDF账单（支持15家马来西亚银行）</div>
+                                    <strong data-i18n="guide_upload_cc">{{ t('guide_upload_cc') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_upload_cc_desc">{{ t('guide_upload_cc_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong>Upload Savings Statements / 上传储蓄账单:</strong>
-                                    <div class="en">Click "Savings" → Upload savings account statements (7 banks supported)</div>
-                                    <div class="cn">点击"Savings" → 上传储蓄账户账单（支持7家银行）</div>
+                                    <strong data-i18n="guide_upload_savings">{{ t('guide_upload_savings') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_upload_savings_desc">{{ t('guide_upload_savings_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong>Customer Management / 客户管理:</strong>
-                                    <div class="en">Admin Dashboard → View all customers, credit cards, and transaction data</div>
-                                    <div class="cn">Admin Dashboard → 查看所有客户、信用卡和交易数据</div>
+                                    <strong data-i18n="guide_customer_mgmt">{{ t('guide_customer_mgmt') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_customer_mgmt_desc">{{ t('guide_customer_mgmt_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong>Generate Monthly Reports / 生成月度报表:</strong>
-                                    <div class="en">Customer details page → Click "Generate Monthly Report"</div>
-                                    <div class="cn">客户详情页 → 点击"生成月度报表"</div>
+                                    <strong data-i18n="guide_generate_reports">{{ t('guide_generate_reports') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_generate_reports_desc">{{ t('guide_generate_reports_desc') }}</div>
                                 </li>
                             </ol>
                         </div>
                         
-                        <!-- Core Features / 核心功能 -->
+                        <!-- Core Features -->
                         <div class="guide-section mb-4">
                             <h6 class="text-golden">
-                                <i class="bi bi-stars me-2"></i>7 Core Features / 7大核心功能
+                                <i class="bi bi-stars me-2"></i><span data-i18n="guide_core_features">{{ t('guide_core_features') }}</span>
                             </h6>
                             <div class="feature-grid">
                                 <div class="feature-item">
                                     <i class="bi bi-credit-card text-silver-pearl"></i>
-                                    <strong>Credit Card Tracking</strong>
-                                    <strong class="cn-text">信用卡追踪</strong>
-                                    <small>Auto-parse statements & categorize</small>
-                                    <small class="cn-text">自动解析账单、分类交易</small>
+                                    <strong data-i18n="guide_cc_tracking">{{ t('guide_cc_tracking') }}</strong>
+                                    <small data-i18n="guide_cc_tracking_desc">{{ t('guide_cc_tracking_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-piggy-bank text-silver-pearl"></i>
-                                    <strong>Savings Account</strong>
-                                    <strong class="cn-text">储蓄账户管理</strong>
-                                    <small>Track deposits & prepayments</small>
-                                    <small class="cn-text">追踪存款、提前还款查询</small>
+                                    <strong data-i18n="guide_savings_account">{{ t('guide_savings_account') }}</strong>
+                                    <small data-i18n="guide_savings_account_desc">{{ t('guide_savings_account_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-receipt text-silver-pearl"></i>
-                                    <strong>Receipt Management</strong>
-                                    <strong class="cn-text">收据管理</strong>
-                                    <small>OCR & auto-matching</small>
-                                    <small class="cn-text">OCR识别、自动匹配交易</small>
+                                    <strong data-i18n="guide_receipt_mgmt">{{ t('guide_receipt_mgmt') }}</strong>
+                                    <small data-i18n="guide_receipt_mgmt_desc">{{ t('guide_receipt_mgmt_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-calculator text-silver-pearl"></i>
-                                    <strong>Smart Loan Matcher</strong>
-                                    <strong class="cn-text">智能贷款匹配</strong>
-                                    <small>CTOS analysis & DSR calculation</small>
-                                    <small class="cn-text">CTOS分析、DSR计算</small>
+                                    <strong data-i18n="guide_loan_matcher">{{ t('guide_loan_matcher') }}</strong>
+                                    <small data-i18n="guide_loan_matcher_desc">{{ t('guide_loan_matcher_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-graph-up text-silver-pearl"></i>
-                                    <strong>AI Advanced Analytics</strong>
-                                    <strong class="cn-text">AI高级分析</strong>
-                                    <small>Health scoring & recommendations</small>
-                                    <small class="cn-text">财务健康评分、智能建议</small>
+                                    <strong data-i18n="guide_ai_analytics">{{ t('guide_ai_analytics') }}</strong>
+                                    <small data-i18n="guide_ai_analytics_desc">{{ t('guide_ai_analytics_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-file-earmark-text text-silver-pearl"></i>
-                                    <strong>Automated Reports</strong>
-                                    <strong class="cn-text">自动月报</strong>
-                                    <small>Auto-generate monthly PDFs</small>
-                                    <small class="cn-text">每月自动生成PDF报告</small>
+                                    <strong data-i18n="guide_auto_reports">{{ t('guide_auto_reports') }}</strong>
+                                    <small data-i18n="guide_auto_reports_desc">{{ t('guide_auto_reports_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-bell text-silver-pearl"></i>
-                                    <strong>Payment Reminders</strong>
-                                    <strong class="cn-text">付款提醒</strong>
-                                    <small>Email & SMS notifications</small>
-                                    <small class="cn-text">邮件/短信提醒</small>
+                                    <strong data-i18n="guide_payment_reminders">{{ t('guide_payment_reminders') }}</strong>
+                                    <small data-i18n="guide_payment_reminders_desc">{{ t('guide_payment_reminders_desc') }}</small>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Customer Features / 客户端功能 -->
+                        <!-- Customer Features -->
                         <div class="guide-section mb-4">
                             <h6 class="text-golden">
-                                <i class="bi bi-person-circle me-2"></i>Customer Features / 客户端功能
+                                <i class="bi bi-person-circle me-2"></i><span data-i18n="guide_customer_features">{{ t('guide_customer_features') }}</span>
                             </h6>
-                            <ol class="guide-list bilingual-list">
+                            <ol class="guide-list">
                                 <li>
-                                    <strong>Customer Login / 客户登录:</strong>
-                                    <div class="en">Click "Login" → Use customer email provided by admin</div>
-                                    <div class="cn">点击"Login" → 使用管理员提供的客户邮箱登录</div>
+                                    <strong data-i18n="guide_customer_login">{{ t('guide_customer_login') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_customer_login_desc">{{ t('guide_customer_login_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong>View Statements / 查看账单:</strong>
-                                    <div class="en">Customer Portal → View all credit cards and transaction records</div>
-                                    <div class="cn">客户Portal → 查看所有信用卡和交易记录</div>
+                                    <strong data-i18n="guide_view_statements">{{ t('guide_view_statements') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_view_statements_desc">{{ t('guide_view_statements_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong>View Reports / 查看月报:</strong>
-                                    <div class="en">Customer Dashboard → Download PDF monthly reports</div>
-                                    <div class="cn">客户Dashboard → 下载PDF月度报告</div>
+                                    <strong data-i18n="guide_view_reports">{{ t('guide_view_reports') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_view_reports_desc">{{ t('guide_view_reports_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong>Apply for Loans / 申请贷款:</strong>
-                                    <div class="en">Click "Loan Matcher" → Upload CTOS report to view matched products</div>
-                                    <div class="cn">点击"Loan Matcher" → 上传CTOS报告查看匹配产品</div>
+                                    <strong data-i18n="guide_apply_loans">{{ t('guide_apply_loans') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_apply_loans_desc">{{ t('guide_apply_loans_desc') }}</div>
                                 </li>
                             </ol>
                         </div>
                         
-                        <!-- Tips & Tricks / 技巧与提示 -->
+                        <!-- Tips & Tricks -->
                         <div class="guide-section">
                             <h6 class="text-golden">
-                                <i class="bi bi-lightbulb me-2"></i>Tips & Tricks / 使用技巧
+                                <i class="bi bi-lightbulb me-2"></i><span data-i18n="guide_tips">{{ t('guide_tips') }}</span>
                             </h6>
-                            <ul class="guide-list bilingual-list">
+                            <ul class="guide-list">
                                 <li>
                                     <i class="bi bi-check-circle text-success me-2"></i>
-                                    <span class="en">Batch upload multiple statement files</span>
-                                    <span class="cn">支持批量上传多个账单文件</span>
+                                    <span data-i18n="guide_tip_batch">{{ t('guide_tip_batch') }}</span>
                                 </li>
                                 <li>
                                     <i class="bi bi-check-circle text-success me-2"></i>
-                                    <span class="en">Auto-organize files by month</span>
-                                    <span class="cn">系统会自动按月份组织文件</span>
+                                    <span data-i18n="guide_tip_organize">{{ t('guide_tip_organize') }}</span>
                                 </li>
                                 <li>
                                     <i class="bi bi-check-circle text-success me-2"></i>
-                                    <span class="en">12-month timeline visualization</span>
-                                    <span class="cn">12个月时间轴可视化账单覆盖情况</span>
+                                    <span data-i18n="guide_tip_timeline">{{ t('guide_tip_timeline') }}</span>
                                 </li>
                                 <li>
                                     <i class="bi bi-check-circle text-success me-2"></i>
-                                    <span class="en">Auto-match receipts to transactions</span>
-                                    <span class="cn">收据自动匹配到对应的信用卡交易</span>
+                                    <span data-i18n="guide_tip_match">{{ t('guide_tip_match') }}</span>
                                 </li>
                                 <li>
                                     <i class="bi bi-check-circle text-success me-2"></i>
-                                    <span class="en">100% data accuracy guaranteed</span>
-                                    <span class="cn">所有数据保证100%准确性验证</span>
+                                    <span data-i18n="guide_tip_accuracy">{{ t('guide_tip_accuracy') }}</span>
                                 </li>
                             </ul>
                         </div>
@@ -364,19 +336,17 @@
                     
                     <div class="alert" style="background: rgba(229, 228, 226, 0.1); border: 1px solid rgba(229, 228, 226, 0.3); color: #e8e6e3;">
                         <i class="bi bi-info-circle me-2"></i>
-                        <strong>Need Help? / 需要帮助？</strong> 
-                        <span class="en">Contact system administrator or consult documentation.</span>
-                        <span class="cn">如有任何问题，请联系系统管理员或查看详细文档。</span>
+                        <strong data-i18n="guide_need_help">{{ t('guide_need_help') }}</strong> 
+                        <span data-i18n="guide_help_desc">{{ t('guide_help_desc') }}</span>
                     </div>
                 </div>
                 <div class="modal-footer" style="border-top: 1px solid rgba(229, 228, 226, 0.2);">
                     <label class="text-silver-pearl me-auto" style="font-size: 0.9rem;">
                         <input type="checkbox" id="dontShowAgain" class="me-2">
-                        <span class="en">Don't show this again</span>
-                        <span class="cn">不再显示此指南</span>
+                        <span data-i18n="guide_dont_show">{{ t('guide_dont_show') }}</span>
                     </label>
                     <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
-                        <span class="en">Got it</span> / <span class="cn">知道了</span>
+                        <span data-i18n="guide_got_it">{{ t('guide_got_it') }}</span>
                     </button>
                 </div>
             </div>
