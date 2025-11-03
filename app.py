@@ -5525,11 +5525,11 @@ def admin_login():
                 user_id=user['id'],
                 username=user['username'],
                 company_id=user['company_id'],
-                action_type='login',
+                action_type='config_change',
                 entity_type='session',
                 description=f"管理员登录成功: role={user['role']}",
                 success=True,
-                new_value={'role': user['role'], 'company_id': user['company_id']},
+                new_value={'role': user['role'], 'company_id': user['company_id'], 'action': 'login'},
                 ip_address=request_info['ip_address'],
                 user_agent=request_info['user_agent']
             )
@@ -5538,7 +5538,7 @@ def admin_login():
             
             # 根据角色跳转到不同页面
             if user['role'] in ['admin', 'accountant']:
-                return redirect(url_for('admin'))
+                return redirect(url_for('admin_dashboard'))
             else:
                 return redirect(url_for('index'))
         else:
@@ -5548,11 +5548,11 @@ def admin_login():
                 user_id=0,
                 username=username,
                 company_id=1,
-                action_type='login',
+                action_type='config_change',
                 entity_type='session',
                 description=f"管理员登录失败: {result['error']}",
                 success=False,
-                new_value={'username': username, 'error': result['error']},
+                new_value={'username': username, 'error': result['error'], 'action': 'login_failed'},
                 ip_address=request_info['ip_address'],
                 user_agent=request_info['user_agent']
             )
@@ -5631,10 +5631,11 @@ def admin_logout():
             user_id=user.get('id', 0),
             username=user.get('username', 'unknown'),
             company_id=user.get('company_id', 1),
-            action_type='logout',
+            action_type='config_change',
             entity_type='session',
             description=f"管理员登出",
             success=True,
+            new_value={'action': 'logout'},
             ip_address=request_info['ip_address'],
             user_agent=request_info['user_agent']
         )

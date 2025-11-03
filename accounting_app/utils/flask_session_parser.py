@@ -27,10 +27,11 @@ class FlaskSessionParser:
         Args:
             secret_key: Flask应用的SECRET_KEY（默认从环境变量获取）
         """
-        self.secret_key = secret_key or os.environ.get('SECRET_KEY')
+        # 优先使用SESSION_SECRET，兼容Flask应用的配置
+        self.secret_key = secret_key or os.environ.get('SECRET_KEY') or os.environ.get('SESSION_SECRET')
         
         if not self.secret_key:
-            logger.warning("⚠️ SECRET_KEY未设置，Flask session验证将失败")
+            logger.warning("⚠️ SECRET_KEY或SESSION_SECRET未设置，Flask session验证将失败")
             self.serializer = None
             return
         
