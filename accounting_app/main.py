@@ -65,7 +65,8 @@ from .routes import (
     notifications,  # 通知系统
     unified_files,  # 统一文件管理API
     self_test,  # 自测接口
-    parsers  # Phase 1-10: 解析器注册表
+    parsers,  # Phase 1-10: 解析器注册表
+    metrics  # Phase 1-10: 分银行指标监控
 )
 
 # 注册路由
@@ -94,6 +95,7 @@ app.include_router(notifications.router, prefix="/api/notifications", tags=["Not
 app.include_router(unified_files.router, tags=["Unified File Management"])  # 统一文件管理（Flask+FastAPI双引擎）
 app.include_router(self_test.router, tags=["Self Test"])  # 自测接口（验收标准）
 app.include_router(parsers.router, tags=["Parser Registry"])  # Phase 1-10: 解析器注册表（支持的银行列表）
+app.include_router(metrics.router, tags=["Metrics"])  # Phase 1-10: 分银行指标监控
 
 
 # 启动事件：初始化数据库

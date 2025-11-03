@@ -2,26 +2,41 @@
 Parser Registry API Endpoints
 
 Provides information about supported banks and their parsers.
+Integrates with circuit breaker for per-bank availability status.
 """
-from fastapi import APIRouter
-from typing import List, Literal
+from fastapi import APIRouter, HTTPException
+from typing import List, Literal, Optional
 from pydantic import BaseModel
+from datetime import datetime
+
+# Phase 1-10: Import from parsers module
+try:
+    from accounting_app.parsers import get_supported_banks, get_circuit_breaker
+except ImportError:
+    # Fallback if module not found (shouldn't happen)
+    def get_supported_banks():
+        return []
+    def get_circuit_breaker():
+        return None
 
 router = APIRouter(prefix="/api/parsers", tags=["Parser Registry"])
 
 
-class SupportedBank(BaseModel):
-    """支持的银行信息"""
+class SupportedBankResponse(BaseModel):
+    """支持的银行信息（含熔断状态）"""
     bank_code: str
     bank_name_en: str
     bank_name_zh: str
-    supported_formats: List[Literal["pdf", "csv", "xlsx"]]
+    supported_formats: List[str]
     parser_version: str
+    enabled: bool
+    circuit_open: bool = False
+    circuit_reason: Optional[str] = None
     notes: str = ""
 
 
-# 15 Major Malaysian Banks (实际生产环境应从配置文件或数据库读取)
-SUPPORTED_BANKS = [
+# DEPRECATED: Legacy hardcoded list (保留作为fallback)
+_LEGACY_SUPPORTED_BANKS = [
     {
         "bank_code": "maybank",
         "bank_name_en": "Maybank (Malayan Banking Berhad)",
@@ -145,12 +160,12 @@ SUPPORTED_BANKS = [
 ]
 
 
-@router.get("/supported", response_model=List[SupportedBank])
-async def get_supported_banks():
+@router.get("/supported", response_model=List[SupportedBankResponse])
+async def get_supported_banks_endpoint():
     """
-    ## 📋 获取支持的银行列表
+    ## 📋 获取支持的银行列表（Phase 1-10 Enhanced）
     
-    返回所有支持的马来西亚银行及其解析器信息。
+    返回所有支持的马来西亚银行及其解析器信息，包含熔断状态。
     
     ### 响应字段：
     - **bank_code**: 银行代码（用于API请求）
@@ -158,12 +173,16 @@ async def get_supported_banks():
     - **bank_name_zh**: 中文名称
     - **supported_formats**: 支持的文件格式（pdf/csv/xlsx）
     - **parser_version**: 解析器版本
+    - **enabled**: 是否在环境变量中启用
+    - **circuit_open**: 熔断器是否打开（True=不可用）
+    - **circuit_reason**: 熔断原因（如有）
     - **notes**: 备注信息
     
     ### 使用场景：
     1. 前端展示银行选择下拉菜单
     2. 验证bank_code参数的有效性
     3. 显示支持的文件格式提示
+    4. 显示银行熔断状态（临时不可用警告）
     
     ### 示例：
     ```bash
@@ -179,13 +198,44 @@ async def get_supported_banks():
         "bank_name_zh": "马来亚银行",
         "supported_formats": ["pdf", "csv"],
         "parser_version": "v1.0",
-        "notes": "Supports both PDF text extraction and CSV import"
+        "enabled": true,
+        "circuit_open": false,
+        "circuit_reason": null,
+        "notes": ""
       },
       ...
     ]
     ```
     """
-    return SUPPORTED_BANKS
+    # Phase 1-10: Get banks from registry
+    banks = get_supported_banks()
+    
+    # Phase 1-10: Enhance with circuit breaker status
+    cb = get_circuit_breaker()
+    result = []
+    
+    for bank in banks:
+        circuit_open = False
+        circuit_reason = None
+        
+        if cb:
+            is_available, reason = cb.is_bank_available(bank["bank_code"])
+            circuit_open = not is_available
+            circuit_reason = reason if not is_available else None
+        
+        result.append(SupportedBankResponse(
+            bank_code=bank["bank_code"],
+            bank_name_en=bank["bank_name_en"],
+            bank_name_zh=bank["bank_name_zh"],
+            supported_formats=bank["supported_formats"],
+            parser_version=bank["parser_version"],
+            enabled=bank["enabled"],
+            circuit_open=circuit_open,
+            circuit_reason=circuit_reason,
+            notes=bank.get("notes", "")
+        ))
+    
+    return result
 
 
 @router.get("/bank/{bank_code}")
