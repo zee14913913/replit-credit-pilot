@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 
-{% block title %}文件详情 - {{ file.file_name }}{% endblock %}
+{% block title %}{{ t('file_detail_title') }} - {{ file.file_name }}{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* 按钮颜色组合模式 */
+    /* 按钮颜色组合模式 - STRICT 3-COLOR PALETTE */
     .btn-pattern-1 {
         background-color: #FF007F;
         color: white;
@@ -13,7 +13,7 @@
         padding: 0.5rem 1.2rem;
     }
     .btn-pattern-1:hover {
-        background-color: #CC0066;
+        background-color: #322446;
         color: white;
     }
     
@@ -25,7 +25,7 @@
         padding: 0.5rem 1.2rem;
     }
     .btn-pattern-2:hover {
-        background-color: #241832;
+        background-color: #FF007F;
         color: white;
     }
     
@@ -37,20 +37,20 @@
         padding: 0.5rem 1.2rem;
     }
     .btn-pattern-3:hover {
-        background-color: #1a1a1a;
+        background-color: #322446;
         color: white;
     }
     
     .btn-pattern-5 {
-        background-color: #D3D3D3;
+        background-color: #FFFFFF;
         color: #FF007F;
         font-weight: bold;
         border: 2px solid #000000;
         padding: 0.5rem 1.2rem;
     }
     .btn-pattern-5:hover {
-        background-color: #C0C0C0;
-        color: #FF007F;
+        background-color: #322446;
+        color: #FFFFFF;
     }
     
     /* Badge颜色 */
@@ -72,7 +72,7 @@
     }
     
     .badge-uploaded {
-        background-color: #D3D3D3;
+        background-color: #FFFFFF;
         color: #322446;
     }
     
@@ -82,7 +82,7 @@
     }
     
     .badge-pending {
-        background-color: #D3D3D3;
+        background-color: #FFFFFF;
         color: #322446;
     }
     
@@ -110,19 +110,19 @@
 {% block content %}
 <div class="mb-4">
     <a href="/files/list" class="btn btn-pattern-5">
-        返回列表
+        {{ t('back_to_list') }}
     </a>
 </div>
 
 <!-- 重复月份警告 -->
 {% if file.status == 'duplicate' or duplicate_warning %}
 <div class="alert alert-duplicate mb-4">
-    <h5>重复月份警告</h5>
-    <p>本月份已有主账单，此文件为第 <strong>{{ duplicate_count or 'N' }}</strong> 份，请选择操作：</p>
+    <h5>{{ t('duplicate_warning_title') }}</h5>
+    <p>{{ t('duplicate_warning_text') }} <strong>{{ duplicate_count or 'N' }}</strong>{{ t('duplicate_warning_actions') }}</p>
     <ul>
-        <li>设为主账单（替换现有）</li>
-        <li>保留为备份文件</li>
-        <li>删除此文件</li>
+        <li>{{ t('set_as_primary') }}</li>
+        <li>{{ t('keep_as_backup') }}</li>
+        <li>{{ t('delete_this_file') }}</li>
     </ul>
 </div>
 {% endif %}
@@ -130,25 +130,25 @@
 <!-- 文件信息卡片 -->
 <div class="card bg-dark text-white mb-4" style="border: 2px solid #322446;">
     <div class="card-header" style="background-color: #322446; border-bottom: 2px solid white;">
-        <h4 style="margin: 0;">文件信息</h4>
+        <h4 style="margin: 0;">{{ t('file_information') }}</h4>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">
-                <p><strong>文件名：</strong> {{ file.file_name }}</p>
-                <p><strong>Raw Document ID：</strong> {{ file.id }}</p>
-                <p><strong>公司ID：</strong> {{ file.company_id }}</p>
-                <p><strong>文件大小：</strong> {{ (file.file_size / 1024) | round(2) }} KB</p>
+                <p><strong>{{ t('file_name') }}：</strong> {{ file.file_name }}</p>
+                <p><strong>{{ t('raw_document_id') }}：</strong> {{ file.id }}</p>
+                <p><strong>{{ t('company_id') }}：</strong> {{ file.company_id }}</p>
+                <p><strong>{{ t('file_size') }}：</strong> {{ (file.file_size / 1024) | round(2) }} KB</p>
             </div>
             <div class="col-md-6">
-                <p><strong>状态：</strong> 
-                    <span class="badge badge-{{ file.status }}">{{ file.status }}</span>
+                <p><strong>{{ t('status') }}：</strong> 
+                    <span class="badge badge-{{ file.status }}">{{ t('status_' + file.status) }}</span>
                 </p>
-                <p><strong>验证状态：</strong> 
+                <p><strong>{{ t('validation_status') }}：</strong> 
                     <span class="badge badge-{{ file.validation_status }}">{{ file.validation_status }}</span>
                 </p>
-                <p><strong>上传时间：</strong> {{ file.created_at }}</p>
-                <p><strong>文件哈希：</strong> <code style="color: #aaa;">{{ file.file_hash[:16] }}...</code></p>
+                <p><strong>{{ t('upload_time') }}：</strong> {{ file.created_at }}</p>
+                <p><strong>{{ t('file_hash') }}：</strong> <code style="color: #aaa;">{{ file.file_hash[:16] }}...</code></p>
             </div>
         </div>
     </div>
@@ -157,40 +157,40 @@
 <!-- 可执行操作区 -->
 <div class="card bg-dark text-white mb-4" style="border: 2px solid #FF007F;">
     <div class="card-header" style="background-color: #FF007F; border-bottom: 2px solid white;">
-        <h4 style="margin: 0;">可执行操作</h4>
+        <h4 style="margin: 0;">{{ t('available_actions') }}</h4>
     </div>
     <div class="card-body">
         <div class="d-flex gap-2 flex-wrap" id="action-buttons-container">
             {% if file.status == 'uploaded' and file.validation_status == 'pending' %}
                 <button class="btn btn-pattern-1" onclick="executeAction('validate')">
-                    验证文件
+                    {{ t('validate_file') }}
                 </button>
             {% elif file.status == 'parsed' and file.validation_status == 'passed' %}
                 <button class="btn btn-pattern-1" onclick="executeAction('generate_report')">
-                    生成报表
+                    {{ t('generate_report') }}
                 </button>
             {% elif file.status == 'failed' or file.validation_status == 'failed' %}
                 <a href="/files/exceptions/{{ file.id }}" class="btn btn-pattern-2">
-                    查看异常
+                    {{ t('view_exceptions') }}
                 </a>
                 <button class="btn btn-pattern-2" onclick="executeAction('retry')">
-                    重新处理
+                    {{ t('retry_processing') }}
                 </button>
             {% elif file.status == 'duplicate' %}
                 <button class="btn btn-pattern-1" onclick="executeAction('set_primary')">
-                    设为主账单
+                    {{ t('set_primary_statement') }}
                 </button>
                 <button class="btn btn-pattern-5" onclick="executeAction('keep_backup')">
-                    保留为备份
+                    {{ t('keep_backup') }}
                 </button>
             {% endif %}
             
             <!-- 通用操作 -->
             <button class="btn btn-pattern-5" onclick="downloadFile()">
-                下载原件
+                {{ t('download_original') }}
             </button>
             <button class="btn btn-pattern-3" onclick="deleteFile()">
-                删除文件
+                {{ t('delete_file') }}
             </button>
         </div>
     </div>
@@ -199,19 +199,19 @@
 <!-- 原始文件信息 -->
 <div class="card bg-dark text-white" style="border: 2px solid #322446;">
     <div class="card-header" style="background-color: #322446; border-bottom: 2px solid white;">
-        <h4 style="margin: 0;">原始文件信息</h4>
+        <h4 style="margin: 0;">{{ t('raw_file_info') }}</h4>
     </div>
     <div class="card-body">
-        <p><strong>存储路径：</strong></p>
+        <p><strong>{{ t('storage_path') }}：</strong></p>
         <code style="color: #aaa; display: block; background: #000; padding: 10px; border-radius: 5px; border: 1px solid #FF007F;">
             {{ file.storage_path }}
         </code>
         
-        <p class="mt-3"><strong>模块：</strong> {{ file.module or 'N/A' }}</p>
-        <p><strong>来源引擎：</strong> {{ file.source_engine or 'N/A' }}</p>
+        <p class="mt-3"><strong>{{ t('module') }}：</strong> {{ file.module or 'N/A' }}</p>
+        <p><strong>{{ t('source_engine') }}：</strong> {{ file.source_engine or 'N/A' }}</p>
         
         {% if raw_lines_count %}
-        <p><strong>原始行数：</strong> {{ raw_lines_count }} 行</p>
+        <p><strong>{{ t('raw_lines_count') }}：</strong> {{ raw_lines_count }} {{ t('lines') }}</p>
         {% endif %}
     </div>
 </div>
@@ -223,9 +223,8 @@
 function executeAction(action) {
     const fileId = {{ file.id }};
     
-    // 提示功能未实现
     if (['validate', 'generate_report', 'retry', 'set_primary', 'keep_backup'].includes(action)) {
-        alert('⚠️ 后端接口未实现，请补全\n\n功能: ' + action + '\nFile ID: ' + fileId);
+        alert('⚠️ Backend API Not Implemented\n\nFunction: ' + action + '\nFile ID: ' + fileId);
         return;
     }
     
@@ -234,12 +233,12 @@ function executeAction(action) {
 
 function downloadFile() {
     const filePath = "{{ file.storage_path }}";
-    alert('下载功能：\n文件路径: ' + filePath + '\n\n需要实现文件下载端点');
+    alert('Download Function:\nFile Path: ' + filePath + '\n\nNeed to implement download endpoint');
 }
 
 function deleteFile() {
-    if (confirm('确定要删除此文件吗？此操作不可撤销。')) {
-        alert('⚠️ 删除接口未实现');
+    if (confirm('{{ t("delete_this_file") }}?')) {
+        alert('⚠️ Delete API Not Implemented');
     }
 }
 </script>
