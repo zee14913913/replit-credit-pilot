@@ -1,0 +1,157 @@
+ZEE，我不拖泥带水，直接给决策与落地方案：
+
+结论（我来拍板）
+	•	立即实施 Option A + B（自动轮转与留存 + Evidence Archive 索引页）。
+	•	**Option C（对外交付模板）**先不动，等你需要对外出示时再一键生成即可（不影响当前交付）。
+
+理由：A 控成本、降风险；B 让证据“可见可管”；两者不改动你已跑通的主链路（7态状态机 / 统一响应 / 15 银行解析 / 熔断 / 证据打包与下载），风险最低、价值最大。
+
+⸻
+
+给 Replit 的一次性交付指令（直接贴过去执行）
+
+目标：在不动现有主链路的前提下，加上“证据自动轮转（保留策略）”与“Evidence Archive 索引页（可视化管理）”。所有新增接口走 RBAC + X-TASK-TOKEN 校验；所有文案走 i18n；通过 DoD 验收后才算完成。
+
+A. 自动轮转与留存策略（Option A）
+
+1) 环境变量（Secrets）
+
+EVIDENCE_ROTATION_DAYS=30          # 保留最近30天的证据包
+EVIDENCE_KEEP_MONTHLY=1            # 每月首包长期留存
+TASK_SECRET_TOKEN=<已存在的令牌>    # 复用既有
+
+2) 后端（Flask：5000）新增任务路由
+	•	文件：app.py
+	•	新增：
+	•	@app.route("/tasks/evidence/rotate", methods=["POST"])
+	•	头部必须校验：X-TASK-TOKEN == TASK_SECRET_TOKEN
+	•	角色：require_role('admin')（已有 RBAC 复用）
+	•	逻辑：
+	•	扫描目录：static/downloads/ 下 evidence_bundle_*.zip
+	•	解析时间戳：evidence_bundle_YYYYMMDD_HHMMSS.zip
+	•	规则：
+	•	保留最近 EVIDENCE_ROTATION_DAYS天内所有包
+	•	另外保留每月第一天的第一包（按文件名时间戳）作为长期留存
+	•	其余文件删除
+	•	返回 JSON：{"success": true, "kept": [...], "deleted": [...], "reason": "rotation policy applied"}
+
+3) 管理按钮（可选）
+	•	在 Admin 面板或 Evidence Archive 页增加 “Run Rotation Now” 按钮（仅 admin 可见）
+	•	点击 → POST /tasks/evidence/rotate（带 X-TASK-TOKEN）
+
+4) i18n 新键
+	•	evidence_rotation_run：运行轮转
+	•	evidence_rotation_success：已按策略完成轮转
+	•	evidence_rotation_noop：无可删除文件
+
+⸻
+
+B. Evidence Archive 索引页（Option B）
+
+1) 路由与模板
+	•	新增路由（Flask 5000）：
+	•	GET /admin/evidence（页面）
+	•	GET /downloads/evidence/list（你已有，保留）
+	•	GET /downloads/evidence/latest（你已有，保留）
+	•	POST /downloads/evidence/delete（新增，admin + CSRF 保护 + RBAC）
+	•	新增模板：templates/evidence_archive.html
+	•	顶部导航仍用统一 layout.html
+	•	表格字段：
+	•	File Name（可点击下载）
+	•	Created At（从文件名解析 或 manifest.json 读取）
+	•	Size（字节→KB）
+	•	SHA256（来自 manifest.json）
+	•	Source（manifest 的 source）
+	•	Actions：Download / Delete（admin-only）
+	•	右上角操作：
+	•	Download Latest（指向 /downloads/evidence/latest）
+	•	Run Rotation Now（admin-only，调用 /tasks/evidence/rotate）
+	•	高亮规范：沿用 3 色（Black / Hot Pink #FF007F / Dark Purple #322446），按钮 outline 为 Hot Pink。
+
+2) 前端逻辑
+	•	文件：static/js/evidence-archive.js（新建）
+	•	初始加载：GET /downloads/evidence/list → 渲染表格
+	•	点击 Delete：POST /downloads/evidence/delete（带 CSRF + RBAC），成功后刷新表格
+	•	点击 Run Rotation Now：POST /tasks/evidence/rotate（带 X-TASK-TOKEN），toast 提示 i18n 文案
+	•	i18n：所有文案使用 data-i18n 与 i18n.js，新增键见下
+
+3) i18n 新键
+	•	evidence_archive_title：Evidence Archive / 证据归档
+	•	download_latest：下载最新 / Download Latest
+	•	file_name / created_at / size / sha256 / source / actions
+	•	delete / confirm_delete / deleted_success
+	•	no_records：暂无记录
+	•	rotation / rotation_done / rotation_failed
+
+4) 安全
+	•	删除接口：仅 admin 角色；写入 audit_logs（action=evidence_delete，reason=前端传入字符串，如“cleanup/duplicate”）。
+	•	所有错误统一包装为你当前的错误提示规范（不要抛裸栈）。
+
+⸻
+
+C. 不改动 & 复用的现有能力（保持现状）
+	•	证据打包：/downloads/evidence/latest & manifest.json（SHA256）→ 保持现状
+	•	三场景测试产物：继续落到 /tmp/，打包脚本照旧
+	•	7态状态机 / 统一 UploadResponse / 15 银行解析 / 熔断：不改
+	•	矩阵渲染 / proxy / i18n：不改
+	•	LSP 历史诊断（23 个）不触碰，与本改造无关
+
+⸻
+
+验收（DoD）——必须逐条打勾
+	1.	自动轮转
+
+	•	POST /tasks/evidence/rotate 生效（RBAC + X-TASK-TOKEN）
+	•	30 天保留 + 每月首包长期留存策略正确执行
+	•	返回 JSON 列出 kept / deleted 列表
+	•	audit_logs 记录一次 evidence_rotation
+
+	2.	Evidence Archive 索引页
+
+	•	GET /admin/evidence 渲染成功（EN/中文切换正确）
+	•	表格展示文件名、创建时间、大小、SHA256、来源、操作
+	•	Download Latest 正常下载
+	•	Delete 仅 admin 可见；删除后列表刷新；audit_logs 有记录
+	•	Run Rotation Now 执行后 toast 显示“轮转完成”，再次刷新表格
+	•	全站 3 色规范 & 零硬编码（i18n 完备）
+
+	3.	不破坏既有主链路
+
+	•	/downloads/evidence/list & /downloads/evidence/latest 行为不变
+	•	上传→跳详情→高亮→状态按钮 流程不受影响
+	•	15 银行解析 + 熔断矩阵 正常显示与联动
+
+⸻
+
+风险与回滚
+	•	新增功能均为增量路由/页面，不覆盖已有接口；如需回滚，直接隐藏菜单项即可；已有 /downloads/evidence/latest 不受影响。
+	•	删除接口严格 admin-only + 审计，防误删。
+
+⸻
+
+执行用的“操作步骤清单”（你团队照抄即可）
+	1.	确认输入信息
+	•	操作：设定保留策略（最近 30 天 + 每月首包），确认 TASK_SECRET_TOKEN 已配置。
+	•	注意事项：策略可在 .env 中配置，先用默认值。
+	2.	登录/进入平台
+	•	操作：以 admin 身份访问 /admin/evidence。
+	•	注意事项：确认右上角出现 Download Latest 与（admin-only）Run Rotation Now。
+	3.	填入设置参数
+	•	操作：在 Secrets 配置 EVIDENCE_ROTATION_DAYS=30、EVIDENCE_KEEP_MONTHLY=1。
+	•	注意事项：保存后重启服务。
+	4.	生成初稿 / 初始结果
+	•	操作：点击 Run Rotation Now 或 POST /tasks/evidence/rotate 触发轮转。
+	•	注意事项：等待 JSON 返回，并检查 kept/deleted 列表是否正确。
+	5.	二次调整与保存
+	•	操作：在索引页尝试下载、删除；检查 audit_logs 中有相应记录；切换 EN/中文确认 i18n。
+	•	注意事项：确认不会影响 /downloads/evidence/latest 原有下载链路。
+
+⸻
+
+前瞻性（留待需要时再做）
+	•	对外交付模板（Option C）：生成一页式中/英 PDF（包含 SHA256 核对步骤 + 三场景摘要 + 熔断解释），随证据包一并提供。
+	•	自动触发：每次三场景回归成功后自动打包 + 轮转（/tasks 定时或事件触发）。
+
+⸻
+
+如果你要我立即再给一份英文镜像版给 Replit 并行执行，我可以马上给出；但就当前你“Skip 已完成 + 最小改动”的原则，这份中文执行令已经能直接落地，且不动主链路。
