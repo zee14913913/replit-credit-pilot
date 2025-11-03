@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block title %}文件列表 - File Manager{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-folder2-open"></i> 文件管理 / File Manager</h2>
+    <a href="http://localhost:8000/accounting" class="btn btn-primary">
+        <i class="bi bi-cloud-upload"></i> 上传新文件
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>文件名 / File Name</th>
+                <th>公司 / Company</th>
+                <th>月份 / Month</th>
+                <th>状态 / Status</th>
+                <th>验证状态 / Validation</th>
+                <th>上传时间 / Upload Time</th>
+                <th>下一步 / Next Action</th>
+            </tr>
+        </thead>
+        <tbody id="files-table-body">
+            {% for file in files %}
+            <tr class="{% if loop.index0 == 0 %}row--highlight{% endif %}" data-file-id="{{ file.id }}">
+                <td>{{ file.id }}</td>
+                <td>
+                    <a href="/files/detail/{{ file.id }}" style="color: var(--primary-pink);">
+                        {{ file.file_name }}
+                    </a>
+                </td>
+                <td>{{ file.company_name or 'N/A' }}</td>
+                <td>{{ file.statement_month or 'N/A' }}</td>
+                <td>
+                    <span class="badge badge-{{ file.status }}">
+                        {{ file.status }}
+                    </span>
+                </td>
+                <td>
+                    <span class="badge badge-{{ file.validation_status }}">
+                        {{ file.validation_status }}
+                    </span>
+                </td>
+                <td>{{ file.created_at }}</td>
+                <td class="next-action-cell" data-status="{{ file.status }}" data-validation="{{ file.validation_status }}" data-file-id="{{ file.id }}">
+                    <!-- NextActionButton 将在这里渲染 -->
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if not files %}
+<div class="alert alert-info text-center">
+    <i class="bi bi-inbox"></i> 暂无文件 / No files uploaded yet
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// 初始化Next-Action按钮
+document.addEventListener('DOMContentLoaded', function() {
+    const cells = document.querySelectorAll('.next-action-cell');
+    
+    cells.forEach(cell => {
+        const status = cell.dataset.status;
+        const validation = cell.dataset.validation;
+        const fileId = cell.dataset.fileId;
+        
+        // 根据状态决定按钮文字和操作
+        let buttonText = '查看详情';
+        let buttonUrl = `/files/detail/${fileId}`;
+        let buttonClass = 'btn-secondary';
+        
+        if (status === 'uploaded' && validation === 'pending') {
+            buttonText = '去验证';
+            buttonClass = 'btn-warning';
+        } else if (status === 'parsed' && validation === 'passed') {
+            buttonText = '生成报表';
+            buttonClass = 'btn-success';
+        } else if (status === 'failed' || validation === 'failed') {
+            buttonText = '查看异常';
+            buttonClass = 'btn-danger';
+        } else if (status === 'duplicate') {
+            buttonText = '设为主账单';
+            buttonClass = 'btn-warning';
+        }
+        
+        // 创建按钮
+        const button = document.createElement('a');
+        button.href = buttonUrl;
+        button.className = `btn btn-sm ${buttonClass}`;
+        button.innerHTML = `<i class="bi bi-arrow-right-circle"></i> ${buttonText}`;
+        
+        cell.appendChild(button);
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+
+{% block title %}文件详情 - {{ file.file_name }}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="/files/list" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> 返回列表
+    </a>
+</div>
+
+<!-- 重复月份警告 -->
+{% if file.status == 'duplicate' or duplicate_warning %}
+<div class="alert alert-warning border-warning" style="border-left: 4px solid #ffc107;">
+    <h5><i class="bi bi-exclamation-triangle-fill"></i> 重复月份警告</h5>
+    <p>本月份已有主账单，此文件为第 <strong>{{ duplicate_count or 'N' }}</strong> 份，请选择操作：</p>
+    <ul>
+        <li>设为主账单（替换现有）</li>
+        <li>保留为备份文件</li>
+        <li>删除此文件</li>
+    </ul>
+</div>
+{% endif %}
+
+<!-- 文件信息卡片 -->
+<div class="card bg-dark text-white mb-4">
+    <div class="card-header" style="background-color: var(--primary-purple);">
+        <h4><i class="bi bi-file-earmark-text"></i> 文件信息</h4>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>文件名：</strong> {{ file.file_name }}</p>
+                <p><strong>Raw Document ID：</strong> {{ file.id }}</p>
+                <p><strong>公司ID：</strong> {{ file.company_id }}</p>
+                <p><strong>文件大小：</strong> {{ (file.file_size / 1024) | round(2) }} KB</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>状态：</strong> 
+                    <span class="badge badge-{{ file.status }}">{{ file.status }}</span>
+                </p>
+                <p><strong>验证状态：</strong> 
+                    <span class="badge badge-{{ file.validation_status }}">{{ file.validation_status }}</span>
+                </p>
+                <p><strong>上传时间：</strong> {{ file.created_at }}</p>
+                <p><strong>文件哈希：</strong> <code style="color: #aaa;">{{ file.file_hash[:16] }}...</code></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 可执行操作区 -->
+<div class="card bg-dark text-white mb-4">
+    <div class="card-header" style="background-color: var(--primary-pink);">
+        <h4><i class="bi bi-lightning-fill"></i> 可执行操作</h4>
+    </div>
+    <div class="card-body">
+        <div class="d-flex gap-2 flex-wrap" id="action-buttons-container">
+            {% if file.status == 'uploaded' and file.validation_status == 'pending' %}
+                <button class="btn btn-warning" onclick="executeAction('validate')">
+                    <i class="bi bi-check-circle"></i> 验证文件
+                </button>
+            {% elif file.status == 'parsed' and file.validation_status == 'passed' %}
+                <button class="btn btn-success" onclick="executeAction('generate_report')">
+                    <i class="bi bi-file-earmark-bar-graph"></i> 生成报表
+                </button>
+            {% elif file.status == 'failed' or file.validation_status == 'failed' %}
+                <a href="/files/exceptions/{{ file.id }}" class="btn btn-danger">
+                    <i class="bi bi-exclamation-octagon"></i> 查看异常
+                </a>
+                <button class="btn btn-warning" onclick="executeAction('retry')">
+                    <i class="bi bi-arrow-clockwise"></i> 重新处理
+                </button>
+            {% elif file.status == 'duplicate' %}
+                <button class="btn btn-primary" onclick="executeAction('set_primary')">
+                    <i class="bi bi-star-fill"></i> 设为主账单
+                </button>
+                <button class="btn btn-secondary" onclick="executeAction('keep_backup')">
+                    <i class="bi bi-archive"></i> 保留为备份
+                </button>
+            {% endif %}
+            
+            <!-- 通用操作 -->
+            <button class="btn btn-info" onclick="downloadFile()">
+                <i class="bi bi-download"></i> 下载原件
+            </button>
+            <button class="btn btn-outline-danger" onclick="deleteFile()">
+                <i class="bi bi-trash"></i> 删除文件
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 原始文件信息 -->
+<div class="card bg-dark text-white">
+    <div class="card-header" style="background-color: var(--primary-purple);">
+        <h4><i class="bi bi-file-code"></i> 原始文件信息</h4>
+    </div>
+    <div class="card-body">
+        <p><strong>存储路径：</strong></p>
+        <code style="color: #aaa; display: block; background: #000; padding: 10px; border-radius: 5px;">
+            {{ file.storage_path }}
+        </code>
+        
+        <p class="mt-3"><strong>模块：</strong> {{ file.module or 'N/A' }}</p>
+        <p><strong>来源引擎：</strong> {{ file.source_engine or 'N/A' }}</p>
+        
+        {% if raw_lines_count %}
+        <p><strong>原始行数：</strong> {{ raw_lines_count }} 行</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function executeAction(action) {
+    const fileId = {{ file.id }};
+    
+    // 提示功能未实现
+    if (['validate', 'generate_report', 'retry', 'set_primary', 'keep_backup'].includes(action)) {
+        alert('⚠️ 后端接口未实现，请补全\n\n功能: ' + action + '\nFile ID: ' + fileId);
+        return;
+    }
+    
+    // 这里应该调用后端API
+    console.log('Executing action:', action, 'for file:', fileId);
+}
+
+function downloadFile() {
+    const filePath = "{{ file.storage_path }}";
+    alert('下载功能：\n文件路径: ' + filePath + '\n\n需要实现文件下载端点');
+}
+
+function deleteFile() {
+    if (confirm('确定要删除此文件吗？此操作不可撤销。')) {
+        alert('⚠️ 删除接口未实现');
+    }
+}
+</script>
+{% endblock %}

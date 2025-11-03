@@ -238,7 +238,13 @@
                     body: formData
                 });
                 const data = await response.json();
-                showResult('uploadResult', data, response.ok);
+                
+                // 成功后跳转到文件详情页（Flask端口5000）
+                if (response.ok && data.raw_document_id) {
+                    window.location.href = `http://localhost:5000/files/detail/${data.raw_document_id}`;
+                } else {
+                    showResult('uploadResult', data, response.ok);
+                }
             } catch (error) {
                 showResult('uploadResult', {error: error.message}, false);
             }

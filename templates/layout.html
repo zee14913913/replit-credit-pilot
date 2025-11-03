@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Credit & Loan Manager{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-black: #000000;
+            --primary-pink: #FF007F;
+            --primary-purple: #322446;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-black);
+            color: #fff;
+            min-height: 100vh;
+        }
+        .navbar {
+            background-color: var(--primary-purple) !important;
+            border-bottom: 2px solid var(--primary-pink);
+        }
+        .navbar-brand, .nav-link {
+            color: #fff !important;
+        }
+        .nav-link:hover {
+            color: var(--primary-pink) !important;
+        }
+        .nav-link.active {
+            color: var(--primary-pink) !important;
+            font-weight: bold;
+        }
+        .container-main {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--primary-purple);
+        }
+        .btn-primary {
+            background-color: var(--primary-pink);
+            border-color: var(--primary-pink);
+        }
+        .btn-primary:hover {
+            background-color: #cc0066;
+            border-color: #cc0066;
+        }
+        .btn-secondary {
+            background-color: var(--primary-purple);
+            border-color: var(--primary-purple);
+        }
+        .table {
+            color: #fff;
+        }
+        .table thead {
+            background-color: var(--primary-purple);
+            color: #fff;
+        }
+        .table-striped > tbody > tr:nth-of-type(odd) {
+            background-color: rgba(50, 36, 70, 0.3);
+        }
+        .row--highlight {
+            background-color: rgba(255, 0, 127, 0.2) !important;
+            border-left: 4px solid var(--primary-pink);
+        }
+        #toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+        }
+        .badge-uploaded { background-color: #6c757d; }
+        .badge-active { background-color: #28a745; }
+        .badge-failed { background-color: #dc3545; }
+        .badge-duplicate { background-color: #ffc107; color: #000; }
+        .badge-parsed { background-color: #17a2b8; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-bank"></i> Smart Credit & Loan Manager
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/customers">Customers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/credit-card/ledger">Credit Cards</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/savings/customers">Savings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/receipts/customers">Receipts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/loan/customers">Loan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://localhost:8000/accounting" target="_blank">
+                            Accounting <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/files/list">Files</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="switchLanguage('en')">EN</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="switchLanguage('zh')">中文</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Toast容器 -->
+    <div id="toast-container"></div>
+
+    <!-- 主内容区 -->
+    <div class="container container-main">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/unified-ui-enhancements.js"></script>
+    <script>
+        function switchLanguage(lang) {
+            localStorage.setItem('language', lang);
+            location.reload();
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

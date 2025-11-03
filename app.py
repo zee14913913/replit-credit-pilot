@@ -5299,6 +5299,116 @@ def admin_logout():
     return redirect(url_for('admin_login'))
 
 
+# ==================== 文件管理路由 ====================
+@app.route('/files/list')
+def files_list():
+    """文件列表页 - 显示所有上传的raw_documents"""
+    import psycopg2
+    from psycopg2.extras import RealDictCursor
+    
+    DATABASE_URL = os.getenv('DATABASE_URL')
+    if not DATABASE_URL:
+        flash('数据库未配置', 'error')
+        return redirect(url_for('index'))
+    
+    try:
+        conn = psycopg2.connect(DATABASE_URL)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        
+        # 查询所有raw_documents，按创建时间倒序（最新的在前）
+        cur.execute("""
+            SELECT 
+                rd.id,
+                rd.company_id,
+                rd.file_name,
+                rd.status,
+                rd.validation_status,
+                rd.created_at,
+                rd.module,
+                c.company_name,
+                NULL as statement_month
+            FROM raw_documents rd
+            LEFT JOIN companies c ON rd.company_id = c.id
+            ORDER BY rd.created_at DESC
+            LIMIT 100
+        """)
+        
+        files = cur.fetchall()
+        
+        # 格式化日期
+        for file in files:
+            if file['created_at']:
+                file['created_at'] = file['created_at'].strftime('%Y-%m-%d %H:%M:%S')
+        
+        cur.close()
+        conn.close()
+        
+        return render_template('files_list.html', files=files)
+        
+    except Exception as e:
+        flash(f'查询失败：{str(e)}', 'error')
+        return redirect(url_for('index'))
+
+
+@app.route('/files/detail/<int:file_id>')
+def file_detail(file_id):
+    """文件详情页 - 显示单个raw_document的详细信息"""
+    import psycopg2
+    from psycopg2.extras import RealDictCursor
+    
+    DATABASE_URL = os.getenv('DATABASE_URL')
+    if not DATABASE_URL:
+        flash('数据库未配置', 'error')
+        return redirect(url_for('index'))
+    
+    try:
+        conn = psycopg2.connect(DATABASE_URL)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        
+        # 查询文件详情
+        cur.execute("""
+            SELECT 
+                rd.*,
+                c.company_name
+            FROM raw_documents rd
+            LEFT JOIN companies c ON rd.company_id = c.id
+            WHERE rd.id = %s
+        """, (file_id,))
+        
+        file = cur.fetchone()
+        
+        if not file:
+            flash('文件不存在', 'error')
+            cur.close()
+            conn.close()
+            return redirect(url_for('files_list'))
+        
+        # 格式化日期
+        if file['created_at']:
+            file['created_at'] = file['created_at'].strftime('%Y-%m-%d %H:%M:%S')
+        
+        # 查询raw_lines数量
+        cur.execute("SELECT COUNT(*) as count FROM raw_lines WHERE raw_document_id = %s", (file_id,))
+        raw_lines_count = cur.fetchone()['count']
+        
+        # 检查是否为重复月份（这里简化处理，实际应该查询bank_statements表）
+        duplicate_warning = False
+        duplicate_count = 1
+        
+        cur.close()
+        conn.close()
+        
+        return render_template('file_detail.html', 
+                             file=file, 
+                             raw_lines_count=raw_lines_count,
+                             duplicate_warning=duplicate_warning,
+                             duplicate_count=duplicate_count)
+        
+    except Exception as e:
+        flash(f'查询失败：{str(e)}', 'error')
+        return redirect(url_for('files_list'))
+
+
 if __name__ == '__main__':
     # Get environment settings
     flask_env = os.getenv('FLASK_ENV', 'development')
