@@ -441,6 +441,30 @@
     
     <!-- 全局翻译对象 -->
     <script>
+        // Phase 1-10: 7-State Machine Mapping (client-side)
+        window.STATUS_NEXT_ACTIONS = {
+            "uploaded": ["validate", "view_original"],
+            "active": ["generate_report", "download_original"],
+            "failed": ["view_exceptions", "reprocess", "download_original"],
+            "duplicate": ["set_as_primary", "view_other_files", "download_original"],
+            "validated": ["generate_report", "download_original"],
+            "posted": ["view_report", "download_original"],
+            "archived": ["download_original"]
+        };
+        
+        // Action labels mapping
+        window.ACTION_LABELS = {
+            "validate": "{{ t('validate_file') }}",
+            "view_original": "{{ t('view_original') }}",
+            "generate_report": "{{ t('generate_report') }}",
+            "download_original": "{{ t('download_original') }}",
+            "view_exceptions": "{{ t('view_exceptions') }}",
+            "reprocess": "{{ t('retry_processing') }}",
+            "set_as_primary": "{{ t('set_primary_statement') }}",
+            "view_other_files": "{{ t('view_other_files') }}",
+            "view_report": "{{ t('view_report') }}"
+        };
+        
         window.i18n = {
             file_name: "{{ t('file_name') }}",
             module: "{{ t('module') }}",
@@ -728,28 +752,30 @@
                     // 状态说明
                     const statusReason = file.status_reason || '无说明';
                     
-                    // 下一步动作按钮（删除所有图标）
+                    // Phase 1-10: 下一步动作按钮（基于7状态机映射）
                     let nextActionsHtml = '';
-                    if (file.next_actions && file.next_actions.length > 0) {
-                        // 只显示优先级最高的1-2个动作
-                        const topActions = file.next_actions.slice(0, 2);
-                        topActions.forEach(action => {
-                            const buttonColor = action.priority === 1 ? '#FF007F' : '#322446';
-                            // 完全删除所有emoji和图标
-                            const cleanLabel = action.label.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|✅|🔍|👁️|📄|📊|🐍|⚡|👉|⚠️|📝|📒|📦|❌|🔄|↩️|⏳/gu, '').trim();
+                    const fileStatus = file.status || 'active';
+                    const nextActions = window.STATUS_NEXT_ACTIONS[fileStatus] || ["download_original"];
+                    
+                    if (nextActions.length > 0) {
+                        // 只显示前2个最重要的动作
+                        const topActions = nextActions.slice(0, 2);
+                        topActions.forEach((actionKey, index) => {
+                            const buttonColor = index === 0 ? '#FF007F' : '#322446';
+                            const label = window.ACTION_LABELS[actionKey] || actionKey;
                             nextActionsHtml += `
                                 <button 
-                                    onclick="executeAction('${action.endpoint}', '${action.method}')"
+                                    onclick="viewFileDetail(${file.file_id})"
                                     class="btn btn-small"
                                     style="background: ${buttonColor}; color: #FFFFFF; margin: 2px; font-size: 0.8rem; font-weight: bold;"
-                                    title="${action.description || ''}"
+                                    title="${label}"
                                 >
-                                    ${cleanLabel}
+                                    ${label}
                                 </button>
                             `;
                         });
                     } else {
-                        nextActionsHtml = '<span style="color: #666;">无动作</span>';
+                        nextActionsHtml = '<span style="color: #666;">-</span>';
                     }
                     
                     html += `

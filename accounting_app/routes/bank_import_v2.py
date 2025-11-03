@@ -190,36 +190,32 @@ async def import_bank_statement_v2(
         )
     
     elif result.get("partial_success"):
+        # Phase 1-10 Critical fix: Return 200 + UploadResponse (不再抛出HTTPException)
         # 部分成功：文件已封存但验证失败
-        raise HTTPException(
-            status_code=422,
-            detail=UploadResponse(
-                success=False,
-                status="failed",
-                raw_document_id=result.get("raw_document_id"),
-                file_id=result.get("raw_document_id"),
-                company_id=company_id,
-                statement_month=statement_month,
-                account_number=account_number,
-                status_reason=result.get("error", "CSV字段验证失败，文件已封存但未入账"),
-                warnings=["请前往异常中心检查并修复问题"],
-                next_actions=get_next_actions("failed"),
-                api_version="v2_phase1-10",
-                protection_enabled=True
-            ).dict()
+        return UploadResponse(
+            success=False,
+            status="failed",
+            raw_document_id=result.get("raw_document_id"),
+            file_id=result.get("raw_document_id"),
+            company_id=company_id,
+            statement_month=statement_month,
+            account_number=account_number,
+            status_reason=result.get("error", "CSV字段验证失败，文件已封存但未入账"),
+            warnings=["请前往异常中心检查并修复问题"],
+            next_actions=get_next_actions("failed"),
+            api_version="v2_phase1-10",
+            protection_enabled=True
         )
     
     else:
+        # Phase 1-10 Critical fix: Return 200 + UploadResponse (不再抛出HTTPException)
         # 完全失败
-        raise HTTPException(
-            status_code=500,
-            detail=UploadResponse(
-                success=False,
-                status="failed",
-                raw_document_id=result.get("raw_document_id"),
-                status_reason=result.get("error", "上传失败"),
-                next_actions=get_next_actions("failed"),
-                api_version="v2_phase1-10",
-                protection_enabled=True
-            ).dict()
+        return UploadResponse(
+            success=False,
+            status="failed",
+            raw_document_id=result.get("raw_document_id"),
+            status_reason=result.get("error", "上传失败"),
+            next_actions=get_next_actions("failed"),
+            api_version="v2_phase1-10",
+            protection_enabled=True
         )

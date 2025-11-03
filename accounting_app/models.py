@@ -66,8 +66,13 @@ class BankStatement(Base):
     matched_journal_id = Column(Integer)
     auto_category = Column(String(100))
     notes = Column(Text)
-    raw_line_id = Column(Integer, ForeignKey('raw_lines.id', ondelete='SET NULL'), index=True)  # Phase 1-2: 防虚构交易
+    raw_line_id = Column(Integer, ForeignKey('raw_lines.id', ondelete='SET NULL'), nullable=False, index=True)  # Phase 1-10: NOT NULL + FK防虚构交易
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Phase 1-10: 数据完整性约束
+    __table_args__ = (
+        CheckConstraint('debit_amount > 0 OR credit_amount > 0', name='one_side_positive'),
+    )
 
 
 class JournalEntry(Base):
