@@ -1679,6 +1679,36 @@ TRANSLATIONS = {
         'stat_test_reports': '测试报告',
         'stat_total_storage': '总存储空间',
         'stat_all_files': '所有文件',
+        
+        # Dashboard Page
+        'upload_bank_statement': '上传银行月结单',
+        'csv_file': 'CSV文件',
+        'upload_and_import': '上传并导入',
+        'supplier_aging_report': '供应商账龄报表',
+        'view_report': '查看报表',
+        'customer_aging_report': '客户账龄报表',
+        'convert_bank_statement': '将银行月结单转换为会计分录，生成银行贷款所需的财务报表',
+        
+        # File Management
+        'file_view': '文件查看',
+        'file_detail': '文件详情',
+        'file_id': '文件ID',
+        'file_deleted': '文件已删除',
+        'loading_file_details': '正在加载文件详情...',
+        'file_not_exist': '文件不存在',
+        'new_file': '新文件',
+        'highlighted_file': '高亮文件',
+        
+        # Actions
+        'details': '详情',
+        'retry': '重试',
+        'view_exceptions': '查看异常',
+        
+        # Status Messages
+        'uploading': '上传中...',
+        'processing': '处理中...',
+        'completed': '已完成',
+        'failed': '失败',
     },
     'en': {
         # Navigation
@@ -1799,6 +1829,36 @@ TRANSLATIONS = {
         'stat_test_reports': 'Test Reports',
         'stat_total_storage': 'Total Storage',
         'stat_all_files': 'All Files',
+        
+        # Dashboard Page
+        'upload_bank_statement': 'UPLOAD BANK STATEMENT',
+        'csv_file': 'CSV File',
+        'upload_and_import': 'Upload And Import',
+        'supplier_aging_report': 'SUPPLIER AGING REPORT',
+        'view_report': 'View Report',
+        'customer_aging_report': 'CUSTOMER AGING REPORT',
+        'convert_bank_statement': 'Convert Bank Statements To Journal Entries, Generate Financial Reports For Bank Loan Applications',
+        
+        # File Management
+        'file_view': 'FILE VIEW',
+        'file_detail': 'FILE DETAILS',
+        'file_id': 'File ID',
+        'file_deleted': 'File Deleted',
+        'loading_file_details': 'Loading File Details...',
+        'file_not_exist': 'File Does Not Exist',
+        'new_file': 'New File',
+        'highlighted_file': 'Highlighted File',
+        
+        # Actions
+        'details': 'Details',
+        'retry': 'Retry',
+        'view_exceptions': 'View Exceptions',
+        
+        # Status Messages
+        'uploading': 'Uploading...',
+        'processing': 'Processing...',
+        'completed': 'Completed',
+        'failed': 'Failed',
     }
 }
 

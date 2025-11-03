@@ -127,10 +127,10 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🏦 银行贷款合规会计系统</h1>
-            <p>将银行月结单转换为会计分录，生成银行贷款所需的财务报表</p>
+            <h1 data-i18n="accounting_system_title">🏦 银行贷款合规会计系统</h1>
+            <p data-i18n="convert_bank_statement">将银行月结单转换为会计分录，生成银行贷款所需的财务报表</p>
             <div class="api-links">
-                <a href="/docs" target="_blank">📚 API文档</a>
+                <a href="/docs" target="_blank" data-i18n="api_documentation">📚 API文档</a>
                 <a href="/" target="_blank">🏠 首页</a>
             </div>
         </div>
@@ -138,10 +138,10 @@
         <div class="cards">
             <!-- 上传银行月结单 -->
             <div class="card">
-                <h2>📤 上传银行月结单</h2>
+                <h2 data-i18n="upload_bank_statement">📤 上传银行月结单</h2>
                 <form id="uploadForm">
                     <div class="form-group">
-                        <label>公司ID</label>
+                        <label data-i18n="company_id">公司ID</label>
                         <input type="number" id="companyId" value="1" required>
                     </div>
                     <div class="form-group">
@@ -157,27 +157,27 @@
                         <input type="text" id="statementMonth" value="2025-01" required>
                     </div>
                     <div class="form-group">
-                        <label>CSV文件</label>
+                        <label data-i18n="csv_file">CSV文件</label>
                         <input type="file" id="csvFile" accept=".csv" required>
                     </div>
-                    <button type="submit" class="btn">上传并导入</button>
+                    <button type="submit" class="btn" data-i18n="upload_and_import">上传并导入</button>
                 </form>
                 <div id="uploadResult" class="result"></div>
             </div>
 
             <!-- 查看Suppliers Aging -->
             <div class="card">
-                <h2>📊 供应商账龄报表</h2>
+                <h2 data-i18n="supplier_aging_report">📊 供应商账龄报表</h2>
                 <form id="agingForm">
                     <div class="form-group">
-                        <label>公司ID</label>
+                        <label data-i18n="company_id">公司ID</label>
                         <input type="number" id="agingCompanyId" value="1" required>
                     </div>
                     <div class="form-group">
                         <label>截止日期 (可选)</label>
                         <input type="date" id="asOfDate">
                     </div>
-                    <button type="submit" class="btn">查看报表</button>
+                    <button type="submit" class="btn" data-i18n="view_report">查看报表</button>
                 </form>
                 <div id="agingResult" class="result"></div>
             </div>
