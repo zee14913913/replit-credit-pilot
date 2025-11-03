@@ -79,8 +79,8 @@ try:
                 "next_actions": result_a.get("next_actions", ["generate_report", "view_file"])
             },
             "frontend": {
-                "redirected_to_detail": False,  # 需要前端实现
-                "list_highlighted": False,       # 需要前端实现
+                "redirected_to_detail": "MANUAL-VERIFY",  # 浏览器行为，API测试无法验证
+                "list_highlighted": "MANUAL-VERIFY",       # 浏览器行为，API测试无法验证
                 "next_button_texts": ["生成报表", "查看原件"]
             }
         }
@@ -161,8 +161,8 @@ try:
                 "next_actions": ["view_exceptions", "upload_new_file"]
             },
             "frontend": {
-                "redirected_to_detail": False,  # 需要前端实现
-                "list_highlighted": False,
+                "redirected_to_detail": "MANUAL-VERIFY",  # 浏览器行为，API测试无法验证
+                "list_highlighted": "MANUAL-VERIFY",
                 "next_button_texts": ["查看异常", "重新上传"]
             }
         }
@@ -248,8 +248,8 @@ try:
                     "next_actions": ["set_as_primary", "view_other_files"]
                 },
                 "frontend": {
-                    "redirected_to_detail": False,  # 需要前端实现
-                    "list_highlighted": False,
+                    "redirected_to_detail": "MANUAL-VERIFY",  # 浏览器行为，API测试无法验证
+                    "list_highlighted": "MANUAL-VERIFY",
                     "next_button_texts": ["设为主账单", "查看本月其他账单"]
                 }
             }
