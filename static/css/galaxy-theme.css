@@ -129,6 +129,38 @@ body {
 }
 
 /* ========================================
+   TEXT TRANSFORM RULES - 英文大小写规范
+   ======================================== */
+
+/* 所有标题 - 英文全大写 (ALL CAPS) */
+h1, h2, h3, h4, h5, h6,
+.section-title,
+.page-title,
+.card-title,
+.modal-title,
+.alert-heading,
+.galaxy-title {
+    text-transform: uppercase !important;
+}
+
+/* 副标题和卡片内容 - 首字母大写 (Title Case) */
+.section-subtitle,
+.card-subtitle,
+.card-text,
+.btn,
+.nav-link,
+.dropdown-item,
+.list-group-item,
+.badge,
+p.subtitle,
+.capitalize-words,
+.btn-professional,
+.btn-professional-outline,
+.btn-white-glow {
+    text-transform: capitalize !important;
+}
+
+/* ========================================
    STARFIELD BACKGROUND ANIMATION - 细银粉闪烁
    ======================================== */
 
