@@ -30,19 +30,28 @@ def to_title_case(text):
 
 def should_be_all_caps(key):
     """Determine if a translation key should be ALL CAPS"""
+    # Keys that are clearly titles (h1, h2, h3 level headings)
     title_indicators = [
         'title', 'nav_', '_header', '_heading', 
         'management', 'center', 'dashboard', 'report',
-        'system', 'portal', 'service'
+        'system', 'portal', 'service', '_page',
+        # Specific title-like keys
+        'upload_bank_statement', 'supplier_aging_report', 
+        'customer_aging_report', 'file_view', 'file_detail',
+        'accounting_system', 'file_management'
     ]
     
     # Company/System names should stay as is
     if key in ['company_name', 'system_name']:
         return False
     
+    # Exact match for specific title keys
+    if key in title_indicators:
+        return True
+    
     # Check if key contains title indicators
     for indicator in title_indicators:
-        if indicator in key:
+        if indicator in key and len(indicator) > 3:  # Avoid short false positives
             return True
     
     return False

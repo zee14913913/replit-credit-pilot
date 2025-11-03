@@ -131,7 +131,7 @@
             <p data-i18n="convert_bank_statement">将银行月结单转换为会计分录，生成银行贷款所需的财务报表</p>
             <div class="api-links">
                 <a href="/docs" target="_blank" data-i18n="api_documentation">📚 API文档</a>
-                <a href="/" target="_blank">🏠 首页</a>
+                <a href="/" target="_blank" data-i18n="home_page">🏠 首页</a>
             </div>
         </div>
 
@@ -145,15 +145,15 @@
                         <input type="number" id="companyId" value="1" required>
                     </div>
                     <div class="form-group">
-                        <label>银行名称</label>
+                        <label data-i18n="bank_name">银行名称</label>
                         <input type="text" id="bankName" placeholder="例如: Maybank" required>
                     </div>
                     <div class="form-group">
-                        <label>账户号码</label>
+                        <label data-i18n="account_number">账户号码</label>
                         <input type="text" id="accountNumber" placeholder="例如: 1234567890" required>
                     </div>
                     <div class="form-group">
-                        <label>月份 (YYYY-MM)</label>
+                        <label data-i18n="statement_month">月份 (YYYY-MM)</label>
                         <input type="text" id="statementMonth" value="2025-01" required>
                     </div>
                     <div class="form-group">
@@ -174,7 +174,7 @@
                         <input type="number" id="agingCompanyId" value="1" required>
                     </div>
                     <div class="form-group">
-                        <label>截止日期 (可选)</label>
+                        <label data-i18n="as_of_date">截止日期 (可选)</label>
                         <input type="date" id="asOfDate">
                     </div>
                     <button type="submit" class="btn" data-i18n="view_report">查看报表</button>
@@ -184,34 +184,34 @@
 
             <!-- 查看P&L -->
             <div class="card">
-                <h2>💰 损益表 (P&L)</h2>
+                <h2 data-i18n="profit_loss_statement">💰 损益表 (P&L)</h2>
                 <form id="pnlForm">
                     <div class="form-group">
-                        <label>公司ID</label>
+                        <label data-i18n="company_id">公司ID</label>
                         <input type="number" id="pnlCompanyId" value="1" required>
                     </div>
                     <div class="form-group">
-                        <label>年份</label>
+                        <label data-i18n="year">年份</label>
                         <input type="number" id="year" value="2025" required>
                     </div>
                     <div class="form-group">
-                        <label>月份</label>
+                        <label data-i18n="month">月份</label>
                         <input type="number" id="month" value="1" min="1" max="12" required>
                     </div>
-                    <button type="submit" class="btn">查看报表</button>
+                    <button type="submit" class="btn" data-i18n="view_report">查看报表</button>
                 </form>
                 <div id="pnlResult" class="result"></div>
             </div>
 
             <!-- 生成贷款资料包 -->
             <div class="card">
-                <h2>📦 银行贷款资料包</h2>
+                <h2 data-i18n="bank_loan_package">📦 银行贷款资料包</h2>
                 <form id="packageForm">
                     <div class="form-group">
-                        <label>公司ID</label>
+                        <label data-i18n="company_id">公司ID</label>
                         <input type="number" id="packageCompanyId" value="1" required>
                     </div>
-                    <button type="submit" class="btn">生成资料包</button>
+                    <button type="submit" class="btn" data-i18n="generate_package">生成资料包</button>
                 </form>
                 <div id="packageResult" class="result"></div>
             </div>
@@ -312,5 +312,6 @@
             resultDiv.style.display = 'block';
         }
     </script>
+    <script src="/static/js/i18n.js"></script>
 </body>
 </html>
