@@ -376,7 +376,7 @@ class Exception(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=False)
-    exception_type = Column(String(50), nullable=False, index=True)  # pdf_parse, ocr_error, customer_mismatch, supplier_mismatch, posting_error
+    exception_type = Column(String(50), nullable=False, index=True)  # pdf_parse, ocr_error, customer_mismatch, supplier_mismatch, posting_error, ingest_validation_failed
     severity = Column(String(20), nullable=False, index=True)  # low, medium, high, critical
     source_type = Column(String(50))  # bank_statement, pos_report, sales_invoice, purchase_invoice, journal_entry
     source_id = Column(Integer)  # 来源记录ID
@@ -386,13 +386,18 @@ class Exception(Base):
     resolved_by = Column(String(100))
     resolved_at = Column(DateTime(timezone=True))
     resolution_notes = Column(Text)
+    next_action = Column(String(50))  # 可行动化：retry_parse, retry_posting, manual_match, upload_new_file, review_source
+    retryable = Column(Boolean, default=False, index=True)  # 是否可以自动重试
+    retry_count = Column(Integer, default=0)  # 重试次数
+    last_retry_at = Column(DateTime(timezone=True))  # 最后重试时间
     created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
     __table_args__ = (
-        CheckConstraint("exception_type IN ('pdf_parse', 'ocr_error', 'customer_mismatch', 'supplier_mismatch', 'posting_error')"),
+        CheckConstraint("exception_type IN ('pdf_parse', 'ocr_error', 'customer_mismatch', 'supplier_mismatch', 'posting_error', 'ingest_validation_failed', 'missing_source', 'duplicate_record')"),
         CheckConstraint("severity IN ('low', 'medium', 'high', 'critical')"),
         CheckConstraint("status IN ('new', 'in_progress', 'resolved', 'ignored')"),
+        CheckConstraint("next_action IN ('retry_parse', 'retry_posting', 'manual_match', 'upload_new_file', 'review_source', 'contact_support')"),
     )
 
 
@@ -400,11 +405,12 @@ class AutoPostingRule(Base):
     """
     自动记账规则表 - 表驱动化配置
     替代硬编码的MATCHING_RULES，支持用户自定义规则
+    公司专属规则(company_id非空) > 全局规则(company_id为NULL) > fallback
     """
     __tablename__ = "auto_posting_rules"
     
     id = Column(Integer, primary_key=True, index=True)
-    company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=False, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=True, index=True)  # NULL = 全局规则
     rule_name = Column(String(200), nullable=False)  # 规则名称（便于识别）
     source_type = Column(String(50), nullable=False, index=True)  # bank_import, supplier_invoice, sales_invoice
     pattern = Column(Text, nullable=False)  # 匹配模式（关键字或正则表达式）
@@ -768,3 +774,106 @@ class NotificationPreference(Base):
     
     created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
     updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
+
+
+class ReportSnapshot(Base):
+    """
+    报表版本化：每次生成报表都保存快照，支持历史查看和对比
+    """
+    __tablename__ = "report_snapshots"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=False, index=True)
+    report_type = Column(String(50), nullable=False, index=True)  # management_report, trial_balance, pl_statement, balance_sheet
+    period = Column(String(20), nullable=False, index=True)  # 2025-01 或 2025-Q1
+    storage_path = Column(Text, nullable=False)  # PDF/CSV文件路径
+    version_number = Column(Integer, default=1)  # 版本号（同期间重复生成时递增）
+    generated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    generated_by = Column(Integer, ForeignKey('users.id', ondelete='SET NULL'))  # 生成人
+    file_size = Column(BigInteger)  # 文件大小
+    file_hash = Column(Text)  # 文件哈希（用于去重）
+    parameters = Column(JSON)  # 生成参数（筛选条件、时间范围等）
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    
+    __table_args__ = (
+        CheckConstraint("report_type IN ('management_report', 'trial_balance', 'pl_statement', 'balance_sheet', 'cash_flow', 'ar_aging', 'ap_aging')"),
+        Index('idx_report_snapshots_period', 'company_id', 'report_type', 'period'),
+    )
+
+
+class PeriodClosing(Base):
+    """
+    期间锁定：已月结的期间禁止重新覆盖报表
+    """
+    __tablename__ = "period_closing"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=False, index=True)
+    period = Column(String(20), nullable=False, index=True)  # 2025-01
+    closing_type = Column(String(20), default='month')  # month, quarter, year
+    closed_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    closed_by = Column(Integer, ForeignKey('users.id', ondelete='SET NULL'))  # 月结操作人
+    is_locked = Column(Boolean, default=True)  # 是否锁定（防止重新生成报表）
+    unlock_reason = Column(Text)  # 解锁原因（如果后续解锁）
+    unlocked_by = Column(Integer, ForeignKey('users.id', ondelete='SET NULL'))  # 解锁操作人
+    unlocked_at = Column(DateTime(timezone=True))  # 解锁时间
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    
+    __table_args__ = (
+        CheckConstraint("closing_type IN ('month', 'quarter', 'year')"),
+        Index('idx_period_closing_company_period', 'company_id', 'period', unique=True),
+    )
+
+
+class SystemConfigVersion(Base):
+    """
+    配置版本锁：追踪系统配置变更（解析规则、文件路径规则、报表生成逻辑）
+    """
+    __tablename__ = "system_config_versions"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    version_no = Column(String(50), nullable=False, unique=True, index=True)  # v1.2.3
+    config_type = Column(String(50), nullable=False, index=True)  # parser_rules, file_path_rules, report_logic, export_templates
+    changed_by = Column(Integer, ForeignKey('users.id', ondelete='SET NULL'))  # 修改人
+    change_reason = Column(Text)  # 修改原因
+    diff = Column(JSON)  # 修改内容（JSON Diff）
+    arch_review_id = Column(String(50))  # Architect审查ID
+    architect_status = Column(String(20), default='pending', index=True)  # pending, approved, rejected
+    architect_comments = Column(Text)  # Architect评审意见
+    is_production_ready = Column(Boolean, default=False)  # 是否允许生产使用
+    rollback_from_version = Column(String(50))  # 如果是回滚，记录原版本号
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    approved_at = Column(DateTime(timezone=True))  # 审批通过时间
+    
+    __table_args__ = (
+        CheckConstraint("config_type IN ('parser_rules', 'file_path_rules', 'report_logic', 'export_templates', 'auto_posting_rules')"),
+        CheckConstraint("architect_status IN ('pending', 'approved', 'rejected')"),
+    )
+
+
+class UploadStaging(Base):
+    """
+    上传暂存区：文件上传成功但还未关联业务记录时的临时存储
+    """
+    __tablename__ = "upload_staging"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=False, index=True)
+    raw_document_id = Column(Integer, ForeignKey('raw_documents.id', ondelete='CASCADE'), nullable=False)
+    file_name = Column(Text, nullable=False)
+    storage_path = Column(Text, nullable=False)
+    module = Column(String(50), nullable=False, index=True)  # bank, supplier, pos, credit-card
+    expected_entity_type = Column(String(50))  # bank_statement, purchase_invoice, sales_invoice
+    upload_metadata = Column(JSON)  # 上传时的额外元数据（银行名、账号、期间等）
+    status = Column(String(20), default='pending', index=True)  # pending, processing, linked, failed
+    linked_entity_type = Column(String(50))  # 关联后的实体类型
+    linked_entity_id = Column(Integer)  # 关联后的实体ID
+    error_message = Column(Text)  # 处理失败原因
+    uploaded_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    processed_at = Column(DateTime(timezone=True))  # 处理完成时间
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    
+    __table_args__ = (
+        CheckConstraint("module IN ('bank', 'supplier', 'pos', 'credit-card', 'savings', 'receipts')"),
+        CheckConstraint("status IN ('pending', 'processing', 'linked', 'failed', 'abandoned')"),
+    )
