@@ -29,29 +29,36 @@ def to_title_case(text):
     return ' '.join(result)
 
 def should_be_all_caps(key):
-    """Determine if a translation key should be ALL CAPS"""
-    # Keys that are clearly titles (h1, h2, h3 level headings)
-    title_indicators = [
-        'title', 'nav_', '_header', '_heading', 
-        'management', 'center', 'dashboard', 'report',
-        'system', 'portal', 'service', '_page',
-        # Specific title-like keys
+    """Determine if a translation key should be ALL CAPS - only genuine headings"""
+    
+    # Exact allowlist for keys that should be ALL CAPS (h1/h2/h3 level headings only)
+    all_caps_keys = {
+        # Page titles
         'upload_bank_statement', 'supplier_aging_report', 
         'customer_aging_report', 'file_view', 'file_detail',
-        'accounting_system', 'file_management'
-    ]
+        'profit_loss_statement', 'bank_loan_package',
+        
+        # Module/Section headers
+        'module_reports', 'module_management',
+        'stat_test_reports',
+        'loading_file_details',
+        
+        # Main navigation headers (exact match)
+        'accounting_system_title', 'accounting_file_management',
+        'accounting_system'
+    }
     
-    # Company/System names should stay as is
-    if key in ['company_name', 'system_name']:
-        return False
-    
-    # Exact match for specific title keys
-    if key in title_indicators:
+    # Exact match check
+    if key in all_caps_keys:
         return True
     
-    # Check if key contains title indicators
-    for indicator in title_indicators:
-        if indicator in key and len(indicator) > 3:  # Avoid short false positives
+    # Pattern-based checks (strict prefixes/suffixes only)
+    if key.startswith('nav_') and not key.endswith('_desc'):
+        return True
+    
+    if key.endswith('_header') or key.endswith('_heading') or key.endswith('_title'):
+        # But exclude description keys
+        if '_desc' not in key and '_subtitle' not in key:
             return True
     
     return False

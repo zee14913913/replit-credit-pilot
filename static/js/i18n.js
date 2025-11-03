@@ -72,18 +72,29 @@ class I18nManager {
     }
 
     applyLanguage(lang) {
-        // Update all elements with data-i18n attribute
+        // Update document title if key exists
+        const pageTitle = this.translate('dashboard_page_title', lang);
+        if (pageTitle && pageTitle !== 'dashboard_page_title') {
+            document.title = pageTitle;
+        }
+        
+        // Update all elements with data-i18n attribute (text content)
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.dataset.i18n;
             const translation = this.translate(key, lang);
             
             if (translation) {
-                // Check if it's a placeholder
-                if (element.hasAttribute('placeholder')) {
-                    element.placeholder = translation;
-                } else {
-                    element.textContent = translation;
-                }
+                element.textContent = translation;
+            }
+        });
+        
+        // Update all elements with data-i18n-placeholder attribute (placeholders)
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+            const key = element.dataset.i18nPlaceholder;
+            const translation = this.translate(key, lang);
+            
+            if (translation) {
+                element.placeholder = translation;
             }
         });
     }

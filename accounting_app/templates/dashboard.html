@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>财务会计系统 - 管理后台</title>
+    <title></title>
     <style>
+        /* STRICT 3-COLOR PALETTE: Hot Pink #FF007F, Dark Purple #322446, Black #000000 */
         * {
             margin: 0;
             padding: 0;
@@ -12,7 +13,7 @@
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #000000;
             min-height: 100vh;
             padding: 2rem;
         }
@@ -21,18 +22,19 @@
             margin: 0 auto;
         }
         .header {
-            background: white;
+            background: #000000;
             padding: 2rem;
             border-radius: 15px;
             margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 2px solid #322446;
         }
         .header h1 {
-            color: #333;
+            color: #FF007F;
             margin-bottom: 0.5rem;
+            font-weight: 700;
         }
         .header p {
-            color: #666;
+            color: #FFFFFF;
         }
         .cards {
             display: grid;
@@ -40,15 +42,16 @@
             gap: 2rem;
         }
         .card {
-            background: white;
+            background: #000000;
             padding: 2rem;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 2px solid #322446;
         }
         .card h2 {
-            color: #667eea;
+            color: #FF007F;
             margin-bottom: 1rem;
             font-size: 1.5rem;
+            font-weight: 700;
         }
         .form-group {
             margin-bottom: 1.5rem;
@@ -56,35 +59,37 @@
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            color: #333;
+            color: #FFFFFF;
             font-weight: 600;
         }
         .form-group input, .form-group select {
             width: 100%;
             padding: 0.75rem;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #322446;
+            background: #000000;
+            color: #FFFFFF;
             border-radius: 8px;
             font-size: 1rem;
         }
         .form-group input:focus, .form-group select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #FF007F;
         }
         .btn {
-            background: #667eea;
-            color: white;
+            background: #FF007F;
+            color: #FFFFFF;
             padding: 0.75rem 1.5rem;
             border: none;
             border-radius: 8px;
             font-size: 1rem;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
             width: 100%;
         }
         .btn:hover {
-            background: #764ba2;
+            background: #322446;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         .result {
             margin-top: 1rem;
@@ -93,19 +98,21 @@
             display: none;
         }
         .result.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: #000000;
+            color: #FF007F;
+            border: 2px solid #FF007F;
         }
         .result.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: #000000;
+            color: #FFFFFF;
+            border: 2px solid #322446;
         }
         pre {
-            background: #f5f5f5;
+            background: #000000;
+            color: #FFFFFF;
             padding: 1rem;
             border-radius: 8px;
+            border: 1px solid #322446;
             overflow-x: auto;
             font-size: 0.9rem;
         }
@@ -115,7 +122,7 @@
             margin-top: 1rem;
         }
         .api-links a {
-            color: #667eea;
+            color: #FF007F;
             text-decoration: none;
             font-weight: 600;
         }
@@ -127,91 +134,87 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1 data-i18n="accounting_system_title">🏦 银行贷款合规会计系统</h1>
-            <p data-i18n="convert_bank_statement">将银行月结单转换为会计分录，生成银行贷款所需的财务报表</p>
+            <h1 data-i18n="accounting_system_title"></h1>
+            <p data-i18n="convert_bank_statement"></p>
             <div class="api-links">
-                <a href="/docs" target="_blank" data-i18n="api_documentation">📚 API文档</a>
-                <a href="/" target="_blank" data-i18n="home_page">🏠 首页</a>
+                <a href="/docs" target="_blank" data-i18n="api_documentation"></a>
+                <a href="/" target="_blank" data-i18n="home_page"></a>
             </div>
         </div>
 
         <div class="cards">
-            <!-- 上传银行月结单 -->
             <div class="card">
-                <h2 data-i18n="upload_bank_statement">📤 上传银行月结单</h2>
+                <h2 data-i18n="upload_bank_statement"></h2>
                 <form id="uploadForm">
                     <div class="form-group">
-                        <label data-i18n="company_id">公司ID</label>
+                        <label data-i18n="company_id"></label>
                         <input type="number" id="companyId" value="1" required>
                     </div>
                     <div class="form-group">
-                        <label data-i18n="bank_name">银行名称</label>
-                        <input type="text" id="bankName" placeholder="例如: Maybank" required>
+                        <label data-i18n="bank_name"></label>
+                        <input type="text" id="bankName" data-i18n-placeholder="placeholder_bank_example" required>
                     </div>
                     <div class="form-group">
-                        <label data-i18n="account_number">账户号码</label>
-                        <input type="text" id="accountNumber" placeholder="例如: 1234567890" required>
+                        <label data-i18n="account_number"></label>
+                        <input type="text" id="accountNumber" data-i18n-placeholder="placeholder_account_example" required>
                     </div>
                     <div class="form-group">
-                        <label data-i18n="statement_month">月份 (YYYY-MM)</label>
+                        <label data-i18n="statement_month"></label>
                         <input type="text" id="statementMonth" value="2025-01" required>
                     </div>
                     <div class="form-group">
-                        <label data-i18n="csv_file">CSV文件</label>
+                        <label data-i18n="csv_file"></label>
                         <input type="file" id="csvFile" accept=".csv" required>
                     </div>
-                    <button type="submit" class="btn" data-i18n="upload_and_import">上传并导入</button>
+                    <button type="submit" class="btn" data-i18n="upload_and_import"></button>
                 </form>
                 <div id="uploadResult" class="result"></div>
             </div>
 
-            <!-- 查看Suppliers Aging -->
             <div class="card">
-                <h2 data-i18n="supplier_aging_report">📊 供应商账龄报表</h2>
+                <h2 data-i18n="supplier_aging_report"></h2>
                 <form id="agingForm">
                     <div class="form-group">
-                        <label data-i18n="company_id">公司ID</label>
+                        <label data-i18n="company_id"></label>
                         <input type="number" id="agingCompanyId" value="1" required>
                     </div>
                     <div class="form-group">
-                        <label data-i18n="as_of_date">截止日期 (可选)</label>
+                        <label data-i18n="as_of_date"></label>
                         <input type="date" id="asOfDate">
                     </div>
-                    <button type="submit" class="btn" data-i18n="view_report">查看报表</button>
+                    <button type="submit" class="btn" data-i18n="view_report"></button>
                 </form>
                 <div id="agingResult" class="result"></div>
             </div>
 
-            <!-- 查看P&L -->
             <div class="card">
-                <h2 data-i18n="profit_loss_statement">💰 损益表 (P&L)</h2>
+                <h2 data-i18n="profit_loss_statement"></h2>
                 <form id="pnlForm">
                     <div class="form-group">
-                        <label data-i18n="company_id">公司ID</label>
+                        <label data-i18n="company_id"></label>
                         <input type="number" id="pnlCompanyId" value="1" required>
                     </div>
                     <div class="form-group">
-                        <label data-i18n="year">年份</label>
+                        <label data-i18n="year"></label>
                         <input type="number" id="year" value="2025" required>
                     </div>
                     <div class="form-group">
-                        <label data-i18n="month">月份</label>
+                        <label data-i18n="month"></label>
                         <input type="number" id="month" value="1" min="1" max="12" required>
                     </div>
-                    <button type="submit" class="btn" data-i18n="view_report">查看报表</button>
+                    <button type="submit" class="btn" data-i18n="view_report"></button>
                 </form>
                 <div id="pnlResult" class="result"></div>
             </div>
 
-            <!-- 生成贷款资料包 -->
             <div class="card">
-                <h2 data-i18n="bank_loan_package">📦 银行贷款资料包</h2>
+                <h2 data-i18n="bank_loan_package"></h2>
                 <form id="packageForm">
                     <div class="form-group">
-                        <label data-i18n="company_id">公司ID</label>
+                        <label data-i18n="company_id"></label>
                         <input type="number" id="packageCompanyId" value="1" required>
                     </div>
-                    <button type="submit" class="btn" data-i18n="generate_package">生成资料包</button>
+                    <button type="submit" class="btn" data-i18n="generate_package"></button>
                 </form>
                 <div id="packageResult" class="result"></div>
             </div>
