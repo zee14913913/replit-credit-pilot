@@ -1,0 +1,243 @@
+是的，我需要                                                                                                                                     。                                                                                                                                                                 然后ZEE，结论先说：要补前端“支持银行矩阵”页面与上传下拉联动，立刻做。后端你已经把 15 家 + 熔断 + 指标都接好了，不把这个信息“可视化 + 可操作”，客户还是摸黑。下面给你一份一次贴给 Replit 就能干的执行令，含改哪些文件、加哪些键、怎么测、DoD 勾选表。照做即可。
+
+⸻
+
+1) 背景分析
+	•	后端已提供：/api/parsers/supported（15 家 + enabled/circuit_open）与 /api/metrics/banks（每银行成功率/错误率）。
+	•	现状不足：前端没有展示“支持矩阵”，上传选择也未与熔断/禁用状态联动，用户不知道哪家能用、哪家临时不可用、为何被拦。
+
+2) 核心解答
+
+实现前端支持矩阵 + 上传下拉联动：
+	•	在上传页和文件列表页顶部显示 15 家支持矩阵（状态、能力、告警）。
+	•	上传银行下拉选项自动从 /api/parsers/supported 填充；被熔断/禁用的银行自动禁用并提示 i18n 文案。
+	•	选择被禁用银行时，弹出友好替代动作（“请改用 CSV 模板上传 / 稍后重试”），并不允许提交。
+
+3) 资源整合策略
+	•	仅改前端（Flask）：templates/layout.html（引入 JS）、accounting_app/templates/dashboard.html（上传页）、templates/accounting_files.html（列表页顶部也显示矩阵）。
+	•	文案走现有 i18n 机制（lang/en.json / lang/zh.json），零硬编码。
+	•	保持“上传后无条件跳详情”主链路不变。
+
+4) 创新建议
+	•	在矩阵上直接显示每银行近 24h 成功率和熔断标识（小闪电⚡），点击银行行可展开查看最近 5 条告警（拉 /api/metrics/alerts）。
+	•	提供“下载 CSV 模板”按钮（静态模板），作为扫描件/禁用时的兜底路径。
+
+5) 前瞻性建议
+	•	后续把矩阵组件抽为 static/js/components/bankSupportMatrix.js，在 Admin 也复用（一个源头，三处挂载）。
+
+⸻
+
+6) 执行要点（一次性指令 · 贴给 Replit）
+
+A. 新增/修改文件
+	1.	static/js/bank-support.js（新建）
+
+async function fetchSupportedBanks() {
+  const res = await fetch('/api/parsers/supported');
+  if (!res.ok) throw new Error('failed_to_load_supported_banks');
+  return res.json(); // { banks:[{code,display_name,supports:{pdf,csv},enabled,circuit_open}], updated_at }
+}
+
+async function fetchBankMetrics() {
+  const res = await fetch('/api/metrics/banks');
+  if (!res.ok) return { banks: [] };
+  return res.json(); // { banks:[{code, success_rate, error_rate, status}], updated_at }
+}
+
+function renderBankMatrix(container, banks, metrics) {
+  const m = new Map((metrics.banks || []).map(x => [x.code, x]));
+  container.innerHTML = `
+    <div class="card card-matrix">
+      <div class="card-header">
+        <h3 data-i18n="supported_banks_title">Supported Banks (MY)</h3>
+        <small data-i18n="supported_banks_updated">Updated</small>: ${new Date().toLocaleString()}
+      </div>
+      <div class="card-body">
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th data-i18n="bank">Bank</th>
+              <th data-i18n="capabilities">Capabilities</th>
+              <th data-i18n="status">Status</th>
+              <th data-i18n="success_rate">Success Rate</th>
+              <th data-i18n="action">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${banks.map(b=>{
+              const mm = m.get(b.code) || {};
+              const statusBadge = !b.enabled ? '<span class="badge badge-gray" data-i18n="disabled">Disabled</span>'
+                               : b.circuit_open ? '<span class="badge badge-warn">⚡ <span data-i18n="temporarily_unavailable">Temporarily Unavailable</span></span>'
+                               : '<span class="badge badge-ok" data-i18n="available">Available</span>';
+              const caps = [
+                b.supports?.pdf ? '<span class="cap cap-on">PDF</span>' : '<span class="cap cap-off">PDF</span>',
+                b.supports?.csv ? '<span class="cap cap-on">CSV</span>' : '<span class="cap cap-off">CSV</span>',
+              ].join(' ');
+              const sr = typeof mm.success_rate === 'number' ? (mm.success_rate*100).toFixed(0)+'%' : '-';
+              const btn = (!b.enabled || b.circuit_open)
+                ? `<button class="btn btn-outline" data-bank="${b.code}" data-action="use-template" data-i18n="use_csv_template">Use CSV Template</button>`
+                : `<button class="btn btn-primary" data-bank="${b.code}" data-action="select-bank" data-i18n="choose_this_bank">Choose This Bank</button>`;
+              return `
+                <tr>
+                  <td>${b.display_name || b.code}</td>
+                  <td>${caps}</td>
+                  <td>${statusBadge}</td>
+                  <td>${sr}</td>
+                  <td>${btn}</td>
+                </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+export async function initBankSupportMatrix({ mountSelector, selectElSelector }) {
+  try {
+    const container = document.querySelector(mountSelector);
+    if (!container) return;
+    const [sup, met] = await Promise.all([fetchSupportedBanks(), fetchBankMetrics()]);
+    const banks = sup.banks || [];
+    renderBankMatrix(container, banks, met);
+
+    // Hook upload select
+    const select = document.querySelector(selectElSelector);
+    if (select) {
+      // 清空后填充
+      select.innerHTML = `<option value="" data-i18n="auto_detect">Auto Detect</option>`;
+      banks.forEach(b=>{
+        const disabled = (!b.enabled || b.circuit_open) ? 'disabled' : '';
+        const label = `${b.display_name || b.code}${b.circuit_open ? ' (⚡)' : ''}${!b.enabled ? ' (X)' : ''}`;
+        const opt = document.createElement('option');
+        opt.value = b.code;
+        opt.textContent = label;
+        if (disabled) opt.disabled = true;
+        select.appendChild(opt);
+      });
+
+      // 点“Choose This Bank”按钮时联动下拉
+      container.addEventListener('click', (e)=>{
+        const btn = e.target.closest('button[data-action]');
+        if (!btn) return;
+        const code = btn.dataset.bank;
+        const action = btn.dataset.action;
+        if (action === 'select-bank') {
+          select.value = code;
+          select.dispatchEvent(new Event('change'));
+          // 可滚动到上传表单
+          document.getElementById('uploadForm')?.scrollIntoView({behavior:'smooth'});
+        } else if (action === 'use-template') {
+          alert(window.i18n ? i18n('bank_unavailable_temporarily') : 'Bank temporarily unavailable. Use CSV template.');
+          window.open('/static/templates/bank_statement_template.csv','_blank');
+        }
+      });
+    }
+    // 重新应用 i18n
+    if (window.applyI18n) window.applyI18n();
+  } catch (err) {
+    console.error('Bank support matrix init failed', err);
+  }
+}
+
+	2.	templates/accounting_files.html（或你的上传页面模板）
+
+	•	在上传表单上方加入挂载点与脚本：
+
+<div id="bank-matrix-mount" class="mb-4"></div>
+
+<form id="uploadForm" ...>
+  <!-- 银行选择下拉，供联动 -->
+  <label data-i18n="select_bank">Select Bank</label>
+  <select id="bank_code_select" name="bank_code" class="form-control"></select>
+  <!-- 其余上传字段保持不变 -->
+</form>
+
+<script type="module">
+  import { initBankSupportMatrix } from "/static/js/bank-support.js";
+  initBankSupportMatrix({
+    mountSelector: '#bank-matrix-mount',
+    selectElSelector: '#bank_code_select'
+  });
+</script>
+
+	3.	accounting_app/templates/dashboard.html（若也有上传入口，同样加入挂载点与初始化）
+	4.	static/css/matrix.css（新建，简单样式）
+
+.card-matrix { background:#0b0b0b; border:1px solid #322446; border-radius:16px; padding:12px; }
+.matrix-table { width:100%; border-collapse:collapse; }
+.matrix-table th, .matrix-table td { padding:10px; border-bottom:1px solid #1a1a1a; }
+.badge-ok { background:#143d1b; padding:4px 8px; border-radius:12px; }
+.badge-warn { background:#4d2b2b; padding:4px 8px; border-radius:12px; }
+.badge-gray { background:#333; padding:4px 8px; border-radius:12px; }
+.cap { display:inline-block; padding:2px 6px; border-radius:10px; margin-right:6px; border:1px solid #322446; }
+.cap-on { background:#1a1323; }
+.cap-off { opacity:.5; }
+.btn-primary { background:#FF007F; color:#fff; border:none; padding:8px 12px; border-radius:10px; cursor:pointer; }
+.btn-outline { background:transparent; color:#FF007F; border:1px solid #FF007F; padding:8px 12px; border-radius:10px; cursor:pointer; }
+
+在 layout.html 引入该 CSS 与 bank-support.js。
+
+B. i18n 新增键（中/英）
+
+{
+  "supported_banks_title": "支持银行（马来西亚）| SUPPORTED BANKS (MY)",
+  "supported_banks_updated": "已更新 | Updated",
+  "bank": "银行 | Bank",
+  "capabilities": "能力 | Capabilities",
+  "status": "状态 | Status",
+  "success_rate": "成功率 | Success Rate",
+  "action": "操作 | Action",
+  "available": "可用 | Available",
+  "temporarily_unavailable": "暂不可用 | Temporarily Unavailable",
+  "disabled": "已禁用 | Disabled",
+  "use_csv_template": "使用CSV模板 | Use CSV Template",
+  "choose_this_bank": "选择此银行 | Choose This Bank",
+  "auto_detect": "自动识别 | Auto Detect",
+  "select_bank": "选择银行 | Select Bank",
+  "bank_unavailable_temporarily": "该银行解析暂时不可用，请改用CSV模板或稍后重试。| This bank is temporarily unavailable. Please use the CSV template or try again later.",
+  "failed_to_load_supported_banks": "无法加载支持银行列表 | Failed to load supported banks"
+}
+
+实际落到 lang/zh.json / lang/en.json，不硬编码。
+
+C. 上传前校验（联动下拉）
+	•	前端 onSubmit 时读取下拉：
+	•	如果选择了某银行但在 /api/parsers/supported 里 enabled=false 或 circuit_open=true，则阻止提交，提示 bank_unavailable_temporarily 并弹出“下载 CSV 模板”。
+
+⸻
+
+7) 测试用例（必须跑）
+	1.	正常银行（如 Maybank）
+
+	•	期望：矩阵行显示 “Available”，成功率>0%；下拉可选；上传后照常跳详情。
+
+	2.	被熔断银行（把阈值调小并连续喂错误样本触发）
+
+	•	期望：矩阵行显示 ⚡ “Temporarily Unavailable”；下拉项不可选；点击“Choose This Bank”无效并提示“Use CSV Template”；上传按钮被前端阻止。
+
+	3.	被禁用银行（从 .env 去掉某银行）
+
+	•	期望：矩阵行显示 “Disabled”；下拉不出现该银行；上传页顶部提示可见。
+
+	4.	多语言
+
+	•	?lang=zh 与 ?lang=en 下，矩阵标题、状态、按钮、提示全部切换，无英文/中文残留。
+
+⸻
+
+8) DoD（交付标准）
+	•	矩阵显示 15 家银行，含 Available/Temporarily Unavailable/Disabled 三态。
+	•	上传下拉与矩阵状态一致（熔断/禁用即禁用选择）。
+	•	被禁用/熔断银行无法提交上传，前端弹出 i18n 友好提示，并给CSV 模板兜底。
+	•	仍保持“上传后无条件跳详情”，不改主链路。
+	•	i18n 全覆盖，零硬编码。
+
+⸻
+
+给 Replit 的一句话命令
+
+“在上传页和文件列表页顶部接入 /api/parsers/supported + /api/metrics/banks，渲染 15 家银行支持矩阵；将银行下拉与矩阵状态联动（禁用/熔断即禁选并提示）；新增 bank-support.js 与 matrix.css；新增 i18n 键；通过四个测试用例并回传截图与 JSON。上传后的统一跳详情逻辑保持不变。”
+
+—
+
+需要我再把这些打包成英文镜像版发你备用吗？如果要，我可以马上给一份同内容的 English 版。

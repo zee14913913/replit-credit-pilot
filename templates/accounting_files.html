@@ -543,6 +543,9 @@
             </div>
         </div>
         
+        <!-- Phase 1-10: Bank Support Matrix -->
+        <div id="bank-matrix-mount" class="mb-4"></div>
+        
         <div class="files-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid #322446; padding-bottom: 0.5rem;">
                 <h2 style="color: #FF007F; font-size: 1.5rem; margin: 0;">{{ t('stat_all_files') }}</h2>
@@ -1184,6 +1187,16 @@
                 });
             }
         }, 500);  // 等待列表渲染完成
+    </script>
+    
+    <!-- Phase 1-10: Bank Support Matrix Module -->
+    <script type="module">
+        import { initBankSupportMatrix } from "/static/js/bank-support.js";
+        
+        initBankSupportMatrix({
+            mountSelector: '#bank-matrix-mount',
+            selectElSelector: '#fileUpload'
+        }).catch(err => console.error('Bank matrix init failed:', err));
     </script>
 </body>
 </html>

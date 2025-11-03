@@ -852,5 +852,18 @@
   "report_generation_failed": "报表生成失败：{error}",
   "report_not_found": "未找到报表",
   "credit_card_already_exists": "⚠️ 该信用卡已存在：{bank_name} ****{last4}（卡ID: {card_id}）",
-  "credit_card_added_success": "✅ 信用卡添加成功：{bank_name} ****{last4}"
+  "credit_card_added_success": "✅ 信用卡添加成功：{bank_name} ****{last4}",
+  "supported_banks_title": "支持银行（马来西亚）",
+  "supported_banks_updated": "已更新",
+  "bank": "银行",
+  "capabilities": "能力",
+  "success_rate": "成功率",
+  "available": "可用",
+  "temporarily_unavailable": "暂不可用",
+  "use_csv_template": "使用CSV模板",
+  "choose_this_bank": "选择此银行",
+  "auto_detect": "自动识别",
+  "select_bank": "选择银行",
+  "bank_unavailable_temporarily": "该银行解析暂时不可用，请改用CSV模板或稍后重试。",
+  "failed_to_load_supported_banks": "无法加载支持银行列表"
 }

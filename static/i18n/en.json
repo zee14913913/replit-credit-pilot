@@ -200,5 +200,18 @@
   "report_generation_failed": "Report Generation Failed: {error}",
   "report_not_found": "Report Not Found",
   "credit_card_already_exists": "⚠️ CREDIT CARD ALREADY EXISTS: {bank_name} ****{last4} (Card ID: {card_id})",
-  "credit_card_added_success": "✅ CREDIT CARD ADDED SUCCESSFULLY: {bank_name} ****{last4}"
+  "credit_card_added_success": "✅ CREDIT CARD ADDED SUCCESSFULLY: {bank_name} ****{last4}",
+  "supported_banks_title": "SUPPORTED BANKS (MY)",
+  "supported_banks_updated": "Updated",
+  "bank": "Bank",
+  "capabilities": "Capabilities",
+  "success_rate": "Success Rate",
+  "available": "Available",
+  "temporarily_unavailable": "Temporarily Unavailable",
+  "use_csv_template": "Use CSV Template",
+  "choose_this_bank": "Choose This Bank",
+  "auto_detect": "Auto Detect",
+  "select_bank": "Select Bank",
+  "bank_unavailable_temporarily": "This bank is temporarily unavailable. Please use the CSV template or try again later.",
+  "failed_to_load_supported_banks": "Failed to load supported banks"
 }

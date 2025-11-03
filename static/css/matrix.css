@@ -1,0 +1,136 @@
+.card-matrix { 
+  background: #000000; 
+  border: 1px solid #322446; 
+  border-radius: 16px; 
+  padding: 20px; 
+  margin-bottom: 24px;
+}
+
+.card-matrix .card-header {
+  border-bottom: 1px solid #322446;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.card-matrix .card-header h3 {
+  color: #FF007F;
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-matrix .card-header small {
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.matrix-table { 
+  width: 100%; 
+  border-collapse: collapse; 
+}
+
+.matrix-table th, .matrix-table td { 
+  padding: 12px; 
+  border-bottom: 1px solid #1a1a1a; 
+  text-align: left;
+}
+
+.matrix-table th {
+  color: #FF007F;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.matrix-table td {
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.matrix-table tbody tr:hover {
+  background: rgba(255, 0, 127, 0.05);
+}
+
+.badge-ok { 
+  background: #143d1b; 
+  color: #4ade80;
+  padding: 4px 10px; 
+  border-radius: 12px; 
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.badge-warn { 
+  background: #4d2b2b; 
+  color: #fbbf24;
+  padding: 4px 10px; 
+  border-radius: 12px; 
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.badge-gray { 
+  background: #333; 
+  color: #999;
+  padding: 4px 10px; 
+  border-radius: 12px; 
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.cap { 
+  display: inline-block; 
+  padding: 3px 8px; 
+  border-radius: 10px; 
+  margin-right: 6px; 
+  border: 1px solid #322446; 
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.cap-on { 
+  background: #1a1323; 
+  color: #FF007F;
+  border-color: #FF007F;
+}
+
+.cap-off { 
+  opacity: 0.3; 
+  color: #666;
+}
+
+.btn-primary { 
+  background: #FF007F; 
+  color: #fff; 
+  border: none; 
+  padding: 8px 16px; 
+  border-radius: 10px; 
+  cursor: pointer; 
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background: #e6006f;
+  transform: translateY(-1px);
+}
+
+.btn-outline { 
+  background: transparent; 
+  color: #FF007F; 
+  border: 1px solid #FF007F; 
+  padding: 8px 16px; 
+  border-radius: 10px; 
+  cursor: pointer; 
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.btn-outline:hover {
+  background: rgba(255, 0, 127, 0.1);
+}
