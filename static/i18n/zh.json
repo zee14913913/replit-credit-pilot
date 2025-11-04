@@ -921,5 +921,22 @@
   "guide_need_help": "需要帮助？",
   "guide_help_desc": "如有任何问题，请联系系统管理员或查看详细文档。",
   "guide_dont_show": "不再显示此指南",
-  "guide_got_it": "知道了"
+  "guide_got_it": "知道了",
+  "supplier_invoices": "供应商发票",
+  "supplier_invoices_subtitle": "自动生成的供应商付款发票",
+  "total_invoices": "发票总数",
+  "suppliers": "供应商",
+  "total_amount": "总金额",
+  "processing_fees": "手续费",
+  "generated_invoices": "已生成供应商发票",
+  "export_excel": "导出 Excel",
+  "invoice_no": "发票号",
+  "customer": "客户",
+  "supplier": "供应商",
+  "amount": "金额",
+  "total": "总计",
+  "action": "操作",
+  "view": "查看",
+  "no_invoices_generated": "尚未生成供应商发票。",
+  "upload_statements_to_generate": "上传包含供应商交易的信用卡账单以自动生成发票。"
 }

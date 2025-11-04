@@ -57,11 +57,6 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ 'active' if 'invoices' in request.endpoint }}" href="{{ url_for('invoices_home') }}">
-                        {{ t('nav_invoices') }}
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link {{ 'active' if 'loan_matcher' in request.endpoint }}" href="{{ url_for('loan_matcher') }}">
                         {{ t('nav_loan_matcher') }}
                     </a>

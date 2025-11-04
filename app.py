@@ -4050,10 +4050,46 @@ def credit_card_ledger():
             ORDER BY c.name, cc.bank_name
         ''')
         all_cards = [dict(row) for row in cursor.fetchall()]
+        
+        # 获取所有供应商发票数据 (整合 INVOICES 功能)
+        cursor.execute('''
+            SELECT 
+                si.id,
+                si.invoice_number,
+                si.invoice_date,
+                si.supplier_name,
+                si.total_amount,
+                si.supplier_fee,
+                si.pdf_path,
+                c.name as customer_name,
+                c.customer_code
+            FROM supplier_invoices si
+            JOIN customers c ON si.customer_id = c.id
+            ORDER BY si.invoice_date DESC, si.invoice_number DESC
+        ''')
+        
+        invoices = cursor.fetchall()
+        
+        # 计算发票统计数据
+        invoices_data = None
+        if invoices:
+            total_invoices = len(invoices)
+            total_suppliers = len(set(inv['supplier_name'] for inv in invoices))
+            total_amount = sum(inv['total_amount'] for inv in invoices)
+            total_fees = sum(inv['supplier_fee'] for inv in invoices)
+            
+            invoices_data = {
+                'invoices': invoices,
+                'total_invoices': total_invoices,
+                'total_suppliers': total_suppliers,
+                'total_amount': total_amount,
+                'total_fees': total_fees
+            }
     
     return render_template('credit_card/ledger_index.html', 
                          customers=customers, 
                          all_cards=all_cards,
+                         invoices_data=invoices_data,
                          is_admin=True)
 
 
