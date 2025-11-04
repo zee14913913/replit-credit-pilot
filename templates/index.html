@@ -69,11 +69,10 @@
     <div class="section-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap">
             <div>
-                <h1 class="section-title capitalize-words">{{ t('dashboard_title') }}</h1>
-                <p class="section-subtitle capitalize-words" style="color: #FF007F; font-weight: 700;">{{ t('dashboard_subtitle') }}</p>
+                <h1 class="section-title" style="color: #F0F0F0; text-shadow: 0 0 10px rgba(240, 240, 240, 0.5);">{{ t('dashboard_title') }}</h1>
+                <p class="section-subtitle" style="color: #FF007F; font-weight: 700;">{{ t('dashboard_subtitle') }}</p>
             </div>
             <a href="{{ url_for('add_customer_page') }}" 
-               class="capitalize-words" 
                style="background: #FF007F; 
                       color: #FFFFFF; 
                       font-weight: 900;
@@ -158,8 +157,8 @@
         {% else %}
             <div class="col-12">
                 <div class="alert-professional alert-info-pro">
-                    <h5 class="capitalize-words">{{ t('no_customers_found') }}</h5>
-                    <p class="mb-0 capitalize-words" style="color: #FF007F; font-weight: 700;">{{ t('add_customers_to_start') }}</p>
+                    <h5 style="color: #F0F0F0; text-shadow: 0 0 10px rgba(240, 240, 240, 0.5);">{{ t('no_customers_found') }}</h5>
+                    <p class="mb-0" style="color: #FF007F; font-weight: 700;">{{ t('add_customers_to_start') }}</p>
                 </div>
             </div>
         {% endif %}
