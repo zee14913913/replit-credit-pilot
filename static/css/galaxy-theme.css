@@ -398,7 +398,7 @@ p {
 }
 
 .nav-logo {
-    height: 200px;
+    height: 240px;
     width: auto;
     filter: drop-shadow(0 0 20px rgba(220, 220, 220, 0.5));
 }
@@ -433,7 +433,7 @@ p {
 
 .nav-menu {
     display: flex;
-    gap: 0.5rem;
+    gap: var(--space-sm);
     align-items: center;
     list-style: none;
     flex-wrap: nowrap;
@@ -443,7 +443,7 @@ p {
 /* Right side utilities container */
 .nav-utilities {
     display: flex;
-    gap: 0.75rem;
+    gap: var(--space-md);
     align-items: center;
     justify-self: end;
 }
@@ -453,8 +453,8 @@ p {
     color: #FFFFFF;
     text-decoration: none;
     font-weight: 700;
-    font-size: 0.85rem;
-    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+    padding: 0.6rem 1.2rem;
     border-radius: 8px;
     border: 2px solid #FF007F;
     transition: all 0.3s ease;
