@@ -5,7 +5,8 @@
 
 class I18nManager {
     constructor() {
-        this.currentLang = localStorage.getItem('language') || 'en';
+        // 强制默认使用英文，确保全系统统一
+        this.currentLang = 'en';
         this.translations = {};
         this.init();
     }
@@ -54,7 +55,8 @@ class I18nManager {
         if (!['en', 'zh'].includes(lang)) return;
         
         this.currentLang = lang;
-        localStorage.setItem('language', lang);
+        // 不保存到 localStorage，确保每次打开都是英文
+        // localStorage.setItem('language', lang);
         
         // Apply language to all elements
         this.applyLanguage(lang);
