@@ -169,154 +169,174 @@
     </div>
 
     <!-- Quick Actions - 专业管理模块 -->
-    <div class="row g-4 mb-5">
-        <div class="col-12 mb-3">
-            <h3 style="color: #FF007F; text-shadow: 0 0 15px rgba(255,0,127,0.5); font-weight: 700; font-size: 1.8rem; margin: 0;">
+    <div class="row g-5 mb-5 justify-content-center">
+        <div class="col-12 mb-4">
+            <h3 style="color: #FF007F; text-shadow: 0 0 15px rgba(255,0,127,0.5); font-weight: 700; font-size: 2rem; margin: 0;">
                 <i class="bi bi-grid-3x3-gap-fill"></i> {{ t('management_center') }}
             </h3>
-            <p style="color: #999; margin: 0.5rem 0 0 0; font-size: 0.95rem;">{{ t('select_module_to_manage') }}</p>
+            <p style="color: #999; margin: 0.5rem 0 0 0; font-size: 1rem;">{{ t('select_module_to_manage') }}</p>
         </div>
         
         <!-- 1. 信用卡账单管理 -->
-        <div class="col-md-6 col-lg-3">
+        <div class="col-md-6 col-lg-4 col-xl-2">
             <a href="#creditCardStatements" style="text-decoration: none;" onclick="document.getElementById('creditCardStatements').scrollIntoView({behavior: 'smooth'}); return false;">
                 <div class="quick-action-card" style="
                     background: #000000;
                     border: 3px solid #FF007F;
-                    border-radius: 15px;
-                    padding: 2rem 1.5rem;
+                    border-radius: 20px;
+                    padding: 3.5rem 2.5rem;
                     transition: all 0.3s ease;
                     cursor: pointer;
-                    height: 100%;
+                    min-height: 320px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
                     box-shadow: 0 0 15px rgba(255, 0, 127, 0.4), 0 0 30px rgba(255, 0, 127, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1);
                 " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 0 20px rgba(255,0,127,0.6), 0 0 40px rgba(255,0,127,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 15px rgba(255, 0, 127, 0.4), 0 0 30px rgba(255, 0, 127, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1)'">
-                    <div style="text-align: center; margin-bottom: 1.2rem;">
-                        <i class="bi bi-credit-card" style="font-size: 3.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
+                    <div style="text-align: center; margin-bottom: 1.8rem;">
+                        <i class="bi bi-credit-card" style="font-size: 4.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
                     </div>
-                    <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1rem; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.08em;">
+                    <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.4;">
                         {{ t('credit_card_statements_management') }}
                     </h4>
-                    <div style="background: rgba(255,0,127,0.1); border-radius: 8px; padding: 0.8rem; text-align: center;">
-                        <div style="color: #FF007F; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
+                    <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
+                        <div style="color: #FF007F; font-size: 1.8rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
                             {{ cc_statements|length }}
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">{{ t('statement_count') }}</div>
+                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;">{{ t('statement_count') }}</div>
                     </div>
                 </div>
             </a>
         </div>
 
         <!-- 2. 储蓄账户月结单管理 -->
-        <div class="col-md-6 col-lg-3">
+        <div class="col-md-6 col-lg-4 col-xl-2">
             <a href="#savingsStatements" style="text-decoration: none;" onclick="document.getElementById('savingsStatements').scrollIntoView({behavior: 'smooth'}); return false;">
                 <div class="quick-action-card" style="
                     background: #000000;
                     border: 3px solid #FF007F;
-                    border-radius: 15px;
-                    padding: 2rem 1.5rem;
+                    border-radius: 20px;
+                    padding: 3.5rem 2.5rem;
                     transition: all 0.3s ease;
                     cursor: pointer;
-                    height: 100%;
+                    min-height: 320px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
                     box-shadow: 0 0 15px rgba(255, 0, 127, 0.4), 0 0 30px rgba(255, 0, 127, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1);
                 " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 0 20px rgba(255,0,127,0.6), 0 0 40px rgba(255,0,127,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 15px rgba(255, 0, 127, 0.4), 0 0 30px rgba(255, 0, 127, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1)'">
-                    <div style="text-align: center; margin-bottom: 1.2rem;">
-                        <i class="bi bi-bank" style="font-size: 3.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
+                    <div style="text-align: center; margin-bottom: 1.8rem;">
+                        <i class="bi bi-bank" style="font-size: 4.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
                     </div>
-                    <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1rem; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.08em;">
+                    <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.4;">
                         {{ t('savings_account_statements_management') }}
                     </h4>
-                    <div style="background: rgba(255,0,127,0.1); border-radius: 8px; padding: 0.8rem; text-align: center;">
-                        <div style="color: #FF007F; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
+                    <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
+                        <div style="color: #FF007F; font-size: 1.8rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
                             {{ sa_statements|length }}
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">{{ t('statement_count') }}</div>
+                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;">{{ t('statement_count') }}</div>
                     </div>
                 </div>
             </a>
         </div>
 
         <!-- 3. 付款收据管理 -->
-        <div class="col-md-6 col-lg-3">
+        <div class="col-md-6 col-lg-4 col-xl-2">
             <a href="{{ url_for('receipts_home') }}" style="text-decoration: none;">
                 <div class="quick-action-card" style="
                     background: #000000;
                     border: 3px solid #FF007F;
-                    border-radius: 15px;
-                    padding: 2rem 1.5rem;
+                    border-radius: 20px;
+                    padding: 3.5rem 2.5rem;
                     transition: all 0.3s ease;
                     cursor: pointer;
-                    height: 100%;
+                    min-height: 320px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
                     box-shadow: 0 0 15px rgba(255, 0, 127, 0.4), 0 0 30px rgba(255, 0, 127, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1);
                 " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 0 20px rgba(255,0,127,0.6), 0 0 40px rgba(255,0,127,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 15px rgba(255, 0, 127, 0.4), 0 0 30px rgba(255, 0, 127, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1)'">
-                    <div style="text-align: center; margin-bottom: 1.2rem;">
-                        <i class="bi bi-receipt" style="font-size: 3.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
+                    <div style="text-align: center; margin-bottom: 1.8rem;">
+                        <i class="bi bi-receipt" style="font-size: 4.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
                     </div>
-                    <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1rem; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.08em;">
+                    <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.4;">
                         {{ t('receipts_management') }}
                     </h4>
-                    <div style="background: rgba(255,0,127,0.1); border-radius: 8px; padding: 0.8rem; text-align: center;">
-                        <div style="color: #FF007F; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
+                    <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
+                        <div style="color: #FF007F; font-size: 1.8rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
                             {{ receipts_count }}
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">{{ t('receipt_total') }}</div>
+                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;">{{ t('receipt_total') }}</div>
                     </div>
                 </div>
             </a>
         </div>
 
         <!-- 4. Supplier Invoices 管理 -->
-        <div class="col-md-6 col-lg-3">
+        <div class="col-md-6 col-lg-4 col-xl-2">
             <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
                 <div class="quick-action-card" style="
                     background: #000000;
                     border: 3px solid #FF007F;
-                    border-radius: 15px;
-                    padding: 2rem 1.5rem;
+                    border-radius: 20px;
+                    padding: 3.5rem 2.5rem;
                     transition: all 0.3s ease;
                     cursor: pointer;
-                    height: 100%;
+                    min-height: 320px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
                     box-shadow: 0 0 15px rgba(255, 0, 127, 0.4), 0 0 30px rgba(255, 0, 127, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1);
                 " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 0 20px rgba(255,0,127,0.6), 0 0 40px rgba(255,0,127,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 15px rgba(255, 0, 127, 0.4), 0 0 30px rgba(255, 0, 127, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1)'">
-                    <div style="text-align: center; margin-bottom: 1.2rem;">
-                        <i class="bi bi-file-earmark-text-fill" style="font-size: 3.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
+                    <div style="text-align: center; margin-bottom: 1.8rem;">
+                        <i class="bi bi-file-earmark-text-fill" style="font-size: 4.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
                     </div>
-                    <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1rem; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.08em;">
+                    <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.4;">
                         {{ t('supplier_invoices_management') }}
                     </h4>
-                    <div style="background: rgba(255,0,127,0.1); border-radius: 8px; padding: 0.8rem; text-align: center;">
-                        <div style="color: #FF007F; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
+                    <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
+                        <div style="color: #FF007F; font-size: 1.8rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
                             {{ invoices_count }}
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">{{ t('invoice_total') }}</div>
+                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;">{{ t('invoice_total') }}</div>
                     </div>
                 </div>
             </a>
         </div>
 
         <!-- 5. Monthly Summary Reports -->
-        <div class="col-md-6 col-lg-3">
+        <div class="col-md-6 col-lg-4 col-xl-2">
             <a href="{{ url_for('monthly_summary_index') }}" style="text-decoration: none;">
                 <div class="quick-action-card" style="
                     background: #000000;
                     border: 3px solid #FF007F;
-                    border-radius: 15px;
-                    padding: 2rem 1.5rem;
+                    border-radius: 20px;
+                    padding: 3.5rem 2.5rem;
                     transition: all 0.3s ease;
                     cursor: pointer;
-                    height: 100%;
+                    min-height: 320px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
                     box-shadow: 0 0 15px rgba(255, 0, 127, 0.4), 0 0 30px rgba(255, 0, 127, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1);
                 " onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 0 20px rgba(255,0,127,0.6), 0 0 40px rgba(255,0,127,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 15px rgba(255, 0, 127, 0.4), 0 0 30px rgba(255, 0, 127, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1)'">
-                    <div style="text-align: center; margin-bottom: 1.2rem;">
-                        <i class="bi bi-file-earmark-bar-graph-fill" style="font-size: 3.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
+                    <div style="text-align: center; margin-bottom: 1.8rem;">
+                        <i class="bi bi-file-earmark-bar-graph-fill" style="font-size: 4.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
                     </div>
-                    <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1rem; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.08em;">
+                    <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.4;">
                         {{ t('monthly_summary_reports') }}
                     </h4>
-                    <div style="background: rgba(255,0,127,0.1); border-radius: 8px; padding: 0.8rem; text-align: center;">
-                        <div style="color: #FF007F; font-size: 1.2rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
+                    <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
+                        <div style="color: #FF007F; font-size: 1.4rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
                             View Reports
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.75rem; margin-top: 0.3rem;">Supplier Expenses & Payments</div>
+                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;">Supplier Expenses & Payments</div>
                     </div>
                 </div>
             </a>
