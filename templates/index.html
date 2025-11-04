@@ -8,17 +8,17 @@
     position: relative;
     display: inline-block;
     font-weight: 900 !important;
-    font-size: 4rem !important;
-    margin-bottom: 1.5rem !important;
+    font-size: 5rem !important;
+    margin-bottom: 2rem !important;
     text-transform: uppercase !important;
-    letter-spacing: 3px !important;
+    letter-spacing: 4px !important;
     color: #FFFFFF !important;
     text-shadow: 
-        0 0 15px rgba(255, 0, 127, 0.4),
-        0 0 25px rgba(255, 0, 127, 0.25),
-        2px 2px 4px rgba(0, 0, 0, 0.6),
+        0 0 20px rgba(255, 0, 127, 0.5),
+        0 0 35px rgba(255, 0, 127, 0.3),
+        3px 3px 6px rgba(0, 0, 0, 0.7),
         -1px -1px 0 rgba(0, 0, 0, 0.3);
-    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
 }
 
 .capitalize-words {
@@ -28,34 +28,36 @@
 
 <div class="fade-in">
     <!-- 会计系统快捷入口 -->
-    <div class="row mb-4">
+    <div class="row mb-5">
         <div class="col-12">
-            <div class="alert acct-system-card" role="alert" style="background: #000000; border: 3px solid #FF007F; border-radius: 15px; padding: 2.5rem; box-shadow: 0 0 15px rgba(255, 0, 127, 0.4), 0 0 30px rgba(255, 0, 127, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1);">
-                <h2 class="galaxy-title">
-                    {{ t('accounting_system_title') }}
-                </h2>
-                <p class="mb-4" style="color: #FFFFFF; font-weight: 700; font-size: 1.1rem;">{{ t('accounting_system_subtitle') }}</p>
-                <div class="d-flex gap-3 flex-wrap">
+            <div class="alert acct-system-card" role="alert" style="background: #000000; border: 4px solid #FF007F; border-radius: 25px; padding: 4rem 3.5rem; box-shadow: 0 0 20px rgba(255, 0, 127, 0.5), 0 0 40px rgba(255, 0, 127, 0.3), inset 0 2px 2px rgba(255, 255, 255, 0.15); max-width: 1400px; margin: 0 auto;">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <h2 class="galaxy-title">
+                        {{ t('accounting_system_title') }}
+                    </h2>
+                </div>
+                <p class="mb-5" style="color: #FFFFFF; font-weight: 700; font-size: 1.3rem; text-align: center; line-height: 1.6;">{{ t('accounting_system_subtitle') }}</p>
+                <div class="d-flex gap-4 flex-wrap justify-content-center">
                     <a href="{{ url_for('accounting_api_proxy', path='docs') }}" 
                        class="btn btn-lg capitalize-words" 
                        target="_blank"
-                       style="font-weight: 900; background: #FF007F; color: #F0F0F0; border: 3px solid #F0F0F0; text-shadow: 0 0 5px rgba(240, 240, 240, 0.5);">
+                       style="font-weight: 900; background: #FF007F; color: #F0F0F0; border: 3px solid #F0F0F0; text-shadow: 0 0 8px rgba(240, 240, 240, 0.6); font-size: 1.2rem; padding: 1rem 2.5rem; min-width: 280px;">
                         {{ t('api_documentation') }}
                     </a>
                     <a href="{{ url_for('accounting_api_proxy', path='accounting') }}" 
                        class="btn btn-lg capitalize-words" 
                        target="_blank"
-                       style="font-weight: 900; background: #FF007F; color: #F0F0F0; border: 3px solid #F0F0F0; text-shadow: 0 0 5px rgba(240, 240, 240, 0.5);">
+                       style="font-weight: 900; background: #FF007F; color: #F0F0F0; border: 3px solid #F0F0F0; text-shadow: 0 0 8px rgba(240, 240, 240, 0.6); font-size: 1.2rem; padding: 1rem 2.5rem; min-width: 280px;">
                         {{ t('management_console') }}
                     </a>
                     <a href="{{ url_for('accounting_files') }}" 
                        class="btn btn-lg capitalize-words" 
-                       style="font-weight: 900; background: #FF007F; color: #F0F0F0; border: 3px solid #F0F0F0; text-shadow: 0 0 5px rgba(240, 240, 240, 0.5);">
+                       style="font-weight: 900; background: #FF007F; color: #F0F0F0; border: 3px solid #F0F0F0; text-shadow: 0 0 8px rgba(240, 240, 240, 0.6); font-size: 1.2rem; padding: 1rem 2.5rem; min-width: 280px;">
                         {{ t('file_management') }}
                     </a>
                     <a href="{{ url_for('accounting_test_results') }}" 
                        class="btn btn-lg capitalize-words" 
-                       style="font-weight: 900; background: #FF007F; color: #F0F0F0; border: 3px solid #F0F0F0; text-shadow: 0 0 5px rgba(240, 240, 240, 0.5);">
+                       style="font-weight: 900; background: #FF007F; color: #F0F0F0; border: 3px solid #F0F0F0; text-shadow: 0 0 8px rgba(240, 240, 240, 0.6); font-size: 1.2rem; padding: 1rem 2.5rem; min-width: 280px;">
                         {{ t('system_test_report') }}
                     </a>
                 </div>
