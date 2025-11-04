@@ -47,147 +47,17 @@
                     <i class="bi bi-exclamation-triangle"></i> {{ t('pending_receipts') }} ({{ stats.pending or 0 }})
                 </a>
             </div>
-        </div>
-    </div>
-    
-    <!-- Supplier Invoices Table -->
-    <div class="row g-4 mb-5">
-        <div class="col-12">
-            <div class="statement-card" style="border: 2px solid #322446;">
-                <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #322446;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
-                        <h3 class="card-title-custom" style="color: #FFFFFF; font-weight: 700; margin: 0; text-shadow: 0 0 10px rgba(255,255,255,0.3);">
-                            <i class="bi bi-file-earmark-text" style="filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));"></i> {{ t('supplier_invoices') }}
-                        </h3>
-                        <button id="exportSupplierTable" class="btn btn-sm" style="background: #322446; color: #fff; border: none; font-weight: 600;">
-                            <i class="bi bi-download"></i> Export Excel
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body-custom" style="padding: 0;">
-                    <div class="table-responsive">
-                        <table id="supplierInvoicesTable" class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto;">
-                            <thead style="background: rgba(50, 36, 70, 0.3); border-bottom: 2px solid #322446;">
-                                <tr>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Date</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Description</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Amount</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">From</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Remarks</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Supplier Fee (1%)</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; white-space: nowrap;">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if supplier_invoices %}
-                                    {% for invoice in supplier_invoices %}
-                                    <tr class="hover-glow-row">
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ invoice['date'] }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; white-space: nowrap;">{{ invoice['description'] }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FF007F; white-space: nowrap;">RM {{ "{:,.2f}".format(invoice['amount']) }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">{{ invoice['from_customer'] }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ invoice['remarks'] }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FF007F; white-space: nowrap;">RM {{ "{:,.2f}".format(invoice['supplier_fee']) }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center; white-space: nowrap;">
-                                            {% if invoice['pdf_path'] %}
-                                            <a href="/static/uploads/{{ invoice['pdf_path'] }}" target="_blank" 
-                                               class="btn btn-sm btn-view-details"
-                                               style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
-                                                      border: 2px solid #322446; 
-                                                      color: #FFFFFF;
-                                                      text-shadow: 0 0 8px rgba(255,255,255,0.3);
-                                                      font-weight: 600;
-                                                      padding: 0.25rem 0.75rem;
-                                                      font-size: 0.75rem;">
-                                                <i class="bi bi-file-pdf"></i> View Details
-                                            </a>
-                                            {% else %}
-                                            <span style="color: #999;">-</span>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                {% else %}
-                                    <tr>
-                                        <td colspan="7" style="text-align: center; padding: 3rem; color: #999; white-space: nowrap;">
-                                            No supplier invoices found
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Payment Receipts Table -->
-    <div class="row g-4 mb-5">
-        <div class="col-12">
-            <div class="statement-card" style="border: 2px solid #FF007F;">
-                <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #FF007F;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
-                        <h3 class="card-title-custom" style="color: #FFFFFF; font-weight: 700; margin: 0; text-shadow: 0 0 10px rgba(255,255,255,0.3);">
-                            <i class="bi bi-receipt" style="filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));"></i> {{ t('payment_receipts') }}
-                        </h3>
-                        <button id="exportPaymentTable" class="btn btn-sm" style="background: #FF007F; color: white; border: none;">
-                            <i class="bi bi-download"></i> Export Excel
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body-custom" style="padding: 0;">
-                    <div class="table-responsive">
-                        <table id="paymentReceiptsTable" class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto;">
-                            <thead style="background: rgba(255, 0, 127, 0.1); border-bottom: 2px solid #FF007F;">
-                                <tr>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Date</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Description</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Amount</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">From</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">Remarks</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; white-space: nowrap;">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if payment_receipts %}
-                                    {% for receipt in payment_receipts %}
-                                    <tr class="hover-glow-row">
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ receipt['date'] }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; white-space: nowrap;">{{ receipt['description'] }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FF007F; white-space: nowrap;">RM {{ "{:,.2f}".format(receipt['amount']) }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">{{ receipt['from_customer'] }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ receipt['remarks'] }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center; white-space: nowrap;">
-                                            {% if receipt['receipt_file_path'] %}
-                                            <a href="/static/uploads/{{ receipt['receipt_file_path'] }}" target="_blank" 
-                                               class="btn btn-sm btn-view-details"
-                                               style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
-                                                      border: 2px solid #FF007F; 
-                                                      color: #FFFFFF;
-                                                      text-shadow: 0 0 8px rgba(255,255,255,0.3);
-                                                      font-weight: 600;
-                                                      padding: 0.25rem 0.75rem;
-                                                      font-size: 0.75rem;">
-                                                <i class="bi bi-file-image"></i> View Details
-                                            </a>
-                                            {% else %}
-                                            <span style="color: #999;">-</span>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                {% else %}
-                                    <tr>
-                                        <td colspan="6" style="text-align: center; padding: 3rem; color: #999; white-space: nowrap;">
-                                            No payment receipts found
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            
+            <div class="alert" style="background: rgba(255, 0, 127, 0.1); border: 2px solid #FF007F; border-radius: 10px; padding: 1.5rem; margin-top: 2rem;">
+                <h5 style="color: #FF007F; margin-bottom: 0.75rem;">
+                    <i class="bi bi-info-circle"></i> {{ t('info') }}
+                </h5>
+                <p style="color: rgba(255, 255, 255, 0.8); margin: 0; line-height: 1.6;">
+                    {{ t('receipts_moved_to_cc') }}<br>
+                    <a href="{{ url_for('credit_card_ledger') }}" style="color: #FF007F; text-decoration: none; font-weight: 600;">
+                        <i class="bi bi-arrow-right"></i> {{ t('view_all_financial_docs') }}
+                    </a>
+                </p>
             </div>
         </div>
     </div>
@@ -245,53 +115,7 @@
 </style>
 
 <script>
-// Export to Excel (CSV format)
-function exportTableToExcel(tableId, filename = 'export.csv') {
-    const table = document.getElementById(tableId);
-    if (!table) return;
-
-    const rows = table.querySelectorAll('tr');
-    const csv = [];
-
-    rows.forEach(row => {
-        const cols = row.querySelectorAll('td, th');
-        const rowData = [];
-        
-        cols.forEach(col => {
-            let text = col.innerText || col.textContent;
-            text = text.replace(/"/g, '""');
-            
-            if (!text.includes('View Invoice') && !text.includes('View Receipt')) {
-                rowData.push(`"${text}"`);
-            }
-        });
-        
-        if (rowData.length > 0) {
-            csv.push(rowData.join(','));
-        }
-    });
-
-    const csvContent = csv.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    
-    link.setAttribute('href', url);
-    link.setAttribute('download', filename);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('exportSupplierTable')?.addEventListener('click', function() {
-        exportTableToExcel('supplierInvoicesTable', 'Supplier_Invoices.csv');
-    });
-    
-    document.getElementById('exportPaymentTable')?.addEventListener('click', function() {
-        exportTableToExcel('paymentReceiptsTable', 'Payment_Receipts.csv');
-    });
-});
+// RECEIPTS page - simplified for OCR upload and matching only
+// Financial documents (Invoices & Payments) moved to CREDIT CARDS page
 </script>
 {% endblock %}

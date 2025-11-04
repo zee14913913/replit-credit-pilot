@@ -321,5 +321,8 @@
   "no_payment_receipts": "No payment receipts found.",
   "payment_receipts_will_appear_here": "Payment receipts from customers will appear here.",
   "description": "Description",
-  "remarks": "Remarks"
+  "remarks": "Remarks",
+  "info": "INFORMATION",
+  "receipts_moved_to_cc": "Supplier Invoices and Payment Receipts have been moved to the CREDIT CARDS page for better financial document management.",
+  "view_all_financial_docs": "View All Financial Documents"
 }
