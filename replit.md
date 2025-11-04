@@ -18,17 +18,16 @@ The platform features a strict professional design with a **MINIMAL 3-COLOR PALE
 No other colors are permitted. The design system emphasizes clean, professional layouts with bilingual support (English/Chinese).
 
 **Navigation Structure** (November 2025):
-The main navigation follows business workflow logic with 8 core modules:
+The main navigation follows business workflow logic with 7 core modules:
 1. **DASHBOARD** - Customer management and overview
-2. **CREDIT CARDS** - Credit card ledger (formerly "CC", now full text for clarity)
+2. **CREDIT CARDS** - Credit card ledger with integrated supplier invoices (formerly "CC", now full text for clarity)
 3. **SAVINGS** - Savings account tracking
 4. **RECEIPTS** - Receipt management with OCR
-5. **INVOICES** - Auto-generated supplier invoices (planned for future integration into CREDIT CARDS)
-6. **LOANS** - Intelligent loan matcher
-7. **REPORTS** - Monthly summary reports
-8. **ADMIN** - System administration
+5. **LOANS** - Intelligent loan matcher
+6. **REPORTS** - Monthly summary reports
+7. **ADMIN** - System administration
 
-*Note: REMINDERS feature has been removed from navigation and will be integrated into CREDIT CARDS page (calculated from statement_date and due_date fields).*
+*Note: INVOICES has been successfully integrated into CREDIT CARDS page, displaying auto-generated supplier invoices alongside credit card data. REMINDERS feature will be integrated into CREDIT CARDS page in the future (calculated from statement_date and due_date fields).*
 
 ### Technical Implementations
 The backend is built with Flask, utilizing SQLite with a context manager pattern for database interactions. Jinja2 handles server-side rendering, and Bootstrap 5 with Bootstrap Icons provides a responsive UI. Plotly.js is integrated for client-side data visualization. A robust notification system provides real-time updates and an auto-redirect feature. Client-side PDF-to-CSV conversion is implemented using PDF.js.
