@@ -4091,11 +4091,11 @@ def credit_card_ledger():
             SELECT 
                 pr.id,
                 pr.payment_date as date,
-                pr.description,
-                pr.amount,
-                pr.remarks,
+                pr.payment_amount as amount,
                 pr.receipt_file_path,
-                c.name as from_customer
+                c.name as from_customer,
+                '' as description,
+                '' as remarks
             FROM payment_receipts pr
             JOIN customers c ON pr.customer_id = c.id
             ORDER BY pr.payment_date DESC

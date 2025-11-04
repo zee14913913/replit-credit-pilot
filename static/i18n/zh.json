@@ -947,6 +947,6 @@
   "description": "描述",
   "remarks": "备注",
   "info": "提示信息",
-  "receipts_moved_to_cc": "供应商发票和客户付款已移至"信用卡"页面，以便更好地管理所有财务单据。",
+  "receipts_moved_to_cc": "供应商发票和客户付款已移至信用卡页面，以便更好地管理所有财务单据",
   "view_all_financial_docs": "查看所有财务单据"
 }
