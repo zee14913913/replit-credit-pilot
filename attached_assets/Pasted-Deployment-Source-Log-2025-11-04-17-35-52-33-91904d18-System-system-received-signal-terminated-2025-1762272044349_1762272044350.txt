@@ -1,0 +1,103 @@
+Deployment
+Source
+Log
+2025-11-04 17:35:52.33
+91904d18
+System
+system: received signal terminated
+2025-11-04 23:57:30.48
+8d982853
+User
+[2025-11-04 15:57:30 +0000] [25] [INFO] Using worker: sync
+2025-11-04 23:57:30.48
+8d982853
+User
+[2025-11-04 15:57:30 +0000] [33] [INFO] Booting worker with pid: 33
+2025-11-04 23:57:30.53
+8d982853
+User
+[2025-11-04 15:57:30 +0000] [34] [INFO] Booting worker with pid: 34
+2025-11-04 23:57:30.57
+8d982853
+User
+[2025-11-04 15:57:30 +0000] [35] [INFO] Booting worker with pid: 35
+2025-11-04 23:57:30.65
+8d982853
+User
+[2025-11-04 15:57:30 +0000] [36] [INFO] Booting worker with pid: 36
+2025-11-04 23:57:40.10
+8d982853
+User
+INFO: Started server process [24]
+2025-11-04 23:57:40.10
+8d982853
+User
+INFO: Waiting for application startup.
+2025-11-04 23:57:43.44
+8d982853
+User
+INFO: Application startup complete.
+2025-11-04 23:57:43.45
+8d982853
+User
+INFO: Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2025-11-04 23:57:45.46
+8d982853
+System
+starting up user application
+2025-11-04 23:57:45.46
+8d982853
+System
+metasidecar: loaded enterprise status from environment is_enterprise=false
+2025-11-04 23:57:45.47
+8d982853
+System
+forwarding local port 5000 to external port 80 (mapped as 1104)
+2025-11-04 23:57:46.29
+8d982853
+User
+[2025-11-04 15:57:46 +0000] [23] [INFO] Starting gunicorn 23.0.0
+2025-11-04 23:57:46.29
+8d982853
+User
+[2025-11-04 15:57:46 +0000] [23] [INFO] Listening at: http://0.0.0.0:5000 (23)
+2025-11-04 23:57:46.29
+8d982853
+User
+[2025-11-04 15:57:46 +0000] [23] [INFO] Using worker: sync
+2025-11-04 23:57:46.29
+8d982853
+User
+[2025-11-04 15:57:46 +0000] [33] [INFO] Booting worker with pid: 33
+2025-11-04 23:57:46.37
+8d982853
+User
+[2025-11-04 15:57:46 +0000] [34] [INFO] Booting worker with pid: 34
+2025-11-04 23:57:46.44
+8d982853
+User
+[2025-11-04 15:57:46 +0000] [35] [INFO] Booting worker with pid: 35
+2025-11-04 23:57:46.48
+8d982853
+User
+[2025-11-04 15:57:46 +0000] [36] [INFO] Booting worker with pid: 36
+2025-11-04 23:57:56.49
+8d982853
+User
+INFO: Started server process [22]
+2025-11-04 23:57:56.49
+8d982853
+User
+INFO: Waiting for application startup.
+2025-11-04 23:57:59.76
+8d982853
+User
+INFO: Application startup complete.
+2025-11-04 23:57:59.76
+8d982853
+User
+INFO: Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2025-11-05 00:00:02.35
+91904d18
+System
+system: received signal terminated
