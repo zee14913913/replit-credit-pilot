@@ -34,7 +34,7 @@
             </a>
             
             <ul class="nav-menu">
-                <!-- Public Navigation - No Authentication Required -->
+                <!-- Public Navigation - Optimized Order by Business Workflow -->
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if request.endpoint == 'index' }}" href="{{ url_for('index') }}">
                         {{ t('nav_dashboard') }}
@@ -52,11 +52,6 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ 'active' if 'loan_matcher' in request.endpoint }}" href="{{ url_for('loan_matcher') }}">
-                        {{ t('nav_loan_matcher') }}
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link {{ 'active' if 'receipts' in request.endpoint }}" href="{{ url_for('receipts_home') }}">
                         {{ t('nav_receipts') }}
                     </a>
@@ -67,13 +62,13 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ 'active' if 'monthly_summary' in request.endpoint }}" href="{{ url_for('monthly_summary_index') }}">
-                        {{ t('nav_monthly_summary') }}
+                    <a class="nav-link {{ 'active' if 'loan_matcher' in request.endpoint }}" href="{{ url_for('loan_matcher') }}">
+                        {{ t('nav_loan_matcher') }}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ 'active' if request.endpoint == 'reminders' }}" href="{{ url_for('reminders') }}">
-                        {{ t('nav_reminders') }}
+                    <a class="nav-link {{ 'active' if 'monthly_summary' in request.endpoint }}" href="{{ url_for('monthly_summary_index') }}">
+                        {{ t('nav_monthly_summary') }}
                     </a>
                 </li>
                 <li class="nav-item">
