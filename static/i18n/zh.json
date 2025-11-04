@@ -938,5 +938,12 @@
   "action": "操作",
   "view": "查看",
   "no_invoices_generated": "尚未生成供应商发票。",
-  "upload_statements_to_generate": "上传包含供应商交易的信用卡账单以自动生成发票。"
+  "upload_statements_to_generate": "上传包含供应商交易的信用卡账单以自动生成发票。",
+  "payment_receipts": "客户付款",
+  "payment_receipts_subtitle": "客户支付给无限公司的款项",
+  "customer_payments": "客户付款记录",
+  "no_payment_receipts": "暂无付款收据。",
+  "payment_receipts_will_appear_here": "客户的付款收据将显示在此处。",
+  "description": "描述",
+  "remarks": "备注"
 }

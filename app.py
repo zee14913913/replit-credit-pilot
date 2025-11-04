@@ -4085,11 +4085,29 @@ def credit_card_ledger():
                 'total_amount': total_amount,
                 'total_fees': total_fees
             }
+        
+        # 获取所有 Payment Receipts 数据 (整合 RECEIPTS 功能)
+        cursor.execute("""
+            SELECT 
+                pr.id,
+                pr.payment_date as date,
+                pr.description,
+                pr.amount,
+                pr.remarks,
+                pr.receipt_file_path,
+                c.name as from_customer
+            FROM payment_receipts pr
+            JOIN customers c ON pr.customer_id = c.id
+            ORDER BY pr.payment_date DESC
+            LIMIT 100
+        """)
+        payment_receipts = [dict(row) for row in cursor.fetchall()]
     
     return render_template('credit_card/ledger_index.html', 
                          customers=customers, 
                          all_cards=all_cards,
                          invoices_data=invoices_data,
+                         payment_receipts=payment_receipts,
                          is_admin=True)
 
 

@@ -424,5 +424,32 @@ document.getElementById('exportInvoiceTable')?.addEventListener('click', functio
     link.download = 'supplier_invoices_' + new Date().toISOString().slice(0,10) + '.csv';
     link.click();
 });
+
+// Excel Export for Payment Receipts
+document.getElementById('exportPaymentTable')?.addEventListener('click', function() {
+    const table = document.getElementById('paymentReceiptsTable');
+    if (!table) return;
+    
+    let csv = [];
+    const rows = table.querySelectorAll('tr');
+    
+    rows.forEach(row => {
+        const cols = row.querySelectorAll('td, th');
+        const csvRow = [];
+        cols.forEach((col, index) => {
+            if (index < cols.length - 1) {
+                csvRow.push('"' + col.innerText.replace(/"/g, '""') + '"');
+            }
+        });
+        csv.push(csvRow.join(','));
+    });
+    
+    const csvContent = csv.join('\n');
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'payment_receipts_' + new Date().toISOString().slice(0,10) + '.csv';
+    link.click();
+});
 </script>
 {% endblock %}
