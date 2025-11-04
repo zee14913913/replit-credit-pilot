@@ -1466,6 +1466,47 @@ def admin_dashboard():
                          invoices_total=invoices_total)
 
 
+@app.route('/admin/payment-accounts')
+@require_admin_or_accountant
+def admin_payment_accounts():
+    """GZ Payment Accounts 管理页面"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            SELECT 
+                id,
+                account_name,
+                account_holder,
+                bank_name,
+                account_number,
+                account_type,
+                is_active,
+                created_at
+            FROM payment_accounts
+            ORDER BY account_type, bank_name
+        """)
+        payment_accounts = [dict(row) for row in cursor.fetchall()]
+        
+        cursor.execute("SELECT COUNT(*) FROM bank_statements")
+        total_bank_statements = cursor.fetchone()[0]
+        
+        cursor.execute("SELECT COUNT(*) FROM payment_slips")
+        total_payment_slips = cursor.fetchone()[0]
+        
+        cursor.execute("""
+            SELECT COUNT(*) 
+            FROM transaction_validations 
+            WHERE validation_status = 'FULLY_VALIDATED'
+        """)
+        validated_transactions = cursor.fetchone()[0]
+    
+    return render_template('admin_payment_accounts.html',
+                         payment_accounts=payment_accounts,
+                         total_bank_statements=total_bank_statements,
+                         total_payment_slips=total_payment_slips,
+                         validated_transactions=validated_transactions)
+
 @app.route('/admin/api-keys')
 @require_admin_or_accountant
 def api_keys_management():

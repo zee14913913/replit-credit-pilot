@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}GZ PAYMENT ACCOUNTS{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-6 fw-bold text-white text-uppercase mb-2">
+                <i class="bi bi-wallet2 me-3" style="color: #FF007F;"></i>GZ PAYMENT ACCOUNTS
+            </h1>
+            <p class="text-muted mb-0" style="color: #FF007F !important; font-size: 0.9rem;">
+                three-way cross-validation system payment accounts management
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0" style="background: linear-gradient(135deg, #1a1a1a 0%, #2a1a2a 100%); border: 1px solid #322446 !important;">
+                <div class="card-body text-center py-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="text-start">
+                            <p class="text-uppercase mb-1" style="font-size: 0.75rem; color: #888; letter-spacing: 1px;">PAYMENT ACCOUNTS</p>
+                            <h2 class="mb-0 fw-bold" style="color: #FF007F; font-size: 2.5rem;">{{ payment_accounts|length }}</h2>
+                        </div>
+                        <i class="bi bi-wallet2" style="font-size: 3rem; color: #322446;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0" style="background: linear-gradient(135deg, #1a1a1a 0%, #2a1a2a 100%); border: 1px solid #322446 !important;">
+                <div class="card-body text-center py-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="text-start">
+                            <p class="text-uppercase mb-1" style="font-size: 0.75rem; color: #888; letter-spacing: 1px;">BANK STATEMENTS</p>
+                            <h2 class="mb-0 fw-bold" style="color: #FF007F; font-size: 2.5rem;">{{ total_bank_statements }}</h2>
+                        </div>
+                        <i class="bi bi-file-earmark-text" style="font-size: 3rem; color: #322446;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0" style="background: linear-gradient(135deg, #1a1a1a 0%, #2a1a2a 100%); border: 1px solid #322446 !important;">
+                <div class="card-body text-center py-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="text-start">
+                            <p class="text-uppercase mb-1" style="font-size: 0.75rem; color: #888; letter-spacing: 1px;">VALIDATED TXN</p>
+                            <h2 class="mb-0 fw-bold" style="color: #00FF7F; font-size: 2.5rem;">{{ validated_transactions }}</h2>
+                        </div>
+                        <i class="bi bi-shield-check" style="font-size: 3rem; color: #322446;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0" style="background: #000; border: 1px solid #322446 !important;">
+                <div class="card-header" style="background: linear-gradient(135deg, #1a1a1a 0%, #2a1a2a 100%); border-bottom: 2px solid #322446;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-uppercase fw-bold text-white">
+                            <i class="bi bi-list-check me-2" style="color: #FF007F;"></i>PAYMENT ACCOUNTS
+                        </h5>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0">
+                            <thead style="background: #1a1a1a; border-bottom: 2px solid #322446;">
+                                <tr>
+                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">ID</th>
+                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">ACCOUNT NAME</th>
+                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">HOLDER</th>
+                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">BANK</th>
+                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">TYPE</th>
+                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for account in payment_accounts %}
+                                <tr style="border-bottom: 1px solid #322446;">
+                                    <td class="text-white">{{ account.id }}</td>
+                                    <td class="text-white fw-bold">{{ account.account_name }}</td>
+                                    <td class="text-white">{{ account.account_holder }}</td>
+                                    <td>
+                                        <span class="badge" style="background: #322446; color: #FF007F; font-size: 0.75rem; padding: 0.35rem 0.65rem;">
+                                            {{ account.bank_name }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if account.account_type == 'PERSONAL' %}
+                                            <span class="badge bg-info text-dark">PERSONAL</span>
+                                        {% elif account.account_type == 'JOINT' %}
+                                            <span class="badge bg-warning text-dark">JOINT</span>
+                                        {% elif account.account_type == 'CORPORATE' %}
+                                            <span class="badge" style="background: #FF007F; color: #000;">CORPORATE</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if account.is_active %}
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle me-1"></i>ACTIVE
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">INACTIVE</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% if not payment_accounts %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-muted">
+                                        <i class="bi bi-inbox me-2"></i>No payment accounts found
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
