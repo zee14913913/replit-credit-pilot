@@ -131,6 +131,32 @@ def add_no_cache_headers(response):
     return response
 
 # Language support
+import json
+
+# Load translation files
+TRANSLATIONS = {}
+try:
+    with open('static/i18n/en.json', 'r', encoding='utf-8') as f:
+        TRANSLATIONS['en'] = json.load(f)
+    with open('static/i18n/zh.json', 'r', encoding='utf-8') as f:
+        TRANSLATIONS['zh'] = json.load(f)
+except Exception as e:
+    print(f"⚠️ 翻译文件加载失败: {e}")
+    TRANSLATIONS = {'en': {}, 'zh': {}}
+
+def translate(key, lang='en', **kwargs):
+    """
+    翻译函数：从翻译字典中获取对应语言的文本
+    """
+    text = TRANSLATIONS.get(lang, {}).get(key, key)
+    # 支持参数替换，例如 {name}, {email} 等
+    if kwargs:
+        try:
+            text = text.format(**kwargs)
+        except:
+            pass
+    return text
+
 def get_current_language():
     """
     智能语言管理：
