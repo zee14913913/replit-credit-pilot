@@ -133,19 +133,22 @@ def add_no_cache_headers(response):
 # Language support
 def get_current_language():
     """
-    统一默认英文：确保全系统每次打开都显示英文版本
-    URL 参数可临时切换语言，但不保存到 session
+    智能语言管理：
+    - 新会话（首次访问）默认英文
+    - 用户切换语言后，在整个会话期间保持该语言
+    - 关闭浏览器后重新打开，恢复为英文
     """
-    # 1. URL parameter 可临时切换语言
+    # 1. URL parameter 优先（用于语言切换）
     lang = request.args.get('lang')
     if lang in ('zh', 'en'):
+        session['language'] = lang  # 保存到 session，在会话期间持久
         return lang
     
-    # 2. 不再使用 session 保存语言，始终默认英文
-    # if 'language' in session:
-    #     return session['language']
+    # 2. Session 读取（在会话期间保持用户选择的语言）
+    if 'language' in session:
+        return session['language']
     
-    # 3. 统一默认英文
+    # 3. 新会话默认英文
     return 'en'
 
 @app.context_processor
@@ -159,18 +162,13 @@ def inject_language():
 
 @app.route('/set-language/<lang>')
 def set_language(lang):
-    """临时切换语言（不保存到 session，确保下次打开仍是英文）"""
+    """
+    切换语言并保存到 session
+    - 在当前会话期间，所有页面保持该语言
+    - 关闭浏览器后重新打开，恢复为英文
+    """
     if lang in ['en', 'zh']:
-        # 通过 URL 参数传递语言，不保存到 session
-        referrer = request.referrer or url_for('index')
-        # 添加 lang 参数到 URL
-        from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
-        parsed = urlparse(referrer)
-        params = parse_qs(parsed.query)
-        params['lang'] = [lang]
-        new_query = urlencode(params, doseq=True)
-        new_url = urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, new_query, parsed.fragment))
-        return redirect(new_url)
+        session['language'] = lang
     return redirect(request.referrer or url_for('index'))
 
 @app.route('/view_statement_file/<int:statement_id>')

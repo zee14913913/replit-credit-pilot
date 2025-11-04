@@ -5,8 +5,9 @@
 
 class I18nManager {
     constructor() {
-        // 强制默认使用英文，确保全系统统一
-        this.currentLang = 'en';
+        // 从服务器端获取当前语言（session 管理）
+        // 不使用 localStorage，避免跨会话持久化
+        this.currentLang = document.documentElement.lang === 'zh-CN' ? 'zh' : 'en';
         this.translations = {};
         this.init();
     }
@@ -55,8 +56,8 @@ class I18nManager {
         if (!['en', 'zh'].includes(lang)) return;
         
         this.currentLang = lang;
-        // 不保存到 localStorage，确保每次打开都是英文
-        // localStorage.setItem('language', lang);
+        // 不使用 localStorage，由服务器端 session 管理
+        // 这样关闭浏览器后会恢复默认英文，但会话期间保持用户选择
         
         // Apply language to all elements
         this.applyLanguage(lang);
