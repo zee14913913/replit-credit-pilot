@@ -1,0 +1,110 @@
+标准回答框架（双核心业务版）
+
+1) 背景分析
+	•	业务链路：代刷（7大Suppliers Name）→ 凭证（小票/发票）→ 还卡/转账（PAYMENT/CR）→ 月结核对。
+	•	合规与授信要点：三要素证据齐全（账单/费用/小票）+ 资金来源账户白名单（你提供的9个账户）。
+	•	风险：多账户与多卡、多路径回款，需严格匹配规则和欠/付方向清晰显示。
+
+2) 核心解答（已编码到 v5）
+
+三类验证方式（系统实现）
+
+A. Suppliers CC 消费交易（必须同时满足 3 条）
+	1.	在信用卡账单中存在 Entry_Type=SPEND。
+	2.	在 Supplier Expenses 中存在**金额/卡后四位/日期（±5天）**可匹配的记录。
+	3.	在 Merchant Swipe Receipts（小票/发票）中 EKey（日期-供应商-发票号-含税金额）可对上（Receipt_Status=OK）。
+
+B. 直接付款信用卡款项（还卡）
+	1.	在信用卡账单中存在 Entry_Type=PAYMENT（CR）。
+	2.	在银行月结单中存在来自白名单账户的付款（自动识别为 Payment_to_Card，卡后四位一致，金额一致，日期±5天）。
+	3.	GZ 付款 slip（To_Type=CARD）存在并匹配金额/日期。
+
+C. 转账客户私人/公司账户用于付款信用卡
+	1.	在信用卡账单中存在 Entry_Type=PAYMENT（CR）。
+	2.	在银行月结单中存在来自白名单账户的转客户记录（自动识别为 Reimbursement_to_Customer，金额一致，日期±5天）。
+	3.	GZ 付款 slip（To_Type=CUSTOMER）存在并匹配金额/日期。
+
+白名单账户（已内置）：tan zee liang GX、Yeo chee wang（MBB/GX/UOB/OCBC）、联名 OCBC、Infinite GZ HLB、Ai Smart Tech（PBB/Alliance）。
+
+月结报告（多卡合并、按客户）
+	•	口径（完全按你要求）：
+Net = CC_Spend - (Direct_Card_Payment + Transfer_To_Customer)
+若 Net < 0 → 客户欠我们；Net > 0 → 我们欠客户；=0 → 结清。
+	•	CC_Spend 来自信用卡账单 SPEND（通过卡后四位映射到客户），自动跨多张卡求和。
+	•	两类“回款”来自银行流水识别（并只统计白名单账户），金额取绝对值后计入。
+
+⸻
+
+3) 资源整合策略
+	•	Savings 页面 → /upload/accounts：把这9个账户一次性导入白名单，系统据此过滤与预警。
+	•	统一导入口：
+	•	/upload/customer-cards（客户↔卡后四位）
+	•	/upload/expenses（Supplier Expenses）
+	•	/upload/receipts（小票/发票）
+	•	/upload/card-statement（信用卡账单，含 SPEND/PAYMENT）
+	•	/upload/bank-txns（各白名单账户月结流水）
+	•	/upload/payment-slips（付款凭条，To_Type=CARD/CUSTOMER）
+
+⸻
+
+4) 创新性 Business Plan 建议
+	•	“证据齐全率”KPI：在 /validate/run 的三类校验基础上，出客户级证据达标率与缺口明细，形成可收费的“对账合规包”。
+	•	白名单驱动的风控提示：/alerts 已加入非白名单账户付款的计数，作为异常项 upsell 给客户（引导把资金流集中到安全账户）。
+
+⸻
+
+5) 前瞻性建议
+	•	规范转账备注：统一包含客户简称/卡后四位，识别率会显著提升。
+	•	银行/卡账尽量用 CSV 导出，减少解析误差；若需要，我可加Excel/CSV 字段校验与自动模板校验。
+
+⸻
+
+6) 执行要点（落地操作步骤清单）
+	1.	确认输入信息
+
+	•	操作：准备客户名、卡后四位映射；9个白名单账户。
+	•	注意：客户名与卡后四位一一对应，不要重名。
+
+	2.	登录/进入平台（Replit）
+
+	•	操作：创建 Python 项目 → 上传并解压 zip → 点击 Run（或执行 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload）。
+	•	注意：访问 /docs 使用交互式界面调试。
+
+	3.	填入设置参数（上传基础主数据）
+
+	•	操作：依次上传 samples/ 模板：
+/upload/accounts → /upload/customer-cards。
+	•	注意：先白名单账户，再其余数据，保证分类生效。
+
+	4.	生成初稿 / 初始结果（上传业务数据）
+
+	•	操作：上传 /upload/expenses、/upload/receipts、/upload/card-statement、/upload/bank-txns、/upload/payment-slips。
+	•	注意：CSV 表头必须与样例一致，UTF-8 编码。
+
+	5.	二次调整与保存（跑对账与验证）
+
+	•	操作：
+	•	POST /reconcile/run（建立费用↔凭证关系、识别银行流水）
+	•	GET /validate/run?ym=2025-10（查看三类验证达标与明细）
+	•	GET /report/monthly?ym=2025-10（得到 Net 与“客户欠我们/我们欠客户/结清”）
+	•	GET /alerts?ym=2025-10（缺凭证、孤儿凭证、未知回款、非白名单付款）
+	•	注意：有红黄项先规范记账描述或补 Slip，再重跑。
+
+⸻
+
+风险提示
+	•	只要银行流水描述不含客户简称/卡后四位，自动识别率会下降；先人工补备注再跑可快速清零异常。
+	•	同金额同日多笔，需要更强的锚点（如 Txn_ID/商户+入账日）；若出现，我可以把“多键匹配”加入校验。
+	•	如出现客户自付卡但我们也转了款，可能同时命中两种路径，需要你定义优先级。我可以按“卡账优先 + 时间窗口去重”加一条规则。
+
+⸻
+
+数据与接口（已内置）
+	•	样例 CSV：zip 内 samples/（已包含你的9个账户）。
+	•	关键接口：
+	•	/upload/accounts、/upload/customer-cards、/upload/expenses、/upload/receipts、/upload/card-statement、/upload/bank-txns、/upload/payment-slips
+	•	/reconcile/run、/validate/run?ym=YYYY-MM、/report/monthly?ym=YYYY-MM、/alerts?ym=YYYY-MM
+
+⸻
+
+若你要把容差（天数/金额）做成环境变量、增加自定义匹配词表（比如常见转账备注缩写），或把验证结果自动发邮件/WhatsApp，我可以在此版本基础上直接扩展并交付新版包。 
