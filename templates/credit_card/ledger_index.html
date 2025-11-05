@@ -224,10 +224,10 @@
     </div>
 
     <!-- Payment Receipts Table -->
-    <div class="table-container" style="border-color: rgba(255, 0, 127, 0.5);">
+    <div class="table-container" style="border-color: rgba(255, 0, 127, 0.5); margin-top: 3rem;">
         <div class="table-header">
-            <h3 style="color: #E8E8E8; font-weight: 700; margin: 0;">
-                <i class="bi bi-receipt"></i> {{ t('customer_payments') }}
+            <h3 style="color: #FFFEF0; font-weight: 900; margin: 0; font-size: 1.3rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                CUSTOMER PAYMENTS
             </h3>
             {% if payment_receipts %}
             <button id="exportPaymentTable" class="btn-professional-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
@@ -239,13 +239,13 @@
         <div class="table-responsive">
             <table class="table table-dark table-hover" id="paymentReceiptsTable">
                 <thead>
-                    <tr>
-                        <th>{{ t('date') }}</th>
-                        <th>{{ t('description') }}</th>
-                        <th>{{ t('amount') }}</th>
-                        <th>{{ t('customer') }}</th>
-                        <th>{{ t('remarks') }}</th>
-                        <th>{{ t('action') }}</th>
+                    <tr style="background: rgba(50, 36, 70, 0.5);">
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('date') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('description') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('amount') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('customer') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('remarks') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('action') }}</th>
                     </tr>
                 </thead>
                 <tbody>
