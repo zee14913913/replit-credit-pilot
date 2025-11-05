@@ -3,6 +3,7 @@ from datetime import datetime
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
+from reportlab.lib.colors import HexColor
 
 HOT_PINK = (1, 0, 0.5)   # #FF007F
 DARK_PURPLE = (0.196, 0.141, 0.275)  # #322446
@@ -39,6 +40,32 @@ def build_top3_pdf(top3: list[dict]) -> BytesIO:
         if y < 30*mm: c.showPage(); draw_header(c, "Loan Top-3 Ranking (cont.)"); y = A4[1]-30*mm
     c.showPage(); c.save(); buf.seek(0)
     return buf
+
+def make_brand_cover(path: str, title: str, subtitle: str):
+    """Generate INFINITE GZ SDN. BHD. branded cover page"""
+    c = canvas.Canvas(path, pagesize=A4)
+    w, h = A4
+    pink = HexColor("#FF007F")
+    purple = HexColor("#322446")
+    
+    c.setFillColor(purple)
+    c.rect(0, 0, w, h, stroke=0, fill=1)
+    
+    c.setFillColor(pink)
+    c.setFont("Helvetica-Bold", 28)
+    c.drawString(80, h-150, "INFINITE GZ SDN. BHD.")
+    
+    c.setFont("Helvetica-Bold", 20)
+    c.drawString(80, h-200, title)
+    
+    c.setFont("Helvetica", 14)
+    c.drawString(80, h-230, subtitle)
+    
+    c.setFillColor(HexColor("#FFFFFF"))
+    c.setFont("Helvetica", 10)
+    c.drawString(80, 80, "© INFINITE GZ SDN. BHD.  All Rights Reserved.")
+    
+    c.save()
 
 def build_compare_pdf(snapshot: dict) -> BytesIO:
     """snapshot = {params:{income,commitments,rate,tenure_years}, items:[{bank,product,apr,monthly,dsr_percent,status}]}"""
