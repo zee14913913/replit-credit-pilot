@@ -1,0 +1,167 @@
+懂了——你要自己动手改。我把“怎么改”的关键信息和可复制片段一次性给全，你照着贴就行，完全不需要我进你代码改。
+
+⸻
+
+一次上手：你自己改外观的 3 步
+
+① 新建/打开 static/brand.css（或你自己的全局 CSS）
+
+把这段放进去（这是“调色台+字号+常用工具”）。以后你只改变量就能全站生效。
+
+:root{
+  /* —— 颜色总开关：改这里就能全站换色 —— */
+  --hot-pink:#FF007F;       /* 主色：按钮/高亮 */
+  --dark-purple:#322446;    /* 次色：卡片底色/描边 */
+  --deep-black:#1A1323;     /* 页面背景 */
+  --snow-white:#FFFFFF;     /* 正文白 */
+  --elephant:#4A4A4A;       /* 大象深灰（次要文字） */
+  --light-gray:#CCCCCC;     /* 浅灰（提示/边框） */
+
+  /* —— 字重/字号常量 —— */
+  --fw-400:400; --fw-600:600; --fw-700:700; --fw-800:800;
+  --fs-12:12px; --fs-14:14px; --fs-15:15px; --fs-18:18px; --fs-22:22px; --fs-28:28px;
+}
+
+/* 页面底色与默认文本色（想换背景只改 --deep-black） */
+html,body{ background:var(--deep-black); color:var(--snow-white); }
+
+/* 卡片基础样式：给容器加 class="card" 就有效果 */
+.card{
+  background:linear-gradient(180deg, var(--dark-purple), #281a3a);
+  border:1px solid color-mix(in srgb, var(--hot-pink) 35%, transparent);
+  border-radius:16px; padding:14px; box-shadow:0 6px 18px #0006;
+}
+
+/* 卡片标题：单行省略+英文自动大写 */
+.card .title{
+  font-size:var(--fs-15);
+  font-weight:var(--fw-700);
+  color:var(--hot-pink);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  text-transform:uppercase;  /* 英文大写；中文不受影响 */
+  margin:0 0 8px 0; line-height:1.2;
+}
+
+/* 说明文字（次要信息） */
+.meta{ color:var(--light-gray); font-size:var(--fs-14); }
+
+/* —— 按钮：通用 + 主按钮 + 线框 —— */
+.btn{
+  background:var(--dark-purple);
+  color:var(--snow-white);
+  border:1px solid color-mix(in srgb, var(--dark-purple) 70%, white 0%);
+  border-radius:12px; padding:8px 12px; cursor:pointer;
+  font-weight:var(--fw-600); font-size:var(--fs-15);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.btn.primary{ background:var(--hot-pink); border-color:color-mix(in srgb, var(--hot-pink) 60%, white 0%); }
+.btn.ghost{ background:transparent; border:1px solid #ffffff33; }
+
+/* 表格（对比页）：深色描边+可排序箭头 */
+table{ width:100%; border-collapse:collapse; }
+th,td{ border:1px solid #3b2b4e; padding:8px; font-size:14px; }
+th.sortable{ cursor:pointer; position:relative; padding-right:18px; }
+th.sortable:after{ content:'↕'; position:absolute; right:6px; opacity:.6; }
+th.sortable.asc:after{ content:'↑'; } th.sortable.desc:after{ content:'↓'; }
+
+/* —— 颜色/字号/粗细/省略 的“快捷键” —— */
+.text-pink{ color:var(--hot-pink)!important; }
+.text-elephant{ color:var(--elephant)!important; }
+.text-light{ color:var(--light-gray)!important; }
+.fs-12{font-size:var(--fs-12)} .fs-14{font-size:var(--fs-14)} .fs-18{font-size:var(--fs-18)} .fs-22{font-size:var(--fs-22)} .fs-28{font-size:var(--fs-28)}
+.fw-600{font-weight:var(--fw-600)} .fw-700{font-weight:var(--fw-700)} .fw-800{font-weight:var(--fw-800)}
+.upper{ text-transform:uppercase; }
+.ellipsis{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+/* 边框颜色可选 */
+.border-pink{ border-color:var(--hot-pink)!important; }
+.border-purple{ border-color:var(--dark-purple)!important; }
+
+想换主题：只改 :root 里的 6 个颜色变量。
+想改标题大小/粗细：改 .card .title 的 font-size / font-weight。
+
+⸻
+
+② 在 templates/base.html 的 <head> 引入它
+
+<link rel="stylesheet" href="/static/brand.css">
+
+确保这行在你其他 CSS 后面（后加载=后覆盖）。
+
+⸻
+
+③ 在页面上“点改就生效”
+
+你要改哪里，就给那个盒子/按钮/标题加对应类名。不改 JS，不动后端。
+
+卡片/标题/按钮例子（复制改名就能用）
+
+<div class="card">
+  <div class="title fs-18 fw-800">Loans Intelligence Center</div>   <!-- 加大变粗，自动英文大写 -->
+  <p class="meta ellipsis">产品列表 / 偏好情报 / DSR 试算</p>
+  <div style="display:flex; gap:8px; flex-wrap:wrap">
+    <a class="btn">Open Portal</a>
+    <a class="btn primary upper">Open Compare</a>          <!-- 主按钮 + 英文大写 -->
+    <a class="btn ghost text-pink">Export Updates CSV</a>  <!-- 线框按钮 + 粉色字 -->
+  </div>
+</div>
+
+
+⸻
+
+你关心的 6 件事（怎么自己改）
+	•	字样粗细/大小
+用类：fw-600 / fw-700 / fw-800、fs-14 / fs-18 / fs-22 / fs-28。
+例：<h3 class="title fs-22 fw-800">…</h3>
+	•	英文大小写
+加 .upper（英文变大写，中文不受影响）。
+	•	单行省略
+任何长标题或长按钮，加 .ellipsis 保证同行不换行：
+<div class="title ellipsis">非常非常长的标题…</div>
+	•	卡片背景
+统一由 .card 控制；想更纯色，把 .card 的 background 改成 background:var(--dark-purple);
+	•	字色
+用 .text-pink / .text-elephant / .text-light；全局默认已经是白。
+	•	描边颜色
+给任何卡片额外加类：border-pink（更亮）或 border-purple（更稳）。
+
+⸻
+
+“批量提亮”捷径（可选）
+
+如果旧模板没有给容器加 .card，你可以把这段 JS 丢进 base.html 底部，自动给常见盒子套卡片样式：
+
+<script>
+(function(){
+  ['.panel','.box','.widget','.tile','.section','.module'].forEach(sel=>{
+    document.querySelectorAll(sel).forEach(el=>{
+      if(!el.classList.contains('card')) el.classList.add('card');
+      // 没有标题类时，尝试给第一个 h1/h2/h3 标记
+      const h = el.querySelector('h1,h2,h3');
+      if(h && !h.classList.contains('title')) h.classList.add('title');
+    });
+  });
+})();
+</script>
+
+
+⸻
+
+Replit/浏览器小坑位处理
+	•	样式不生效多数是缓存：Replit 里点 Stop→Run 重启服务；浏览器 Ctrl/Cmd + Shift + R 强刷。
+	•	如果你换了 brand.css 的变量，看不到变化，检查：
+1）/static/brand.css 路径是否正确；
+2）base.html 引入顺序是否在最后；
+3）某些页面内联样式太强，可以在你的选择器后面加 !important 临时压过它。
+
+⸻
+
+最后一张“口袋卡”（你直接照抄就能统一风格）
+	•	卡片：<div class="card">…</div>
+	•	标题：<div class="title fs-18 fw-800 upper ellipsis">TEXT</div>
+	•	正文淡色：<p class="meta">desc…</p>
+	•	主按钮：<a class="btn primary">Action</a>
+	•	次按钮：<a class="btn">Action</a>
+	•	线框按钮（透明底）：<a class="btn ghost">Action</a>
+	•	高亮边框：class="card border-pink"
+
+你先照这个做，你改哪张卡、哪个标题、哪个按钮，都能“立改立亮”。后面要做更细的页面级定制，再告诉我你想要的具体视觉——我给你生成对应的片段，你自己贴上去就好。
