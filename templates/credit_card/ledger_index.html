@@ -12,7 +12,7 @@
     </div>
 
     <!-- 上传信用卡账单区域 -->
-    <div class="professional-card mb-4" style="padding: 2.5rem 3rem;">
+    <div class="professional-card mb-5" style="padding: 2.5rem 3rem; margin-top: 2rem;">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 style="color: #FFFEF0; margin: 0; font-size: 1.8rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;">
                 UPLOAD CREDIT CARD STATEMENT
@@ -69,7 +69,7 @@
 
     <!-- 客户列表 - 表格布局 -->
     {% if customers %}
-    <div class="table-container">
+    <div class="table-container" style="margin-top: 3rem; margin-bottom: 3rem;">
         <div class="table-header">
             <h3 style="color: #FFFEF0; font-weight: 700; margin: 0; text-transform: uppercase; letter-spacing: 1px;">
                 CUSTOMER LIST
@@ -116,9 +116,9 @@
     {% endif %}
 
     <!-- =============== SUPPLIER INVOICES SECTION =============== -->
-    <div class="section-divider" style="margin: 4rem 0;"></div>
+    <div class="section-divider" style="margin: 5rem 0;"></div>
     
-    <div class="section-header" style="margin-top: 3rem;">
+    <div class="section-header" style="margin-top: 3rem; margin-bottom: 3rem;">
         <h2 class="section-title" style="font-size: 2rem;">
             <i class="bi bi-file-earmark-text" style="color: #FF007F;"></i> {{ t('supplier_invoices') }}
         </h2>
@@ -156,10 +156,10 @@
     {% endif %}
 
     <!-- Generated Invoices Table -->
-    <div class="table-container">
+    <div class="table-container" style="margin-top: 3rem;">
         <div class="table-header">
-            <h3 style="color: #E8E8E8; font-weight: 700; margin: 0;">
-                <i class="bi bi-file-earmark-check"></i> {{ t('generated_invoices') }}
+            <h3 style="color: #FFFEF0; font-weight: 900; margin: 0; font-size: 1.3rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                SUPPLIER INVOICES
             </h3>
             {% if invoices_data and invoices_data.invoices %}
             <button id="exportInvoiceTable" class="btn-professional-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
@@ -171,15 +171,15 @@
         <div class="table-responsive">
             <table class="table table-dark table-hover" id="invoicesTable">
                 <thead>
-                    <tr>
-                        <th>{{ t('invoice_no') }}</th>
-                        <th>{{ t('date') }}</th>
-                        <th>{{ t('customer') }}</th>
-                        <th>{{ t('supplier') }}</th>
-                        <th>{{ t('amount') }}</th>
-                        <th>{{ t('fee') }} (1%)</th>
-                        <th>{{ t('total') }}</th>
-                        <th>{{ t('action') }}</th>
+                    <tr style="background: rgba(50, 36, 70, 0.5);">
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('invoice_no') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('date') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('customer') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('supplier') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('amount') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('fee') }} (1%)</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('total') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('action') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -214,9 +214,9 @@
     </div>
 
     <!-- =============== PAYMENT RECEIPTS SECTION =============== -->
-    <div class="section-divider" style="margin: 4rem 0;"></div>
+    <div class="section-divider" style="margin: 5rem 0;"></div>
 
-    <div class="section-header" style="margin-top: 3rem; margin-bottom: 2rem;">
+    <div class="section-header" style="margin-top: 3rem; margin-bottom: 3rem;">
         <h2 class="section-title" style="font-size: 2rem; font-weight: 700; color: #E8E8E8; margin: 0; text-transform: uppercase;">
             <i class="bi bi-receipt-cutoff" style="color: #FF007F;"></i> {{ t('payment_receipts') }}
         </h2>
