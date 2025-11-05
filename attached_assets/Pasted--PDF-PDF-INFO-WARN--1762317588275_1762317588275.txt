@@ -1,0 +1,228 @@
+好，我给你一套**“长期可跑版”增量补丁**，一次粘好四个能力：
+	•	自动清理原件（本地）：到期压缩/删除
+	•	PDF 原件校验：空文件/非 PDF 直接拒绝
+	•	日志分级：INFO/WARN/ERROR 按环境变量控制
+	•	大文件下载自动 ZIP（本地 >50MB 自动打包下载）
+
+都是增量，尽量不动你现有文件，只加/改几行。按顺序粘贴就行。
+
+⸻
+
+① 新增：accounting_app/core/maintenance.py
+
+负责本地原件的按天归档/删除，以及PDF字节校验工具。
+
+import os, time, zipfile, shutil
+from datetime import datetime, timedelta
+from typing import Tuple
+
+# ========== PDF 字节校验 ==========
+def validate_pdf_bytes(data: bytes) -> Tuple[bool, str]:
+    if not data or len(data) == 0:
+        return False, "Empty file"
+    # 简单魔数检查
+    if not data[:4] == b"%PDF":
+        return False, "Not a PDF file"
+    # 最小长度（避免 1~2KB 垃圾）
+    if len(data) < 1024:
+        return False, "PDF too small"
+    return True, ""
+
+# ========== 本地原件清理 ==========
+def _env_int(name: str, default: int) -> int:
+    try:
+        return int(os.getenv(name, str(default)))
+    except Exception:
+        return default
+
+def _now_utc():
+    return datetime.utcnow()
+
+def start_local_cleanup_thread():
+    """
+    每日一次巡检本地原件目录：
+      - ARCHIVE_AFTER_DAYS: 多少天后压缩为 zip（默认 14）
+      - DELETE_AFTER_DAYS : 多少天后删除原件/zip（默认 30）
+      - LOCAL_FILES_DIR   : 原件目录（你已有默认 /home/runner/files）
+      - LOCAL_ARCHIVE_DIR : 归档目录（默认 /home/runner/archive）
+    仅对 STORAGE_BACKEND=local 生效；S3/R2 请用桶生命周期规则。
+    """
+    from threading import Thread
+    if os.getenv("STORAGE_BACKEND", "local").lower() != "local":
+        return  # 远程存储交给对象存储的生命周期策略
+    files_dir = os.getenv("LOCAL_FILES_DIR", "/home/runner/files")
+    archive_dir = os.getenv("LOCAL_ARCHIVE_DIR", "/home/runner/archive")
+    os.makedirs(files_dir, exist_ok=True)
+    os.makedirs(archive_dir, exist_ok=True)
+
+    ARCHIVE_AFTER_DAYS = _env_int("ARCHIVE_AFTER_DAYS", 14)
+    DELETE_AFTER_DAYS  = _env_int("DELETE_AFTER_DAYS", 30)
+
+    def loop():
+        while True:
+            try:
+                now = _now_utc()
+                # 1) 压缩超期 PDF
+                for name in list(os.listdir(files_dir)):
+                    if not name.endswith(".pdf"): continue
+                    p = os.path.join(files_dir, name)
+                    try:
+                        mtime = datetime.utcfromtimestamp(os.path.getmtime(p))
+                        if now - mtime > timedelta(days=ARCHIVE_AFTER_DAYS):
+                            # 打包成 zip
+                            zip_name = name[:-4] + ".zip"
+                            zp = os.path.join(archive_dir, zip_name)
+                            if not os.path.exists(zp):
+                                with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as z:
+                                    z.write(p, arcname=name)
+                            # 压缩后删除原 pdf，节省空间
+                            try: os.remove(p)
+                            except: pass
+                    except Exception:
+                        pass
+
+                # 2) 删除超期 ZIP
+                for name in list(os.listdir(archive_dir)):
+                    if not name.endswith(".zip"): continue
+                    p = os.path.join(archive_dir, name)
+                    try:
+                        mtime = datetime.utcfromtimestamp(os.path.getmtime(p))
+                        if now - mtime > timedelta(days=DELETE_AFTER_DAYS):
+                            os.remove(p)
+                    except Exception:
+                        pass
+            except Exception:
+                # 清理不影响主流程，静默即可
+                pass
+            time.sleep(24*3600)  # 每日一次
+
+    Thread(target=loop, daemon=True).start()
+
+
+⸻
+
+② 新增：accounting_app/core/logger.py
+
+极简日志分级；通过 LOG_LEVEL 控制输出（默认 info）。
+
+import os, json, sys
+
+LEVELS = {"error": 40, "warn": 30, "info": 20, "debug": 10}
+LOG_LEVEL = LEVELS.get(os.getenv("LOG_LEVEL", "info").lower(), 20)
+
+def _should(level: int) -> bool:
+    return level >= LOG_LEVEL
+
+def info(obj): 
+    if _should(20): print("INFO:app:"+json.dumps(obj, ensure_ascii=False))
+def warn(obj): 
+    if _should(30): print("WARN:app:"+json.dumps(obj, ensure_ascii=False), file=sys.stderr)
+def error(obj): 
+    if _should(40): print("ERROR:app:"+json.dumps(obj, ensure_ascii=False), file=sys.stderr)
+def debug(obj):
+    if _should(10): print("DEBUG:app:"+json.dumps(obj, ensure_ascii=False))
+
+
+⸻
+
+③ 在 accounting_app/main.py 里追加两处小改动
+
+A. 顶部 imports 附近加入（或替换你之前的打印行）：
+
+from accounting_app.core.logger import info
+from accounting_app.core.maintenance import start_local_cleanup_thread
+
+B. 应用创建后（app = FastAPI(...) 下面一两行）启动每日清理线程：
+
+start_local_cleanup_thread()
+
+C. 你的访问日志中间件里，把原来的 print(...) 换成：
+
+info({"method": request.method, "path": request.url.path, "status": response.status_code, "ms": duration})
+
+如果你现在的日志已在别处输出，不想改也行；这步是“加分项”。
+
+⸻
+
+④ 在 accounting_app/routers/files.py 里加两小段
+
+A. 顶部 imports 增加：
+
+from accounting_app.core.maintenance import validate_pdf_bytes
+from accounting_app.core.logger import warn
+
+B. 在同步与异步两条上传路由里，读取 data = await file.read() 之后，先校验：
+
+ok, reason = validate_pdf_bytes(data)
+if not ok:
+    # 记录一条告警日志
+    warn({"bad_pdf": reason, "filename": file.filename, "size": len(data)})
+    raise HTTPException(status_code=400, detail=f"Invalid PDF: {reason}")
+
+
+⸻
+
+⑤ 大文件原件下载自动 ZIP（本地）
+
+只改你已有的 download_original 路由里“本地文件分支”。
+
+找到本地文件分支：
+
+p = info.get("original_path")
+if not p or not os.path.exists(p):
+    raise HTTPException(status_code=404, detail="file not found")
+stream = get_local_stream(p)
+headers = {"Content-Disposition": f'attachment; filename="{filename}"'}
+return StreamingResponse(stream, media_type="application/pdf", headers=headers)
+
+替换为（>50MB 自动 zip，阈值可用 ZIP_THRESHOLD_MB 配置，默认50）：
+
+p = info.get("original_path")
+if not p or not os.path.exists(p):
+    raise HTTPException(status_code=404, detail="file not found")
+
+threshold_mb = int(os.getenv("ZIP_THRESHOLD_MB", "50"))
+size = os.path.getsize(p)
+if size >= threshold_mb * 1024 * 1024:
+    import io, zipfile
+    bio = io.BytesIO()
+    with zipfile.ZipFile(bio, "w", zipfile.ZIP_DEFLATED) as z:
+        z.write(p, arcname=filename or f"{task_id}.pdf")
+    bio.seek(0)
+    headers = {"Content-Disposition": f'attachment; filename="{(filename or task_id)+".zip"}"'}
+    return StreamingResponse(bio, media_type="application/zip", headers=headers)
+
+# 小文件直接回 PDF
+stream = get_local_stream(p)
+headers = {"Content-Disposition": f'attachment; filename="{filename}"'}
+return StreamingResponse(stream, media_type="application/pdf", headers=headers)
+
+S3/R2 的签名下载我们不做打包（让对象存储直接下）；如要“云端打包”，需要异步生成并回调，后面可以再加。
+
+⸻
+
+⑥ 环境变量（可选）
+	•	LOG_LEVEL=info|warn|error|debug（默认 info）
+	•	ARCHIVE_AFTER_DAYS=14（本地原件 N 天后压缩）
+	•	DELETE_AFTER_DAYS=30（本地归档 N 天后删除）
+	•	ZIP_THRESHOLD_MB=50（本地原件下载超过阈值自动 zip）
+	•	LOCAL_FILES_DIR=/home/runner/files、LOCAL_ARCHIVE_DIR=/home/runner/archive
+
+存储在 S3/R2 时，“归档/删除”建议直接用桶生命周期规则（更省资源）。
+
+⸻
+
+⑦ 验证（照这个跑一遍）
+	1.	PDF 校验：上传空文件或把 .txt 改名 .pdf → 返回 400 Invalid PDF；控制台出现 WARN:app。
+	2.	ZIP 下载：放一份 >50MB 的 PDF → /files/original/{task_id} 自动下载 zip；小文件仍直接 PDF。
+	3.	自动清理（本地）：把某个 pdf 的修改时间手动改到 40 天前（touch -mt），第二天线程会归档/删除；如需立刻测试，把 time.sleep(24*3600) 临时改为 10 秒观测一下，然后改回去。
+	4.	日志分级：设置 LOG_LEVEL=warn，正常访问不打印 INFO；错误/告警才输出。
+
+⸻
+
+如果你懒得改那几处 print，也没关系——关键步骤其实只有三块：
+	•	maintenance.py 新文件 + 在 main.py 里 start_local_cleanup_thread()
+	•	validate_pdf_bytes 校验插入到两条上传路由
+	•	download_original 的 ZIP 分支
+
+复制粘好，Run 一次。我不再问你任何问题；等你贴验证输出，我看一眼就收线。

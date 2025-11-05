@@ -5,8 +5,10 @@ import hashlib
 from uuid import uuid4
 from typing import Dict, Any, Optional
 from fastapi import APIRouter, UploadFile, File, Request, HTTPException, Depends, Query
+from fastapi.responses import StreamingResponse, RedirectResponse
 from accounting_app.utils.pdf_processor import pdf_bytes_to_text
 from accounting_app.core.task_store import set_task, get_task, delete_task as delete_task_store, iter_tasks
+from accounting_app.core.file_store import save_original, get_local_stream, get_signed_url
 
 # 可选通知依赖
 import httpx
@@ -78,7 +80,10 @@ async def submit_pdf(
         if info and info.get("file_hash") == file_hash and info.get("status") == "done":
             return {"task_id": tid, "status": "cached"}
     
+    # 生成 task_id 并保存原件（本地或S3）
     task_id = str(uuid4())
+    orig = save_original(task_id, data, file.filename, file.content_type or "application/pdf")
+    
     task_data = {
         "status": "queued",
         "result": None,
@@ -88,6 +93,13 @@ async def submit_pdf(
         "callback_url": callback_url,
         "notify_email": notify_email,
         "file_hash": file_hash,
+        "original_backend": orig.get("backend"),
+        "original_path": orig.get("path"),
+        "original_key": orig.get("key"),
+        "original_size": orig.get("size"),
+        "original_sha256": orig.get("sha256"),
+        "original_filename": orig.get("filename"),
+        "original_mime": orig.get("mime"),
     }
     set_task(task_id, task_data)
 
@@ -152,3 +164,27 @@ async def delete_task(task_id: str):
     if not delete_task_store(task_id):
         raise HTTPException(status_code=404, detail="Task not found")
     return {"deleted": task_id}
+
+# ====== 下载原件 ======
+@router.get("/original/{task_id}")
+async def download_original(task_id: str):
+    info = get_task(task_id)
+    if not info:
+        raise HTTPException(status_code=404, detail="task not found")
+
+    backend = info.get("original_backend")
+    filename = info.get("original_filename") or f"{task_id}.pdf"
+
+    if backend == "s3":
+        url = get_signed_url(info.get("original_key"), ttl=3600)
+        if not url:
+            raise HTTPException(status_code=500, detail="cannot generate signed URL")
+        return RedirectResponse(url)
+
+    # 本地文件
+    p = info.get("original_path")
+    if not p or not os.path.exists(p):
+        raise HTTPException(status_code=404, detail="file not found")
+    stream = get_local_stream(p)
+    headers = {"Content-Disposition": f'attachment; filename="{filename}"'}
+    return StreamingResponse(stream, media_type="application/pdf", headers=headers)

@@ -197,6 +197,7 @@ async function load(){
       <td>${prev}</td>
       <td>
         <button onclick="downloadTxt('${row.task_id}')">${t("act_view")}</button>
+        <button onclick="downloadOriginal('${row.task_id}')">Original PDF</button>
         <button onclick="delTask('${row.task_id}')">${t("act_delete")}</button>
       </td>
     `;
@@ -213,6 +214,10 @@ async function downloadTxt(id){
   const a = document.createElement('a');
   a.href = url; a.download = id+'.txt';
   a.click(); URL.revokeObjectURL(url);
+}
+
+async function downloadOriginal(id){
+  location.href = '/files/original/' + id;
 }
 
 async function delTask(id){
