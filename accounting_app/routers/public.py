@@ -13,7 +13,7 @@ HTML = r"""
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
     :root { color-scheme: light dark; }
-    body{font-family:ui-sans-serif,system-ui,Arial;margin:40px;max-width:760px}
+    body{font-family:ui-sans-serif,system-ui,Arial;margin:40px;max-width:860px}
     .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     .card{padding:16px;border:1px solid #ddd;border-radius:12px}
     .muted{color:#666}
@@ -21,12 +21,17 @@ HTML = r"""
     button{padding:8px 14px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer}
     input[type=file],input[type=email]{padding:8px;border:1px solid #ccc;border-radius:8px}
     .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    a.link{color:inherit;text-decoration:underline}
   </style>
 </head>
 <body>
   <div class="toolbar">
     <h2 id="title">PDF OCR</h2>
-    <button id="langBtn" aria-label="Toggle Language">中文</button>
+    <div>
+      <a id="historyLink" class="link" href="/portal/history">History</a>
+      &nbsp;|&nbsp;
+      <button id="langBtn" aria-label="Toggle Language">中文</button>
+    </div>
   </div>
 
   <div class="card">
@@ -43,8 +48,10 @@ HTML = r"""
 
 <script>
 const MAX_MB = parseInt("%MAX%");
+const NEED_KEY = "%NEED_KEY%" === "1";
+const KEY_VALUE = "%KEY_VALUE%";
 
-// --- i18n dictionary ---
+// --- language ---
 const I18N = {
   en: {
     title: "PDF OCR",
@@ -58,7 +65,7 @@ const I18N = {
     not_pdf: "Only PDF is allowed",
     too_big: "File exceeds limit",
     submit_failed: "Submit failed",
-    processing_error: (m) => `Processing error: ${m||"unknown"}`,
+    link_history: "History",
   },
   zh: {
     title: "PDF 文字提取",
@@ -72,11 +79,10 @@ const I18N = {
     not_pdf: "仅支持 PDF 文件",
     too_big: "文件超过大小限制",
     submit_failed: "提交失败",
-    processing_error: (m) => `处理出错：${m||"未知错误"}`,
+    link_history: "历史记录",
   }
 };
 
-// --- language resolve: ?lang=zh|en > localStorage > navigator ---
 function resolveLang(){
   const qs = new URLSearchParams(location.search);
   const q = qs.get("lang");
@@ -87,13 +93,11 @@ function resolveLang(){
   return nav.startsWith("zh") ? "zh" : "en";
 }
 let LANG = resolveLang();
-
 function t(key, ...args){
   const pack = I18N[LANG] || I18N.en;
   const v = pack[key];
   return (typeof v === "function") ? v(...args) : v;
 }
-
 function applyTexts(){
   document.title = t("title");
   document.getElementById("title").textContent = t("title");
@@ -101,17 +105,22 @@ function applyTexts(){
   document.getElementById("email").placeholder = t("email_placeholder");
   document.getElementById("submitBtn").textContent = t("submit");
   document.getElementById("msg").textContent = t("hint_choose");
+  const link = document.getElementById("historyLink");
+  link.textContent = t("link_history");
+  const u = new URL(link.href, location.origin);
+  u.searchParams.set("lang", LANG);
+  if (NEED_KEY) u.searchParams.set("key", KEY_VALUE);
+  link.href = u.toString();
 }
-
 document.getElementById("langBtn").addEventListener("click", ()=>{
   LANG = (LANG === "zh" ? "en" : "zh");
   localStorage.setItem("lang", LANG);
   const u = new URL(location.href);
   u.searchParams.set("lang", LANG);
+  if (NEED_KEY) u.searchParams.set("key", KEY_VALUE);
   history.replaceState(null, "", u.toString());
   applyTexts();
 });
-
 applyTexts();
 
 // --- main logic ---
@@ -130,7 +139,7 @@ document.getElementById('f').addEventListener('submit', async (e)=>{
   msg.textContent = t("uploading");
   const fd = new FormData();
   fd.append('file', f);
-  if(email) fd.append('notify_email', email); // 作为 multipart 字段提交
+  if(email) fd.append('notify_email', email);
 
   const submitResp = await fetch('/files/pdf-to-text/submit', { method:'POST', body: fd });
   if(!submitResp.ok){ msg.textContent = t("submit_failed"); return; }
@@ -145,7 +154,7 @@ document.getElementById('f').addEventListener('submit', async (e)=>{
       const safe = (j.result || '').replace(/[<>&]/g, m=>({"<":"&lt;","&":"&amp;",">":"&gt;"}[m]));
       out.innerHTML = '<h3>'+t("result_title")+'</h3><pre>'+ safe +'</pre>';
     }else if(j.status === 'error'){
-      msg.textContent = t("processing_error", j.error_msg);
+      msg.textContent = 'ERROR: ' + (j.error_msg || 'unknown');
     }else{
       setTimeout(poll, 1200);
     }
@@ -159,12 +168,13 @@ document.getElementById('f').addEventListener('submit', async (e)=>{
 
 @router.get("/portal", response_class=HTMLResponse)
 async def portal(request: Request):
-    # 可选：简单访问密钥
     need_key = os.getenv("PORTAL_KEY")
-    if need_key:
-        key = request.query_params.get("key")
-        if key != need_key:
-            raise HTTPException(status_code=404, detail="Not Found")
+    if need_key and request.query_params.get("key") != need_key:
+        # 不泄露存在性，直接 404
+        raise HTTPException(status_code=404, detail="Not Found")
 
     limit = os.getenv("MAX_UPLOAD_MB", "10")
-    return HTML.replace("%MAX%", str(limit))
+    # 透传密钥给前端（用于拼历史页链接），仅在设置密钥时传值
+    need_key_flag = "1" if bool(need_key) else "0"
+    key_value = request.query_params.get("key", "") if need_key else ""
+    return HTML.replace("%MAX%", str(limit)).replace("%NEED_KEY%", need_key_flag).replace("%KEY_VALUE%", key_value)
