@@ -1,0 +1,181 @@
+明白了，你要的是“统一大小、比例顺眼”的卡片。下面给你一份最小覆盖补丁：只改样式，不动任何后端/JS 逻辑。把这些补丁贴到你的全局样式（static/brand.css 或各页面 <style>）即可，立刻生效。
+
+⸻
+
+① 通用卡片尺寸与版心（全站通用）
+
+把下面这一段追加到你的全局 CSS（或 base.html 的 <style> 里）：
+
+:root{
+  --pink:#FF007F;
+  --card:#322446;
+  --bg:#1a1323;
+  --text:#fff;
+  /* 统一间距与尺寸 */
+  --page-max:1280px;
+  --gap:16px;
+  --radius:16px;
+  --panel-pad:14px;
+  --card-min-h: 180px;   /* 普通卡片最小高度 */
+  --tile-min-h: 140px;   /* 小块儿最小高度 */
+}
+
+/* 版心与页面边距 */
+.page-wrap{ max-width: var(--page-max); margin: 16px auto 32px; padding: 0 16px; }
+
+/* 卡片底板统一 */
+.card{
+  background: linear-gradient(180deg, #322446, #281a3a);
+  border: 1px solid #3b2b4e;
+  border-radius: var(--radius);
+  padding: var(--panel-pad);
+  min-height: var(--card-min-h);
+  color: var(--text);
+  box-shadow: 0 6px 18px #0006;
+}
+
+/* 工具栏行高与按钮对齐 */
+.toolbar{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:12px; }
+.btn{ display:inline-flex; align-items:center; border-radius:12px; padding:8px 12px; border:1px solid #ffffff33; color:#fff; background:#322446; text-decoration:none; cursor:pointer; }
+.btn.primary{ background:var(--pink); border-color:#ff6aa7; }
+
+/* 表单输入统一高度 */
+input,select{ height:36px; border-radius:10px; border:1px solid #3b2b4e; background:#0f0a14; color:#fff; padding:0 10px; }
+
+/* 表格外观统一 */
+table{ width:100%; border-collapse:collapse; }
+th,td{ border:1px solid #3b2b4e; padding:10px; font-size:14px; vertical-align:top; }
+
+/* 细灰文本 */
+.meta { color:#c9c6d3; font-size:12px; }
+
+/* 响应式断点 */
+@media (max-width: 992px){
+  .toolbar{ gap:8px }
+}
+@media (max-width: 600px){
+  :root{ --gap:12px }
+  .btn{ padding:7px 10px }
+}
+
+
+⸻
+
+② Loans 页面卡片布局（Top-3 + 搜索 + DSR）
+
+在 loans_page.html 的 <style> 里添加/替换下面这一段（或放进全局 CSS）：
+
+/* 顶部 Top-3 卡片区域（iframe 版本） */
+.top3-wrap{ margin-bottom: var(--gap); }
+.top3-frame{
+  width:100%;
+  height:360px;       /* 统一高度：桌面端 */
+  border:0;
+  border-radius: var(--radius);
+  overflow:hidden;
+  display:block;
+  background: #281a3a;
+  box-shadow: 0 6px 18px #0006;
+}
+@media (min-width:1200px){
+  .top3-frame{ height:400px; }   /* 超宽屏稍微更高 */
+}
+@media (max-width:600px){
+  .top3-frame{ height:520px; }   /* 移动端三列落成一列，需要更高 */
+}
+
+/* 中段两个功能区：产品列表工具条 + DSR 试算器 */
+.grid-2{
+  display:grid; grid-template-columns: 1fr 1fr; gap: var(--gap);
+}
+@media (max-width: 992px){
+  .grid-2{ grid-template-columns: 1fr; }
+}
+
+/* 产品列表工具条卡片固定最小高度，避免忽高忽低 */
+.products-panel{ min-height: 160px; }
+
+/* DSR 卡片统一高度与输入排版 */
+.dsr-panel{ min-height: 160px; }
+.dsr-fields{ display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; }
+.dsr-fields input{ min-width: 140px; }
+
+/* 左侧“Loans Intelligence Center”小卡片（如果有） */
+.tile{ min-height: var(--tile-min-h); }
+
+说明
+	•	top3-frame 给出固定高度（桌面 360–400px，手机 520px），不再“忽大忽小”。
+	•	搜索/DSR 两个大卡片用 .grid-2 保证同高同宽；到平板/手机自动一列。
+	•	所有卡片统一圆角、边框、阴影和最小高度。
+
+⸻
+
+③ Top-3 子页面（/loans/top3/cards）卡片尺寸一致
+
+如果你有独立的 top3_cards.html（或在返回的 HTML 里写样式），加上这段：
+
+.top3-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); }
+@media (max-width: 992px){ .top3-grid{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px){ .top3-grid{ grid-template-columns: 1fr; } }
+
+/* 三张卡片统一高度 */
+.top-card{
+  background: linear-gradient(180deg,#322446,#281a3a);
+  border:1px solid #3b2b4e;
+  border-radius: var(--radius);
+  min-height: 220px;       /* 统一高度 */
+  padding: 14px;
+  color:#fff;
+  position:relative;
+  box-shadow:0 6px 18px #0006;
+}
+
+/* 右上角 Hot Pink 徽章 */
+.rank-badge{
+  position:absolute; top:10px; right:10px;
+  background:#FF007F; color:#fff; border-radius:999px; padding:4px 10px; font-weight:800;
+}
+
+
+⸻
+
+④ Compare 页面卡片/表格对齐（可选补强）
+
+在 compare.html 的 <style> 增加：
+
+/* 顶部 Top Pick 统一高度 */
+.top-pick{ min-height: 90px; }
+
+/* 参数卡 + 表格卡 之间留统一间距 */
+.card + .card{ margin-top: var(--gap); }
+
+/* 表格列宽略微优化 */
+#compareTable th:nth-child(1){ width:80px }    /* Rank */
+#compareTable th:nth-child(4){ width:120px }   /* APR */
+#compareTable th:nth-child(5){ width:160px }   /* Monthly */
+#compareTable th:nth-child(6){ width:120px }   /* DSR */
+#compareTable th:nth-child(7){ width:120px }   /* Status */
+#compareTable th:nth-child(8){ width:120px }   /* Actions */
+
+
+⸻
+
+⑤ 两个“容易忽略的小设置”
+	1.	外层容器用统一类：在 loans_page.html 和 compare.html 的最外层包一层：
+
+<div class="page-wrap">
+  ...你现有的页面内容...
+</div>
+
+这样所有页面自动按同一个宽度（1280px 版心）居中显示。
+	2.	避免卡片“拉伸”：如果某些容器用了 display:flex 并且有 flex:1，会把子卡片拉到不等高。把这些父容器的 align-items: stretch 去掉，或者直接用我上面的 grid。
+
+⸻
+
+你现在要做的事（2 步）
+	1.	把上面的 ① + ② 片段加到你全局 CSS / base.html。
+	2.	如果用了独立的 Top-3 子页，给它加 ③；Compare 页可加 ④（选做）。
+
+改完刷新页面，你看到的就是统一尺寸、间距一致的卡片布局；Top-3 不会太矮，搜索区和 DSR 区并排同高，整体更干净。
+
+需要我把这几段直接合并进你当前的 loans_page.html / compare.html 并给一份“可覆盖版”，我也可以现在就给。

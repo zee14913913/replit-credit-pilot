@@ -15,6 +15,7 @@
 
   /* Legacy aliases (backward compatibility) */
   --primary: var(--hot-pink);
+  --pink: var(--hot-pink);
   --bg: var(--deep-black);
   --card: var(--dark-purple);
   --text: var(--snow-white);
@@ -48,6 +49,14 @@
   --lh-tight: 1.2;
   --lh-normal: 1.45;
   --lh-relax: 1.65;
+
+  /* ===== Layout & Spacing (v2.1) ===== */
+  --page-max: 1280px;     /* 页面最大宽度 */
+  --gap: 16px;            /* 标准间距 */
+  --radius: 16px;         /* 圆角半径 */
+  --panel-pad: 14px;      /* 面板内边距 */
+  --card-min-h: 180px;    /* 普通卡片最小高度 */
+  --tile-min-h: 140px;    /* 小块最小高度 */
 }
 
 /* ===== Base Reset ===== */
@@ -68,6 +77,7 @@ a:hover { text-decoration: underline; }
 
 /* ===== Layout Utilities ===== */
 .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+.page-wrap { max-width: var(--page-max); margin: 16px auto 32px; padding: 0 16px; }
 
 .nav {
   display: flex;
@@ -109,11 +119,16 @@ a:hover { text-decoration: underline; }
 /* ===== Card Component ===== */
 .card {
   background: linear-gradient(180deg, var(--dark-purple), #281a3a);
-  border: 1px solid var(--pink-20);
-  border-radius: 14px;
-  padding: 18px;
+  border: 1px solid #3b2b4e;
+  border-radius: var(--radius);
+  padding: var(--panel-pad);
+  min-height: var(--card-min-h);
   color: var(--snow-white);
-  box-shadow: 0 6px 22px rgba(0, 0, 0, .25);
+  box-shadow: 0 6px 18px #0006;
+}
+
+.card + .card {
+  margin-top: var(--gap);
 }
 
 .card-title {
@@ -287,4 +302,148 @@ a:hover { text-decoration: underline; }
   border-top: 1px solid #ffffff14;
   padding-top: 14px;
   font-size: 12px;
+}
+
+/* ===== Loans Page Specific Layouts ===== */
+
+/* Top-3 iframe wrapper */
+.top3-wrap {
+  margin-bottom: var(--gap);
+}
+
+.top3-frame {
+  width: 100%;
+  height: 360px;
+  border: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: block;
+  background: #281a3a;
+  box-shadow: 0 6px 18px #0006;
+}
+
+/* Two-column grid (products + DSR) */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+}
+
+/* Products panel */
+.products-panel {
+  min-height: 160px;
+}
+
+/* DSR panel */
+.dsr-panel {
+  min-height: 160px;
+}
+
+.dsr-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.dsr-fields input {
+  min-width: 140px;
+}
+
+/* Small tile component */
+.tile {
+  min-height: var(--tile-min-h);
+}
+
+/* Toolbar (action buttons row) */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+/* ===== Top-3 Cards Specific ===== */
+
+.top3-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+}
+
+.top-card {
+  background: linear-gradient(180deg, #322446, #281a3a);
+  border: 1px solid #3b2b4e;
+  border-radius: var(--radius);
+  min-height: 220px;
+  padding: 14px;
+  color: var(--snow-white);
+  position: relative;
+  box-shadow: 0 6px 18px #0006;
+}
+
+.rank-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--hot-pink);
+  color: var(--snow-white);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+/* ===== Compare Page Specific ===== */
+
+.top-pick {
+  min-height: 90px;
+}
+
+#compareTable th:nth-child(1) { width: 80px; }    /* Rank */
+#compareTable th:nth-child(4) { width: 120px; }   /* APR */
+#compareTable th:nth-child(5) { width: 160px; }   /* Monthly */
+#compareTable th:nth-child(6) { width: 120px; }   /* DSR */
+#compareTable th:nth-child(7) { width: 120px; }   /* Status */
+#compareTable th:nth-child(8) { width: 120px; }   /* Actions */
+
+/* ===== Responsive Breakpoints ===== */
+
+@media (min-width: 1200px) {
+  .top3-frame {
+    height: 400px;
+  }
+}
+
+@media (max-width: 992px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+  
+  .top3-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .toolbar {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  :root {
+    --gap: 12px;
+  }
+  
+  .top3-frame {
+    height: 520px;
+  }
+  
+  .top3-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .btn {
+    padding: 7px 10px;
+  }
 }
