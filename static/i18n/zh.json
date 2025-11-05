@@ -336,6 +336,7 @@
   "transaction": "交易",
   "customer_list": "客户列表",
   "customer_code": "客户代码",
+  "customers_count": "{count} 位客户",
   "view_timeline": "查看时间线",
   "timeline": "时间线",
   "back_to_timeline": "返回时间线",
