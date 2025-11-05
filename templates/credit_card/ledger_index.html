@@ -84,10 +84,10 @@
             <table class="table table-dark table-hover">
                 <thead>
                     <tr style="background: rgba(50, 36, 70, 0.5);">
-                        <th style="width: 15%; color: #999; font-size: 0.85rem; text-transform: uppercase; font-weight: 600; padding: 1rem 1.5rem; border-bottom: 2px solid #322446;">CUSTOMER CODE</th>
-                        <th style="width: 25%; color: #999; font-size: 0.85rem; text-transform: uppercase; font-weight: 600; padding: 1rem 1.5rem; border-bottom: 2px solid #322446;">CUSTOMER NAME</th>
-                        <th style="width: 15%; text-align: center; color: #999; font-size: 0.85rem; text-transform: uppercase; font-weight: 600; padding: 1rem 1.5rem; border-bottom: 2px solid #322446;">STATEMENT COUNT</th>
-                        <th style="width: 15%; text-align: center; color: #999; font-size: 0.85rem; text-transform: uppercase; font-weight: 600; padding: 1rem 1.5rem; border-bottom: 2px solid #322446;">ACTIONS</th>
+                        <th style="width: 15%; color: #999; font-size: 0.85rem; text-transform: uppercase; font-weight: 600; padding: 1rem 1.5rem; border: 2px solid #FF007F;">CUSTOMER CODE</th>
+                        <th style="width: 25%; color: #999; font-size: 0.85rem; text-transform: uppercase; font-weight: 600; padding: 1rem 1.5rem; border: 2px solid #FF007F;">CUSTOMER NAME</th>
+                        <th style="width: 15%; text-align: center; color: #999; font-size: 0.85rem; text-transform: uppercase; font-weight: 600; padding: 1rem 1.5rem; border: 2px solid #FF007F;">STATEMENT COUNT</th>
+                        <th style="width: 15%; text-align: center; color: #999; font-size: 0.85rem; text-transform: uppercase; font-weight: 600; padding: 1rem 1.5rem; border: 2px solid #FF007F;">ACTIONS</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -96,7 +96,7 @@
                         <td style="font-weight: 700; color: #FFFEF0; font-size: 1.1rem; text-transform: uppercase; padding: 1.2rem 1.5rem;">{{ customer.code }}</td>
                         <td style="font-weight: 700; color: #FFFEF0; font-size: 1.1rem; text-transform: uppercase; padding: 1.2rem 1.5rem;">{{ customer.name }}</td>
                         <td style="text-align: center; padding: 1.2rem 1.5rem;">
-                            <span style="background: rgba(255, 0, 127, 0.2); color: #FF007F; padding: 0.4rem 1rem; border-radius: 6px; font-weight: 700; border: 1px solid rgba(255, 0, 127, 0.4); font-size: 1.1rem;">
+                            <span style="background: rgba(255, 0, 127, 0.2); color: #FFFEF0; padding: 0.4rem 1rem; border-radius: 6px; font-weight: 700; border: 1px solid rgba(255, 0, 127, 0.4); font-size: 1.1rem;">
                                 {{ customer.statement_count }}
                             </span>
                         </td>
