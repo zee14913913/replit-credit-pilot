@@ -1,0 +1,94 @@
+没关系，我们收一点。照这“三步走”，你不用理解原理也能把页面变好看。
+
+三步就够了
+
+1) 新建样式文件
+
+在项目里新建：static/brand.css，整段粘贴进去↓
+
+:root{
+  --hot-pink:#FF007F;      /* 主色 */
+  --dark-purple:#322446;   /* 次色/卡片 */
+  --deep-black:#1A1323;    /* 背景 */
+  --white:#fff;            /* 文字-白 */
+  --light:#CFCFCF;         /* 淡灰 */
+}
+html,body{background:var(--deep-black);color:var(--white);}
+
+/* 卡片：套上这个类就好看 */
+.card{
+  background:linear-gradient(180deg,var(--dark-purple),#281a3a);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:16px; padding:14px; box-shadow:0 6px 18px #0006;
+}
+/* 卡片标题：单行省略 + 更粗更大 + 英文自动大写 */
+.title{
+  font-weight:800; font-size:16px; color:var(--hot-pink);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  text-transform:uppercase; margin:0 0 8px 0;
+}
+/* 按钮：通用 / 主按钮 / 线框 */
+.btn{
+  background:var(--dark-purple); color:var(--white);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:12px; padding:8px 12px; cursor:pointer;
+  font-weight:700; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.btn.primary{ background:var(--hot-pink); border-color:#ff6aa7; }
+.btn.ghost{ background:transparent; border:1px solid #ffffff33; color:var(--white); }
+
+/* 小工具：需要时加上去 */
+.text-light{color:var(--light)!important;}
+.upper{text-transform:uppercase;}
+.ellipsis{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.border-pink{border-color:var(--hot-pink)!important;}
+
+2) 在页面里引用
+
+打开 templates/base.html，在 </head> 之前加入一行：
+
+<link rel="stylesheet" href="/static/brand.css">
+
+（一定要加到最后，它才能覆盖旧样式。）
+
+3) 给每张卡片/按钮加类名（你自己改）
+
+把页面里每个卡片外层加 class="card"，标题加 class="title ellipsis"，按钮加 class="btn" 或 class="btn primary"。
+
+改前
+
+<div>
+  <h3>Loans Intelligence Center - Bank A Home Loan Flexi</h3>
+  <button>Open Compare</button>
+</div>
+
+改后（只加类名）
+
+<div class="card">
+  <h3 class="title ellipsis">Loans Intelligence Center - Bank A Home Loan Flexi</h3>
+  <button class="btn primary upper">Open Compare</button>
+  <button class="btn ghost">Export CSV</button>
+</div>
+
+就这三步。保存后刷新（浏览器按 Ctrl/Cmd+Shift+R）。
+
+⸻
+
+你说的6项外观怎么自己改？
+	•	字粗细/大小：标题统一在 .title 已经加粗变大；想更大，把 font-size:16px 改 18/20 即可。
+	•	英文大小写：给文本加 .upper（中文无影响）。
+	•	同一行省略：给任何长文字加 .ellipsis。
+	•	卡片背景色：只想纯色，把 .card 的 background: 改为 background:var(--dark-purple);
+	•	文字颜色：用 .text-light（淡灰）或默认白。
+	•	卡片描边颜色：额外加 .border-pink → 粉色描边更显眼。
+
+⸻
+
+看不到效果？三件事排查
+	1.	brand.css 路径拼对了吗：/static/brand.css
+	2.	引用顺序在最后吗（要覆盖旧样式）
+	3.	强制刷新：浏览器 Ctrl/Cmd + Shift + R；Replit 点 Stop 再 Run
+
+⸻
+
+需要我把某一页（比如 /loans/page）替换成已经加好类名的版本，我也可以直接给你那一页的成品模板。你先照三步做，有哪里不亮，告诉我那个页面的片段，我给你对应的“加类名后”的版本。
