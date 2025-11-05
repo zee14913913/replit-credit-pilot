@@ -3,6 +3,7 @@ import time
 import json
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from starlette.responses import Response
 
 from accounting_app.routers import health, files, public, history, stats, loans_updates, loans_business, ctos, ui_cards
@@ -37,6 +38,9 @@ app.add_middleware(
 # 新中间件：安全头 + 日志 + 限流
 app.add_middleware(SecurityAndLogMiddleware, env=ENV)
 app.add_middleware(SimpleRateLimitMiddleware)
+
+# ====== 静态文件 ======
+app.mount("/static", StaticFiles(directory="accounting_app/static"), name="static")
 
 # ====== 路由注册 ======
 app.include_router(health.router)
