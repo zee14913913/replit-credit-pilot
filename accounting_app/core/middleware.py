@@ -1,6 +1,7 @@
 import os, time, json
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response, PlainTextResponse
+from accounting_app.core.logger import info
 
 class SecurityAndLogMiddleware(BaseHTTPMiddleware):
     def __init__(self, app, env: str = "dev"):
@@ -17,7 +18,7 @@ class SecurityAndLogMiddleware(BaseHTTPMiddleware):
             resp.headers.setdefault("Strict-Transport-Security","max-age=31536000; includeSubDomains")
         # 日志
         ms = int((time.time()-t0)*1000)
-        print("INFO:app:"+json.dumps({"method":request.method,"path":request.url.path,"status":resp.status_code,"ms":ms}, ensure_ascii=False))
+        info({"method": request.method, "path": request.url.path, "status": resp.status_code, "ms": ms})
         return resp
 
 class SimpleRateLimitMiddleware(BaseHTTPMiddleware):

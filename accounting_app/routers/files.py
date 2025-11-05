@@ -9,6 +9,8 @@ from fastapi.responses import StreamingResponse, RedirectResponse
 from accounting_app.utils.pdf_processor import pdf_bytes_to_text
 from accounting_app.core.task_store import set_task, get_task, delete_task as delete_task_store, iter_tasks
 from accounting_app.core.file_store import save_original, get_local_stream, get_signed_url
+from accounting_app.core.maintenance import validate_pdf_bytes
+from accounting_app.core.logger import warn
 
 # 可选通知依赖
 import httpx
@@ -59,6 +61,12 @@ async def pdf_to_text(file: UploadFile = File(...)):
     if file.content_type not in {"application/pdf"}:
         raise HTTPException(415, detail="Only PDF is allowed")
     data = await file.read()
+    
+    ok, reason = validate_pdf_bytes(data)
+    if not ok:
+        warn({"bad_pdf": reason, "filename": file.filename, "size": len(data)})
+        raise HTTPException(status_code=400, detail=f"Invalid PDF: {reason}")
+    
     text = await asyncio.to_thread(pdf_bytes_to_text, data)
     return {"text": text}
 
@@ -73,6 +81,11 @@ async def submit_pdf(
     if file.content_type not in {"application/pdf"}:
         raise HTTPException(415, detail="Only PDF is allowed")
     data = await file.read()
+    
+    ok, reason = validate_pdf_bytes(data)
+    if not ok:
+        warn({"bad_pdf": reason, "filename": file.filename, "size": len(data)})
+        raise HTTPException(status_code=400, detail=f"Invalid PDF: {reason}")
     
     # 结果去重：hash 文件，已有则直接返回旧 task_id
     file_hash = hashlib.sha256(data).hexdigest()
@@ -185,6 +198,19 @@ async def download_original(task_id: str):
     p = info.get("original_path")
     if not p or not os.path.exists(p):
         raise HTTPException(status_code=404, detail="file not found")
+    
+    threshold_mb = int(os.getenv("ZIP_THRESHOLD_MB", "50"))
+    size = os.path.getsize(p)
+    if size >= threshold_mb * 1024 * 1024:
+        import io, zipfile
+        bio = io.BytesIO()
+        with zipfile.ZipFile(bio, "w", zipfile.ZIP_DEFLATED) as z:
+            z.write(p, arcname=filename or f"{task_id}.pdf")
+        bio.seek(0)
+        headers = {"Content-Disposition": f'attachment; filename="{(filename or task_id)+".zip"}"'}
+        return StreamingResponse(bio, media_type="application/zip", headers=headers)
+    
+    # 小文件直接回 PDF
     stream = get_local_stream(p)
     headers = {"Content-Disposition": f'attachment; filename="{filename}"'}
     return StreamingResponse(stream, media_type="application/pdf", headers=headers)

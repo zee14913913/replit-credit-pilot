@@ -1,3 +1,8 @@
+好，我把你的配色一口气用在 /portal 的前端界面上：主色 #FF007F，深背景 #1a1323 / #322446，文本与边框用 #fff / #999 / #888 / #000。
+下面是一份可直接覆盖的 accounting_app/routers/public.py，包含：中英切换、加载动画、进度条、Toast 提示、帮助弹窗、响应式布局、历史链接（会自动带上密钥）。
+
+——你只要把整段贴进同名文件保存、Run 即可。
+
 import os
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import HTMLResponse
@@ -168,7 +173,7 @@ HTML = r"""
     <div class="panel">
       <div class="close" id="modalClose">✕</div>
       <h3 id="helpTitle">How to use</h3>
-      <p id="help1">1) Choose a PDF (≤ %MAX% MB) and click "Upload & Process".</p>
+      <p id="help1">1) Choose a PDF (≤ %MAX% MB) and click “Upload & Process”.</p>
       <p id="help2">2) Large files will run in background. You can keep this page open; it will auto-refresh the result.</p>
       <p id="help3">3) You may enter an email to receive notification when done.</p>
       <p class="muted" id="help4">Only PDF is accepted. If file is scanned, OCR quality depends on the source.</p>
@@ -198,7 +203,7 @@ const I18N = {
     too_big:"File exceeds limit",
     submit_failed:"Submit failed",
     help_title:"How to use",
-    help_1:`1) Choose a PDF (≤ ${MAX_MB} MB) and click "Upload & Process".`,
+    help_1:`1) Choose a PDF (≤ ${MAX_MB} MB) and click “Upload & Process”.`,
     help_2:`2) Large files will run in background. This page will auto-refresh the result.`,
     help_3:`3) Optionally enter an email for notification.`,
     help_4:`Only PDF is accepted. OCR depends on source quality.`,
@@ -220,7 +225,7 @@ const I18N = {
     too_big:"文件超过大小限制",
     submit_failed:"提交失败",
     help_title:"如何使用",
-    help_1:`1）选择 PDF（≤ ${MAX_MB} MB），点击"上传并处理"。`,
+    help_1:`1）选择 PDF（≤ ${MAX_MB} MB），点击“上传并处理”。`,
     help_2:"2）大文件将后台处理，页面会自动刷新结果。",
     help_3:"3）可填写邮箱，完成后会邮件通知。",
     help_4:"仅支持 PDF。扫描件的识别质量受原文件影响。",
@@ -316,6 +321,7 @@ document.getElementById('f').addEventListener('submit', async (e)=>{
   fd.append('file', f);
   if(email) fd.append('notify_email', email);
 
+  // 提交任务（异步接口）
   const submitResp = await fetch('/files/pdf-to-text/submit', { method:'POST', body: fd });
   if(!submitResp.ok){
     showSpinner(false); resetProgress();
@@ -326,6 +332,7 @@ document.getElementById('f').addEventListener('submit', async (e)=>{
   msg.textContent = t("submitted", sub.task_id);
   showSpinner(false);
 
+  // 进度模拟 + 轮询
   let prog = 12;
   (function tick(){
     prog = Math.min(95, prog + Math.random()*7);
@@ -370,3 +377,12 @@ async def portal(request: Request):
       .replace("%KEY_VALUE%", key_value)
       .replace("%ENV%", env.upper()))
     return html
+
+说明
+	•	颜色全部按你给的：#FF007F / #888 / #fff / #999 / #322446 / #1a1323 / #000000。
+	•	按钮、边框、阴影统一风格；主按钮采用粉色主色，深色背景+卡片。
+	•	自带：中英切换、加载 Spinner、进度条模拟、Toast、帮助弹窗、历史链接（自动带 lang 和密钥）。
+	•	页脚显示当前 ENV（DEV/PROD）。
+
+贴上去后，打开 /portal?lang=zh 看效果就行。
+要把同样的视觉套到 /portal/history 页，我也能给你一份“只改样式”的增量补丁。

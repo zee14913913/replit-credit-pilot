@@ -7,6 +7,8 @@ from starlette.responses import Response
 
 from accounting_app.routers import health, files, public, history, stats
 from accounting_app.core.middleware import SecurityAndLogMiddleware, SimpleRateLimitMiddleware
+from accounting_app.core.logger import info
+from accounting_app.core.maintenance import start_local_cleanup_thread
 
 APP_NAME = os.getenv("APP_NAME", "Accounting API")
 ENV = os.getenv("ENV", "dev")  # dev / prod
@@ -18,6 +20,9 @@ app = FastAPI(
     redoc_url=None if ENV == "prod" else "/redoc",
     openapi_url=None if ENV == "prod" else "/openapi.json",
 )
+
+# 启动本地原件清理线程
+start_local_cleanup_thread()
 
 # ====== 安全与跨域 ======
 origins = [o.strip() for o in CORS_ALLOW.split(",") if o.strip()]
