@@ -11,7 +11,7 @@ class SecurityAndLogMiddleware(BaseHTTPMiddleware):
         resp: Response = await call_next(request)
         # 安全头
         resp.headers.setdefault("X-Content-Type-Options","nosniff")
-        resp.headers.setdefault("X-Frame-Options","DENY")
+        resp.headers.setdefault("X-Frame-Options","SAMEORIGIN")
         resp.headers.setdefault("Referrer-Policy","no-referrer")
         resp.headers.setdefault("Permissions-Policy","geolocation=(), microphone=(), camera=()")
         if self.env == "prod":
