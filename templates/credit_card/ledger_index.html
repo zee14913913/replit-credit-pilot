@@ -99,7 +99,7 @@
                             </span>
                         </td>
                         <td style="text-align: center; padding: 1.2rem 1.5rem;">
-                            <a href="{{ url_for('credit_card_ledger_timeline', customer_id=customer.id) }}" class="btn-view" style="text-transform: uppercase; font-size: 1rem; font-weight: 700;">
+                            <a href="{{ url_for('credit_card_ledger_timeline', customer_id=customer.id) }}" class="btn-view" style="text-transform: uppercase; font-size: 1rem; font-weight: 700; color: #FFFEF0;">
                                 {{ t('view_timeline') }}
                             </a>
                         </td>
@@ -193,7 +193,7 @@
                         <td>RM {{ "{:,.2f}".format(invoice.supplier_fee) }}</td>
                         <td style="color: #FF007F; font-weight: 700;">RM {{ "{:,.2f}".format(invoice.total_amount + invoice.supplier_fee) }}</td>
                         <td>
-                            <a href="/static/uploads/{{ invoice.pdf_path }}" target="_blank" class="btn-view" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;">
+                            <a href="/static/uploads/{{ invoice.pdf_path }}" target="_blank" class="btn-view" style="font-size: 0.75rem; padding: 0.35rem 0.7rem; color: #FFFEF0; font-weight: 700;">
                                 <i class="bi bi-eye"></i> {{ t('view') }}
                             </a>
                         </td>
@@ -258,7 +258,7 @@
                         <td style="color: #C0C0C0;">{{ receipt['remarks'] }}</td>
                         <td>
                             {% if receipt['receipt_file_path'] %}
-                            <a href="/static/uploads/{{ receipt['receipt_file_path'] }}" target="_blank" class="btn-view" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;">
+                            <a href="/static/uploads/{{ receipt['receipt_file_path'] }}" target="_blank" class="btn-view" style="font-size: 0.75rem; padding: 0.35rem 0.7rem; color: #FFFEF0; font-weight: 700;">
                                 <i class="bi bi-file-image"></i> {{ t('view') }}
                             </a>
                             {% else %}
