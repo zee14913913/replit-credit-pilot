@@ -17,43 +17,23 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Server"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Accounting API"
+args = "FastAPI Server"
 
 [[workflows.workflow]]
-name = "Server"
+name = "FastAPI Server"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python app.py"
+args = "python -m uvicorn accounting_app.main:app --host 0.0.0.0 --port 5000"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
 
-[[workflows.workflow]]
-name = "Accounting API"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "uvicorn accounting_app.main:app --host 0.0.0.0 --port 8000 --reload"
-waitForPort = 8000
-
-[workflows.workflow.metadata]
-outputType = "console"
-
 [[ports]]
 localPort = 5000
 externalPort = 80
-
-[[ports]]
-localPort = 8000
-externalPort = 8000
 
 [[ports]]
 localPort = 8080
@@ -98,6 +78,10 @@ externalPort = 8081
 [[ports]]
 localPort = 40671
 externalPort = 4200
+
+[[ports]]
+localPort = 40889
+externalPort = 8099
 
 [[ports]]
 localPort = 42459

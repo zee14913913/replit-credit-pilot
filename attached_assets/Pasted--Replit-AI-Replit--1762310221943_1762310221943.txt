@@ -1,0 +1,83 @@
+行，你当“送信人”最省事。我给你一段**可直接粘贴给 Replit（AI/支持/同事）**的话，他们照做就能把服务稳住。你把他们的回复原样带回来就行。
+
+我需要把当前 Replit 项目调整为**只对外跑 FastAPI**，并修好 /health。请按下面步骤直接修改与验证，并把修改后的关键输出贴给我。
+
+——— 修改目标（务必落实） ———
+1) 只跑 FastAPI（不要再对外跑 Flask）
+- 把 .replit 改成仅这一行（去掉原 workflows/并行任务/多服务）：
+  run = "python -m uvicorn accounting_app.main:app --host 0.0.0.0 --port $PORT"
+
+2) 修复 /health 的数据库健康检查（SQLAlchemy 2.0 语法）
+- 在健康检查里，把
+  conn.execute("SELECT 1")
+  改为
+  from sqlalchemy import text
+  conn.execute(text("SELECT 1"))
+  （若是异步连接：await conn.execute(text("SELECT 1"))）
+- 确认 /health 返回：
+  {"status":"healthy","database":"connected"}（或同等语义）
+
+3) PDF→文本：优先改为 **pypdfium2 路线**（更稳，不依赖系统 pdftoppm）
+- 用 pypdfium2 把 PDF 页渲染为 PIL.Image，再用 pytesseract 做 OCR。
+- 示例函数（可放到 accounting_app/routers 或 utils 中替换原 pdf2image 流程）：
+  ```python
+  import io, pypdfium2 as pdfium
+  from PIL import Image
+  import pytesseract
+
+  def pdf_bytes_to_text(data: bytes, ocr_lang="eng") -> str:
+    pdf = pdfium.PdfDocument(io.BytesIO(data))
+    out = []
+    for i in range(len(pdf)):
+        page = pdf.get_page(i)
+        img = page.render(scale=200/72).to_pil().convert("L")  # ~200dpi
+        out.append(pytesseract.image_to_string(img, lang=ocr_lang))
+        page.close()
+    pdf.close()
+    return "\n\n".join(out).strip()
+  ```
+- 如果必须继续用 pdf2image，请确保运行环境能找到 pdftoppm：
+  - 优先方案：让 PATH 包含 Nix 二进制：/home/runner/.nix-profile/bin 和 /run/current-system/sw/bin
+  - 验证：`which pdftoppm && pdftoppm -v | head -n 1`
+
+4) 依赖清理（只保留 FastAPI 所需；去掉 Flask 及重复项）
+- 最少可运行 requirements.txt 建议（如果你们看到有多余包，请一并移除）：
+  ```
+  fastapi==0.115.0
+  uvicorn[standard]==0.30.6
+  python-multipart==0.0.9
+  pydantic[email]==2.9.2
+  SQLAlchemy==2.0.43
+  psycopg2-binary==2.9.11
+  python-dotenv==1.0.1
+
+  pdfplumber==0.11.7
+  pypdfium2==4.30.0
+  pytesseract==0.3.13
+  Pillow==10.4.0
+
+  requests==2.32.5
+  ```
+- 执行：`pip install -r requirements.txt`
+
+——— 验证清单（请把原始输出贴回给我） ———
+A) 运行与端口
+- 用 .replit 的 run 启动后，确认只监听 0.0.0.0:$PORT（不要再起 Flask 进程）
+- 访问 `/docs` 可打开 Swagger 文档（返回 200）
+
+B) /health
+- 访问 `/health`，返回 healthy（包含 database: connected），贴出响应体
+
+C) PDF/OCR
+- 贴出以下命令输出（只要第一行）：
+  - `python -V`
+  - `pip freeze | sed -n '1,80p'`
+  - 如仍使用 pdf2image：`which pdftoppm && pdftoppm -v | head -n 1`
+  - `tesseract --version | head -n 1`
+
+D) 目录 & 关键文件（确认变更生效）
+- 贴出 `.replit` 完整内容
+- 贴出 `requirements.txt` 前 50 行
+- 执行 `find . -maxdepth 2 -type f | sort | sed -n '1,120p'` 并贴回（用于确认未再并行跑 Flask）
+
+如果上述任一步失败，请直接贴错误堆栈或命令输出（不要截图）。谢谢！

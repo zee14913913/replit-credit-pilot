@@ -10,6 +10,7 @@ from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 from .db import get_db, init_database, execute_sql_file
 from . import models
@@ -224,8 +225,8 @@ async def root():
 @app.get("/health")
 async def health_check(db: Session = Depends(get_db)):
     try:
-        # 测试数据库连接
-        db.execute("SELECT 1")
+        # 测试数据库连接（SQLAlchemy 2.0 语法）
+        db.execute(text("SELECT 1"))
         return {
             "status": "healthy",
             "database": "connected",
