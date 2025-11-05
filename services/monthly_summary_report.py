@@ -295,9 +295,9 @@ class MonthlySummaryReport:
         report_lines.append("-" * 100)
         
         if summary['net_balance'] > 0:
-            report_lines.append(f"应收余额:            RM {summary['net_balance']:,.2f}  ⚠️  客户需补款")
+            report_lines.append(f"应付余额:            RM {summary['net_balance']:,.2f}  ⚠️  GZ 欠客户")
         elif summary['net_balance'] < 0:
-            report_lines.append(f"应付余额:            RM {abs(summary['net_balance']):,.2f}  💰 我们需退款")
+            report_lines.append(f"应收余额:            RM {abs(summary['net_balance']):,.2f}  💰 客户欠 GZ")
         else:
             report_lines.append(f"余额:                RM 0.00  ✅ 已结清")
         

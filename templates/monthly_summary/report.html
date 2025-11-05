@@ -74,9 +74,9 @@
                 <div style="color: #FF007F; font-size: 0.85rem; margin-bottom: 10px;">
                     净余额
                     {% if summary.net_balance > 0 %}
-                        <span style="color: #FF007F;">(客户需补款)</span>
+                        <span style="color: #FF007F;">(GZ 欠客户)</span>
                     {% elif summary.net_balance < 0 %}
-                        <span style="color: #322446;">(我们需退款)</span>
+                        <span style="color: #00FF7F;">(客户欠 GZ)</span>
                     {% else %}
                         <span style="color: #FFFFFF;">(已结清)</span>
                     {% endif %}
@@ -251,9 +251,9 @@
                             </div>
                             <div style="font-size: 0.9rem; margin-top: 5px;">
                                 {% if summary.net_balance > 0 %}
-                                    <span style="color: #FF007F;">客户需补款给我们</span>
+                                    <span style="color: #FF007F;">GZ 欠客户</span>
                                 {% elif summary.net_balance < 0 %}
-                                    <span style="color: #322446;">我们需退款给客户</span>
+                                    <span style="color: #00FF7F;">客户欠 GZ</span>
                                 {% else %}
                                     <span style="color: #FFFFFF;">已完全结清</span>
                                 {% endif %}
