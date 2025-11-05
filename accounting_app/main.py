@@ -216,7 +216,7 @@ async def root():
     </head>
     <body>
         <div class="container">
-            <div class="status">✅ System Online</div>
+            <div class="status">System Online</div>
             <h1>🏦 银行贷款合规会计系统</h1>
             <p>
                 <strong>核心功能：</strong>将客户的真实银行月结单自动转换为会计分录，
@@ -227,8 +227,8 @@ async def root():
                 Suppliers Aging | Customer Ledger | P&L | Balance Sheet | 
                 Payroll | Tax Adjustments | 自动发票
             </p>
-            <a href="/docs" class="btn">📚 API文档</a>
-            <a href="/accounting" class="btn">💼 管理后台</a>
+            <a href="/docs" class="btn">API文档</a>
+            <a href="/accounting" class="btn">管理后台</a>
         </div>
     </body>
     </html>
