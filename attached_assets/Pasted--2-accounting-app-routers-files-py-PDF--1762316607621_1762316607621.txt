@@ -1,3 +1,18 @@
+好，下面是第二份：
+
+✅ 文件 2：accounting_app/routers/files.py
+
+这是系统的核心后端逻辑。
+包含：
+	•	PDF 上传（同步 / 异步）
+	•	文件类型验证
+	•	限流
+	•	任务历史记录（含分页与搜索）
+	•	删除任务
+	•	可选 Webhook 与邮件通知（SendGrid）
+
+直接覆盖旧文件保存即可👇
+
 import asyncio
 import os
 import time
@@ -132,3 +147,10 @@ async def delete_task(task_id: str):
         raise HTTPException(status_code=404, detail="Task not found")
     TASKS.pop(task_id)
     return {"deleted": task_id}
+
+
+⸻
+
+保存完这一份，我就发第三份前端：
+accounting_app/routers/public.py（双语界面 /portal）。
+继续吗？
