@@ -7,7 +7,10 @@
     <div style="flex:1"></div>
     <a class="btn" href="/loans/updates/export.csv">Export Updates CSV</a>
     <a class="btn" href="/loans/intel/export.csv">Export Intel CSV</a>
-    <a class="btn" href="/loans/compare/page">Compare Basket</a>
+    <a class="btn" href="/loans/compare/page" style="position:relative">
+      Compare Basket
+      <span id="basketBadge" style="position:absolute;top:-6px;right:-6px;background:#FF007F;color:#fff;border-radius:50%;width:20px;height:20px;font-size:11px;display:none;align-items:center;justify-content:center;font-weight:bold"></span>
+    </a>
   </div>
 </div>
 
@@ -81,8 +84,26 @@ function showIntel(source, product){
 }
 
 async function addCompare(source, product){
-  await fetch('/loans/compare/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source,product})});
+  const res = await fetch('/loans/compare/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source,product})});
+  const data = await res.json();
+  updateBadge(data.len);
   alert('已加入比价篮');
+}
+
+async function loadBasketCount(){
+  const res = await fetch('/loans/compare/list');
+  const items = await res.json();
+  updateBadge(items.length);
+}
+
+function updateBadge(count){
+  const badge = document.getElementById('basketBadge');
+  if(count > 0){
+    badge.textContent = count;
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
 }
 
 function search(){
@@ -110,5 +131,6 @@ async function calc(){
 
 function escape(s){return (s??'').toString().replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[m]))}
 load();
+loadBasketCount();
 </script>
 {% endblock %}

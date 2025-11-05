@@ -1,8 +1,20 @@
+对，你理解对了：我说的是在“对比页”里给产品做一个自动排名（ranking），把最适合的组合放到最上面，客户一眼就知道选谁。
+
+我已经把“排名版对比页”写好，你只要用下面这个完整文件覆盖 accounting_app/templates/compare.html 就行，后端不需要改。默认排序逻辑：
+	1.	状态优先：PASS → BORDERLINE → HIGH
+	2.	再比月供：越低越前
+	3.	再比 DSR：越低越前
+并显示“Rank #”列，Top 1 带小皇冠👑，顶部还有“本页最佳推荐”。
+
+⸻
+
+✅ 覆盖文件：accounting_app/templates/compare.html
+
 {% extends "base.html" %}
 {% block content %}
 <div class="card">
   <h3 style="margin-top:0">Compare Basket · 贷款对比</h3>
-  <p class="small">已添加的产品会显示在下方表格。你可以输入试算参数，点击"一键重算"，对每个产品计算月供与 DSR。</p>
+  <p class="small">已添加的产品会显示在下方表格。输入试算参数，点击“一键重算”，系统会自动计算每个产品的月供、DSR，并给出排名。</p>
 
   <div class="grid grid-cols-3" style="margin-top:8px">
     <div><label>贷款金额</label><input class="input" id="amt" value="400000"></div>
@@ -18,7 +30,7 @@
     <div><label>现有月供</label><input class="input" id="commit" value="1500"></div>
   </div>
 
-  <div style="display:flex;gap:8px;margin-top:12px">
+  <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
     <button class="btn primary" onclick="recalc()">一键重算</button>
     <a class="btn" href="/loans/page">返回 Loans</a>
     <button class="btn" onclick="exportCsv()">导出对比 CSV</button>
@@ -26,14 +38,21 @@
   </div>
 </div>
 
+<!-- 顶部最佳推荐卡片 -->
+<div id="topPick" class="card" style="margin-top:14px; display:none">
+  <h3 style="margin:0">本页最佳推荐 · Top Pick</h3>
+  <div id="topPickBody" class="small" style="margin-top:6px"></div>
+</div>
+
 <div class="card" style="margin-top:14px">
-  <div style="display:flex;justify-content:space-between;align-items:center">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
     <h3 style="margin:0">对比结果</h3>
-    <div class="small">提示：点击表头可按列排序（本页简单升序/降序切换）。</div>
+    <div class="small">提示：列头可排序（再次点击切换升/降）。系统默认按“状态→月供→DSR”自动排名。</div>
   </div>
   <table class="table" id="tbl" style="margin-top:8px">
     <thead>
       <tr>
+        <th data-k="rank" class="sortable">Rank #</th>
         <th data-k="bank" class="sortable">银行/机构</th>
         <th data-k="product" class="sortable">产品</th>
         <th data-k="apr" class="sortable">年利率</th>
@@ -48,11 +67,12 @@
 </div>
 
 <script>
-let basket = [];
-let updates = [];
-let merged  = [];
-let sortKey = 'status', sortAsc = true;
+let basket = [];     // [{source, product}]
+let updates = [];    // /loans/updates 列表
+let merged  = [];    // 合并 + 计算后的行
+let sortKey = 'rank', sortAsc = true; // 默认按 rank 升序
 
+// —— 工具 —— //
 function pctToFloat(s){
   if(!s) return NaN;
   const m = (''+s).match(/[\d.]+/);
@@ -67,18 +87,25 @@ function annToMonthlyPayment(amount, annualPercent, years){
 function statusByDsr(d){
   return d<60 ? 'PASS' : (d<70 ? 'BORDERLINE' : 'HIGH');
 }
-function statusRank(s){
-  if(s==='PASS') return 1;
-  if(s==='BORDERLINE') return 2;
-  return 3;
+function statusWeight(s){
+  if(s==='PASS') return 0;
+  if(s==='BORDERLINE') return 1;
+  return 2; // HIGH
 }
-function fmt(x){ return isFinite(x) ? x.toFixed(2) : '-'; }
+function fmt2(x){ return isFinite(x) ? x.toFixed(2) : '-'; }
 function esc(s){ return (s??'').toString().replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m])) }
+function crown(i){ return i===1 ? ' 👑' : ''; }
 
+// —— 主流程 —— //
 async function load(){
+  // 1) 对比篮
   const bj = await fetch('/loans/compare/json').then(r=>r.json());
   basket = bj.items || [];
+
+  // 2) 产品清单
   updates = await fetch('/loans/updates').then(r=>r.json());
+
+  // 3) 合并
   merged = basket.map(b=>{
     const row = updates.find(u=>u.source===b.source && u.product===b.product) || {};
     return {
@@ -90,7 +117,8 @@ async function load(){
       pulled_at: row.pulled_at || ''
     };
   });
-  recalc();
+
+  recalc(); // 初次计算 + 排名 + 渲染
 }
 
 function recalc(){
@@ -101,44 +129,75 @@ function recalc(){
   const rateSrc= document.getElementById('rateSrc').value;
   const custom = +document.getElementById('customRate').value;
 
+  // 计算月供/DSR/状态
   merged = merged.map(r=>{
-    const apr = rateSrc==='custom' ? custom : pctToFloat(r.apr);
-    const monthly = annToMonthlyPayment(amount, apr, tenure);
+    const aprVal = rateSrc==='custom' ? custom : pctToFloat(r.apr);
+    const monthly = annToMonthlyPayment(amount, aprVal, tenure);
     const dsr = ((commit + monthly) / Math.max(income,1))*100;
-    return {...r, apr: (rateSrc==='custom' ? (custom+'%') : r.apr), monthly, dsr, status: statusByDsr(dsr)};
+    const status = statusByDsr(dsr);
+    return {
+      ...r,
+      apr: (rateSrc==='custom' ? (custom+'%') : r.apr),
+      apr_num: aprVal,
+      monthly, dsr, status,
+      _w: statusWeight(status)
+    };
   });
+
+  // 自动排名：状态权重 → 月供 → DSR
+  merged.sort((a,b)=>{
+    if(a._w !== b._w) return a._w - b._w;                // PASS 优先
+    if(a.monthly !== b.monthly) return a.monthly - b.monthly; // 月供越低越好
+    return a.dsr - b.dsr;                                  // DSR 越低越好
+  });
+  // 写入 rank（1-based）
+  merged = merged.map((r,i)=> ({...r, rank: i+1}));
+
+  // 默认展示按 rank 升序
+  sortKey = 'rank'; sortAsc = true;
+
   render();
+  renderTopPick();
+}
+
+function renderTopPick(){
+  const card = document.getElementById('topPick');
+  const body = document.getElementById('topPickBody');
+  if(!merged.length){ card.style.display='none'; return; }
+  const t = merged[0];
+  card.style.display='block';
+  body.innerHTML = `
+    <div><b>${esc(t.bank)} · ${esc(t.product)}</b>${crown(1)}</div>
+    <div>年利率：${esc(t.apr||'-')} ｜ 预计月供：RM ${fmt2(t.monthly)} ｜ DSR：${fmt2(t.dsr)}% ｜ 状态：${esc(t.status)}</div>
+    <div class="muted">数据时间：${esc(t.pulled_at||'-')} ｜ 摘要：${esc(t.summary||'无')}</div>
+  `;
 }
 
 function render(){
+  // 用户自定义排序（如果点击了表头）
+  const key = sortKey, asc = sortAsc;
   merged.sort((a,b)=>{
-    if(sortKey==='status'){
-      const diff = statusRank(a.status) - statusRank(b.status);
-      return sortAsc ? diff : -diff;
-    }
-    const A = (a[sortKey] ?? '');
-    const B = (b[sortKey] ?? '');
-    if(typeof A === 'number' && typeof B === 'number') return sortAsc ? (A-B) : (B-A);
-    return sortAsc ? (''+A).localeCompare(''+B) : (''+B).localeCompare(''+A);
+    const A = (a[key] ?? '');
+    const B = (b[key] ?? '');
+    if(typeof A === 'number' && typeof B === 'number') return asc ? (A-B) : (B-A);
+    return asc ? (''+A).localeCompare(''+B) : (''+B).localeCompare(''+A);
   });
 
   const tb = document.getElementById('rows');
   tb.innerHTML = merged.map(r=>`
     <tr>
+      <td>${r.rank}${crown(r.rank)}</td>
       <td>${esc(r.bank)}</td>
       <td>${esc(r.product)}</td>
       <td>${esc(r.apr||'-')}</td>
-      <td>RM ${fmt(r.monthly)}</td>
-      <td>${fmt(r.dsr)}%</td>
-      <td>
-        <span class="badge" style="border-color:${badgeColor(r.status)};color:${badgeColor(r.status)}">${r.status}</span>
-      </td>
-      <td>
-        <button class="btn" onclick="removeItem('${esc(r.source)}','${esc(r.product)}')">移除</button>
-      </td>
+      <td>RM ${fmt2(r.monthly)}</td>
+      <td>${fmt2(r.dsr)}%</td>
+      <td><span class="badge" style="border-color:${badgeColor(r.status)};color:${badgeColor(r.status)}">${r.status}</span></td>
+      <td><button class="btn" onclick="removeItem('${esc(r.source)}','${esc(r.product)}')">移除</button></td>
     </tr>
   `).join('');
 
+  // 表头交互
   document.querySelectorAll('th.sortable').forEach(th=>{
     th.onclick = ()=>{
       const k = th.dataset.k;
@@ -166,14 +225,14 @@ async function clearAll(){
 
 function exportCsv(){
   if(!merged.length){ alert('当前无数据'); return; }
-  const cols = ['bank','product','apr','monthly','dsr','status','pulled_at','summary'];
+  const cols = ['rank','bank','product','apr','monthly','dsr','status','pulled_at','summary'];
   const lines = [cols.join(',')].concat(
     merged.map(r=>cols.map(k=>csvCell(r[k])).join(','))
   );
   const blob = new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8;'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'compare_basket.csv';
+  a.download = 'compare_ranking.csv';
   a.click();
 }
 function csvCell(v){
@@ -190,3 +249,15 @@ th.sortable{cursor:pointer;position:relative;padding-right:16px}
 th.sortable:after{content:'↕';opacity:.5;margin-left:4px}
 </style>
 {% endblock %}
+
+
+⸻
+
+验收怎么测
+	•	去 /loans/page 给 2~3 个产品点“加入比价”。
+	•	打开 /loans/compare/page：
+	•	点“一键重算”，会自动排名并显示“Top Pick”。
+	•	调整金额/年期/收入/现有月供，再重算，排名会实时更新。
+	•	“导出对比 CSV”会把 Rank 一并导出，方便发客户或团队。
+
+需要我顺手把 Loans 列表页右上角加“对比篮计数徽标” 吗？如果要，我直接给你 3 行 JS + 1 个小徽标的 HTML，拎包即用。
