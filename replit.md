@@ -17,17 +17,24 @@ The platform features a strict professional design with a **MINIMAL 3-COLOR PALE
 - **Dark Purple (#322446)**: Secondary accent, expenses, debits, borders
 No other colors are permitted. The design system emphasizes clean, professional layouts with bilingual support (English/Chinese).
 
-**Navigation Structure** (November 2025):
-The main navigation follows business workflow logic with 7 core modules:
+**Navigation Structure** (Final Version - November 2025):
+The main navigation follows a streamlined business workflow logic with 6 core modules:
 1. **DASHBOARD** - Customer management and overview
-2. **CREDIT CARDS** - Credit card ledger with integrated supplier invoices (formerly "CC", now full text for clarity)
-3. **SAVINGS** - Savings account tracking
-4. **RECEIPTS** - Receipt management with OCR
-5. **LOANS** - Intelligent loan matcher
-6. **REPORTS** - Monthly summary reports
-7. **ADMIN** - System administration
+2. **CREDIT CARDS** - Unified credit card management center integrating:
+   - Credit card statements (PDF/Excel upload with OCR)
+   - Transaction receipts (OCR matching and verification)
+   - Supplier invoices (auto-generated from 7 designated suppliers)
+   - Payment reminders (calculated from statement_date and due_date)
+   - Monthly consolidated reporting (combining all three data sources)
+3. **SAVINGS** - Savings account tracking and bank statement management
+4. **LOANS** - Intelligent loan matcher with CTOS parsing and DSR calculation
+5. **REPORTS** - Monthly summary reports and professional financial statements
+6. **ADMIN** - System administration, user management, and audit logs
 
-*Note: INVOICES has been successfully integrated into CREDIT CARDS page, displaying auto-generated supplier invoices alongside credit card data. REMINDERS feature will be integrated into CREDIT CARDS page in the future (calculated from statement_date and due_date fields).*
+*Design Rationale: The integration of RECEIPTS and INVOICES into the CREDIT CARDS module creates a unified workflow for complete monthly reconciliation. This allows users to:*
+- *Upload credit card statements → Match transaction receipts → Review supplier invoices → Generate consolidated monthly reports*
+- *All credit card related data (statements + receipts + invoices) are managed in one place for streamlined monthly closing*
+- *Eliminates navigation overhead and improves data accuracy through centralized verification*
 
 ### Technical Implementations
 The backend is built with Flask, utilizing SQLite with a context manager pattern for database interactions. Jinja2 handles server-side rendering, and Bootstrap 5 with Bootstrap Icons provides a responsive UI. Plotly.js is integrated for client-side data visualization. A robust notification system provides real-time updates and an auto-redirect feature. Client-side PDF-to-CSV conversion is implemented using PDF.js.
@@ -76,3 +83,4 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 ### File Storage
 - A `FileStorageManager` handles standardized path generation and directory management.
 - **Standard Directory Structure**: `static/uploads/customers/{customer_code}/` with subdirectories.
+- 
