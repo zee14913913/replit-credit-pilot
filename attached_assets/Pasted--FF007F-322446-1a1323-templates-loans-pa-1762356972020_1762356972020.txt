@@ -1,3 +1,212 @@
+好的，给你两份可直接覆盖的整页模板（严格品牌色：#FF007F / #322446 / #1a1323）。它们兼容你现有路由与数据结构，零后端改动即可用。
+
+⸻
+
+templates/loans_page.html（Loans 情报中心 + 顶部 Top-3 卡片 + 徽标）
+
+{% extends "base.html" %}
+{% block title %}Loans Intelligence · CreditPilot{% endblock %}
+{% block head_extra %}
+<style>
+  :root{
+    --pink:#FF007F; --card:#322446; --bg:#1a1323; --text:#fff; --muted:#999; --line:#888;
+  }
+  body{background:var(--bg); color:var(--text);}
+  .wrap{max-width:1100px; margin:20px auto; padding:0 12px;}
+  .toolbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px}
+  .btn{background:var(--card); color:#fff; border:1px solid #3b2b4e; border-radius:12px; padding:8px 12px; cursor:pointer}
+  .btn.primary{background:var(--pink); border-color:#ff6aa7}
+  .btn.ghost{background:transparent; border:1px solid #ffffff33}
+  .field{display:flex; gap:8px; flex-wrap:wrap}
+  .field input{background:#0f0a14; color:#fff; border:1px solid #3b2b4e; border-radius:10px; padding:8px 10px; min-width:220px}
+  .card{background:linear-gradient(180deg,#322446,#281a3a); border:1px solid #3b2b4e; border-radius:16px; padding:14px; box-shadow:0 6px 18px #0006;}
+  .grid{display:grid; gap:12px; grid-template-columns:1.5fr 1fr}
+  .list{display:grid; gap:10px; margin-top:10px}
+  .li{display:grid; gap:8px; grid-template-columns:1fr 1fr}
+  .li h4{margin:0 0 6px 0}
+  .meta{font-size:13px; color:#ddd}
+  .pill{display:inline-block; background:#ff007f26; border:1px solid #FF007F66; color:#fff; border-radius:999px; padding:2px 8px; font-size:12px; margin-right:6px}
+  .sec-title{display:flex; justify-content:space-between; align-items:center; margin:6px 0 8px}
+  .badge{display:inline-flex; align-items:center; justify-content:center; min-width:20px; height:20px; padding:0 6px;
+         background:var(--pink); color:#fff; border-radius:999px; font-weight:700; margin-left:6px}
+  .badge.dim{opacity:.35}
+  .link{color:#fff; text-decoration:none; border-bottom:1px dashed #ffffff55}
+  iframe.top3{width:100%; height:540px; border:0; overflow:hidden; border-radius:16px; margin: 8px 0 14px}
+  @media (max-width:980px){ .grid{grid-template-columns:1fr} .li{grid-template-columns:1fr} }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="wrap">
+
+  <div class="toolbar">
+    <div style="font-weight:700; font-size:18px; letter-spacing:0.3px">💼 Loans Intelligence Center</div>
+    <div style="flex:1"></div>
+
+    <!-- Compare Basket 按钮 + 计数徽标 -->
+    <a href="/loans/compare/page" class="btn">Compare Basket <span id="cmpBadge" class="badge dim">0</span></a>
+
+    <!-- 快捷工具 -->
+    <a class="btn" href="/loans/updates" target="_blank">⭐ Top 3 Today (JSON)</a>
+    <a class="btn primary" href="/loans/ranking/pdf">📄 导出 Top3 PDF</a>
+  </div>
+
+  <!-- 顶部 Top-3 可视卡片（iframe 注入，内含“加入比价”） -->
+  <iframe class="top3" src="/loans/top3/cards"></iframe>
+
+  <div class="grid">
+    <!-- 左侧：产品列表 -->
+    <div class="card">
+      <div class="sec-title">
+        <div style="font-weight:700">📋 产品列表（可搜索）</div>
+        <div class="field">
+          <input id="q" placeholder="Search: product/bank/type/preferences...">
+          <button id="btnSearch" class="btn primary">Search</button>
+          <a class="btn" href="/loans/updates/export.csv">Export Updates CSV</a>
+          <a class="btn" href="/loans/intel/export.csv">Export Intel CSV</a>
+        </div>
+      </div>
+      <div id="list" class="list">
+        <!-- JS 渲染 -->
+      </div>
+    </div>
+
+    <!-- 右侧：DSR 试算器 -->
+    <div class="card">
+      <div class="sec-title"><div style="font-weight:700">🧮 DSR 试算器</div></div>
+      <div class="field">
+        <input id="income" type="number" placeholder="月净收入 (RM)" value="8000">
+        <input id="commitments" type="number" placeholder="现有月供合计 (RM)" value="1500">
+        <input id="amount" type="number" placeholder="贷款金额 (RM)" value="400000">
+        <input id="rate" type="number" step="0.01" placeholder="年利率 (%)" value="3.75">
+        <input id="tenure" type="number" placeholder="年期 (年)" value="30">
+        <button id="btnCalc" class="btn primary">一键试算</button>
+      </div>
+      <div id="dsrResult" class="meta" style="margin-top:8px">结果将显示在此处…</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // 徽标刷新（供 iframe 调用）
+  async function refreshCompareBadge(){
+    try{
+      const r = await fetch('/loans/compare/json');
+      const j = await r.json();
+      const n = (j && j.items) ? j.items.length : 0;
+      const b = document.getElementById('cmpBadge');
+      b.textContent = n;
+      b.classList.toggle('dim', n===0);
+    }catch(e){}
+  }
+  window.refreshCompareBadge = refreshCompareBadge;
+  refreshCompareBadge();
+  setInterval(refreshCompareBadge, 15000);
+
+  // 加载数据并渲染
+  let UPDATES=[], INTEL=[];
+  async function loadData(){
+    const [u,i] = await Promise.all([fetch('/loans/updates'), fetch('/loans/intel')]);
+    UPDATES = await u.json(); INTEL = await i.json();
+  }
+
+  function joinIntel(product){
+    const rec = INTEL.find(x=>x.product===product) || {};
+    return {
+      preferred_customer: rec.preferred_customer||'',
+      less_preferred: rec.less_preferred||'',
+      docs_required: rec.docs_required||'',
+      feedback_summary: rec.feedback_summary||'',
+      sentiment_score: rec.sentiment_score ?? ''
+    };
+  }
+
+  function h(s){ return (s||'').replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m])) }
+
+  async function renderList(q=''){
+    const box = document.getElementById('list'); box.innerHTML='';
+    const kw = q.trim().toLowerCase();
+    const data = UPDATES.filter(x=>{
+      const t = JSON.stringify(x).toLowerCase() + JSON.stringify(joinIntel(x.product)).toLowerCase();
+      return kw ? t.includes(kw) : true;
+    });
+    if(!data.length){
+      box.innerHTML = `<div class="meta">暂无结果</div>`;
+      return;
+    }
+    for(const x of data){
+      const intel = joinIntel(x.product);
+      const left = `
+        <h4>${h(x.bank)} · ${h(x.product)}</h4>
+        <div class="meta">Type: ${h(x.type||'N/A')} · APR ${h(x.apr)}% · Updated ${h(x.pulled_at||'')}</div>
+        <div style="margin-top:6px">${h(x.summary||'No description')}</div>
+        <div style="margin-top:8px">
+          ${x.url ? `<a class="link" href="${h(x.url)}" target="_blank">Official Link</a>` : ''}
+        </div>
+      `;
+      const right = `
+        <div class="meta">偏好与口碑</div>
+        <div style="margin:6px 0">
+          <span class="pill">Preferred: ${h(intel.preferred_customer||'—')}</span>
+          <span class="pill">Sentiment: ${h(intel.sentiment_score||'—')}</span>
+        </div>
+        <div class="meta" title="${h(intel.docs_required||'')}">资料偏好：${h((intel.docs_required||'').slice(0,48))}${(intel.docs_required||'').length>48?'…':''}</div>
+        <div class="meta" title="${h(intel.feedback_summary||'')}">口碑摘要：${h((intel.feedback_summary||'').slice(0,56))}${(intel.feedback_summary||'').length>56?'…':''}</div>
+        <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn primary add-compare" data-product="${h(x.product)}" data-bank="${h(x.bank)}" data-apr="${h(x.apr)}">加入比价</button>
+          <a class="btn ghost" href="/loans/compare/page">去对比页</a>
+        </div>
+      `;
+      const row = document.createElement('div');
+      row.className = 'li card';
+      row.innerHTML = `<div>${left}</div><div>${right}</div>`;
+      box.appendChild(row);
+    }
+    // 绑定加入比价
+    document.querySelectorAll('.add-compare').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const payload = { product: btn.dataset.product, bank: btn.dataset.bank, apr: parseFloat(btn.dataset.apr||'0') };
+        await fetch('/loans/compare/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        refreshCompareBadge();
+        alert('已加入比价篮');
+      });
+    });
+  }
+
+  // 搜索
+  document.getElementById('btnSearch').addEventListener('click',()=>{
+    renderList(document.getElementById('q').value||'');
+  });
+
+  // DSR 试算
+  document.getElementById('btnCalc').addEventListener('click', async ()=>{
+    const payload = {
+      income: parseFloat(document.getElementById('income').value||0),
+      commitments: parseFloat(document.getElementById('commitments').value||0),
+      amount: parseFloat(document.getElementById('amount').value||0),
+      rate: parseFloat(document.getElementById('rate').value||0),
+      tenure_years: parseFloat(document.getElementById('tenure').value||0)
+    };
+    const r = await fetch('/loans/dsr/calc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const j = await r.json();
+    const s = j.status || '—';
+    document.getElementById('dsrResult').innerHTML = `月供：<b>RM ${j.monthly||'-'}</b> · DSR：<b>${j.dsr_percent||'-'}%</b> · 状态：<b>${s}</b>`;
+  });
+
+  (async function init(){
+    await loadData();
+    await renderList('');
+  })();
+</script>
+
+{% endblock %}
+
+
+⸻
+
+templates/compare.html（Compare 对比页：一键重算 + 排名 + 保存/分享/PDF）
+
 {% extends "base.html" %}
 {% block title %}Compare Loans · CreditPilot{% endblock %}
 {% block head_extra %}
@@ -254,3 +463,16 @@
 </script>
 
 {% endblock %}
+
+
+⸻
+
+怎么用（超短步骤）
+	1.	把上面两份模板粘贴覆盖到你的项目：
+templates/loans_page.html、templates/compare.html
+	2.	重启服务，访问：
+
+	•	/loans/page：顶端出现Top-3 大卡，“加入比价”即刻生效；右上角 Compare 徽标自动计数
+	•	/loans/compare/page：有一键重算 + 排名 + 保存/分享/PDF三件套
+
+如果你还没把 loans_extras.py / share_store.py / pdf_maker.py 加进去，告诉我，我把那三份也再发一遍（上个回合已给）。

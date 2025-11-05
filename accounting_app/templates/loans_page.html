@@ -1,119 +1,194 @@
 {% extends "base.html" %}
+{% block title %}Loans Intelligence · CreditPilot{% endblock %}
+{% block head_extra %}
+<style>
+  :root{
+    --pink:#FF007F; --card:#322446; --bg:#1a1323; --text:#fff; --muted:#999; --line:#888;
+  }
+  body{background:var(--bg); color:var(--text);}
+  .wrap{max-width:1100px; margin:20px auto; padding:0 12px;}
+  .toolbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px}
+  .btn{background:var(--card); color:#fff; border:1px solid #3b2b4e; border-radius:12px; padding:8px 12px; cursor:pointer}
+  .btn.primary{background:var(--pink); border-color:#ff6aa7}
+  .btn.ghost{background:transparent; border:1px solid #ffffff33}
+  .field{display:flex; gap:8px; flex-wrap:wrap}
+  .field input{background:#0f0a14; color:#fff; border:1px solid #3b2b4e; border-radius:10px; padding:8px 10px; min-width:220px}
+  .card{background:linear-gradient(180deg,#322446,#281a3a); border:1px solid #3b2b4e; border-radius:16px; padding:14px; box-shadow:0 6px 18px #0006;}
+  .grid{display:grid; gap:12px; grid-template-columns:1.5fr 1fr}
+  .list{display:grid; gap:10px; margin-top:10px}
+  .li{display:grid; gap:8px; grid-template-columns:1fr 1fr}
+  .li h4{margin:0 0 6px 0}
+  .meta{font-size:13px; color:#ddd}
+  .pill{display:inline-block; background:#ff007f26; border:1px solid #FF007F66; color:#fff; border-radius:999px; padding:2px 8px; font-size:12px; margin-right:6px}
+  .sec-title{display:flex; justify-content:space-between; align-items:center; margin:6px 0 8px}
+  .badge{display:inline-flex; align-items:center; justify-content:center; min-width:20px; height:20px; padding:0 6px;
+         background:var(--pink); color:#fff; border-radius:999px; font-weight:700; margin-left:6px}
+  .badge.dim{opacity:.35}
+  .link{color:#fff; text-decoration:none; border-bottom:1px dashed #ffffff55}
+  iframe.top3{width:100%; height:240px; border:0; overflow:hidden; border-radius:16px; margin: 8px 0 14px}
+  @media (max-width:980px){ .grid{grid-template-columns:1fr} .li{grid-template-columns:1fr} }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="card" style="margin-bottom:14px">
-  <div class="searchbar">
-    <input class="input" id="q" placeholder="搜索产品/银行/偏好…（中英均可）">
-    <button class="btn" onclick="search()">Search</button>
+<div class="wrap">
+
+  <div class="toolbar">
+    <div style="font-weight:700; font-size:18px; letter-spacing:0.3px">💼 Loans Intelligence Center</div>
     <div style="flex:1"></div>
-    <a class="btn" href="/loans/ranking" style="background:#322446;color:#fff" target="_blank">⭐ Top 3 Today</a>
-    <a class="btn" href="/loans/ranking/pdf" style="background:#FF007F;color:#fff">📄 导出Top3 PDF</a>
-    <a class="btn" href="/loans/updates/export.csv">Export Updates CSV</a>
-    <a class="btn" href="/loans/intel/export.csv">Export Intel CSV</a>
-    {% include "_compare_badge.html" %}
-  </div>
-</div>
 
-<!-- Top-3 Visual Cards (iframe 免集成风险) -->
-<iframe src="/loans/top3/cards" style="width:100%;height:240px;border:0;overflow:hidden;border-radius:16px;margin-bottom:10px"></iframe>
+    <!-- Compare Basket 按钮 + 计数徽标 -->
+    <a href="/loans/compare/page" class="btn">Compare Basket <span id="cmpBadge" class="badge dim">0</span></a>
 
-<div class="grid grid-cols-2">
-  <div class="card" id="list">
-    <h3 style="margin-top:0">贷款产品</h3>
-    <div id="items"></div>
+    <!-- 快捷工具 -->
+    <a class="btn" href="/loans/ranking" target="_blank">⭐ Top 3 Today (JSON)</a>
+    <a class="btn primary" href="/loans/ranking/pdf">📄 导出 Top3 PDF</a>
   </div>
-  <div class="card" id="intel">
-    <h3 style="margin-top:0">偏好与口碑 · Preferences & Feedback</h3>
-    <div id="intelBox" class="small">选择左侧产品查看情报…</div>
-  </div>
-</div>
 
-<div class="card" style="margin-top:14px">
-  <h3 style="margin-top:0">DSR 试算</h3>
-  <div class="grid grid-cols-3">
-    <div><label>月净收入</label><input class="input" id="income" value="8000"></div>
-    <div><label>现有月供</label><input class="input" id="commit" value="1500"></div>
-    <div><label>贷款金额</label><input class="input" id="amt" value="400000"></div>
-    <div><label>年利率(%)</label><input class="input" id="rate" value="3.75"></div>
-    <div><label>年期</label><input class="input" id="tenure" value="30"></div>
-    <div style="display:flex;align-items:end"><button class="btn primary" onclick="calc()">计算</button></div>
+  <!-- 顶部 Top-3 可视卡片（iframe 注入，内含"加入比价"） -->
+  <iframe class="top3" src="/loans/top3/cards"></iframe>
+
+  <div class="grid">
+    <!-- 左侧：产品列表 -->
+    <div class="card">
+      <div class="sec-title">
+        <div style="font-weight:700">📋 产品列表（可搜索）</div>
+        <div class="field">
+          <input id="q" placeholder="Search: product/bank/type/preferences...">
+          <button id="btnSearch" class="btn primary">Search</button>
+          <a class="btn" href="/loans/updates/export.csv">Export Updates CSV</a>
+          <a class="btn" href="/loans/intel/export.csv">Export Intel CSV</a>
+        </div>
+      </div>
+      <div id="list" class="list">
+        <!-- JS 渲染 -->
+      </div>
+    </div>
+
+    <!-- 右侧：DSR 试算器 -->
+    <div class="card">
+      <div class="sec-title"><div style="font-weight:700">🧮 DSR 试算器</div></div>
+      <div class="field">
+        <input id="income" type="number" placeholder="月净收入 (RM)" value="8000">
+        <input id="commitments" type="number" placeholder="现有月供合计 (RM)" value="1500">
+        <input id="amount" type="number" placeholder="贷款金额 (RM)" value="400000">
+        <input id="rate" type="number" step="0.01" placeholder="年利率 (%)" value="3.75">
+        <input id="tenure" type="number" placeholder="年期 (年)" value="30">
+        <button id="btnCalc" class="btn primary">一键试算</button>
+      </div>
+      <div id="dsrResult" class="meta" style="margin-top:8px">结果将显示在此处…</div>
+    </div>
   </div>
-  <pre id="out" class="code" style="margin-top:8px"></pre>
+
 </div>
 
 <script>
-let updates=[], intel=[];
+  // 徽标刷新（供 iframe 调用）
+  async function syncBadge(){
+    try{
+      const r = await fetch('/loans/compare/json');
+      const j = await r.json();
+      const n = (j && j.items) ? j.items.length : 0;
+      const b = document.getElementById('cmpBadge');
+      b.textContent = n;
+      b.classList.toggle('dim', n===0);
+    }catch(e){}
+  }
+  window.syncBadge = syncBadge;
+  syncBadge();
+  setInterval(syncBadge, 15000);
 
-async function load(){
-  const [u,i] = await Promise.all([
-    fetch('/loans/updates').then(r=>r.json()),
-    fetch('/loans/intel').then(r=>r.json())
-  ]);
-  updates=u; intel=i;
-  renderList(updates);
-}
+  // 加载数据并渲染
+  let UPDATES=[], INTEL=[];
+  async function loadData(){
+    const [u,i] = await Promise.all([fetch('/loans/updates'), fetch('/loans/intel')]);
+    UPDATES = await u.json(); INTEL = await i.json();
+  }
 
-function renderList(arr){
-  const wrap = document.getElementById('items');
-  wrap.innerHTML = arr.map((x,idx)=>`
-   <div class="card" style="margin:10px 0;background:#ffffff06;">
-     <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
-       <div>
-         <div style="font-weight:600">${escape(x.product)} <span class="badge">${escape(x.type||'')}</span></div>
-         <div class="small">Bank/Provider: ${escape(x.bank||x.source||'')}</div>
-         <div class="small">Rate: ${x.rate || '-'} | Updated: ${escape(x.pulled_at||'')}</div>
-       </div>
-       <div style="display:flex;gap:8px">
-         <button class="btn" onclick="showIntel('${escape(x.source)}','${escape(x.product)}')">查看情报</button>
-         <button class="btn add-compare" onclick="addCompare('${escape(x.source)}','${escape(x.product)}')">加入比价</button>
-       </div>
-     </div>
-     <div class="small" style="margin-top:6px">${escape(x.summary||'')}</div>
-   </div>`).join('');
-}
+  function joinIntel(product){
+    const rec = INTEL.find(x=>x.product===product) || {};
+    return {
+      preferred_customer: rec.preferred_customer||'',
+      less_preferred: rec.less_preferred||'',
+      docs_required: rec.docs_required||'',
+      feedback_summary: rec.feedback_summary||'',
+      sentiment_score: rec.sentiment_score ?? ''
+    };
+  }
 
-function showIntel(source, product){
-  const box=document.getElementById('intelBox');
-  const card=intel.find(i=>i.source===source && i.product===product);
-  if(!card){box.innerHTML='未找到情报';return;}
-  box.innerHTML=`
-  <div class="kv">
-    <div>偏好客户</div><div>${escape(card.preferred_customer||'-')}</div>
-    <div>不偏好</div><div>${escape(card.less_preferred||'-')}</div>
-    <div>资料偏好</div><div>${escape(card.docs_required||'-')}</div>
-    <div>口碑摘要</div><div>${escape(card.feedback_summary||'-')}</div>
-    <div>情绪分数</div><div>${card.sentiment_score ?? '-'}</div>
-  </div>`;
-}
+  function h(s){ return (s||'').replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m])) }
 
-async function addCompare(source, product){
-  await fetch('/loans/compare/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source,product})});
-  alert('已加入比价篮');
-}
+  async function renderList(q=''){
+    const box = document.getElementById('list'); box.innerHTML='';
+    const kw = q.trim().toLowerCase();
+    const data = UPDATES.filter(x=>{
+      const t = JSON.stringify(x).toLowerCase() + JSON.stringify(joinIntel(x.product)).toLowerCase();
+      return kw ? t.includes(kw) : true;
+    });
+    if(!data.length){
+      box.innerHTML = `<div class="meta">暂无结果</div>`;
+      return;
+    }
+    for(const x of data){
+      const intel = joinIntel(x.product);
+      const left = `
+        <h4>${h(x.bank)} · ${h(x.product)}</h4>
+        <div class="meta">Type: ${h(x.type||'N/A')} · APR ${h(x.apr)}% · Updated ${h(x.pulled_at||'')}</div>
+        <div style="margin-top:6px">${h(x.summary||'No description')}</div>
+      `;
+      const right = `
+        <div class="meta">偏好与口碑</div>
+        <div style="margin:6px 0">
+          <span class="pill">Preferred: ${h(intel.preferred_customer||'—')}</span>
+          <span class="pill">Sentiment: ${h(intel.sentiment_score||'—')}</span>
+        </div>
+        <div class="meta" title="${h(intel.docs_required||'')}">资料偏好：${h((intel.docs_required||'').slice(0,48))}${(intel.docs_required||'').length>48?'…':''}</div>
+        <div class="meta" title="${h(intel.feedback_summary||'')}">口碑摘要：${h((intel.feedback_summary||'').slice(0,56))}${(intel.feedback_summary||'').length>56?'…':''}</div>
+        <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn primary add-compare" data-source="${h(x.source)}" data-product="${h(x.product)}">加入比价</button>
+          <a class="btn ghost" href="/loans/compare/page">去对比页</a>
+        </div>
+      `;
+      const row = document.createElement('div');
+      row.className = 'li card';
+      row.innerHTML = `<div>${left}</div><div>${right}</div>`;
+      box.appendChild(row);
+    }
+    // 绑定加入比价
+    document.querySelectorAll('.add-compare').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const payload = { source: btn.dataset.source, product: btn.dataset.product };
+        await fetch('/loans/compare/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        syncBadge();
+        alert('已加入比价篮');
+      });
+    });
+  }
 
-function search(){
-  const q=document.getElementById('q').value.trim().toLowerCase();
-  if(!q){renderList(updates);return;}
-  const arr=updates.filter(x=>{
-    const s=(x.product+' '+(x.bank||x.source||'')+' '+(x.type||'')+' '+(x.summary||'')).toLowerCase();
-    return s.includes(q);
+  // 搜索
+  document.getElementById('btnSearch').addEventListener('click',()=>{
+    renderList(document.getElementById('q').value||'');
   });
-  renderList(arr);
-}
 
-async function calc(){
-  const payload={
-    income:+document.getElementById('income').value,
-    commitments:+document.getElementById('commit').value,
-    amount:+document.getElementById('amt').value,
-    rate:+document.getElementById('rate').value,
-    tenure_years:+document.getElementById('tenure').value
-  };
-  const res=await fetch('/loans/dsr/calc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-  const js=await res.json();
-  document.getElementById('out').textContent=JSON.stringify(js,null,2);
-}
+  // DSR 试算
+  document.getElementById('btnCalc').addEventListener('click', async ()=>{
+    const payload = {
+      income: parseFloat(document.getElementById('income').value||0),
+      commitments: parseFloat(document.getElementById('commitments').value||0),
+      amount: parseFloat(document.getElementById('amount').value||0),
+      rate: parseFloat(document.getElementById('rate').value||0),
+      tenure_years: parseFloat(document.getElementById('tenure').value||0)
+    };
+    const r = await fetch('/loans/dsr/calc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const j = await r.json();
+    const s = j.status || '—';
+    document.getElementById('dsrResult').innerHTML = `月供：<b>RM ${j.monthly||'-'}</b> · DSR：<b>${j.dsr_percent||'-'}%</b> · 状态：<b>${s}</b>`;
+  });
 
-function escape(s){return (s??'').toString().replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[m]))}
-load();
+  (async function init(){
+    await loadData();
+    await renderList('');
+  })();
 </script>
+
 {% endblock %}
