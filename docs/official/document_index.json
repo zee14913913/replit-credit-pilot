@@ -1,0 +1,33 @@
+{
+  "repository": "CreditPilot Official Documents",
+  "organization": "INFINITE GZ SDN. BHD.",
+  "last_updated": "2025-11-05",
+  "documents": [
+    {
+      "id": "creditpilot_report_en",
+      "filename": "CREDITPILOT_企业报告_EN.pdf",
+      "title": "CreditPilot Smart Loans & CTOS Intelligence System",
+      "language": "en",
+      "version": "1.0",
+      "pages": 1,
+      "format": "PDF",
+      "category": "Enterprise Report",
+      "tags": ["official", "english", "enterprise", "system-overview"],
+      "audience": ["clients", "partners", "investors"],
+      "url": "/docs/official/CREDITPILOT_企业报告_EN.pdf"
+    },
+    {
+      "id": "creditpilot_report_cn",
+      "filename": "CREDITPILOT_企业报告_CN.pdf",
+      "title": "CreditPilot 智能贷款与 CTOS 情报系统",
+      "language": "zh",
+      "version": "1.0",
+      "pages": 1,
+      "format": "PDF",
+      "category": "Enterprise Report",
+      "tags": ["official", "chinese", "enterprise", "system-overview"],
+      "audience": ["clients", "partners", "investors"],
+      "url": "/docs/official/CREDITPILOT_企业报告_CN.pdf"
+    }
+  ]
+}
