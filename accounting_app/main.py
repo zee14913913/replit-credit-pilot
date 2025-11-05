@@ -5,7 +5,8 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import Response
 
-from accounting_app.routers import health, files, public, history
+from accounting_app.routers import health, files, public, history, stats
+from accounting_app.core.middleware import SecurityAndLogMiddleware, SimpleRateLimitMiddleware
 
 APP_NAME = os.getenv("APP_NAME", "Accounting API")
 ENV = os.getenv("ENV", "dev")  # dev / prod
@@ -28,28 +29,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.middleware("http")
-async def add_security_headers(request: Request, call_next):
-    start = time.time()
-    response: Response = await call_next(request)
-    duration = int((time.time() - start) * 1000)
-    # 安全头
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-Frame-Options"] = "DENY"
-    response.headers["Referrer-Policy"] = "no-referrer"
-    response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
-    if ENV == "prod":
-        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
-    # 日志
-    log = {"method": request.method, "path": request.url.path, "status": response.status_code, "ms": duration}
-    print(f"INFO:app:{json.dumps(log, ensure_ascii=False)}")
-    return response
+# 新中间件：安全头 + 日志 + 限流
+app.add_middleware(SecurityAndLogMiddleware, env=ENV)
+app.add_middleware(SimpleRateLimitMiddleware)
 
 # ====== 路由注册 ======
 app.include_router(health.router)
 app.include_router(files.router)
 app.include_router(public.router)
 app.include_router(history.router)
+app.include_router(stats.router)
+
+# ====== Sentry 错误追踪（可选）======
+if os.getenv("SENTRY_DSN"):
+    import sentry_sdk
+    sentry_sdk.init(dsn=os.getenv("SENTRY_DSN"), traces_sample_rate=0.05)
 
 # ====== 根路由 ======
 @app.get("/")

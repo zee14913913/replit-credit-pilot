@@ -1,0 +1,241 @@
+行，我给你一套一次性优化包，只做“增量小补丁”，尽量不再整文件覆盖，也不浪费空间。你照着加几个新文件、在现有文件里补几行就行。
+
+⸻
+
+一次性优化包（增量版）
+
+0) 目标
+	•	更稳：限流、告警更细、错误追踪可选
+	•	更快：GZip、ETag/去重、连接池细化
+	•	更省：结果去重存储、任务抽象可切换（内存/Redis/DB）
+	•	更好用：/stats 运行统计、导出大文件自动压缩
+
+⸻
+
+1) 新增：可插拔任务存储（不再锁死内存）
+
+新增文件：accounting_app/core/task_store.py
+
+import os, json, time
+from typing import Optional, Dict, Any
+
+# 内存存储（默认）
+_TASKS: Dict[str, Dict[str, Any]] = {}
+
+def use_memory() -> bool:
+    return not os.getenv("REDIS_URL") and not os.getenv("DB_URL")
+
+# Redis 实现（可选）
+def _redis():
+    from redis import Redis
+    return Redis.from_url(os.getenv("REDIS_URL"), decode_responses=True)
+
+def set_task(task_id: str, data: Dict[str, Any]):
+    data.setdefault("time", time.strftime("%Y-%m-%d %H:%M:%S"))
+    if use_memory():
+        _TASKS[task_id] = data; return
+    if os.getenv("REDIS_URL"):
+        r = _redis(); r.hset(f"task:{task_id}", mapping=data); r.sadd("tasks:index", task_id)
+
+def get_task(task_id: str) -> Optional[Dict[str, Any]]:
+    if use_memory():
+        return _TASKS.get(task_id)
+    if os.getenv("REDIS_URL"):
+        r = _redis(); d = r.hgetall(f"task:{task_id}"); return d or None
+
+def delete_task(task_id: str) -> bool:
+    if use_memory():
+        return _TASKS.pop(task_id, None) is not None
+    if os.getenv("REDIS_URL"):
+        r = _redis(); r.delete(f"task:{task_id}"); r.srem("tasks:index", task_id); return True
+
+def iter_tasks(reverse=True):
+    if use_memory():
+        items = list(_TASKS.items())
+        return items[::-1] if reverse else items
+    if os.getenv("REDIS_URL"):
+        r = _redis()
+        ids = list(r.smembers("tasks:index"))
+        ids.sort(reverse=reverse)
+        return [(tid, r.hgetall(f"task:{tid}")) for tid in ids]
+
+在 requirements.txt 已装过 redis 就不用管；没装的话：pip install redis==5.0.8
+
+⸻
+
+2) 新增：通用中间件（GZip、速率限制、统一安全头/日志）
+
+新增文件：accounting_app/core/middleware.py
+
+import os, time, json
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response, PlainTextResponse
+
+class SecurityAndLogMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app, env: str = "dev"):
+        super().__init__(app); self.env = env
+    async def dispatch(self, request, call_next):
+        t0 = time.time()
+        resp: Response = await call_next(request)
+        # 安全头
+        resp.headers.setdefault("X-Content-Type-Options","nosniff")
+        resp.headers.setdefault("X-Frame-Options","DENY")
+        resp.headers.setdefault("Referrer-Policy","no-referrer")
+        resp.headers.setdefault("Permissions-Policy","geolocation=(), microphone=(), camera=()")
+        if self.env == "prod":
+            resp.headers.setdefault("Strict-Transport-Security","max-age=31536000; includeSubDomains")
+        # 日志
+        ms = int((time.time()-t0)*1000)
+        print("INFO:app:"+json.dumps({"method":request.method,"path":request.url.path,"status":resp.status_code,"ms":ms}, ensure_ascii=False))
+        return resp
+
+class SimpleRateLimitMiddleware(BaseHTTPMiddleware):
+    """
+    每 IP 每分钟 N 次（默认 120），超限返回 429
+    适合小场景，后期可换 redis 限流
+    """
+    BUCKET = {}
+    def __init__(self, app, per_minute:int = None):
+        super().__init__(app)
+        self.limit = per_minute or int(os.getenv("RATE_LIMIT_PER_MIN", "120"))
+    async def dispatch(self, request, call_next):
+        ip = request.client.host if request.client else "unknown"
+        now = int(time.time()//60)
+        key = (ip, now)
+        cnt = self.BUCKET.get(key, 0) + 1
+        self.BUCKET[key] = cnt
+        # 清理上一个窗口
+        for k in list(self.BUCKET.keys()):
+            if k[1] < now: self.BUCKET.pop(k, None)
+        if cnt > self.limit:
+            return PlainTextResponse("Too Many Requests", status_code=429)
+        return await call_next(request)
+
+在 accounting_app/main.py 顶部加一段：
+
+from accounting_app.core.middleware import SecurityAndLogMiddleware, SimpleRateLimitMiddleware
+
+app.add_middleware(SecurityAndLogMiddleware, env=ENV)
+app.add_middleware(SimpleRateLimitMiddleware)  # 可用 RATE_LIMIT_PER_MIN 环境变量调整
+
+（你已有类似安全头/日志也没事，重复不冲突；如果想更干净，可移除原中间件，保留这一套。）
+
+⸻
+
+3) 优化：结果去重（相同 PDF 不重复处理）
+
+在 accounting_app/routers/files.py 顶部加：
+
+import hashlib
+from accounting_app.core.task_store import set_task, get_task, delete_task, iter_tasks
+
+在 submit_pdf 里读文件后，加上去重逻辑（就在 task_id = ... 前）：
+
+# 结果去重：hash 文件，已有则直接返回旧 task_id
+file_hash = hashlib.sha256(data).hexdigest()
+for tid, info in iter_tasks():
+    if info and info.get("file_hash") == file_hash and info.get("status") == "done":
+        return {"task_id": tid, "status": "cached"}
+
+创建任务时，把 file_hash 存进去，并用 set_task 写入：
+
+task_id = str(uuid4())
+task_data = {
+    "status": "queued",
+    "result": None,
+    "error_msg": None,
+    "filename": file.filename,
+    "time": time.strftime("%Y-%m-%d %H:%M:%S"),
+    "callback_url": callback_url,
+    "notify_email": notify_email,
+    "file_hash": file_hash,
+}
+set_task(task_id, task_data)
+
+所有读取/删除/遍历任务的地方，替换为 get_task/delete_task/iter_tasks（和你现在的 TASKS[...] 用法一一对应，逻辑不变）。
+
+⸻
+
+4) 优化：历史导出大文件自动压缩
+
+你已经有 /files/history/export。在 CSV 分支返回前加一行（压缩阈值 5MB）：
+
+# 如果 CSV 超过 5MB，自动 zip
+if data.getbuffer().nbytes > 5*1024*1024:
+    import zipfile, io as _io
+    zbuf = _io.BytesIO()
+    with zipfile.ZipFile(zbuf, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("history.csv", data.getvalue())
+    zbuf.seek(0)
+    headers = {"Content-Disposition": "attachment; filename=history.zip"}
+    return StreamingResponse(zbuf, media_type="application/zip", headers=headers)
+
+
+⸻
+
+5) 新增：轻量运行统计 /stats
+
+新增文件：accounting_app/routers/stats.py
+
+import os, time
+from fastapi import APIRouter
+from accounting_app.core.task_store import iter_tasks
+
+router = APIRouter(prefix="/stats", tags=["stats"])
+
+@router.get("")
+async def stats():
+    total = 0; done=0; err=0
+    for _, t in iter_tasks():
+        total += 1
+        s = (t or {}).get("status")
+        if s == "done": done += 1
+        if s == "error": err += 1
+    return {
+        "env": os.getenv("ENV","dev"),
+        "tasks_total": total,
+        "tasks_done": done,
+        "tasks_error": err,
+        "ts": int(time.time())
+    }
+
+在 main.py 路由注册区加：
+
+from accounting_app.routers import stats
+app.include_router(stats.router)
+
+
+⸻
+
+6) 可选：Sentry 错误追踪（不用就跳过）
+	•	安装：pip install --upgrade sentry-sdk==2.*
+	•	在 main.py 顶部：
+
+import os
+if os.getenv("SENTRY_DSN"):
+    import sentry_sdk
+    sentry_sdk.init(dsn=os.getenv("SENTRY_DSN"), traces_sample_rate=0.05)
+
+
+⸻
+
+7) 环境变量（可选）
+	•	REDIS_URL：启用 Redis 任务存储
+	•	RATE_LIMIT_PER_MIN：每 IP 每分钟请求上限（默认 120）
+	•	SENTRY_DSN：启用 Sentry
+	•	你已有：ENV / CORS_ALLOW / MAX_UPLOAD_MB / PORTAL_KEY / SENDGRID_API_KEY / FROM_EMAIL
+
+⸻
+
+验证清单（一次跑完）
+	•	去重：同一份 PDF 连续上传两次，第二次返回 {"status":"cached"}，且复用旧 task_id。
+	•	限流：1 分钟内高频狂刷接口，超过阈值开始 429。
+	•	/stats：GET /stats 返回总数、完成数、错误数。
+	•	导出：筛选后导出 CSV/Excel；当 CSV 很大时自动下载 zip。
+	•	任务存储：
+	•	无 REDIS_URL → 重启丢历史（内存模式）。
+	•	配置 REDIS_URL → 重启后历史仍在（持久化）。
+
+⸻
+
+想再更“长跑”：把 OCR 的全文结果存到对象存储（S3/Cloudflare R2）只留 result_url，本地只存 preview，这样历史无限大也不怕内存。要这个，我再给你一套“对象存储最小实现”补丁。

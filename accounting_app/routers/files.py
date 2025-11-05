@@ -1,10 +1,12 @@
 import asyncio
 import os
 import time
+import hashlib
 from uuid import uuid4
 from typing import Dict, Any, Optional
 from fastapi import APIRouter, UploadFile, File, Request, HTTPException, Depends, Query
 from accounting_app.utils.pdf_processor import pdf_bytes_to_text
+from accounting_app.core.task_store import set_task, get_task, delete_task as delete_task_store, iter_tasks
 
 # 可选通知依赖
 import httpx
@@ -22,8 +24,8 @@ async def guard_content_length(request: Request):
     if cl and int(cl) > MAX_BYTES:
         raise HTTPException(status_code=413, detail=f"File too large (max {MAX_BYTES // (1024*1024)}MB)")
 
-# ====== 全局任务存储 ======
-TASKS: Dict[str, Dict[str, Any]] = {}
+# ====== 全局任务存储（已迁移到 task_store）======
+# TASKS: Dict[str, Dict[str, Any]] = {}
 
 # ====== 工具函数 ======
 def _notify(task_id: str, data: Dict[str, Any]):
@@ -69,8 +71,15 @@ async def submit_pdf(
     if file.content_type not in {"application/pdf"}:
         raise HTTPException(415, detail="Only PDF is allowed")
     data = await file.read()
+    
+    # 结果去重：hash 文件，已有则直接返回旧 task_id
+    file_hash = hashlib.sha256(data).hexdigest()
+    for tid, info in iter_tasks():
+        if info and info.get("file_hash") == file_hash and info.get("status") == "done":
+            return {"task_id": tid, "status": "cached"}
+    
     task_id = str(uuid4())
-    TASKS[task_id] = {
+    task_data = {
         "status": "queued",
         "result": None,
         "error_msg": None,
@@ -78,19 +87,30 @@ async def submit_pdf(
         "time": time.strftime("%Y-%m-%d %H:%M:%S"),
         "callback_url": callback_url,
         "notify_email": notify_email,
+        "file_hash": file_hash,
     }
+    set_task(task_id, task_data)
 
     async def run():
-        TASKS[task_id]["status"] = "processing"
+        task_info = get_task(task_id)
+        if task_info:
+            task_info["status"] = "processing"
+            set_task(task_id, task_info)
         try:
             text = await asyncio.to_thread(pdf_bytes_to_text, data)
-            TASKS[task_id]["status"] = "done"
-            TASKS[task_id]["result"] = text
-            _notify(task_id, TASKS[task_id])
+            task_info = get_task(task_id)
+            if task_info:
+                task_info["status"] = "done"
+                task_info["result"] = text
+                set_task(task_id, task_info)
+                _notify(task_id, task_info)
         except Exception as e:
-            TASKS[task_id]["status"] = "error"
-            TASKS[task_id]["error_msg"] = str(e)
-            _notify(task_id, TASKS[task_id])
+            task_info = get_task(task_id)
+            if task_info:
+                task_info["status"] = "error"
+                task_info["error_msg"] = str(e)
+                set_task(task_id, task_info)
+                _notify(task_id, task_info)
 
     asyncio.create_task(run())
     return {"task_id": task_id, "status": "queued"}
@@ -98,7 +118,7 @@ async def submit_pdf(
 # ====== 查询结果 ======
 @router.get("/pdf-to-text/result/{task_id}")
 async def get_result(task_id: str):
-    info = TASKS.get(task_id)
+    info = get_task(task_id)
     if not info:
         raise HTTPException(status_code=404, detail="task not found")
     return info
@@ -110,25 +130,25 @@ async def list_history(
     skip: int = 0,
     limit: int = 20
 ):
-    tasks = list(TASKS.items())[::-1]  # 倒序（新到旧）
+    tasks = list(iter_tasks(reverse=True))  # 倒序（新到旧）
     if q:
-        tasks = [(tid, t) for tid, t in tasks if q.lower() in (t.get("result") or "").lower()]
+        tasks = [(tid, t) for tid, t in tasks if t and q.lower() in (t.get("result") or "").lower()]
     sliced = tasks[skip: skip + limit]
     items = []
     for tid, info in sliced:
-        items.append({
-            "task_id": tid,
-            "status": info.get("status"),
-            "time": info.get("time"),
-            "filename": info.get("filename"),
-            "preview": (info.get("result") or "")[:100],
-        })
+        if info:
+            items.append({
+                "task_id": tid,
+                "status": info.get("status"),
+                "time": info.get("time"),
+                "filename": info.get("filename"),
+                "preview": (info.get("result") or "")[:100],
+            })
     return {"count": len(items), "total": len(tasks), "tasks": items}
 
 # ====== 删除任务 ======
 @router.delete("/history/{task_id}")
 async def delete_task(task_id: str):
-    if task_id not in TASKS:
+    if not delete_task_store(task_id):
         raise HTTPException(status_code=404, detail="Task not found")
-    TASKS.pop(task_id)
     return {"deleted": task_id}
