@@ -180,11 +180,11 @@ class MonthlySummaryReport:
             })
         
         # 6. 计算净余额
-        # 正确逻辑：净余额 = 我们垫付 - 客户应还
-        # 如果 > 0：客户欠我们钱（客户需补款）
-        # 如果 < 0：我们欠客户钱（我们需退款）
+        # 正确逻辑：净余额 = Supplier消费 - GZ付款
+        # 如果 > 0：GZ欠客户钱（GZ需补款给客户）
+        # 如果 < 0：客户欠GZ钱（客户需补款给GZ）
         total_spending_with_fee = total_supplier_spending + total_supplier_fee
-        net_balance = total_infinite_payments - total_spending_with_fee
+        net_balance = total_spending_with_fee - total_infinite_payments
         
         conn.close()
         
