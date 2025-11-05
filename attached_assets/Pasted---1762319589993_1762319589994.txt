@@ -1,0 +1,135 @@
+太好了，整套功能都跑顺了。你现在就差“把它挂在自己的域名上”这一步。不给你添麻烦——我直接给你一份可以原样转发的部署与验收指令包。你只负责转发，别人照做→把原始输出回给你即可。
+
+⸻
+
+【终版上线指令包｜creditpilot.digital】
+
+目标：把 /portal 正式挂到 https://portal.creditpilot.digital，开启生产模式与基础防护，并做一次完整验收。
+
+0) 前置（域名与证书）
+	1.	DNS 添加一条 CNAME
+	•	主机名：portal
+	•	指向：Replit 提供的应用域名（控制台里能看到）
+	2.	在 Replit 的 Deploy / Custom Domains 添加：portal.creditpilot.digital
+	•	等待自动签发 HTTPS 证书（状态应变为 Active）
+
+⸻
+
+1) 环境变量（Secrets）
+
+按下表设置（已有就保留/覆盖）：
+
+键	值（示例）	说明
+ENV	prod	生产模式（/docs 关闭、HSTS 开启）
+CORS_ALLOW	https://portal.creditpilot.digital	前端域名白名单
+PORTAL_KEY	生成的强随机串（≥32位）	访问门户需要带 ?key=...
+LOG_LEVEL	warn	线上更安静，只打告警/错误
+MAX_UPLOAD_MB	10	上传大小上限
+RATE_LIMIT_PER_MIN	120	每 IP 每分钟请求上限
+ALERT_WEBHOOK	（可选）你的告警地址	1 分钟内 5 次 5xx 自动告警
+LOCAL_FILES_DIR	/home/runner/files	本地原件目录（默认）
+ARCHIVE_AFTER_DAYS	14	14 天后自动压缩
+DELETE_AFTER_DAYS	30	30 天后自动删除归档
+ZIP_THRESHOLD_MB	50	下载≥50MB 自动 ZIP
+
+可选持久化与对象存储（建议）：
+
+键	值（示例）	说明
+REDIS_URL	redis://<host>:6379/0	任务持久化，重启不丢历史
+STORAGE_BACKEND	s3	切到对象存储（R2/S3）
+S3_ENDPOINT	https://<你的R2端点>	R2/S3 端点
+S3_REGION	auto	区域
+S3_BUCKET	pdf-originals	桶名
+S3_ACCESS_KEY	<AK>	访问密钥
+S3_SECRET_KEY	<SK>	访问密钥
+
+（邮件通知可选：SENDGRID_API_KEY、FROM_EMAIL）
+
+⸻
+
+2) 启动方式（已就绪）
+
+保持启动命令（或 Workflow）使用：
+
+python -m uvicorn accounting_app.main:app --host 0.0.0.0 --port ${PORT:-5000}
+
+
+⸻
+
+3) 一次性验收（贴回原始输出即可）
+
+A. 健康与模式
+
+curl -sS https://portal.creditpilot.digital/health
+curl -sS 'https://portal.creditpilot.digital/portal?key=__PORTAL_KEY__&lang=zh' | head -n 3
+curl -sS 'https://portal.creditpilot.digital/docs' -I
+
+期望：
+	•	/health 返回 healthy/connected
+	•	/portal?... 返回页面 HTML 片段
+	•	/docs → 404（生产模式关闭）
+
+B. 安全头（HSTS 生效）
+
+curl -I https://portal.creditpilot.digital/ | sed -n '1,20p'
+
+期望出现：strict-transport-security、x-content-type-options、x-frame-options、referrer-policy、permissions-policy
+
+C. 上传与导出（走 Portal）
+	•	上传一个小 PDF（拖拽区可用）
+	•	看到结果后点：Copy / Download TXT / Download DOCX
+贴回：
+	•	GET /files/result/txt/{task_id} 的响应头（200、Cache-Control、Content-Disposition）
+	•	GET /files/result/docx/{task_id} 的响应头（200、DOCX 类型）
+
+D. 原件下载与阈值压缩
+	•	访问：/files/original/{task_id}（小文件直接 PDF）
+	•	如需验证 ZIP：把 ZIP_THRESHOLD_MB=1 临时设 1，重新下载应变 ZIP（验证后改回 50）
+
+E. 统计
+
+curl -sS https://portal.creditpilot.digital/stats
+
+期望返回：tasks_total/done/error 与 storage_local_bytes
+
+F. 访问密钥
+	•	不带 ?key= 访问 /portal 应 404
+	•	带上正确 key 能打开
+
+⸻
+
+4) 客户演示链接（给 BD/售前）
+
+中文：
+
+https://portal.creditpilot.digital/portal?lang=zh&key=__PORTAL_KEY__
+
+英文：
+
+https://portal.creditpilot.digital/portal?lang=en&key=__PORTAL_KEY__
+
+
+⸻
+
+5) 运维习惯（两句话）
+	•	上线前后在 Replit History → Create Checkpoint：prod-YYYYMMDD-stable
+	•	每周下载一次 /home/runner/pgdump_*.sql 备份（系统已每日自动生成）
+
+⸻
+
+6) 可选加分（以后再开也行）
+	•	Redis（REDIS_URL）→ 历史持久化
+	•	R2/S3（STORAGE_BACKEND=s3 + 相关参数）→ 原件无限保存 + CDN
+	•	Sentry：pip install sentry-sdk + SENTRY_DSN（错误自动告警）
+	•	批量打包下载：历史页多选→一键 ZIP（需要我给 50 行以内增量补丁，随时发）
+
+⸻
+
+7) 回滚预案
+	•	若本次变更异常：在 Replit History 一键回滚到上个 prod-...-stable
+	•	如对象存储切换失败：把 STORAGE_BACKEND 改回 local，重启即可
+
+⸻
+
+完成后请把第 3 步的原始输出回贴。
+这一步做完，你的门户就是一个带 HTTPS、自带防护的正式入口了；客户打开就会“哦，这系统是正经产品”。

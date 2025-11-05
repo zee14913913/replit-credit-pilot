@@ -23,6 +23,18 @@ HTML = r"""
     .left{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     .muted{color:#666}
     a.link{color:inherit;text-decoration:underline}
+    /* 搜索高亮 + 表头排序 */
+    mark.hl{ background: #FF007F33; color: var(--text); padding: 0 2px; border-radius: 4px }
+    th.sortable{ cursor:pointer; user-select:none; position:relative; padding-right:18px }
+    th.sortable:after{
+      content: '↕'; position:absolute; right:8px; top:50%; transform:translateY(-50%);
+      font-size:12px; color:#bbb; opacity:.7
+    }
+    th.sortable.asc:after{ content:'↑' }
+    th.sortable.desc:after{ content:'↓' }
+    /* 空状态插画 */
+    .empty{ text-align:center; padding:40px 20px; color:#999 }
+    .empty svg{ width:48px; height:48px; opacity:.9; display:block; margin:0 auto 8px auto }
   </style>
 </head>
 <body>
@@ -43,13 +55,21 @@ HTML = r"""
     <label class="muted" id="countLabel"></label>
   </div>
 
+  <div id="empty" class="empty" style="display:none">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 7h16l-2 10H6L4 7Z" stroke="#FF007F" stroke-width="1.4"/>
+      <path d="M9 7V5a3 3 0 0 1 6 0v2" stroke="#ff9bc6" stroke-width="1.4"/>
+    </svg>
+    <div id="emptyText">No data</div>
+  </div>
+
   <table id="tbl">
     <thead>
       <tr>
-        <th>ID</th>
-        <th>Status</th>
-        <th>Time</th>
-        <th>Filename</th>
+        <th class="sortable" data-key="task_id">ID</th>
+        <th class="sortable" data-key="status">Status</th>
+        <th class="sortable" data-key="time">Time</th>
+        <th class="sortable" data-key="filename">Filename</th>
         <th>Preview</th>
         <th>Action</th>
       </tr>
@@ -81,6 +101,7 @@ const I18N = {
     total: (n) => `Total ${n}`,
     confirm_del: "Delete this task?",
     portal: "Portal",
+    empty: "No data",
   },
   zh: {
     title: "任务历史",
@@ -97,6 +118,7 @@ const I18N = {
     total: (n) => `共 ${n} 条`,
     confirm_del: "确定删除该任务吗？",
     portal: "Portal",
+    empty: "暂无数据",
   }
 };
 
@@ -142,6 +164,11 @@ function applyTexts(){
   ths.forEach((th, i) => th.textContent = labels[i] || th.textContent);
 }
 
+function applyEmptyText(){
+  document.getElementById("emptyText").textContent = t("empty");
+}
+applyEmptyText();
+
 document.getElementById("langBtn").addEventListener("click", ()=>{
   LANG = (LANG === "zh" ? "en" : "zh");
   localStorage.setItem("lang", LANG);
@@ -159,6 +186,8 @@ applyTexts();
 let page = 1;
 let limit = 10;
 let total = 0;
+let sortKey = null;   // 'task_id' | 'status' | 'time' | 'filename'
+let sortDir = 'asc';  // 'asc' | 'desc'
 
 document.getElementById("searchBtn").addEventListener("click", ()=>{
   page = 1; load();
@@ -186,14 +215,48 @@ async function load(){
 
   const tb = document.querySelector("#tbl tbody");
   tb.innerHTML = '';
-  (j.tasks || []).forEach(row=>{
+
+  // 排序（前端）
+  let rows = (j.tasks || []).slice();
+  const key = sortKey, dir = sortDir;
+  if(key){
+    rows.sort((a,b)=>{
+      const va = (a[key] || '').toString().toLowerCase();
+      const vb = (b[key] || '').toString().toLowerCase();
+      if(va < vb) return dir==='asc' ? -1 : 1;
+      if(va > vb) return dir==='asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
+  // 搜索高亮
+  const re = q ? new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi') : null;
+  function highlight(s){
+    if(!s) return '';
+    if(!re) return (s+'').replace(/[<>&]/g, m=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[m]));
+    return (s+'').replace(/[<>&]/g, m=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[m])).replace(re, m=>`<mark class="hl">${m}</mark>`);
+  }
+
+  // 空状态显示
+  const emptyDiv = document.getElementById("empty");
+  const tbl = document.getElementById("tbl");
+  if(rows.length === 0){
+    emptyDiv.style.display = 'block';
+    tbl.style.display = 'none';
+  } else {
+    emptyDiv.style.display = 'none';
+    tbl.style.display = 'table';
+  }
+
+  rows.forEach(row=>{
     const tr = document.createElement('tr');
-    const prev = (row.preview || '').replace(/[<>&]/g, m=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[m]));
+    const prev = highlight(row.preview || '');
+    const fname = highlight(row.filename || '');
     tr.innerHTML = `
-      <td>${row.task_id}</td>
-      <td>${row.status}</td>
-      <td>${row.time || ""}</td>
-      <td>${row.filename || ""}</td>
+      <td>${highlight(row.task_id)}</td>
+      <td>${highlight(row.status)}</td>
+      <td>${highlight(row.time || "")}</td>
+      <td>${fname}</td>
       <td>${prev}</td>
       <td>
         <button onclick="copyTxt('${row.task_id}')">${t("act_copy")||'Copy'}</button>
@@ -231,6 +294,23 @@ async function delTask(id){
   const r = await fetch('/files/history/'+id, {method:'DELETE'});
   if(r.ok) load();
 }
+
+// 表头点击排序
+document.querySelectorAll('th.sortable').forEach(th=>{
+  th.addEventListener('click', ()=>{
+    const key = th.getAttribute('data-key');
+    if(sortKey === key){
+      sortDir = (sortDir === 'asc' ? 'desc' : 'asc');
+    } else {
+      sortKey = key; sortDir = 'asc';
+    }
+    // 视觉标记
+    document.querySelectorAll('th.sortable').forEach(x=>x.classList.remove('asc','desc'));
+    th.classList.add(sortDir);
+    // 重新加载（仍沿用后端分页 + 前端排序）
+    load();
+  });
+});
 
 load();
 </script>
