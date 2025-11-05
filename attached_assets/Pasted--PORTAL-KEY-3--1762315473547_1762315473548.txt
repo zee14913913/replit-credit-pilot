@@ -1,0 +1,256 @@
+我建议：默认加一个简单访问密钥，更安全，还不影响你给客户试用。做法很轻：设置环境变量 PORTAL_KEY=一串你自定的值；如果不设置，就视为公开入口。
+
+下面是整包（3 个文件）——直接覆盖即可。若你已经有安全头/日志中间件，这些文件不会冲突；只是在 main.py 里挂上 /portal。
+
+⸻
+
+accounting_app/main.py（覆盖）
+
+import os
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+# 现有路由
+from accounting_app.routers import health, files
+# 新增公开入口
+from accounting_app.routers import public
+
+APP_NAME = os.getenv("APP_NAME", "Accounting API")
+ENV = os.getenv("ENV", "dev")  # dev / prod
+CORS_ALLOW = os.getenv("CORS_ALLOW", "*")  # 多域逗号分隔
+
+app = FastAPI(
+    title=APP_NAME,
+    docs_url=None if ENV == "prod" else "/docs",
+    redoc_url=None if ENV == "prod" else "/redoc",
+    openapi_url=None if ENV == "prod" else "/openapi.json",
+)
+
+# CORS
+origins = [o.strip() for o in CORS_ALLOW.split(",") if o.strip()]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins if origins else ["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# 挂载路由
+app.include_router(health.router)
+app.include_router(files.router)
+app.include_router(public.router)   # /portal
+
+@app.get("/")
+def root():
+    return {"app": APP_NAME, "env": ENV, "docs": (ENV != "prod")}
+
+
+⸻
+
+accounting_app/routers/files.py（覆盖：加入回调/邮件通知、PDF 白名单）
+
+import os
+import asyncio
+from uuid import uuid4
+from typing import Dict, Any
+
+from fastapi import APIRouter, UploadFile, File, Request, HTTPException, Depends
+from accounting_app.utils.pdf_processor import pdf_bytes_to_text
+
+router = APIRouter(prefix="/files", tags=["files"])
+
+# ====== 上传大小限流（默认 10MB，可用 MAX_UPLOAD_MB 覆盖） ======
+DEFAULT_MAX_MB = 10
+MAX_BYTES = int(float(os.getenv("MAX_UPLOAD_MB", DEFAULT_MAX_MB)) * 1024 * 1024)
+
+async def guard_content_length(request: Request):
+    cl = request.headers.get("content-length")
+    if cl and int(cl) > MAX_BYTES:
+        raise HTTPException(status_code=413, detail=f"File too large (max {MAX_BYTES // (1024*1024)}MB)")
+
+# ====== 简单任务存储（内存/或你已接入 Redis 可替换） ======
+TASKS: Dict[str, Dict[str, Any]] = {}
+# 结构：{ task_id: {"status": "queued"|"processing"|"done"|"error", "result": str|None, "error_msg": str|None} }
+
+# ====== 同步直返：小文件直接返回文本 ======
+@router.post("/pdf-to-text", dependencies=[Depends(guard_content_length)])
+async def pdf_to_text(file: UploadFile = File(...)):
+    if file.content_type not in {"application/pdf"}:
+        raise HTTPException(415, detail="Only PDF is allowed")
+    data = await file.read()
+    text = await asyncio.to_thread(pdf_bytes_to_text, data)
+    return {"text": text}
+
+# ====== 异步队列：大文件友好 + 可选回调/邮件通知 ======
+@router.post("/pdf-to-text/submit", dependencies=[Depends(guard_content_length)])
+async def submit_pdf(
+    request: Request,
+    file: UploadFile = File(...)
+):
+    if file.content_type not in {"application/pdf"}:
+        raise HTTPException(415, detail="Only PDF is allowed")
+
+    # 读取文件与可选参数
+    data = await file.read()
+    try:
+        payload = await request.json()
+    except Exception:
+        payload = {}
+    callback_url: str | None = payload.get("callback_url")
+    notify_email: str | None = payload.get("notify_email")
+
+    task_id = str(uuid4())
+    TASKS[task_id] = {"status": "queued", "result": None, "error_msg": None}
+
+    async def run():
+        TASKS[task_id]["status"] = "processing"
+        try:
+            text = await asyncio.to_thread(pdf_bytes_to_text, data)
+            TASKS[task_id]["status"] = "done"
+            TASKS[task_id]["result"] = text
+
+            # —— Webhook 回调（可选）——
+            if callback_url:
+                try:
+                    import httpx
+                    async with httpx.AsyncClient(timeout=10) as client:
+                        await client.post(callback_url, json={
+                            "task_id": task_id,
+                            "status": "done",
+                            "result_preview": text[:1000]
+                        })
+                except Exception:
+                    # 静默失败：不影响主流程
+                    pass
+
+            # —— 邮件通知（可选，需要 SENDGRID_API_KEY/FROM_EMAIL）——
+            if notify_email and os.getenv("SENDGRID_API_KEY"):
+                try:
+                    from sendgrid import SendGridAPIClient
+                    from sendgrid.helpers.mail import Mail
+                    sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
+                    from_email = os.getenv("FROM_EMAIL", "no-reply@example.com")
+                    msg = Mail(
+                        from_email=from_email,
+                        to_emails=notify_email,
+                        subject="Your PDF processing is complete",
+                        html_content=f"<p>Task {task_id} done.</p><pre>{(text[:1000]).replace('<','&lt;')}</pre>"
+                    )
+                    sg.send(msg)
+                except Exception:
+                    pass
+
+        except Exception as e:
+            TASKS[task_id]["status"] = "error"
+            TASKS[task_id]["error_msg"] = str(e)
+
+    asyncio.create_task(run())
+    return {"task_id": task_id, "status": "queued"}
+
+@router.get("/pdf-to-text/result/{task_id}")
+async def get_result(task_id: str):
+    info = TASKS.get(task_id)
+    if not info:
+        raise HTTPException(status_code=404, detail="task not found")
+    return info
+
+
+⸻
+
+accounting_app/routers/public.py（新增：/portal 客户页面；可选密钥）
+
+import os
+from fastapi import APIRouter, Request, HTTPException
+from fastapi.responses import HTMLResponse
+
+router = APIRouter(tags=["public"])
+
+HTML = """
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>PDF OCR</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body{font-family:ui-sans-serif,system-ui,Arial;margin:40px;max-width:760px}
+    .card{padding:16px;border:1px solid #ddd;border-radius:12px}
+    .muted{color:#666}
+    pre{white-space:pre-wrap;word-break:break-word;background:#f7f7f7;padding:12px;border-radius:8px}
+    button{padding:8px 14px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer}
+    input[type=file],input[type=email]{margin-right:8px}
+  </style>
+</head>
+<body>
+  <h2>PDF 文字提取</h2>
+  <div class="card">
+    <form id="f">
+      <input type="file" id="file" accept="application/pdf" required />
+      <input type="email" id="email" placeholder="可选：完成后邮件通知" />
+      <button type="submit">上传并处理</button>
+    </form>
+    <p class="muted" id="msg">请选择 PDF 文件后提交（最大 %MAX% MB）。</p>
+    <div id="out"></div>
+  </div>
+<script>
+const msg = document.getElementById('msg');
+const out = document.getElementById('out');
+document.getElementById('f').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const f = document.getElementById('file').files[0];
+  if(!f){ alert('请选择PDF'); return; }
+  if(f.size > (parseInt('%MAX%')*1024*1024)){ alert('文件超过限制'); return; }
+
+  msg.textContent = '正在上传...';
+  const fd = new FormData(); fd.append('file', f);
+
+  // 提交任务（这里使用异步接口，页面自动轮询）
+  const submit = await fetch('/files/pdf-to-text/submit', { method:'POST', body: fd });
+  if(!submit.ok){ msg.textContent = '提交失败'; return; }
+  const sub = await submit.json();
+  msg.textContent = '已提交，任务ID：' + sub.task_id + '，等待完成...';
+
+  async function poll(){
+    const r = await fetch('/files/pdf-to-text/result/' + sub.task_id);
+    const j = await r.json();
+    if(j.status === 'done'){
+      msg.textContent = '处理完成';
+      out.innerHTML = '<h3>结果</h3><pre>'+ (j.result || '').replace(/[<>&]/g, m=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[m])) +'</pre>';
+    }else if(j.status === 'error'){
+      msg.textContent = '处理出错：' + (j.error_msg || 'unknown');
+    }else{
+      setTimeout(poll, 1200);
+    }
+  }
+  poll();
+});
+</script>
+</body>
+</html>
+"""
+
+@router.get("/portal", response_class=HTMLResponse)
+async def portal(request: Request):
+    # 可选：简单访问密钥
+    need_key = os.getenv("PORTAL_KEY")
+    if need_key:
+        key = request.query_params.get("key")
+        if key != need_key:
+            # 不暴露是否存在：直接 404
+            raise HTTPException(status_code=404, detail="Not Found")
+
+    limit = os.getenv("MAX_UPLOAD_MB", "10")
+    return HTML.replace("%MAX%", str(limit))
+
+
+⸻
+
+要点（你只需设置一次）
+	•	是否加密钥：在 Secrets 里设 PORTAL_KEY=随便一串；访问 /portal?key=这串 才能进。没设就公开。
+	•	通知功能（可选）：
+	•	Webhook：提交时 JSON 带 callback_url。
+	•	邮件：再带 notify_email，并设 SENDGRID_API_KEY 与 FROM_EMAIL。
+	•	其它变量你已就绪：ENV=prod、CORS_ALLOW、MAX_UPLOAD_MB、（可选）REDIS_URL。
+
+需要我再给你一条“要发给 Replit 的指令版”也可以，但你现在直接覆盖这 3 个文件就能跑。
