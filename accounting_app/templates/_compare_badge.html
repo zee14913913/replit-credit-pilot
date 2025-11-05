@@ -1,0 +1,66 @@
+{# Hot Pink 计数徽标 · Compare Basket Badge #}
+<div id="cp-basket-bar" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+  <a href="/loans/compare/page" class="btn" style="position:relative;display:inline-flex;align-items:center;gap:6px">
+    <span class="bi bi-basket"></span>
+    Compare Basket
+    <span id="cp-basket-badge"
+          style="
+            display:inline-block;min-width:22px;height:22px;line-height:22px;
+            text-align:center;border-radius:11px;
+            background:#FF007F;color:#fff;font-size:12px;font-weight:700;
+            padding:0 6px;box-shadow:0 0 0 2px #322446;
+          ">0</span>
+  </a>
+</div>
+
+<script>
+(function(){
+  const BADGE_ID = 'cp-basket-badge';
+
+  async function fetchCount(){
+    try {
+      const r = await fetch('/loans/compare/json', {cache:'no-store'});
+      const j = await r.json();
+      return (j && Array.isArray(j.items)) ? j.items.length : 0;
+    } catch(e){
+      return 0;
+    }
+  }
+
+  async function syncBadge(){
+    const n = await fetchCount();
+    const el = document.getElementById(BADGE_ID);
+    if(!el) return;
+    el.textContent = n;
+    el.style.opacity = n>0 ? '1' : '0.55';
+  }
+
+  function hookAddButtons(){
+    const sel = '[data-action="add-compare"], .add-compare';
+    document.body.addEventListener('click', async (ev)=>{
+      const btn = ev.target.closest(sel);
+      if(!btn) return;
+      setTimeout(syncBadge, 400);
+    });
+  }
+
+  hookAddButtons();
+  syncBadge();
+  setInterval(syncBadge, 15000);
+})();
+</script>
+
+<style>
+#cp-basket-bar .btn{
+  border:1px solid #322446;
+  background:linear-gradient(180deg, #322446, #281a3a);
+  color:#fff;
+}
+#cp-basket-bar .btn:hover{
+  filter:brightness(1.06);
+  box-shadow:0 0 0 2px #ff007f33 inset;
+}
+@media (max-width:640px){
+  #cp-basket-bar { width:100% }
+}
+</style>

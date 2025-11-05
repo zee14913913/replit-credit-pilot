@@ -1,0 +1,90 @@
+太好了，整套 Loans & CTOS 情报系统已经跑通、验证齐全。为了不再“版本打架”，我把最终可交付整理成一页清单，你直接复制给 Replit/维护者即可（他们不用再问你要哪一版）。
+
+最终交付（已上线版本 · 一页清单）
+
+当前状态
+	•	FastAPI 运行正常（/portal、/loans/page、/ctos/page 均 200）
+	•	日更采集：每天 11:00（Asia/Kuala_Lumpur），20 小时冷却
+	•	产品与情报双表：loan_updates + loan_intel（示例数据 3 条+3 条）
+	•	对比篮、DSR 计算、CSV 导出、偏好情报卡片、CTOS 表单/队列 ✅
+
+这就是“最终版”所包含
+	•	/routers：loans_updates.py、loans_business.py、ctos.py（+ 你已有 public.py、历史页等）
+	•	/services：loans_harvester.py、crypto_box.py、ctos_client.py
+	•	/templates：loans_page.html、compare.html、ctos_form.html、_compare_badge.html 等
+	•	brand.css（热粉 #FF007F、深紫 #322446、深底 #1a1323 已统一）
+	•	main.py 已挂载静态文件与全部路由
+
+环境变量（已配置就不动）
+	•	核心：ENV=prod、TZ=Asia/Kuala_Lumpur
+	•	访问控制：PORTAL_KEY（客户页）、LOANS_REFRESH_KEY（仅运维手动刷新）
+	•	刷新策略：MIN_REFRESH_HOURS=20、SHOW_REFRESH_BUTTON=0
+	•	加密：FERNET_KEY（已就绪）
+	•	可选：PERPLEXITY_API_KEY（接真采集时再加）
+
+⸻
+
+运维验收（一次性复核）
+
+# 1) 健康
+curl -sS /health
+
+# 2) Loans 列表 & 情报
+curl -sS /loans/updates | jq 'length'
+curl -sS /loans/intel   | jq 'length'
+
+# 3) 导出
+curl -I /loans/updates/export.csv | grep -i '200\|content-type'
+curl -I /loans/intel/export.csv   | grep -i '200\|content-type'
+
+# 4) DSR 计算（示例）
+curl -sS -X POST /loans/dsr/calc -H 'Content-Type: application/json' \
+-d '{"income":8000,"commitments":1500,"amount":400000,"rate":3.75,"tenure_years":30}'
+
+# 5) 比价篮（可选）
+curl -sS /loans/compare/list
+
+# 6) CTOS 页面 gate
+curl -I "/ctos/page?key=$PORTAL_KEY" | grep '200'
+
+管理员仅在需要时手动刷新（不会对客户公开）
+
+curl -X POST /loans/updates/refresh -H "X-Refresh-Key: $LOANS_REFRESH_KEY"
+
+
+⸻
+
+客户演示入口（给客户就是这 1 个）
+	•	Loans 情报中心（只读、含搜索/导出/对比/DSR）：/loans/page
+
+CTOS 授权页仅在私下发给需要提交资料的客户：/ctos/page?key=<PORTAL_KEY>
+
+⸻
+
+安全与稳定要点
+	•	Token 经济性：客户不能触发刷新。每日 11:00 自动采集 + 20 小时冷却，避免“100 位客户=100 次调用”的浪费。
+	•	密钥不暴露：ADMIN_KEY 已从前端移除；PORTAL_KEY 只 gate 需要的页面。
+	•	PII 加密：CTOS 表单数据用 FERNET_KEY 加密落盘。
+	•	静态资源：StaticFiles 已挂载，CSS MIME 问题已解决。
+	•	CSV 导出：Cache-Control: private, max-age=600，省资源又不越界缓存。
+
+⸻
+
+万一要回滚 / 扩展
+	•	回滚：用 Replit History 创建 checkpoint，例如 prod-stable-YYYYMMDD，出事一键回退。
+	•	接入真数据：补上 PERPLEXITY_API_KEY 后，无需改代码，采集自动切到真实源。
+	•	扩展：可加“偏好匹配度评分进 PDF 报告”“情绪趋势图”“新品通知”。
+
+⸻
+
+你要给 Replit / 维护者的话（两句就够）
+	1.	「请保留当前代码树，确认 /loans/page、/loans/updates、/loans/intel、/ctos/page?key=... 均 200；/loans/updates/export.csv 与 /loans/intel/export.csv 响应 text/csv。」
+	2.	「禁止对外暴露刷新端点；如需手动刷新，仅通过 X-Refresh-Key: $LOANS_REFRESH_KEY 执行。」
+
+⸻
+
+想继续“锦上添花”，我建议下一步选 1 个小而打动客户的亮点做增量（不影响现网）：
+	•	产品排名（Ranking）：按 DSR 适配度 + 银行偏好 + 情绪分数加权，给出 Top 3 —— 客户一眼就懂该选谁。
+	•	一键打包报告：把“客户画像匹配 + 对比篮 + DSR 结果”导出成 1 份 PDF，适合发银行/会计。
+
+你要哪一个，我就给你“可直接覆盖”的补丁。
