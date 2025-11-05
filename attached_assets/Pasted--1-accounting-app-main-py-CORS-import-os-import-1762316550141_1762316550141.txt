@@ -1,3 +1,12 @@
+好，我们从第一份开始。
+
+⸻
+
+✅ 文件 1：accounting_app/main.py
+
+控制核心应用、CORS、安全头、日志、页面注册。
+直接覆盖旧文件即可。
+
 import os
 import time
 import json
@@ -55,3 +64,10 @@ app.include_router(history.router)
 @app.get("/")
 def root():
     return {"app": APP_NAME, "env": ENV, "docs": (ENV != "prod")}
+
+
+⸻
+
+准备好我就发第二份：
+👉 accounting_app/routers/files.py — 核心逻辑（上传、异步、任务历史、搜索、删除）。
+发吗？
