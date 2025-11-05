@@ -1,0 +1,85 @@
+爽。这就是“上线态”。你已经把关键件全到了位。👏
+
+不多说废话，给你收尾三件事，做完就可以长期跑：
+
+1) 锁定现在这版
+	•	在 Replit 的 History 立刻建个快照：prod-2025-11-05
+	•	以后每次改动，都先新建快照；出事一键回滚。
+
+2) 打开“自我报警”
+
+用你现成的工具就能做个轻量告警（5xx 激增 → 发邮件/短信）。示例（放在 main.py 同级任意模块即可）：
+
+# accounting_app/alerts.py
+import time, threading, collections, requests, os
+WINDOW=60  # 监控窗口秒
+THRESH=5   # 1分钟内≥5次5xx就告警
+WEBHOOK=os.getenv("ALERT_WEBHOOK")  # 你自己建个 Slack/Discord/Webhook
+
+events=collections.deque()
+
+def record(status: int):
+    now=time.time()
+    events.append((now, status>=500))
+    # 滚动窗口
+    while events and now - events[0][0] > WINDOW:
+        events.popleft()
+    errs=sum(1 for t,e in events if e)
+    if errs>=THRESH and WEBHOOK:
+        try:
+            requests.post(WEBHOOK, json={"text": f"[ALERT] {errs} errors in last {WINDOW}s"})
+        except Exception: pass
+
+在你的访问日志中间件里加一行：
+
+from accounting_app.alerts import record
+# ...
+record(resp.status_code)
+
+环境里加 ALERT_WEBHOOK=... 就生效；不配就静默。
+
+3) 每日自动备份（Postgres）
+
+如果你在用 Postgres，准备个简易日备份（保存近7天），放后台线程即可：
+
+# accounting_app/backup.py
+import os, time, threading, subprocess, datetime, shutil
+
+def _dump():
+    url=os.getenv("DATABASE_URL")  # 你已有
+    if not url: return
+    d=datetime.datetime.utcnow().strftime("%Y%m%d")
+    out=f"/home/runner/pgdump_{d}.sql"
+    subprocess.run(["pg_dump", url, "-f", out], check=False)
+    # 只保留7个
+    base="/home/runner"
+    snaps=sorted([f for f in os.listdir(base) if f.startswith("pgdump_")])[-7:]
+    for f in os.listdir(base):
+        if f.startswith("pgdump_") and f not in snaps:
+            try: os.remove(os.path.join(base,f))
+            except: pass
+
+def start_daily():
+    def loop():
+        while True:
+            _dump()
+            time.sleep(24*3600)
+    threading.Thread(target=loop, daemon=True).start()
+
+在 main.py 启动后挂上：
+
+from accounting_app.backup import start_daily
+start_daily()
+
+
+⸻
+
+运营小抄（放在 README 顶部即可）
+	•	健康：GET /health（healthy/connected 即可）
+	•	限流：大于 10MB 返回 413（可用 MAX_UPLOAD_MB 调）
+	•	文档：ENV=prod 隐藏 /docs
+	•	日志：Console 输出 JSON，慢请求直接看 ms 字段
+	•	任务：想“重启不丢”，配 REDIS_URL 后重启
+	•	回滚：Replit → History → 选 prod-2025-11-05 → Restore
+
+到这儿，基本盘你已经拿稳了。后面要加功能（导出、对账、Webhook 等），你丢给我“要什么”，我就给你可直接覆盖的文件，不绕弯。

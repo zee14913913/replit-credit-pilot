@@ -7,6 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 from accounting_app.routers import health, files
+from accounting_app.alerts import record
+from accounting_app.backup import start_daily
 
 # 配置日志
 logging.basicConfig(level=logging.INFO)
@@ -41,6 +43,7 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
             "status": resp.status_code,
             "ms": dt
         }))
+        record(resp.status_code)
         return resp
 
 # ====== 创建 FastAPI 应用 ======
@@ -72,3 +75,7 @@ app.include_router(files.router)
 @app.get("/")
 def root():
     return {"app": APP_NAME, "env": ENV, "docs": (ENV != "prod")}
+
+@app.on_event("startup")
+async def startup():
+    start_daily()

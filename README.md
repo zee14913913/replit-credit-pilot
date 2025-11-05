@@ -1,5 +1,38 @@
 # Smart Credit & Loan Manager
 
+## 🚨 运营小抄（Production Ready）
+
+### 日常监控
+- **健康检查**: `GET /health` → 返回 `{"status":"healthy","database":"connected"}` 即正常
+- **限流验证**: 上传超过 10MB 文件 → 返回 `413` (可通过 `MAX_UPLOAD_MB` 调整)
+- **文档隐藏**: `ENV=prod` 时 `/docs` 自动隐藏（返回 404）
+- **日志查看**: Console 输出 JSON 格式，慢请求直接看 `ms` 字段
+- **任务持久化**: 配置 `REDIS_URL` 后重启不丢任务结果
+
+### 环境变量
+```
+ENV=prod                              # 生产模式
+CORS_ALLOW=https://creditpilot.digital  # 跨域限制
+MAX_UPLOAD_MB=10                      # 上传限制
+ALERT_WEBHOOK=https://...             # 告警通知（可选）
+REDIS_URL=redis://...                 # 任务持久化（可选）
+```
+
+### 告警系统
+- 1分钟内 ≥5 次 5xx 错误 → 自动发送通知到 `ALERT_WEBHOOK`
+- 支持 Slack/Discord/任意 Webhook
+
+### 数据备份
+- 每日自动备份 Postgres 到 `/home/runner/pgdump_YYYYMMDD.sql`
+- 自动保留最近 7 天备份
+
+### 快速回滚
+1. 打开 Replit → History
+2. 选择快照：`prod-2025-11-05`
+3. 点击 Restore
+
+---
+
 ## 🚀 快速开始
 
 ### 📚 重要文档位置（永久固定）
