@@ -1,0 +1,226 @@
+可以。下面这份就是“给 Replit 的完整版本（统一版 v1.0）”。你把整段转交给维护同事／直接贴到 Replit 按步骤做就行，不需要来回对比多份稿。
+
+⸻
+
+CreditPilot · 统一上线包 v1.0（FastAPI）
+
+本次交付范围
+	1.	Loans 日更资讯聚合（每天 11:00 KL 自动抓取；支持手动刷新但带冷却；默认不对客户暴露刷新按钮）
+	2.	Loans 业务联动：DSR 计算 + “加入比价/试算”小篮子（页面内操作即可）
+	3.	CTOS 授权 + 资料上传（客户在线填表&上传 IC/SSM；我们接收、排队；可直连或人工）→ 回写 DSR/DSRC → Loans 比价页可直接用
+	4.	Credit Cards 三步漏斗新 UI（可选挂载）：不改你现有后端逻辑，只换页面结构与交互
+
+⸻
+
+0) 依赖 & 环境变量（先做这一步）
+
+依赖（requirements.txt 追加）
+
+apscheduler==3.10.4
+pytz==2024.2
+cryptography==43.0.3
+
+安装（本地或 Replit shell）：
+
+pip install -q apscheduler==3.10.4 pytz==2024.2 cryptography==43.0.3
+
+环境变量（Replit Secrets）
+
+# —— Loans 聚合控制 ——
+LOANS_REFRESH_KEY=<强随机字符串>   # 仅运维可用的手动刷新密钥
+MIN_REFRESH_HOURS=20               # 冷却小时数（默认 20，可改 24/36）
+SHOW_REFRESH_BUTTON=0              # 0=对客户隐藏刷新按钮（推荐）
+
+# —— Perplexity（可选；没填也能跑，占位空数据）——
+PERPLEXITY_API_KEY=<你的PPLX key，如暂未接通可不填>
+PERPLEXITY_MODEL=llama-3.1-sonar-large-128k-online  # 按你账号可用模型改（可选）
+
+# —— CTOS 客户表单访问控制 & 管理口令 ——
+PORTAL_KEY=<强随机字符串>       # 客户端访问 /ctos/page?key=... 时校验
+ADMIN_KEY=<强随机字符串>        # 管理端与回调使用
+
+# —— 本地加密（生成一把 Fernet 密钥）——
+# 生成方法：python -c "from cryptography.fernet import Fernet;print(Fernet.generate_key().decode())"
+FERNET_KEY=<生成的key>
+
+# —— CTOS 直连（可选；没开通就先走人工队列）——
+CTOS_API_ENABLED=0
+CTOS_API_BASE=https://api.ctos.example
+CTOS_API_KEY=<ctos的key>
+
+
+⸻
+
+1) 新增代码文件（保持路径）
+
+下列文件都是“新增”，按路径创建并粘贴即可。已有项目结构示例：accounting_app/...
+
+A. Loans · 抓取服务（Perplexity 占位/对接口）
+
+accounting_app/services/loans_harvester.py
+说明：如果未配置 PERPLEXITY_API_KEY，函数会返回空列表（不报错）。后续把你现有的 PPLX 抓取实现替换到 TODO 区即可。
+
+B. Loans · 聚合路由（定时+冷却+列表+导出+只读UI+“加入比价/试算”按钮）
+
+accounting_app/routers/loans_updates.py
+包含：
+	•	数据表 loan_updates 与 loan_meta_kv（记录上次抓取时间/锁）
+	•	定时任务：每天 11:00（KL）自动跑；冷却保护：默认 20 小时
+	•	仅运维可手动刷新：POST /loans/updates/refresh（需 X-Refresh-Key）
+	•	客户端只读页面：GET /loans/page（搜索、筛选、导出 CSV、加入比价/试算）
+	•	API：GET /loans/updates、GET /loans/updates/export.csv、GET /loans/updates/last
+
+说明：不会让每个客户点一次就消耗一次 token。客户看的是共享结果；刷新权与冷却受控。
+
+C. Loans · 业务路由（DSR 计算 + 比价篮 + 比价页）
+
+accounting_app/routers/loans_business.py
+包含：
+	•	POST /loans/dsr/calc：等额本息月供与 DSR 计算
+	•	比价篮：/loans/compare/add|remove|list/{basket_id}（先用内存存储，后续可换 Redis）
+	•	比价页：/loans/compare/page（支持批量 Recalculate；列表里“加入比价”“试算”按钮会跳这里）
+
+D. CTOS · 本地加密封装
+
+accounting_app/services/crypto_box.py
+说明：用 FERNET_KEY 对 IC/SSM/邮箱/手机字段加密落库。
+
+E. CTOS · API 客户端桩
+
+accounting_app/services/ctos_client.py
+说明：CTOS_API_ENABLED=0 时走人工队列（不调用外部 API）；启用后替换 TODO 为正式对接。
+
+F. CTOS · 路由（表单+上传+队列+回调+下载+联动）
+
+accounting_app/routers/ctos.py
+包含：
+	•	客户页：/ctos/page?key=...（中英双语、配色统一；上传 IC/SSM；提交后自动跳转到 Loans 比价页，携带 consent_id）
+	•	提交：POST /ctos/submit（校验扩展名与大小；加密入库；触发直连或人工队列）
+	•	管理页：/ctos/admin?key=...&ak=...（查看队列/状态/下载报告）
+	•	人工挂报告：POST /ctos/attach-report（上传 PDF 附到单据，更新状态，并示例更新 DSR/DSRC）
+	•	回调：POST /ctos/webhook?ak=...（直连模式；保存报告并更新 DSR/DSRC）
+	•	Loans 读取指标：GET /ctos/metrics/{consent_id}
+
+额外便捷口：GET /loans/dsr/from-ctos?consent_id=...（在 loans_business.py 末尾已加入）——比价页据此拿到最新 DSR/DSRC。
+
+G.（可选）Credit Cards 三步漏斗新 UI
+	•	路由：accounting_app/routers/ui_cards.py
+	•	模板：accounting_app/templates/cards.html
+访问：/ui/cards?step=1|2|3&lang=zh|en
+
+左侧“步骤导航”+ 中间“当前工作区”+ 右侧“收益面板”；所有主要操作有明确按钮（上传/去收据/看报表/导出等），“返回/上一步”=左侧点击上一步或直接用顶部快速操作。需要“固定的返回按钮”的话，也可以在模板顶部再加 <button onclick="history.back()">返回</button>（一行即可）。
+
+⸻
+
+2) 修改主程序（挂载路由）
+
+找到你的 accounting_app/main.py，只需新增以下几行（不动你现有中间件与其他路由）：
+
+# 顶部
+from accounting_app.routers import loans_updates, loans_business, ctos
+# （若使用三步漏斗 UI）
+from accounting_app.routers import ui_cards
+
+# 应用处
+app.include_router(loans_updates.router)
+app.include_router(loans_business.router)
+app.include_router(ctos.router)
+# （若使用三步漏斗 UI）
+app.include_router(ui_cards.router)
+
+提示：loans_updates 内部已在 @router.on_event("startup") 开启定时任务；无需你额外写启动钩子。
+
+⸻
+
+3) 验收脚本（逐条执行即可）
+
+A. Loans 定时器冷却状态
+
+GET /loans/updates/last
+→ {"last_harvest_at": "...或null", "min_hours": 20}
+
+B.（仅运维）手动刷新（冷却内会被跳过，不消耗 token）
+
+POST /loans/updates/refresh
+Header: X-Refresh-Key: <你的LOANS_REFRESH_KEY>
+→ {"status":"done","saved":N,"last_harvest_at":"...Z"}
+或 {"status":"skipped","skipped_reason":"cooldown 20h", ...}
+
+C. 列表/导出
+	•	GET /loans/updates?q=&limit=5 看到结构化字段
+	•	GET /loans/updates/export.csv 能下载 CSV
+
+D. 客户只读页（包含“加入比价/试算”）
+	•	打开浏览器：/loans/page
+
+E. DSR 计算接口
+
+POST /loans/dsr/calc
+{"income":8000,"commitments":1500,"amount":400000,"rate":3.75,"tenure_years":30}
+→ {"monthly":..., "dsr_pct":..., "verdict":"PASS|BORDERLINE|HIGH"}
+
+F. CTOS 客户表单 → 自动跳 Loans 比价
+	1.	打开：/ctos/page?key=<PORTAL_KEY>（网页填写并上传）→ 提交
+	2.	提交成功会自动跳转到 /loans/compare/page?use_ctos=1&consent_id=<uuid>&key=<PORTAL_KEY>，页面右上会显示“CTOS 最新”徽标，且已用最新 DSR/DSRC 预填并重算
+	3.	人工模式下（CTOS_API_ENABLED=0）你也可上传一份 PDF 模拟报告就绪：
+
+POST /ctos/attach-report
+form: consent_id=<uuid>, ak=<ADMIN_KEY>, pdf=@fake_report.pdf
+
+然后 /loans/dsr/from-ctos?consent_id=<uuid> 应返回最新 DSR/DSRC。
+
+⸻
+
+4) UI 交互说明（你关心的“下一步/返回”）
+	•	Loans 资讯页：每条卡片有 Open / Add to Compare / Try DSR 按钮；顶部有 Export CSV、到“Compare Basket”的入口（返回=浏览器返回，或点击顶部入口切换）。
+	•	Compare Basket：有输入栏位 + Recalculate；来源数据从本地篮子读取（你在资讯列表“添加”后出现）。
+	•	CTOS 表单：提交 后自动跳转到比价页（无须客户手动找入口）；如要“返回上一页”，浏览器默认返回可用，或在模板加一行 history.back() 按钮。
+	•	Credit Cards 三步漏斗（可选）：左侧“1/2/3”就是前进/返回的“导航按钮”，随时可跳回上一阶段；顶部“快速操作”也提供直达（上传/去收据/看报表）。
+
+如果你想把“固定样式的【下一步】【上一步】”两个按钮也加上，我可以给你两行脚本直接贴到对应模板顶部（不影响现有导航）。
+
+⸻
+
+5) 常见问题
+	•	会不会被客户反复点刷新、烧 PPLX token？
+不会。客户页默认没有刷新按钮；只有你拿 LOANS_REFRESH_KEY 才能手动刷新，而且有冷却（MIN_REFRESH_HOURS），冷却内直接 skipped，不触发外部调用。
+	•	Perplexity 没配置能跑吗？
+能。会显示空或占位条目，但所有页面/接口/比价/DSR 都可用；配置好 key 再对接真实抓取即可。
+	•	CTOS 没有对接 API 怎么办？
+走人工队列：客户提交→我们收到→后台上传 PDF（或等邮件）→系统即刻更新 DSR/DSRC 并联动 Loans 比价。
+	•	比价篮持久化
+目前用内存（够演示/小规模实用）。要持久化的话，把 BASKETS 换成 Redis Hash 即可（key 方案已在注释里给出）。
+
+⸻
+
+6) 路由清单（给同事查阅）
+	•	Loans 资讯：
+	•	GET /loans/page（只读页）
+	•	GET /loans/updates（查询）
+	•	GET /loans/updates/export.csv（导出）
+	•	GET /loans/updates/last（上次抓取时间）
+	•	POST /loans/updates/refresh（手动刷新，需 X-Refresh-Key）
+	•	Loans 业务：
+	•	POST /loans/dsr/calc（DSR）
+	•	POST /loans/compare/add|remove，GET /loans/compare/list/{basket_id}
+	•	GET /loans/compare/page（比价页）
+	•	GET /loans/dsr/from-ctos?consent_id=...（取 CTOS 最新 DSR/DSRC）
+	•	CTOS：
+	•	GET /ctos/page?key=...（客户表单）
+	•	POST /ctos/submit（提交授权 + 上传）
+	•	GET /ctos/admin?key=...&ak=...（管理队列）
+	•	POST /ctos/attach-report（人工上传报告）
+	•	POST /ctos/webhook?ak=...（直连回调）
+	•	GET /ctos/metrics/{consent_id}（Loans 读取指标）
+
+-（可选）Credit Cards 三步漏斗：
+	•	GET /ui/cards?step=1|2|3&lang=zh|en
+
+⸻
+
+7) 你要做的就三步
+	1.	加依赖、设环境变量（如上）
+	2.	把 6~7 个文件按路径新增，并在 main.py 挂上路由（上面那几行）
+	3.	重启 → 按“验收脚本”逐条确认
+
+就这些。之后要把 Loans 资讯的“今日简报条”嵌到你现有 Loans 主页面顶部，我可以再给你一个 20 行的 HTML 片段，直接读 /loans/updates，只读显示，不带刷新。
