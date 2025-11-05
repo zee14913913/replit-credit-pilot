@@ -1,34 +1,57 @@
 {% extends "base.html" %}
+{% block title %}Portal · CreditPilot{% endblock %}
+
 {% block content %}
-<div class="grid grid-cols-2">
-  <div class="card">
-    <h3 style="margin-top:0">PDF 文字提取</h3>
-    <form id="f" enctype="multipart/form-data" method="post" action="/files/pdf-to-text">
-      <input class="input" type="file" name="file" accept="application/pdf" required/>
-      <div style="display:flex;gap:8px;margin-top:10px">
-        <button class="btn primary" type="submit">上传并提取</button>
-        <a class="btn" href="/portal/history{% if key %}?key={{key}}{% endif %}">查看历史</a>
-      </div>
-    </form>
-    <pre id="out" class="code" style="margin-top:12px;white-space:pre-wrap"></pre>
+<h1 class="title">Portal</h1>
+
+<div class="grid-3">
+  <div class="card tile">
+    <h2 class="section">Loans Intelligence</h2>
+    <div class="meta">产品 / 偏好情报 / Top-3 / 比价</div>
+    <div class="actions">
+      <a class="btn primary" href="/loans/page">Open Loans</a>
+      <a class="btn" href="/loans/compare/page">Open Compare</a>
+      <a class="btn" href="/loans/top3/cards" target="_blank">Open Top-3 Cards</a>
+    </div>
   </div>
-  <div class="card">
-    <h3 style="margin-top:0">说明</h3>
-    <div class="kv">
-      <div>文件类型</div><div>PDF（≤10MB）</div>
-      <div>处理方式</div><div>OCR + 文本解析</div>
-      <div>结果导出</div><div>TXT / DOCX / 原件下载</div>
+
+  <div class="card tile">
+    <h2 class="section">CTOS</h2>
+    <div class="meta">授权表单 / 上传证件 / 队列</div>
+    <div class="actions">
+      <a class="btn primary" href="/ctos/page{% if key %}?key={{ key }}{% endif %}">Open CTOS Form</a>
+      <a class="btn" href="/ctos/admin{% if key and admin_key %}?key={{ key }}&ak={{ admin_key }}{% endif %}">Admin</a>
+    </div>
+  </div>
+
+  <div class="card tile">
+    <h2 class="section">Docs</h2>
+    <div class="meta">企业报告（中/英）</div>
+    <div class="actions">
+      <a class="btn" href="/docs/official/CREDITPILOT_企业报告_EN.pdf" target="_blank">Open EN PDF</a>
+      <a class="btn" href="/docs/official/CREDITPILOT_企业报告_CN.pdf" target="_blank">打开 中文 PDF</a>
     </div>
   </div>
 </div>
-<script>
-const f = document.getElementById('f');
-f.addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const fd = new FormData(f);
-  const res = await fetch('/files/pdf-to-text', {method:'POST', body:fd});
-  const js = await res.json();
-  document.getElementById('out').textContent = js.text || JSON.stringify(js);
-});
-</script>
+
+<hr class="sep">
+
+<div class="grid-2">
+  <div class="card tile">
+    <h2 class="section">History</h2>
+    <div class="meta">变更记录 / 最近活动</div>
+    <div class="actions">
+      <a class="btn" href="/portal/history{% if key %}?key={{ key }}{% endif %}">Open History</a>
+    </div>
+  </div>
+
+  <div class="card tile">
+    <h2 class="section">System</h2>
+    <div class="meta">健康检查 / 定时任务 / 冷却策略</div>
+    <div class="actions">
+      <a class="btn" href="/health" target="_blank">Health</a>
+      <a class="btn" href="/loans/updates/last" target="_blank">Last Harvest</a>
+    </div>
+  </div>
+</div>
 {% endblock %}

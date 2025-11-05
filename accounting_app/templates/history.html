@@ -1,25 +1,44 @@
 {% extends "base.html" %}
+{% block title %}History · CreditPilot{% endblock %}
+
 {% block content %}
+<h1 class="title">History</h1>
+
 <div class="card">
-  <h3 style="margin-top:0">历史记录</h3>
-  <p class="small">此处展示最近处理的任务（示例占位，真实数据由现有 /files 历史接口提供）</p>
-  <table class="table">
-    <thead><tr><th>ID</th><th>Status</th><th>Time</th><th>Actions</th></tr></thead>
-    <tbody id="rows"></tbody>
+  <h2 class="section">最近活动</h2>
+  <div class="meta">自动采集：每日 11:00（吉隆坡时区）；20 小时冷却</div>
+  <hr class="sep">
+  <table>
+    <thead>
+      <tr>
+        <th>时间</th>
+        <th>事件</th>
+        <th>详情</th>
+      </tr>
+    </thead>
+    <tbody id="rows">
+      <tr><td colspan="3" class="meta">加载中...</td></tr>
+    </tbody>
   </table>
 </div>
+
 <script>
 (async ()=>{
-  const demo=[{id:'demo-1',status:'done',time:new Date().toISOString()}];
+  const demo=[
+    {ts:new Date().toISOString(), kind:'采集', detail:'成功采集 12 款产品'},
+    {ts:new Date(Date.now()-3600000).toISOString(), kind:'更新', detail:'利率变动：Bank A -0.05%'}
+  ];
   const tb=document.getElementById('rows');
-  tb.innerHTML=demo.map(r=>`
-   <tr>
-     <td>${r.id}</td><td>${r.status}</td><td>${r.time}</td>
-     <td>
-       <a class="btn" href="/files/result/txt/${r.id}">TXT</a>
-       <a class="btn" href="/files/result/docx/${r.id}">DOCX</a>
-     </td>
-   </tr>`).join('');
+  if(demo.length===0){
+    tb.innerHTML='<tr><td colspan="3" class="meta">暂无记录...</td></tr>';
+  }else{
+    tb.innerHTML=demo.map(r=>`
+     <tr>
+       <td>${r.ts}</td>
+       <td>${r.kind}</td>
+       <td class="meta">${r.detail}</td>
+     </tr>`).join('');
+  }
 })();
 </script>
 {% endblock %}

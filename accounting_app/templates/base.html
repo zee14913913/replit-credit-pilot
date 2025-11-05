@@ -1,27 +1,29 @@
 <!doctype html>
-<html lang="{{ lang or 'zh' }}">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>{{ title or 'CreditPilot' }}</title>
-  <link rel="stylesheet" href="/static/css/brand.css"/>
-</head>
-<body>
-  <div class="nav">
-    <div class="brand">
-      <div class="logo"></div>
-      <h1>CreditPilot · Smart Credit & Loan Manager</h1>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{% block title %}CreditPilot{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/brand.css">
+    {% block head_extra %}{% endblock %}
+  </head>
+  <body>
+    <div class="page-wrap">
+      <div class="brandbar">
+        <div class="logo">
+          <div style="width:28px;height:28px;background:linear-gradient(135deg,#FF007F,#ff5aa8);border-radius:6px;box-shadow:0 4px 30px #ff007f55"></div>
+          <div>INFINITE GZ SDN. BHD.</div>
+        </div>
+
+        <div class="lang">
+          <a class="btn" href="?lang=en">EN</a>
+          <a class="btn" href="?lang=zh">中文</a>
+        </div>
+      </div>
+
+      {% block content %}{% endblock %}
+      <div class="meta" style="margin-top:16px">© 2025 CreditPilot · INFINITE GZ SDN. BHD.</div>
     </div>
-    <div class="menu">
-      <a class="btn" href="/portal{% if key %}?key={{key}}{% endif %}">Portal</a>
-      <a class="btn" href="/portal/history{% if key %}?key={{key}}{% endif %}">History</a>
-      <a class="btn primary" href="/loans/page">Loans</a>
-      <a class="btn" href="/ctos/page{% if key %}?key={{key}}{% endif %}">CTOS</a>
-    </div>
-  </div>
-  <div class="container">
-    {% block content %}{% endblock %}
-    <div class="footer">© 2025 CreditPilot · ENV={{ env or 'prod' }}</div>
-  </div>
-</body>
+    {% block foot_extra %}{% endblock %}
+  </body>
 </html>

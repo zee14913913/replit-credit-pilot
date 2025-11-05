@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="/static/css/brand.css">
+  <style>
+    .cards{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; padding:16px }
+    @media (max-width:900px){ .cards{ grid-template-columns:1fr } }
+    .rank{ position:absolute; right:10px; top:10px; background:var(--pink); color:#fff; border-radius:999px; padding:4px 10px; font-weight:900; font-size:12px }
+    .tc{ min-height:180px; padding-top:8px; position:relative }
+    .kv{ display:flex; gap:10px; flex-wrap:wrap; margin-top:6px; color:#e8e4f1; font-size:13px }
+    .kv b{ color:#fff }
+  </style>
+</head>
+<body style="background:transparent">
+  <div class="cards">
+    {% for it in items %}
+    <div class="card tc">
+      <div class="rank">{{ loop.index }}{% if loop.first %} 🔥{% endif %}</div>
+      <div style="font-weight:900; font-size:15px; margin-bottom:6px">{{ it.bank }} · {{ it.product }}</div>
+      <div class="kv">
+        <div><b>APR</b> {{ "%.2f"|format(it.apr) }}%</div>
+        <div><b>Score</b> {{ "%.2f"|format(it.score) }}</div>
+        <div><b>Sentiment</b> {{ "%.2f"|format(it.sentiment or 0) }}</div>
+      </div>
+      <div class="meta" style="margin-top:6px">{{ it.reason or '' }}</div>
+      <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
+        <form action="/loans/compare/add" method="post" style="display:inline"
+              onsubmit="setTimeout(()=>parent.postMessage({type:'cmpBadge'},'*'),350); return true;">
+          <input type="hidden" name="product" value="{{ it.product }}">
+          <input type="hidden" name="bank" value="{{ it.bank }}">
+          <button class="btn primary" type="submit">加入比价</button>
+        </form>
+        <a class="btn" href="/loans/ranking/pdf" target="_blank">下载 PDF</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</body>
+</html>

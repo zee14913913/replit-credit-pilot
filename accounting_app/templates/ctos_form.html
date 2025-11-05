@@ -1,47 +1,80 @@
 {% extends "base.html" %}
+{% block title %}CTOS Authorization · CreditPilot{% endblock %}
+
 {% block content %}
-<div class="grid grid-cols-2">
-  <div class="card">
-    <h3 style="margin-top:0">CTOS 授权与资料上传</h3>
-    <form id="f" enctype="multipart/form-data" method="post" action="/ctos/submit{% if key %}?key={{key}}{% endif %}">
-      <div class="grid">
-        <div><label>姓名（个人）/ 公司名（企业）</label><input class="input" name="name" required></div>
-        <div><label>身份证号（个人）/ 公司注册号（SSM）</label><input class="input" name="idnum" required></div>
-        <div><label>邮箱</label><input class="input" name="email" required></div>
-        <div><label>手机号</label><input class="input" name="phone" required></div>
-        <div><label>客户类型</label>
-          <select class="input" name="ctype">
-            <option value="PERSONAL">PERSONAL</option>
-            <option value="COMPANY">COMPANY</option>
-          </select>
-        </div>
-        <div><label>上传身份证/公司 SSM（PDF/JPG/PNG）</label><input class="input" type="file" name="doc" accept=".pdf,.jpg,.jpeg,.png" required></div>
+<h1 class="title">CTOS Authorization</h1>
+
+<div class="card">
+  <div class="meta">请填写授权并上传身份证 / 公司 SSM。提交后将进入队列处理。</div>
+  <hr class="sep">
+
+  <form id="ctosForm" action="/ctos/submit{% if key %}?key={{ key }}{% endif %}" method="post" enctype="multipart/form-data" style="display:grid; gap:12px; max-width:780px">
+    <div class="grid-2">
+      <div>
+        <label>Full Name</label><br>
+        <input class="input" name="full_name" required placeholder="as per IC">
       </div>
-      <div style="display:flex;gap:8px;margin-top:10px">
-        <button class="btn primary" type="submit">提交授权</button>
-        <a class="btn" href="/loans/page">返回 Loans</a>
+      <div>
+        <label>NRIC / Company No.</label><br>
+        <input class="input" name="id_no" required placeholder="e.g. 900101-14-5678 / 2024xxxxx">
       </div>
-    </form>
-    <pre id="out" class="code" style="margin-top:10px"></pre>
-  </div>
-  <div class="card">
-    <h3 style="margin-top:0">说明</h3>
-    <ul>
-      <li>提交后系统会加密存储关键资料（Fernet）</li>
-      <li>若已接通 CTOS API，将自动请求最新报告</li>
-      <li>未接通时，进入人工队列，管理员可在后台处理</li>
-    </ul>
-    <div class="small" style="margin-top:8px;opacity:0.6">管理员后台需单独授权访问</div>
-  </div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <label>Email</label><br>
+        <input class="input" type="email" name="email" required>
+      </div>
+      <div>
+        <label>Phone</label><br>
+        <input class="input" name="phone" required placeholder="+60...">
+      </div>
+    </div>
+
+    <div>
+      <label>Customer Type</label><br>
+      <select class="input" name="ctype" style="width:200px">
+        <option value="PERSONAL">PERSONAL</option>
+        <option value="COMPANY">COMPANY</option>
+      </select>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <label>IC / Passport (PDF/JPG/PNG)</label><br>
+        <input class="input" type="file" name="ic_file" accept=".pdf,.jpg,.jpeg,.png" required>
+      </div>
+      <div>
+        <label>SSM / Biz Doc (PDF/JPG/PNG)</label><br>
+        <input class="input" type="file" name="ssm_file" accept=".pdf,.jpg,.jpeg,.png">
+      </div>
+    </div>
+
+    <div style="display:flex; gap:8px; align-items:center">
+      <input id="agree" type="checkbox" required>
+      <label for="agree" class="meta">我授权 INFINITE GZ SDN. BHD. 代表我向 CTOS 及相关机构查询信用报告用于贷款评估。</label>
+    </div>
+
+    <div style="display:flex; gap:8px; flex-wrap:wrap">
+      <button class="btn primary" type="submit">提交授权</button>
+      <a class="btn" href="/loans/page">返回 Loans</a>
+    </div>
+  </form>
+  
+  <pre id="out" class="code" style="margin-top:12px; white-space:pre-wrap"></pre>
 </div>
+
 <script>
-const frm=document.getElementById('f');
+const frm=document.getElementById('ctosForm');
 frm.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const fd=new FormData(frm);
   const res=await fetch(frm.action,{method:'POST',body:fd});
   const js=await res.json();
   document.getElementById('out').textContent=JSON.stringify(js,null,2);
+  if(js.status==='success'){
+    alert('提交成功！');
+  }
 });
 </script>
 {% endblock %}
