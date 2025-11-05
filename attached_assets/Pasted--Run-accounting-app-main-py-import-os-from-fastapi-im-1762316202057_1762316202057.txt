@@ -1,0 +1,358 @@
+好，整包给你。你只要把这三份覆盖到对应文件，然后 Run 即可。无需思考，直接粘贴。
+
+⸻
+
+accounting_app/main.py（覆盖）
+
+import os
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+# 路由
+from accounting_app.routers import health, files
+from accounting_app.routers import public  # /portal
+
+APP_NAME = os.getenv("APP_NAME", "Accounting API")
+ENV = os.getenv("ENV", "dev")  # dev / prod
+CORS_ALLOW = os.getenv("CORS_ALLOW", "*")  # 多域逗号分隔
+
+app = FastAPI(
+    title=APP_NAME,
+    docs_url=None if ENV == "prod" else "/docs",
+    redoc_url=None if ENV == "prod" else "/redoc",
+    openapi_url=None if ENV == "prod" else "/openapi.json",
+)
+
+# CORS
+origins = [o.strip() for o in CORS_ALLOW.split(",") if o.strip()]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins if origins else ["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# 路由挂载
+app.include_router(health.router)
+app.include_router(files.router)
+app.include_router(public.router)  # /portal
+
+@app.get("/")
+def root():
+    return {"app": APP_NAME, "env": ENV, "docs": (ENV != "prod")}
+
+
+⸻
+
+accounting_app/routers/files.py（覆盖：带 PDF 白名单、10MB 限流、异步任务、Webhook/邮件通知、表单+JSON 两种读法）
+
+import os
+import asyncio
+from uuid import uuid4
+from typing import Dict, Any, Optional
+
+from fastapi import APIRouter, UploadFile, File, Request, HTTPException, Depends
+from accounting_app.utils.pdf_processor import pdf_bytes_to_text
+
+router = APIRouter(prefix="/files", tags=["files"])
+
+# ====== 上传大小限流（默认 10MB，可用 MAX_UPLOAD_MB 覆盖） ======
+DEFAULT_MAX_MB = 10
+MAX_BYTES = int(float(os.getenv("MAX_UPLOAD_MB", DEFAULT_MAX_MB)) * 1024 * 1024)
+
+async def guard_content_length(request: Request):
+    cl = request.headers.get("content-length")
+    if cl and int(cl) > MAX_BYTES:
+        raise HTTPException(status_code=413, detail=f"File too large (max {MAX_BYTES // (1024*1024)}MB)")
+
+# ====== 简单任务存储（内存） ======
+TASKS: Dict[str, Dict[str, Any]] = {}
+# 结构：{ task_id: {"status": "queued"|"processing"|"done"|"error", "result": str|None, "error_msg": str|None} }
+
+# ====== 同步直返：小文件直接返回文本 ======
+@router.post("/pdf-to-text", dependencies=[Depends(guard_content_length)])
+async def pdf_to_text(file: UploadFile = File(...)):
+    if file.content_type not in {"application/pdf"}:
+        raise HTTPException(415, detail="Only PDF is allowed")
+    data = await file.read()
+    text = await asyncio.to_thread(pdf_bytes_to_text, data)
+    return {"text": text}
+
+# ====== 异步队列：大文件友好 + 可选回调/邮件通知（支持 multipart 表单或 JSON） ======
+@router.post("/pdf-to-text/submit", dependencies=[Depends(guard_content_length)])
+async def submit_pdf(
+    request: Request,
+    file: UploadFile = File(...)
+):
+    if file.content_type not in {"application/pdf"}:
+        raise HTTPException(415, detail="Only PDF is allowed")
+
+    data = await file.read()
+
+    # 先尝试 JSON 体
+    payload: Dict[str, Any] = {}
+    try:
+        payload = await request.json()
+    except Exception:
+        payload = {}
+
+    # 再尝试表单体（与 JSON 合并，表单优先填补）
+    try:
+        form = await request.form()
+        if "notify_email" in form and not payload.get("notify_email"):
+            payload["notify_email"] = str(form.get("notify_email")).strip()
+        if "callback_url" in form and not payload.get("callback_url"):
+            payload["callback_url"] = str(form.get("callback_url")).strip()
+    except Exception:
+        pass
+
+    callback_url: Optional[str] = payload.get("callback_url")
+    notify_email: Optional[str] = payload.get("notify_email")
+
+    task_id = str(uuid4())
+    TASKS[task_id] = {"status": "queued", "result": None, "error_msg": None}
+
+    async def run():
+        TASKS[task_id]["status"] = "processing"
+        try:
+            text = await asyncio.to_thread(pdf_bytes_to_text, data)
+            TASKS[task_id]["status"] = "done"
+            TASKS[task_id]["result"] = text
+
+            # —— Webhook 回调（可选）——
+            if callback_url:
+                try:
+                    import httpx
+                    async with httpx.AsyncClient(timeout=10) as client:
+                        await client.post(callback_url, json={
+                            "task_id": task_id,
+                            "status": "done",
+                            "result_preview": text[:1000]
+                        })
+                except Exception:
+                    # 静默失败
+                    pass
+
+            # —— 邮件通知（可选，需要 SENDGRID_API_KEY/FROM_EMAIL）——
+            if notify_email and os.getenv("SENDGRID_API_KEY"):
+                try:
+                    from sendgrid import SendGridAPIClient
+                    from sendgrid.helpers.mail import Mail
+                    sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
+                    from_email = os.getenv("FROM_EMAIL", "no-reply@example.com")
+                    msg = Mail(
+                        from_email=from_email,
+                        to_emails=notify_email,
+                        subject="Your PDF processing is complete",
+                        html_content=f"<p>Task {task_id} done.</p><pre>{(text[:1000]).replace('<','&lt;')}</pre>"
+                    )
+                    sg.send(msg)
+                except Exception:
+                    pass
+
+        except Exception as e:
+            TASKS[task_id]["status"] = "error"
+            TASKS[task_id]["error_msg"] = str(e)
+
+    asyncio.create_task(run())
+    return {"task_id": task_id, "status": "queued"}
+
+@router.get("/pdf-to-text/result/{task_id}")
+async def get_result(task_id: str):
+    info = TASKS.get(task_id)
+    if not info:
+        raise HTTPException(status_code=404, detail="task not found")
+    return info
+
+
+⸻
+
+accounting_app/routers/public.py（覆盖：/portal 页面 + 中/英文切换按钮 + 可选访问密钥）
+
+import os
+from fastapi import APIRouter, Request, HTTPException
+from fastapi.responses import HTMLResponse
+
+router = APIRouter(tags=["public"])
+
+HTML = r"""
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>PDF OCR</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root { color-scheme: light dark; }
+    body{font-family:ui-sans-serif,system-ui,Arial;margin:40px;max-width:760px}
+    .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .card{padding:16px;border:1px solid #ddd;border-radius:12px}
+    .muted{color:#666}
+    pre{white-space:pre-wrap;word-break:break-word;background:#f7f7f7;padding:12px;border-radius:8px}
+    button{padding:8px 14px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer}
+    input[type=file],input[type=email]{padding:8px;border:1px solid #ccc;border-radius:8px}
+    .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <h2 id="title">PDF OCR</h2>
+    <button id="langBtn" aria-label="Toggle Language">中文</button>
+  </div>
+
+  <div class="card">
+    <form id="f">
+      <div class="row" style="margin-bottom:8px">
+        <input type="file" id="file" accept="application/pdf" aria-label="PDF file" required />
+        <input type="email" id="email" placeholder="Optional: email on finish" aria-label="Notify email (optional)" />
+        <button type="submit" id="submitBtn">Upload & Process</button>
+      </div>
+      <p class="muted" id="msg">Choose a PDF and submit. Max %MAX% MB.</p>
+    </form>
+    <div id="out"></div>
+  </div>
+
+<script>
+const MAX_MB = parseInt("%MAX%");
+
+// --- i18n dictionary ---
+const I18N = {
+  en: {
+    title: "PDF OCR",
+    btn_toggle: "中文",
+    email_placeholder: "Optional: email on finish",
+    submit: "Upload & Process",
+    hint_choose: `Choose a PDF and submit. Max ${MAX_MB} MB.`,
+    uploading: "Uploading...",
+    submitted: (id) => `Submitted. Task ID: ${id}. Waiting...`,
+    result_title: "Result",
+    not_pdf: "Only PDF is allowed",
+    too_big: "File exceeds limit",
+    submit_failed: "Submit failed",
+    processing_error: (m) => `Processing error: ${m||"unknown"}`,
+  },
+  zh: {
+    title: "PDF 文字提取",
+    btn_toggle: "English",
+    email_placeholder: "可选：完成后邮件通知",
+    submit: "上传并处理",
+    hint_choose: `请选择 PDF 后提交。最大 ${MAX_MB} MB。`,
+    uploading: "正在上传…",
+    submitted: (id) => `已提交，任务ID：${id}，等待完成…`,
+    result_title: "结果",
+    not_pdf: "仅支持 PDF 文件",
+    too_big: "文件超过大小限制",
+    submit_failed: "提交失败",
+    processing_error: (m) => `处理出错：${m||"未知错误"}`,
+  }
+};
+
+// --- language resolve: ?lang=zh|en > localStorage > navigator ---
+function resolveLang(){
+  const qs = new URLSearchParams(location.search);
+  const q = qs.get("lang");
+  if (q === "zh" || q === "en") { localStorage.setItem("lang", q); return q; }
+  const saved = localStorage.getItem("lang");
+  if (saved === "zh" || saved === "en") return saved;
+  const nav = (navigator.language || "en").toLowerCase();
+  return nav.startsWith("zh") ? "zh" : "en";
+}
+let LANG = resolveLang();
+
+function t(key, ...args){
+  const pack = I18N[LANG] || I18N.en;
+  const v = pack[key];
+  return (typeof v === "function") ? v(...args) : v;
+}
+
+function applyTexts(){
+  document.title = t("title");
+  document.getElementById("title").textContent = t("title");
+  document.getElementById("langBtn").textContent = t("btn_toggle");
+  document.getElementById("email").placeholder = t("email_placeholder");
+  document.getElementById("submitBtn").textContent = t("submit");
+  document.getElementById("msg").textContent = t("hint_choose");
+}
+
+document.getElementById("langBtn").addEventListener("click", ()=>{
+  LANG = (LANG === "zh" ? "en" : "zh");
+  localStorage.setItem("lang", LANG);
+  const u = new URL(location.href);
+  u.searchParams.set("lang", LANG);
+  history.replaceState(null, "", u.toString());
+  applyTexts();
+});
+
+applyTexts();
+
+// --- main logic ---
+const msg = document.getElementById('msg');
+const out = document.getElementById('out');
+
+document.getElementById('f').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const f = document.getElementById('file').files[0];
+  const email = document.getElementById('email').value.trim();
+
+  if(!f){ alert(t("hint_choose")); return; }
+  if(f.type !== "application/pdf"){ alert(t("not_pdf")); return; }
+  if(f.size > (MAX_MB*1024*1024)){ alert(t("too_big")); return; }
+
+  msg.textContent = t("uploading");
+  const fd = new FormData();
+  fd.append('file', f);
+  if(email) fd.append('notify_email', email); // 作为 multipart 字段提交
+
+  const submitResp = await fetch('/files/pdf-to-text/submit', { method:'POST', body: fd });
+  if(!submitResp.ok){ msg.textContent = t("submit_failed"); return; }
+  const sub = await submitResp.json();
+  msg.textContent = t("submitted", sub.task_id);
+
+  async function poll(){
+    const r = await fetch('/files/pdf-to-text/result/' + sub.task_id);
+    const j = await r.json();
+    if(j.status === 'done'){
+      msg.textContent = '';
+      const safe = (j.result || '').replace(/[<>&]/g, m=>({"<":"&lt;","&":"&amp;",">":"&gt;"}[m]));
+      out.innerHTML = '<h3>'+t("result_title")+'</h3><pre>'+ safe +'</pre>';
+    }else if(j.status === 'error'){
+      msg.textContent = t("processing_error", j.error_msg);
+    }else{
+      setTimeout(poll, 1200);
+    }
+  }
+  poll();
+});
+</script>
+</body>
+</html>
+"""
+
+@router.get("/portal", response_class=HTMLResponse)
+async def portal(request: Request):
+    # 可选：简单访问密钥
+    need_key = os.getenv("PORTAL_KEY")
+    if need_key:
+        key = request.query_params.get("key")
+        if key != need_key:
+            raise HTTPException(status_code=404, detail="Not Found")
+
+    limit = os.getenv("MAX_UPLOAD_MB", "10")
+    return HTML.replace("%MAX%", str(limit))
+
+
+⸻
+
+你只需要做两件事
+	1.	把这三个文件覆盖保存，Run。
+2)（可选）Secrets 里设：
+	•	PORTAL_KEY=你的一串密钥（想限制访问就设；不设则公开）
+	•	SENDGRID_API_KEY、FROM_EMAIL（想用邮件通知才设）
+
+验证：
+	•	/portal?lang=zh 中文；点按钮切英文；刷新仍记住语言。
+	•	上传 PDF 正常；非 PDF 直接 415。
+-（如设邮件/API）完成后能收到通知/回调。
+
+需要别的页面（历史任务、下载文本、导出 Word）再说一声，我继续给你“可直接覆盖”的文件。
