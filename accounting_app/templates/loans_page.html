@@ -43,7 +43,7 @@ async function load(){
     fetch('/loans/updates').then(r=>r.json()),
     fetch('/loans/intel').then(r=>r.json())
   ]);
-  updates=u.items || []; intel=i.items || [];
+  updates=u; intel=i;
   renderList(updates);
 }
 

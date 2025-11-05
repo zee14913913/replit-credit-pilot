@@ -24,7 +24,7 @@ def _ak(request: Request):
 @router.get("/page", response_class=HTMLResponse)
 def ctos_page(request: Request):
     _gate(request)
-    return templates.TemplateResponse("ctos_form.html", {"request": request, "env": os.getenv("ENV","prod"), "key": os.getenv("PORTAL_KEY"), "ak": os.getenv("ADMIN_KEY")})
+    return templates.TemplateResponse("ctos_form.html", {"request": request, "env": os.getenv("ENV","prod"), "key": os.getenv("PORTAL_KEY")})
 
 @router.post("/submit")
 async def ctos_submit(request: Request,

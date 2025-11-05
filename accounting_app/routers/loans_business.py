@@ -34,15 +34,16 @@ def compare_add(item: dict):
         _compare.append(item)
     return {"len": len(_compare)}
 
+@router.get("/compare/list")
+def compare_list():
+    return _compare
+
 @router.get("/compare/page", response_class=HTMLResponse)
 def compare_page(request: Request):
-    return templates.TemplateResponse("base.html", {
+    return templates.TemplateResponse("compare.html", {
         "request": request,
-        "title": "Compare Basket",
-        "env": "prod",
-        "key": None,
-        "content": ""
-    }, media_type="text/html", status_code=200)
+        "env": "prod"
+    })
 
 @router.get("/page", response_class=HTMLResponse)
 def loans_page(request: Request):

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h3 style="margin-top:0">比价篮 · Compare Basket</h3>
+  <div id="basket"></div>
+  <a class="btn" href="/loans/page" style="margin-top:12px">返回 Loans</a>
+</div>
+
+<script>
+async function loadBasket(){
+  const res = await fetch('/loans/compare/list');
+  const items = await res.json();
+  const box = document.getElementById('basket');
+  if(!items || items.length===0){
+    box.innerHTML='<div class="small" style="opacity:0.6">篮子为空</div>';
+    return;
+  }
+  box.innerHTML = items.map((it,idx)=>`
+    <div class="card" style="margin:10px 0;background:#ffffff06">
+      <div>${idx+1}. ${escape(it.product)} - ${escape(it.source)}</div>
+    </div>
+  `).join('');
+}
+
+function escape(s){return (s??'').toString().replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[m]))}
+loadBasket();
+</script>
+{% endblock %}

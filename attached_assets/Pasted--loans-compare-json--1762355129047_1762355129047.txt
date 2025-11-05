@@ -1,0 +1,115 @@
+好，我给你一个“一贴就亮”的对比篮计数徽标组件，独立、带样式和脚本，热粉配色，自动拉取 /loans/compare/json 并显示数量；当用户在列表里点“加入比价”后也会自动刷新计数。你只需要做两件小事：
+	1.	把我给的组件文件放到项目里
+	2.	在 Loans 列表页模板里插入一行 {% include '_compare_badge.html' %}
+
+就这两步，其他不用动。
+
+⸻
+
+① 新增文件：accounting_app/templates/_compare_badge.html（完整可用）
+
+{# Hot Pink 计数徽标 · Compare Basket Badge #}
+<div id="cp-basket-bar" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+  <a href="/loans/compare/page" class="btn" style="position:relative;display:inline-flex;align-items:center;gap:6px">
+    <span class="bi bi-basket"></span>
+    Compare Basket
+    <span id="cp-basket-badge"
+          style="
+            display:inline-block;min-width:22px;height:22px;line-height:22px;
+            text-align:center;border-radius:11px;
+            background:#FF007F;color:#fff;font-size:12px;font-weight:700;
+            padding:0 6px;box-shadow:0 0 0 2px #322446;
+          ">0</span>
+  </a>
+</div>
+
+<script>
+// ====== Compare Basket Badge (self-contained) ======
+(function(){
+  const BADGE_ID = 'cp-basket-badge';
+
+  async function fetchCount(){
+    try {
+      const r = await fetch('/loans/compare/json', {cache:'no-store'});
+      const j = await r.json();
+      return (j && Array.isArray(j.items)) ? j.items.length : 0;
+    } catch(e){
+      return 0;
+    }
+  }
+
+  async function syncBadge(){
+    const n = await fetchCount();
+    const el = document.getElementById(BADGE_ID);
+    if(!el) return;
+    el.textContent = n;
+    // 0 件时弱化显示
+    el.style.opacity = n>0 ? '1' : '0.55';
+  }
+
+  // 绑定到“加入比价”按钮：class="add-compare" 或 data-action="add-compare"
+  function hookAddButtons(){
+    const sel = '[data-action="add-compare"], .add-compare';
+    document.body.addEventListener('click', async (ev)=>{
+      const btn = ev.target.closest(sel);
+      if(!btn) return;
+      // 允许原有逻辑先跑，然后稍后同步数量（适配异步接口）
+      setTimeout(syncBadge, 400);
+    });
+  }
+
+  // 初始 & 轮询
+  hookAddButtons();
+  syncBadge();
+  setInterval(syncBadge, 15000);
+})();
+</script>
+
+<style>
+/* 适配企业配色（深紫描边 + 热粉数字） */
+#cp-basket-bar .btn{
+  border:1px solid #322446;
+  background:linear-gradient(180deg, #322446, #281a3a);
+  color:#fff;
+}
+#cp-basket-bar .btn:hover{
+  filter:brightness(1.06);
+  box-shadow:0 0 0 2px #ff007f33 inset;
+}
+@media (max-width:640px){
+  #cp-basket-bar { width:100% }
+}
+</style>
+
+
+⸻
+
+② 在 Loans 列表页模板里插入 1 行
+
+在你用于渲染 /loans/page 的模板（常见文件名可能是 accounting_app/templates/loans.html 或 loans_page.html）里，把下面这一行插入到页面标题/工具栏区域（比如搜索框旁边或右上角按钮区）：
+
+{% include "_compare_badge.html" %}
+
+放置位置建议：
+	•	有“搜索/导出/比价篮”按钮的一排工具条里；
+	•	如果没有工具条，就放在页面标题 <h2> 下方一行。
+
+⸻
+
+工作原理（你不用解释给别人，说给你听就好）
+	•	组件每 15 秒请求一次 /loans/compare/json，把 items.length 显示在粉色圆角徽标里。
+	•	当用户点击列表里的“加入比价”按钮（只要按钮用了 class="add-compare" 或 data-action="add-compare" 其中之一），组件会在 400ms 后自动刷新徽标数量，不需要改后端。
+	•	0 件时徽标会半透明，>0 件则全亮。
+	•	样式完全遵守你的品牌色：热粉 #FF007F、深紫 #322446、深底色系。
+
+⸻
+
+快速自测（两步）
+	1.	在 Loans 列表页点几个“加入比价”（或从产品卡片进入的那个按钮）；
+	2.	看右上角徽标数字是否增长；刷新页面后是否能保持数字（由 /loans/compare/json 返回来保证）。
+
+一旦不对，基本就是模板里没 include 到，或者列表页的“加入比价”按钮没有使用 add-compare / data-action="add-compare"，这时依旧会每 15 秒自动同步——只是不会“立即+400ms 刷新”，但功能不受影响。
+
+⸻
+
+需要我把 Loans 列表页右上角的工具条也顺便给一版“可直接覆盖”的头部区域吗？我可以把“搜索框 + 导出按钮 + 对比篮徽标”打成一段，贴上去就有统一风格。
