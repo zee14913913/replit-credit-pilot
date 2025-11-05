@@ -5,8 +5,9 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.responses import Response
+from starlette.templating import Jinja2Templates
 
-from accounting_app.routers import health, files, public, history, stats, loans_updates, loans_business, ctos, ui_cards, loans_ranking, loans_extras
+from accounting_app.routers import health, files, public, history, stats, loans_updates, loans_business, ctos, ui_cards, loans_ranking, loans_extras, preview
 from accounting_app.core.middleware import SecurityAndLogMiddleware, SimpleRateLimitMiddleware
 from accounting_app.core.logger import info
 from accounting_app.core.maintenance import start_local_cleanup_thread
@@ -21,6 +22,9 @@ app = FastAPI(
     redoc_url=None if ENV == "prod" else "/redoc",
     openapi_url=None if ENV == "prod" else "/openapi.json",
 )
+
+# Jinja2 Templates for preview hub
+app.state.templates = Jinja2Templates(directory="accounting_app/templates")
 
 # 启动本地原件清理线程
 start_local_cleanup_thread()
@@ -41,8 +45,10 @@ app.add_middleware(SimpleRateLimitMiddleware)
 
 # ====== 静态文件 ======
 app.mount("/static", StaticFiles(directory="accounting_app/static"), name="static")
+app.mount("/docs", StaticFiles(directory="docs"), name="docs")
 
 # ====== 路由注册 ======
+app.include_router(preview.router)
 app.include_router(health.router)
 app.include_router(files.router)
 app.include_router(public.router)
@@ -60,7 +66,3 @@ if os.getenv("SENTRY_DSN"):
     import sentry_sdk
     sentry_sdk.init(dsn=os.getenv("SENTRY_DSN"), traces_sample_rate=0.05)
 
-# ====== 根路由 ======
-@app.get("/")
-def root():
-    return {"app": APP_NAME, "env": ENV, "docs": (ENV != "prod")}

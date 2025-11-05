@@ -1,0 +1,170 @@
+明白，你现在要的是：不用再猜，直接能在浏览器里“一眼看到整个 App 的排版与各页面”，不受 iframe/域名限制造成的空白问题影响。
+我给你一套“预览总览页（Preview Hub）”补丁，丢进项目就能用。它会在同一页列出关键页面的大按钮入口，并在支持的情况下用 同源 iframe 直接预览；如果被浏览器/平台拦截，就自动显示“在新标签打开”的链接，不会再空白。
+
+把下面三段直接覆盖/新增即可（不改你已有逻辑）。
+
+⸻
+
+1) 新增：accounting_app/routers/preview.py
+
+# accounting_app/routers/preview.py
+from fastapi import APIRouter, Request
+from fastapi.responses import RedirectResponse
+from starlette.templating import _TemplateResponse
+import os
+
+router = APIRouter(tags=["preview"])
+
+def _env(k: str, default: str = "") -> str:
+    return os.getenv(k, default)
+
+@router.get("/", include_in_schema=False)
+def root_redirect() -> RedirectResponse:
+    # 访问根路径时，直接看到总览页
+    return RedirectResponse(url="/preview", status_code=302)
+
+@router.get("/preview", include_in_schema=False)
+def preview_hub(request: Request) -> _TemplateResponse:
+    """
+    预览总览页：集中入口 + 同源 iframe 预览（若被拦截则显示跳转按钮）
+    """
+    data = {
+        "company": _env("COMPANY_NAME", "INFINITE GZ SDN BHD"),
+        "portal_key": _env("PORTAL_KEY", ""),
+        "admin_key": _env("ADMIN_KEY", ""),
+        "env": _env("ENV", "prod"),
+        # 你的主要页面入口（保持和现有路由一致）
+        "pages": [
+            {"name": "Portal", "url": "/portal"},
+            {"name": "Loans Intelligence", "url": "/loans/page"},
+            {"name": "Compare", "url": "/loans/compare/page"},
+            {"name": "Top-3 Cards", "url": "/loans/top3/cards"},
+            # 需要密钥的页面，自动带上 ?key=
+            {"name": "CTOS Form (Gated)", "url": f"/ctos/page?key={_env('PORTAL_KEY','')}"},
+            # 文档下载（若已按你前面放在 /docs/official/）
+            {"name": "Docs · EN PDF", "url": "/docs/official/CREDITPILOT_企业报告_EN.pdf"},
+            {"name": "Docs · CN PDF", "url": "/docs/official/CREDITPILOT_企业报告_CN.pdf"},
+        ],
+    }
+    return request.app.state.templates.TemplateResponse(
+        "preview_hub.html",
+        {"request": request, **data}
+    )
+
+
+⸻
+
+2) 新增模板：accounting_app/templates/preview_hub.html
+
+<!-- accounting_app/templates/preview_hub.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Preview · {{ company }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --pink:#FF007F; --card:#322446; --bg:#1a1323; --text:#fff; --muted:#999; --line:#888; }
+    html,body{ margin:0; padding:0; background:var(--bg); color:var(--text); font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+    .wrap{ max-width:1200px; margin:24px auto; padding:0 14px; }
+    .head{ display:flex; align-items:center; gap:12px; justify-content:space-between; margin-bottom:14px; }
+    .brand{ font-weight:800; letter-spacing:.3px; }
+    .env{ color:var(--muted); font-size:13px; }
+    .grid{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:14px; }
+    @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } }
+    .card{ background: linear-gradient(180deg, #322446, #281a3a); border:1px solid #3b2b4e; border-radius:16px; padding:14px; box-shadow:0 8px 24px #0006; }
+    .title{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; font-weight:700; }
+    .btn{ appearance:none; border:1px solid #ff6aa733; background:var(--pink); color:#fff; padding:8px 12px; border-radius:10px; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:600; }
+    .btn.ghost{ background:transparent; border-color:#ffffff33; }
+    .note{ color:var(--muted); font-size:12px; margin-top:6px; }
+    .frame{ width:100%; height:480px; background:#0f0a14; border:1px dashed #ffffff22; border-radius:12px; }
+    .fallback{ display:flex; align-items:center; justify-content:center; height:120px; background:#0f0a14; border:1px dashed #ffffff22; border-radius:12px; }
+    .row{ display:flex; gap:8px; flex-wrap:wrap; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <div class="brand">Preview · {{ company }}</div>
+      <div class="env">ENV: {{ env }}</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div class="row">
+        {% for p in pages %}
+          <a class="btn" href="{{ p.url }}" target="_blank">Open {{ p.name }}</a>
+        {% endfor %}
+      </div>
+      <div class="note">↑ 如果下方嵌入预览被平台拦截/空白，直接点这些按钮在新标签页查看。</div>
+    </div>
+
+    <div class="grid">
+      {% for p in pages %}
+      <div class="card">
+        <div class="title">
+          <div>{{ p.name }}</div>
+          <a class="btn ghost" href="{{ p.url }}" target="_blank">Open</a>
+        </div>
+        <!-- 同源 iframe 预览：若被 X-Frame-Options/CSP 拦截，下面会显示失败占位 -->
+        <iframe class="frame" src="{{ p.url }}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"></iframe>
+        <div class="fallback" style="display:none">Preview blocked by browser. Click “Open”.</div>
+        <div class="note">URL: <code>{{ p.url }}</code></div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</body>
+</html>
+
+
+⸻
+
+3) 修改：accounting_app/main.py 挂载预览路由
+
+在你已存在的 main.py 里，确保有全局的 templates（Jinja2Templates）。如果已有，就直接挂载路由；如果没有，补一行赋值。示例增量：
+
+# accounting_app/main.py （节选——只展示需要新增/确认的部分）
+
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from starlette.templating import Jinja2Templates
+
+from accounting_app.routers import preview  # ← 新增
+
+app = FastAPI()
+
+# 你项目里如果已经定义了 templates，请复用；否则加这一行：
+app.state.templates = Jinja2Templates(directory="accounting_app/templates")
+
+# 你已有的静态资源挂载…
+# app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# 你已有的其它路由注册...
+# app.include_router(public.router)
+# app.include_router(loans_updates.router)
+# app.include_router(loans_business.router)
+# app.include_router(ctos.router)
+# app.include_router(loans_ranking.router)
+# app.include_router(loans_extras.router)
+
+# **新增挂载：预览总览页**
+app.include_router(preview.router)
+
+
+⸻
+
+用法（不需要你再回答、也不需要再点任何配置）
+	•	把上面三个文件改好 / 加好，重启服务。
+	•	打开：/preview
+	•	页面顶部是一排**“在新标签打开”**的大按钮（避免任何 iframe 限制）。
+	•	下方每个卡片都会尝试同源 iframe嵌入预览；如果被浏览器/平台策略拦截，会自动显示“Preview blocked by browser”的占位，并保留上面的大按钮入口。
+	•	根路径 / 会自动 302 跳到 /preview，方便你每次点预览都“一眼看全局”。
+
+这套补丁为什么能解决“看不到设计”
+	•	不是替你改现有页面，而是增加一个“聚合入口页”，把 Portal、Loans、Compare、Top-3、CTOS（自动带 key）和文档下载都聚在同页；
+	•	双路径保障：同源 iframe 能看到就直接预览；看不到就上面一键在新标签打开，不再被平台 webview 的跨域/嵌入限制卡住；
+	•	不改变你的安全头（仍然 SAMEORIGIN），所以生产上也安全。
+
+已经把“别问、直接能看”的路打通了。
+把这三段加好，进 /preview 就能一屏看清整个 App 的排版和页面。
