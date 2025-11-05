@@ -5,7 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import Response
 
-from accounting_app.routers import health, files, public, history, stats
+from accounting_app.routers import health, files, public, history, stats, loans_updates, loans_business, ctos, ui_cards
 from accounting_app.core.middleware import SecurityAndLogMiddleware, SimpleRateLimitMiddleware
 from accounting_app.core.logger import info
 from accounting_app.core.maintenance import start_local_cleanup_thread
@@ -44,6 +44,10 @@ app.include_router(files.router)
 app.include_router(public.router)
 app.include_router(history.router)
 app.include_router(stats.router)
+app.include_router(loans_updates.router)
+app.include_router(loans_business.router)
+app.include_router(ctos.router)
+app.include_router(ui_cards.router)
 
 # ====== Sentry 错误追踪（可选）======
 if os.getenv("SENTRY_DSN"):
