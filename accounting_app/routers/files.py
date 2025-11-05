@@ -5,7 +5,7 @@ import hashlib
 from uuid import uuid4
 from typing import Dict, Any, Optional
 from fastapi import APIRouter, UploadFile, File, Request, HTTPException, Depends, Query
-from fastapi.responses import StreamingResponse, RedirectResponse
+from fastapi.responses import StreamingResponse, RedirectResponse, PlainTextResponse
 from accounting_app.utils.pdf_processor import pdf_bytes_to_text
 from accounting_app.core.task_store import set_task, get_task, delete_task as delete_task_store, iter_tasks
 from accounting_app.core.file_store import save_original, get_local_stream, get_signed_url
@@ -212,5 +212,32 @@ async def download_original(task_id: str):
     
     # 小文件直接回 PDF
     stream = get_local_stream(p)
-    headers = {"Content-Disposition": f'attachment; filename="{filename}"'}
+    headers = {"Content-Disposition": f'attachment; filename="{filename}"', "Cache-Control": "private, max-age=600"}
     return StreamingResponse(stream, media_type="application/pdf", headers=headers)
+
+# ====== 导出 TXT ======
+@router.get("/result/txt/{task_id}")
+async def export_result_txt(task_id: str):
+    info = get_task(task_id)
+    if not info: raise HTTPException(404, "task not found")
+    text = info.get("result") or ""
+    headers = {"Content-Disposition": f'attachment; filename="{task_id}.txt"', "Cache-Control": "private, max-age=600"}
+    return PlainTextResponse(text, headers=headers, media_type="text/plain; charset=utf-8")
+
+# ====== 导出 DOCX ======
+@router.get("/result/docx/{task_id}")
+async def export_result_docx(task_id: str):
+    info = get_task(task_id)
+    if not info: raise HTTPException(404, "task not found")
+    text = info.get("result") or ""
+    try:
+        import io
+        from docx import Document
+        doc = Document()
+        for line in text.splitlines() or ["(empty)"]:
+            doc.add_paragraph(line)
+        bio = io.BytesIO(); doc.save(bio); bio.seek(0)
+        headers = {"Content-Disposition": f'attachment; filename="{task_id}.docx"', "Cache-Control": "private, max-age=600"}
+        return StreamingResponse(bio, media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document", headers=headers)
+    except Exception as e:
+        raise HTTPException(500, f"docx export failed: {e}")

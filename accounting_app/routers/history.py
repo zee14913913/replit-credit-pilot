@@ -196,7 +196,9 @@ async function load(){
       <td>${row.filename || ""}</td>
       <td>${prev}</td>
       <td>
-        <button onclick="downloadTxt('${row.task_id}')">${t("act_view")}</button>
+        <button onclick="copyTxt('${row.task_id}')">${t("act_copy")||'Copy'}</button>
+        <button onclick="downloadTxtFile('${row.task_id}')">${t("act_view")}</button>
+        <button onclick="downloadDocx('${row.task_id}')">DOCX</button>
         <button onclick="downloadOriginal('${row.task_id}')">Original PDF</button>
         <button onclick="delTask('${row.task_id}')">${t("act_delete")}</button>
       </td>
@@ -205,15 +207,19 @@ async function load(){
   });
 }
 
-async function downloadTxt(id){
+async function copyTxt(id){
   const r = await fetch('/files/pdf-to-text/result/'+id);
   const j = await r.json();
-  const text = j.result || '(no result)';
-  const blob = new Blob([text],{type:'text/plain'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = id+'.txt';
-  a.click(); URL.revokeObjectURL(url);
+  await navigator.clipboard.writeText(j.result || '');
+  alert(LANG==='zh'?'已复制':'Copied');
+}
+
+async function downloadTxtFile(id){
+  location.href = '/files/result/txt/'+id;
+}
+
+function downloadDocx(id){
+  location.href = '/files/result/docx/'+id;
 }
 
 async function downloadOriginal(id){

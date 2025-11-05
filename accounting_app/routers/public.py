@@ -150,7 +150,16 @@ HTML = r"""
         <div class="hint" id="msg">Choose a PDF and submit. Max %MAX% MB.</div>
         <div class="progress" id="pg"><div class="bar" id="bar"></div></div>
       </form>
-      <div class="out" id="out"></div>
+      <div class="out" id="out">
+        <div id="resultActions" style="display:none; margin-bottom:8px; gap:8px; flex-wrap:wrap">
+          <button class="btn" id="copyBtn">Copy</button>
+          <a class="btn" id="txtBtn" download>Download TXT</a>
+          <a class="btn" id="docxBtn" download>Download DOCX</a>
+        </div>
+      </div>
+      <div id="drop" style="margin-top:10px; padding:16px; border:1px dashed #ff007f66; border-radius:12px; color:#bbb">
+        Drag & drop PDF here
+      </div>
     </div>
 
     <div class="footer">
@@ -340,6 +349,9 @@ document.getElementById('f').addEventListener('submit', async (e)=>{
       resetProgress();
       const safe = (j.result || '').replace(/[<>&]/g, m=>({"<":"&lt;","&":"&amp;",">":"&gt;"}[m]));
       out.innerHTML = '<h3 style="margin:10px 0">'+t("result")+'</h3><pre>'+ safe +'</pre>';
+      document.getElementById('resultActions').style.display='flex';
+      document.getElementById('txtBtn').href = '/files/result/txt/' + sub.task_id;
+      document.getElementById('docxBtn').href = '/files/result/docx/' + sub.task_id;
     }else if(j.status === 'error'){
       resetProgress(); toast(t("toast_err"), "err");
       msg.textContent = 'ERROR: ' + (j.error_msg || 'unknown');
@@ -348,6 +360,24 @@ document.getElementById('f').addEventListener('submit', async (e)=>{
     }
   }
   poll();
+});
+
+document.getElementById('copyBtn').addEventListener('click', ()=>{
+  const pre = document.querySelector('#out pre');
+  if(!pre) return;
+  const t = pre.textContent || '';
+  navigator.clipboard.writeText(t).then(()=>toast(LANG==='zh'?'已复制':'Copied','ok'));
+});
+
+const dz = document.getElementById('drop');
+['dragenter','dragover','dragleave','drop'].forEach(ev=>dz.addEventListener(ev, e=>{ e.preventDefault(); e.stopPropagation(); }));
+['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev, ()=>{ dz.style.background='#ffffff08'; }));
+['dragleave','drop'].forEach(ev=>dz.addEventListener(ev, ()=>{ dz.style.background='transparent'; }));
+dz.addEventListener('drop', e=>{
+  const f = e.dataTransfer.files[0];
+  if(!f) return;
+  document.getElementById('file').files = e.dataTransfer.files;
+  toast(LANG==='zh'?'已选择文件':'File selected','ok');
 });
 </script>
 </body>
