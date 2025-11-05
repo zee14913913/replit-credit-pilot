@@ -1,35 +1,41 @@
-# accounting_app/services/ctos_client.py
-import os
-from typing import Dict, Any
+import os, sqlite3, uuid, time
+from typing import Optional
+from .crypto_box import enc
 
-def is_enabled() -> bool:
-    return os.getenv("CTOS_API_ENABLED", "0") == "1"
+DB = os.getenv("CTOS_DB_PATH","/home/runner/ctos.db")
 
-def submit_consent(payload: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    直连模式：提交授权；这里是桩函数。
-    真实对接时：发起 HTTP 请求到 CTOS，返回 request_id 等信息。
-    """
-    if not is_enabled():
-        return {"mode": "manual", "status": "queued"}
-    return {"mode": "api", "status": "submitted", "request_id": "CTOSREQ123"}
+def _conn():
+    con = sqlite3.connect(DB)
+    con.row_factory = sqlite3.Row
+    return con
 
-def poll_report(request_id: str) -> Dict[str, Any]:
-    """
-    直连模式：轮询报告是否就绪；桩函数。
-    """
-    if not is_enabled():
-        return {"mode": "manual", "status": "pending"}
-    return {"mode": "api", "status": "ready", "download_url": "https://example.com/report.pdf"}
+def init():
+    con=_conn(); cur=con.cursor()
+    cur.execute("""CREATE TABLE IF NOT EXISTS ctos_queue(
+        id TEXT PRIMARY KEY,
+        ctype TEXT, name_enc TEXT, idnum_enc TEXT, email_enc TEXT, phone_enc TEXT,
+        doc_path TEXT, status TEXT, created_at TEXT
+    )""")
+    con.commit(); con.close()
 
-def fetch_metrics_from_report(report_bytes: bytes) -> Dict[str, Any]:
-    """
-    从报告字节解析关键指标：DSR/DSRC/commitments 等。
-    当前为示例解析。
-    """
-    return {
-        "dsr": 0.43,
-        "dsrc": 0.50,
-        "commitments": 2500.0,
-        "monthly_income": 8000.0
-    }
+def enqueue(ctype:str, name:str, idnum:str, email:str, phone:str, doc_path:str) -> str:
+    init()
+    jid=str(uuid.uuid4())
+    con=_conn(); cur=con.cursor()
+    cur.execute("""INSERT INTO ctos_queue(id,ctype,name_enc,idnum_enc,email_enc,phone_enc,doc_path,status,created_at)
+                   VALUES(?,?,?,?,?,?,?,?,datetime('now'))""",
+                (jid, ctype, enc(name), enc(idnum), enc(email), enc(phone), doc_path, "PENDING"))
+    con.commit(); con.close()
+    return jid
+
+def list_jobs(limit:int=100):
+    init()
+    con=_conn(); cur=con.cursor()
+    cur.execute("SELECT id,ctype,doc_path,status,created_at FROM ctos_queue ORDER BY created_at DESC LIMIT ?",(limit,))
+    rows=[dict(r) for r in cur.fetchall()]
+    con.close(); return rows
+
+def mark_done(jid:str):
+    con=_conn(); cur=con.cursor()
+    cur.execute("UPDATE ctos_queue SET status='DONE' WHERE id=?",(jid,))
+    con.commit(); con.close()

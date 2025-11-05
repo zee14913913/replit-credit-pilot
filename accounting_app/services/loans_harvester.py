@@ -1,93 +1,104 @@
-# accounting_app/services/loans_harvester.py
-import os
-import datetime as dt
-from typing import List, Dict, Any
+import os, sqlite3, time, csv, io
+from datetime import datetime, timedelta, timezone
 
+DB = os.getenv("LOANS_DB_PATH", "/home/runner/loans.db")
 TZ = os.getenv("TZ", "Asia/Kuala_Lumpur")
+MIN_REFRESH_HOURS = int(os.getenv("MIN_REFRESH_HOURS", "20"))
 
-def _now_iso() -> str:
-    return dt.datetime.utcnow().replace(tzinfo=dt.timezone.utc).isoformat()
+def _conn():
+    con = sqlite3.connect(DB)
+    con.row_factory = sqlite3.Row
+    return con
 
-def harvest_loans() -> List[Dict[str, Any]]:
-    """
-    贷款资讯聚合器（占位版 + 银行偏好与口碑情报）：
-    - 未配置 PERPLEXITY_API_KEY 时：返回示例数据（不触发外部请求）
-    - 日后接入 Perplexity：在 TODO 区替换采集逻辑即可
-    返回结构：
-    [
-      {
-        "source": "Bank / Lender 名称",
-        "product": "产品名",
-        "rate": 3.75,           # 利率（可选）
-        "type": "Home Loan",
-        "link": "https://...",
-        "snapshot": "本产品一句话说明",
-        "pulled_at": "...ISO...",
-        "intel": {              # 新增：偏好与口碑
-          "preferred_customer": "偏好客户画像（如：受薪族、稳定收入≥RM4k、EPF ≥ X）",
-          "less_preferred": "不偏好的客户（如：自雇初创、信用历史短、DSR>70%）",
-          "docs_required": "材料偏好（如：3个月薪资单/EPF/PCB、6个月流水、CTOS良好）",
-          "feedback_summary": "网评摘要（优缺点；放款速度/审批严格度/费用体验）",
-          "sentiment_score": 0.82  # 0~1，越高越正面
-        }
-      },
-      ...
+def init():
+    con=_conn(); cur=con.cursor()
+    cur.execute("""CREATE TABLE IF NOT EXISTS loan_updates(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        source TEXT, bank TEXT, product TEXT, type TEXT, rate TEXT, summary TEXT, pulled_at TEXT
+    )""")
+    cur.execute("""CREATE TABLE IF NOT EXISTS loan_intel(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        source TEXT, product TEXT,
+        preferred_customer TEXT, less_preferred TEXT, docs_required TEXT,
+        feedback_summary TEXT, sentiment_score REAL, pulled_at TEXT
+    )""")
+    cur.execute("""CREATE TABLE IF NOT EXISTS loan_meta_kv(
+        k TEXT PRIMARY KEY, v TEXT
+    )""")
+    con.commit(); con.close()
+
+def _now_iso():
+    return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+
+def get_last_harvest():
+    con=_conn(); cur=con.cursor()
+    cur.execute("SELECT v FROM loan_meta_kv WHERE k='last_harvest_at'")
+    row=cur.fetchone(); con.close()
+    return row["v"] if row else None
+
+def set_last_harvest(ts:str):
+    con=_conn(); cur=con.cursor()
+    cur.execute("INSERT INTO loan_meta_kv(k,v) VALUES('last_harvest_at',?) ON CONFLICT(k) DO UPDATE SET v=excluded.v",(ts,))
+    con.commit(); con.close()
+
+def wipe_and_seed_demo():
+    con=_conn(); cur=con.cursor()
+    cur.execute("DELETE FROM loan_updates"); cur.execute("DELETE FROM loan_intel")
+    ts=_now_iso()
+    items=[
+        ("bank-a","Bank A","Home Loan Flexi","HOME","3.75%","房贷灵活方案，支持提前还款，无复利",ts),
+        ("digital-x","Digital Bank X","Personal Loan Promo","PERSONAL","6.88%","快速批核，线上签署，灵活分期",ts),
+        ("fintech-y","Fintech Y","SME Working Capital","SME","7.20%","营运资金周转，额度灵活",ts),
     ]
-    """
-    api_key = os.getenv("PERPLEXITY_API_KEY", "").strip()
-    model = os.getenv("PERPLEXITY_MODEL", "llama-3.1-sonar-large-128k-online")
+    cur.executemany("INSERT INTO loan_updates(source,bank,product,type,rate,summary,pulled_at) VALUES(?,?,?,?,?,?,?)",items)
+    intel=[
+        ("bank-a","Home Loan Flexi","受薪族；固定雇佣 ≥ 12个月；月净收入 ≥ RM4,000；DSR ≤ 55%","自雇不足12个月；频繁逾期；信用卡利用率 >70%","3个月薪资单与银行流水、EPF/PCB、CTOS报告良好","审批较快（5-7个工作日）；律师与估价合作资源多；提前还款便捷。",0.84,ts),
+        ("digital-x","Personal Loan Promo","受薪族；净收入 ≥ RM3,500；工作≥6个月","高负债（DSR ≥ 70%）；近期多次查询","工资单、e-BE税表、流水","放款较快；移动端体验好；提早结清手续费低。",0.78,ts),
+        ("fintech-y","SME Working Capital","中小企业；成立 ≥24个月；月流水≥RM80k","现金为主、无正规账务；未注册GST/无报税","公司流水、SSM、财报/报税","客服响应快；额度灵活；要求财务资料规范。",0.74,ts),
+    ]
+    cur.executemany("""INSERT INTO loan_intel(source,product,preferred_customer,less_preferred,docs_required,feedback_summary,sentiment_score,pulled_at)
+                       VALUES(?,?,?,?,?,?,?,?)""",intel)
+    con.commit(); con.close()
+    set_last_harvest(ts)
 
-    if not api_key:
-        now = _now_iso()
-        return [
-            {
-                "source": "Bank A",
-                "product": "Home Loan Flexi 3.75%",
-                "rate": 3.75,
-                "type": "Home Loan",
-                "link": "https://example.com/loans/bank-a-home-flexi",
-                "snapshot": "首购族 90% 融资；灵活提前还款，无违约金。",
-                "pulled_at": now,
-                "intel": {
-                    "preferred_customer": "受薪族；固定雇佣 ≥ 12 个月；月净收入 ≥ RM4,000；DSR ≤ 55%",
-                    "less_preferred": "自雇不足 12 个月；频繁逾期；信用卡利用率 >70%",
-                    "docs_required": "3 个月薪资单与银行流水、EPF/PCB、CTOS 报告良好",
-                    "feedback_summary": "审批较快（5-7个工作日）；律师与估价合作资源多；提前还款便捷。",
-                    "sentiment_score": 0.84
-                }
-            },
-            {
-                "source": "Digital Bank X",
-                "product": "Personal Loan Promo 6.88%",
-                "rate": 6.88,
-                "type": "Personal Loan",
-                "link": "https://example.com/loans/dbx-personal-688",
-                "snapshot": "纯线上，无抵押；最高 RM100k；放款快。",
-                "pulled_at": now,
-                "intel": {
-                    "preferred_customer": "受薪族；净收入 ≥ RM3,500；工作满 6 个月；良好还款记录",
-                    "less_preferred": "高负债（DSR ≥ 70%）；近期多次查询；不稳定收入",
-                    "docs_required": "工资单/雇佣证明、e-BE 税表 或 EPF、近 3-6 个月流水",
-                    "feedback_summary": "体验好、放款快，但利率区间较宽；逾期费用严格。",
-                    "sentiment_score": 0.78
-                }
-            },
-            {
-                "source": "Fintech Y",
-                "product": "SME Working Capital 7.20%",
-                "rate": 7.20,
-                "type": "SME",
-                "link": "https://example.com/loans/fintechy-sme-720",
-                "snapshot": "营运资金融通；可分期展期。",
-                "pulled_at": now,
-                "intel": {
-                    "preferred_customer": "中小企业；成立 ≥ 24 个月；月流水 ≥ RM80k；税务合规",
-                    "less_preferred": "现金为主且无正规的账务与发票；频繁退票；董事过度负债",
-                    "docs_required": "6-12 个月公司对公流水、SSM 文件、近两年财报/报税、CTOS/CCRIS 正常",
-                    "feedback_summary": "审批灵活、额度适中；对资料规范性较看重；放款速度一般。",
-                    "sentiment_score": 0.74
-                }
-            }
-        ]
+def harvest_if_due(force=False):
+    init()
+    last = get_last_harvest()
+    if not force and last:
+        try:
+            last_dt=datetime.fromisoformat(last)
+            if datetime.now(last_dt.tzinfo)-last_dt < timedelta(hours=MIN_REFRESH_HOURS):
+                return False, last
+        except Exception:
+            pass
+    wipe_and_seed_demo()
+    return True, get_last_harvest()
 
-    return []
+def list_updates(q:str=None, limit:int=100):
+    con=_conn(); cur=con.cursor()
+    if q:
+        like=f"%{q}%"
+        cur.execute("""SELECT * FROM loan_updates
+                       WHERE source LIKE ? OR bank LIKE ? OR product LIKE ? OR type LIKE ? OR summary LIKE ?
+                       ORDER BY id DESC LIMIT ?""",(like,like,like,like,like,limit))
+    else:
+        cur.execute("SELECT * FROM loan_updates ORDER BY id DESC LIMIT ?",(limit,))
+    rows=[dict(r) for r in cur.fetchall()]
+    con.close(); return rows
+
+def list_intel(q:str=None, limit:int=200):
+    con=_conn(); cur=con.cursor()
+    if q:
+        like=f"%{q}%"
+        cur.execute("""SELECT * FROM loan_intel
+                       WHERE source LIKE ? OR product LIKE ? OR preferred_customer LIKE ? OR less_preferred LIKE ? OR feedback_summary LIKE ?
+                       ORDER BY id DESC LIMIT ?""",(like,like,like,like,like,limit))
+    else:
+        cur.execute("SELECT * FROM loan_intel ORDER BY id DESC LIMIT ?",(limit,))
+    rows=[dict(r) for r in cur.fetchall()]
+    con.close(); return rows
+
+def export_csv(rows:list) -> bytes:
+    f=io.StringIO(); w=csv.DictWriter(f, fieldnames=list(rows[0].keys()) if rows else [])
+    if rows: w.writeheader(); [w.writerow(r) for r in rows]
+    return f.getvalue().encode("utf-8")

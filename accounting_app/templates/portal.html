@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="grid grid-cols-2">
+  <div class="card">
+    <h3 style="margin-top:0">PDF 文字提取</h3>
+    <form id="f" enctype="multipart/form-data" method="post" action="/files/pdf-to-text">
+      <input class="input" type="file" name="file" accept="application/pdf" required/>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn primary" type="submit">上传并提取</button>
+        <a class="btn" href="/portal/history{% if key %}?key={{key}}{% endif %}">查看历史</a>
+      </div>
+    </form>
+    <pre id="out" class="code" style="margin-top:12px;white-space:pre-wrap"></pre>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">说明</h3>
+    <div class="kv">
+      <div>文件类型</div><div>PDF（≤10MB）</div>
+      <div>处理方式</div><div>OCR + 文本解析</div>
+      <div>结果导出</div><div>TXT / DOCX / 原件下载</div>
+    </div>
+  </div>
+</div>
+<script>
+const f = document.getElementById('f');
+f.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const fd = new FormData(f);
+  const res = await fetch('/files/pdf-to-text', {method:'POST', body:fd});
+  const js = await res.json();
+  document.getElementById('out').textContent = js.text || JSON.stringify(js);
+});
+</script>
+{% endblock %}

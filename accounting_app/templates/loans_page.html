@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="margin-bottom:14px">
+  <div class="searchbar">
+    <input class="input" id="q" placeholder="搜索产品/银行/偏好…（中英均可）">
+    <button class="btn" onclick="search()">Search</button>
+    <div style="flex:1"></div>
+    <a class="btn" href="/loans/updates/export.csv">Export Updates CSV</a>
+    <a class="btn" href="/loans/intel/export.csv">Export Intel CSV</a>
+    <a class="btn" href="/loans/compare/page">Compare Basket</a>
+  </div>
+</div>
+
+<div class="grid grid-cols-2">
+  <div class="card" id="list">
+    <h3 style="margin-top:0">贷款产品</h3>
+    <div id="items"></div>
+  </div>
+  <div class="card" id="intel">
+    <h3 style="margin-top:0">偏好与口碑 · Preferences & Feedback</h3>
+    <div id="intelBox" class="small">选择左侧产品查看情报…</div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:14px">
+  <h3 style="margin-top:0">DSR 试算</h3>
+  <div class="grid grid-cols-3">
+    <div><label>月净收入</label><input class="input" id="income" value="8000"></div>
+    <div><label>现有月供</label><input class="input" id="commit" value="1500"></div>
+    <div><label>贷款金额</label><input class="input" id="amt" value="400000"></div>
+    <div><label>年利率(%)</label><input class="input" id="rate" value="3.75"></div>
+    <div><label>年期</label><input class="input" id="tenure" value="30"></div>
+    <div style="display:flex;align-items:end"><button class="btn primary" onclick="calc()">计算</button></div>
+  </div>
+  <pre id="out" class="code" style="margin-top:8px"></pre>
+</div>
+
+<script>
+let updates=[], intel=[];
+
+async function load(){
+  const [u,i] = await Promise.all([
+    fetch('/loans/updates').then(r=>r.json()),
+    fetch('/loans/intel').then(r=>r.json())
+  ]);
+  updates=u.items || []; intel=i.items || [];
+  renderList(updates);
+}
+
+function renderList(arr){
+  const wrap = document.getElementById('items');
+  wrap.innerHTML = arr.map((x,idx)=>`
+   <div class="card" style="margin:10px 0;background:#ffffff06;">
+     <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
+       <div>
+         <div style="font-weight:600">${escape(x.product)} <span class="badge">${escape(x.type||'')}</span></div>
+         <div class="small">Bank/Provider: ${escape(x.bank||x.source||'')}</div>
+         <div class="small">Rate: ${x.rate || '-'} | Updated: ${escape(x.pulled_at||'')}</div>
+       </div>
+       <div style="display:flex;gap:8px">
+         <button class="btn" onclick="showIntel('${escape(x.source)}','${escape(x.product)}')">查看情报</button>
+         <button class="btn" onclick="addCompare('${escape(x.source)}','${escape(x.product)}')">加入比价</button>
+       </div>
+     </div>
+     <div class="small" style="margin-top:6px">${escape(x.summary||'')}</div>
+   </div>`).join('');
+}
+
+function showIntel(source, product){
+  const box=document.getElementById('intelBox');
+  const card=intel.find(i=>i.source===source && i.product===product);
+  if(!card){box.innerHTML='未找到情报';return;}
+  box.innerHTML=`
+  <div class="kv">
+    <div>偏好客户</div><div>${escape(card.preferred_customer||'-')}</div>
+    <div>不偏好</div><div>${escape(card.less_preferred||'-')}</div>
+    <div>资料偏好</div><div>${escape(card.docs_required||'-')}</div>
+    <div>口碑摘要</div><div>${escape(card.feedback_summary||'-')}</div>
+    <div>情绪分数</div><div>${card.sentiment_score ?? '-'}</div>
+  </div>`;
+}
+
+async function addCompare(source, product){
+  await fetch('/loans/compare/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source,product})});
+  alert('已加入比价篮');
+}
+
+function search(){
+  const q=document.getElementById('q').value.trim().toLowerCase();
+  if(!q){renderList(updates);return;}
+  const arr=updates.filter(x=>{
+    const s=(x.product+' '+(x.bank||x.source||'')+' '+(x.type||'')+' '+(x.summary||'')).toLowerCase();
+    return s.includes(q);
+  });
+  renderList(arr);
+}
+
+async function calc(){
+  const payload={
+    income:+document.getElementById('income').value,
+    commitments:+document.getElementById('commit').value,
+    amount:+document.getElementById('amt').value,
+    rate:+document.getElementById('rate').value,
+    tenure_years:+document.getElementById('tenure').value
+  };
+  const res=await fetch('/loans/dsr/calc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const js=await res.json();
+  document.getElementById('out').textContent=JSON.stringify(js,null,2);
+}
+
+function escape(s){return (s??'').toString().replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[m]))}
+load();
+</script>
+{% endblock %}

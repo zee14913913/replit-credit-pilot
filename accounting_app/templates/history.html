@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h3 style="margin-top:0">历史记录</h3>
+  <p class="small">此处展示最近处理的任务（示例占位，真实数据由现有 /files 历史接口提供）</p>
+  <table class="table">
+    <thead><tr><th>ID</th><th>Status</th><th>Time</th><th>Actions</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</div>
+<script>
+(async ()=>{
+  const demo=[{id:'demo-1',status:'done',time:new Date().toISOString()}];
+  const tb=document.getElementById('rows');
+  tb.innerHTML=demo.map(r=>`
+   <tr>
+     <td>${r.id}</td><td>${r.status}</td><td>${r.time}</td>
+     <td>
+       <a class="btn" href="/files/result/txt/${r.id}">TXT</a>
+       <a class="btn" href="/files/result/docx/${r.id}">DOCX</a>
+     </td>
+   </tr>`).join('');
+})();
+</script>
+{% endblock %}
