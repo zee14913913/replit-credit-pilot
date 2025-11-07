@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Credit Cards · Supplier Invoices{% endblock %}
+{% block content %}
+<div class="page"><div class="main">
+  <h1 class="title">Supplier Invoices (7 Vendors)</h1>
+  <div class="grid-auto">
+    <div class="card">
+      <h2 class="section">This Month</h2>
+      <p class="meta">Total Spend: RM {{ '%.2f'|format(total) }} · Service Fee (1%): RM {{ '%.2f'|format(total_fee) }}</p>
+      <a class="btn primary" href="/credit-cards/supplier-invoices/export.pdf">Export All as PDF</a>
+    </div>
+    <div class="card span-2">
+      <table class="table">
+        <thead><tr><th>Supplier</th><th>Transactions</th><th>Amount</th><th>Fee (1%)</th><th>Action</th></tr></thead>
+        <tbody>
+          {% for s in suppliers %}
+          <tr>
+            <td>{{ s.name }}</td><td>{{ s.tx }}</td>
+            <td>RM {{ '%.2f'|format(s.sum) }}</td>
+            <td>RM {{ '%.2f'|format(s.fee) }}</td>
+            <td><a class="btn" href="#">View</a> <a class="btn ghost" href="#">PDF</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div></div>
+{% endblock %}

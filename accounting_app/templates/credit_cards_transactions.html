@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Credit Cards · Transactions{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="main">
+    <h1 class="title">Credit Cards · Transactions</h1>
+    <div class="grid-auto">
+      <div class="card">
+        <h2 class="section">Receipt Status</h2>
+        <p class="meta">
+          Matched: {{ stats.matched }} · Pending: {{ stats.pending }} · Missing: {{ stats.missing }}
+        </p>
+      </div>
+      <div class="card">
+        <h2 class="section">Filters</h2>
+        <div class="row">
+          <input class="input" placeholder="Search merchant...">
+          <select class="input"><option>All Cards</option></select>
+          <select class="input"><option>This Month</option></select>
+          <select class="input"><option>All Categories</option></select>
+        </div>
+      </div>
+      <div class="card span-2">
+        <table class="table">
+          <thead>
+            <tr><th>Date</th><th>Description</th><th>Amount (RM)</th><th>Tag</th><th>Receipt</th></tr>
+          </thead>
+          <tbody>
+            {% for x in items %}
+            <tr>
+              <td>{{ x.date }}</td>
+              <td>{{ x.desc }}</td>
+              <td>{{ '%.2f'|format(x.amount) }}</td>
+              <td>{{ x.tag }}</td>
+              <td>{{ x.receipt }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

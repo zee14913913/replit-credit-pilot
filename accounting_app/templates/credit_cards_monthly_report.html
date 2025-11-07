@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Credit Cards · Monthly Report{% endblock %}
+{% block content %}
+<div class="page"><div class="main">
+  <h1 class="title">Monthly Report</h1>
+  <div class="grid-auto">
+    <div class="card">
+      <h2 class="section">Data Quality</h2>
+      <p class="meta">Coverage {{ coverage }}% · Grade {{ grade }}</p>
+      <ul class="meta">
+        <li>Statements: A</li>
+        <li>Receipts: {{ 'A' if coverage>=90 else 'B' if coverage>=70 else 'C' if coverage>=50 else 'D' }}</li>
+        <li>Invoices: A</li>
+        <li>OWNER/INFINITE: A</li>
+      </ul>
+      <div class="row">
+        <a class="btn primary" href="#">Export PDF</a>
+        <a class="btn" href="#">Export Excel</a>
+        <a class="btn ghost" href="#">Export CSV</a>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="section">OWNER (Personal)</h2>
+      <p>Expenses RM {{ '%.2f'|format(owner.expenses) }}</p>
+      <p>Payments RM {{ '%.2f'|format(owner.payments) }}</p>
+      <p>Net RM {{ '%.2f'|format(owner.expenses-owner.payments) }}</p>
+    </div>
+    <div class="card">
+      <h2 class="section">INFINITE (Suppliers)</h2>
+      <p>Expenses RM {{ '%.2f'|format(gz.expenses) }}</p>
+      <p>Payments RM {{ '%.2f'|format(gz.payments) }}</p>
+      <p>Service Fee (1%) RM {{ '%.2f'|format(gz.fee) }}</p>
+    </div>
+  </div>
+</div></div>
+{% endblock %}

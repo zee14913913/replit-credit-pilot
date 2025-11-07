@@ -1,0 +1,502 @@
+收到。这份“Pre-FastAPI Flask Final（Receipts & Invoices 融合版）”就是你要我对齐实现的完整规格。我先把它落到你现在的 FastAPI 架构里，给你一套“可直接贴进项目”的最小可运行骨架（页面+路由+服务钩子），先把 2 个你关心且当前缺位的模块补上页面与流程：
+	•	CREDIT CARDS（4 个 Tab：交易明细 / 收据匹配 / 供应商发票 / 月结报告）
+	•	SAVINGS（账户总览 + 上传/解析入口）
+
+这版骨架能马上跑、能看到 UI、能走流程；OCR/短信/发票 PDF 等会以可插拔服务接口留好钩子（等你确认供应商与密钥就能接上）。
+
+⸻
+
+你将得到（直接覆盖/新增）
+
+新增/覆盖文件清单
+	•	accounting_app/routers/credit_cards.py（💳 四个子页 + API 占位）
+	•	accounting_app/routers/savings.py（💰 账户总览 + 上传页）
+	•	accounting_app/services/ocr_client.py（OCR 统一接口占位）
+	•	accounting_app/services/invoice_service.py（1% 服务费 + 发票导出占位）
+	•	accounting_app/templates/credit_cards_transactions.html
+	•	accounting_app/templates/credit_cards_receipts.html
+	•	accounting_app/templates/credit_cards_supplier_invoices.html
+	•	accounting_app/templates/credit_cards_monthly_report.html
+	•	accounting_app/templates/savings_overview.html
+	•	accounting_app/templates/savings_upload.html
+
+模板已套用你现在的全屏样式（v4：无图标纯文字、三色系、全屏网格），右上角保留 EN/中文切换位。
+
+⸻
+
+1) 路由：CREDIT CARDS
+
+accounting_app/routers/credit_cards.py
+
+from fastapi import APIRouter, Request, UploadFile, File, Form
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
+from fastapi.templating import Jinja2Templates
+from datetime import datetime
+from io import BytesIO
+
+# 可从 main.py 里的 templates 取同一个实例；独立使用也行
+templates = Jinja2Templates(directory="accounting_app/templates")
+router = APIRouter(prefix="/credit-cards", tags=["credit-cards"])
+
+# ===== 占位数据（可替换为数据库查询）=====
+DEMO_TX = [
+    {"date":"2025-11-05","desc":"DINAS RESTAURANT","amount":85.00,"tag":"INFINITE","receipt":"matched"},
+    {"date":"2025-11-04","desc":"GRAB RIDE","amount":12.50,"tag":"OWNER","receipt":"pending"},
+    {"date":"2025-11-03","desc":"SHOPEE ONLINE","amount":156.00,"tag":"OWNER","receipt":"missing"},
+]
+
+DEMO_SUPPLIERS = [
+    {"name":"Dinas","sum":850.00,"fee":8.50,"tx":6},
+    {"name":"Huawei","sum":1200.00,"fee":12.00,"tx":3},
+    {"name":"7SL","sum":650.00,"fee":6.50,"tx":5},
+    {"name":"Pasar Raya","sum":500.00,"fee":5.00,"tx":4},
+]
+
+# ========== Tab 1: 交易明细 ==========
+@router.get("/transactions", response_class=HTMLResponse)
+async def page_transactions(request: Request):
+    stats = {
+        "matched": sum(1 for x in DEMO_TX if x["receipt"]=="matched"),
+        "pending": sum(1 for x in DEMO_TX if x["receipt"]=="pending"),
+        "missing": sum(1 for x in DEMO_TX if x["receipt"]=="missing"),
+    }
+    return templates.TemplateResponse("credit_cards_transactions.html",
+        {"request": request, "items": DEMO_TX, "stats": stats})
+
+# ========== Tab 2: 收据匹配 ==========
+@router.get("/receipts", response_class=HTMLResponse)
+async def page_receipts(request: Request):
+    coverage = {
+        "total": len(DEMO_TX),
+        "matched": sum(1 for x in DEMO_TX if x["receipt"]=="matched"),
+        "pending": sum(1 for x in DEMO_TX if x["receipt"]=="pending"),
+        "missing": sum(1 for x in DEMO_TX if x["receipt"]=="missing"),
+    }
+    return templates.TemplateResponse("credit_cards_receipts.html",
+        {"request": request, "coverage": coverage, "pending": [x for x in DEMO_TX if x["receipt"]!="matched"]})
+
+@router.post("/receipts/ocr")
+async def api_receipts_ocr(file: UploadFile = File(...)):
+    # TODO: 调用 services/ocr_client.py
+    extracted = {
+        "merchant_name": "KFC RESTAURANT",
+        "amount": 23.40,
+        "date": "2025-11-05",
+        "confidence_score": 0.88
+    }
+    return JSONResponse({"ok": True, "extracted": extracted})
+
+@router.post("/receipts/match")
+async def api_receipts_match(
+    tx_date: str = Form(...),
+    tx_amount: float = Form(...),
+    ocr_date: str = Form(...),
+    ocr_amount: float = Form(...),
+    merchant: str = Form(...)
+):
+    # TODO: 实现金额/日期/商户相似度；现在给示例分数
+    score = 0.4*min(1.0, ocr_amount/tx_amount if tx_amount else 0) \
+          + 0.3*(1.0 if tx_date==ocr_date else 0.7) \
+          + 0.2*(0.85 if merchant.lower() in "kfc restaurant" else 0.5) \
+          + 0.1*0.9
+    level = "优秀" if score>=0.9 else ("良好" if score>=0.8 else ("一般" if score>=0.6 else "差"))
+    return JSONResponse({"ok": True, "score": round(score,3), "level": level})
+
+# ========== Tab 3: 供应商发票（1% 服务费） ==========
+@router.get("/supplier-invoices", response_class=HTMLResponse)
+async def page_supplier_invoices(request: Request):
+    total = sum(x["sum"] for x in DEMO_SUPPLIERS)
+    total_fee = round(total*0.01, 2)
+    return templates.TemplateResponse("credit_cards_supplier_invoices.html",
+        {"request": request, "suppliers": DEMO_SUPPLIERS, "total": total, "total_fee": total_fee})
+
+@router.get("/supplier-invoices/export.pdf")
+async def export_invoices_pdf():
+    # TODO: 调用 services/invoice_service.py 生成真实 PDF
+    # 先返回一个示例 PDF 二进制
+    bio = BytesIO()
+    bio.write(b"%PDF-1.4\n% Demo PDF\n")
+    bio.seek(0)
+    return StreamingResponse(bio, media_type="application/pdf",
+        headers={"Content-Disposition": "attachment; filename=supplier_invoices_demo.pdf"})
+
+# ========== Tab 4: 月结报告 ==========
+@router.get("/monthly-report", response_class=HTMLResponse)
+async def page_monthly_report(request: Request):
+    coverage = 0 if not DEMO_TX else round(100*sum(1 for x in DEMO_TX if x["receipt"]=="matched")/len(DEMO_TX),2)
+    grade = "A" if coverage>=90 else ("B" if coverage>=70 else ("C" if coverage>=50 else "D"))
+    owner = {"expenses": 8500.00, "payments": 6000.00, "credits": 0.0}
+    gz    = {"expenses": 3200.00, "payments": 2800.00, "credits": 0.0, "fee": round(3200*0.01,2)}
+    return templates.TemplateResponse("credit_cards_monthly_report.html",
+        {"request": request, "coverage": coverage, "grade": grade, "owner": owner, "gz": gz})
+
+
+⸻
+
+2) 路由：SAVINGS
+
+accounting_app/routers/savings.py
+
+from fastapi import APIRouter, Request, UploadFile, File
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.templating import Jinja2Templates
+
+templates = Jinja2Templates(directory="accounting_app/templates")
+router = APIRouter(prefix="/savings", tags=["savings"])
+
+DEMO_ACCOUNTS = [
+    {"bank":"Maybank Savings ****1234","balance":22500.00, "share":64},
+    {"bank":"CIMB FD ****5678","balance":10000.00, "share":28},
+    {"bank":"Public Bank CA ****9012","balance":2730.50, "share":8},
+]
+
+@router.get("/accounts", response_class=HTMLResponse)
+async def savings_overview(request: Request):
+    total = sum(a["balance"] for a in DEMO_ACCOUNTS)
+    return templates.TemplateResponse("savings_overview.html",
+        {"request": request, "accounts": DEMO_ACCOUNTS, "total": total})
+
+@router.get("/upload", response_class=HTMLResponse)
+async def savings_upload(request: Request):
+    return templates.TemplateResponse("savings_upload.html", {"request": request})
+
+@router.post("/upload")
+async def savings_upload_post(file: UploadFile = File(...)):
+    # TODO: 调用实际 PDF/CSV 解析器（你之前的 Universal/Standard/Balance-Change 解析策略）
+    # 这里先假装解析出 42 笔交易
+    return JSONResponse({"ok": True, "parsed_transactions": 42})
+
+
+⸻
+
+3) 服务钩子（OCR / 发票）
+
+accounting_app/services/ocr_client.py
+
+import os
+
+class OCRClient:
+    """
+    统一 OCR 接口占位：
+    - 若 PERPLEXITY/第三方 OCR Key 未配置，则返回示例
+    - 未来可接 Google Vision / Azure / Tesseract Server 等
+    """
+    def __init__(self):
+        self.provider = os.getenv("OCR_PROVIDER", "demo")
+        self.api_key = os.getenv("OCR_API_KEY", "")
+
+    def parse(self, image_bytes: bytes) -> dict:
+        if self.provider == "demo" or not self.api_key:
+            return {
+                "merchant_name": "DEMO MERCHANT",
+                "amount": 12.34,
+                "date": "2025-11-05",
+                "confidence_score": 0.80
+            }
+        # TODO: 实接供应商
+        raise NotImplementedError("OCR provider not implemented yet")
+
+accounting_app/services/invoice_service.py
+
+from io import BytesIO
+
+def render_supplier_invoices_pdf(suppliers: list, month: str) -> bytes:
+    """
+    占位：返回极简 PDF；未来用 reportlab/WeasyPrint 生成正式版
+    """
+    bio = BytesIO()
+    bio.write(b"%PDF-1.4\n% Supplier Invoices Demo\n")
+    return bio.getvalue()
+
+
+⸻
+
+4) 模板（套全屏布局 + 三色系 + 中英切换位）
+
+accounting_app/templates/credit_cards_transactions.html
+
+{% extends "base.html" %}
+{% block title %}Credit Cards · Transactions{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="main">
+    <h1 class="title">Credit Cards · Transactions</h1>
+    <div class="grid-auto">
+      <div class="card">
+        <h2 class="section">Receipt Status</h2>
+        <p class="meta">
+          Matched: {{ stats.matched }} · Pending: {{ stats.pending }} · Missing: {{ stats.missing }}
+        </p>
+      </div>
+      <div class="card">
+        <h2 class="section">Filters</h2>
+        <div class="row">
+          <input class="input" placeholder="Search merchant...">
+          <select class="input"><option>All Cards</option></select>
+          <select class="input"><option>This Month</option></select>
+          <select class="input"><option>All Categories</option></select>
+        </div>
+      </div>
+      <div class="card span-2">
+        <table class="table">
+          <thead>
+            <tr><th>Date</th><th>Description</th><th>Amount (RM)</th><th>Tag</th><th>Receipt</th></tr>
+          </thead>
+          <tbody>
+            {% for x in items %}
+            <tr>
+              <td>{{ x.date }}</td>
+              <td>{{ x.desc }}</td>
+              <td>{{ '%.2f'|format(x.amount) }}</td>
+              <td>{{ x.tag }}</td>
+              <td>{{ x.receipt }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+accounting_app/templates/credit_cards_receipts.html
+
+{% extends "base.html" %}
+{% block title %}Credit Cards · Receipts{% endblock %}
+{% block content %}
+<div class="page"><div class="main">
+  <h1 class="title">Credit Cards · Receipts</h1>
+  <div class="grid-auto">
+    <div class="card">
+      <h2 class="section">Coverage</h2>
+      <p class="meta">Total {{ coverage.total }} · Matched {{ coverage.matched }} · Pending {{ coverage.pending }} · Missing {{ coverage.missing }}</p>
+    </div>
+    <div class="card">
+      <h2 class="section">Upload</h2>
+      <form id="frm" enctype="multipart/form-data">
+        <input class="input" type="file" name="file" accept="image/*,application/pdf">
+        <button class="btn primary" type="submit">Run OCR</button>
+      </form>
+      <pre id="ocrOut" class="meta" style="margin-top:8px;"></pre>
+    </div>
+    <div class="card span-2">
+      <h2 class="section">Pending Matches</h2>
+      <table class="table">
+        <thead><tr><th>Date</th><th>Desc</th><th>Amount</th><th>Action</th></tr></thead>
+        <tbody>
+          {% for x in pending %}
+          <tr>
+            <td>{{ x.date }}</td><td>{{ x.desc }}</td><td>{{ '%.2f'|format(x.amount) }}</td>
+            <td>
+              <form class="match">
+                <input type="hidden" name="tx_date" value="{{ x.date }}">
+                <input type="hidden" name="tx_amount" value="{{ x.amount }}">
+                <input class="input" name="ocr_date" placeholder="OCR date (YYYY-MM-DD)">
+                <input class="input" name="ocr_amount" placeholder="OCR amount">
+                <input class="input" name="merchant" placeholder="Merchant">
+                <button class="btn">Score</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <pre id="scoreOut" class="meta" style="margin-top:8px;"></pre>
+    </div>
+  </div>
+</div></div>
+<script>
+document.getElementById('frm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const r = await fetch('/credit-cards/receipts/ocr',{method:'POST',body:fd});
+  document.getElementById('ocrOut').textContent = JSON.stringify(await r.json(),null,2);
+});
+document.querySelectorAll('form.match').forEach(f=>{
+  f.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const fd = new FormData(f);
+    const r = await fetch('/credit-cards/receipts/match',{method:'POST',body:fd});
+    document.getElementById('scoreOut').textContent = JSON.stringify(await r.json(),null,2);
+  });
+});
+</script>
+{% endblock %}
+
+accounting_app/templates/credit_cards_supplier_invoices.html
+
+{% extends "base.html" %}
+{% block title %}Credit Cards · Supplier Invoices{% endblock %}
+{% block content %}
+<div class="page"><div class="main">
+  <h1 class="title">Supplier Invoices (7 Vendors)</h1>
+  <div class="grid-auto">
+    <div class="card">
+      <h2 class="section">This Month</h2>
+      <p class="meta">Total Spend: RM {{ '%.2f'|format(total) }} · Service Fee (1%): RM {{ '%.2f'|format(total_fee) }}</p>
+      <a class="btn primary" href="/credit-cards/supplier-invoices/export.pdf">Export All as PDF</a>
+    </div>
+    <div class="card span-2">
+      <table class="table">
+        <thead><tr><th>Supplier</th><th>Transactions</th><th>Amount</th><th>Fee (1%)</th><th>Action</th></tr></thead>
+        <tbody>
+          {% for s in suppliers %}
+          <tr>
+            <td>{{ s.name }}</td><td>{{ s.tx }}</td>
+            <td>RM {{ '%.2f'|format(s.sum) }}</td>
+            <td>RM {{ '%.2f'|format(s.fee) }}</td>
+            <td><a class="btn" href="#">View</a> <a class="btn ghost" href="#">PDF</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div></div>
+{% endblock %}
+
+accounting_app/templates/credit_cards_monthly_report.html
+
+{% extends "base.html" %}
+{% block title %}Credit Cards · Monthly Report{% endblock %}
+{% block content %}
+<div class="page"><div class="main">
+  <h1 class="title">Monthly Report</h1>
+  <div class="grid-auto">
+    <div class="card">
+      <h2 class="section">Data Quality</h2>
+      <p class="meta">Coverage {{ coverage }}% · Grade {{ grade }}</p>
+      <ul class="meta">
+        <li>Statements: A</li>
+        <li>Receipts: {{ 'A' if coverage>=90 else 'B' if coverage>=70 else 'C' if coverage>=50 else 'D' }}</li>
+        <li>Invoices: A</li>
+        <li>OWNER/INFINITE: A</li>
+      </ul>
+      <div class="row">
+        <a class="btn primary" href="#">Export PDF</a>
+        <a class="btn" href="#">Export Excel</a>
+        <a class="btn ghost" href="#">Export CSV</a>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="section">OWNER (Personal)</h2>
+      <p>Expenses RM {{ '%.2f'|format(owner.expenses) }}</p>
+      <p>Payments RM {{ '%.2f'|format(owner.payments) }}</p>
+      <p>Net RM {{ '%.2f'|format(owner.expenses-owner.payments) }}</p>
+    </div>
+    <div class="card">
+      <h2 class="section">INFINITE (Suppliers)</h2>
+      <p>Expenses RM {{ '%.2f'|format(gz.expenses) }}</p>
+      <p>Payments RM {{ '%.2f'|format(gz.payments) }}</p>
+      <p>Service Fee (1%) RM {{ '%.2f'|format(gz.fee) }}</p>
+    </div>
+  </div>
+</div></div>
+{% endblock %}
+
+
+⸻
+
+5) 模板：SAVINGS
+
+accounting_app/templates/savings_overview.html
+
+{% extends "base.html" %}
+{% block title %}Savings · Overview{% endblock %}
+{% block content %}
+<div class="page"><div class="main">
+  <h1 class="title">Savings · Overview</h1>
+  <div class="grid-auto">
+    <div class="card">
+      <h2 class="section">Total Balance</h2>
+      <p class="meta">RM {{ '%.2f'|format(total) }}</p>
+      <a class="btn primary" href="/savings/upload">Upload Statement</a>
+    </div>
+    <div class="card span-2">
+      <table class="table">
+        <thead><tr><th>Account</th><th>Balance</th><th>Share</th></tr></thead>
+        <tbody>
+          {% for a in accounts %}
+          <tr>
+            <td>{{ a.bank }}</td>
+            <td>RM {{ '%.2f'|format(a.balance) }}</td>
+            <td>{{ a.share }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div></div>
+{% endblock %}
+
+accounting_app/templates/savings_upload.html
+
+{% extends "base.html" %}
+{% block title %}Savings · Upload{% endblock %}
+{% block content %}
+<div class="page"><div class="main">
+  <h1 class="title">Upload Savings Statement</h1>
+  <div class="grid-auto">
+    <div class="card">
+      <h2 class="section">Upload PDF/CSV</h2>
+      <form id="u" enctype="multipart/form-data">
+        <input class="input" type="file" name="file" accept=".pdf,.csv,application/pdf,text/csv">
+        <button class="btn primary">Upload & Parse</button>
+      </form>
+      <pre id="out" class="meta" style="margin-top:8px;"></pre>
+    </div>
+  </div>
+</div></div>
+<script>
+document.getElementById('u').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const r = await fetch('/savings/upload',{method:'POST',body:fd});
+  document.getElementById('out').textContent = JSON.stringify(await r.json(),null,2);
+});
+</script>
+{% endblock %}
+
+
+⸻
+
+6) 在 main.py 挂载路由
+
+from accounting_app.routers import credit_cards, savings
+app.include_router(credit_cards.router)
+app.include_router(savings.router)
+
+
+⸻
+
+7) 环境变量（先放占位）
+
+# OCR（未配置时返回 demo 结果）
+OCR_PROVIDER=demo
+OCR_API_KEY=
+
+# 发票/PDF 生成如需云渲染可追加（可选）
+PDF_ENGINE=internal
+
+
+⸻
+
+你现在可以做什么
+	•	把上述文件按路径贴进项目（覆盖/新增）。
+	•	重启应用 → 打开：
+	•	/credit-cards/transactions
+	•	/credit-cards/receipts
+	•	/credit-cards/supplier-invoices
+	•	/credit-cards/monthly-report
+	•	/savings/accounts /savings/upload
+	•	你会看到和规格书一致的 4 个 Tab + 储蓄模块的全屏页面与操作流，先跑在示例数据/占位逻辑上。
+
+等你点头，我再把：
+	•	账单解析（PDF/CSV 实装你列的 Universal / Standard / Balance-Change 算法）
+	•	OCR 真接入（你选供应商我对接）
+	•	1% 发票 PDF（ReportLab/WeasyPrint 正式版 + 批量导出）
+	•	提醒系统（Email/SMS/WhatsApp 定时）
+
+逐条接上去。这样既不会再“乱改掉功能”，也能确保每一块都对齐你这份最终融合版规格。

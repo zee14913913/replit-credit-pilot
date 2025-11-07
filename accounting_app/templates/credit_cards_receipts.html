@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Credit Cards · Receipts{% endblock %}
+{% block content %}
+<div class="page"><div class="main">
+  <h1 class="title">Credit Cards · Receipts</h1>
+  <div class="grid-auto">
+    <div class="card">
+      <h2 class="section">Coverage</h2>
+      <p class="meta">Total {{ coverage.total }} · Matched {{ coverage.matched }} · Pending {{ coverage.pending }} · Missing {{ coverage.missing }}</p>
+    </div>
+    <div class="card">
+      <h2 class="section">Upload</h2>
+      <form id="frm" enctype="multipart/form-data">
+        <input class="input" type="file" name="file" accept="image/*,application/pdf">
+        <button class="btn primary" type="submit">Run OCR</button>
+      </form>
+      <pre id="ocrOut" class="meta" style="margin-top:8px;"></pre>
+    </div>
+    <div class="card span-2">
+      <h2 class="section">Pending Matches</h2>
+      <table class="table">
+        <thead><tr><th>Date</th><th>Desc</th><th>Amount</th><th>Action</th></tr></thead>
+        <tbody>
+          {% for x in pending %}
+          <tr>
+            <td>{{ x.date }}</td><td>{{ x.desc }}</td><td>{{ '%.2f'|format(x.amount) }}</td>
+            <td>
+              <form class="match">
+                <input type="hidden" name="tx_date" value="{{ x.date }}">
+                <input type="hidden" name="tx_amount" value="{{ x.amount }}">
+                <input class="input" name="ocr_date" placeholder="OCR date (YYYY-MM-DD)">
+                <input class="input" name="ocr_amount" placeholder="OCR amount">
+                <input class="input" name="merchant" placeholder="Merchant">
+                <button class="btn">Score</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <pre id="scoreOut" class="meta" style="margin-top:8px;"></pre>
+    </div>
+  </div>
+</div></div>
+<script>
+document.getElementById('frm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const r = await fetch('/credit-cards/receipts/ocr',{method:'POST',body:fd});
+  document.getElementById('ocrOut').textContent = JSON.stringify(await r.json(),null,2);
+});
+document.querySelectorAll('form.match').forEach(f=>{
+  f.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const fd = new FormData(f);
+    const r = await fetch('/credit-cards/receipts/match',{method:'POST',body:fd});
+    document.getElementById('scoreOut').textContent = JSON.stringify(await r.json(),null,2);
+  });
+});
+</script>
+{% endblock %}

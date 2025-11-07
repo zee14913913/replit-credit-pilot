@@ -1,0 +1,492 @@
+稳了。按你给的顺序，我直接给你一套“可覆盖即用”的补丁：
+	1.	三类账单解析器（Universal / Standard / Balance-Change），
+	2.	OCR 抽象层（先内置 demo + 本地 Tesseract，占位云厂商），
+	3.	发票 PDF 正式模板（默认 ReportLab，可切 WeasyPrint），
+	4.	还款提醒（APSheduler + SendGrid 邮件 + Twilio SMS/WhatsApp）。
+
+把下面这些文件按路径放进项目（已有同名请覆盖），然后重启即可。
+我也顺手给了最小 UI 钩子和验收方式。
+
+⸻
+
+0) requirements.txt（新增依赖）
+
+把这些行加入你的 requirements.txt（有则忽略）：
+
+reportlab>=4.2.0
+weasyprint>=62.3
+pytesseract>=0.3.10
+pdfplumber>=0.11.4
+apscheduler==3.10.4
+sendgrid==6.11.0
+twilio==9.2.3
+pytz==2024.2
+
+
+⸻
+
+1) 三类账单解析器
+
+文件：accounting_app/services/statements_parsers.py
+
+import io, re, pdfplumber, datetime as dt
+from decimal import Decimal
+
+class ParseResult:
+    def __init__(self, statements=None, transactions=None, meta=None):
+        self.statements = statements or {}   # 汇总维度（本期应还等）
+        self.transactions = transactions or []  # 明细列表
+        self.meta = meta or {}
+
+    def to_dict(self): return {
+        "statements": self.statements, "transactions": self.transactions, "meta": self.meta
+    }
+
+# —— 共用工具 —— #
+def _to_amount(x):
+    if x is None: return None
+    s = str(x).replace(',', '').strip()
+    m = re.search(r'-?\d+(\.\d+)?', s)
+    return Decimal(m.group(0)) if m else None
+
+def _infer_date(s):
+    # 尝试 3 种常见日期
+    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d-%b-%Y", "%d %b %Y"):
+        try: return dt.datetime.strptime(s.strip(), fmt).date()
+        except: pass
+    return None
+
+# —— 1) Universal：表格有“期初余额/期末余额/总计”行，交易部分有“Date/Description/Amount” —— #
+class UniversalStatementParser:
+    NAME = "universal"
+
+    def match(self, text):
+        score = 0
+        if re.search(r'Opening Balance|期初余额', text, re.I): score += 1
+        if re.search(r'Closing Balance|期末余额', text, re.I): score += 1
+        if re.search(r'Date\s+Description\s+Amount', text, re.I): score += 1
+        return score >= 2
+
+    def parse(self, pdf_bytes: bytes) -> ParseResult:
+        with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
+            full_text = "\n".join([p.extract_text() or "" for p in pdf.pages])
+            # 汇总
+            opening = re.search(r'(Opening Balance|期初余额)\s*[:：]\s*([-,\d.]+)', full_text, re.I)
+            closing = re.search(r'(Closing Balance|期末余额)\s*[:：]\s*([-,\d.]+)', full_text, re.I)
+            total_pay = re.search(r'(Total Payment|本期还款)\s*[:：]\s*([-,\d.]+)', full_text, re.I)
+
+            statements = {
+                "opening_balance": _to_amount(opening.group(2)) if opening else None,
+                "closing_balance": _to_amount(closing.group(2)) if closing else None,
+                "total_payment": _to_amount(total_pay.group(2)) if total_pay else None,
+            }
+
+            # 交易（表格抽取兜底）
+            transactions=[]
+            for page in pdf.pages:
+                table = page.extract_table()
+                if not table: continue
+                headers = [h.strip().lower() if h else "" for h in table[0]]
+                rows = table[1:]
+                if "date" in headers and "amount" in headers:
+                    di = headers.index("date"); ai = headers.index("amount")
+                    di_desc = headers.index("description") if "description" in headers else None
+                    for r in rows:
+                        if not r or len(r)<=ai: continue
+                        d=_infer_date(r[di] or "")
+                        desc=(r[di_desc] if di_desc is not None and di_desc<len(r) else "") or ""
+                        amt=_to_amount(r[ai])
+                        if d and amt is not None:
+                            transactions.append({"date":str(d), "desc":desc.strip(), "amount":str(amt)})
+            return ParseResult(statements, transactions, {"parser": self.NAME})
+
+# —— 2) Standard：有固定“Posting Date / Description / Debit / Credit / Balance” —— #
+class StandardStatementParser:
+    NAME="standard"
+
+    def match(self, text):
+        return bool(re.search(r'Posting Date\s+Description\s+Debit\s+Credit\s+Balance', text, re.I))
+
+    def parse(self, pdf_bytes: bytes) -> ParseResult:
+        tx=[]
+        with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
+            for page in pdf.pages:
+                table = page.extract_table()
+                if not table: continue
+                headers=[(h or "").strip().lower() for h in table[0]]
+                rows=table[1:]
+                try:
+                    di=headers.index("posting date"); desci=headers.index("description")
+                    debi=headers.index("debit"); credi=headers.index("credit")
+                except ValueError:
+                    continue
+                for r in rows:
+                    if not r or len(r)<=max(di,desci,debi,credi): continue
+                    d=_infer_date(r[di] or "")
+                    desc=(r[desci] or "").strip()
+                    debit=_to_amount(r[debi]); credit=_to_amount(r[credi])
+                    amt = credit if credit is not None else (Decimal(0)-debit if debit is not None else None)
+                    if d and amt is not None:
+                        tx.append({"date":str(d),"desc":desc,"amount":str(amt)})
+        return ParseResult({"pattern":"standard"}, tx, {"parser": self.NAME})
+
+# —— 3) Balance-Change：只有“前后余额 + 差额”可推导金额 —— #
+class BalanceChangeParser:
+    NAME="balance_change"
+
+    def match(self, text):
+        return bool(re.search(r'Balance\s+Change|Previous Balance|New Balance', text, re.I))
+
+    def parse(self, pdf_bytes: bytes) -> ParseResult:
+        tx=[]
+        with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
+            for page in pdf.pages:
+                text = page.extract_text() or ""
+                # 粗暴切分：一行一个交易段，示例： "2025-11-03 SHOPEE ONLINE Prev: 1,000.00 New: 844.00"
+                for line in text.splitlines():
+                    m=re.search(r'(\d{1,2}[-/][A-Za-z]{3}[-/]\d{2,4}|\d{4}-\d{2}-\d{2}).+?Prev[:：]\s*([-,\d.]+).+?New[:：]\s*([-,\d.]+)', line, re.I)
+                    if not m: continue
+                    d=_infer_date(m.group(1))
+                    prev=_to_amount(m.group(2)); new=_to_amount(m.group(3))
+                    if d and prev is not None and new is not None:
+                        delta=new-prev
+                        desc=re.sub(r'\s+', ' ', line)
+                        tx.append({"date":str(d),"desc":desc,"amount":str(delta)})
+        return ParseResult({"pattern":"balance_change"}, tx, {"parser": self.NAME})
+
+# —— 自动选择器 —— #
+class StatementAutoDetector:
+    PARSERS=[UniversalStatementParser(), StandardStatementParser(), BalanceChangeParser()]
+
+    def detect(self, text)->str:
+        scores=[(p.NAME, p.match(text)) for p in self.PARSERS]
+        # 先匹配到者优先，Universal/Standard/BalanceChange 顺序即优先级
+        for p in self.PARSERS:
+            if p.match(text): return p.NAME
+        return self.PARSERS[0].NAME
+
+    def parse(self, pdf_bytes: bytes)->ParseResult:
+        with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
+            text="\n".join([p.extract_text() or "" for p in pdf.pages])
+        name=self.detect(text)
+        parser = next(p for p in self.PARSERS if p.NAME==name)
+        return parser.parse(pdf_bytes)
+
+文件：accounting_app/routers/statements.py（上传入口 + 解析）
+
+from fastapi import APIRouter, UploadFile, File, HTTPException
+from accounting_app.services.statements_parsers import StatementAutoDetector
+router = APIRouter(prefix="/credit-cards/statements", tags=["credit_cards.statements"])
+
+@router.post("/upload")
+async def upload_statement(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(400, "Please upload a PDF statement")
+    pdf_bytes = await file.read()
+    res = StatementAutoDetector().parse(pdf_bytes).to_dict()
+    # TODO: 写入你现有的数据库 schema（此处先返回解析结果）
+    return res
+
+挂载到 main.py：
+
+from accounting_app.routers import statements
+app.include_router(statements.router)
+
+
+⸻
+
+2) OCR 抽象层（含 demo / pytesseract）
+
+文件：accounting_app/services/ocr_client.py
+
+import os, io, pytesseract
+from PIL import Image
+from typing import List, Dict
+
+class OCRClient:
+    def __init__(self):
+        self.provider = os.getenv("OCR_PROVIDER", "demo").lower()
+
+    def ocr_image(self, content: bytes) -> Dict:
+        if self.provider == "demo":
+            # 演示返回：固定结构 + 假置信度
+            return {"merchant_name":"DEMO MERCHANT","amount": 12.34, "date":"2025-11-05","confidence":0.76}
+        if self.provider == "tesseract":
+            img = Image.open(io.BytesIO(content))
+            text = pytesseract.image_to_string(img)
+            # 粗提取（示例）
+            return {
+                "raw_text": text,
+                "merchant_name": text.splitlines()[0][:32] if text.strip() else "UNKNOWN",
+                "amount": None, "date": None, "confidence": 0.55
+            }
+        # 预留：google / azure / aws…（读取 OCR_API_KEY）
+        # elif self.provider == "google": ...
+        return {"merchant_name":"UNKNOWN","amount": None, "date": None, "confidence": 0.0}
+
+    def batch_ocr(self, files: List[bytes]) -> List[Dict]:
+        return [self.ocr_image(b) for b in files]
+
+在你“收据上传”处调用该客户端即可（你已有 receipts 页面/接口的话，把 OCRClient().ocr_image(file_bytes) 丢进去）。
+
+⸻
+
+3) 发票 PDF 正式模板（ReportLab / 可选 WeasyPrint）
+
+文件：accounting_app/services/invoice_service.py
+
+import io, os
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import mm
+from fastapi.responses import StreamingResponse
+
+def build_invoice_pdf(supplier:str, month:str, items, fee_rate=0.01):
+    # items: [{date, desc, amount}, ...]  仅示例
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf, pagesize=A4)
+    W, H = A4
+
+    # 品牌色
+    pink = (1, 0, 0.5)  # #FF007F approximate
+    purple = (0.196, 0.141, 0.275)  # #322446 approx
+
+    # Header
+    c.setFillColor(pink); c.setFont("Helvetica-Bold", 18)
+    c.drawString(20*mm, (H-20*mm), "INFINITE GZ SDN. BHD.")
+    c.setFillColor(purple); c.setFont("Helvetica", 12)
+    c.drawString(20*mm, (H-28*mm), f"Supplier Invoice · {supplier}")
+    c.drawString(20*mm, (H-34*mm), f"Period: {month}")
+
+    # Table header
+    y = H-48*mm
+    c.setFillColorRGB(1,1,1)
+    c.setStrokeColor(purple)
+    c.setFillColor(purple)
+    c.rect(20*mm, y, W-40*mm, 8*mm, fill=1, stroke=0)
+    c.setFillColorRGB(1,1,1); c.setFont("Helvetica-Bold", 10)
+    c.drawString(22*mm, y+2.5*mm, "Date")
+    c.drawString(60*mm, y+2.5*mm, "Description")
+    c.drawRightString(W-42*mm, y+2.5*mm, "Amount (RM)")
+    y -= 10*mm
+
+    total = 0.0
+    c.setFillColorRGB(1,1,1); c.setStrokeColor(purple)
+    c.setFont("Helvetica", 10)
+    for it in items:
+        if y < 30*mm:
+            c.showPage(); y = H-20*mm
+        c.setFillColorRGB(1,1,1)
+        c.rect(20*mm, y, W-40*mm, 8*mm, fill=0, stroke=1)
+        c.setFillColorRGB(1,1,1); c.setFillColorRGB(1,1,1)
+        c.setFillColorRGB(1,1,1)
+        c.setFillColorRGB(1,1,1)
+        c.setFillColorRGB(1,1,1)
+        c.setFillColorRGB(1,1,1)
+        c.setFillColorRGB(1,1,1)
+        c.setFillColorRGB(1,1,1)
+        c.setFillColorRGB(1,1,1)
+        c.setFillColorRGB(1,1,1)
+        # 内容
+        c.setFillColorRGB(1,1,1); c.setStrokeColor(purple)
+        c.setFillColorRGB(1,1,1)
+        c.setFillColorRGB(1,1,1)
+        c.setFillColorRGB(1,1,1)
+        c.drawString(22*mm, y+2.5*mm, str(it.get("date","")))
+        c.drawString(60*mm, y+2.5*mm, str(it.get("desc",""))[:40])
+        c.drawRightString(W-42*mm, y+2.5*mm, f'{float(it.get("amount",0.0)):.2f}')
+        total += float(it.get("amount",0.0))
+        y -= 9*mm
+
+    fee = total * float(os.getenv("SERVICE_FEE_RATE", fee_rate))
+    grand = total + fee
+
+    # Total
+    y -= 5*mm
+    c.setFont("Helvetica-Bold", 11); c.setFillColor(pink)
+    c.drawRightString(W-42*mm, y, f"Subtotal: RM {total:.2f}")
+    y -= 6*mm; c.drawRightString(W-42*mm, y, f"Service Fee ({int(float(os.getenv('SERVICE_FEE_RATE','0.01'))*100)}%): RM {fee:.2f}")
+    y -= 6*mm; c.drawRightString(W-42*mm, y, f"Total Due: RM {grand:.2f}")
+
+    # Footer
+    c.setFillColor(purple); c.setFont("Helvetica-Oblique", 9)
+    c.drawString(20*mm, 15*mm, "This invoice is generated by CreditPilot · INFINITE GZ SDN. BHD.")
+
+    c.showPage(); c.save()
+    buf.seek(0)
+    return StreamingResponse(buf, media_type="application/pdf",
+           headers={"Content-Disposition": f'attachment; filename="invoice_{supplier}_{month}.pdf"'})
+
+路由导出：accounting_app/routers/invoices.py
+
+from fastapi import APIRouter, Query
+from accounting_app.services.invoice_service import build_invoice_pdf
+router = APIRouter(prefix="/invoices", tags=["invoices"])
+
+@router.get("/supplier.pdf")
+def supplier_invoice(supplier: str = Query(...), month: str = Query(...)):
+    # TODO: 从数据库聚合 supplier 在 month 的交易列表；这里放演示数据
+    items = [
+        {"date":"2025-11-05","desc":"Office Supplies","amount":450.0},
+        {"date":"2025-11-12","desc":"A4 Paper","amount":280.0},
+        {"date":"2025-11-20","desc":"Ink Cartridge","amount":320.0},
+    ]
+    return build_invoice_pdf(supplier, month, items)
+
+挂载到 main.py：
+
+from accounting_app.routers import invoices
+app.include_router(invoices.router)
+
+WeasyPrint（可选）
+设 USE_WEASY=1 时，你可以写一个备用函数把 HTML → PDF 走 Weasy（此处先保持 ReportLab 默认，便于轻量）。
+
+⸻
+
+4) 还款提醒（Email / SMS / WhatsApp）
+
+文件：accounting_app/services/reminders.py
+
+import os, pytz, datetime as dt
+from apscheduler.schedulers.background import BackgroundScheduler
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+from twilio.rest import Client as Twilio
+
+TZ = os.getenv("TZ","Asia/Kuala_Lumpur")
+RUN_HOUR = int(os.getenv("REMINDER_HOUR","8"))
+
+def _send_email(to, subject, html):
+    key=os.getenv("SENDGRID_API_KEY")
+    if not key: return False
+    sg=SendGridAPIClient(key)
+    msg=Mail(from_email=os.getenv("MAIL_FROM","noreply@creditpilot.digital"),
+             to_emails=to, subject=subject, html_content=html)
+    sg.send(msg); return True
+
+def _send_sms(to, body, whatsapp=False):
+    sid=os.getenv("TWILIO_SID"); tok=os.getenv("TWILIO_TOKEN")
+    from_sms=os.getenv("TWILIO_FROM")
+    from_wa=os.getenv("TWILIO_WHATSAPP_FROM")
+    if not (sid and tok): return False
+    cli=Twilio(sid, tok)
+    if whatsapp:
+        cli.messages.create(from_=f"whatsapp:{from_wa}", to=f"whatsapp:{to}", body=body)
+    else:
+        cli.messages.create(from_=from_sms, to=to, body=body)
+    return True
+
+def _due_items_today():
+    # TODO: 从你的账单/交易表里查“到期在 [今天,+7天]”的信用卡账单
+    today=dt.date.today()
+    demo=[
+        {"customer":"Chen","card":"Maybank ****1234","due":"2025-11-10","amount":2500.0,
+         "email":"chen@example.com","phone":"+60123456789"}
+    ]
+    return demo
+
+def run_once():
+    for it in _due_items_today():
+        d=it["due"]; amt=it["amount"]; card=it["card"]
+        subject=f"[CreditPilot] Upcoming Due · {card}"
+        html=f"<p>Hi {it['customer']},</p><p>Your card {card} will be due on {d}. Amount: RM {amt:.2f}.</p>"
+        body=f"Reminder: {card} due {d}, RM {amt:.2f}"
+        _send_email(it["email"], subject, html)
+        _send_sms(it["phone"], body, whatsapp=False)
+        if os.getenv("ENABLE_WHATSAPP","0")=="1":
+            _send_sms(it["phone"], body, whatsapp=True)
+
+def start_scheduler():
+    tz=pytz.timezone(TZ)
+    sch=BackgroundScheduler(timezone=tz)
+    sch.add_job(run_once, "cron", hour=RUN_HOUR, minute=0)
+    sch.start()
+    return sch
+
+在 main.py 启动：
+
+from accounting_app.services.reminders import start_scheduler
+scheduler = start_scheduler()
+
+环境变量（Secrets）（先占位可空）：
+
+# OCR
+OCR_PROVIDER=demo            # demo | tesseract | google | azure | aws
+OCR_API_KEY=
+
+# 发票
+SERVICE_FEE_RATE=0.01       # 1%
+
+# 提醒
+TZ=Asia/Kuala_Lumpur
+REMINDER_HOUR=8
+
+# Email (SendGrid)
+SENDGRID_API_KEY=
+MAIL_FROM=noreply@creditpilot.digital
+
+# SMS/WhatsApp (Twilio)
+TWILIO_SID=
+TWILIO_TOKEN=
+TWILIO_FROM=+1xxxxxxxxxx
+TWILIO_WHATSAPP_FROM=+1xxxxxxxxxx
+ENABLE_WHATSAPP=0
+
+# 可选 WeasyPrint
+USE_WEASY=0
+
+
+⸻
+
+5) 最小 UI 钩子（把按钮挂上就能跑）
+
+在你的 accounting_app/templates/credit_cards_supplier_invoices.html 顶部加一个下载按钮：
+
+<div class="toolbar">
+  <a class="btn primary" href="/invoices/supplier.pdf?supplier=SUPPLIER%20A&month=2025-11">Download Invoice PDF</a>
+</div>
+
+在 accounting_app/templates/credit_cards_receipts.html 的收据上传处理里，后端保存后调用 OCRClient().ocr_image(...)，把返回的 merchant_name/amount/date/confidence 显示在列表即可（你已有页面就用原位替换）。
+
+⸻
+
+6) 快速验收
+
+账单解析（上传 PDF）
+
+POST /credit-cards/statements/upload
+Content-Type: multipart/form-data
+file=@your_statement.pdf
+
+预期：返回 {statements:{...}, transactions:[...] , meta:{parser:"universal|standard|balance_change"}}
+
+发票导出
+
+GET /invoices/supplier.pdf?supplier=SUPPLIER%20A&month=2025-11
+
+预期：浏览器下载 PDF
+
+提醒定时
+	•	启动服务后日志能看到 APScheduler 已启动
+	•	修改 REMINDER_HOUR 为当前小时+1，等触发或在后台调用 from accounting_app.services.reminders import run_once; run_once() 做即时测试
+
+OCR
+	•	设置 OCR_PROVIDER=demo → 上传任意图片，能看到 demo 识别结构
+	•	设置 OCR_PROVIDER=tesseract 并在 Replit 安装 tesseract（若环境允许），即可跑本地 OCR
+
+⸻
+
+7) 你通常会问的两件事
+
+A. 真的会改你现有结构吗？
+不会。所有文件都是新增或在你现有“Credit Cards/Savings”里加入口；不改你 Loans/CTOS/Compare 逻辑。
+
+B. 什么时候切换“演示 → 生产”？
+	•	把 OCR_PROVIDER 换成你定的厂商，并填 OCR_API_KEY；
+	•	把 SERVICE_FEE_RATE 改为 0.01（已默认）；
+	•	配置 SendGrid/Twilio 密钥；
+	•	把 REMINDER_HOUR 设为你想发提醒的时间（24h 制，吉隆坡时区）。
+
+⸻
+
+需要我把 收据上传页 和 交易明细页 里的按钮和后端拼好（直接替换两份模板）的话，我也可以马上给整页模板版本。
