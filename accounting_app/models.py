@@ -882,3 +882,62 @@ class UploadStaging(Base):
         CheckConstraint("module IN ('bank', 'supplier', 'pos', 'credit-card', 'savings', 'receipts')"),
         CheckConstraint("status IN ('pending', 'processing', 'linked', 'failed', 'abandoned')"),
     )
+
+
+class Transaction(Base):
+    """
+    简化供应商交易模型（用于发票生成）
+    """
+    __tablename__ = "supplier_transactions"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    supplier_id = Column(Integer, ForeignKey("suppliers.id", ondelete='CASCADE'), nullable=False, index=True)
+    txn_date = Column(Date, nullable=False, index=True)
+    description = Column(String(500), default="")
+    amount = Column(Numeric(12, 2), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    supplier = relationship("Supplier", backref="supplier_transactions")
+
+
+class Invoice(Base):
+    """
+    发票记录表
+    """
+    __tablename__ = "invoices"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    number = Column(String(100), unique=True, nullable=False, index=True)
+    lang = Column(String(10), default="en")
+    layout = Column(String(50), default="service")
+    supplier_id = Column(Integer, ForeignKey("suppliers.id", ondelete='SET NULL'))
+    bill_to_name = Column(String(200), nullable=False)
+    bill_to_addr = Column(Text, default="")
+    bill_to_reg = Column(String(100), default="")
+    amount = Column(Numeric(12, 2), nullable=False)
+    tax_rate = Column(Numeric(4, 2), default=0.00)
+    total = Column(Numeric(12, 2), nullable=False)
+    issued_date = Column(Date, nullable=False, server_default=func.current_date())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    supplier = relationship("Supplier")
+
+
+class InvoiceSequence(Base):
+    """
+    发票编号自动递增序列表
+    每年每前缀维护一个序列： (prefix, year) -> next_seq
+    例：("INV", 2025) -> 1  意味着下一张是 INV-2025-0001
+    """
+    __tablename__ = "invoice_sequences"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    prefix = Column(String(20), nullable=False)
+    year = Column(Integer, nullable=False)
+    next_seq = Column(Integer, nullable=False, default=1)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    __table_args__ = (
+        Index('idx_prefix_year', 'prefix', 'year', unique=True),
+    )

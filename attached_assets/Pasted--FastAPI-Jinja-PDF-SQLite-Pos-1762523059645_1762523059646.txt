@@ -1,0 +1,347 @@
+好，两个都给你：连数据库 + 发票编号自动递增。下面是“一贴就能用”的最小补丁，兼容现在的代码风格（FastAPI + Jinja + 你现有的发票 PDF 引擎）。默认先连 SQLite，换 PostgreSQL 只改一个环境变量即可。
+
+⸻
+
+1) 新增：数据库基础（SQLAlchemy）
+
+文件：accounting_app/db.py（新建）
+
+# accounting_app/db.py
+import os
+from contextlib import contextmanager
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data.db")  # 改成 postgres 时写：postgresql+psycopg2://user:pass@host/db
+connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+engine = create_engine(DATABASE_URL, future=True, pool_pre_ping=True, connect_args=connect_args)
+SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
+Base = declarative_base()
+
+@contextmanager
+def get_session():
+    db = SessionLocal()
+    try:
+        yield db
+        db.commit()
+    except:
+        db.rollback()
+        raise
+    finally:
+        db.close()
+
+
+⸻
+
+2) 新增：最小模型（供应商/交易/发票/流水号）
+
+文件：accounting_app/models.py（新建）
+
+# accounting_app/models.py
+from datetime import datetime, date
+from decimal import Decimal
+from sqlalchemy import Column, Integer, String, Date, DateTime, Numeric, ForeignKey, UniqueConstraint
+from sqlalchemy.orm import relationship
+from .db import Base
+
+class Supplier(Base):
+    __tablename__ = "suppliers"
+    id = Column(Integer, primary_key=True)
+    name = Column(String, unique=True, index=True, nullable=False)
+    address = Column(String, default="")
+    reg_no = Column(String, default="")     # 可选：注册号
+    email = Column(String, default="")      # 可选：发票邮箱
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class Transaction(Base):
+    __tablename__ = "transactions"
+    id = Column(Integer, primary_key=True)
+    supplier_id = Column(Integer, ForeignKey("suppliers.id"), nullable=False)
+    txn_date = Column(Date, nullable=False)
+    description = Column(String, default="")
+    amount = Column(Numeric(12,2), nullable=False)  # 正数表示支出
+    supplier = relationship("Supplier", backref="transactions")
+
+class Invoice(Base):
+    __tablename__ = "invoices"
+    id = Column(Integer, primary_key=True)
+    number = Column(String, unique=True, nullable=False, index=True)  # INV-2025-0001
+    lang = Column(String, default="en")
+    layout = Column(String, default="service")
+    supplier_id = Column(Integer, ForeignKey("suppliers.id"))
+    bill_to_name = Column(String, nullable=False)
+    bill_to_addr = Column(String, default="")
+    bill_to_reg = Column(String, default="")
+    amount = Column(Numeric(12,2), nullable=False)
+    tax_rate = Column(Numeric(4,2), default=Decimal("0.00"))
+    total = Column(Numeric(12,2), nullable=False)
+    issued_date = Column(Date, default=date.today)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    supplier = relationship("Supplier")
+
+class InvoiceSequence(Base):
+    """
+    每年每前缀维护一个序列： (prefix, year) -> next_seq
+    例：("INV", 2025) -> 1  意味着下一张是 INV-2025-0001
+    """
+    __tablename__ = "invoice_sequences"
+    id = Column(Integer, primary_key=True)
+    prefix = Column(String, nullable=False)
+    year = Column(Integer, nullable=False)
+    next_seq = Column(Integer, nullable=False, default=1)
+    __table_args__ = (UniqueConstraint("prefix", "year", name="uq_prefix_year"),)
+
+
+⸻
+
+3) 启动时建表 & 一个演示种子接口（可选）
+
+修改：accounting_app/main.py（或你的 FastAPI 入口文件）
+
+# 在 FastAPI app 创建后、include_router 之前或之后都行：
+from accounting_app.db import engine
+from accounting_app.models import Base
+Base.metadata.create_all(bind=engine)
+
+可选：新增种子路由，方便一键塞演示数据
+
+文件：accounting_app/routers/admin_seed.py（新建）
+
+# accounting_app/routers/admin_seed.py
+from fastapi import APIRouter
+from datetime import date
+from decimal import Decimal
+from sqlalchemy import select
+from accounting_app.db import get_session
+from accounting_app.models import Supplier, Transaction
+
+router = APIRouter(prefix="/admin/seed", tags=["Admin"])
+
+@router.post("/demo")
+def seed_demo():
+    with get_session() as db:
+        # 供应商
+        names = [("DINAS RESTAURANT", "Kuala Lumpur"),
+                 ("HUAWEI", "Selangor"),
+                 ("PASAR RAYA", "Kuala Lumpur")]
+        for nm, addr in names:
+            if not db.scalar(select(Supplier).where(Supplier.name==nm)):
+                db.add(Supplier(name=nm, address=addr))
+        db.flush()
+        # 三家供应商本月交易合计：850 / 1200 / 500
+        dinas = db.scalar(select(Supplier).where(Supplier.name=="DINAS RESTAURANT"))
+        huawei = db.scalar(select(Supplier).where(Supplier.name=="HUAWEI"))
+        pasar = db.scalar(select(Supplier).where(Supplier.name=="PASAR RAYA"))
+        today = date.today().replace(day=5)
+        # 确保有交易（幂等写法：若已有则跳过）
+        if not db.scalar(select(Transaction).where(Transaction.supplier_id==dinas.id)):
+            db.add_all([
+                Transaction(supplier_id=dinas.id, txn_date=today, description="Meals", amount=Decimal("300")),
+                Transaction(supplier_id=dinas.id, txn_date=today, description="Meals", amount=Decimal("550")),
+            ])
+        if not db.scalar(select(Transaction).where(Transaction.supplier_id==huawei.id)):
+            db.add_all([
+                Transaction(supplier_id=huawei.id, txn_date=today, description="Device", amount=Decimal("700")),
+                Transaction(supplier_id=huawei.id, txn_date=today, description="Service", amount=Decimal("500")),
+            ])
+        if not db.scalar(select(Transaction).where(Transaction.supplier_id==pasar.id)):
+            db.add_all([
+                Transaction(supplier_id=pasar.id, txn_date=today, description="Groceries", amount=Decimal("500")),
+            ])
+    return {"ok": True}
+
+在 main.py 里 app.include_router(admin_seed.router) 一下即可。
+（只用于演示，真实环境你会用自己的数据导入）
+
+⸻
+
+4) 改造：供应商发票页面读“真数据”
+
+修改：accounting_app/routers/invoices.py
+在你现有文件顶部增加导入，并新增一个页面路由 /credit-cards/supplier-invoices 使用数据库聚合：
+
+# …… 你原来的 import 之外，新增：
+from datetime import date
+from decimal import Decimal
+from sqlalchemy import select, func, extract
+from accounting_app.db import get_session
+from accounting_app.models import Supplier, Transaction, Invoice, InvoiceSequence
+
+新增页面路由（用数据库数据渲染你已有的模板 credit_cards_supplier_invoices.html）：
+
+from fastapi import Request
+from fastapi.responses import HTMLResponse
+from ..templates import templates  # 如果你有统一的模板加载器；没有就按你的方式引入
+
+@router.get("/credit-cards/supplier-invoices", response_class=HTMLResponse)
+def page_supplier_invoices(request: Request, y: int | None = None, m: int | None = None):
+    """
+    用数据库汇总本月各供应商的总额，并计算 1% 服务费，渲染模板。
+    """
+    today = date.today()
+    y = y or today.year
+    m = m or today.month
+
+    with get_session() as db:
+        rows = db.execute(
+            select(
+                Supplier.id, Supplier.name, Supplier.address,
+                func.coalesce(func.sum(Transaction.amount), 0)
+            )
+            .join(Transaction, Transaction.supplier_id==Supplier.id, isouter=True)
+            .where(extract("year", Transaction.txn_date)==y,
+                   extract("month", Transaction.txn_date)==m)
+            .group_by(Supplier.id)
+            .order_by(Supplier.name.asc())
+        ).all()
+
+        suppliers = []
+        total_infinite = Decimal("0.00")
+        for sid, name, addr, total in rows:
+            total = Decimal(str(total or 0)).quantize(Decimal("0.01"))
+            suppliers.append({
+                "id": sid,
+                "name": name,
+                "address": addr or "",
+                "total": float(total),
+                "fee": float((total * Decimal("0.01")).quantize(Decimal("0.01"))),  # 1%
+            })
+            total_infinite += total
+
+    service_fee = (total_infinite * Decimal("0.01")).quantize(Decimal("0.01"))
+    return templates.TemplateResponse("credit_cards_supplier_invoices.html", {
+        "request": request,
+        "suppliers": suppliers,
+        "total_infinite": float(total_infinite),
+        "service_fee": float(service_fee),
+    })
+
+现在 /credit-cards/supplier-invoices 会用数据库里的真数据来展示列表和 1% 费用。
+
+⸻
+
+5) 发票编号 自动递增（替代手填）
+
+在你 invoices.py 里增加一个安全的取号函数，并让 /invoices/make 支持“不给 number 也能自动出单”。
+
+def next_number(prefix: str = "INV") -> str:
+    """按年分表的自动流水号：INV-YYYY-0001、0002……"""
+    from datetime import date
+    y = date.today().year
+    with get_session() as db:
+        # 拿到或新建序列
+        seq = db.execute(
+            select(InvoiceSequence).where(InvoiceSequence.prefix==prefix, InvoiceSequence.year==y)
+        ).scalar_one_or_none()
+        if not seq:
+            seq = InvoiceSequence(prefix=prefix, year=y, next_seq=1)
+            db.add(seq)
+            db.flush()
+        num = f"{prefix}-{y}-{seq.next_seq:04d}"
+        seq.next_seq += 1
+        # commit 在 get_session() 退出时发生，确保号段不冲突
+    return num
+
+修改 /invoices/make 路由 —— 让 number 变为可选；若未提供，则自动生成：
+
+from fastapi import Query
+
+@router.get("/make")
+def make_invoice(
+    layout: str = Query(...),
+    number: str | None = Query(None),          # ← 改成可选
+    bill_to_name: str = Query(...),
+    amount: float = Query(...),
+    bill_to_addr: str = Query(""),
+    bill_to_reg: str = Query(""),
+    lang: str = Query("en"),
+) -> Response:
+    render = _pick_renderer(layout)
+    inv_no = number or next_number("INV")      # ← 自动取号
+
+    data = {
+        "number": inv_no,
+        "date": datetime.now().strftime("%Y-%m-%d"),
+        "bill_to_name": bill_to_name,
+        "bill_to_addr": bill_to_addr,
+        "bill_to_reg": bill_to_reg,
+        "amount": amount,
+    }
+    pdf = render(data, "zh" if lang.lower()=="zh" else "en")
+    filename = f"{inv_no}.pdf"
+    return Response(content=pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="{filename}"'})
+
+这样你点“生成发票”就不用再传 number，系统会按年顺序出 INV-2025-0001、0002……
+
+⸻
+
+6)（可选）出单时把记录存数据库
+
+如果你希望每次 /invoices/make 生成后都存一条 Invoice 记录，给它加几行：
+
+from decimal import Decimal
+# …… inside make_invoice, 生成 pdf 前：
+from accounting_app.db import get_session
+from accounting_app.models import Invoice
+
+tax_rate = Decimal(str(COMPANY["tax"]["sst"]))
+total = Decimal(str(amount)).quantize(Decimal("0.01")) * (Decimal("1.00") + tax_rate)
+
+with get_session() as db:
+    db.add(Invoice(
+        number=inv_no, lang=lang, layout=layout,
+        bill_to_name=bill_to_name, bill_to_addr=bill_to_addr, bill_to_reg=bill_to_reg,
+        amount=Decimal(str(amount)).quantize(Decimal("0.01")),
+        tax_rate=tax_rate, total=total,
+    ))
+
+
+⸻
+
+7) 路由注册
+
+在 main.py：
+
+from accounting_app.routers import invoices as invoices_router
+from accounting_app.routers import admin_seed as admin_seed_router
+
+app.include_router(invoices_router.router)
+app.include_router(admin_seed_router.router)  # 仅演示用，用完可注释
+
+
+⸻
+
+8) 一分钟验收
+
+# ① 建表（首次启动已自动）+ 演示数据
+curl -X POST https://你的域名/admin/seed/demo
+
+# ② 看“真数据”的发票页面（不再是写死的）
+open https://你的域名/credit-cards/supplier-invoices
+
+# ③ 自动取号出英文发票（不传 number）
+open "https://你的域名/invoices/make?layout=service&bill_to_name=DINAS%20RESTAURANT&amount=8.50&lang=en"
+
+# ④ 自动取号出中文发票
+open "https://你的域名/invoices/make?layout=service&bill_to_name=HUAWEI&amount=12.00&lang=zh"
+
+
+⸻
+
+9) 切换 PostgreSQL（随时）
+	•	在 Replit/服务器设置 DATABASE_URL：
+
+postgresql+psycopg2://USER:PASSWORD@HOST:5432/DBNAME
+
+	•	重启即可，代码不需要改。
+
+⸻
+
+你现在得到的是什么
+	•	供应商发票页面 用数据库真汇总（当月合计 + 1%自动算）
+	•	发票编号 不用手填，系统自动递增（INV-年-流水号）
+	•	数据可落库（可选），方便后续报表/对账
+	•	SQLite→Postgres 一键切换，未来直接上生产
+
+需要我再把 “批量一键开票（打包ZIP）” 或 “发票自动邮件发送” 也接上吗？你点名，我就把补丁给你。

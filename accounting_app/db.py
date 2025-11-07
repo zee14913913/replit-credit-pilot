@@ -43,6 +43,25 @@ def get_db() -> Generator[Session, None, None]:
         db.close()
 
 
+from contextlib import contextmanager
+
+@contextmanager
+def get_session():
+    """
+    上下文管理器：用于数据库session
+    用法: with get_session() as db: ...
+    """
+    db = SessionLocal()
+    try:
+        yield db
+        db.commit()
+    except:
+        db.rollback()
+        raise
+    finally:
+        db.close()
+
+
 def init_database():
     """
     初始化数据库：创建所有表
