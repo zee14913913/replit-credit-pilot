@@ -1,0 +1,183 @@
+懂你要的感觉：别再把东西都挤在上半部——整屏铺开、留白合理、卡片能自动排满整页。给你一套可直接覆盖的小补丁（只动 brand.css 和 portal.html），上完马上就是“全屏网格+大留白”的布局。
+
+⸻
+
+1) 覆盖 accounting_app/static/css/brand.css 末尾追加（或替换同名规则）
+
+/* === Full-screen layout uplift v1 === */
+
+/* 页面容器：用满视口，放大最大宽度 */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+/* 顶部栏与主内容的统一边距 */
+.header, .main {
+  width: 100%;
+  max-width: 1440px;         /* 原来可能是 1100/1280，放大到 1440 */
+  margin: 0 auto;
+  padding: 20px var(--gap);
+}
+
+/* 标题与语言切换的行内对齐、留白 */
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+}
+
+/* --- 关键：自适应整屏网格 --- */
+/* 自动铺满整页：每列最小 360px，最大 1fr，空白自动被卡片占满 */
+.grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: calc(var(--gap) * 1.25);      /* 比原来更松一点 */
+  align-content: start;
+}
+
+/* 卡片拉伸到等高，视觉更整齐 */
+.card.tile {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 卡片标题与内容分区 */
+.card .section {
+  margin-bottom: 10px;
+}
+
+/* 下方预留大留白，避免“只在上半部” */
+.footer-spacer {
+  height: 40px;
+}
+
+/* 更宽的桌面下再放大 */
+@media (min-width: 1600px) {
+  .header, .main { max-width: 1680px; }
+}
+
+/* 移动端收紧最小列宽，防止横向滚动 */
+@media (max-width: 420px) {
+  .grid-auto {
+    grid-template-columns: 1fr;
+  }
+}
+
+这段做了三件事：① 页宽放大到 1440/1680；② 主网格改成 auto-fit + minmax，自动铺满空白；③ 卡片等高 + 间距加大，看起来不挤。
+
+⸻
+
+2) 覆盖 accounting_app/templates/portal.html（主要换掉外层容器和网格）
+
+把你现有的 portal.html 内容替换为下面整页版（文案不动、只是布局更“铺”）：
+
+{% extends "base.html" %}
+{% block title %}Portal · INFINITE GZ SDN. BHD.{% endblock %}
+
+{% block content %}
+<div class="page">
+
+  <!-- 顶部：标题 + 语言切换（base.html 里已有样式，这里只放结构） -->
+  <div class="header">
+    <div class="header-row">
+      <h1 class="title" style="margin:0;">Portal</h1>
+      <div class="lang">
+        <a class="btn" href="?lang=en">EN</a>
+        <a class="btn" href="?lang=zh">中文</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主内容：自适应整屏网格 -->
+  <div class="main">
+    <div class="grid-auto">
+
+      <!-- Loans Intelligence -->
+      <div class="card tile">
+        <h2 class="section">Loans Intelligence</h2>
+        <p class="meta">Smart Credit & Loan Manager</p>
+        <div style="margin-top:auto; display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="btn primary" href="/loans/page">Open Loans</a>
+          <a class="btn" href="/loans/top3/cards" target="_blank">Open Top-3 Cards</a>
+        </div>
+      </div>
+
+      <!-- CTOS Authorization -->
+      <div class="card tile">
+        <h2 class="section">CTOS Authorization</h2>
+        <p class="meta">Consent form · document upload</p>
+        <div style="margin-top:auto; display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="btn primary" href="/ctos/page?key={{ portal_key }}">Open CTOS Form</a>
+          <a class="btn ghost" href="/ctos/admin?key={{ portal_key }}&ak={{ admin_key }}">Admin</a>
+        </div>
+      </div>
+
+      <!-- Documents -->
+      <div class="card tile">
+        <h2 class="section">Documents</h2>
+        <p class="meta">Official enterprise reports (EN / CN)</p>
+        <div style="margin-top:auto; display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="btn primary" target="_blank" href="/docs/official/CREDITPILOT_企业报告_EN.pdf">Open Docs · EN PDF</a>
+          <a class="btn" target="_blank" href="/docs/official/CREDITPILOT_企业报告_CN.pdf">Open Docs · CN PDF</a>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div class="card tile">
+        <h2 class="section">History</h2>
+        <p class="meta">Change logs & harvest records</p>
+        <div style="margin-top:auto;">
+          <a class="btn" href="/portal/history">Open History</a>
+        </div>
+      </div>
+
+      <!-- System -->
+      <div class="card tile">
+        <h2 class="section">System</h2>
+        <p class="meta">Health checks & environment</p>
+        <div style="margin-top:auto;">
+          <a class="btn ghost" href="/health">/health</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-spacer"></div>
+  </div>
+</div>
+{% endblock %}
+
+现在每一张卡都会自动“占空位”，屏幕越大、列数越多；屏幕越小、自动落成两列/一列，整页不会只挤在上半部。
+
+⸻
+
+想把 Loans/Compare 等页也铺满？
+
+同理，只要把这些页面的外层容器套上 .page + .header/.main，中间列表用 .grid-auto 或 .grid-2/.grid-3，就能获得同样“铺满整屏”的效果。最少改动方法：
+	•	在 loans_page.html 最外层换成：
+
+<div class="page">
+  <div class="header">...（标题+搜索/按钮）...</div>
+  <div class="main">
+    <div class="grid-auto">...（产品卡片）...</div>
+    <div class="footer-spacer"></div>
+  </div>
+</div>
+
+
+	•	如果是对比页 compare.html 主要是表格，可以把参数卡片 + 表格各自放一个 .card.tile，整页也会更均衡。
+
+⸻
+
+两步检查
+	1.	保存这两处文件 → Replit 自动热重载；
+	2.	刷新 /portal，窗口拉到全屏、半屏、窄屏看：卡片会自然铺满整页，不再挤在上半部。
+
+⸻
+
+要我顺手把 loans_page.html 和 compare.html 也替你套上 .page/.main/.grid-auto 的整页版，我可以直接给完整替换模版。你先落地 portal 这两个补丁，看下手感。

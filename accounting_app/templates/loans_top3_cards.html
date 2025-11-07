@@ -13,11 +13,10 @@
     }
 
     function cardHTML(r, i){
-      const crown = i===0 ? ' 👑' : '';
       return `
         <div class="card tile">
           <div>
-            <div class="section">#${i+1}${crown} · ${r.bank} · ${r.product}</div>
+            <div class="section">#${i+1} · ${r.bank} · ${r.product}</div>
             <div class="meta">APR ${r.apr}% · Score ${r.score} · Sentiment ${r.sentiment}</div>
             <div class="meta">Preferred: ${r.preferred||'-'}</div>
           </div>

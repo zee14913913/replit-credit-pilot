@@ -73,3 +73,16 @@ a,button{transition:all .15s ease}
 
 .footer{margin-top:28px; color:#8b8796; font-size:12px}
 .hr{height:1px; background:#ffffff14; border:0; margin:16px 0}
+
+/* === Iconless cleanup v1 === */
+.btn { gap: 0; }
+.btn i, .btn svg, .btn .ico { display:none !important; }
+.badge i, .badge svg { display:none !important; }
+.title i, .title svg { display:none !important; }
+
+/* 统一文字按钮外观（保留 Hot Pink 主题） */
+.btn.primary { background: var(--pink); border-color: #ff6aa7; color: #fff; }
+.btn, .badge { line-height: 1; }
+
+/* 卡片/按钮纯文字风格优化 */
+.section { letter-spacing: 0.2px; }
