@@ -1,3 +1,16 @@
+好的，按你要的“整页可覆盖版”，我把供应商发票页直接接上生成正式 PDF 的按钮，同时在页头放了三种发票版式的“预览”入口（用于校对样式，英文/中文都可）。你只需要把下面这份文件覆盖到项目里即可。
+
+⸻
+
+覆盖文件：templates/credit_cards_supplier_invoices.html
+
+说明：
+	•	使用你现有的统一设计（.page / .main / .card / .btn 等）。
+	•	供应商表格中每一行都有「Generate PDF」按钮，直接调用 /invoices/make?... 生成正式 PDF。
+	•	页头提供三种预览按钮（Service / Debit / Itemised），以及中文预览（&lang=zh）。
+	•	模板期待后端传入 suppliers 列表，每项含 {name, total, fee, address?, reg?, number?}。缺省字段自动降级为空。
+	•	税率由后台 invoices.py 的 COMPANY["tax"]["sst"] 控制（0.00 / 0.06），模板无需再设置颜色或税率。
+
 {% extends "base.html" %}
 {% block title %}Supplier Invoices · CreditPilot{% endblock %}
 
@@ -164,3 +177,16 @@
   </div>
 </div>
 {% endblock %}
+
+
+⸻
+
+放置与使用
+	1.	把上面整段覆盖到：templates/credit_cards_supplier_invoices.html
+	2.	确保你已经使用了我给的 accounting_app/routers/invoices.py（内含公司信息 & 三种版式渲染）。
+	3.	打开页面：/credit-cards/supplier-invoices
+	•	顶部按钮可预览三种版式（EN/中文）
+	•	表格右侧的「Generate PDF / 生成中文PDF」直接出正式 PDF（service 布局）
+	4.	如需税率 6%：改 invoices.py 顶部 COMPANY["tax"]["sst"] = 0.06。
+	5.	想按供应商维度下载交易明细，可把“View Transactions”的链接接到你的明细页过滤参数上（模板里已留 ?supplier=... 示例）。
+
