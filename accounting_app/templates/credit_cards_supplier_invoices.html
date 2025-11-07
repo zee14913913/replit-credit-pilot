@@ -1,29 +1,95 @@
 {% extends "base.html" %}
 {% block title %}Credit Cards · Supplier Invoices{% endblock %}
+{% block head_extra %}
+<style>
+  :root{ --pink:#FF007F; --card:#322446; --bg:#1a1323; --text:#fff; --line:#3b2b4e; --muted:#c9c6d3; --gap:16px; --radius:16px; --pad:14px; --page-max:1280px }
+  body{ background:var(--bg); color:var(--text) }
+  .page{ min-height:100vh; display:flex; flex-direction:column }
+  .main{ width:100%; max-width:var(--page-max); margin:0 auto; padding:20px }
+  .title{ font-size:22px; font-weight:700 }
+  .toolbar{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:var(--gap) }
+  .btn{ background:var(--card); color:#fff; border:1px solid var(--line); border-radius:12px; padding:8px 12px; text-decoration:none; cursor:pointer }
+  .btn.primary{ background:var(--pink); border-color:#ff6aa7 }
+  .btn.ghost{ background:transparent; border:1px solid #ffffff33 }
+  .card{ background:linear-gradient(180deg,#322446,#281a3a); border:1px solid var(--line); border-radius:16px; padding:var(--pad); box-shadow:0 6px 18px #0006 }
+  .grid-auto{ display:grid; grid-template-columns:1fr 1fr; gap:var(--gap) }
+  @media (max-width:1024px){ .grid-auto{ grid-template-columns:1fr } }
+  .meta{ color:var(--muted); font-size:12px }
+  table{ width:100%; border-collapse:collapse }
+  th,td{ border:1px solid var(--line); padding:8px; font-size:14px; vertical-align:top }
+  th{ background:#271b36; text-align:left }
+  .input, select{ background:#0f0a14; color:#fff; border:1px solid var(--line); border-radius:10px; padding:8px 10px }
+</style>
+{% endblock %}
 {% block content %}
-<div class="page"><div class="main">
-  <h1 class="title">Supplier Invoices (7 Vendors)</h1>
-  <div class="grid-auto">
-    <div class="card">
-      <h2 class="section">This Month</h2>
-      <p class="meta">Total Spend: RM {{ '%.2f'|format(total) }} · Service Fee (1%): RM {{ '%.2f'|format(total_fee) }}</p>
-      <a class="btn primary" href="/credit-cards/supplier-invoices/export.pdf">Export All as PDF</a>
+
+<div class="page">
+  <div class="main">
+
+    <div class="title">Credit Cards · Supplier Invoices</div>
+
+    <div class="toolbar">
+      <a class="btn" href="/credit-cards/transactions{{ '?lang=' + request.query_params.get('lang') if request.query_params.get('lang') else '' }}">Back to Transactions</a>
+      <div style="flex:1"></div>
+      <select id="selSupplier">
+        {% for s in suppliers or ['Dinas','Huawei','7SL','Raub Syc Hainan','Pasar Raya','Ai Smart Tech','Puchong Herbs'] %}
+        <option value="{{ s }}">{{ s }}</option>
+        {% endfor %}
+      </select>
+      <input class="input" id="selMonth" placeholder="YYYY-MM" value="{{ month or '2025-11' }}">
+      <a class="btn primary" id="btnPdf" href="#">Generate PDF</a>
+      <a class="btn" id="btnExcel" href="#">Export Excel</a>
+      <a class="btn ghost" href="?lang=en">EN</a>
+      <a class="btn ghost" href="?lang=zh">中文</a>
     </div>
-    <div class="card span-2">
-      <table class="table">
-        <thead><tr><th>Supplier</th><th>Transactions</th><th>Amount</th><th>Fee (1%)</th><th>Action</th></tr></thead>
-        <tbody>
-          {% for s in suppliers %}
-          <tr>
-            <td>{{ s.name }}</td><td>{{ s.tx }}</td>
-            <td>RM {{ '%.2f'|format(s.sum) }}</td>
-            <td>RM {{ '%.2f'|format(s.fee) }}</td>
-            <td><a class="btn" href="#">View</a> <a class="btn ghost" href="#">PDF</a></td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+
+    <div class="grid-auto">
+      <div class="card">
+        <div style="font-weight:700; margin-bottom:8px">Monthly Service Fee Summary</div>
+        <table>
+          <tbody>
+            <tr><td>Total INFINITE Spend</td><td>RM {{ '%.2f'|format(total_gz or 3200) }}</td></tr>
+            <tr><td>Service Fee (1%)</td><td>RM {{ '%.2f'|format((total_gz or 3200)*0.01) }}</td></tr>
+          </tbody>
+        </table>
+        <div class="meta" style="margin-top:8px">Rates configurable via SERVICE_FEE_RATE.</div>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:700; margin-bottom:8px">Supplier Invoices</div>
+        <table id="invTable">
+          <thead><tr><th>Supplier</th><th>Transactions</th><th>Amount (RM)</th><th>Service Fee</th></tr></thead>
+          <tbody>
+            {% for row in supplier_rows or [] %}
+            <tr>
+              <td>{{ row.name }}</td>
+              <td>{{ row.count }}</td>
+              <td>{{ '%.2f'|format(row.amount|float) }}</td>
+              <td>{{ '%.2f'|format(row.amount|float*0.01) }}</td>
+            </tr>
+            {% endfor %}
+            {% if not supplier_rows %}
+            <tr><td>Dinas</td><td>6</td><td>850.00</td><td>8.50</td></tr>
+            <tr><td>Huawei</td><td>3</td><td>1200.00</td><td>12.00</td></tr>
+            <tr><td>7SL</td><td>5</td><td>650.00</td><td>6.50</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
     </div>
+
   </div>
-</div></div>
+</div>
+
+<script>
+  const q = (k)=>document.querySelector(k);
+  function goPdf(){
+    const s = q('#selSupplier').value || 'Dinas';
+    const m = q('#selMonth').value || '2025-11';
+    window.location = `/invoices/supplier.pdf?supplier=${encodeURIComponent(s)}&month=${encodeURIComponent(m)}`;
+  }
+  q('#btnPdf').addEventListener('click', goPdf);
+  q('#btnExcel').addEventListener('click', ()=>alert('Excel export endpoint to be wired.'));
+</script>
+
 {% endblock %}

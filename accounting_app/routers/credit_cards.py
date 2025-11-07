@@ -36,14 +36,25 @@ async def page_transactions(request: Request):
 # ========== Tab 2: 收据匹配 ==========
 @router.get("/receipts", response_class=HTMLResponse)
 async def page_receipts(request: Request):
-    coverage = {
-        "total": len(DEMO_TX),
-        "matched": sum(1 for x in DEMO_TX if x["receipt"]=="matched"),
-        "pending": sum(1 for x in DEMO_TX if x["receipt"]=="pending"),
-        "missing": sum(1 for x in DEMO_TX if x["receipt"]=="missing"),
-    }
+    coverage_percent = 75
+    matched_count = sum(1 for x in DEMO_TX if x["receipt"]=="matched")
+    total_count = len(DEMO_TX)
+    pending_items = [
+        {
+            "tx_id": i,
+            "tx_date": x["date"],
+            "tx_desc": x["desc"],
+            "tx_amount": x["amount"],
+            "candidate_brief": "N/A",
+            "similarity": "Pending",
+            "receipt_id": None
+        }
+        for i, x in enumerate(DEMO_TX) if x["receipt"]!="matched"
+    ]
     return templates.TemplateResponse("credit_cards_receipts.html",
-        {"request": request, "coverage": coverage, "pending": [x for x in DEMO_TX if x["receipt"]!="matched"]})
+        {"request": request, "coverage_percent": coverage_percent, 
+         "matched_count": matched_count, "total_count": total_count,
+         "pending": pending_items, "ocr_results": []})
 
 @router.post("/receipts/ocr")
 async def api_receipts_ocr(file: UploadFile = File(...)):
