@@ -22,22 +22,19 @@ args = "FastAPI Server"
 [[workflows.workflow]]
 name = "FastAPI Server"
 author = "agent"
+mode = "parallel"
 
 [workflows.workflow.metadata]
 outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python -m uvicorn accounting_app.main:app --host 0.0.0.0 --port ${PORT:-5000}"
+args = "python -m uvicorn accounting_app.main:app --host 0.0.0.0 --port 5000"
 waitForPort = 5000
 
 [[ports]]
 localPort = 5000
 externalPort = 80
-
-[[ports]]
-localPort = 32989
-externalPort = 3003
 
 [[ports]]
 localPort = 33035
@@ -54,6 +51,10 @@ externalPort = 9000
 [[ports]]
 localPort = 36189
 externalPort = 3001
+
+[[ports]]
+localPort = 36937
+externalPort = 3002
 
 [[ports]]
 localPort = 38745
