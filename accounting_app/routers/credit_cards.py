@@ -1,8 +1,13 @@
 from fastapi import APIRouter, Request, UploadFile, File, Form
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
-from datetime import datetime
+from datetime import datetime, date
+from decimal import Decimal
 from io import BytesIO
+
+from sqlalchemy import select, func, extract
+from accounting_app.db import get_session
+from accounting_app.models import Supplier, Transaction
 
 # 可从 main.py 里的 templates 取同一个实例；独立使用也行
 templates = Jinja2Templates(directory="accounting_app/templates")
@@ -85,11 +90,52 @@ async def api_receipts_match(
 
 # ========== Tab 3: 供应商发票（1% 服务费） ==========
 @router.get("/supplier-invoices", response_class=HTMLResponse)
-async def page_supplier_invoices(request: Request):
-    total = sum(x["sum"] for x in DEMO_SUPPLIERS)
-    total_fee = round(total*0.01, 2)
-    return templates.TemplateResponse("credit_cards_supplier_invoices.html",
-        {"request": request, "suppliers": DEMO_SUPPLIERS, "total": total, "total_fee": total_fee})
+async def page_supplier_invoices(request: Request, y: int = None, m: int = None):
+    """供应商发票页面：读取数据库真实数据"""
+    today = date.today()
+    y = y or today.year
+    m = m or today.month
+    
+    with get_session() as db:
+        rows = db.execute(
+            select(
+                Supplier.id,
+                Supplier.supplier_name,
+                Supplier.address,
+                func.coalesce(func.sum(Transaction.amount), 0).label('total')
+            )
+            .join(
+                Transaction,
+                (Transaction.supplier_id == Supplier.id) &
+                (extract('year', Transaction.txn_date) == y) &
+                (extract('month', Transaction.txn_date) == m),
+                isouter=True
+            )
+            .group_by(Supplier.id, Supplier.supplier_name, Supplier.address)
+            .order_by(Supplier.supplier_name.asc())
+        ).all()
+        
+        suppliers = []
+        total_infinite = Decimal("0.00")
+        for sid, name, addr, total in rows:
+            total = Decimal(str(total or 0)).quantize(Decimal("0.01"))
+            suppliers.append({
+                "id": sid,
+                "name": name,
+                "address": addr or "",
+                "total": float(total),
+                "fee": float((total * Decimal("0.01")).quantize(Decimal("0.01"))),
+            })
+            total_infinite += total
+    
+    service_fee = (total_infinite * Decimal("0.01")).quantize(Decimal("0.01"))
+    
+    return templates.TemplateResponse("credit_cards_supplier_invoices.html", {
+        "request": request,
+        "suppliers": suppliers,
+        "total_infinite": float(total_infinite),
+        "service_fee": float(service_fee),
+    })
 
 @router.get("/supplier-invoices/export.pdf")
 async def export_invoices_pdf():

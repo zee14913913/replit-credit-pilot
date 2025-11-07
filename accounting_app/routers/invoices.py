@@ -342,54 +342,6 @@ def next_number(prefix: str = "INV") -> str:
 
 # ------------------- 路由 -------------------
 
-@router.get("/credit-cards/supplier-invoices", response_class=HTMLResponse)
-def page_supplier_invoices(request: Request, y: int = None, m: int = None):
-    """
-    供应商发票页面：读取数据库真实数据，按月汇总供应商交易并计算1%服务费
-    """
-    today = date.today()
-    y = y or today.year
-    m = m or today.month
-    
-    with get_session() as db:
-        rows = db.execute(
-            select(
-                Supplier.id,
-                Supplier.supplier_name,
-                Supplier.address,
-                func.coalesce(func.sum(Transaction.amount), 0).label('total')
-            )
-            .join(Transaction, Transaction.supplier_id == Supplier.id, isouter=True)
-            .where(
-                extract('year', Transaction.txn_date) == y,
-                extract('month', Transaction.txn_date) == m
-            )
-            .group_by(Supplier.id, Supplier.supplier_name, Supplier.address)
-            .order_by(Supplier.supplier_name.asc())
-        ).all()
-        
-        suppliers = []
-        total_infinite = Decimal("0.00")
-        for sid, name, addr, total in rows:
-            total = Decimal(str(total or 0)).quantize(Decimal("0.01"))
-            suppliers.append({
-                "id": sid,
-                "name": name,
-                "address": addr or "",
-                "total": float(total),
-                "fee": float((total * Decimal("0.01")).quantize(Decimal("0.01"))),
-            })
-            total_infinite += total
-    
-    service_fee = (total_infinite * Decimal("0.01")).quantize(Decimal("0.01"))
-    
-    return templates.TemplateResponse("credit_cards_supplier_invoices.html", {
-        "request": request,
-        "suppliers": suppliers,
-        "total_infinite": float(total_infinite),
-        "service_fee": float(service_fee),
-    })
-
 @router.get("/preview.pdf")
 def preview_pdf(
     layout: str = Query("service"),
