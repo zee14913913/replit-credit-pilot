@@ -43,6 +43,11 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 **Core Features:**
 - **Financial Management:** Statement ingestion (PDF with OCR, Excel), transaction categorization, savings account tracking, statement validation, and dual verification for 100% data accuracy.
 - **AI-Powered Advisory:** Credit card recommendations, financial optimization engine, cash flow prediction, anomaly detection, personalized recommendations, and a financial health scoring system.
+- **Professional Invoice Generation:** Three enterprise-grade invoice formats in black/white formal style:
+  - **Service Invoice**: Professional services billing (audit, tax, consulting) with itemized breakdown, tax calculations, payment terms, and authorized signatory
+  - **Debit Note**: Late payment interest, adjustment notices with computer-generated certification
+  - **Itemised Tax Invoice**: Detailed fee breakdown with sectioned tables (e.g., airline-style itemization with service tax calculations)
+  - All formats support ReportLab PDF generation, customizable company branding, and automated numbering
 - **Reporting & Export:** Professional Excel/CSV export and PDF report generation, automated monthly reports, and report versioning.
 - **Workflow Automation:** Batch operations, reminder system, rule engine for transaction matching, and auto-posting rules.
 - **Security & Compliance:** Multi-role authentication & authorization (RBAC), comprehensive audit logging, data integrity validation, and period locking.
