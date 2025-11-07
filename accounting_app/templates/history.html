@@ -1,44 +1,28 @@
 {% extends "base.html" %}
-{% block title %}History · CreditPilot{% endblock %}
-
+{% block title %}History · INFINITE GZ{% endblock %}
 {% block content %}
-<h1 class="title">History</h1>
-
-<div class="card">
-  <h2 class="section">最近活动</h2>
-  <div class="meta">自动采集：每日 11:00（吉隆坡时区）；20 小时冷却</div>
-  <hr class="sep">
-  <table>
-    <thead>
-      <tr>
-        <th>时间</th>
-        <th>事件</th>
-        <th>详情</th>
-      </tr>
-    </thead>
-    <tbody id="rows">
-      <tr><td colspan="3" class="meta">加载中...</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<script>
-(async ()=>{
-  const demo=[
-    {ts:new Date().toISOString(), kind:'采集', detail:'成功采集 12 款产品'},
-    {ts:new Date(Date.now()-3600000).toISOString(), kind:'更新', detail:'利率变动：Bank A -0.05%'}
-  ];
-  const tb=document.getElementById('rows');
-  if(demo.length===0){
-    tb.innerHTML='<tr><td colspan="3" class="meta">暂无记录...</td></tr>';
-  }else{
-    tb.innerHTML=demo.map(r=>`
-     <tr>
-       <td>${r.ts}</td>
-       <td>${r.kind}</td>
-       <td class="meta">${r.detail}</td>
-     </tr>`).join('');
-  }
-})();
-</script>
+  <h1 class="section">Change History</h1>
+  <div class="card">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Event</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for x in rows %}
+        <tr>
+          <td>{{ x.ts }}</td>
+          <td>{{ x.event }}</td>
+          <td>{{ x.detail }}</td>
+        </tr>
+        {% endfor %}
+        {% if not rows %}
+        <tr><td colspan="3" class="meta">No records.</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
 {% endblock %}

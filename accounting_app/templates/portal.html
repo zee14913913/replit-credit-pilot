@@ -1,57 +1,63 @@
 {% extends "base.html" %}
-{% block title %}Portal · CreditPilot{% endblock %}
-
+{% block title %}Portal · INFINITE GZ{% endblock %}
 {% block content %}
-<h1 class="title">Portal</h1>
+  <h1 class="section">Portal</h1>
+  <div class="grid-3">
+    <div class="card tile">
+      <div>
+        <h2 class="section">Loans Intelligence</h2>
+        <p class="meta">Smart Credit & Loan Manager</p>
+      </div>
+      <div>
+        <a class="btn primary" href="/loans/page">Open Loans</a>
+        <a class="btn" href="/loans/top3/cards" target="_blank">Open Top-3 Cards</a>
+      </div>
+    </div>
 
-<div class="grid-3">
-  <div class="card tile">
-    <h2 class="section">Loans Intelligence</h2>
-    <div class="meta">产品 / 偏好情报 / Top-3 / 比价</div>
-    <div class="actions">
-      <a class="btn primary" href="/loans/page">Open Loans</a>
-      <a class="btn" href="/loans/compare/page">Open Compare</a>
-      <a class="btn" href="/loans/top3/cards" target="_blank">Open Top-3 Cards</a>
+    <div class="card tile">
+      <div>
+        <h2 class="section">CTOS Authorization</h2>
+        <p class="meta">Consent form + document upload</p>
+      </div>
+      <div>
+        <a class="btn primary" href="/ctos/page?key={{ portal_key or 'demo' }}">Open CTOS Form</a>
+        <a class="btn" href="/ctos/admin?key={{ portal_key or 'demo' }}&ak={{ admin_key or 'demo' }}">Admin</a>
+      </div>
+    </div>
+
+    <div class="card tile">
+      <div>
+        <h2 class="section">Documents</h2>
+        <p class="meta">Official enterprise reports (EN / CN)</p>
+      </div>
+      <div>
+        <a class="btn" href="/docs/official/CREDITPILOT_企业报告_EN.pdf" target="_blank">Open Docs · EN PDF</a>
+        <a class="btn" href="/docs/official/CREDITPILOT_企业报告_CN.pdf" target="_blank">打开文档 · CN PDF</a>
+      </div>
     </div>
   </div>
 
-  <div class="card tile">
-    <h2 class="section">CTOS</h2>
-    <div class="meta">授权表单 / 上传证件 / 队列</div>
-    <div class="actions">
-      <a class="btn primary" href="/ctos/page{% if key %}?key={{ key }}{% endif %}">Open CTOS Form</a>
-      <a class="btn" href="/ctos/admin{% if key and admin_key %}?key={{ key }}&ak={{ admin_key }}{% endif %}">Admin</a>
+  <hr class="hr">
+
+  <div class="grid-2">
+    <div class="card tile">
+      <div>
+        <h2 class="section">History</h2>
+        <p class="meta">Change logs & harvest records</p>
+      </div>
+      <div>
+        <a class="btn" href="/portal/history">Open History</a>
+      </div>
+    </div>
+
+    <div class="card tile">
+      <div>
+        <h2 class="section">System</h2>
+        <p class="meta">Health checks & environment</p>
+      </div>
+      <div>
+        <a class="btn" href="/health" target="_blank">/health</a>
+      </div>
     </div>
   </div>
-
-  <div class="card tile">
-    <h2 class="section">Docs</h2>
-    <div class="meta">企业报告（中/英）</div>
-    <div class="actions">
-      <a class="btn" href="/docs/official/CREDITPILOT_企业报告_EN.pdf" target="_blank">Open EN PDF</a>
-      <a class="btn" href="/docs/official/CREDITPILOT_企业报告_CN.pdf" target="_blank">打开 中文 PDF</a>
-    </div>
-  </div>
-</div>
-
-<hr class="sep">
-
-<div class="grid-2">
-  <div class="card tile">
-    <h2 class="section">History</h2>
-    <div class="meta">变更记录 / 最近活动</div>
-    <div class="actions">
-      <a class="btn" href="/portal/history{% if key %}?key={{ key }}{% endif %}">Open History</a>
-    </div>
-  </div>
-
-  <div class="card tile">
-    <h2 class="section">System</h2>
-    <div class="meta">健康检查 / 定时任务 / 冷却策略</div>
-    <div class="actions">
-      <a class="btn" href="/health" target="_blank">Health</a>
-      <a class="btn" href="/loans/updates/last" target="_blank">Last Harvest</a>
-    </div>
-  </div>
-</div>
 {% endblock %}

@@ -1,80 +1,47 @@
 {% extends "base.html" %}
-{% block title %}CTOS Authorization · CreditPilot{% endblock %}
-
+{% block title %}CTOS Consent · INFINITE GZ{% endblock %}
 {% block content %}
-<h1 class="title">CTOS Authorization</h1>
+  <h1 class="section">CTOS Consent Form</h1>
+  <div class="grid-2">
+    <div class="card">
+      <div class="label">Full Name</div>
+      <input class="input" name="name" placeholder="e.g. CHEN DA MING">
+      <div class="label" style="margin-top:10px">IC / Passport</div>
+      <input class="input" name="ic" placeholder="e.g. 850123-10-5678">
 
-<div class="card">
-  <div class="meta">请填写授权并上传身份证 / 公司 SSM。提交后将进入队列处理。</div>
-  <hr class="sep">
-
-  <form id="ctosForm" action="/ctos/submit{% if key %}?key={{ key }}{% endif %}" method="post" enctype="multipart/form-data" style="display:grid; gap:12px; max-width:780px">
-    <div class="grid-2">
-      <div>
-        <label>Full Name</label><br>
-        <input class="input" name="full_name" required placeholder="as per IC">
-      </div>
-      <div>
-        <label>NRIC / Company No.</label><br>
-        <input class="input" name="id_no" required placeholder="e.g. 900101-14-5678 / 2024xxxxx">
-      </div>
+      <div class="label" style="margin-top:10px">Email</div>
+      <input class="input" name="email" placeholder="name@example.com">
+      <div class="label" style="margin-top:10px">Phone</div>
+      <input class="input" name="phone" placeholder="+60...">
     </div>
 
-    <div class="grid-2">
-      <div>
-        <label>Email</label><br>
-        <input class="input" type="email" name="email" required>
+    <div class="card">
+      <div class="label">Upload Identification (PDF/JPG/PNG)</div>
+      <input class="input" type="file" id="icFile" accept=".pdf,.jpg,.jpeg,.png">
+      <div class="label" style="margin-top:10px">Upload SSM (if company)</div>
+      <input class="input" type="file" id="ssmFile" accept=".pdf,.jpg,.jpeg,.png">
+      <div style="margin-top:12px; display:flex; gap:10px">
+        <button class="btn primary" id="submitBtn">Submit</button>
+        <a class="btn ghost" href="/loans/page">← Back to Loans</a>
       </div>
-      <div>
-        <label>Phone</label><br>
-        <input class="input" name="phone" required placeholder="+60...">
-      </div>
+      <div id="msg" class="meta" style="margin-top:10px"></div>
     </div>
+  </div>
 
-    <div>
-      <label>Customer Type</label><br>
-      <select class="input" name="ctype" style="width:200px">
-        <option value="PERSONAL">PERSONAL</option>
-        <option value="COMPANY">COMPANY</option>
-      </select>
-    </div>
+  <script>
+    document.getElementById('submitBtn').addEventListener('click', async ()=>{
+      const fd = new FormData();
+      fd.append('name', document.querySelector('[name=name]').value||'');
+      fd.append('ic', document.querySelector('[name=ic]').value||'');
+      fd.append('email', document.querySelector('[name=email]').value||'');
+      fd.append('phone', document.querySelector('[name=phone]').value||'');
+      if(document.getElementById('icFile').files[0]) fd.append('ic_file', document.getElementById('icFile').files[0]);
+      if(document.getElementById('ssmFile').files[0]) fd.append('ssm_file', document.getElementById('ssmFile').files[0]);
 
-    <div class="grid-2">
-      <div>
-        <label>IC / Passport (PDF/JPG/PNG)</label><br>
-        <input class="input" type="file" name="ic_file" accept=".pdf,.jpg,.jpeg,.png" required>
-      </div>
-      <div>
-        <label>SSM / Biz Doc (PDF/JPG/PNG)</label><br>
-        <input class="input" type="file" name="ssm_file" accept=".pdf,.jpg,.jpeg,.png">
-      </div>
-    </div>
-
-    <div style="display:flex; gap:8px; align-items:center">
-      <input id="agree" type="checkbox" required>
-      <label for="agree" class="meta">我授权 INFINITE GZ SDN. BHD. 代表我向 CTOS 及相关机构查询信用报告用于贷款评估。</label>
-    </div>
-
-    <div style="display:flex; gap:8px; flex-wrap:wrap">
-      <button class="btn primary" type="submit">提交授权</button>
-      <a class="btn" href="/loans/page">返回 Loans</a>
-    </div>
-  </form>
-  
-  <pre id="out" class="code" style="margin-top:12px; white-space:pre-wrap"></pre>
-</div>
-
-<script>
-const frm=document.getElementById('ctosForm');
-frm.addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const fd=new FormData(frm);
-  const res=await fetch(frm.action,{method:'POST',body:fd});
-  const js=await res.json();
-  document.getElementById('out').textContent=JSON.stringify(js,null,2);
-  if(js.status==='success'){
-    alert('提交成功！');
-  }
-});
-</script>
+      const res = await fetch('/ctos/submit?key={{ portal_key or "demo" }}', {method:'POST', body:fd});
+      const j = await res.json().catch(()=>({ok:false}));
+      document.getElementById('msg').textContent = res.ok ? 'Submitted. Ticket: '+(j.ticket||'ok') : 'Failed.';
+      if(res.ok) setTimeout(()=>location.href='/loans/compare/page', 600);
+    });
+  </script>
 {% endblock %}

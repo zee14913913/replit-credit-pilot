@@ -1,60 +1,75 @@
 :root{
-  --pink:#FF007F; --card:#322446; --bg:#1a1323; --text:#fff;
-  --page-max:1280px; --gap:16px; --radius:16px; --pad:14px;
-  --shadow:0 6px 18px #0006; --line:#3b2b4e; --muted:#c9c6d3;
+  --pink:#FF007F;          /* Hot Pink 主色 */
+  --card:#322446;          /* 深紫卡片 */
+  --bg:#1a1323;            /* 深黑背景 */
+  --text:#ffffff;          /* 文字 */
+  --line:#3b2b4e;          /* 边框 */
+  --muted:#c9c6d3;         /* 次要文字 */
+
+  --page-max:1280px;
+  --gap:16px;
+  --radius:16px;
+  --pad:14px;
 }
 
-*{ box-sizing:border-box }
-html,body{ height:100% }
-body{ margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial }
-a{ color:inherit; text-decoration:none }
-
-.page-wrap{ max-width:var(--page-max); margin:16px auto 32px; padding:0 16px }
-
-/* 顶栏 */
-.brandbar{ display:flex; align-items:center; gap:10px; margin:10px 0 12px }
-.brandbar .logo{ display:flex; align-items:center; gap:10px; font-weight:900; letter-spacing:.5px }
-.brandbar .logo img{ width:28px; height:28px; object-fit:contain; filter:drop-shadow(0 0 8px #0009) }
-.brandbar .lang{ margin-left:auto; display:flex; gap:6px }
-
-/* 组件 */
-.btn{ display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:12px; border:1px solid #ffffff33; background:var(--card); color:#fff; cursor:pointer }
-.btn.primary{ background:var(--pink); border-color:#ff6aa7 }
-.btn.ghost{ background:transparent; border-color:#ffffff33 }
-.badge{ display:inline-flex; align-items:center; justify-content:center; min-width:20px; height:20px; padding:0 6px; border-radius:999px; background:var(--pink); color:#fff; font-weight:800 }
-.input, input, select, textarea{
-  height:36px; border-radius:10px; border:1px solid var(--line); background:#0f0a14; color:#fff; padding:0 10px
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  background:var(--bg); color:var(--text);
 }
+
+.container{max-width:var(--page-max); margin:0 auto; padding:20px}
+.header{display:flex; align-items:center; gap:10px; margin-bottom:20px}
+.logo{
+  width:28px;height:28px;border-radius:8px;flex:0 0 28px;
+  background: radial-gradient(60% 60% at 30% 30%, #ff5cab, var(--pink)) ;
+  box-shadow:0 0 18px #ff007f55;
+}
+.brand{font-weight:800; letter-spacing:.5px}
+
+.lang{margin-left:auto; display:flex; gap:8px}
+a,button{transition:all .15s ease}
+
+.btn{
+  display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none;
+  padding:8px 12px; border-radius:12px; border:1px solid #ffffff22;
+  color:#fff; background:linear-gradient(180deg,#3a2950,#2a1d3a);
+  text-decoration:none; font-weight:600; font-size:14px;
+}
+.btn:hover{transform:translateY(-1px); box-shadow:0 8px 18px #0006}
+.btn.primary{background:var(--pink); border-color:#ff6aa7; color:#fff}
+.btn.ghost{background:transparent; border:1px solid #ffffff33}
+
+.badge{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:20px; height:20px; padding:0 6px; border-radius:999px;
+  background:var(--pink); color:#fff; font-weight:700; margin-left:6px;
+}
+
 .card{
   background:linear-gradient(180deg,#322446,#281a3a);
-  border:1px solid var(--line); border-radius:var(--radius); padding:var(--pad); box-shadow:var(--shadow); color:var(--text)
+  border:1px solid var(--line); border-radius:var(--radius); padding:var(--pad);
+  box-shadow:0 6px 18px #0006;
 }
-h1.title{ font-size:22px; margin:0 0 8px }
-h2.section{ font-size:18px; margin:0 0 8px }
-.meta{ color:var(--muted); font-size:12px }
-hr.sep{ border:none; height:1px; background:var(--line); margin:12px 0 }
+.tile{min-height:180px; display:flex; flex-direction:column; justify-content:space-between}
 
-/* 栅格 */
-.grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:var(--gap) }
-.grid-3{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--gap) }
-@media (max-width:992px){ .grid-2,.grid-3{ grid-template-columns:1fr } }
+.section{margin:0 0 6px 0; font-size:16px; font-weight:800}
+.meta{color:var(--muted); font-size:13px}
 
-/* Portal 卡片 */
-.tile{ min-height:140px }
-.tile .actions{ margin-top:10px; display:flex; gap:8px; flex-wrap:wrap }
+.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:var(--gap)}
+.grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:var(--gap)}
+@media (max-width:900px){ .grid-2, .grid-3{grid-template-columns:1fr} }
 
-/* 通用表格 */
-table{ width:100%; border-collapse:collapse }
-th,td{ border:1px solid var(--line); padding:10px; font-size:14px; vertical-align:top }
-th.sortable{ cursor:pointer; position:relative; padding-right:18px }
-th.sortable:after{ content:'↕'; position:absolute; right:6px; opacity:.6 }
-th.sortable.asc:after{ content:'↑' } th.sortable.desc:after{ content:'↓' }
+.input, select, textarea{
+  width:100%; background:#0f0a14; color:#fff; border:1px solid var(--line);
+  border-radius:10px; padding:10px 12px; font-size:14px;
+}
+.label{font-size:13px; color:var(--muted)}
 
-/* 状态色 */
-.status{ font-weight:800 }
-.status.PASS{ color:#6CFFB0 }
-.status.BORDERLINE{ color:#FFD070 }
-.status.HIGH{ color:#FF8A8A }
+.table{width:100%; border-collapse:collapse}
+.table th,.table td{border:1px solid var(--line); padding:10px; font-size:14px}
+.table th{background:#2a1e3a; text-align:left}
 
-/* 顶部固定提示区（可选） */
-.banner{ background:#241831; border:1px solid var(--line); padding:8px 12px; border-radius:10px; color:#eae4f6 }
+.footer{margin-top:28px; color:#8b8796; font-size:12px}
+.hr{height:1px; background:#ffffff14; border:0; margin:16px 0}

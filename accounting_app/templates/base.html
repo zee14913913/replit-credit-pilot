@@ -1,29 +1,25 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>{% block title %}CreditPilot{% endblock %}</title>
-    <link rel="stylesheet" href="/static/css/brand.css">
-    {% block head_extra %}{% endblock %}
-  </head>
-  <body>
-    <div class="page-wrap">
-      <div class="brandbar">
-        <div class="logo">
-          <div style="width:28px;height:28px;background:linear-gradient(135deg,#FF007F,#ff5aa8);border-radius:6px;box-shadow:0 4px 30px #ff007f55"></div>
-          <div>INFINITE GZ SDN. BHD.</div>
-        </div>
-
-        <div class="lang">
-          <a class="btn" href="?lang=en">EN</a>
-          <a class="btn" href="?lang=zh">中文</a>
-        </div>
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}INFINITE GZ · CreditPilot{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/static/css/brand.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo"></div>
+      <div class="brand">INFINITE GZ SDN. BHD.</div>
+      <div class="lang">
+        <a class="btn" href="?lang=en">EN</a>
+        <a class="btn" href="?lang=zh">中文</a>
       </div>
-
-      {% block content %}{% endblock %}
-      <div class="meta" style="margin-top:16px">© 2025 CreditPilot · INFINITE GZ SDN. BHD.</div>
     </div>
-    {% block foot_extra %}{% endblock %}
-  </body>
+
+    {% block content %}{% endblock %}
+
+    <div class="footer">© 2025 INFINITE GZ SDN. BHD. · ENV={{ env or 'prod' }}</div>
+  </div>
+</body>
 </html>

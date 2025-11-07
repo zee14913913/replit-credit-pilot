@@ -18,9 +18,21 @@ def _key_ok(request: Request):
 @router.get("/portal", response_class=HTMLResponse)
 def portal_page(request: Request):
     key=os.getenv("PORTAL_KEY")
-    return templates.TemplateResponse("portal.html", {"request": request, "env": os.getenv("ENV","prod"), "key": key})
+    return templates.TemplateResponse("portal.html", {
+        "request": request, 
+        "env": os.getenv("ENV","prod"), 
+        "key": key,
+        "portal_key": key,
+        "admin_key": os.getenv("ADMIN_KEY")
+    })
 
 @router.get("/portal/history", response_class=HTMLResponse)
 def history_page(request: Request):
     key=os.getenv("PORTAL_KEY")
-    return templates.TemplateResponse("history.html", {"request": request, "env": os.getenv("ENV","prod"), "key": key})
+    # Sample history data
+    rows = [
+        {"ts": "2025-11-07 14:00:00", "event": "Auto Harvest", "detail": "Successfully collected 12 products from banking websites"},
+        {"ts": "2025-11-07 11:00:00", "event": "Rate Update", "detail": "Bank A: -0.05% | Bank B: +0.10%"},
+        {"ts": "2025-11-06 11:00:00", "event": "Auto Harvest", "detail": "Successfully collected 12 products"}
+    ]
+    return templates.TemplateResponse("history.html", {"request": request, "env": os.getenv("ENV","prod"), "key": key, "rows": rows, "portal_key": key, "admin_key": os.getenv("ADMIN_KEY")})
