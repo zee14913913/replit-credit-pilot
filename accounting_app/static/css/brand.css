@@ -86,3 +86,67 @@ a,button{transition:all .15s ease}
 
 /* 卡片/按钮纯文字风格优化 */
 .section { letter-spacing: 0.2px; }
+
+/* === Full-screen layout uplift v1 === */
+
+/* 页面容器：用满视口，放大最大宽度 */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+/* 顶部栏与主内容的统一边距 */
+.header, .main {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 20px var(--gap);
+}
+
+/* 标题与语言切换的行内对齐、留白 */
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+}
+
+/* --- 关键：自适应整屏网格 --- */
+/* 自动铺满整页：每列最小 360px，最大 1fr，空白自动被卡片占满 */
+.grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: calc(var(--gap) * 1.25);
+  align-content: start;
+}
+
+/* 卡片拉伸到等高，视觉更整齐 */
+.card.tile {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 卡片标题与内容分区 */
+.card .section {
+  margin-bottom: 10px;
+}
+
+/* 下方预留大留白，避免"只在上半部" */
+.footer-spacer {
+  height: 40px;
+}
+
+/* 更宽的桌面下再放大 */
+@media (min-width: 1600px) {
+  .header, .main { max-width: 1680px; }
+}
+
+/* 移动端收紧最小列宽，防止横向滚动 */
+@media (max-width: 420px) {
+  .grid-auto {
+    grid-template-columns: 1fr;
+  }
+}

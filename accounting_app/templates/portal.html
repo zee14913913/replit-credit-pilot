@@ -1,63 +1,75 @@
 {% extends "base.html" %}
-{% block title %}Portal · INFINITE GZ{% endblock %}
+{% block title %}Portal · INFINITE GZ SDN. BHD.{% endblock %}
+
 {% block content %}
-  <h1 class="section">Portal</h1>
-  <div class="grid-3">
-    <div class="card tile">
-      <div>
+<div class="page">
+
+  <!-- 顶部：标题 + 语言切换 -->
+  <div class="header">
+    <div class="header-row">
+      <h1 class="title" style="margin:0;">Portal</h1>
+      <div class="lang">
+        <a class="btn" href="?lang=en">EN</a>
+        <a class="btn" href="?lang=zh">中文</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主内容：自适应整屏网格 -->
+  <div class="main">
+    <div class="grid-auto">
+
+      <!-- Loans Intelligence -->
+      <div class="card tile">
         <h2 class="section">Loans Intelligence</h2>
         <p class="meta">Smart Credit & Loan Manager</p>
+        <div style="margin-top:auto; display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="btn primary" href="/loans/page">Open Loans</a>
+          <a class="btn" href="/loans/top3/cards" target="_blank">Open Top-3 Cards</a>
+        </div>
       </div>
-      <div>
-        <a class="btn primary" href="/loans/page">Open Loans</a>
-        <a class="btn" href="/loans/top3/cards" target="_blank">Open Top-3 Cards</a>
-      </div>
-    </div>
 
-    <div class="card tile">
-      <div>
+      <!-- CTOS Authorization -->
+      <div class="card tile">
         <h2 class="section">CTOS Authorization</h2>
-        <p class="meta">Consent form + document upload</p>
+        <p class="meta">Consent form · document upload</p>
+        <div style="margin-top:auto; display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="btn primary" href="/ctos/page?key={{ portal_key or 'demo' }}">Open CTOS Form</a>
+          <a class="btn ghost" href="/ctos/admin?key={{ portal_key or 'demo' }}&ak={{ admin_key or 'demo' }}">Admin</a>
+        </div>
       </div>
-      <div>
-        <a class="btn primary" href="/ctos/page?key={{ portal_key or 'demo' }}">Open CTOS Form</a>
-        <a class="btn" href="/ctos/admin?key={{ portal_key or 'demo' }}&ak={{ admin_key or 'demo' }}">Admin</a>
-      </div>
-    </div>
 
-    <div class="card tile">
-      <div>
+      <!-- Documents -->
+      <div class="card tile">
         <h2 class="section">Documents</h2>
         <p class="meta">Official enterprise reports (EN / CN)</p>
+        <div style="margin-top:auto; display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="btn primary" target="_blank" href="/docs/official/CREDITPILOT_企业报告_EN.pdf">Open Docs EN PDF</a>
+          <a class="btn" target="_blank" href="/docs/official/CREDITPILOT_企业报告_CN.pdf">Open Docs CN PDF</a>
+        </div>
       </div>
-      <div>
-        <a class="btn" href="/docs/official/CREDITPILOT_企业报告_EN.pdf" target="_blank">Open Docs EN PDF</a>
-        <a class="btn" href="/docs/official/CREDITPILOT_企业报告_CN.pdf" target="_blank">Open Docs CN PDF</a>
-      </div>
-    </div>
-  </div>
 
-  <hr class="hr">
-
-  <div class="grid-2">
-    <div class="card tile">
-      <div>
+      <!-- History -->
+      <div class="card tile">
         <h2 class="section">History</h2>
         <p class="meta">Change logs & harvest records</p>
+        <div style="margin-top:auto;">
+          <a class="btn" href="/portal/history">Open History</a>
+        </div>
       </div>
-      <div>
-        <a class="btn" href="/portal/history">Open History</a>
-      </div>
-    </div>
 
-    <div class="card tile">
-      <div>
+      <!-- System -->
+      <div class="card tile">
         <h2 class="section">System</h2>
         <p class="meta">Health checks & environment</p>
+        <div style="margin-top:auto;">
+          <a class="btn ghost" href="/health">/health</a>
+        </div>
       </div>
-      <div>
-        <a class="btn" href="/health" target="_blank">/health</a>
-      </div>
+
     </div>
+
+    <div class="footer-spacer"></div>
   </div>
+</div>
 {% endblock %}
