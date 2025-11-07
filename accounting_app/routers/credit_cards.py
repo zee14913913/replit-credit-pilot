@@ -144,6 +144,7 @@ async def batch_zip_invoices(y: int = None, m: int = None, lang: str = "en"):
     """批量生成供应商发票ZIP包"""
     import zipfile
     import re
+    import hashlib
     from accounting_app.routers.invoices import render_service_invoice
     
     def sanitize_filename(name: str) -> str:
@@ -154,6 +155,10 @@ async def batch_zip_invoices(y: int = None, m: int = None, lang: str = "en"):
         safe = re.sub(r'\s+', '_', safe)
         # 截断过长文件名
         return safe[:50] if safe else "UNNAMED"
+    
+    def file_hash(data: bytes) -> str:
+        """生成文件SHA256哈希摘要（前10位）"""
+        return hashlib.sha256(data).hexdigest()[:10]
     
     today = date.today()
     y = y or today.year
@@ -197,9 +202,10 @@ async def batch_zip_invoices(y: int = None, m: int = None, lang: str = "en"):
                     "amount": float(fee)
                 }, "zh" if lang.lower() == "zh" else "en")
                 
-                # 安全化文件名
+                # 安全化文件名 + 添加哈希校验
                 safe_name = sanitize_filename(name)
-                zf.writestr(f"{number}_{safe_name}.pdf", pdf)
+                pdf_hash = file_hash(pdf)
+                zf.writestr(f"{number}_{safe_name}_{pdf_hash}.pdf", pdf)
         
         buf.seek(0)
         return StreamingResponse(
@@ -257,8 +263,13 @@ async def export_monthly_report_csv(y: int = None, m: int = None):
     y = y or today.year
     m = m or today.month
     
+    # TODO: 使用真实数据库查询
     owner = {"expenses": 8500.00, "payments": 6000.00, "balance": 2500.00}
     gz = {"expenses": 3200.00, "payments": 2800.00, "service_fee": 32.00, "balance": 400.00}
+    
+    # 计算评级
+    coverage = 33.33  # TODO: 从数据库计算
+    grade = "A" if coverage >= 90 else ("B" if coverage >= 70 else ("C" if coverage >= 50 else "D"))
     
     sio = StringIO()
     w = csv.writer(sio)
@@ -267,10 +278,12 @@ async def export_monthly_report_csv(y: int = None, m: int = None):
     w.writerow(["INFINITE", gz["expenses"], gz["payments"], gz["service_fee"], gz["balance"]])
     
     sio.seek(0)
+    # 文件名包含年月和评级
+    filename = f"monthly_{y}-{m:02d}_{grade}.csv"
     return StreamingResponse(
         iter([sio.getvalue()]),
         media_type="text/csv",
-        headers={"Content-Disposition": f'attachment; filename="monthly_report_{y}-{m:02d}.csv"'}
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'}
     )
 
 @router.get("/month-summary")

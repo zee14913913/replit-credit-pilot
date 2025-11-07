@@ -40,8 +40,11 @@
       </div>
 
       <div class="card">
-        <h2 class="section">Month-End · 月末待办</h2>
-        <p class="meta">自动汇总来自后台的统计数字</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: var(--gap);">
+          <h2 class="section" style="margin:0;">Month-End · 月末待办</h2>
+          <button id="refresh-summary" class="btn" style="font-size:14px;">🔄 刷新统计</button>
+        </div>
+        <p class="meta">自动汇总来自后台的统计数字 · 每30秒自动刷新</p>
         <div id="month-summary">
           <div>待匹配收据：<span id="ms-pending">—</span></div>
           <div>本月供应商：<span id="ms-suppliers">—</span></div>
@@ -49,7 +52,7 @@
         </div>
         <div style="margin-top: var(--gap); display:flex; gap: var(--gap); flex-wrap:wrap;">
           <a class="btn primary" href="/credit-cards/receipts?filter=missing">去补收据</a>
-          <a class="btn" href="/credit-cards/supplier-invoices/batch.zip">生成全部发票</a>
+          <button class="btn" onclick="downloadZIP(this)">生成全部发票</button>
           <a class="btn ghost" href="/credit-cards/monthly-report">出月结报告</a>
         </div>
       </div>
@@ -73,16 +76,58 @@
     }));
   })();
   
-  // 加载月末统计数据
-  fetch('/credit-cards/month-summary')
-    .then(r => r.json())
-    .then(data => {
-      if (data.ok) {
+  // 加载月末统计数据（带实时刷新）
+  async function loadMonthSummary() {
+    try {
+      const r = await fetch('/credit-cards/month-summary');
+      if (r.ok) {
+        const data = await r.json();
         document.getElementById('ms-pending').textContent = data.pending || 0;
         document.getElementById('ms-suppliers').textContent = data.suppliers || 0;
         document.getElementById('ms-fee').textContent = (data.service_fee || 0).toFixed(2);
       }
-    })
-    .catch(() => {});
+    } catch (e) {
+      console.warn('月末统计加载失败:', e);
+    }
+  }
+  
+  // 初始加载
+  loadMonthSummary();
+  
+  // 每30秒自动刷新
+  setInterval(loadMonthSummary, 30000);
+  
+  // 手动刷新按钮
+  const refreshBtn = document.getElementById('refresh-summary');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      refreshBtn.disabled = true;
+      refreshBtn.textContent = '刷新中...';
+      await loadMonthSummary();
+      refreshBtn.disabled = false;
+      refreshBtn.textContent = '🔄 刷新统计';
+    });
+  }
+  
+  // 批量ZIP下载（带加载状态）
+  async function downloadZIP(btn) {
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '生成中...';
+    
+    try {
+      window.location.href = '/credit-cards/supplier-invoices/batch.zip';
+      // 等待2秒后恢复按钮（ZIP下载不会阻塞页面）
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }, 2000);
+    } catch (e) {
+      alert('生成失败: ' + e.message);
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
+  }
 </script>
 {% endblock %}
