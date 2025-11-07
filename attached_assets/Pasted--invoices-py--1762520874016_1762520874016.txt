@@ -1,3 +1,11 @@
+好，给你一份一站式可覆盖交付包：含最终版 invoices.py（黑白正式风、你的公司信息已内置、三种版式、双语开关），再附上最短上线清单、模板按钮接法与验收清单。把下面文件内容粘到项目里覆盖即可用。
+
+⸻
+
+A) 可直接覆盖文件
+
+路径： accounting_app/routers/invoices.py
+
 # accounting_app/routers/invoices.py
 from fastapi import APIRouter, Query, Response, HTTPException
 from datetime import datetime
@@ -298,8 +306,8 @@ def render_itemised_tax_invoice(data: Dict[str, Any], lang: str) -> bytes:
 RENDERERS = {
     "service": render_service_invoice,
     "debit": render_debit_note,
-    "itemised": render_itemised_tax_invoice,
-    "itemised_tax": render_itemised_tax_invoice,
+    "itemised": render_itemised_tax_invoice,       # 参数：itemised（英式）
+    "itemised_tax": render_itemised_tax_invoice,   # 兼容别名
     "itemised_invoice": render_itemised_tax_invoice,
 }
 def _pick_renderer(layout: str):
@@ -357,3 +365,63 @@ def make_invoice(
     filename = f"{number}.pdf"
     return Response(content=pdf, media_type="application/pdf",
                     headers={"Content-Disposition": f'attachment; filename="{filename}"'})
+
+
+⸻
+
+B) 最短“从演示切到正式”清单
+	1.	公司信息：上面 COMPANY 一次改好（抬头、注册号、地址、电话、Email、银行、SST稅率）。
+	2.	发票编号：先手动传参 &number=INV-2025-0001 使用；以后接数据库再做自增。
+	3.	SST税率：无税= 0.00；6% 就改 COMPANY["tax"]["sst"] = 0.06。
+	4.	预览→正式（马上可看）
+	•	/invoices/preview.pdf?layout=service
+	•	/invoices/preview.pdf?layout=debit
+	•	/invoices/preview.pdf?layout=itemised
+	5.	带数据生成（下载）
+	•	/invoices/make?layout=service&number=INV-2025-0001&bill_to_name=VK%20Premium&amount=19080
+	•	/invoices/make?layout=debit&number=DN-250401&bill_to_name=TEMA%20UNTUNG%20SDN%20BHD&amount=28
+	•	/invoices/make?layout=itemised&number=TAX-0001&bill_to_name=AirAsia%20Customer&amount=299
+	6.	模板接按钮（见下一节）
+	7.	安全：生产下建议给 /invoices/* 加门（登录或一次性 token）。
+
+⸻
+
+C) 模板里接按钮（两种用法）
+
+1）供应商页统一预览按钮（不带参数）
+
+<a class="btn" href="/invoices/preview.pdf?layout=service" target="_blank">
+  Generate PDF
+</a>
+
+2）按供应商金额直接出单（带参数）
+（示例：supplier.name 与 supplier.fee 来自你的上下文）
+
+<a class="btn"
+   href="/invoices/make?layout=service
+          &number=INV-2025-0001
+          &bill_to_name={{ supplier.name | urlencode }}
+          &amount={{ '%.2f'|format(supplier.fee) }}
+          &lang=en"
+   target="_blank">Generate PDF</a>
+
+
+⸻
+
+D) 烟囱式验收（1 分钟）
+	•	打开三条预览链接，目测版式、抬头、页脚无误。
+	•	生成一张借记单（RM 28）对照样图：
+/invoices/make?layout=debit&number=DN-250401&bill_to_name=Demo&amount=28&lang=en
+	•	切换中文：在任意链接后加 &lang=zh 检查中文抬头与条款。
+	•	如需开税，改成 0.06 再点预览，确认出现 SST (6%) 行。
+
+⸻
+
+E) 小提示（可选）
+	•	Logo：需要灰阶 Logo 可在 _header 里加 drawImage（预留位很容易加，不影响黑白风）。
+	•	条款文案：改 TERMS_EN / TERMS_ZH 即可。
+	•	明细发票：要传多行明细，后续可上 POST JSON 版本；当前快速路由先走金额汇总。
+
+⸻
+
+全部到位。你只要把这份 invoices.py 覆盖掉，现在就能在你的域名（如 https://portal.creditpilot.digital）直接跑三种正式发票。需要我再把某个页面（如 Supplier Invoices 或 Loans 页）替你加上“开票/下载”按钮，我也可以直接给整页可覆盖模板。
