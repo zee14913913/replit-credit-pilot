@@ -132,10 +132,81 @@ async def page_supplier_invoices(request: Request, y: int = None, m: int = None)
     
     return templates.TemplateResponse("credit_cards_supplier_invoices.html", {
         "request": request,
+        "y": y,
+        "m": m,
         "suppliers": suppliers,
         "total_infinite": float(total_infinite),
         "service_fee": float(service_fee),
     })
+
+@router.get("/supplier-invoices/batch.zip")
+async def batch_zip_invoices(y: int = None, m: int = None, lang: str = "en"):
+    """批量生成供应商发票ZIP包"""
+    import zipfile
+    import re
+    from accounting_app.routers.invoices import render_service_invoice
+    
+    def sanitize_filename(name: str) -> str:
+        """安全化文件名，防止Zip Slip漏洞"""
+        # 移除路径分隔符和危险字符
+        safe = re.sub(r'[^\w\s-]', '', name)
+        # 替换空格为下划线
+        safe = re.sub(r'\s+', '_', safe)
+        # 截断过长文件名
+        return safe[:50] if safe else "UNNAMED"
+    
+    today = date.today()
+    y = y or today.year
+    m = m or today.month
+    
+    with get_session() as db:
+        rows = db.execute(
+            select(
+                Supplier.id,
+                Supplier.supplier_name,
+                Supplier.address,
+                func.coalesce(func.sum(Transaction.amount), 0).label('total')
+            )
+            .join(
+                Transaction,
+                (Transaction.supplier_id == Supplier.id) &
+                (extract('year', Transaction.txn_date) == y) &
+                (extract('month', Transaction.txn_date) == m),
+                isouter=True
+            )
+            .group_by(Supplier.id, Supplier.supplier_name, Supplier.address)
+            .order_by(Supplier.supplier_name.asc())
+        ).all()
+        
+        buf = BytesIO()
+        with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
+            for idx, (sid, name, addr, total) in enumerate(rows, start=1):
+                total = Decimal(str(total or 0)).quantize(Decimal("0.01"))
+                if total == 0:
+                    continue
+                    
+                fee = (total * Decimal("0.01")).quantize(Decimal("0.01"))
+                number = f"INV-{y}-{idx:04d}"
+                
+                # 调用现有的发票渲染函数
+                pdf = render_service_invoice({
+                    "number": number,
+                    "date": str(today),
+                    "bill_to_name": name,
+                    "bill_to_addr": addr or "",
+                    "amount": float(fee)
+                }, "zh" if lang.lower() == "zh" else "en")
+                
+                # 安全化文件名
+                safe_name = sanitize_filename(name)
+                zf.writestr(f"{number}_{safe_name}.pdf", pdf)
+        
+        buf.seek(0)
+        return StreamingResponse(
+            buf,
+            media_type="application/zip",
+            headers={"Content-Disposition": f'attachment; filename="invoices_{y}-{m:02d}.zip"'}
+        )
 
 @router.get("/supplier-invoices/export.pdf")
 async def export_invoices_pdf():
@@ -149,10 +220,117 @@ async def export_invoices_pdf():
 
 # ========== Tab 4: 月结报告 ==========
 @router.get("/monthly-report", response_class=HTMLResponse)
-async def page_monthly_report(request: Request):
+async def page_monthly_report(request: Request, y: int = None, m: int = None):
+    today = date.today()
+    y = y or today.year
+    m = m or today.month
+    
     coverage = 0 if not DEMO_TX else round(100*sum(1 for x in DEMO_TX if x["receipt"]=="matched")/len(DEMO_TX),2)
     grade = "A" if coverage>=90 else ("B" if coverage>=70 else ("C" if coverage>=50 else "D"))
-    owner = {"expenses": 8500.00, "payments": 6000.00, "credits": 0.0}
-    gz    = {"expenses": 3200.00, "payments": 2800.00, "credits": 0.0, "fee": round(3200*0.01,2)}
-    return templates.TemplateResponse("credit_cards_monthly_report.html",
-        {"request": request, "coverage": coverage, "grade": grade, "owner": owner, "gz": gz})
+    matched = sum(1 for x in DEMO_TX if x["receipt"]=="matched")
+    total = len(DEMO_TX)
+    need_for_A = max(0, int(total * 0.9) - matched)
+    
+    owner = {"expenses": 8500.00, "payments": 6000.00, "balance": 2500.00}
+    gz = {"expenses": 3200.00, "payments": 2800.00, "service_fee": 32.00, "balance": 400.00}
+    
+    return templates.TemplateResponse("credit_cards_monthly_report.html", {
+        "request": request,
+        "y": y,
+        "m": m,
+        "coverage": coverage,
+        "grade": grade,
+        "matched": matched,
+        "total": total,
+        "need_for_A": need_for_A,
+        "owner": owner,
+        "gz": gz
+    })
+
+@router.get("/monthly-report/export.csv")
+async def export_monthly_report_csv(y: int = None, m: int = None):
+    """导出月度报告CSV"""
+    from io import StringIO
+    import csv
+    
+    today = date.today()
+    y = y or today.year
+    m = m or today.month
+    
+    owner = {"expenses": 8500.00, "payments": 6000.00, "balance": 2500.00}
+    gz = {"expenses": 3200.00, "payments": 2800.00, "service_fee": 32.00, "balance": 400.00}
+    
+    sio = StringIO()
+    w = csv.writer(sio)
+    w.writerow(["Category", "Expenses", "Payments", "Service Fee", "Balance"])
+    w.writerow(["OWNER", owner["expenses"], owner["payments"], 0, owner["balance"]])
+    w.writerow(["INFINITE", gz["expenses"], gz["payments"], gz["service_fee"], gz["balance"]])
+    
+    sio.seek(0)
+    return StreamingResponse(
+        iter([sio.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="monthly_report_{y}-{m:02d}.csv"'}
+    )
+
+@router.get("/month-summary")
+async def api_month_summary(y: int = None, m: int = None):
+    """月末统计数据API（Portal页面调用）"""
+    pending = sum(1 for x in DEMO_TX if x["receipt"] != "matched")
+    
+    today = date.today()
+    y = y or today.year
+    m = m or today.month
+    
+    with get_session() as db:
+        # 统计当月有交易的供应商数量
+        suppliers_count = db.execute(
+            select(func.count(func.distinct(Transaction.supplier_id)))
+            .where(
+                extract('year', Transaction.txn_date) == y,
+                extract('month', Transaction.txn_date) == m
+            )
+        ).scalar() or 0
+        
+        # 当月交易总额
+        total_amount = db.execute(
+            select(func.coalesce(func.sum(Transaction.amount), 0))
+            .where(
+                extract('year', Transaction.txn_date) == y,
+                extract('month', Transaction.txn_date) == m
+            )
+        ).scalar() or 0
+        
+    service_fee = float(Decimal(str(total_amount)) * Decimal("0.01"))
+    
+    return JSONResponse({
+        "ok": True,
+        "pending": pending,
+        "suppliers": suppliers_count,
+        "service_fee": round(service_fee, 2)
+    })
+
+@router.post("/receipts/upload")
+async def upload_receipts(file: UploadFile = File(...)):
+    """上传收据并OCR识别"""
+    # TODO: 调用真实OCR服务
+    extracted = {
+        "merchant_name": "DEMO MERCHANT",
+        "amount": 12.34,
+        "date": str(date.today()),
+        "confidence_score": 0.76
+    }
+    return JSONResponse({"ok": True, "extracted": extracted})
+
+@router.post("/receipts/confirm")
+async def confirm_receipt_match(tx_id: int = Form(...), receipt_id: int = Form(...)):
+    """确认收据匹配"""
+    # TODO: 更新数据库匹配关系
+    return JSONResponse({"ok": True})
+
+@router.post("/receipts/match_all")
+async def match_all_receipts(threshold: float = 0.90):
+    """批量自动匹配（相似度>=阈值）"""
+    # TODO: 批量匹配逻辑
+    auto_confirmed = 1
+    return JSONResponse({"ok": True, "auto_confirmed": auto_confirmed})

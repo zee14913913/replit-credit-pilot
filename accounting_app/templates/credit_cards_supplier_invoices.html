@@ -1,166 +1,80 @@
 {% extends "base.html" %}
-{% block title %}Supplier Invoices · CreditPilot{% endblock %}
-
-{% block head_extra %}
-<style>
-  :root{ --pink:#FF007F; --card:#322446; --bg:#1a1323; --text:#fff; --line:#3b2b4e; --muted:#c9c6d3; --pad:14px; --radius:16px; --gap:16px; --page-max:1280px; }
-  body{ background:var(--bg); color:var(--text); }
-  .page{ max-width:var(--page-max); margin:0 auto; padding:24px 14px 64px; }
-  .main{ display:flex; flex-direction:column; gap:var(--gap); }
-  .toolbar{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-  .btn{ background:#241a2e; color:#fff; border:1px solid var(--line); border-radius:12px; padding:8px 12px; text-decoration:none; display:inline-flex; align-items:center; cursor:pointer; }
-  .btn.primary{ background:var(--pink); border-color:#ff6aa7; }
-  .btn.ghost{ background:transparent; border:1px dashed #ffffff33; }
-  .card{ background:linear-gradient(180deg,#322446,#281a3a); border:1px solid var(--line); border-radius:var(--radius); padding:var(--pad); box-shadow:0 6px 18px #0006; }
-  .section{ font-weight:700; margin:2px 0 8px; }
-  table{ width:100%; border-collapse:collapse; }
-  th,td{ border:1px solid var(--line); padding:10px; font-size:14px; vertical-align:top; }
-  th{ text-align:left; background:#2a1e37; }
-  .kpi{ display:flex; gap:12px; flex-wrap:wrap; }
-  .kpi .tile{ flex:1 1 220px; background:#241a2e; border:1px solid var(--line); border-radius:12px; padding:12px; }
-  .muted{ color:var(--muted); font-size:12px; }
-  @media (max-width: 960px){
-    .toolbar{ gap:6px; }
-    th,td{ font-size:13px; }
-  }
-</style>
-{% endblock %}
-
+{% block title %}Supplier Invoices{% endblock %}
 {% block content %}
 <div class="page">
-  <div class="main">
+  <div class="main" style="max-width: var(--page-max); margin: 0 auto;">
+    <h1 class="title">Supplier Invoices · 供应商发票</h1>
 
-    <!-- 顶部工具栏：三种发票预览 + 中文预览（仅样式校对用） -->
-    <div class="toolbar">
-      <a class="btn" href="/invoices/preview.pdf?layout=service&lang=en" target="_blank">Preview · Service (EN)</a>
-      <a class="btn" href="/invoices/preview.pdf?layout=debit&lang=en" target="_blank">Preview · Debit (EN)</a>
-      <a class="btn" href="/invoices/preview.pdf?layout=itemised&lang=en" target="_blank">Preview · Itemised (EN)</a>
-      <a class="btn ghost" href="/invoices/preview.pdf?layout=service&lang=zh" target="_blank">预览 · 服务发票(中文)</a>
-      <div style="flex:1"></div>
-      <a class="btn" href="/credit-cards/transactions">Back to Transactions</a>
+    <!-- 顶部工具条：月份选择 + 预览 -->
+    <div class="card" style="display:flex; gap: var(--gap); align-items:center; flex-wrap:wrap;">
+      <form method="get" style="display:flex; gap: var(--gap); align-items:center;">
+        <label class="meta">Year</label>
+        <input class="btn" type="number" name="y" value="{{ y }}" min="2020" max="2100" style="width:110px;">
+        <label class="meta">Month</label>
+        <input class="btn" type="number" name="m" value="{{ m }}" min="1" max="12" style="width:90px;">
+        <button class="btn" type="submit">应用</button>
+      </form>
+      <div style="margin-left:auto; display:flex; gap: var(--gap); flex-wrap:wrap;">
+        <a class="btn" href="/invoices/preview.pdf?layout=service&lang=en" target="_blank">Preview · Service (EN)</a>
+        <a class="btn" href="/invoices/preview.pdf?layout=debit&lang=en" target="_blank">Preview · Debit (EN)</a>
+        <a class="btn" href="/invoices/preview.pdf?layout=itemised&lang=en" target="_blank">Preview · Itemised (EN)</a>
+        <a class="btn primary" href="/credit-cards/supplier-invoices/batch.zip?y={{ y }}&m={{ m }}">Generate All (ZIP)</a>
+      </div>
     </div>
 
-    <!-- 概览卡片 -->
+    <!-- 汇总卡片 -->
     <div class="card">
-      <div class="section">Monthly Summary · 本月汇总</div>
-      <div class="kpi">
-        <div class="tile">
-          <div class="muted">INFINITE 支出（供应商）</div>
-          <div style="font-weight:700; font-size:18px;">RM {{ '%.2f'|format(total_infinite or 0) }}</div>
+      <h2 class="section">Monthly Summary · 本月汇总</h2>
+      <div class="grid-3">
+        <div class="card">
+          <div class="meta">INFINITE 支出</div>
+          <div style="font-weight:700; font-size:18px;">RM {{ "%.2f"|format(total_infinite) }}</div>
         </div>
-        <div class="tile">
-          <div class="muted">Service Fee (1%) · 服务费</div>
-          <div style="font-weight:700; font-size:18px;">RM {{ '%.2f'|format(service_fee or 0) }}</div>
+        <div class="card">
+          <div class="meta">Service Fee 1%</div>
+          <div style="font-weight:700; font-size:18px;">RM {{ "%.2f"|format(service_fee) }}</div>
         </div>
-        <div class="tile">
-          <div class="muted">Suppliers · 供应商数</div>
-          <div style="font-weight:700; font-size:18px;">{{ suppliers|length if suppliers is defined else 0 }}</div>
+        <div class="card">
+          <div class="meta">Suppliers</div>
+          <div style="font-weight:700; font-size:18px;">{{ suppliers|length }}</div>
         </div>
       </div>
     </div>
 
-    <!-- 供应商发票列表 -->
+    <!-- 列表 -->
     <div class="card">
-      <div class="section">Supplier Invoices · 供应商发票</div>
-      <table>
-        <thead>
-          <tr>
-            <th style="width:28%;">Supplier</th>
-            <th style="width:18%;">This Month Total (RM)</th>
-            <th style="width:18%;">Service Fee 1% (RM)</th>
-            <th style="width:18%;">Details</th>
-            <th style="width:18%;">Invoice</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% if suppliers and suppliers|length > 0 %}
-            {% for s in suppliers %}
-              {% set _name = s.name %}
-              {% set _total = s.total or 0 %}
-              {% set _fee = s.fee or (s.total * 0.01 if s.total is defined else 0) %}
-              {% set _addr = s.address or '' %}
-              {% set _reg  = s.reg or '' %}
-              {% set _num  = s.number or ('INV-2025-' ~ ("%04d"|format(loop.index))) %}
-              <tr>
-                <td>
-                  <div style="font-weight:700">{{ _name }}</div>
-                  {% if _addr %}<div class="muted">{{ _addr }}</div>{% endif %}
-                  {% if _reg %}<div class="muted">Reg: {{ _reg }}</div>{% endif %}
-                </td>
-                <td>RM {{ '%.2f'|format(_total) }}</td>
-                <td>RM {{ '%.2f'|format(_fee) }}</td>
-                <td>
-                  <a class="btn" href="/credit-cards/transactions?supplier={{ _name|urlencode }}">View Transactions</a>
-                </td>
-                <td>
-                  <!-- 正式出单（英文） -->
-                  <a class="btn primary"
-                     href="/invoices/make?layout=service
-                            &number={{ _num | urlencode }}
-                            &bill_to_name={{ _name | urlencode }}
-                            &bill_to_addr={{ _addr | urlencode }}
-                            &bill_to_reg={{ _reg  | urlencode }}
-                            &amount={{ '%.2f'|format(_fee) }}
-                            &lang=en"
-                     target="_blank">Generate PDF</a>
-                  <!-- 中文版出单 -->
-                  <a class="btn"
-                     style="margin-left:6px"
-                     href="/invoices/make?layout=service
-                            &number={{ _num | urlencode }}
-                            &bill_to_name={{ _name | urlencode }}
-                            &bill_to_addr={{ _addr | urlencode }}
-                            &bill_to_reg={{ _reg  | urlencode }}
-                            &amount={{ '%.2f'|format(_fee) }}
-                            &lang=zh"
-                     target="_blank">生成中文PDF</a>
-                </td>
-              </tr>
-            {% endfor %}
-          {% else %}
-            <!-- 无数据时的演示行（可保留作为占位） -->
-            {% set demo = [
-              {'name':'DINAS RESTAURANT','total':850.00,'fee':8.50,'address':'Kuala Lumpur','reg':''},
-              {'name':'HUAWEI','total':1200.00,'fee':12.00,'address':'Selangor','reg':''},
-              {'name':'PASAR RAYA','total':500.00,'fee':5.00,'address':'Kuala Lumpur','reg':''},
-            ] %}
-            {% for s in demo %}
-              {% set _num = 'INV-DEMO-' ~ ("%04d"|format(loop.index)) %}
-              <tr>
-                <td><div style="font-weight:700">{{ s.name }}</div><div class="muted">{{ s.address }}</div></td>
-                <td>RM {{ '%.2f'|format(s.total) }}</td>
-                <td>RM {{ '%.2f'|format(s.fee) }}</td>
-                <td><span class="muted">Demo data · 请接入后端真实明细</span></td>
-                <td>
-                  <a class="btn primary"
-                     href="/invoices/make?layout=service
-                            &number={{ _num | urlencode }}
-                            &bill_to_name={{ s.name | urlencode }}
-                            &bill_to_addr={{ s.address | urlencode }}
-                            &bill_to_reg=
-                            &amount={{ '%.2f'|format(s.fee) }}
-                            &lang=en"
-                     target="_blank">Generate PDF</a>
-                  <a class="btn" style="margin-left:6px"
-                     href="/invoices/make?layout=service
-                            &number={{ _num | urlencode }}
-                            &bill_to_name={{ s.name | urlencode }}
-                            &bill_to_addr={{ s.address | urlencode }}
-                            &bill_to_reg=
-                            &amount={{ '%.2f'|format(s.fee) }}
-                            &lang=zh"
-                     target="_blank">生成中文PDF</a>
-                </td>
-              </tr>
-            {% endfor %}
-          {% endif %}
-        </tbody>
-      </table>
-      <div class="muted" style="margin-top:8px;">
-        发票税率由后台 <code>COMPANY["tax"]["sst"]</code> 决定（0.00 / 0.06）。若需 6% 请到 <code>accounting_app/routers/invoices.py</code> 调整。
+      <h2 class="section">Suppliers · 供应商列表</h2>
+      {% if suppliers|length == 0 %}
+        <p class="meta">本月暂无供应商数据。可尝试切换月份或导入账单。</p>
+      {% else %}
+      <div class="table-like">
+        <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr; gap: 8px; font-weight:600; margin-bottom:8px;">
+          <div>Supplier</div><div>This Month Total</div><div>Service Fee 1%</div><div>Details</div><div>Invoice</div>
+        </div>
+        {% for s in suppliers %}
+        {% set _fee = s.fee if s.fee is defined else (s.total * 0.01) %}
+        {% set _num = s.number or ('INV-' ~ y ~ '-' ~ ("%04d"|format(loop.index))) %}
+        <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr; gap: 8px; padding:10px; border:1px solid var(--line); border-radius: var(--radius);">
+          <div>{{ s.name }}<br><span class="meta">{{ s.address or '' }}</span></div>
+          <div>RM {{ "%.2f"|format(s.total) }}</div>
+          <div>RM {{ "%.2f"|format(_fee) }}</div>
+          <div><a class="btn" href="/credit-cards/transactions?supplier={{ s.name | urlencode }}">View Transactions</a></div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <a class="btn primary" href="/invoices/make?layout=service&number={{ _num }}&bill_to_name={{ s.name | urlencode }}&amount={{ '%.2f'|format(_fee) }}&lang=en" target="_blank">Generate</a>
+            <details class="btn" style="padding:0 10px;">
+              <summary>⋯</summary>
+              <div style="padding:8px; display:flex; flex-direction:column; gap:6px;">
+                <a class="btn" href="/invoices/make?layout=service&number={{ _num }}&bill_to_name={{ s.name | urlencode }}&amount={{ '%.2f'|format(_fee) }}&lang=zh" target="_blank">Generate (中文)</a>
+                <a class="btn" href="/invoices/make?layout=itemised&number={{ _num }}&bill_to_name={{ s.name | urlencode }}&amount={{ '%.2f'|format(_fee) }}&lang=en" target="_blank">Itemised</a>
+                <a class="btn" href="/invoices/make?layout=debit&number=DN-{{ y }}-{{ "%04d"|format(loop.index) }}&bill_to_name={{ s.name | urlencode }}&amount=10&lang=en" target="_blank">Debit Note</a>
+              </div>
+            </details>
+          </div>
+        </div>
+        {% endfor %}
       </div>
+      {% endif %}
     </div>
-
   </div>
 </div>
 {% endblock %}

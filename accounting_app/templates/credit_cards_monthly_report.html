@@ -1,36 +1,60 @@
 {% extends "base.html" %}
-{% block title %}Credit Cards · Monthly Report{% endblock %}
+{% block title %}Monthly Report{% endblock %}
 {% block content %}
-<div class="page"><div class="main">
-  <h1 class="title">Monthly Report</h1>
-  <div class="grid-auto">
-    <div class="card">
-      <h2 class="section">Data Quality</h2>
-      <p class="meta">Coverage {{ coverage }}% · Grade {{ grade }}</p>
-      <ul class="meta">
-        <li>Statements: A</li>
-        <li>Receipts: {{ 'A' if coverage>=90 else 'B' if coverage>=70 else 'C' if coverage>=50 else 'D' }}</li>
-        <li>Invoices: A</li>
-        <li>OWNER/INFINITE: A</li>
-      </ul>
-      <div class="row">
-        <a class="btn primary" href="#">Export PDF</a>
-        <a class="btn" href="#">Export Excel</a>
-        <a class="btn ghost" href="#">Export CSV</a>
+<div class="page">
+  <div class="main" style="max-width: var(--page-max); margin: 0 auto;">
+    <h1 class="title">Monthly Report · 月度报告</h1>
+
+    <!-- 工具条 -->
+    <div class="card" style="display:flex; gap: var(--gap); align-items:center; flex-wrap:wrap;">
+      <form method="get" style="display:flex; gap: var(--gap); align-items:center;">
+        <label class="meta">Year</label>
+        <input class="btn" type="number" name="y" value="{{ y }}" min="2020" max="2100" style="width:110px;">
+        <label class="meta">Month</label>
+        <input class="btn" type="number" name="m" value="{{ m }}" min="1" max="12" style="width:90px;">
+        <button class="btn" type="submit">应用</button>
+      </form>
+      <div style="margin-left:auto; display:flex; gap: var(--gap); flex-wrap:wrap;">
+        <a class="btn" href="/credit-cards/monthly-report/export.csv?y={{ y }}&m={{ m }}">导出 CSV</a>
+        <a class="btn primary" href="/credit-cards/receipts?filter=missing&y={{ y }}&m={{ m }}">去补缺收据</a>
       </div>
     </div>
+
+    <!-- 评分卡 -->
     <div class="card">
-      <h2 class="section">OWNER (Personal)</h2>
-      <p>Expenses RM {{ '%.2f'|format(owner.expenses) }}</p>
-      <p>Payments RM {{ '%.2f'|format(owner.payments) }}</p>
-      <p>Net RM {{ '%.2f'|format(owner.expenses-owner.payments) }}</p>
+      <h2 class="section">数据完整性</h2>
+      <div class="grid-3">
+        <div class="card">
+          <div class="meta">覆盖率</div>
+          <div style="font-weight:700; font-size:18px;">{{ coverage }}% （评级：{{ grade }}）</div>
+        </div>
+        <div class="card">
+          <div class="meta">已匹配 / 总交易</div>
+          <div style="font-weight:700;">{{ matched }}/{{ total }}</div>
+        </div>
+        <div class="card">
+          <div class="meta">达到A级还需</div>
+          <div style="font-weight:700;">{{ need_for_A }} 张收据</div>
+        </div>
+      </div>
     </div>
-    <div class="card">
-      <h2 class="section">INFINITE (Suppliers)</h2>
-      <p>Expenses RM {{ '%.2f'|format(gz.expenses) }}</p>
-      <p>Payments RM {{ '%.2f'|format(gz.payments) }}</p>
-      <p>Service Fee (1%) RM {{ '%.2f'|format(gz.fee) }}</p>
+
+    <!-- OWNER / INFINITE 拆分 -->
+    <div class="grid-2">
+      <div class="card">
+        <h2 class="section">OWNER</h2>
+        <div>消费：RM {{ "%.2f"|format(owner.expenses) }}</div>
+        <div>还款：RM {{ "%.2f"|format(owner.payments) }}</div>
+        <div>结存：RM {{ "%.2f"|format(owner.balance) }}</div>
+      </div>
+      <div class="card">
+        <h2 class="section">INFINITE</h2>
+        <div>消费：RM {{ "%.2f"|format(gz.expenses) }}</div>
+        <div>还款：RM {{ "%.2f"|format(gz.payments) }}</div>
+        <div>服务费收入：RM {{ "%.2f"|format(gz.service_fee) }}</div>
+        <div>结存：RM {{ "%.2f"|format(gz.balance) }}</div>
+      </div>
     </div>
   </div>
-</div></div>
+</div>
 {% endblock %}
