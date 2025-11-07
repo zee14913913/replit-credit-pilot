@@ -326,14 +326,19 @@ async def api_month_summary(y: int = None, m: int = None):
 @router.post("/receipts/upload")
 async def upload_receipts(file: UploadFile = File(...)):
     """上传收据并OCR识别"""
-    # TODO: 调用真实OCR服务
+    # TODO: 调用真实OCR服务（需配置OCR_API_KEY）
     extracted = {
         "merchant_name": "DEMO MERCHANT",
         "amount": 12.34,
         "date": str(date.today()),
         "confidence_score": 0.76
     }
-    return JSONResponse({"ok": True, "extracted": extracted})
+    # 成功上传后，前端应自动跳转到 ?filter=pending
+    return JSONResponse({
+        "ok": True, 
+        "extracted": extracted,
+        "redirect": "/credit-cards/receipts?filter=pending"
+    })
 
 @router.post("/receipts/confirm")
 async def confirm_receipt_match(tx_id: int = Form(...), receipt_id: int = Form(...)):
