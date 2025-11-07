@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.responses import Response
 from starlette.templating import Jinja2Templates
 
-from accounting_app.routers import health, files, public, history, stats, loans_updates, loans_business, ctos, ui_cards, loans_ranking, loans_extras, preview, credit_cards, savings
+from accounting_app.routers import health, files, public, history, stats, loans_updates, loans_business, ctos, ui_cards, loans_ranking, loans_extras, preview, credit_cards, savings, statements, invoices
 from accounting_app.core.middleware import SecurityAndLogMiddleware, SimpleRateLimitMiddleware
 from accounting_app.core.logger import info
 from accounting_app.core.maintenance import start_local_cleanup_thread
@@ -28,6 +28,11 @@ app.state.templates = Jinja2Templates(directory="accounting_app/templates")
 
 # 启动本地原件清理线程
 start_local_cleanup_thread()
+
+# 启动还款提醒调度器
+from accounting_app.services.reminders import start_scheduler
+scheduler = start_scheduler()
+info("Reminders scheduler started")
 
 # ====== 安全与跨域 ======
 origins = [o.strip() for o in CORS_ALLOW.split(",") if o.strip()]
@@ -62,6 +67,8 @@ app.include_router(ctos.router)
 app.include_router(ui_cards.router)
 app.include_router(credit_cards.router)
 app.include_router(savings.router)
+app.include_router(statements.router)
+app.include_router(invoices.router)
 
 # ====== Sentry 错误追踪（可选）======
 if os.getenv("SENTRY_DSN"):

@@ -1,22 +1,23 @@
-import os
+import os, io, pytesseract
+from PIL import Image
+from typing import List, Dict
 
 class OCRClient:
-    """
-    统一 OCR 接口占位：
-    - 若 PERPLEXITY/第三方 OCR Key 未配置，则返回示例
-    - 未来可接 Google Vision / Azure / Tesseract Server 等
-    """
     def __init__(self):
-        self.provider = os.getenv("OCR_PROVIDER", "demo")
-        self.api_key = os.getenv("OCR_API_KEY", "")
+        self.provider = os.getenv("OCR_PROVIDER", "demo").lower()
 
-    def parse(self, image_bytes: bytes) -> dict:
-        if self.provider == "demo" or not self.api_key:
+    def ocr_image(self, content: bytes) -> Dict:
+        if self.provider == "demo":
+            return {"merchant_name":"DEMO MERCHANT","amount": 12.34, "date":"2025-11-05","confidence":0.76}
+        if self.provider == "tesseract":
+            img = Image.open(io.BytesIO(content))
+            text = pytesseract.image_to_string(img)
             return {
-                "merchant_name": "DEMO MERCHANT",
-                "amount": 12.34,
-                "date": "2025-11-05",
-                "confidence_score": 0.80
+                "raw_text": text,
+                "merchant_name": text.splitlines()[0][:32] if text.strip() else "UNKNOWN",
+                "amount": None, "date": None, "confidence": 0.55
             }
-        # TODO: 实接供应商
-        raise NotImplementedError("OCR provider not implemented yet")
+        return {"merchant_name":"UNKNOWN","amount": None, "date": None, "confidence": 0.0}
+
+    def batch_ocr(self, files: List[bytes]) -> List[Dict]:
+        return [self.ocr_image(b) for b in files]

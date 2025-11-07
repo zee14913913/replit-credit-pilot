@@ -1,0 +1,379 @@
+好的，我直接给你三份“可直接覆盖”的整页模板（无图标、全屏布局、品牌三色、双语开关已兼容）。把它们按文件名放进 accounting_app/templates/ 覆盖即可：
+
+⸻
+
+1) credit_cards_transactions.html（交易明细 · 全屏版）
+
+{% extends "base.html" %}
+{% block title %}Credit Cards · Transactions{% endblock %}
+{% block head_extra %}
+<style>
+  :root{ --pink:#FF007F; --card:#322446; --bg:#1a1323; --text:#fff; --line:#3b2b4e; --muted:#c9c6d3; --gap:16px; --radius:16px; --pad:14px; --page-max:1280px }
+  body{ background:var(--bg); color:var(--text) }
+  .page{ min-height:100vh; display:flex; flex-direction:column }
+  .main{ width:100%; max-width:var(--page-max); margin:0 auto; padding:20px }
+  .header{ display:flex; align-items:center; gap:12px; margin-bottom:var(--gap) }
+  .title{ font-size:22px; font-weight:700; color:var(--text) }
+  .toolbar{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:var(--gap) }
+  .btn{ background:var(--card); color:#fff; border:1px solid var(--line); border-radius:12px; padding:8px 12px; text-decoration:none; cursor:pointer }
+  .btn.primary{ background:var(--pink); border-color:#ff6aa7 }
+  .btn.ghost{ background:transparent; border:1px solid #ffffff33 }
+  .filters{ display:grid; grid-template-columns:repeat(4,minmax(160px,1fr)); gap:8px }
+  .input, select{ background:#0f0a14; color:#fff; border:1px solid var(--line); border-radius:10px; padding:8px 10px }
+  .card{ background:linear-gradient(180deg,#322446,#281a3a); border:1px solid var(--line); border-radius:16px; padding:var(--pad); box-shadow:0 6px 18px #0006 }
+  .grid-auto{ display:grid; grid-template-columns:1.2fr .8fr; gap:var(--gap) }
+  @media (max-width:1024px){ .grid-auto{ grid-template-columns:1fr } }
+  table{ width:100%; border-collapse:collapse; }
+  th,td{ border:1px solid var(--line); padding:8px; font-size:14px; vertical-align:top }
+  th{ background:#271b36; text-align:left }
+  .meta{ color:var(--muted); font-size:12px }
+  .tag{ display:inline-block; padding:2px 6px; border:1px solid var(--line); border-radius:999px; font-size:12px; margin-right:6px }
+  .tag.primary{ border-color:var(--pink); color:#fff }
+  .stat{ display:flex; gap:10px; align-items:baseline }
+  .stat .v{ font-size:20px; font-weight:700 }
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="page">
+  <div class="main">
+
+    <div class="header">
+      <div class="title">Credit Cards · Transactions</div>
+      <div class="meta">{{ request.query_params.get('lang','en')|upper }}</div>
+    </div>
+
+    <div class="toolbar">
+      <a class="btn" href="/credit-cards/statements/page{{ '?lang=' + request.query_params.get('lang') if request.query_params.get('lang') else '' }}">Upload Statements</a>
+      <a class="btn" href="/credit-cards/receipts{{ '?lang=' + request.query_params.get('lang') if request.query_params.get('lang') else '' }}">Manage Receipts</a>
+      <a class="btn" href="/credit-cards/supplier-invoices{{ '?lang=' + request.query_params.get('lang') if request.query_params.get('lang') else '' }}">Supplier Invoices</a>
+      <div style="flex:1"></div>
+      <a class="btn ghost" href="?lang=en">EN</a>
+      <a class="btn ghost" href="?lang=zh">中文</a>
+    </div>
+
+    <div class="grid-auto">
+      <!-- 左：交易表 -->
+      <div class="card">
+        <div style="font-weight:700; margin-bottom:8px">All Transactions (This Month)</div>
+        <div class="filters" style="margin-bottom:10px">
+          <select id="f-card">
+            <option value="">All Cards</option>
+            <option>Maybank ****1234</option>
+            <option>CIMB ****5678</option>
+          </select>
+          <select id="f-period">
+            <option>This Month</option>
+            <option>Last Month</option>
+            <option>Custom Range</option>
+          </select>
+          <select id="f-type">
+            <option value="">All Types</option>
+            <option>Owner Expense</option>
+            <option>Owner Payment</option>
+            <option>INFINITE Supplier</option>
+          </select>
+          <input class="input" id="f-q" placeholder="Search description...">
+        </div>
+        <table id="txTable">
+          <thead>
+            <tr>
+              <th>Date</th><th>Description</th><th>Amount (RM)</th><th>Category</th><th>Receipt</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 由后端渲染或前端填充；这里放示例行 -->
+            {% for t in transactions or [] %}
+            <tr>
+              <td>{{ t.date }}</td>
+              <td>{{ t.desc }}</td>
+              <td>{{ '%.2f'|format(t.amount|float) }}</td>
+              <td>
+                {% if t.category == 'gz_expenses' %}<span class="tag primary">INFINITE Supplier</span>
+                {% elif t.category == 'owner_expenses' %}<span class="tag">Owner Expense</span>
+                {% elif t.category == 'owner_payments' %}<span class="tag">Owner Payment</span>
+                {% else %}<span class="tag">Uncategorized</span>{% endif %}
+              </td>
+              <td>{{ t.receipt_status or 'Pending' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 右：统计与状态 -->
+      <div class="card">
+        <div style="font-weight:700; margin-bottom:8px">Coverage & Status</div>
+        <div class="stat">
+          <div class="v">{{ matched_count or 45 }}/{{ total_count or 60 }}</div>
+          <div class="meta">Receipts Matched</div>
+        </div>
+        <div class="stat">
+          <div class="v">B</div>
+          <div class="meta">Data Integrity Grade</div>
+        </div>
+        <div style="height:10px"></div>
+        <div class="meta">This panel summarizes receipt coverage and grading. Upload missing receipts to improve grade.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+
+⸻
+
+2) credit_cards_receipts.html（收据匹配 · 全屏版）
+
+{% extends "base.html" %}
+{% block title %}Credit Cards · Receipts Matching{% endblock %}
+{% block head_extra %}
+<style>
+  :root{ --pink:#FF007F; --card:#322446; --bg:#1a1323; --text:#fff; --line:#3b2b4e; --muted:#c9c6d3; --gap:16px; --radius:16px; --pad:14px; --page-max:1280px }
+  body{ background:var(--bg); color:var(--text) }
+  .page{ min-height:100vh; display:flex; flex-direction:column }
+  .main{ width:100%; max-width:var(--page-max); margin:0 auto; padding:20px }
+  .title{ font-size:22px; font-weight:700 }
+  .toolbar{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:var(--gap) }
+  .btn{ background:var(--card); color:#fff; border:1px solid var(--line); border-radius:12px; padding:8px 12px; text-decoration:none; cursor:pointer }
+  .btn.primary{ background:var(--pink); border-color:#ff6aa7 }
+  .btn.ghost{ background:transparent; border:1px solid #ffffff33 }
+  .card{ background:linear-gradient(180deg,#322446,#281a3a); border:1px solid var(--line); border-radius:16px; padding:var(--pad); box-shadow:0 6px 18px #0006 }
+  .grid-auto{ display:grid; grid-template-columns:1fr 1fr; gap:var(--gap) }
+  @media (max-width:1024px){ .grid-auto{ grid-template-columns:1fr } }
+  .meta{ color:var(--muted); font-size:12px }
+  table{ width:100%; border-collapse:collapse }
+  th,td{ border:1px solid var(--line); padding:8px; font-size:14px; vertical-align:top }
+  th{ background:#271b36; text-align:left }
+  .progress{ height:10px; background:#0f0a14; border:1px solid var(--line); border-radius:999px; overflow:hidden }
+  .bar{ height:100%; background:var(--pink); width:0% }
+  input[type=file]{ background:#0f0a14; color:#fff; border:1px solid var(--line); border-radius:10px; padding:8px 10px; width:100% }
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="page">
+  <div class="main">
+
+    <div class="title">Credit Cards · Receipts Matching</div>
+    <div class="toolbar">
+      <a class="btn" href="/credit-cards/transactions{{ '?lang=' + request.query_params.get('lang') if request.query_params.get('lang') else '' }}">Back to Transactions</a>
+      <div style="flex:1"></div>
+      <a class="btn ghost" href="?lang=en">EN</a>
+      <a class="btn ghost" href="?lang=zh">中文</a>
+    </div>
+
+    <div class="grid-auto">
+      <!-- 左：覆盖率与上传 -->
+      <div class="card">
+        <div style="font-weight:700; margin-bottom:8px">Coverage & Upload</div>
+        <div class="meta" style="margin-bottom:6px">Upload receipt images (JPG/PNG). OCR will extract merchant/amount/date.</div>
+
+        <form id="uploadForm" method="post" enctype="multipart/form-data" action="/credit-cards/receipts/upload">
+          <input type="file" name="files" accept="image/*" multiple>
+          <div style="height:10px"></div>
+          <button class="btn primary" type="submit">Upload & OCR</button>
+          <button class="btn" type="button" id="reScanBtn">Re-scan OCR</button>
+        </form>
+
+        <div style="height:16px"></div>
+        <div class="meta">Receipt Coverage</div>
+        <div class="progress"><div class="bar" id="covBar" style="width: {{ coverage_percent or 75 }}%"></div></div>
+        <div class="meta" style="margin-top:6px">{{ matched_count or 45 }}/{{ total_count or 60 }} matched ({{ coverage_percent or 75 }}%)</div>
+      </div>
+
+      <!-- 右：待匹配清单 -->
+      <div class="card">
+        <div style="font-weight:700; margin-bottom:8px">Pending Matching</div>
+        <table id="pendingTable">
+          <thead>
+            <tr>
+              <th>Transaction</th><th>Candidate Receipt</th><th>Similarity</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in pending or [] %}
+            <tr>
+              <td>{{ r.tx_date }} · {{ r.tx_desc }} · RM {{ '%.2f'|format(r.tx_amount|float) }}</td>
+              <td>{{ r.candidate_brief or 'N/A' }}</td>
+              <td>{{ r.similarity or 'Good' }}</td>
+              <td>
+                <form method="post" action="/credit-cards/receipts/confirm">
+                  <input type="hidden" name="tx_id" value="{{ r.tx_id }}">
+                  <input type="hidden" name="receipt_id" value="{{ r.receipt_id }}">
+                  <button class="btn primary" type="submit">Confirm</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+            {% if not pending %}
+            <tr><td colspan="4" class="meta">No pending items.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+
+    <!-- 下：OCR 结果预览（最近上传） -->
+    <div class="card">
+      <div style="font-weight:700; margin-bottom:8px">Latest OCR Results</div>
+      <table id="ocrTable">
+        <thead>
+          <tr><th>Merchant</th><th>Amount</th><th>Date</th><th>Confidence</th><th>Raw</th></tr>
+        </thead>
+        <tbody>
+          {% for o in ocr_results or [] %}
+          <tr>
+            <td>{{ o.merchant_name }}</td>
+            <td>{{ o.amount if o.amount is not none else '-' }}</td>
+            <td>{{ o.date or '-' }}</td>
+            <td>{{ '%.2f'|format(o.confidence|float) if o.confidence is not none else '-' }}</td>
+            <td class="meta">{{ o.raw_text[:80] if o.raw_text else '-' }}</td>
+          </tr>
+          {% endfor %}
+          {% if not ocr_results %}
+          <tr><td colspan="5" class="meta">Upload receipts to see OCR output.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // 可选：提交后刷新或改成异步
+  document.getElementById('reScanBtn').addEventListener('click', ()=>{
+    // 这里可调用后端重新OCR的端点，例如：/credit-cards/receipts/rescan
+    window.location.reload();
+  });
+</script>
+
+{% endblock %}
+
+
+⸻
+
+3) credit_cards_supplier_invoices.html（供应商发票 · 全屏版）
+
+{% extends "base.html" %}
+{% block title %}Credit Cards · Supplier Invoices{% endblock %}
+{% block head_extra %}
+<style>
+  :root{ --pink:#FF007F; --card:#322446; --bg:#1a1323; --text:#fff; --line:#3b2b4e; --muted:#c9c6d3; --gap:16px; --radius:16px; --pad:14px; --page-max:1280px }
+  body{ background:var(--bg); color:var(--text) }
+  .page{ min-height:100vh; display:flex; flex-direction:column }
+  .main{ width:100%; max-width:var(--page-max); margin:0 auto; padding:20px }
+  .title{ font-size:22px; font-weight:700 }
+  .toolbar{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:var(--gap) }
+  .btn{ background:var(--card); color:#fff; border:1px solid var(--line); border-radius:12px; padding:8px 12px; text-decoration:none; cursor:pointer }
+  .btn.primary{ background:var(--pink); border-color:#ff6aa7 }
+  .btn.ghost{ background:transparent; border:1px solid #ffffff33 }
+  .card{ background:linear-gradient(180deg,#322446,#281a3a); border:1px solid var(--line); border-radius:16px; padding:var(--pad); box-shadow:0 6px 18px #0006 }
+  .grid-auto{ display:grid; grid-template-columns:1fr 1fr; gap:var(--gap) }
+  @media (max-width:1024px){ .grid-auto{ grid-template-columns:1fr } }
+  .meta{ color:var(--muted); font-size:12px }
+  table{ width:100%; border-collapse:collapse }
+  th,td{ border:1px solid var(--line); padding:8px; font-size:14px; vertical-align:top }
+  th{ background:#271b36; text-align:left }
+  .input, select{ background:#0f0a14; color:#fff; border:1px solid var(--line); border-radius:10px; padding:8px 10px }
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="page">
+  <div class="main">
+
+    <div class="title">Credit Cards · Supplier Invoices</div>
+
+    <div class="toolbar">
+      <a class="btn" href="/credit-cards/transactions{{ '?lang=' + request.query_params.get('lang') if request.query_params.get('lang') else '' }}">Back to Transactions</a>
+      <div style="flex:1"></div>
+      <select id="selSupplier">
+        {% for s in suppliers or ['Dinas','Huawei','7SL','Raub Syc Hainan','Pasar Raya','Ai Smart Tech','Puchong Herbs'] %}
+        <option value="{{ s }}">{{ s }}</option>
+        {% endfor %}
+      </select>
+      <input class="input" id="selMonth" placeholder="YYYY-MM" value="{{ month or '2025-11' }}">
+      <a class="btn primary" id="btnPdf" href="#">Generate PDF</a>
+      <a class="btn" id="btnExcel" href="#">Export Excel</a>
+      <a class="btn ghost" href="?lang=en">EN</a>
+      <a class="btn ghost" href="?lang=zh">中文</a>
+    </div>
+
+    <div class="grid-auto">
+      <div class="card">
+        <div style="font-weight:700; margin-bottom:8px">Monthly Service Fee Summary</div>
+        <table>
+          <tbody>
+            <tr><td>Total INFINITE Spend</td><td>RM {{ '%.2f'|format(total_gz or 3200) }}</td></tr>
+            <tr><td>Service Fee (1%)</td><td>RM {{ '%.2f'|format((total_gz or 3200)*0.01) }}</td></tr>
+          </tbody>
+        </table>
+        <div class="meta" style="margin-top:8px">Rates configurable via SERVICE_FEE_RATE.</div>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:700; margin-bottom:8px">Supplier Invoices</div>
+        <table id="invTable">
+          <thead><tr><th>Supplier</th><th>Transactions</th><th>Amount (RM)</th><th>Service Fee</th></tr></thead>
+          <tbody>
+            {% for row in supplier_rows or [] %}
+            <tr>
+              <td>{{ row.name }}</td>
+              <td>{{ row.count }}</td>
+              <td>{{ '%.2f'|format(row.amount|float) }}</td>
+              <td>{{ '%.2f'|format(row.amount|float*0.01) }}</td>
+            </tr>
+            {% endfor %}
+            {% if not supplier_rows %}
+            <tr><td>Dinas</td><td>6</td><td>850.00</td><td>8.50</td></tr>
+            <tr><td>Huawei</td><td>3</td><td>1200.00</td><td>12.00</td></tr>
+            <tr><td>7SL</td><td>5</td><td>650.00</td><td>6.50</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const q = (k)=>document.querySelector(k);
+  function goPdf(){
+    const s = q('#selSupplier').value || 'Dinas';
+    const m = q('#selMonth').value || '2025-11';
+    window.location = `/invoices/supplier.pdf?supplier=${encodeURIComponent(s)}&month=${encodeURIComponent(m)}`;
+  }
+  q('#btnPdf').addEventListener('click', goPdf);
+  q('#btnExcel').addEventListener('click', ()=>alert('Excel export endpoint to be wired.'));
+</script>
+
+{% endblock %}
+
+
+⸻
+
+使用说明（一次性替换即可）
+	1.	把以上三份模板文件放进：
+
+accounting_app/templates/
+  credit_cards_transactions.html
+  credit_cards_receipts.html
+  credit_cards_supplier_invoices.html
+
+	2.	确保已挂载相关路由（你之前已装好的就不用动）：
+
+	•	/credit-cards/transactions 渲染 credit_cards_transactions.html
+	•	/credit-cards/receipts 渲染并处理上传，OCR 走 OCRClient
+	•	/credit-cards/receipts/upload 处理多文件上传
+	•	/invoices/supplier.pdf 已由我给你的 invoices.py 提供
+
+	3.	颜色、间距、字号全走 brand.css（已统一）。需要微调全站只改 :root 变量。
+
+不问你别的了，这三份就是整页成品。直接覆盖、刷新预览就能看到“全屏、不拥挤、无图标、品牌三色”的版本。
