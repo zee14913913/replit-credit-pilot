@@ -1,6 +1,8 @@
 # accounting_app/routers/invoices.py
-from fastapi import APIRouter, Query, Response, HTTPException
-from datetime import datetime
+from fastapi import APIRouter, Query, Response, HTTPException, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from datetime import datetime, date
 from decimal import Decimal, ROUND_HALF_UP
 from typing import Dict, Any, List
 import io
@@ -11,7 +13,13 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.lib import colors
 
+# 数据库相关导入
+from sqlalchemy import select, func, extract
+from accounting_app.db import get_session
+from accounting_app.models import Supplier, Transaction, Invoice, InvoiceSequence
+
 router = APIRouter(prefix="/invoices", tags=["Invoices"])
+templates = Jinja2Templates(directory="accounting_app/templates")
 
 # ========= 你的公司信息（全局生效，可改） =========
 COMPANY: Dict[str, Any] = {
@@ -308,7 +316,79 @@ def _pick_renderer(layout: str):
         raise HTTPException(status_code=400, detail="Unknown layout. Use one of: service | debit | itemised")
     return RENDERERS[key]
 
+def next_number(prefix: str = "INV") -> str:
+    """
+    按年自动递增发票编号：INV-YYYY-0001、0002……
+    线程安全：使用数据库事务保证唯一性
+    """
+    y = date.today().year
+    with get_session() as db:
+        seq = db.execute(
+            select(InvoiceSequence).where(
+                InvoiceSequence.prefix == prefix,
+                InvoiceSequence.year == y
+            )
+        ).scalar_one_or_none()
+        
+        if not seq:
+            seq = InvoiceSequence(prefix=prefix, year=y, next_seq=1)
+            db.add(seq)
+            db.flush()
+        
+        num = f"{prefix}-{y}-{seq.next_seq:04d}"
+        seq.next_seq += 1
+    
+    return num
+
 # ------------------- 路由 -------------------
+
+@router.get("/credit-cards/supplier-invoices", response_class=HTMLResponse)
+def page_supplier_invoices(request: Request, y: int = None, m: int = None):
+    """
+    供应商发票页面：读取数据库真实数据，按月汇总供应商交易并计算1%服务费
+    """
+    today = date.today()
+    y = y or today.year
+    m = m or today.month
+    
+    with get_session() as db:
+        rows = db.execute(
+            select(
+                Supplier.id,
+                Supplier.supplier_name,
+                Supplier.address,
+                func.coalesce(func.sum(Transaction.amount), 0).label('total')
+            )
+            .join(Transaction, Transaction.supplier_id == Supplier.id, isouter=True)
+            .where(
+                extract('year', Transaction.txn_date) == y,
+                extract('month', Transaction.txn_date) == m
+            )
+            .group_by(Supplier.id, Supplier.supplier_name, Supplier.address)
+            .order_by(Supplier.supplier_name.asc())
+        ).all()
+        
+        suppliers = []
+        total_infinite = Decimal("0.00")
+        for sid, name, addr, total in rows:
+            total = Decimal(str(total or 0)).quantize(Decimal("0.01"))
+            suppliers.append({
+                "id": sid,
+                "name": name,
+                "address": addr or "",
+                "total": float(total),
+                "fee": float((total * Decimal("0.01")).quantize(Decimal("0.01"))),
+            })
+            total_infinite += total
+    
+    service_fee = (total_infinite * Decimal("0.01")).quantize(Decimal("0.01"))
+    
+    return templates.TemplateResponse("credit_cards_supplier_invoices.html", {
+        "request": request,
+        "suppliers": suppliers,
+        "total_infinite": float(total_infinite),
+        "service_fee": float(service_fee),
+    })
 
 @router.get("/preview.pdf")
 def preview_pdf(
@@ -336,17 +416,41 @@ def preview_pdf(
 @router.get("/make")
 def make_invoice(
     layout: str = Query(...),
-    number: str = Query(...),
     bill_to_name: str = Query(...),
     amount: float = Query(...),
+    number: str = Query(None),
     bill_to_addr: str = Query(""),
     bill_to_reg: str = Query(""),
     lang: str = Query("en"),
 ) -> Response:
-    """最小参数生成并下载 PDF"""
+    """
+    生成并下载 PDF 发票
+    - number参数可选，若未提供则自动生成 INV-YYYY-0001 格式编号
+    - 自动保存发票记录到数据库
+    """
     render = _pick_renderer(layout)
+    
+    inv_no = number or next_number("INV")
+    
+    tax_rate = Decimal(str(COMPANY["tax"]["sst"]))
+    base_amount = Decimal(str(amount)).quantize(Decimal("0.01"))
+    total = base_amount * (Decimal("1.00") + tax_rate)
+    
+    with get_session() as db:
+        db.add(Invoice(
+            number=inv_no,
+            lang=lang,
+            layout=layout,
+            bill_to_name=bill_to_name,
+            bill_to_addr=bill_to_addr,
+            bill_to_reg=bill_to_reg,
+            amount=base_amount,
+            tax_rate=tax_rate,
+            total=total,
+        ))
+    
     data = {
-        "number": number,
+        "number": inv_no,
         "date": datetime.now().strftime("%Y-%m-%d"),
         "bill_to_name": bill_to_name,
         "bill_to_addr": bill_to_addr,
@@ -354,6 +458,6 @@ def make_invoice(
         "amount": amount,
     }
     pdf = render(data, "zh" if lang.lower()=="zh" else "en")
-    filename = f"{number}.pdf"
+    filename = f"{inv_no}.pdf"
     return Response(content=pdf, media_type="application/pdf",
                     headers={"Content-Disposition": f'attachment; filename="{filename}"'})
