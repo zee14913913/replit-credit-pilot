@@ -331,15 +331,42 @@ class UltimateLoanScraper:
         }
     
     def classify_loan_type(self, text: str) -> str:
-        """智能分类贷款类型"""
+        """智能分类贷款类型 - 使用决策树（architect设计）"""
         text_lower = text.lower()
         
-        # 按优先级检查
-        for loan_type, keywords in self.loan_keywords.items():
-            if any(kw in text_lower for kw in keywords):
-                return loan_type.upper()
+        # Step 1: 排除非贷款类别（优先级最高）
+        non_loan_keywords = {
+            'savings': ['savings account', 'deposit account', 'fixed deposit', 'simpanan'],
+            'insurance': ['insurance', 'takaful', 'protection plan', 'insurans'],
+            'debit': ['debit card', 'atm card', 'kad debit'],
+            'investment': ['unit trust', 'investment', 'mutual fund', 'pelaburan'],
+            'forex': ['forex', 'foreign exchange', 'currency'],
+            'other_services': ['online banking', 'mobile app', 'calculator', 'simulator']
+        }
         
-        return 'OTHER'
+        for category, keywords in non_loan_keywords.items():
+            if any(kw in text_lower for kw in keywords):
+                return None  # 排除，不是贷款产品
+        
+        # Step 2: 按优先级分类贷款类型
+        if any(kw in text_lower for kw in self.loan_keywords['credit_card']):
+            return 'CREDIT_CARD'
+        elif any(kw in text_lower for kw in self.loan_keywords['home_loan']):
+            return 'HOME_LOAN'
+        elif any(kw in text_lower for kw in self.loan_keywords['refinance']):
+            return 'REFINANCE'
+        elif any(kw in text_lower for kw in self.loan_keywords['debt_consolidation']):
+            return 'DEBT_CONSOLIDATION'
+        elif any(kw in text_lower for kw in self.loan_keywords['car_loan']):
+            return 'CAR_LOAN'
+        elif any(kw in text_lower for kw in self.loan_keywords['sme_loan']):
+            return 'SME_LOAN'
+        elif any(kw in text_lower for kw in self.loan_keywords['business_loan']):
+            return 'BUSINESS_LOAN'
+        elif any(kw in text_lower for kw in self.loan_keywords['personal_loan']):
+            return 'PERSONAL_LOAN'
+        else:
+            return 'OTHER'
     
     def is_comparison_platform(self, company_name: str) -> bool:
         """判断是否为比价平台"""
@@ -609,7 +636,7 @@ class UltimateLoanScraper:
         return False
     
     def _extract_product_links(self, soup: BeautifulSoup, base_url: str) -> List[str]:
-        """从列表页提取所有产品链接"""
+        """从列表页提取所有产品链接（过滤导航链接）"""
         product_links = []
         
         # 查找产品卡片中的链接
@@ -617,7 +644,7 @@ class UltimateLoanScraper:
             link = card.find('a', href=True)
             if link:
                 full_url = urljoin(base_url, link['href'])
-                if self._is_valid_url(full_url, base_url):
+                if self._is_valid_url(full_url, base_url) and self._is_product_link(full_url, link.get_text()):
                     product_links.append(full_url)
         
         # 查找表格中的链接
@@ -625,16 +652,43 @@ class UltimateLoanScraper:
             link = row.find('a', href=True)
             if link:
                 href = link['href']
-                # 排除分页链接
+                # 排除分页链接和导航链接
                 if not any(kw in href.lower() for kw in ['page=', 'next', 'prev']):
                     full_url = urljoin(base_url, href)
-                    if self._is_valid_url(full_url, base_url):
+                    if self._is_valid_url(full_url, base_url) and self._is_product_link(full_url, link.get_text()):
                         product_links.append(full_url)
         
         return list(set(product_links))  # 去重
     
+    def _is_product_link(self, url: str, link_text: str) -> bool:
+        """判断是否为真正的产品链接（过滤导航页面）"""
+        # 排除导航关键词
+        nav_keywords = [
+            'about', 'contact', 'login', 'register', 'media', 'news', 'announcement',
+            'promotion', 'terms', 'privacy', 'faq', 'help', 'support', 'branch',
+            'atm', 'calculator', 'simulator', 'apply-now', 'learn-more', 'find-out',
+            'read-more', 'what-happening', 'latest-news', 'our-commitment'
+        ]
+        
+        url_lower = url.lower()
+        text_lower = link_text.lower()
+        
+        # 如果URL或链接文字包含导航关键词，排除
+        if any(kw in url_lower or kw in text_lower for kw in nav_keywords):
+            return False
+        
+        # 如果链接文字太短或太通用，排除
+        generic_texts = [
+            'personal', 'business', 'contact us', 'about us', 'read more',
+            'learn more', 'find out more', 'click here', 'home'
+        ]
+        if text_lower in generic_texts:
+            return False
+        
+        return True
+    
     def _extract_single_product(self, url: str, company_name: str) -> Optional[Dict[str, Any]]:
-        """提取单个产品的完整12个字段"""
+        """提取单个产品的完整12个字段 - 增强版（architect设计）"""
         try:
             response = self.session.get(url, timeout=15)
             if response.status_code != 200:
@@ -643,8 +697,12 @@ class UltimateLoanScraper:
             soup = BeautifulSoup(response.text, 'html.parser')
             text = soup.get_text(separator=' ', strip=True)
             
-            # 提取产品名称
-            product_name = self._extract_product_name(soup)
+            # Layer 2验证：硬性排除（architect设计）
+            if self._is_invalid_page(soup, text, url):
+                return None
+            
+            # 提取产品名称（改进版）
+            product_name = self._extract_product_name_improved(soup)
             if not product_name or len(product_name) < 3:
                 return None
             
@@ -654,8 +712,12 @@ class UltimateLoanScraper:
                 return None
             self.product_hashes.add(product_hash)
             
-            # 判断贷款类型
+            # 判断贷款类型（使用决策树）
             loan_type = self.classify_loan_type(url + ' ' + text + ' ' + product_name)
+            
+            # 如果是非贷款类别，排除
+            if loan_type is None:
+                return None
             
             # 提取12个字段
             product = {
@@ -681,6 +743,71 @@ class UltimateLoanScraper:
         except Exception as e:
             logger.debug(f"        提取产品失败 {url}: {e}")
             return None
+    
+    def _is_invalid_page(self, soup: BeautifulSoup, text: str, url: str) -> bool:
+        """硬性排除：检测无效页面（architect设计）"""
+        # 检测错误页面
+        error_indicators = [
+            'sorry, we', 'unavailable', 'not found', '404', '403', 'error',
+            'oops', 'ooops', 'something went wrong', 'page not found'
+        ]
+        if any(indicator in text.lower() for indicator in error_indicators):
+            return True
+        
+        # 检测导航页面（内容太少）
+        if len(text) < 200:
+            return True
+        
+        # 检测登录/验证页面
+        if soup.find(['input'], {'type': 'password'}):
+            return True
+        
+        return False
+    
+    def _extract_product_name_improved(self, soup: BeautifulSoup) -> str:
+        """改进的产品名称提取（architect优先级策略）"""
+        # 优先级1: Breadcrumb终端
+        breadcrumb = soup.find(['nav', 'ol', 'ul'], class_=re.compile(r'breadcrumb', re.I))
+        if breadcrumb:
+            items = breadcrumb.find_all(['li', 'a'])
+            if items:
+                last_item = items[-1].get_text(strip=True)
+                if 5 < len(last_item) < 100:
+                    return last_item
+        
+        # 优先级2: 利率表附近的标题
+        rate_section = soup.find(text=re.compile(r'(rate|interest|kadar)', re.I))
+        if rate_section:
+            heading = rate_section.find_parent(['h1', 'h2', 'h3', 'h4', 'h5'])
+            if heading:
+                name = heading.get_text(strip=True)
+                if 5 < len(name) < 100:
+                    return name
+        
+        # 优先级3: 主要h1标题
+        h1 = soup.find('h1')
+        if h1:
+            name = h1.get_text(strip=True)
+            if 5 < len(name) < 150:
+                return name
+        
+        # 优先级4: title标签（清理后）
+        title = soup.find('title')
+        if title:
+            name = title.get_text(strip=True)
+            # 清理title（移除站点名称）
+            name = re.split(r'[|–-]', name)[0].strip()
+            if 5 < len(name) < 150:
+                return name
+        
+        # 优先级5: h2标题
+        h2 = soup.find('h2')
+        if h2:
+            name = h2.get_text(strip=True)
+            if 5 < len(name) < 150:
+                return name
+        
+        return ''
     
     def _extract_product_name(self, soup: BeautifulSoup) -> str:
         """提取产品名称"""
