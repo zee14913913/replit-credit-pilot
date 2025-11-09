@@ -77,7 +77,8 @@ app.include_router(invoices.router)
 app.include_router(admin_seed.router)
 
 # ====== Sentry 错误追踪（可选）======
-if os.getenv("SENTRY_DSN"):
-    import sentry_sdk
-    sentry_sdk.init(dsn=os.getenv("SENTRY_DSN"), traces_sample_rate=0.05)
+# 注释掉直到安装 sentry_sdk 或配置 SENTRY_DSN
+# if os.getenv("SENTRY_DSN"):
+#     import sentry_sdk
+#     sentry_sdk.init(dsn=os.getenv("SENTRY_DSN"), traces_sample_rate=0.05)
 
