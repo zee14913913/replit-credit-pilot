@@ -1,9 +1,13 @@
-import os, sqlite3, time, csv, io
+import os, sqlite3, time, csv, io, logging
 from datetime import datetime, timedelta, timezone
+from typing import List, Dict, Any
+
+logger = logging.getLogger(__name__)
 
 DB = os.getenv("LOANS_DB_PATH", "/home/runner/loans.db")
 TZ = os.getenv("TZ", "Asia/Kuala_Lumpur")
 MIN_REFRESH_HOURS = int(os.getenv("MIN_REFRESH_HOURS", "20"))
+USE_REAL_DATA = os.getenv("USE_REAL_LOAN_DATA", "false").lower() == "true"
 
 def _conn():
     con = sqlite3.connect(DB)
@@ -61,18 +65,104 @@ def wipe_and_seed_demo():
     con.commit(); con.close()
     set_last_harvest(ts)
 
+def harvest_real_data():
+    """
+    从真实数据源获取贷款数据
+    - BNM API: 官方利率数据
+    - 68家金融机构爬虫: 全面贷款产品
+    """
+    try:
+        # 导入完整数据采集模块
+        from accounting_app.services.bnm_api_client import bnm_client
+        from accounting_app.services.comprehensive_loan_scraper import comprehensive_scraper
+        
+        logger.info("🚀 开始采集真实贷款数据（68家金融机构）...")
+        
+        # 1. 获取BNM利率数据
+        logger.info("📊 获取BNM官方利率...")
+        bnm_rates = bnm_client.get_all_rates()
+        logger.info(f"  - OPR: {bnm_rates.get('opr', {}).get('opr', 'N/A')}%")
+        
+        # 2. 爬取所有金融机构贷款产品
+        logger.info("🕷️ 爬取68家金融机构贷款产品...")
+        all_products = comprehensive_scraper.scrape_all_institutions(max_workers=10)
+        
+        # 3. 验证数据
+        valid_products = comprehensive_scraper.validate_products(all_products)
+        
+        # 4. 存储到数据库
+        if valid_products:
+            con = _conn()
+            cur = con.cursor()
+            cur.execute("DELETE FROM loan_updates")
+            
+            ts = _now_iso()
+            items = [
+                (
+                    p['source'],
+                    p['bank'],
+                    p['product'],
+                    p['type'],
+                    p['rate'],
+                    p['summary'],
+                    ts
+                )
+                for p in valid_products
+            ]
+            
+            cur.executemany(
+                "INSERT INTO loan_updates(source,bank,product,type,rate,summary,pulled_at) VALUES(?,?,?,?,?,?,?)",
+                items
+            )
+            con.commit()
+            con.close()
+            
+            logger.info(f"✅ 成功存储 {len(valid_products)} 个真实贷款产品")
+            logger.info(f"   来自 68 家金融机构")
+            
+            # 导出CSV备份
+            try:
+                comprehensive_scraper.export_to_csv(valid_products, '/home/runner/malaysia_loans_export.csv')
+            except Exception as e:
+                logger.warning(f"⚠️ CSV导出失败: {e}")
+            
+            set_last_harvest(ts)
+            return True, ts
+        else:
+            logger.warning("⚠️ 未获取到有效的贷款产品，保持现有数据")
+            return False, get_last_harvest()
+            
+    except Exception as e:
+        logger.error(f"❌ 真实数据采集失败: {e}")
+        logger.info("⚠️ 回退到演示数据")
+        wipe_and_seed_demo()
+        return True, get_last_harvest()
+
+
 def harvest_if_due(force=False):
+    """
+    根据配置选择数据源：
+    - USE_REAL_LOAN_DATA=true: 采集真实银行数据
+    - USE_REAL_LOAN_DATA=false: 使用演示数据（默认）
+    """
     init()
     last = get_last_harvest()
     if not force and last:
         try:
-            last_dt=datetime.fromisoformat(last)
-            if datetime.now(last_dt.tzinfo)-last_dt < timedelta(hours=MIN_REFRESH_HOURS):
+            last_dt = datetime.fromisoformat(last)
+            if datetime.now(last_dt.tzinfo) - last_dt < timedelta(hours=MIN_REFRESH_HOURS):
                 return False, last
         except Exception:
             pass
-    wipe_and_seed_demo()
-    return True, get_last_harvest()
+    
+    # 根据环境变量选择数据源
+    if USE_REAL_DATA:
+        logger.info("🌐 使用真实数据源（BNM API + 银行爬虫）")
+        return harvest_real_data()
+    else:
+        logger.info("🎭 使用演示数据（快速启动）")
+        wipe_and_seed_demo()
+        return True, get_last_harvest()
 
 def list_updates(q:str=None, limit:int=100):
     con=_conn(); cur=con.cursor()

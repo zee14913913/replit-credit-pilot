@@ -1,0 +1,103 @@
+📋 商业银行 (Commercial Banks) - 27家
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+01。 Affin Bank Berhad
+02。Alliance Bank Malaysia Berhad
+03。AmBank (M) Berhad
+04。BNP Paribas Malaysia Berhad (企业银行)
+05。Bangkok Bank Berhad (外资)
+06。Bank of America Malaysia Berhad (有错误数据)
+07。Bank of China (Malaysia) Berhad (外资)
+08。CIMB Bank Berhad
+09。China Construction Bank (Malaysia) Berhad (企业银行)
+10。 Citibank Berhad (业务转UOB)
+11。  Deutsche Bank (Malaysia) Berhad (企业银行)
+12。 HSBC Bank Malaysia Berhad
+13。 Hong Leong Bank Berhad
+14。 India International Bank (Malaysia) Berhad (已关闭2025年7月)
+15。 Industrial and Commercial Bank of China (Malaysia) Berhad (ICBC)
+16。 J.P. Morgan Chase Bank Berhad (企业银行)
+17。 MUFG Bank (Malaysia) Berhad (企业银行)
+18。 Malayan Banking Berhad (Maybank)
+19。 Mizuho Bank (Malaysia) Berhad (企业银行)
+20。 National Bank of Abu Dhabi Malaysia Berhad (已合并2016)
+21。 OCBC Bank (Malaysia) Berhad
+22。 Public Bank Berhad
+23。 RHB Bank Berhad
+24。 Standard Chartered Bank Malaysia Berhad
+25。 Sumitomo Mitsui Banking Corporation Malaysia Berhad (企业银行)
+26。 The Bank of Nova Scotia Berhad (已退出2024年6月)
+27。 United Overseas Bank (Malaysia) Bhd (UOB)
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+🕌 伊斯兰银行 (Islamic Banks) - 16家
+
+━━━━━━━━━━━━━━━━━━━━━━
+28。 Affin Islamic Bank Berhad
+29。 Al Rajhi Banking & Investment Corporation (Malaysia) Berhad
+30。 Alliance Islamic Bank Berhad
+31。 AmBank Islamic Berhad
+32。 Bank Islam Malaysia Berhad
+33。 Bank Muamalat Malaysia Berhad 
+34。 CIMB Islamic Bank Berhad
+35。 HSBC Amanah Malaysia Berhad
+36。 Hong Leong Islamic Bank Berhad 
+37。 Kuwait Finance House (Malaysia) Berhad
+38。 MBSB Bank Berhad
+39。 Maybank Islamic Berhad
+40。 OCBC Al-Amin Bank Berhad
+41。  Public Islamic Bank Berhad
+42。 RHB Islamic Bank Berhad
+43。 Standard Chartered Saadiq Berhad
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+发展金融机构 (Development Financial Institutions) - 6家
+
+━━━━━━━━━━━━━━━━━━━━━━
+44。 Bank Pembangunan Malaysia Berhad
+45。 SME Bank (Bank Perusahaan Kecil & Sederhana Malaysia Berhad)
+46。 EXIM Bank (Export-Import Bank of Malaysia Berhad)
+47。 Bank Kerjasama Rakyat Malaysia Berhad (Bank Rakyat)
+48。 Bank Simpanan Nasional (BSN)
+49。 Agrobank (Bank Pertanian Malaysia Berhad)
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+💻 数字银行 (Digital Banks) - 5家
+
+━━━━━━━━━━━━━━━━━━━━━━
+50。 GX Bank Berhad
+51。 Boost Bank Berhad (Axiata × RHB)
+52。 AEON Bank (M) Berhad
+53。 KAF Digital Bank Berhad (只有储蓄产品)
+54。 YTL Digital Bank Berhad (Ryt Bank) (只有BNPL产品)
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+🌐 P2P平台 (FinTech P2P Platforms) - 10家
+
+━━━━━━━━━━━━━━━━━━━━━━
+55。 Bay Smart Capital Ventures Sdn Bhd (CapBay)
+56。 B2B Finpal Sdn Bhd
+57。 CapSphere Services Sdn Bhd (Capsphere)
+58。 Crowd Sense Sdn Bhd (Cofundr)
+59。 FBM Crowdtech Sdn Bhd (Alixco)
+60。 Microleap PLT (microLEAP)
+61。  Modalku Ventures Sdn Bhd (Funding Societies Malaysia)
+62。 MoneySave Capital PLT (MoneySave)
+63。 Peoplender Sdn Bhd (Fundaztic)
+64。 QuicKash Malaysia Sdn Bhd (QuicKash)
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+Non-Bank Credit Providers （ CCOB · BNPL ）
+
+━━━━━━━━━━━━━━━━━━━━━━
+65。FinTech
+66。AEON Credit Service
+67。BigPay
+68。Grab Finance
+
