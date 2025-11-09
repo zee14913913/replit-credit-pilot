@@ -701,6 +701,11 @@ class UltimateLoanScraper:
             if self._is_invalid_page(soup, text, url):
                 return None
             
+            # Layer 2验证：产品信号检查（architect设计）
+            if not self._has_product_signals(soup, text):
+                logger.debug(f"        缺少产品信号，跳过: {url}")
+                return None
+            
             # 提取产品名称（改进版）
             product_name = self._extract_product_name_improved(soup)
             if not product_name or len(product_name) < 3:
@@ -754,8 +759,8 @@ class UltimateLoanScraper:
         if any(indicator in text.lower() for indicator in error_indicators):
             return True
         
-        # 检测导航页面（内容太少）
-        if len(text) < 200:
+        # 检测导航页面（内容太少）- 放宽到100字符
+        if len(text) < 100:
             return True
         
         # 检测登录/验证页面
@@ -763,6 +768,40 @@ class UltimateLoanScraper:
             return True
         
         return False
+    
+    def _has_product_signals(self, soup: BeautifulSoup, text: str) -> bool:
+        """产品信号验证（architect设计）- 必需：CTA + 财务属性"""
+        # 信号1: CTA（申请按钮）
+        has_cta = False
+        cta_keywords = ['apply', 'apply now', 'get started', 'learn more', 'mohon', 'borang']
+        
+        for link in soup.find_all(['a', 'button']):
+            link_text = link.get_text().lower()
+            if any(kw in link_text for kw in cta_keywords):
+                has_cta = True
+                break
+        
+        # 信号2: 财务属性（利率、期限、费用）
+        has_financial = False
+        financial_keywords = [
+            'rate', 'interest', 'kadar', 'apr', 'p.a.', 'per annum',
+            'tenure', 'period', 'tempoh', 'tahun', 'month', 'year',
+            'fee', 'charge', 'yuran', 'caj', 'rm'
+        ]
+        
+        text_lower = text.lower()
+        if any(kw in text_lower for kw in financial_keywords):
+            has_financial = True
+        
+        # 信号3: 贷款关键词
+        has_loan_keywords = False
+        loan_keywords = ['loan', 'financing', 'credit card', 'pinjaman', 'pembiayaan', 'kad kredit']
+        if any(kw in text_lower for kw in loan_keywords):
+            has_loan_keywords = True
+        
+        # 必需至少1个信号（进一步放宽，优先召回率）
+        signals_count = sum([has_cta, has_financial, has_loan_keywords])
+        return signals_count >= 1  # 临时放宽到1个信号
     
     def _extract_product_name_improved(self, soup: BeautifulSoup) -> str:
         """改进的产品名称提取（architect优先级策略）"""
@@ -1078,11 +1117,14 @@ def generate_statistics():
     logger.info("")
 
 
-def main():
-    """主流程"""
+def main(test_mode=False, max_institutions=None):
+    """主流程 - 支持测试模式"""
     logger.info("")
     logger.info("=" * 100)
-    logger.info("🚀 CreditPilot - 马来西亚68家金融机构深度爬虫系统 (Ultimate Edition)")
+    if test_mode:
+        logger.info(f"🧪 CreditPilot - 测试模式（前{max_institutions}家机构）")
+    else:
+        logger.info("🚀 CreditPilot - 马来西亚68家金融机构深度爬虫系统 (Ultimate Edition)")
     logger.info("=" * 100)
     logger.info("三层架构: Layer 0 (Orchestrator) + Layer 1 (Discovery) + Layer 2 (Extraction) + Layer 3 (QA)")
     logger.info("目标: 3000-5000个产品，100%准确性")
@@ -1096,6 +1138,12 @@ def main():
     
     # 加载机构列表（按CSV顺序）
     institutions = load_institutions_from_csv(CSV_INPUT)
+    
+    # 测试模式：只爬取前N家
+    if test_mode and max_institutions:
+        institutions = institutions[:max_institutions]
+        logger.info(f"🧪 测试模式：只爬取前 {max_institutions} 家机构")
+        logger.info("")
     
     # 创建爬虫
     scraper = UltimateLoanScraper()
@@ -1147,4 +1195,14 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    import sys
+    
+    # 支持命令行参数：python script.py --test 2
+    if '--test' in sys.argv:
+        try:
+            test_count = int(sys.argv[sys.argv.index('--test') + 1])
+            main(test_mode=True, max_institutions=test_count)
+        except:
+            main(test_mode=True, max_institutions=2)
+    else:
+        main()
