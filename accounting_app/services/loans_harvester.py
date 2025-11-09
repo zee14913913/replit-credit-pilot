@@ -15,20 +15,47 @@ def _conn():
     return con
 
 def init():
+    """初始化数据库，支持12个详细字段"""
     con=_conn(); cur=con.cursor()
+    
+    # 扩展的贷款产品表（12个字段）
+    cur.execute("""CREATE TABLE IF NOT EXISTS loan_products_detailed(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        company TEXT,                    -- 1. COMPANY (金融机构)
+        loan_type TEXT,                  -- 2. LOAN TYPE (贷款类型)
+        product_name TEXT,               -- 产品名称
+        required_doc TEXT,               -- 3. REQUIRED DOC (所需文件)
+        features TEXT,                   -- 4. FEATURES (特点)
+        benefits TEXT,                   -- 5. BENEFITS (优势)
+        fees_charges TEXT,               -- 6. FEES & CHARGES (费用)
+        tenure TEXT,                     -- 7. TENURE (期限)
+        rate TEXT,                       -- 8. RATE (利率)
+        application_form_url TEXT,       -- 9. APPLICATION FORM (申请表链接)
+        product_disclosure_url TEXT,     -- 10. PRODUCT DISCLOSURE (产品披露链接)
+        terms_conditions_url TEXT,       -- 11. TERMS & CONDITIONS (条款链接)
+        preferred_customer_type TEXT,    -- 12. 放贷方对借贷人的喜好
+        institution_type TEXT,           -- 机构类型 (commercial, islamic, digital等)
+        source_url TEXT,                 -- 数据来源URL
+        pulled_at TEXT                   -- 采集时间
+    )""")
+    
+    # 保留旧表以兼容现有系统
     cur.execute("""CREATE TABLE IF NOT EXISTS loan_updates(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         source TEXT, bank TEXT, product TEXT, type TEXT, rate TEXT, summary TEXT, pulled_at TEXT
     )""")
+    
     cur.execute("""CREATE TABLE IF NOT EXISTS loan_intel(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         source TEXT, product TEXT,
         preferred_customer TEXT, less_preferred TEXT, docs_required TEXT,
         feedback_summary TEXT, sentiment_score REAL, pulled_at TEXT
     )""")
+    
     cur.execute("""CREATE TABLE IF NOT EXISTS loan_meta_kv(
         k TEXT PRIMARY KEY, v TEXT
     )""")
+    
     con.commit(); con.close()
 
 def _now_iso():

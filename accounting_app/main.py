@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.responses import Response
 from starlette.templating import Jinja2Templates
 
-from accounting_app.routers import health, files, public, history, stats, loans_updates, loans_business, ctos, ui_cards, loans_ranking, loans_extras, preview, credit_cards, savings, statements, invoices, admin_seed
+from accounting_app.routers import health, files, public, history, stats, loans_updates, loans_business, ctos, ui_cards, loans_ranking, loans_extras, preview, credit_cards, savings, statements, invoices, admin_seed, loans_detailed
 from accounting_app.core.middleware import SecurityAndLogMiddleware, SimpleRateLimitMiddleware
 from accounting_app.core.logger import info
 from accounting_app.core.maintenance import start_local_cleanup_thread
@@ -65,6 +65,7 @@ app.include_router(public.router)
 app.include_router(history.router)
 app.include_router(stats.router)
 app.include_router(loans_updates.router)
+app.include_router(loans_detailed.router)
 app.include_router(loans_business.router)
 app.include_router(loans_ranking.router)
 app.include_router(loans_extras.router)
