@@ -661,31 +661,21 @@ class UltimateLoanScraper:
         return list(set(product_links))  # 去重
     
     def _is_product_link(self, url: str, link_text: str) -> bool:
-        """判断是否为真正的产品链接（过滤导航页面）"""
-        # 排除导航关键词
-        nav_keywords = [
-            'about', 'contact', 'login', 'register', 'media', 'news', 'announcement',
-            'promotion', 'terms', 'privacy', 'faq', 'help', 'support', 'branch',
-            'atm', 'calculator', 'simulator', 'apply-now', 'learn-more', 'find-out',
-            'read-more', 'what-happening', 'latest-news', 'our-commitment'
+        """判断是否为产品链接（宽松过滤 - 宁可多抓）"""
+        # 仅排除明显的非产品链接
+        excluded_keywords = [
+            'login', 'logout', 'register', 'signin', 'signout',
+            'mailto:', 'tel:', 'javascript:', '#',
+            '/branch', '/atm', '/contact-us', '/about-us'
         ]
         
         url_lower = url.lower()
-        text_lower = link_text.lower()
         
-        # 如果URL或链接文字包含导航关键词，排除
-        if any(kw in url_lower or kw in text_lower for kw in nav_keywords):
+        # 如果URL包含明显排除关键词，才排除
+        if any(kw in url_lower for kw in excluded_keywords):
             return False
         
-        # 如果链接文字太短或太通用，排除
-        generic_texts = [
-            'personal', 'business', 'contact us', 'about us', 'read more',
-            'learn more', 'find out more', 'click here', 'home'
-        ]
-        if text_lower in generic_texts:
-            return False
-        
-        return True
+        return True  # 其他都通过
     
     def _extract_single_product(self, url: str, company_name: str) -> Optional[Dict[str, Any]]:
         """提取单个产品的完整12个字段 - 增强版（architect设计）"""
@@ -697,14 +687,14 @@ class UltimateLoanScraper:
             soup = BeautifulSoup(response.text, 'html.parser')
             text = soup.get_text(separator=' ', strip=True)
             
-            # Layer 2验证：硬性排除（architect设计）
+            # Layer 2验证：仅排除明显错误页面
             if self._is_invalid_page(soup, text, url):
                 return None
             
-            # Layer 2验证：产品信号检查（architect设计）
-            if not self._has_product_signals(soup, text):
-                logger.debug(f"        缺少产品信号，跳过: {url}")
-                return None
+            # 暂时禁用产品信号检查 - 宁可多抓，后期删除
+            # if not self._has_product_signals(soup, text):
+            #     logger.debug(f"        缺少产品信号，跳过: {url}")
+            #     return None
             
             # 提取产品名称（改进版）
             product_name = self._extract_product_name_improved(soup)
@@ -750,20 +740,21 @@ class UltimateLoanScraper:
             return None
     
     def _is_invalid_page(self, soup: BeautifulSoup, text: str, url: str) -> bool:
-        """硬性排除：检测无效页面（architect设计）"""
-        # 检测错误页面
-        error_indicators = [
-            'sorry, we', 'unavailable', 'not found', '404', '403', 'error',
-            'oops', 'ooops', 'something went wrong', 'page not found'
-        ]
-        if any(indicator in text.lower() for indicator in error_indicators):
+        """硬性排除：仅排除明显错误页面（宁可多抓）"""
+        # 仅检测明显错误页面
+        error_indicators = ['404', '403', 'page not found', 'not found']
+        text_lower = text.lower()
+        if any(indicator in text_lower for indicator in error_indicators):
+            # 双重检查：如果有loan关键词，可能是误判
+            if any(kw in text_lower for kw in ['loan', 'credit card', 'financing']):
+                return False
             return True
         
-        # 检测导航页面（内容太少）- 放宽到100字符
-        if len(text) < 100:
+        # 仅排除极短内容（可能是空白页）
+        if len(text) < 50:
             return True
         
-        # 检测登录/验证页面
+        # 检测登录页面
         if soup.find(['input'], {'type': 'password'}):
             return True
         
