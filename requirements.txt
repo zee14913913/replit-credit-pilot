@@ -67,3 +67,5 @@ weasyprint
 sqlalchemy
 beautifulsoup4
 lxml
+beautifulsoup4
+psycopg2-binary
