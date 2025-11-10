@@ -4162,7 +4162,7 @@ def credit_card_ledger():
                 r.receipt_type,
                 r.file_path,
                 r.original_filename,
-                r.uploaded_at,
+                r.created_at as uploaded_at,
                 r.match_status as match_type,
                 c.name as customer_name,
                 cc.bank_name,
@@ -4171,7 +4171,7 @@ def credit_card_ledger():
             LEFT JOIN customers c ON r.customer_id = c.id
             LEFT JOIN credit_cards cc ON r.card_id = cc.id
             WHERE r.customer_id IS NOT NULL AND r.card_id IS NOT NULL
-            ORDER BY r.uploaded_at DESC
+            ORDER BY r.created_at DESC
             LIMIT 100
         """)
         ocr_matched_receipts = [dict(row) for row in cursor.fetchall()]
@@ -4183,13 +4183,13 @@ def credit_card_ledger():
                 r.receipt_type,
                 r.file_path,
                 r.original_filename,
-                r.uploaded_at,
-                r.ocr_amount,
-                r.ocr_date,
-                r.ocr_merchant
+                r.created_at as uploaded_at,
+                r.amount as ocr_amount,
+                r.transaction_date as ocr_date,
+                r.merchant_name as ocr_merchant
             FROM receipts r
             WHERE r.customer_id IS NULL OR r.card_id IS NULL
-            ORDER BY r.uploaded_at DESC
+            ORDER BY r.created_at DESC
         """)
         ocr_pending_receipts = [dict(row) for row in cursor.fetchall()]
     
