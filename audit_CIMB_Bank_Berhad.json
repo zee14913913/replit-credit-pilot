@@ -1,0 +1,110 @@
+{
+  "company": "CIMB Bank Berhad",
+  "start_time": "2025-11-10T19:09:56.348756",
+  "end_time": "2025-11-10T19:12:18.828305",
+  "total_products": 15,
+  "log": [
+    {
+      "step": "FETCH_LIST_PAGE",
+      "url": "https://www.cimb.com.my",
+      "product_count": 7,
+      "time": "2025-11-10T19:10:03.668073"
+    },
+    {
+      "step": "EXTRACT_DETAIL_PAGE",
+      "product": "https://www.cimb.com.my/en/personal/wealth-management/insurance-takaful/credit-related.html",
+      "fields_extracted": 10,
+      "time": "2025-11-10T19:10:06.148805"
+    },
+    {
+      "step": "EXTRACT_DETAIL_PAGE",
+      "product": "https://www.corpcardsonline.cimb.com/cimb-business-portal/login",
+      "fields_extracted": 3,
+      "time": "2025-11-10T19:10:16.658310"
+    },
+    {
+      "step": "EXTRACT_DETAIL_PAGE",
+      "product": "https://www.cimb.com.my/en/personal/search-results.html?q=Credit%20Card",
+      "fields_extracted": 9,
+      "time": "2025-11-10T19:10:24.590564"
+    },
+    {
+      "step": "EXTRACT_DETAIL_PAGE",
+      "product": "https://www.cimb.com.my/en/personal/promotions/latest-promotions/up-to-50-flight-tickets-visa.html?icid=b1:cc_b2:50offtravelv_b3:gws_b4:home_b5:tile",
+      "fields_extracted": 11,
+      "time": "2025-11-10T19:10:30.001960"
+    },
+    {
+      "step": "EXTRACT_DETAIL_PAGE",
+      "product": "https://www.cimb.com.my/en/personal/promotions/latest-promotions/cimb-visa-infinite-signature-credit-card.html?icid=b1:cc_b2:vi25_b3:gws_b4:home_b5:tile_b6:pe01",
+      "fields_extracted": 11,
+      "time": "2025-11-10T19:10:36.735132"
+    },
+    {
+      "step": "EXTRACT_DETAIL_PAGE",
+      "product": "https://www.cimb.com.my/en/personal/day-to-day-banking/cards/credit-card.html",
+      "fields_extracted": 11,
+      "time": "2025-11-10T19:10:42.864542"
+    },
+    {
+      "step": "EXTRACT_DETAIL_PAGE",
+      "product": "https://www.cimb.com.my/en/personal/day-to-day-banking/cards/debit-card.html",
+      "fields_extracted": 10,
+      "time": "2025-11-10T19:10:48.038959"
+    },
+    {
+      "step": "FETCH_LIST_PAGE",
+      "url": "https://www.cimb.com.my",
+      "product_count": 10,
+      "time": "2025-11-10T19:10:54.908535"
+    },
+    {
+      "step": "EXTRACT_DETAIL_PAGE",
+      "product": "https://www.cimb.com.my/en/personal/help-support/rates-charges/interest-rates-charges.html",
+      "fields_extracted": 10,
+      "time": "2025-11-10T19:10:58.086481"
+    },
+    {
+      "step": "EXTRACT_DETAIL_PAGE",
+      "product": "https://www.cimb.com.my/en/personal/help-support/rates-charges/forex-rates.html",
+      "fields_extracted": 10,
+      "time": "2025-11-10T19:11:05.045956"
+    },
+    {
+      "step": "EXTRACT_DETAIL_PAGE",
+      "product": "https://www.cimb.com.my/en/personal/help-support/rates-charges/profit-rates-charges.html",
+      "fields_extracted": 10,
+      "time": "2025-11-10T19:11:11.522273"
+    },
+    {
+      "step": "EXTRACT_DETAIL_PAGE",
+      "product": "https://www.corpcardsonline.cimb.com/cimb-business-portal/login",
+      "fields_extracted": 3,
+      "time": "2025-11-10T19:11:18.202396"
+    },
+    {
+      "step": "EXTRACT_DETAIL_PAGE",
+      "product": "https://www.cimb.com.my/en/personal/help-support/rates-charges/cimb-base-rate-base-lending-rates.html",
+      "fields_extracted": 10,
+      "time": "2025-11-10T19:11:24.741203"
+    },
+    {
+      "step": "EXTRACT_DETAIL_PAGE",
+      "product": "https://www.cimb.com.my/en/personal/search-results.html?q=Credit%20Card",
+      "fields_extracted": 9,
+      "time": "2025-11-10T19:11:32.509102"
+    },
+    {
+      "step": "EXTRACT_DETAIL_PAGE",
+      "product": "https://www.cimb.com.my/en/personal/promotions/latest-promotions/up-to-50-flight-tickets-visa.html?icid=b1:cc_b2:50offtravelv_b3:gws_b4:home_b5:tile",
+      "fields_extracted": 11,
+      "time": "2025-11-10T19:11:48.112295"
+    },
+    {
+      "step": "EXTRACT_DETAIL_PAGE",
+      "product": "https://www.cimb.com.my/en/personal/day-to-day-banking/cards/credit-card.html",
+      "fields_extracted": 11,
+      "time": "2025-11-10T19:12:12.978392"
+    }
+  ]
+}

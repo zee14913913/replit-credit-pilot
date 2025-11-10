@@ -38,7 +38,7 @@ class ScrapingDogClient:
         
         try:
             logger.info(f"🕷️ 爬取URL: {url}")
-            response = requests.get(self.base_url, params=params, timeout=60)
+            response = requests.get(self.base_url, params=params, timeout=120)
             
             if response.status_code == 200:
                 logger.info(f"✅ 成功爬取: {url}")
