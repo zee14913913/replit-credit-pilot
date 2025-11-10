@@ -15,13 +15,13 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL 环境变量未设置！请检查 .env 文件或 Replit Secrets")
 
-# 创建数据库引擎（连接池优化）
+# 创建数据库引擎
 engine = create_engine(
     DATABASE_URL,
-    pool_size=5,           # 基础连接池大小
-    max_overflow=5,        # 最大溢出连接数
-    pool_pre_ping=True,    # 自动重连检测
-    echo=False             # 生产环境关闭SQL日志
+    pool_pre_ping=True,  # 自动重连
+    pool_size=10,
+    max_overflow=20,
+    echo=False  # 生产环境关闭SQL日志
 )
 
 # 创建SessionLocal类
@@ -39,25 +39,6 @@ def get_db() -> Generator[Session, None, None]:
     db = SessionLocal()
     try:
         yield db
-    finally:
-        db.close()
-
-
-from contextlib import contextmanager
-
-@contextmanager
-def get_session():
-    """
-    上下文管理器：用于数据库session
-    用法: with get_session() as db: ...
-    """
-    db = SessionLocal()
-    try:
-        yield db
-        db.commit()
-    except:
-        db.rollback()
-        raise
     finally:
         db.close()
 

@@ -1,11 +1,11 @@
 modules = ["python-3.11", "postgresql-16", "python3"]
 [agent]
 expertMode = true
-integrations = ["twilio:1.0.0", "python_openai_ai_integrations:1.0.0", "sendgrid:1.0.0"]
+integrations = ["twilio:1.0.0", "python_openai_ai_integrations:1.0.0"]
 
 [nix]
 channel = "stable-25_05"
-packages = ["cargo", "fontconfig", "freetype", "ghostscript", "gitFull", "glib", "glibcLocales", "gumbo", "harfbuzz", "jbig2dec", "lcms2", "libiconv", "libimagequant", "libjpeg", "libjpeg_turbo", "libtiff", "libwebp", "libxcrypt", "mupdf", "openjpeg", "openssl", "pango", "pkg-config", "playwright-driver", "poppler", "poppler_utils", "rustc", "swig", "tcl", "tesseract", "tk", "xcbuild", "xcodebuild", "zlib", "chromium"]
+packages = ["cargo", "freetype", "glibcLocales", "gumbo", "harfbuzz", "jbig2dec", "lcms2", "libiconv", "libimagequant", "libjpeg", "libjpeg_turbo", "libtiff", "libwebp", "libxcrypt", "mupdf", "openjpeg", "poppler", "poppler_utils", "rustc", "swig", "tcl", "tesseract", "tk", "xcbuild", "xcodebuild", "zlib"]
 
 [workflows]
 runButton = "Project"
@@ -22,19 +22,30 @@ args = "FastAPI Server"
 [[workflows.workflow]]
 name = "FastAPI Server"
 author = "agent"
-mode = "parallel"
-
-[workflows.workflow.metadata]
-outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python -m uvicorn accounting_app.main:app --host 0.0.0.0 --port 5000"
 waitForPort = 5000
 
+[workflows.workflow.metadata]
+outputType = "webview"
+
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 8080
+externalPort = 8080
+
+[[ports]]
+localPort = 8888
+externalPort = 3002
+
+[[ports]]
+localPort = 32989
+externalPort = 3003
 
 [[ports]]
 localPort = 33035
@@ -67,6 +78,10 @@ externalPort = 8081
 [[ports]]
 localPort = 40671
 externalPort = 4200
+
+[[ports]]
+localPort = 41461
+externalPort = 8099
 
 [[ports]]
 localPort = 42459
