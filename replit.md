@@ -20,14 +20,29 @@ No other colors are permitted. The design system emphasizes clean, professional 
 **Navigation Structure** (November 2025):
 The main navigation follows business workflow logic with 7 core modules:
 1. **DASHBOARD** - Customer management and overview
-2. **CREDIT CARDS** - Credit card ledger with integrated supplier invoices (formerly "CC", now full text for clarity)
+2. **CREDIT CARDS** - Unified credit card management hub (see details below)
 3. **SAVINGS** - Savings account tracking
-4. **RECEIPTS** - Receipt management with OCR
+4. **RECEIPTS** - Legacy route (redirects to CREDIT CARDS OCR section)
 5. **LOANS** - Intelligent loan matcher
 6. **REPORTS** - Monthly summary reports
 7. **ADMIN** - System administration
 
-*Note: INVOICES has been successfully integrated into CREDIT CARDS page, displaying auto-generated supplier invoices alongside credit card data. REMINDERS feature will be integrated into CREDIT CARDS page in the future (calculated from statement_date and due_date fields).*
+**CREDIT CARDS Page - Integrated Financial Hub:**
+The CREDIT CARDS page serves as the complete credit card management center, integrating all related financial documents and workflows:
+1. **Upload Credit Card Statements** - PDF/Excel upload with dual validation
+2. **Customer List** - View all customers with statement counts
+3. **Supplier Invoices** - Auto-generated invoices for supplier consumption (1% processing fee)
+4. **Customer Payments** - Payment receipts from customers to GZ
+5. **OCR Receipts** (NEW ✨) - Smart OCR recognition for merchant swipe receipts:
+   - Statistics dashboard (Total, Auto-matched, Manual-matched, Pending)
+   - Upload form with image recognition (JPG/PNG)
+   - Matched receipts table linked to customers and cards
+   - Pending receipts management with manual matching
+
+*Integration History: 
+- INVOICES successfully integrated (supplier invoices display) ✅
+- OCR RECEIPTS successfully integrated (merchant receipt OCR + matching) ✅
+- REMINDERS feature planned for future integration (calculated from statement_date and due_date fields) 📅*
 
 ### Technical Implementations
 The backend is built with Flask, utilizing SQLite with a context manager pattern for database interactions. Jinja2 handles server-side rendering, and Bootstrap 5 with Bootstrap Icons provides a responsive UI. Plotly.js is integrated for client-side data visualization. A robust notification system provides real-time updates and an auto-redirect feature. Client-side PDF-to-CSV conversion is implemented using PDF.js.

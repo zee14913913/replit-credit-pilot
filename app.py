@@ -4148,8 +4148,8 @@ def credit_card_ledger():
         cursor.execute("""
             SELECT 
                 COUNT(*) as total,
-                SUM(CASE WHEN customer_id IS NOT NULL AND card_id IS NOT NULL AND match_type = 'auto' THEN 1 ELSE 0 END) as auto_matched,
-                SUM(CASE WHEN customer_id IS NOT NULL AND card_id IS NOT NULL AND match_type = 'manual' THEN 1 ELSE 0 END) as manual_matched,
+                SUM(CASE WHEN customer_id IS NOT NULL AND card_id IS NOT NULL AND match_status = 'auto' THEN 1 ELSE 0 END) as auto_matched,
+                SUM(CASE WHEN customer_id IS NOT NULL AND card_id IS NOT NULL AND match_status = 'manual' THEN 1 ELSE 0 END) as manual_matched,
                 SUM(CASE WHEN customer_id IS NULL OR card_id IS NULL THEN 1 ELSE 0 END) as pending
             FROM receipts
         """)
@@ -4163,7 +4163,7 @@ def credit_card_ledger():
                 r.file_path,
                 r.original_filename,
                 r.uploaded_at,
-                r.match_type,
+                r.match_status as match_type,
                 c.name as customer_name,
                 cc.bank_name,
                 cc.card_number_last4
