@@ -281,6 +281,173 @@
         {% endif %}
     </div>
 
+    <!-- =============== OCR RECEIPTS SECTION =============== -->
+    <div class="section-divider" style="margin: 5rem 0;"></div>
+
+    <div class="section-header" style="margin-top: 3rem; margin-bottom: 3rem;">
+        <h2 class="section-title" style="font-size: 2rem; font-weight: 700; color: #E8E8E8; margin: 0; text-transform: uppercase;">
+            <i class="bi bi-receipt" style="color: #FF007F;"></i> {{ t('ocr_receipts') }}
+        </h2>
+        <p class="section-subtitle" style="color: #FF007F; margin-top: 0.5rem;">Smart OCR Recognition for Merchant Receipts</p>
+    </div>
+
+    <!-- OCR Statistics Cards -->
+    {% if ocr_stats %}
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="professional-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F; padding: 1.5rem;">
+                <div style="font-size: 2rem; color: #FF007F; font-weight: 700;">{{ ocr_stats.total or 0 }}</div>
+                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">📄 Total Receipts</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="professional-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446; padding: 1.5rem;">
+                <div style="font-size: 2rem; color: #FFFEF0; font-weight: 700;">{{ ocr_stats.auto_matched or 0 }}</div>
+                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">🤖 Auto Matched</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="professional-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F; padding: 1.5rem;">
+                <div style="font-size: 2rem; color: #FFFEF0; font-weight: 700;">{{ ocr_stats.manual_matched or 0 }}</div>
+                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">👤 Manual Matched</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="professional-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446; padding: 1.5rem;">
+                <div style="font-size: 2rem; color: #FFFEF0; font-weight: 700;">{{ ocr_stats.pending or 0 }}</div>
+                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">⏳ Pending Match</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- OCR Upload Section (Collapsible) -->
+    <div class="professional-card mb-4" style="border: 2px solid #FF007F; padding: 2rem;">
+        <button onclick="toggleOCRUploadForm()" class="btn-professional-outline" style="width: 100%; color: #FFFEF0; font-weight: 700; border: 2px solid #FFFEF0;">
+            <span id="ocr-upload-toggle-text">Show OCR Upload Form</span>
+        </button>
+        
+        <div id="ocr-upload-form-section" style="display: none; margin-top: 2rem;">
+            <form action="{{ url_for('receipts_upload') }}" method="POST" enctype="multipart/form-data">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label" style="color: #FFFEF0; font-weight: 600;">Receipt Type</label>
+                        <select name="receipt_type" class="form-select" required style="background: rgba(0,0,0,0.5); color: #FFFEF0; border: 1px solid #FF007F;">
+                            <option value="merchant_swipe">Merchant Swipe Receipt</option>
+                            <option value="payment">Credit Card Payment</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label" style="color: #FFFEF0; font-weight: 600;">Select Receipt Images (JPG/PNG)</label>
+                        <input type="file" name="receipt_files" class="form-control" accept="image/*" multiple required style="background: rgba(0,0,0,0.5); color: #FFFEF0; border: 1px solid #FF007F;">
+                        <small style="color: #C0C0C0; margin-top: 0.5rem; display: block;">
+                            ✨ OCR will auto-extract amount, date, merchant | 🎯 Auto-match to customer & card
+                        </small>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn-professional" style="margin-right: 1rem;">
+                            <i class="bi bi-upload"></i> Upload & Process
+                        </button>
+                        <button type="button" onclick="toggleOCRUploadForm()" class="btn-professional-outline">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Matched Receipts Table -->
+    <div class="table-container" style="margin-top: 3rem;">
+        <div class="table-header">
+            <h3 style="color: #FFFEF0; font-weight: 900; margin: 0; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                MATCHED RECEIPTS
+            </h3>
+        </div>
+        {% if ocr_matched_receipts %}
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr style="background: rgba(50, 36, 70, 0.5);">
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">Date</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">Customer</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">Card</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">Type</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">Match</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for receipt in ocr_matched_receipts %}
+                    <tr>
+                        <td style="font-weight: 600; color: #E8E8E8;">{{ receipt.uploaded_at[:10] }}</td>
+                        <td>{{ receipt.customer_name }}</td>
+                        <td>{{ receipt.bank_name }} (****{{ receipt.card_number_last4 }})</td>
+                        <td><span style="background: rgba(255,0,127,0.2); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">{{ receipt.receipt_type }}</span></td>
+                        <td><span style="color: {{ '#00FF00' if receipt.match_type == 'auto' else '#FFAA00' }};">{{ receipt.match_type }}</span></td>
+                        <td>
+                            <a href="/static/uploads/{{ receipt.file_path }}" target="_blank" class="btn-view" style="font-size: 0.75rem; padding: 0.35rem 0.7rem; color: #FFFEF0; font-weight: 700;">
+                                <i class="bi bi-file-image"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="padding: 3rem; text-align: center;">
+            <i class="bi bi-inbox" style="font-size: 4rem; color: #FFFEF0;"></i>
+            <p style="color: rgba(255, 255, 255, 0.7); margin-top: 1rem;">
+                No matched receipts yet<br>
+                Upload merchant receipts to get started
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Pending Receipts Table -->
+    {% if ocr_pending_receipts %}
+    <div class="table-container" style="margin-top: 3rem;">
+        <div class="table-header">
+            <h3 style="color: #FFFEF0; font-weight: 900; margin: 0; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                PENDING MATCH ({{ ocr_pending_receipts|length }})
+            </h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr style="background: rgba(50, 36, 70, 0.5);">
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">Uploaded</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">OCR Amount</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">OCR Date</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">Merchant</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for receipt in ocr_pending_receipts %}
+                    <tr>
+                        <td style="font-weight: 600; color: #E8E8E8;">{{ receipt.uploaded_at[:10] }}</td>
+                        <td style="color: #FF007F; font-weight: 700;">{{ 'RM %.2f'|format(receipt.ocr_amount) if receipt.ocr_amount else '-' }}</td>
+                        <td>{{ receipt.ocr_date or '-' }}</td>
+                        <td style="color: #C0C0C0;">{{ receipt.ocr_merchant or '-' }}</td>
+                        <td>
+                            <a href="/static/uploads/{{ receipt.file_path }}" target="_blank" class="btn-view" style="font-size: 0.75rem; padding: 0.35rem 0.7rem; color: #FFFEF0; font-weight: 700; margin-right: 0.5rem;">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <a href="{{ url_for('receipts_pending') }}" class="btn-professional-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;">
+                                <i class="bi bi-link"></i> Match
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
 </div>
 
 <style>
@@ -382,6 +549,20 @@ function toggleUploadForm() {
     } else {
         formSection.style.display = 'none';
         toggleText.textContent = 'Show Upload Form';
+    }
+}
+
+// Toggle OCR upload form visibility
+function toggleOCRUploadForm() {
+    const formSection = document.getElementById('ocr-upload-form-section');
+    const toggleText = document.getElementById('ocr-upload-toggle-text');
+    
+    if (formSection.style.display === 'none') {
+        formSection.style.display = 'block';
+        toggleText.textContent = 'Hide OCR Upload Form';
+    } else {
+        formSection.style.display = 'none';
+        toggleText.textContent = 'Show OCR Upload Form';
     }
 }
 
