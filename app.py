@@ -4143,12 +4143,64 @@ def credit_card_ledger():
             LIMIT 100
         """)
         payment_receipts = [dict(row) for row in cursor.fetchall()]
+        
+        # 获取 OCR Receipts 统计数据 (整合 OCR RECEIPTS 功能)
+        cursor.execute("""
+            SELECT 
+                COUNT(*) as total,
+                SUM(CASE WHEN customer_id IS NOT NULL AND card_id IS NOT NULL AND match_type = 'auto' THEN 1 ELSE 0 END) as auto_matched,
+                SUM(CASE WHEN customer_id IS NOT NULL AND card_id IS NOT NULL AND match_type = 'manual' THEN 1 ELSE 0 END) as manual_matched,
+                SUM(CASE WHEN customer_id IS NULL OR card_id IS NULL THEN 1 ELSE 0 END) as pending
+            FROM receipts
+        """)
+        ocr_stats = dict(cursor.fetchone())
+        
+        # 获取已匹配的 OCR Receipts (最近100条)
+        cursor.execute("""
+            SELECT 
+                r.id,
+                r.receipt_type,
+                r.file_path,
+                r.original_filename,
+                r.uploaded_at,
+                r.match_type,
+                c.name as customer_name,
+                cc.bank_name,
+                cc.card_number_last4
+            FROM receipts r
+            LEFT JOIN customers c ON r.customer_id = c.id
+            LEFT JOIN credit_cards cc ON r.card_id = cc.id
+            WHERE r.customer_id IS NOT NULL AND r.card_id IS NOT NULL
+            ORDER BY r.uploaded_at DESC
+            LIMIT 100
+        """)
+        ocr_matched_receipts = [dict(row) for row in cursor.fetchall()]
+        
+        # 获取待匹配的 OCR Receipts
+        cursor.execute("""
+            SELECT 
+                r.id,
+                r.receipt_type,
+                r.file_path,
+                r.original_filename,
+                r.uploaded_at,
+                r.ocr_amount,
+                r.ocr_date,
+                r.ocr_merchant
+            FROM receipts r
+            WHERE r.customer_id IS NULL OR r.card_id IS NULL
+            ORDER BY r.uploaded_at DESC
+        """)
+        ocr_pending_receipts = [dict(row) for row in cursor.fetchall()]
     
     return render_template('credit_card/ledger_index.html', 
                          customers=customers, 
                          all_cards=all_cards,
                          invoices_data=invoices_data,
                          payment_receipts=payment_receipts,
+                         ocr_stats=ocr_stats,
+                         ocr_matched_receipts=ocr_matched_receipts,
+                         ocr_pending_receipts=ocr_pending_receipts,
                          is_admin=True)
 
 
