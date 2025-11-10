@@ -5,7 +5,7 @@ integrations = ["twilio:1.0.0", "python_openai_ai_integrations:1.0.0", "sendgrid
 
 [nix]
 channel = "stable-25_05"
-packages = ["cargo", "chromium", "fontconfig", "freetype", "ghostscript", "gitFull", "glib", "glibcLocales", "gumbo", "harfbuzz", "jbig2dec", "lcms2", "libiconv", "libimagequant", "libjpeg", "libjpeg_turbo", "libtiff", "libwebp", "libxcrypt", "mupdf", "openjpeg", "openssl", "pango", "pkg-config", "playwright-driver", "poppler", "poppler_utils", "rustc", "swig", "tcl", "tesseract", "tk", "xcbuild", "xcodebuild", "zlib"]
+packages = ["cargo", "fontconfig", "freetype", "ghostscript", "gitFull", "glib", "glibcLocales", "gumbo", "harfbuzz", "jbig2dec", "lcms2", "libiconv", "libimagequant", "libjpeg", "libjpeg_turbo", "libtiff", "libwebp", "libxcrypt", "mupdf", "openjpeg", "openssl", "pango", "pkg-config", "playwright-driver", "poppler", "poppler_utils", "rustc", "swig", "tcl", "tesseract", "tk", "xcbuild", "xcodebuild", "zlib", "chromium"]
 
 [workflows]
 runButton = "Project"
