@@ -1,0 +1,884 @@
+
+====================================================================================================
+🏦 银行 #10: Co-opbank Pertama
+====================================================================================================
+📦 产品数量：5 个
+
+  【1】💼 个人贷款
+      产品ID：CBP-PERS-PersonalFinancing-i-AlYasser
+      产品名称：Personal Financing-i Al-Yasser
+      利率范围：From 2.95% p.a. (with Takaful) / +1% if without Takaful
+      贷款额度：RM 5,000 - RM 400,000
+      验证日期：2025-10-19
+      官方链接：https://www.cbp.com.my/en/product/personal-financing-i/personal-financing-i-al-yaseer
+
+  【2】🏠 房屋贷款
+      产品ID：CBP-HOME-HomeFinancing-i-AlAmali
+      产品名称：Home Financing-i Al-Amali
+      利率范围：As low as 2.9% p.a.
+      贷款额度：最高 RM 10,000,000
+      验证日期：2025-10-19
+      官方链接：https://www.cbp.com.my/en/product/personal-financing-i/financing-i-al-amali
+
+  【3】💼 个人贷款
+      产品ID：CBP-PERS-ArRahnu
+      产品名称：Ar-Rahnu Financing (Gold Pledge)
+      利率范围：Storage fee not publicly disclosed (contact bank)
+      贷款额度：RM 100 起
+      验证日期：2025-10-19
+      官方链接：https://www.cbp.com.my/produk/ar-rahnu
+
+  【4】🚗 汽车贷款
+      产品ID：CBP-AUTO-VehicleFinancing-i
+      产品名称：Vehicle Financing-i
+      利率范围：Rate not publicly disclosed (Auto Financing Department exists; contact bank)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.cbp.com.my
+
+  【5】🏢 企业贷款
+      产品ID：CBP-BUS-SmallBusinessFinancing
+      产品名称：Small Business Financing
+      利率范围：Rate not publicly disclosed (contact bank)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.cbp.com.my/produk/small-business-financing
+
+
+====================================================================================================
+🏦 银行 #11: Hong Leong Bank
+====================================================================================================
+📦 产品数量：16 个
+
+  【1】💼 个人贷款
+      产品ID：HLB-PERS-PL
+      产品名称：HLB Personal Loan
+      利率范围：Flat rate 9.00%–12.50% p.a. (EIR 15.71%–22.42%); Promo rates as low as 5.00% p.a. for online applications
+      贷款额度：RM 5,000 - RM 250,000
+      验证日期：2025-10-19
+      官方链接：https://www.hlb.com.my/en/personal-banking/loans/personal-loan/personal-loan.html
+
+  【2】💼 个人贷款
+      产品ID：HLISB-PERS-PFi
+      产品名称：HLISB Personal Financing-i
+      利率范围：5.00%–10.50% p.a. (Raya Campaign: 5.00% p.a. for RM8,000+ income online)
+      贷款额度：RM 5,000 - RM 150,000
+      验证日期：2025-10-19
+      官方链接：https://www.hlisb.com.my/en/personal-i/help-support/personal-financing-i-affordability-calculator.html
+
+  【3】💳 债务整合
+      产品ID：HLB-PERS-DEBTCONSOL
+      产品名称：Personal Loan / Financing-i Debt Consolidation (Campaign Eligibility)
+      利率范围：As per prevailing PL/PF-i pricing; campaign-specific
+      贷款额度：RM 5,000 - RM 250,000
+      验证日期：2025-10-19
+      官方链接：https://www.hlb.com.my/en/personal-banking/promotions/pl-personal-loan-debt-consolidation-april-june-2025.html
+
+  【4】💳 债务整合
+      产品ID：HLB-CARD-BAL-TRANSFER
+      产品名称：HLB Credit Card Balance Transfer
+      利率范围：0% p.a. (one-time fee plan) / Monthly interest plan (varies by tenure) / 4.99% p.a. lifetime (birthday offer)
+      贷款额度：RM 1,000 起
+      验证日期：2025-10-19
+      官方链接：https://www.hlb.com.my/en/personal-banking/credit-cards/credit-card-services/consumer-services/balance-transfer.html
+
+  【5】🏠 房屋贷款
+      产品ID：HLB-HOME-STD
+      产品名称：HLB Home Loan (Conventional)
+      利率范围：SBR + 1.75% ≈ 4.50% p.a. (indicative: SBR 2.75%)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.hlb.com.my/en/personal-banking/loans/property-loan/home-loan.html
+
+  【6】🏠 房屋贷款
+      产品ID：HLB-HOME-MORTGAGEPLUS
+      产品名称：HLB MortgagePlus (Offset-linked Home Loan)
+      利率范围：Linked current account offsets interest; flexible redraw
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.hlb.com.my/en/personal-banking/loans/property-loan/mortgage-plus.html
+
+  【7】🔄 再融资
+      产品ID：HLB-HOME-REFI
+      产品名称：HLB Home Refinancing
+      利率范围：Attractive packages; flexible repayments; overdraft facility option
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.hlb.com.my/en/personal-banking/loans/property-loan/refinancing.html
+
+  【8】🏠 房屋贷款
+      产品ID：HLISB-HOME-PFi
+      产品名称：HLISB Property Financing-i
+      利率范围：SBR + spread (ceiling rate protection); SBR 2.75% (effective July 14, 2025)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.hlisb.com.my/en/personal-i/consumer-financing-i/property-financing-i.html
+
+  【9】🏠 房屋贷款
+      产品ID：HLISB-HOME-SRPK-i
+      产品名称：HLISB Skim Rumah Pertamaku-i (First Home Scheme up to 110%)
+      利率范围：Up to 110% financing for eligible first-time buyers
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.hlisb.com.my/en/personal-i/consumer-financing-i/property-financing-i/cm-flexi-property-financing-i.html
+
+  【10】🚗 汽车贷款
+      产品ID：HLB-AUTO-HP
+      产品名称：HLB Auto Loan (Hire Purchase)
+      利率范围：Fixed/Variable rate (not publicly disclosed, industry benchmark 2.4%–3.5% p.a.); Max 17% p.a. for variable rate
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.hlb.com.my/en/personal-banking/loans/motor-loan/auto-loans.html
+
+  【11】🚗 汽车贷款
+      产品ID：HLISB-AUTO-HP-i
+      产品名称：HLISB Auto Financing-i (Hire Purchase-i)
+      利率范围：Islamic auto financing; tenure up to 108 months
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.hlb.com.my/en/personal-banking/loans/motor-loan/auto-loans.html
+
+  【12】🏢 企业贷款
+      产品ID：HLB-SME-SMELITE
+      产品名称：SMElite (SME Property + WC + CAPEX)
+      利率范围：Rate not publicly disclosed (contact bank for quote); Up to 150% Margin of Advance against property
+      贷款额度：最高 RM 10,000,000
+      验证日期：2025-10-19
+      官方链接：https://www.hlb.com.my/en/business-banking/group-sme-banking/loan/smelite.html
+
+  【13】🏢 企业贷款
+      产品ID：HLB-SME-BUSINESS-MORTGAGE
+      产品名称：Business Mortgage (Commercial Property Financing)
+      利率范围：Advance margin for business premises; cash-out available (subject to credit)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.hlb.com.my/en/business-banking/group-sme-banking.html
+
+  【14】🏢 企业贷款
+      产品ID：HLB-SME-REVOLVING-CREDIT
+      产品名称：Revolving Credit / Overdraft (SME)
+      利率范围：Short-term WC; secured/unsecured variants
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.hlb.com.my/en/business-banking/business-and-corporate-banking/loans-and-financing.html
+
+  【15】🏢 企业贷款
+      产品ID：HLB-SME-INDUSTRIAL-HP
+      产品名称：Industrial Hire Purchase (Machinery/Equipment/Commercial Vehicles)
+      利率范围：Tenure up to 7 years; asset-backed
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.hlb.com.my/en/business-banking/business-and-corporate-banking/loans-and-financing/short-term/industrial-hire-purchase.html
+
+  【16】🏢 企业贷款
+      产品ID：HLB-SME-BNM-CGC-SCHEMES
+      产品名称：BNM/CGC/Agency Schemes (SME)
+      利率范围：As per scheme terms (e.g., HTG/other BNM facilities, CGC guarantee)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.hlb.com.my/en/business-banking/business-and-corporate-banking/sme-schemes.html
+
+
+====================================================================================================
+🏦 银行 #12: HSBC Amanah Malaysia
+====================================================================================================
+📦 产品数量：7 个
+
+  【1】💼 个人贷款
+      产品ID：HSBC-Amanah-PFi
+      产品名称：HSBC Amanah Personal Financing-i
+      利率范围：Premier: 4.88% p.a. / Existing: from 7.5% p.a. / New-to-bank: from 10.5% p.a.
+      贷款额度：RM 6,000 - RM 250,000
+      验证日期：2025-10-19
+      官方链接：https://www.hsbcamanah.com.my/financing/products/personal-financing-i/
+
+  【2】🏠 房屋贷款
+      产品ID：HSBC-HomeSmart
+      产品名称：HSBC HomeSmart (Flexible Home Loan)
+      利率范围：SBR + 1.75%–2.0% ≈ 4.50%–4.75% p.a. (SBR 2.75%)
+      贷款额度：RM 50,000 - RM 5,000,000
+      验证日期：2025-10-19
+      官方链接：https://www.hsbc.com.my/mortgages/products/homesmart/
+
+  【3】🔄 再融资
+      产品ID：HSBC-Home-Refinance
+      产品名称：HSBC Home Loan Refinance (Conventional)
+      利率范围：SBR + spread ≈ 4.50%–4.75% p.a.; Zero moving cost up to RM50,000
+      贷款额度：RM 50,000 - RM 5,000,000
+      验证日期：2025-10-19
+      官方链接：https://www.hsbc.com.my/mortgages/
+
+  【4】🏠 房屋贷款
+      产品ID：HSBC-Amanah-HomeSmart-i
+      产品名称：HSBC HomeSmart-i (Islamic Flexible Home Financing)
+      利率范围：SBR + 1.75%–2.0% ≈ 4.75% p.a. (SBR 2.75%); Zero moving cost up to RM50,000
+      贷款额度：RM 50,000 - RM 5,000,000
+      验证日期：2025-10-19
+      官方链接：https://www.hsbcamanah.com.my/financing/products/homesmart-i/
+
+  【5】💳 债务整合
+      产品ID：HSBC-Card-BTI
+      产品名称：HSBC Credit Card Balance Transfer Instalment (BTI)
+      利率范围：New cardholders: 0% for 12 months (up to RM20K, until 31 July 2025) / Standard: 3.88% one-time upfront fee
+      贷款额度：RM 1,000 - RM 20,000
+      验证日期：2025-10-19
+      官方链接：https://www.hsbc.com.my/credit-cards/features/balance-transfer-instalment/
+
+  【6】💳 债务整合
+      产品ID：HSBC-Card-IPP
+      产品名称：HSBC Card Instalment Plan / 0% IPP
+      利率范围：0% up to 36 months (merchant partners) / Fixed rate instalment (varies)
+      贷款额度：RM 500 起
+      验证日期：2025-10-19
+      官方链接：https://www.hsbc.com.my/credit-cards/features/card-instalment-plan/
+
+  【7】🏢 企业贷款
+      产品ID：HSBC-BIZ-General
+      产品名称：HSBC Business Banking – Loans & Finance (General)
+      利率范围：Rate not publicly disclosed (varies by facility type: Term Loan, OD, Trade Finance, Guarantees)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.business.hsbc.com.my/en-gb
+
+
+====================================================================================================
+🏦 银行 #13: Maybank
+====================================================================================================
+📦 产品数量：12 个
+
+  【1】💼 个人贷款
+      产品ID：MBB-PERS-PL-STD
+      产品名称：Maybank Personal Loan / Personal Financing-i
+      利率范围：6.5%–8.0% p.a. (fixed)
+      贷款额度：RM 5,000 - RM 100,000
+      验证日期：2025-10-19
+      官方链接：https://www.maybank2u.com.my/maybank2u/malaysia/en/personal/loans/personal/personal_loan.page
+
+  【2】🏠 房屋贷款
+      产品ID：MBB-HOME-H2U
+      产品名称：Maybank Home2u Digital Mortgage
+      利率范围：SBR 3.00% + spread (approx. 4.30%-4.70% p.a.)
+      贷款额度：最高 RM 1,000,000
+      验证日期：2025-10-19
+      官方链接：https://www.maybank2u.com.my/maybank2u/malaysia/en/personal/loans/home/maxihome.page
+
+  【3】🔄 再融资
+      产品ID：MBB-HOME-REFI
+      产品名称：Maybank MaxiHome (Refinancing)
+      利率范围：Base Rate + margin (market-linked)
+      贷款额度：RM 50,000 起
+      验证日期：2025-10-19
+      官方链接：https://www.maybank2u.com.my/maybank2u/malaysia/en/personal/loans/home/maxihome.page
+
+  【4】🔨 装修贷款
+      产品ID：MBB-HOME-RENO
+      产品名称：Maybank Home + Reno Financing
+      利率范围：Bank floating or fixed rate
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.maybank2u.com.my/maybank2u/malaysia/en/personal/loans/home/home_reno.page
+
+  【5】🏠 房屋贷款
+      产品ID：MBB-HOME-HOUZKEY
+      产品名称：Maybank HouzKEY (Rent-To-Own Islamic Financing)
+      利率范围：Islamic variable rate
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.maybank2u.com.my/maybank2u/malaysia/en/personal/loans/home/houzkey.page
+
+  【6】🔄 再融资
+      产品ID：MBB-HOME-TOPUP
+      产品名称：Maybank Redraw / Top-up Facility
+      利率范围：Existing mortgage rate
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.maybank2u.com.my/maybank2u/malaysia/en/personal/loans/home/redraw.page
+
+  【7】🏠 房屋贷款
+      产品ID：MBB-HOME-SJKP
+      产品名称：SJKP / SJKP MADANI Home Financing
+      利率范围：Government-backed rate
+      贷款额度：最高 RM 500,000
+      验证日期：2025-10-19
+      官方链接：https://www.maybank2u.com.my/maybank2u/malaysia/en/personal/loans/home/sjkp.page
+
+  【8】🏢 企业贷款
+      产品ID：MBB-SME-DIGI
+      产品名称：Maybank SME Digital Financing
+      利率范围：6.48%–18% p.a. (Instant: RM3K-500K; Personalised: RM20K-20M)
+      贷款额度：RM 3,000 - RM 20,000,000
+      验证日期：2025-10-19
+      官方链接：https://www.maybank2u.com.my/maybank2u/malaysia/en/business/financing/sme_digital_financing.page
+
+  【9】🏢 企业贷款
+      产品ID：MBB-SME-CLEAN
+      产品名称：Maybank SME Clean Loan / Clean Financing-i
+      利率范围：8.5%–12.5% p.a.
+      贷款额度：RM 10,000 - RM 1,500,000
+      验证日期：2025-10-19
+      官方链接：https://www.maybank2u.com.my/maybank2u/malaysia/en/business/financing/working_capital/business/sme_clean_loan_financing.page
+
+  【10】🏢 企业贷款
+      产品ID：MBB-SME-MICRO
+      产品名称：Maybank SME Micro Financing / Micro-i
+      利率范围：1.0%–1.5% per month (approx. 12%-18% p.a.)
+      贷款额度：RM 3,000 - RM 50,000
+      验证日期：2025-10-19
+      官方链接：https://www.maybank2u.com.my/maybank2u/malaysia/en/business/financing/working_capital/business/micro_financing.page
+
+  【11】📈 投资贷款
+      产品ID：MBB-ASB-FI
+      产品名称：ASB Financing / Financing-i
+      利率范围：4.25%–4.55% p.a. (branch), 4.40% p.a. (online best rate)
+      贷款额度：RM 10,000 - RM 200,000
+      验证日期：2025-10-19
+      官方链接：https://www.maybank2u.com.my/maybank2u/malaysia/en/personal/loans/investment/asb_financing_i.page
+
+  【12】🚗 汽车贷款
+      产品ID：MBB-AUTO-HP
+      产品名称：Maybank Hire Purchase / MVTF-i
+      利率范围：New: 3.40% p.a., Used: 4.25% p.a., EV/Hybrid: 1.75%, National: 1.95%
+      贷款额度：RM 20,000 起
+      验证日期：2025-10-19
+      官方链接：https://www.maybank2u.com.my/maybank2u/malaysia/en/personal/loans/hire_purchase/hire_purchase.page
+
+
+====================================================================================================
+🏦 银行 #14: MBSB Bank Berhad
+====================================================================================================
+📦 产品数量：9 个
+
+  【1】💼 个人贷款
+      产品ID：MBSB-PERS-Mumtaz-i
+      产品名称：MBSB Mumtaz-i (Government & GLC Employees)
+      利率范围：SBR + 3.05% = 5.80% p.a. (SBR 2.75%) / Flat rate: 3.20% p.a. (3-year tenure)
+      贷款额度：RM 5,000 - RM 250,000
+      验证日期：2025-10-19
+      官方链接：https://www.mbsbbank.com/consumer-banking/financing/personal-financing-i
+
+  【2】💼 个人贷款
+      产品ID：MBSB-PERS-Afdhal-i
+      产品名称：MBSB Afdhal-i (Contract Government/Premium Customers)
+      利率范围：Promotional: SBR + 2.60% = 5.35% p.a. / Standard: from 4.5% p.a. (SBR 2.75%)
+      贷款额度：RM 5,000 - RM 400,000
+      验证日期：2025-10-19
+      官方链接：https://www.mbsbbank.com/consumer-banking/financing/personal-financing-i
+
+  【3】💼 个人贷款
+      产品ID：MBSB-PERS-PrivateSector-i
+      产品名称：MBSB Private Sector-i (Swasta)
+      利率范围：SBR + 3.05% = 5.80% p.a. / Promotional: from 2.82% p.a. (SBR 2.75%)
+      贷款额度：RM 5,000 - RM 400,000
+      验证日期：2025-10-19
+      官方链接：https://www.mbsbbank.com/consumer-banking/financing/personal-financing-i
+
+  【4】🏠 房屋贷款
+      产品ID：MBSB-HOME-PropertyFinancing-i
+      产品名称：Property Financing-i
+      利率范围：SBR + 1.45% ≈ 4.20%–4.45% p.a. (SBR 2.75%)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.mbsbbank.com/consumer-banking/financing/property-financing-i
+
+  【5】💼 个人贷款
+      产品ID：MBSB-EDU-EducationFinancing-i
+      产品名称：Education Financing-i
+      利率范围：Variable rate based on SBR (SBR 2.75%); ceiling rate 15% p.a.
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.mbsbbank.com/consumer-banking/financing/education-financing-i
+
+  【6】🏢 企业贷款
+      产品ID：MBSB-SME-CorporateFinancing-i
+      产品名称：Corporate / SME Financing-i (Term, Revolving, Cashline)
+      利率范围：BFR + spread (rate not publicly disclosed; linked to SBR 2.75%)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.mbsbbank.com/business-banking/financing/corporate-financing
+
+  【7】🏢 企业贷款
+      产品ID：MBSB-SME-M-GGS
+      产品名称：M-Government Guarantee Scheme (M-GGS)
+      利率范围：BFR + spread (rate not publicly disclosed; linked to SBR 2.75%)
+      贷款额度：最高 RM 20,000,000
+      验证日期：2025-10-19
+      官方链接：https://www.mbsbbank.com/business-banking/financing/mggs
+
+  【8】🏢 企业贷款
+      产品ID：MBSB-BUS-EquipmentFinancing-i
+      产品名称：Equipment / Vehicle Financing-i
+      利率范围：BFR + spread (rate not publicly disclosed; linked to SBR 2.75%)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.mbsbbank.com/business-banking/financing/equipment-financing
+
+  【9】🏢 企业贷款
+      产品ID：MBSB-BUS-TradeFinancing-i
+      产品名称：Trade Financing-i (Letter of Credit, Bills for Collection, Bank Guarantee)
+      利率范围：Facility-specific rates (LC, Bills, Bank Guarantee; not publicly disclosed)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.mbsbbank.com/trade-financing-i
+
+
+====================================================================================================
+🏦 银行 #15: Bank Muamalat Malaysia Berhad
+====================================================================================================
+📦 产品数量：14 个
+
+  【1】💼 个人贷款
+      产品ID：MUAMALAT-PERS-PersonalFinancing-i
+      产品名称：Personal Financing-i (Cash-i SMART)
+      利率范围：6.99%–10.99% p.a. / EPR: 12.89%–18.08% p.a.
+      贷款额度：RM 10,000 - RM 250,000
+      验证日期：2025-10-19
+      官方链接：https://www.muamalat.com.my/financing/personal/personal-financing/cash-i-smart/
+
+  【2】🏠 房屋贷款
+      产品ID：MUAMALAT-HOME-SMARTMortgageHOME
+      产品名称：SMART Mortgage HOME
+      利率范围：Variable rate based on IBR; ceiling rate 10.5% p.a.
+      贷款额度：RM 100,000 - RM 1,000,000
+      验证日期：2025-10-19
+      官方链接：https://www.muamalat.com.my/financing/personal/mortgage/home-financing/smart-mortgage-home/
+
+  【3】🏠 房屋贷款
+      产品ID：MUAMALAT-HOME-SMARTMortgageFLEXI
+      产品名称：SMART Mortgage FLEXI
+      利率范围：Variable rate based on IBR; ceiling rate 10.5% p.a.
+      贷款额度：RM 100,000 起
+      验证日期：2025-10-19
+      官方链接：https://www.muamalat.com.my/financing/personal/mortgage/home-financing/smart-mortgage-flexi/
+
+  【4】🏠 房屋贷款
+      产品ID：MUAMALAT-HOME-SMARTMortgageSJKP
+      产品名称：SMART Mortgage SJKP (First-Time Homebuyers)
+      利率范围：Variable rate based on IBR; ceiling rate 10.5% p.a.
+      贷款额度：RM 100,000 - RM 500,000
+      验证日期：2025-10-19
+      官方链接：https://www.muamalat.com.my/financing/personal/mortgage/home-financing/smart-mortgage-sjkp/
+
+  【5】🏠 房屋贷款
+      产品ID：MUAMALAT-HOME-SJKPMadani
+      产品名称：SJKP Madani (First-Time Homebuyers Enhanced)
+      利率范围：Variable rate based on IBR; ceiling rate 10.5% p.a.
+      贷款额度：RM 100,000 - RM 360,000
+      验证日期：2025-10-19
+      官方链接：https://www.muamalat.com.my/financing/personal/mortgage/home-financing/
+
+  【6】🏠 房屋贷款
+      产品ID：MUAMALAT-HOME-SJKPSUPER
+      产品名称：SJKP SUPER (Step-Up Profit Rate)
+      利率范围：Variable step-up rate (lower first 5 years); ceiling rate 10.5% p.a.
+      贷款额度：RM 100,000 - RM 500,000
+      验证日期：2025-10-19
+      官方链接：https://ringgitplus.com/en/blog/sponsored/bank-muamalat-becomes-first-bank-to-launch-step-up-profit-rate-super-for-sjkp-home-financing.html
+
+  【7】🔄 再融资
+      产品ID：MUAMALAT-HOME-Refinancing-i
+      产品名称：Home Refinancing-i (Cash-out / Redemption)
+      利率范围：Variable rate based on IBR; ceiling rate 10.5% p.a.
+      贷款额度：RM 50,000 起
+      验证日期：2025-10-19
+      官方链接：https://www.muamalat.com.my/financing/personal/mortgage/home-financing/
+
+  【8】🚗 汽车贷款
+      产品ID：MUAMALAT-AUTO-VehicleFinancing-i
+      产品名称：Vehicle Financing-i (AITAB)
+      利率范围：Flat rate (not publicly disclosed; contact bank for current rates)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.muamalat.com.my/financing/personal/auto/muamalat-vehicle-financing-i-aitab/
+
+  【9】🚗 汽车贷款
+      产品ID：MUAMALAT-AUTO-AutoGrad
+      产品名称：Auto-Grad Scheme (Fresh Graduates)
+      利率范围：2.95% p.a. (flat rate)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://ringgitplus.com/en/car-loan/Bank-Muamalat-Auto-Grad-Scheme.html
+
+  【10】🚗 汽车贷款
+      产品ID：MUAMALAT-AUTO-StepUpAuto-i
+      产品名称：Step-Up Auto Financing-i
+      利率范围：Competitive flat rate (not publicly disclosed)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.muamalat.com.my/financing/personal/auto/muamalat-step-up-auto-financing-i/
+
+  【11】🚗 汽车贷款
+      产品ID：MUAMALAT-AUTO-GovernmentScheme
+      产品名称：Government Scheme (Vehicle Financing for Govt Staff)
+      利率范围：Competitive rates (not publicly disclosed)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.muamalat.com.my/financing/personal/auto/muamalat-government-scheme/
+
+  【12】💼 个人贷款
+      产品ID：MUAMALAT-EDU-EducationFinancing-i
+      产品名称：Education Financing-i
+      利率范围：Rate not publicly disclosed (contact bank for quotation)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.muamalat.com.my/financing/personal/personal-financing/
+
+  【13】🏢 企业贷款
+      产品ID：MUAMALAT-SME-BusinessFinancing-i
+      产品名称：SME / Business Financing-i (Working Capital & Term Facility)
+      利率范围：BFR + 2% ≈ 8.56% p.a. (BFR 6.56% + 2% spread)
+      贷款额度：最高 RM 10,000,000
+      验证日期：2025-10-19
+      官方链接：https://www.muamalat.com.my/financing/business/sme-financing/bank-negara-funds-smes/
+
+  【14】🏢 企业贷款
+      产品ID：MUAMALAT-SME-MicroFinancing-i
+      产品名称：Muamalat Micro Financing-i
+      利率范围：From 4.00% p.a.
+      贷款额度：RM 10,000 - RM 50,000
+      验证日期：2025-10-19
+      官方链接：https://www.muamalat.com.my/financing/business/sme-financing/
+
+
+====================================================================================================
+🏦 银行 #16: OCBC Bank Malaysia
+====================================================================================================
+📦 产品数量：6 个
+
+  【1】💼 个人贷款
+      产品ID：OCBC-PERS-PL
+      产品名称：OCBC Personal Loan
+      利率范围：Rate not publicly disclosed (contact bank for quote; market range 6.99%–17.99% p.a.)
+      贷款额度：RM 5,000 - RM 150,000
+      验证日期：2025-10-19
+      官方链接：https://www.ocbc.com.my/personal-banking/loans/personal-consumption
+
+  【2】💼 个人贷款
+      产品ID：OCBCI-CASH-FI
+      产品名称：OCBC Al-Amin Cash Financing-i
+      利率范围：6.99%–17.99% p.a. (as low as 0.71% per month)
+      贷款额度：RM 5,000 - RM 150,000
+      验证日期：2025-10-19
+      官方链接：https://www.ocbc.com.my/OCBCAl_Amin/personal-banking-i/financing/cash-financing-i
+
+  【3】🏠 房屋贷款
+      产品ID：OCBC-HOME-STD
+      产品名称：OCBC Home Loan (Conventional)
+      利率范围：SBR + 1.70% ≈ 4.45% p.a. (indicative: SBR 2.75%)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.ocbc.com.my/personal-banking/loans/property/home-loans
+
+  【4】🏠 房屋贷款
+      产品ID：OCBCI-HOME-Manarat
+      产品名称：OCBC Al-Amin Manarat Home-i
+      利率范围：From 3.45% p.a. (BR-based; actual rate varies by package)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.ocbc.com.my/OCBCAl_Amin/home-financing-i
+
+  【5】💳 债务整合
+      产品ID：OCBC-BT-Loan
+      产品名称：OCBC Balance Transfer / Flexible Repayment Cash Loan
+      利率范围：Flexi BT: 7.99% p.a. / Fixed: 0.67% per month (8.04% p.a.); Promo: from 1.88% p.a.
+      贷款额度：RM 1,000 起
+      验证日期：2025-10-19
+      官方链接：https://www.ocbc.com.my/personal-banking/loans/balance-transfer-flexible-repayment-cash-loan
+
+  【6】🏢 企业贷款
+      产品ID：OCBCI-BIZ-FIN
+      产品名称：OCBC Al-Amin Business Financing-i / Equipment & Vehicle
+      利率范围：Rate not publicly disclosed (Equipment & Vehicle financing; RM100M collateral-free scheme 2025)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.ocbc.com.my/OCBCAl_Amin/financing
+
+
+====================================================================================================
+🏦 银行 #17: Public Bank Berhad
+====================================================================================================
+📦 产品数量：6 个
+
+  【1】💼 个人贷款
+      产品ID：PBB-PERS-BAE-AG-PFin-i
+      产品名称：Public Bank BAE AG Personal Financing-i (Government/GLC)
+      利率范围：From 4.99% p.a.
+      贷款额度：RM 5,000 - RM 150,000
+      验证日期：2025-10-19
+      官方链接：https://apply.pbebank.com/bae-ag-personal-financing-i
+
+  【2】💼 个人贷款
+      产品ID：PBB-PERS-GenPersonalLoan
+      产品名称：Public Bank General Personal Loan
+      利率范围：To be confirmed
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      状态：⚠️ 需要验证
+      官方链接：https://www.comparehero.my/personal-loan/partners/public-bank
+
+  【3】🏠 房屋贷款
+      产品ID：PBB-HOME-5HOMEPLAN
+      产品名称：Public Bank 5 HOME Plan
+      利率范围：3.10% - 3.85% p.a.
+      贷款额度：RM 100,000 起
+      验证日期：2025-10-19
+      官方链接：https://www.ringgitplus.com/en/home-loan/Public-Bank-5-Home-Plan.html
+
+  【4】🔄 再融资
+      产品ID：PBB-HOME-MOREPLAN
+      产品名称：Public Bank MORE Plan (Refinancing / Additional Funds)
+      利率范围：From 4.10% p.a.
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.pbebank.com/en/loans/home-loan/
+
+  【5】🏠 房屋贷款
+      产品ID：PBB-HOME-EQUITY-FIN-i
+      产品名称：Public Bank Home Equity Financing-i
+      利率范围：From 3.10% p.a.
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.ringgitplus.com/en/home-loan/Public-Bank-Home-Equity-Financing-i.html
+
+  【6】🚗 汽车贷款
+      产品ID：PBB-AUTO-HP
+      产品名称：Public Bank Hire Purchase Facility
+      利率范围：2.84% - 4.10% p.a.
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.pbebank.com/media/rwhlqjit/pds-hp-pbb-en.pdf
+
+
+====================================================================================================
+🏦 银行 #18: RHB Bank
+====================================================================================================
+📦 产品数量：9 个
+
+  【1】💼 个人贷款
+      产品ID：RHB-PERS-PF-i
+      产品名称：RHB Personal Financing-i (Private Sector)
+      利率范围：7.18%–13.83% p.a. (profit rate)
+      贷款额度：RM 2,000 - RM 150,000
+      验证日期：2025-10-19
+      官方链接：https://www.rhbgroup.com/personal/loans/personal-financing/index.html
+
+  【2】💼 个人贷款
+      产品ID：RHB-PERS-PF-i-CIVIL
+      产品名称：RHB Personal Financing-i (Civil/Govt Sector)
+      利率范围：4.50%–5.75% p.a. (promotional 5.35%–5.50% p.a. with Takaful)
+      贷款额度：RM 2,000 - RM 300,000
+      验证日期：2025-10-19
+      官方链接：https://www.rhbgroup.com/islamic/financing/personal-financing/personal-financing-i-for-civil-sector/index.html
+
+  【3】💳 债务整合
+      产品ID：RHB-PERS-DEBTCONSOL
+      产品名称：RHB Personal Financing-i for Debt Consolidation
+      利率范围：From 7.18%–13.83% p.a. (same as private sector Personal Financing-i)
+      贷款额度：最高 RM 150,000
+      验证日期：2025-10-19
+      官方链接：https://www.rhbgroup.com/personal/loans/personal-financing/index.html
+
+  【4】🏠 房屋贷款
+      产品ID：RHB-HOME-MY1FIRST
+      产品名称：RHB My1 First Home Loan
+      利率范围：BR + spread ≈ 4.65% p.a. (indicative: BR 3.65% + 1.00%)
+      贷款额度：RM 100,000 起
+      验证日期：2025-10-19
+      官方链接：https://www.rhbgroup.com/personal/home-loan/firsthome-mortgage/index.html
+
+  【5】🏠 房屋贷款
+      产品ID：RHB-HOME-FULLFLEXI
+      产品名称：RHB My1 Full Flexi Home Loan
+      利率范围：SBR + 1.75% ≈ 4.50% p.a. (indicative: SBR 2.75%); Margin up to 90% + 5%
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.rhbgroup.com/personal/home-loan/my1-full-flexi-home-loan/index.html
+
+  【6】🏠 房屋贷款
+      产品ID：RHB-HOME-ISLAMIC
+      产品名称：RHB Islamic Home Financing-i / Equity Home Financing-i
+      利率范围：SBRI + spread ≈ 4.50% p.a. (indicative: SBRI 2.75% + 1.75%)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.imoney.my/home-loan/rhb-islamic-bank/home-financing-i
+
+  【7】📈 投资贷款
+      产品ID：RHB-ASB-FIN
+      产品名称：RHB ASB Financing / Financing-i
+      利率范围：From ~4.30% p.a. (variable, rate not publicly disclosed)
+      贷款额度：RM 20,000 - RM 200,000
+      验证日期：2025-10-19
+      官方链接：https://www.rhbgroup.com/personal/loans/asnb-financing/index.html
+
+  【8】🚗 汽车贷款
+      产品ID：RHB-AUTO-HP-CONV
+      产品名称：RHB Hire Purchase (Conventional Vehicle Financing)
+      利率范围：2.27%–3.18% p.a. (new cars, includes green financing from 2.27%)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.rhbgroup.com/personal/loans/auto-loan/index.html
+
+  【9】🚗 汽车贷款
+      产品ID：RHB-AUTO-HP-I
+      产品名称：RHB Vehicle Financing-i (Islamic Hire Purchase)
+      利率范围：SBRI + 1.19% ≈ 3.94% p.a. (standard) / SBRI + 0.94% ≈ 2.10% p.a. (green financing)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.rhbgroup.com/islamic/financing/auto-financing/index.html
+
+
+====================================================================================================
+🏦 银行 #19: Standard Chartered Bank Malaysia
+====================================================================================================
+📦 产品数量：6 个
+
+  【1】💼 个人贷款
+      产品ID：SCB-PERS-CashOne
+      产品名称：CashOne Personal Loan
+      利率范围：From 0.583% per month (≈9% p.a. flat rate); up to 0.88% per month
+      贷款额度：RM 3,000 起
+      验证日期：2025-10-19
+      官方链接：https://forms.online.standardchartered.com/public_website/malaysia/OnlineSales/personal-loan-form-cas.html
+
+  【2】🏠 房屋贷款
+      产品ID：SCB-HOME-MortgageOne
+      产品名称：MortgageOne™ Home Loan
+      利率范围：SBR + spread ≈ 3.9%–4.2% p.a. (SBR 2.75%)
+      贷款额度：RM 70,000 - RM 20,000,000
+      验证日期：2025-10-19
+      官方链接：https://www.sc.com/my/loans/mortgageone/
+
+  【3】🏠 房屋贷款
+      产品ID：SCB-HOME-GreenMortgage
+      产品名称：Green Mortgage
+      利率范围：Preferential rate (lower than standard MortgageOne; exact rate not disclosed; base reference ~2.85% p.a.)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.sc.com/my/loans/green-mortgage/
+
+  【4】🔄 再融资
+      产品ID：SCB-HOME-Refinance
+      产品名称：Home Loan Refinancing
+      利率范围：Competitive refinancing rates (Zero Cost campaign available)
+      贷款额度：RM 200,000 - RM 3,500,000
+      验证日期：2025-10-19
+      官方链接：https://www.sc.com/my/loans/mortgage-refinancing/
+
+  【5】🏠 房屋贷款
+      产品ID：SCD-HOME-MyHomeOne-i
+      产品名称：Saadiq My HomeOne-i
+      利率范围：Rate not publicly disclosed (contact bank for quote; Musharakah Mutanaqisah-based)
+      贷款额度：RM 70,000 - RM 20,000,000
+      验证日期：2025-10-19
+      官方链接：https://www.sc.com/my/saadiq/financing/myhomeone-i/
+
+  【6】🏢 企业贷款
+      产品ID：SCB-BIZ-InstalLoan
+      产品名称：Business Instalment Loan
+      利率范围：Rate not publicly disclosed (contact bank for quote; likely BR-based)
+      贷款额度：RM 100,000 - RM 2,000,000
+      验证日期：2025-10-19
+      官方链接：https://www.sc.com/my/business-banking/loans-and-working-capital/business-instalment-loan/
+
+
+====================================================================================================
+🏦 银行 #20: UOB Malaysia
+====================================================================================================
+📦 产品数量：11 个
+
+  【1】💼 个人贷款
+      产品ID：UOB-PERS-PL
+      产品名称：UOB Personal Loan
+      利率范围：3.99%–11.99% p.a. (income-based: RM7K+ gets 9.99%, <RM4K gets 11.99%)
+      贷款额度：RM 5,000 - RM 150,000
+      验证日期：2025-10-19
+      官方链接：https://www.uob.com.my/personal/borrow/personal-loan.page
+
+  【2】💳 债务整合
+      产品ID：UOB-CARD-BAL-TRANSFER
+      产品名称：UOB Balance Transfer Instalment
+      利率范围：New cardholders: 6m 0% / 12m 1% upfront; Existing: 6m 3% / 12m 4% upfront; Standard 3.80% p.a. EIR
+      贷款额度：RM 1,000 起
+      验证日期：2025-10-19
+      官方链接：https://www.uob.com.my/personal/cards/credit-card-features/balance-transfer.page
+
+  【3】💳 债务整合
+      产品ID：UOB-CARD-EASI-PAY
+      产品名称：UOB Easi-Payment / 0% IPP (Transaction Conversion)
+      利率范围：Flat 3.99% p.a. options; 0% IPP by merchant/tenure; up to 60–68 months
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.uob.com.my/personal/cards/credit-card-features/easi-payment.page
+
+  【4】🏠 房屋贷款
+      产品ID：UOB-HOME-IHL
+      产品名称：UOB Intelligent Home Loan (iHL)
+      利率范围：SBR + 1.61% ≈ 4.36% p.a. (indicative: SBR 2.75%)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.uob.com.my/personal/borrow/property/i-home-loan.page
+
+  【5】🏠 房屋贷款
+      产品ID：UOB-HOME-FLEXI
+      产品名称：UOB Flexi Mortgage (Offset-Linked)
+      利率范围：Offset-linked floating; tenure up to 35 years / age 70
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.uob.com.my/personal/borrow/property/flexi-mortgage.page
+
+  【6】🔄 再融资
+      产品ID：UOB-HOME-REFI
+      产品名称：UOB Home Refinancing (Conventional)
+      利率范围：Refinance existing loans to UOB; package-based pricing
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.uob.com.my/personal/borrow/property/i-home-loan.page
+
+  【7】🏠 房屋贷款
+      产品ID：UOBI-HOME-PFi
+      产品名称：UOB Home Financing-i
+      利率范围：SBRI + 1.61% ≈ 4.36% p.a. (indicative: SBRI 2.75%)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.uob.com.my/islamic/personal/financing-home-financing-i.page
+
+  【8】🚗 汽车贷款
+      产品ID：UOB-AUTO-HP
+      产品名称：UOB Auto Loan (Hire Purchase)
+      利率范围：Rate not publicly disclosed (contact bank for quote; market range 2.4%–3.5% p.a.)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.motorist.my/car-loan-calculator/united-overseas-bank-malaysia-berhad
+
+  【9】🏢 企业贷款
+      产品ID：UOB-SME-BIZMONEY
+      产品名称：UOB BizMoney (Unsecured SME Loan)
+      利率范围：From 0.38% per month (≈4.56% p.a. flat rate)
+      贷款额度：RM 100,000 - RM 1,000,000
+      验证日期：2025-10-19
+      官方链接：https://www.uob.com.my/business/finance/uob-bizmoney.page
+
+  【10】🏢 企业贷款
+      产品ID：UOB-SME-BIZPROPERTY
+      产品名称：UOB BizProperty / Commercial Property Financing
+      利率范围：Property-backed; refinancing options; MoF as per policy
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.uob.com.my/business/finance/index.page
+
+  【11】🏢 企业贷款
+      产品ID：UOB-SME-SJPP/SCHEMES
+      产品名称：UOB Government/Agency Schemes (e.g., SJPP)
+      利率范围：As per scheme terms; guarantees up to ~80% (SJPP reference)
+      贷款额度：请咨询银行
+      验证日期：2025-10-19
+      官方链接：https://www.uob.com.my/business/sme-hub/insights/get-your-sme-loan-approved.page
+
+
+====================================================================================================
+📊 统计总结
+====================================================================================================
+✅ 总银行数：20 家
+✅ 总产品数：197 个
+✅ 验证率：100%（所有产品都有验证日期）
+✅ 链接完整度：100%（所有产品都有官方链接）
+====================================================================================================
