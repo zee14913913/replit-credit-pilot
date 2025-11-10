@@ -65,6 +65,7 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 - **Security:** Session secret key, file upload size limits, SQL injection prevention, and audit logging.
 - **Data Accuracy:** Robust previous balance extraction and monthly ledger engine ensuring 100% accuracy and DR/CR classification.
 - **Monthly Statement Architecture:** One monthly statement record per bank + month, aggregating 6 mandatory classification fields.
+- **OCR Receipts SQL Implementation:** Uses SQL column aliasing (AS) to map database columns (`created_at`, `amount`, `transaction_date`, `merchant_name`, `match_status`) to UI-friendly names (`uploaded_at`, `ocr_amount`, `ocr_date`, `ocr_merchant`, `match_type`) without requiring schema migrations. This approach maintains backward compatibility while providing semantic clarity for frontend code.
 
 ## External Dependencies
 
