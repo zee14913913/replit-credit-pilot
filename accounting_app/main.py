@@ -10,7 +10,6 @@ from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from sqlalchemy.orm import Session
-from sqlalchemy import text
 
 from .db import get_db, init_database, execute_sql_file
 from . import models
@@ -151,7 +150,7 @@ async def root():
         <style>
             body {
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background: #000000;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 margin: 0;
                 padding: 0;
                 display: flex;
@@ -160,63 +159,49 @@ async def root():
                 min-height: 100vh;
             }
             .container {
-                background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%);
-                border: 2px solid #FF007F;
+                background: white;
                 padding: 3rem;
                 border-radius: 15px;
-                box-shadow: 0 20px 60px rgba(255, 0, 127, 0.3);
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
                 max-width: 600px;
                 text-align: center;
             }
             h1 {
-                color: #FFFEF0;
+                color: #333;
                 margin-bottom: 1rem;
-                font-weight: 900;
-                font-size: 2rem;
             }
             p {
-                color: #FFFEF0;
+                color: #666;
                 line-height: 1.8;
-                font-size: 1rem;
-            }
-            strong {
-                color: #FF007F;
-                font-weight: 700;
             }
             .btn {
                 display: inline-block;
                 margin: 1rem 0.5rem;
                 padding: 12px 30px;
-                background: linear-gradient(135deg, #FF007F 0%, #FF3399 100%);
-                color: #FFFEF0;
+                background: #667eea;
+                color: white;
                 text-decoration: none;
                 border-radius: 8px;
-                border: 2px solid #FFFEF0;
                 transition: all 0.3s;
-                font-weight: 700;
-                text-transform: uppercase;
-                font-size: 0.9rem;
             }
             .btn:hover {
-                background: linear-gradient(135deg, #FF3399 0%, #FF007F 100%);
+                background: #764ba2;
                 transform: translateY(-2px);
-                box-shadow: 0 5px 20px rgba(255, 0, 127, 0.5);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             }
             .status {
-                background: #FF007F;
-                color: #FFFEF0;
+                background: #10b981;
+                color: white;
                 padding: 8px 16px;
                 border-radius: 20px;
                 display: inline-block;
                 margin-bottom: 1rem;
-                font-weight: 700;
-                border: 2px solid #FFFEF0;
             }
         </style>
     </head>
     <body>
         <div class="container">
-            <div class="status">System Online</div>
+            <div class="status">✅ System Online</div>
             <h1>🏦 银行贷款合规会计系统</h1>
             <p>
                 <strong>核心功能：</strong>将客户的真实银行月结单自动转换为会计分录，
@@ -227,8 +212,8 @@ async def root():
                 Suppliers Aging | Customer Ledger | P&L | Balance Sheet | 
                 Payroll | Tax Adjustments | 自动发票
             </p>
-            <a href="/docs" class="btn">API文档</a>
-            <a href="/accounting" class="btn">管理后台</a>
+            <a href="/docs" class="btn">📚 API文档</a>
+            <a href="/accounting" class="btn">💼 管理后台</a>
         </div>
     </body>
     </html>
@@ -239,8 +224,8 @@ async def root():
 @app.get("/health")
 async def health_check(db: Session = Depends(get_db)):
     try:
-        # 测试数据库连接（SQLAlchemy 2.0 语法）
-        db.execute(text("SELECT 1"))
+        # 测试数据库连接
+        db.execute("SELECT 1")
         return {
             "status": "healthy",
             "database": "connected",
