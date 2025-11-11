@@ -882,3 +882,42 @@ class UploadStaging(Base):
         CheckConstraint("module IN ('bank', 'supplier', 'pos', 'credit-card', 'savings', 'receipts')"),
         CheckConstraint("status IN ('pending', 'processing', 'linked', 'failed', 'abandoned')"),
     )
+
+
+class SFTPUploadJob(Base):
+    """
+    SFTP上传任务追踪：记录每次文件上传到客户ERP系统的状态和重试历史
+    """
+    __tablename__ = "sftp_upload_jobs"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id', ondelete='CASCADE'), nullable=False, index=True)
+    job_number = Column(String(100), nullable=False, unique=True, index=True)  # SFTP-20251111-143025-001
+    file_path = Column(Text, nullable=False)  # 本地文件路径
+    file_name = Column(String(255), nullable=False)
+    payload_type = Column(String(50), nullable=False, index=True)  # sales, suppliers, payments, customers, bank, payroll, loan
+    remote_path = Column(Text, nullable=False)  # 远程目标路径
+    file_size = Column(BigInteger)  # 文件大小（字节）
+    file_hash = Column(String(64))  # SHA256文件哈希
+    status = Column(String(20), default='pending', nullable=False, index=True)  # pending, uploading, success, failed, retry
+    attempts = Column(Integer, default=0, nullable=False)  # 尝试次数
+    max_attempts = Column(Integer, default=3, nullable=False)  # 最大重试次数
+    last_error = Column(Text)  # 最后一次错误信息
+    next_retry_at = Column(DateTime(timezone=True))  # 下次重试时间
+    started_at = Column(DateTime(timezone=True))  # 开始上传时间
+    completed_at = Column(DateTime(timezone=True))  # 完成时间
+    duration_seconds = Column(Numeric(10,2))  # 上传耗时（秒）
+    sftp_host = Column(String(255))  # SFTP服务器地址
+    sftp_username = Column(String(100))  # SFTP用户名
+    uploaded_by = Column(String(100))  # 上传触发用户/系统
+    is_manual = Column(Boolean, default=False)  # 是否手动触发
+    job_metadata = Column(JSON)  # 额外元数据
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
+    
+    __table_args__ = (
+        CheckConstraint("payload_type IN ('sales', 'suppliers', 'payments', 'customers', 'bank', 'payroll', 'loan')"),
+        CheckConstraint("status IN ('pending', 'uploading', 'success', 'failed', 'retry', 'cancelled')"),
+        Index('idx_sftp_status_retry', 'status', 'next_retry_at'),
+        Index('idx_sftp_company_type', 'company_id', 'payload_type'),
+    )
