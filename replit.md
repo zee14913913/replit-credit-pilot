@@ -92,3 +92,101 @@ The backend is built with Flask, utilizing SQLite with a context manager pattern
 ### File Storage
 - A `FileStorageManager` handles standardized path generation and directory management.
 - **Standard Directory Structure**: `static/uploads/customers/{customer_code}/` with subdirectories.
+
+## SFTP ERP Automation System (November 2025)
+
+### Overview
+Production-ready SFTP synchronization system that automatically exports financial data to SQL ACC ERP Edition via secure SFTP every 10 minutes. Supports multi-company file organization with backward compatibility for legacy flat directory structures.
+
+### Architecture
+- **Backend**: FastAPI (Port 8000) with background scheduler
+- **SFTP Client**: Paramiko with strict SSH host key verification
+- **Data Exporter**: 7 financial data types (sales, invoices, payments, bank statements, suppliers, payroll, loan charges)
+- **Scheduler**: Background thread with 10-minute sync cycles
+- **Database**: PostgreSQL (`SFTPUploadJob` model for upload history tracking)
+
+### Security Features
+1. **SSH Host Key Verification**:
+   - Strict known_hosts matching (rejects unknown hosts)
+   - Supports hashed entries (`|1|...` format)
+   - Supports both `host` and `[host]:port` lookup formats
+   - MITM attack detection with key mismatch alerts
+   
+2. **Path Security**:
+   - Path normalization (prevents directory traversal)
+   - Company folder validation (alphanumeric + underscore/hyphen only)
+   - Symlink detection and blocking
+   - Hidden folder filtering (excludes `.` prefixed folders)
+
+3. **Configuration**:
+   - Environment variables for credentials
+   - Configurable known_hosts path
+   - Support for both password and SSH key authentication
+
+### Directory Structure
+**Legacy (Flat) Layout** - Backward compatible:
+```
+accounting_data/uploads/
+├── sales/
+├── suppliers/
+├── invoices/
+├── payments/
+├── bank_statements/
+├── payroll/
+└── loan_charges/
+```
+
+**New (Multi-Company) Layout**:
+```
+accounting_data/uploads/
+├── Company1/
+│   ├── sales/
+│   ├── suppliers/
+│   └── ...
+└── Company2/
+    ├── sales/
+    └── ...
+```
+
+### SFTP Upload Configuration
+- **Target Server**: 161.142.139.122:22
+- **Remote Directory**: `C:/ERP_IMPORTS/`
+- **File Categories**: 7 folders (sales, suppliers, invoices, payments, bank_statements, payroll, loan_charges)
+- **Sync Frequency**: Every 10 minutes
+- **Retry Strategy**: Exponential backoff (2^attempts minutes), max 3 attempts
+
+### Database Model: SFTPUploadJob
+Tracks upload history with the following fields:
+- `job_id`: Unique identifier (format: `SFTP-YYYYMMDD-HHmmss-NNN`)
+- `status`: pending | uploading | completed | failed | retry
+- `retry_count`: Number of retry attempts
+- `job_metadata`: JSON metadata (file counts, errors)
+- `company_folder`: Source company folder name
+- `created_at`, `updated_at`, `completed_at`: Timestamps
+
+### API Endpoints
+- `POST /api/sftp/sync/trigger`: Trigger manual SFTP sync
+- `GET /api/sftp/sync/status/{job_id}`: Get sync job status
+- `GET /api/sftp/sync/history`: Get sync history (pagination support)
+- `GET /api/sftp/sync/statistics`: Get upload statistics
+
+### Audit Logging
+All SFTP operations are logged to `audit_logs` table with:
+- Action type: `SFTP_SYNC`
+- Entity type: `sftp_upload_job`
+- Metadata: Upload results (success/failed counts, file lists)
+- User: `system` (for scheduled jobs)
+
+### Key Files
+- `accounting_app/models.py`: `SFTPUploadJob` model
+- `accounting_app/services/sftp/sftp_client.py`: SFTP client with security
+- `accounting_app/services/sftp/erp_exporter.py`: Data export logic
+- `accounting_app/services/sftp/sync_service.py`: Sync coordinator
+- `accounting_app/services/sftp/scheduler.py`: Background scheduler
+- `accounting_app/routes/sftp_sync.py`: REST API routes
+- `accounting_app/main.py`: SFTP system initialization
+
+### Known Issues & Future Improvements
+- ⚠️ Global `schedule` module has thread-safety concerns (consider migrating to APScheduler)
+- 📝 API RBAC permissions currently hardcoded (company_id=1)
+- 🔒 Upload rate limiting not yet implemented
