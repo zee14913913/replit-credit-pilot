@@ -120,12 +120,12 @@
                style="background: #FF007F; 
                       color: #FFFFFF; 
                       font-weight: 900;
-                      font-size: 1.1rem;
-                      padding: 0.75rem 2rem;
+                      font-size: 1.21rem;
+                      padding: 0.825rem 2.2rem;
                       border-radius: 8px;
                       text-decoration: none;
                       border: 2px solid #FFFFFF;
-                      box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
+                      box-shadow: 0 0 12px rgba(255, 0, 127, 0.6), 0 4px 20px rgba(255, 0, 127, 0.5);
                       transition: all 0.3s ease;
                       -webkit-text-stroke: 0.5px #FFFFFF;
                       letter-spacing: 0.5px;">
@@ -200,7 +200,9 @@
             {% endfor %}
         {% else %}
             <div class="col-12">
-                <div class="alert-professional alert-info-pro">
+                <div class="alert-professional alert-info-pro" 
+                     style="box-shadow: 0 0 16px rgba(255, 255, 255, 0.06); 
+                            border-radius: 20px;">
                     <h5 style="color: #F0F0F0; text-shadow: 0 0 10px rgba(240, 240, 240, 0.5);">{{ t('no_customers_found') }}</h5>
                     <p class="mb-0" style="color: #FF007F; font-weight: 700;">{{ t('add_customers_to_start') }}</p>
                 </div>
