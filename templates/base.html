@@ -29,8 +29,12 @@
     <!-- Professional Navigation -->
     <nav class="professional-nav">
         <div class="nav-container">
-            <a href="{{ url_for('index') }}" class="nav-brand">
+            <a href="{{ url_for('index') }}" class="nav-brand" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
                 <img src="{{ url_for('static', filename='logo.png') }}" alt="{{ t('company_name') }}" class="nav-logo">
+                <div style="display: flex; flex-direction: column; line-height: 1.2;">
+                    <span style="color: #FFFFFF; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.5px; text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);">INFINITE GZ</span>
+                    <span style="color: #FF007F; font-weight: 700; font-size: 0.75rem; letter-spacing: 1px;">SDN BHD</span>
+                </div>
             </a>
             
             <ul class="nav-menu">
@@ -623,6 +627,7 @@
     <script>
         // Notification System
         let notificationCheckInterval;
+        let isAuthenticated = null;
         const API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:8000`;
         
         // 页面加载时初始化
@@ -642,22 +647,43 @@
         
         // 开始轮询通知
         function startNotificationPolling() {
-            notificationCheckInterval = setInterval(checkNotifications, 30000); // 每30秒检查一次
+            notificationCheckInterval = setInterval(checkNotifications, 30000);
+        }
+        
+        // 停止轮询通知
+        function stopNotificationPolling() {
+            if (notificationCheckInterval) {
+                clearInterval(notificationCheckInterval);
+                notificationCheckInterval = null;
+            }
         }
         
         // 检查未读通知
         async function checkNotifications() {
+            if (isAuthenticated === false) {
+                return;
+            }
+            
             try {
                 const response = await fetch(`${API_BASE_URL}/api/notifications/unread-count`, {
                     credentials: 'include'
                 });
                 
-                if (!response.ok) return;
+                if (response.status === 401) {
+                    isAuthenticated = false;
+                    stopNotificationPolling();
+                    return;
+                }
                 
+                if (!response.ok) {
+                    return;
+                }
+                
+                isAuthenticated = true;
                 const data = await response.json();
                 updateNotificationBadge(data.unread_count);
             } catch (error) {
-                console.error('Failed to check notifications:', error);
+                // 静默处理网络错误，避免控制台噪音
             }
         }
         
