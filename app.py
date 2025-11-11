@@ -3830,6 +3830,145 @@ def loan_matcher_analyze():
 
 
 # ============================================================================
+# LOAN PRODUCTS CATALOG - 贷款产品目录浏览系统
+# ============================================================================
+
+@app.route('/loan-products')
+def loan_products():
+    """贷款产品目录 - 浏览所有银行产品"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取筛选参数
+        bank_filter = request.args.get('bank', '')
+        category_filter = request.args.get('category', '')
+        search_query = request.args.get('search', '')
+        sort_by = request.args.get('sort', 'bank')  # bank, rate, amount
+        
+        # 构建SQL查询
+        sql = "SELECT * FROM loan_products WHERE 1=1"
+        params = []
+        
+        if bank_filter:
+            sql += " AND bank = ?"
+            params.append(bank_filter)
+        
+        if category_filter:
+            sql += " AND category = ?"
+            params.append(category_filter)
+        
+        if search_query:
+            sql += " AND (name LIKE ? OR description LIKE ? OR product_id LIKE ?)"
+            search_term = f'%{search_query}%'
+            params.extend([search_term, search_term, search_term])
+        
+        # 排序
+        if sort_by == 'rate':
+            sql += " ORDER BY rate_display ASC"
+        elif sort_by == 'amount':
+            sql += " ORDER BY amount_max IS NULL, amount_max DESC"
+        else:
+            sql += " ORDER BY bank, category, name"
+        
+        cursor.execute(sql, params)
+        products = [dict(row) for row in cursor.fetchall()]
+        
+        # 获取所有银行列表
+        cursor.execute("SELECT DISTINCT bank FROM loan_products ORDER BY bank")
+        banks = [row['bank'] for row in cursor.fetchall()]
+        
+        # 获取产品统计
+        cursor.execute("SELECT COUNT(*) as total FROM loan_products")
+        total_products = cursor.fetchone()['total']
+        
+        cursor.execute("SELECT COUNT(DISTINCT bank) as total FROM loan_products")
+        total_banks = cursor.fetchone()['total']
+        
+        # 类型统计
+        cursor.execute("SELECT category, COUNT(*) as count FROM loan_products GROUP BY category ORDER BY count DESC")
+        category_stats = {row['category']: row['count'] for row in cursor.fetchall()}
+    
+    # 类型名称映射
+    category_names = {
+        'personal': '个人贷款',
+        'home': '房屋贷款',
+        'auto': '汽车贷款',
+        'sme': '企业贷款',
+        'refinance': '再融资',
+        'debt_consolidation': '债务整合',
+        'home_reno': '装修贷款',
+        'investment': '投资贷款',
+        'other': '其他'
+    }
+    
+    # 解析 JSON 字段
+    import json
+    for product in products:
+        if product.get('channel'):
+            try:
+                product['channel'] = json.loads(product['channel'])
+            except:
+                product['channel'] = []
+        
+        if product.get('docs_required'):
+            try:
+                product['docs_required'] = json.loads(product['docs_required'])
+            except:
+                product['docs_required'] = []
+        
+        if product.get('special_features'):
+            try:
+                product['special_features'] = json.loads(product['special_features'])
+            except:
+                product['special_features'] = []
+        
+        if product.get('links'):
+            try:
+                product['links'] = json.loads(product['links'])
+            except:
+                product['links'] = []
+    
+    return render_template(
+        'loan_products.html',
+        products=products,
+        banks=banks,
+        category_names=category_names,
+        category_stats=category_stats,
+        total_products=total_products,
+        total_banks=total_banks,
+        current_bank=bank_filter,
+        current_category=category_filter,
+        current_search=search_query,
+        current_sort=sort_by
+    )
+
+@app.route('/loan-products/<int:product_id>')
+def loan_product_detail(product_id):
+    """贷款产品详情页"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM loan_products WHERE id = ?", (product_id,))
+        product = cursor.fetchone()
+        
+        if not product:
+            flash('产品未找到', 'error')
+            return redirect(url_for('loan_products'))
+        
+        product = dict(product)
+        
+        # 解析 JSON 字段
+        import json
+        for field in ['channel', 'docs_required', 'special_features', 'special_conditions', 'links']:
+            if product.get(field):
+                try:
+                    product[field] = json.loads(product[field])
+                except:
+                    product[field] = []
+    
+    return render_template('loan_product_detail.html', product=product)
+
+
+# ============================================================================
 # CREDIT CARD LEDGER - 信用卡账本系统 (OWNER vs INFINITE)
 # ============================================================================
 
