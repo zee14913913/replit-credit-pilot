@@ -9,37 +9,41 @@
         <h2 style="color: var(--primary-pink);">
             <i class="bi bi-bank2"></i> {{ t('loan_products_catalog') }}
         </h2>
-        <p class="text-muted">{{ t('browse_products_desc').replace('{banks}', total_banks|string).replace('{products}', total_products|string) }}</p>
+        <p style="color: #FFFEF0; font-size: 0.95rem;">{{ t('browse_products_desc').replace('{banks}', total_banks|string).replace('{products}', total_products|string) }}</p>
     </div>
 </div>
 
 <!-- 统计卡片 -->
 <div class="row mb-4">
     <div class="col-md-3">
-        <div class="card" style="background: var(--primary-purple); border: 1px solid var(--primary-pink);">
-            <div class="card-body text-center">
-                <h3 style="color: var(--primary-pink);">{{ total_products }}</h3>
-                <p>{{ t('total_products') }}</p>
+        <div class="card" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 2px solid var(--primary-pink);">
+            <div class="card-body text-center" style="padding: 1.5rem;">
+                <h3 style="color: var(--primary-pink); font-size: 2.5rem; font-weight: 900; text-shadow: 0 0 15px rgba(255,0,127,0.5);">{{ total_products }}</h3>
+                <p style="color: #FFFEF0; font-size: 0.85rem; font-weight: 600; margin: 0;">{{ t('total_products') }}</p>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card" style="background: var(--primary-purple); border: 1px solid var(--primary-pink);">
-            <div class="card-body text-center">
-                <h3 style="color: var(--primary-pink);">{{ total_banks }}</h3>
-                <p>{{ t('total_banks') }}</p>
+        <div class="card" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 2px solid var(--primary-pink);">
+            <div class="card-body text-center" style="padding: 1.5rem;">
+                <h3 style="color: var(--primary-pink); font-size: 2.5rem; font-weight: 900; text-shadow: 0 0 15px rgba(255,0,127,0.5);">{{ total_banks }}</h3>
+                <p style="color: #FFFEF0; font-size: 0.85rem; font-weight: 600; margin: 0;">{{ t('total_banks') }}</p>
             </div>
         </div>
     </div>
     <div class="col-md-6">
-        <div class="card" style="background: var(--primary-purple); border: 1px solid var(--primary-pink);">
-            <div class="card-body">
-                <p class="mb-2"><strong>{{ t('product_type_distribution') }}：</strong></p>
-                {% for category, count in category_stats.items() %}
-                <span class="badge" style="background: var(--primary-pink); margin: 2px;">
-                    {{ category_names.get(category, category) }}: {{ count }}
-                </span>
-                {% endfor %}
+        <div class="card" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 2px solid var(--primary-purple);">
+            <div class="card-body" style="padding: 1.5rem;">
+                <p style="color: #FFFEF0; font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                    {{ t('product_type_distribution') }}:
+                </p>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                    {% for category, count in category_stats.items() %}
+                    <span style="background: #322446; color: #FFFEF0; padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; border: 1px solid #FF007F;">
+                        {{ category_names.get(category, category) }}: <strong style="color: #FF007F;">{{ count }}</strong>
+                    </span>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
