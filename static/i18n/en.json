@@ -355,5 +355,14 @@
   "view_details": "View Details",
   "no_products_found": "No products found matching your criteria",
   "showing_products": "Showing {count} products",
-  "last_updated": "Last Updated"
+  "last_updated": "Last Updated",
+  "category_personal": "Personal Loan",
+  "category_home": "Home Loan",
+  "category_auto": "Auto Loan",
+  "category_sme": "SME Financing",
+  "category_refinance": "Refinancing",
+  "category_debt_consolidation": "Debt Consolidation",
+  "category_home_reno": "Home Renovation",
+  "category_investment": "Investment Loan",
+  "category_other": "Other"
 }
