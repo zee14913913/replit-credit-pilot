@@ -41,3 +41,5 @@ py-vapid
 pywebpush
 beautifulsoup4
 lxml
+paramiko
+schedule

@@ -1,0 +1,208 @@
+Replit 项目 accounting-audit-system 具备自动 SFTP 上传至客户 SQL ACC ERP Edition 的能力。
+
+⸻
+
+🧭 全系统结构目标
+
+最终结果：
+
+accounting_app/
+├── main.py                     ← 主 FastAPI 启动文件（已有）
+├── services/
+│   ├── sftp_client.py          ← 新增：SFTP 上传模块
+│   ├── erp_exporter.py         ← 新增：格式化 ERP 文件
+│   └── automation_scheduler.py ← 新增：自动上传调度器
+├── routers/
+│   ├── sftp_sync.py            ← 新增：SFTP API 控制端点
+│   └── (其他原有路由保持不变)
+
+
+⸻
+
+🧩 第一阶段：环境准备（Replit 设置）
+
+1️⃣ 安装新依赖包
+
+打开 Replit 的 Shell（终端）执行：
+
+pip install paramiko schedule
+
+这两个是核心：
+	•	paramiko：SSH/SFTP 协议模块；
+	•	schedule：后台定时任务调度。
+
+⸻
+
+2️⃣ 确认 Replit Secret（环境变量）
+
+你之前已设置了：
+
+{
+  "host": "161.142.139.122",
+  "port": 22,
+  "username": "erp_sync",
+  "password": "Erp2025!",
+  "remote_dir": "C:/ERP_IMPORTS",
+  "use_key_auth": false,
+  "private_key_path": "",
+  "description": "Connection to SQL ACC ERP Edition import directory for automated CSV upload"
+}
+
+请确认 Secret 名称为：SFTP_CONFIG ✅。
+这是自动上传系统读取的唯一配置。
+
+⸻
+
+🧩 第二阶段：新增文件与功能模块
+
+📁 1. 新增文件 accounting_app/services/sftp_client.py
+
+import paramiko, os, json
+from dotenv import load_dotenv
+
+load_dotenv()
+
+def get_sftp_connection():
+    """建立 SFTP 连接"""
+    config = json.loads(os.getenv("SFTP_CONFIG"))
+    host = config["host"]
+    username = config["username"]
+    password = config["password"]
+    port = config.get("port", 22)
+
+    transport = paramiko.Transport((host, port))
+    transport.connect(username=username, password=password)
+    sftp = paramiko.SFTPClient.from_transport(transport)
+    return sftp
+
+def upload_file(local_path, remote_path):
+    """上传单个文件"""
+    sftp = get_sftp_connection()
+    try:
+        sftp.put(local_path, remote_path)
+        print(f"✅ Uploaded: {local_path} → {remote_path}")
+    except Exception as e:
+        print(f"❌ Upload failed: {local_path} | Error: {e}")
+    finally:
+        sftp.close()
+
+
+⸻
+
+📁 2. 新增文件 accounting_app/services/automation_scheduler.py
+
+import schedule, time, os
+from accounting_app.services.sftp_client import upload_file
+
+def sync_csv_files():
+    """扫描并上传 CSV 文件到客户 ERP"""
+    base_dir = "accounting_data/uploads"
+    mapping = {
+        "sales": "C:/ERP_IMPORTS/sales/",
+        "suppliers": "C:/ERP_IMPORTS/suppliers/",
+        "payments": "C:/ERP_IMPORTS/payments/",
+        "customers": "C:/ERP_IMPORTS/customers/",
+        "bank": "C:/ERP_IMPORTS/bank/",
+        "payroll": "C:/ERP_IMPORTS/payroll/",
+        "loan": "C:/ERP_IMPORTS/loan/"
+    }
+
+    for folder, remote in mapping.items():
+        local_dir = os.path.join(base_dir, folder)
+        if not os.path.exists(local_dir):
+            continue
+        for file in os.listdir(local_dir):
+            if file.endswith(".csv"):
+                local_path = os.path.join(local_dir, file)
+                try:
+                    upload_file(local_path, remote + file)
+                except Exception as e:
+                    print(f"Error uploading {file}: {e}")
+
+schedule.every(10).minutes.do(sync_csv_files)
+
+def start_scheduler():
+    """后台持续执行同步任务"""
+    print("⏳ SFTP Scheduler started (sync every 10 min)")
+    while True:
+        schedule.run_pending()
+        time.sleep(30)
+
+
+⸻
+
+📁 3. 新增文件 accounting_app/routers/sftp_sync.py
+
+from fastapi import APIRouter
+from accounting_app.services.automation_scheduler import sync_csv_files
+
+router = APIRouter()
+
+@router.get("/sync-sftp-now")
+def manual_sync():
+    """手动触发立即同步"""
+    sync_csv_files()
+    return {"message": "Manual SFTP sync triggered successfully."}
+
+
+⸻
+
+📁 4. 修改 accounting_app/main.py
+
+在文件底部加入以下内容👇（不要删原来的内容）
+
+from accounting_app.services.automation_scheduler import start_scheduler
+import threading
+from accounting_app.routers import sftp_sync
+from fastapi import FastAPI
+
+# 确保 SFTP API 也加载
+app = FastAPI()
+app.include_router(sftp_sync.router)
+
+# 启动后台调度线程
+threading.Thread(target=start_scheduler, daemon=True).start()
+
+
+⸻
+
+🧩 第三阶段：部署验证
+
+1️⃣ 上传一份 CSV 文件到你的 Replit 项目目录：
+
+accounting_data/uploads/sales/sales_2025-11-12.csv
+
+2️⃣ 等待 10 分钟（系统每 10 分钟扫描一次），或
+打开浏览器访问：
+
+https://<your-replit-domain>/sync-sftp-now
+
+触发立即同步。
+
+3️⃣ 在客户电脑 C:\ERP_IMPORTS\sales 文件夹中查看是否出现对应 CSV 文件。
+若出现 ✅，整个链路已经完成部署。
+
+⸻
+
+🧠 系统安全提示
+	•	所有 SFTP 登录凭证存放在 Secret，不会被泄露。
+	•	仅允许 .csv 文件类型上传。
+	•	每次上传都有日志记录（可以后续写入 audit log）。
+	•	即使 Replit 重启，后台调度线程会在系统启动时重新启动。
+
+⸻
+
+🧱 可选优化（之后再加）
+
+模块	功能
+erp_exporter.py	自动将数据库中数据格式化为 SQL ACC ERP CSV 结构
+sync_log.db	记录每次上传的文件与时间
+retry_handler	若客户电脑暂时断线，自动延迟重试
+
+
+
+
+我想拥有一个：
+
+Replit 自动对接 SQL ACC ERP 的完整 SFTP 会计同步系统。
+
