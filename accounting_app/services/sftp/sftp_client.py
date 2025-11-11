@@ -35,6 +35,8 @@ class SFTPClient:
         self.remote_base_dir = config.get("remote_dir", "C:/ERP_IMPORTS")
         self.use_key_auth = config.get("use_key_auth", False)
         self.private_key_path = config.get("private_key_path", "")
+        self.verify_host_key = config.get("verify_host_key", True)  # 默认启用host key验证
+        self.known_hosts_path = config.get("known_hosts_path", os.path.expanduser("~/.ssh/known_hosts"))
         
         # 验证必需配置
         if not all([self.host, self.username]):
@@ -64,15 +66,88 @@ class SFTPClient:
             # 建立 SSH transport
             transport = paramiko.Transport((self.host, self.port))
             
-            # 认证
+            # 启动客户端（不进行认证，只获取host key）
+            transport.start_client()
+            
+            # 🔒 安全性：SSH host key验证（防止中间人攻击）
+            if self.verify_host_key:
+                # 加载known_hosts文件
+                host_keys = paramiko.HostKeys()
+                if os.path.exists(self.known_hosts_path):
+                    try:
+                        host_keys.load(self.known_hosts_path)
+                        logger.debug(f"Loaded host keys from: {self.known_hosts_path}")
+                    except Exception as e:
+                        logger.error(f"❌ Failed to load known_hosts: {e}")
+                        raise
+                
+                # 获取服务器host key
+                server_key = transport.get_remote_server_key()
+                
+                # 🔒 使用 lookup() 方法支持 hashed entries
+                # lookup() 返回 dict: {key_type: PKey}
+                lookup_candidates = [
+                    self.host,
+                    f"[{self.host}]:{self.port}",
+                ]
+                
+                stored_key_map = None
+                for candidate in lookup_candidates:
+                    stored_key_map = host_keys.lookup(candidate)
+                    if stored_key_map:
+                        logger.debug(f"Found stored keys for: {candidate}")
+                        break
+                
+                # 🔒 严格模式：未知主机必须拒绝
+                if stored_key_map is None:
+                    error_msg = (
+                        f"❌ Host key verification failed: {self.host}:{self.port} not found in known_hosts.\n"
+                        f"Known_hosts file: {self.known_hosts_path}\n"
+                        f"To fix this, add the server key (works with both hashed and unhashed entries):\n"
+                        f"  ssh-keyscan -p {self.port} {self.host} >> {self.known_hosts_path}\n"
+                        f"Or manually connect once via SSH to add the key:\n"
+                        f"  ssh -p {self.port} {self.username}@{self.host}\n"
+                        f"Or disable host key verification (NOT RECOMMENDED) by setting verify_host_key=false."
+                    )
+                    logger.error(error_msg)
+                    raise paramiko.SSHException(error_msg)
+                
+                # 从字典中获取与服务器 key 类型匹配的 key
+                server_key_type = server_key.get_name()
+                stored_key = stored_key_map.get(server_key_type)
+                
+                if stored_key is None:
+                    error_msg = (
+                        f"❌ Host key type mismatch: server presented {server_key_type}, "
+                        f"but known_hosts has {list(stored_key_map.keys())}. "
+                        f"Update known_hosts with the correct key type."
+                    )
+                    logger.error(error_msg)
+                    raise paramiko.SSHException(error_msg)
+                
+                # 验证 key 是否匹配
+                if stored_key.asbytes() != server_key.asbytes():
+                    error_msg = (
+                        f"❌ Host key mismatch for {self.host}:{self.port}! "
+                        f"Possible MITM attack detected. "
+                        f"Server presented key fingerprint: {server_key.get_base64()}\n"
+                        f"Stored key fingerprint: {stored_key.get_base64()}\n"
+                        f"Remove the old key and re-add the correct one."
+                    )
+                    logger.error(error_msg)
+                    raise paramiko.SSHException(error_msg)
+                
+                logger.info(f"✅ Host key verified successfully for {self.host}:{self.port} ({server_key_type})")
+            
+            # 在同一个transport session上进行认证
             if self.use_key_auth and self.private_key_path:
                 # 使用私钥认证
                 private_key = paramiko.RSAKey.from_private_key_file(self.private_key_path)
-                transport.connect(username=self.username, pkey=private_key)
+                transport.auth_publickey(self.username, private_key)
                 logger.info(f"🔑 Connected using SSH key authentication")
             else:
                 # 使用密码认证
-                transport.connect(username=self.username, password=self.password)
+                transport.auth_password(self.username, self.password)
                 logger.info(f"🔑 Connected using password authentication")
             
             # 创建 SFTP 客户端
@@ -212,7 +287,7 @@ class SFTPClient:
     
     def get_payload_remote_path(self, payload_type: str) -> str:
         """
-        根据数据类型获取远程目标路径
+        根据数据类型获取远程目标路径（防止路径遍历攻击）
         
         Args:
             payload_type: 数据类型（sales, suppliers, payments等）
@@ -220,18 +295,32 @@ class SFTPClient:
         Returns:
             远程目录路径
         """
-        # 路径映射（防止路径注入）
-        path_mapping = {
-            "sales": f"{self.remote_base_dir}/sales/",
-            "suppliers": f"{self.remote_base_dir}/suppliers/",
-            "payments": f"{self.remote_base_dir}/payments/",
-            "customers": f"{self.remote_base_dir}/customers/",
-            "bank": f"{self.remote_base_dir}/bank/",
-            "payroll": f"{self.remote_base_dir}/payroll/",
-            "loan": f"{self.remote_base_dir}/loan/",
+        # 🔒 安全性：严格白名单验证（防止路径注入）
+        allowed_types = {
+            "sales", "suppliers", "payments", "customers",
+            "bank", "payroll", "loan"
         }
         
-        if payload_type not in path_mapping:
-            raise ValueError(f"Invalid payload_type: {payload_type}")
+        if payload_type not in allowed_types:
+            raise ValueError(
+                f"Invalid payload_type: {payload_type}. "
+                f"Allowed types: {allowed_types}"
+            )
         
-        return path_mapping[payload_type]
+        # 构造路径（使用posixpath确保Linux路径格式）
+        import posixpath
+        remote_path = posixpath.join(self.remote_base_dir, payload_type)
+        
+        # 🔒 安全性：规范化路径并验证不超出base_dir
+        normalized = posixpath.normpath(remote_path)
+        if not normalized.startswith(self.remote_base_dir):
+            raise SecurityError(
+                f"Path traversal detected: {payload_type} would escape base directory"
+            )
+        
+        return normalized + "/"
+
+
+class SecurityError(Exception):
+    """安全相关错误"""
+    pass
