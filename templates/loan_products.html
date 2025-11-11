@@ -118,37 +118,45 @@
                 <!-- Key Metrics -->
                 <div class="row g-3 mb-3">
                     <div class="col-6">
-                        <div style="text-align: center; padding: 1.25rem 0.75rem; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 1px solid #FF007F; border-radius: 6px;">
+                        <div style="text-align: center; padding: 1.25rem 0.75rem; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 1px solid #FF007F; border-radius: 6px; min-height: 95px; display: flex; flex-direction: column; justify-content: center;">
                             <div style="color: #FF007F; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem;">
                                 {{ t('interest_rate') }}
                             </div>
-                            <div style="color: #FFFEF0; font-size: 1.3rem; font-weight: 900;">
-                                {{ product.rate_display or t('consult_bank') }}
+                            <div style="color: #FFFEF0; font-size: 1.2rem; font-weight: 900; line-height: 1.3; min-height: 40px; display: flex; align-items: center; justify-content: center;">
+                                {% if product.rate_display %}
+                                    {% if product.rate_display|length > 15 %}
+                                        <span style="font-size: 1rem;">{{ product.rate_display }}</span>
+                                    {% else %}
+                                        {{ product.rate_display }}
+                                    {% endif %}
+                                {% else %}
+                                    <span style="font-size: 0.9rem; color: #999;">{{ t('consult_bank') }}</span>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                     <div class="col-6">
-                        <div style="text-align: center; padding: 1.25rem 0.75rem; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 1px solid #322446; border-radius: 6px;">
+                        <div style="text-align: center; padding: 1.25rem 0.75rem; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 1px solid #322446; border-radius: 6px; min-height: 95px; display: flex; flex-direction: column; justify-content: center;">
                             <div style="color: #FFFEF0; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem;">
                                 {{ t('loan_amount') }}
                             </div>
-                            <div style="color: #FFFEF0; font-size: 1.3rem; font-weight: 900;">
+                            <div style="color: #FFFEF0; font-size: 1.2rem; font-weight: 900; line-height: 1.3; min-height: 40px; display: flex; align-items: center; justify-content: center;">
                                 {% if product.amount_min and product.amount_max %}
                                     {% if product.amount_max >= 1000000 %}
-                                        RM {{ "{:,.1f}".format(product.amount_max/1000000) }}M
+                                        <div style="font-size: 1.4rem;">{{ "{:,.1f}".format(product.amount_max/1000000) }}<span style="font-size: 0.9rem;">M</span></div>
                                     {% else %}
-                                        RM {{ "{:,.0f}".format(product.amount_max/1000) }}K
+                                        <div style="font-size: 1.4rem;">{{ "{:,.0f}".format(product.amount_max/1000) }}<span style="font-size: 0.9rem;">K</span></div>
                                     {% endif %}
                                 {% elif product.amount_min %}
-                                    RM {{ "{:,.0f}".format(product.amount_min/1000) }}K+
+                                    <div style="font-size: 1.4rem;">{{ "{:,.0f}".format(product.amount_min/1000) }}<span style="font-size: 0.9rem;">K+</span></div>
                                 {% elif product.amount_max %}
                                     {% if product.amount_max >= 1000000 %}
-                                        RM {{ "{:,.1f}".format(product.amount_max/1000000) }}M
+                                        <div style="font-size: 1.4rem;">{{ "{:,.1f}".format(product.amount_max/1000000) }}<span style="font-size: 0.9rem;">M</span></div>
                                     {% else %}
-                                        RM {{ "{:,.0f}".format(product.amount_max/1000) }}K
+                                        <div style="font-size: 1.4rem;">{{ "{:,.0f}".format(product.amount_max/1000) }}<span style="font-size: 0.9rem;">K</span></div>
                                     {% endif %}
                                 {% else %}
-                                    TBD
+                                    <span style="font-size: 0.9rem; color: #999;">TBD</span>
                                 {% endif %}
                             </div>
                         </div>
