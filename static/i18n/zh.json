@@ -4,6 +4,8 @@
   "nav_cc_ledger": "信用卡",
   "nav_savings": "储蓄账户",
   "nav_loan_matcher": "贷款",
+  "nav_loan_matcher_smart": "智能贷款匹配器",
+  "nav_loan_products": "贷款产品目录",
   "nav_receipts": "收据",
   "nav_invoices": "发票",
   "nav_monthly_summary": "报告",

@@ -51,15 +51,14 @@
                         {{ t('nav_savings') }}
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ 'active' if 'receipts' in request.endpoint }}" href="{{ url_for('receipts_home') }}">
-                        {{ t('nav_receipts') }}
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ 'active' if 'loan_matcher' in request.endpoint }}" href="{{ url_for('loan_matcher') }}">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ 'active' if 'loan' in request.endpoint }}" href="#" id="loansDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         {{ t('nav_loan_matcher') }}
                     </a>
+                    <ul class="dropdown-menu" aria-labelledby="loansDropdown" style="background: #1a1a1a; border: 2px solid #FF007F;">
+                        <li><a class="dropdown-item" href="{{ url_for('loan_matcher') }}" style="color: #FFFFFF;">{{ t('nav_loan_matcher_smart') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('loan_products') }}" style="color: #FFFFFF;">{{ t('nav_loan_products') }}</a></li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if 'monthly_summary' in request.endpoint }}" href="{{ url_for('monthly_summary_index') }}">

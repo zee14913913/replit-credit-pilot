@@ -4,6 +4,8 @@
   "nav_cc_ledger": "CREDIT CARDS",
   "nav_savings": "SAVINGS",
   "nav_loan_matcher": "LOANS",
+  "nav_loan_matcher_smart": "Smart Loan Matcher",
+  "nav_loan_products": "Loan Products Catalog",
   "nav_receipts": "RECEIPTS",
   "nav_invoices": "INVOICES",
   "nav_monthly_summary": "REPORTS",
