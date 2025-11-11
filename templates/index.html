@@ -28,35 +28,79 @@
 
 <div class="fade-in">
     <!-- 会计系统快捷入口 -->
-    <div class="row mb-4">
+    <div class="row mb-5">
         <div class="col-12">
-            <div class="professional-card" style="border: 2px solid #FF007F; padding: 1.5rem;">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                    <div>
-                        <h5 style="color: #FF007F; margin-bottom: 0.25rem; font-weight: 700;">{{ t('accounting_system_title') }}</h5>
-                        <p style="color: #FFFFFF; margin: 0; font-size: 0.9rem;">{{ t('accounting_system_subtitle') }}</p>
+            <div class="professional-card" style="border: 3px solid #FF007F; padding: 2.5rem 3rem; border-radius: 12px;">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-4">
+                    <div style="flex: 1; min-width: 300px;">
+                        <h3 style="color: #FF007F; margin-bottom: 0.75rem; font-weight: 800; font-size: 1.75rem; letter-spacing: 0.5px;">
+                            {{ t('accounting_system_title') }}
+                        </h3>
+                        <p style="color: #FFFFFF; margin: 0; font-size: 1.05rem; line-height: 1.6;">
+                            {{ t('accounting_system_subtitle') }}
+                        </p>
                     </div>
-                    <div class="d-flex gap-2 flex-wrap">
+                    <div class="d-flex gap-3 flex-wrap" style="justify-content: flex-end;">
                         <a href="{{ url_for('accounting_api_proxy', path='docs') }}" 
-                           class="btn btn-sm" 
+                           class="btn" 
                            target="_blank"
-                           style="background: #FF007F; color: #FFFFFF; font-weight: 700; border: 1px solid #FFFFFF;">
+                           style="background: #FF007F; 
+                                  color: #FFFFFF; 
+                                  font-weight: 800; 
+                                  font-size: 1rem;
+                                  padding: 0.85rem 1.75rem;
+                                  border: 2px solid #FFFFFF;
+                                  border-radius: 8px;
+                                  box-shadow: 0 4px 12px rgba(255, 0, 127, 0.3);
+                                  transition: all 0.3s ease;
+                                  min-width: 180px;
+                                  text-align: center;">
                             {{ t('api_documentation') }}
                         </a>
                         <a href="{{ url_for('accounting_api_proxy', path='accounting') }}" 
-                           class="btn btn-sm" 
+                           class="btn" 
                            target="_blank"
-                           style="background: #FF007F; color: #FFFFFF; font-weight: 700; border: 1px solid #FFFFFF;">
+                           style="background: #FF007F; 
+                                  color: #FFFFFF; 
+                                  font-weight: 800; 
+                                  font-size: 1rem;
+                                  padding: 0.85rem 1.75rem;
+                                  border: 2px solid #FFFFFF;
+                                  border-radius: 8px;
+                                  box-shadow: 0 4px 12px rgba(255, 0, 127, 0.3);
+                                  transition: all 0.3s ease;
+                                  min-width: 180px;
+                                  text-align: center;">
                             {{ t('management_console') }}
                         </a>
                         <a href="{{ url_for('accounting_files') }}" 
-                           class="btn btn-sm" 
-                           style="background: #322446; color: #FFFFFF; font-weight: 700; border: 1px solid #FFFFFF;">
+                           class="btn" 
+                           style="background: #322446; 
+                                  color: #FFFFFF; 
+                                  font-weight: 800; 
+                                  font-size: 1rem;
+                                  padding: 0.85rem 1.75rem;
+                                  border: 2px solid #FFFFFF;
+                                  border-radius: 8px;
+                                  box-shadow: 0 4px 12px rgba(50, 36, 70, 0.3);
+                                  transition: all 0.3s ease;
+                                  min-width: 180px;
+                                  text-align: center;">
                             {{ t('file_management') }}
                         </a>
                         <a href="{{ url_for('accounting_test_results') }}" 
-                           class="btn btn-sm" 
-                           style="background: #322446; color: #FFFFFF; font-weight: 700; border: 1px solid #FFFFFF;">
+                           class="btn" 
+                           style="background: #322446; 
+                                  color: #FFFFFF; 
+                                  font-weight: 800; 
+                                  font-size: 1rem;
+                                  padding: 0.85rem 1.75rem;
+                                  border: 2px solid #FFFFFF;
+                                  border-radius: 8px;
+                                  box-shadow: 0 4px 12px rgba(50, 36, 70, 0.3);
+                                  transition: all 0.3s ease;
+                                  min-width: 180px;
+                                  text-align: center;">
                             {{ t('system_test_report') }}
                         </a>
                     </div>
