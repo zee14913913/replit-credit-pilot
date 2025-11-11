@@ -1,14 +1,15 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 
-{% block title %}贷款产品目录{% endblock %}
+{% block title %}{{ t('loan_products_catalog') }}{% endblock %}
 
 {% block content %}
+<div class="fade-in">
 <div class="row mb-4">
     <div class="col-md-12">
         <h2 style="color: var(--primary-pink);">
-            <i class="bi bi-bank2"></i> 贷款产品目录
+            <i class="bi bi-bank2"></i> {{ t('loan_products_catalog') }}
         </h2>
-        <p class="text-muted">浏览 {{ total_banks }} 家银行的 {{ total_products }} 个真实贷款产品</p>
+        <p class="text-muted">{{ t('browse_products_desc').replace('{banks}', total_banks|string).replace('{products}', total_products|string) }}</p>
     </div>
 </div>
 
@@ -18,7 +19,7 @@
         <div class="card" style="background: var(--primary-purple); border: 1px solid var(--primary-pink);">
             <div class="card-body text-center">
                 <h3 style="color: var(--primary-pink);">{{ total_products }}</h3>
-                <p>总产品数</p>
+                <p>{{ t('total_products') }}</p>
             </div>
         </div>
     </div>
@@ -26,14 +27,14 @@
         <div class="card" style="background: var(--primary-purple); border: 1px solid var(--primary-pink);">
             <div class="card-body text-center">
                 <h3 style="color: var(--primary-pink);">{{ total_banks }}</h3>
-                <p>银行数量</p>
+                <p>{{ t('total_banks') }}</p>
             </div>
         </div>
     </div>
     <div class="col-md-6">
         <div class="card" style="background: var(--primary-purple); border: 1px solid var(--primary-pink);">
             <div class="card-body">
-                <p class="mb-2"><strong>产品类型分布：</strong></p>
+                <p class="mb-2"><strong>{{ t('product_type_distribution') }}：</strong></p>
                 {% for category, count in category_stats.items() %}
                 <span class="badge" style="background: var(--primary-pink); margin: 2px;">
                     {{ category_names.get(category, category) }}: {{ count }}
@@ -50,40 +51,40 @@
         <form method="get" action="/loan-products">
             <div class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">银行筛选</label>
+                    <label class="form-label">{{ t('filter_by_bank') }}</label>
                     <select name="bank" class="form-select" style="background: #000; color: #fff; border-color: var(--primary-purple);">
-                        <option value="">全部银行</option>
+                        <option value="">{{ t('all_banks') }}</option>
                         {% for bank in banks %}
                         <option value="{{ bank }}" {% if bank == current_bank %}selected{% endif %}>{{ bank }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">产品类型</label>
+                    <label class="form-label">{{ t('product_type') }}</label>
                     <select name="category" class="form-select" style="background: #000; color: #fff; border-color: var(--primary-purple);">
-                        <option value="">全部类型</option>
+                        <option value="">{{ t('all_types') }}</option>
                         {% for cat, name in category_names.items() %}
                         <option value="{{ cat }}" {% if cat == current_category %}selected{% endif %}>{{ name }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">搜索产品</label>
-                    <input type="text" name="search" class="form-control" placeholder="产品名称或描述" 
+                    <label class="form-label">{{ t('search_products') }}</label>
+                    <input type="text" name="search" class="form-control" placeholder="{{ t('product_name_or_desc') }}" 
                            value="{{ current_search }}" style="background: #000; color: #fff; border-color: var(--primary-purple);">
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label">排序方式</label>
+                    <label class="form-label">{{ t('sort_by') }}</label>
                     <select name="sort" class="form-select" style="background: #000; color: #fff; border-color: var(--primary-purple);">
-                        <option value="bank" {% if current_sort == 'bank' %}selected{% endif %}>按银行</option>
-                        <option value="rate" {% if current_sort == 'rate' %}selected{% endif %}>按利率</option>
-                        <option value="amount" {% if current_sort == 'amount' %}selected{% endif %}>按额度</option>
+                        <option value="bank" {% if current_sort == 'bank' %}selected{% endif %}>{{ t('sort_by_bank') }}</option>
+                        <option value="rate" {% if current_sort == 'rate' %}selected{% endif %}>{{ t('sort_by_rate') }}</option>
+                        <option value="amount" {% if current_sort == 'amount' %}selected{% endif %}>{{ t('sort_by_amount') }}</option>
                     </select>
                 </div>
                 <div class="col-md-1">
                     <label class="form-label">&nbsp;</label>
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-search"></i> 筛选
+                        <i class="bi bi-search"></i> {{ t('filter_btn') }}
                     </button>
                 </div>
             </div>
@@ -112,26 +113,26 @@
                     </p>
                     
                     <div class="mb-2">
-                        <strong style="color: var(--primary-pink);">利率：</strong>
-                        <span>{{ product.rate_display or '请咨询银行' }}</span>
+                        <strong style="color: var(--primary-pink);">{{ t('interest_rate') }}：</strong>
+                        <span>{{ product.rate_display or t('consult_bank') }}</span>
                     </div>
                     
                     <div class="mb-2">
-                        <strong>贷款额度：</strong>
+                        <strong>{{ t('loan_amount') }}：</strong>
                         {% if product.amount_min and product.amount_max %}
                             RM {{ "{:,}".format(product.amount_min) }} - RM {{ "{:,}".format(product.amount_max) }}
                         {% elif product.amount_min %}
-                            RM {{ "{:,}".format(product.amount_min) }} 起
+                            {{ t('from_amount') }} RM {{ "{:,}".format(product.amount_min) }}
                         {% elif product.amount_max %}
-                            最高 RM {{ "{:,}".format(product.amount_max) }}
+                            {{ t('up_to') }} RM {{ "{:,}".format(product.amount_max) }}
                         {% else %}
-                            请咨询银行
+                            {{ t('consult_bank') }}
                         {% endif %}
                     </div>
                     
                     {% if product.approval_days %}
                     <div class="mb-2">
-                        <strong>审批时间：</strong> {{ product.approval_days }}
+                        <strong>{{ t('approval_time') }}：</strong> {{ product.approval_days }}
                     </div>
                     {% endif %}
                     
@@ -144,11 +145,11 @@
                     <div class="mt-3">
                         {% if product.link %}
                         <a href="{{ product.link }}" target="_blank" class="btn btn-sm btn-primary">
-                            <i class="bi bi-box-arrow-up-right"></i> 官方链接
+                            <i class="bi bi-box-arrow-up-right"></i> {{ t('official_link') }}
                         </a>
                         {% endif %}
                         <a href="/loan-products/{{ product.id }}" class="btn btn-sm btn-secondary">
-                            <i class="bi bi-info-circle"></i> 查看详情
+                            <i class="bi bi-info-circle"></i> {{ t('view_details') }}
                         </a>
                     </div>
                 </div>
@@ -158,7 +159,7 @@
     {% else %}
         <div class="col-12">
             <div class="alert alert-warning">
-                <i class="bi bi-exclamation-triangle"></i> 未找到符合条件的产品
+                <i class="bi bi-exclamation-triangle"></i> {{ t('no_products_found') }}
             </div>
         </div>
     {% endif %}
@@ -166,8 +167,9 @@
 
 {% if products|length > 0 %}
 <div class="mt-4 text-center text-muted">
-    <p>显示 {{ products|length }} 个产品 | 最后更新：2025-10-19</p>
+    <p>{{ t('showing_products').replace('{count}', products|length|string) }} | {{ t('last_updated') }}: 2025-10-19</p>
 </div>
 {% endif %}
 
+</div>
 {% endblock %}
