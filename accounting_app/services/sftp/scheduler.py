@@ -7,6 +7,7 @@ import time
 import logging
 import threading
 from datetime import datetime
+from typing import Optional
 from sqlalchemy.orm import Session
 from .sync_service import SFTPSyncService
 from ...db import SessionLocal
@@ -205,6 +206,3 @@ def stop_global_scheduler():
     if _global_scheduler and _global_scheduler.is_running:
         _global_scheduler.stop()
         logger.info("🛑 Global SFTP scheduler stopped")
-
-
-from typing import Optional

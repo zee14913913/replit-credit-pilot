@@ -135,8 +135,32 @@ async def startup_event():
         except Exception as e:
             print(f"⚠️ 导出模板种子数据加载失败: {e}")
     
+    # 启动SFTP后台调度器（每10分钟自动同步）
+    try:
+        from .services.sftp.scheduler import start_global_scheduler
+        start_global_scheduler(company_id=1, sync_interval_minutes=10)
+        print("✅ SFTP自动同步调度器已启动（每10分钟同步一次）")
+    except Exception as e:
+        print(f"⚠️ SFTP调度器启动失败: {e}")
+    
     print("✅ 财务会计系统启动成功！")
     print("📊 API文档: http://localhost:8000/docs")
+
+
+# 关闭事件：停止SFTP调度器
+@app.on_event("shutdown")
+async def shutdown_event():
+    print("🛑 正在关闭财务会计系统...")
+    
+    # 停止SFTP后台调度器
+    try:
+        from .services.sftp.scheduler import stop_global_scheduler
+        stop_global_scheduler()
+        print("✅ SFTP自动同步调度器已停止")
+    except Exception as e:
+        print(f"⚠️ SFTP调度器停止失败: {e}")
+    
+    print("✅ 系统已安全关闭")
 
 
 # 根路由

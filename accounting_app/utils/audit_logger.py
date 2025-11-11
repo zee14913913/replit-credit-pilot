@@ -365,3 +365,52 @@ def extract_request_info(request: Request) -> Dict[str, Any]:
         'request_method': request.method,
         'request_path': str(request.url.path)
     }
+
+
+def log_event(
+    db: Session,
+    action_type: str,
+    description: str,
+    entity_type: Optional[str] = None,
+    entity_id: Optional[int] = None,
+    company_id: Optional[int] = None,
+    username: Optional[str] = "system",
+    metadata: Optional[Dict[str, Any]] = None,
+    **kwargs
+) -> AuditLog:
+    """
+    独立的审计日志记录函数（简化版）
+    适用于不需要装饰器的场景
+    
+    Args:
+        db: 数据库会话
+        action_type: 操作类型
+        description: 操作描述
+        entity_type: 实体类型
+        entity_id: 实体ID
+        company_id: 公司ID
+        username: 用户名
+        metadata: 额外元数据
+        **kwargs: 其他参数传递给AuditLogger.log()
+    
+    Returns:
+        AuditLog对象
+    """
+    logger = AuditLogger(db)
+    
+    try:
+        # 如果metadata存在，放入new_value
+        if metadata:
+            kwargs['new_value'] = metadata
+        
+        return logger.log(
+            action_type=action_type,
+            description=description,
+            company_id=company_id,
+            username=username,
+            entity_type=entity_type,
+            entity_id=entity_id,
+            **kwargs
+        )
+    finally:
+        logger.close()
