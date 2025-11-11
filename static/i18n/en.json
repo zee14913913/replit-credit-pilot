@@ -364,5 +364,13 @@
   "category_debt_consolidation": "Debt Consolidation",
   "category_home_reno": "Home Renovation",
   "category_investment": "Investment Loan",
-  "category_other": "Other"
+  "category_other": "Other",
+  "base_rate": "Base Rate",
+  "loan_type": "Loan Type",
+  "tenure": "Tenure",
+  "remark": "Remark",
+  "flat": "FLAT",
+  "spread": "SPREAD",
+  "months": "months",
+  "years": "years"
 }

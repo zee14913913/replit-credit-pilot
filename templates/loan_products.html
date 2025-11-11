@@ -101,80 +101,96 @@
                 <!-- Product Header -->
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div style="flex: 1;">
-                        <h4 style="color: #FFFEF0; margin-bottom: 0.5rem; font-weight: 700; font-size: 1.1rem;">
+                        <h4 style="color: #FFFEF0; margin-bottom: 0.5rem; font-weight: 700; font-size: 1.05rem; line-height: 1.3;">
                             {{ product.name }}
                         </h4>
-                        <p style="color: #FF007F; font-size: 0.85rem; margin: 0; font-weight: 600;">
+                        <p style="color: #FF007F; font-size: 0.8rem; margin: 0; font-weight: 600;">
                             <i class="bi bi-bank2"></i> {{ product.bank }}
                         </p>
                     </div>
-                    <span style="background: #322446; color: #FFFEF0; padding: 0.35rem 0.75rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; white-space: nowrap;">
+                    <span style="background: #322446; color: #FFFEF0; padding: 0.3rem 0.7rem; border-radius: 4px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; white-space: nowrap;">
                         {{ t('category_' + product.category) }}
                     </span>
                 </div>
                 
                 <div class="divider-professional"></div>
                 
-                <!-- Key Metrics -->
-                <div class="row g-3 mb-3">
-                    <div class="col-6">
-                        <div style="text-align: center; padding: 1.25rem 0.75rem; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 1px solid #FF007F; border-radius: 6px; min-height: 95px; display: flex; flex-direction: column; justify-content: center;">
-                            <div style="color: #FF007F; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem;">
-                                {{ t('interest_rate') }}
-                            </div>
-                            <div style="color: #FFFEF0; font-size: 1.2rem; font-weight: 900; line-height: 1.3; min-height: 40px; display: flex; align-items: center; justify-content: center;">
-                                {% if product.rate_display %}
-                                    {% if product.rate_display|length > 15 %}
-                                        <span style="font-size: 1rem;">{{ product.rate_display }}</span>
-                                    {% else %}
-                                        {{ product.rate_display }}
-                                    {% endif %}
-                                {% else %}
-                                    <span style="font-size: 0.9rem; color: #999;">{{ t('consult_bank') }}</span>
-                                {% endif %}
-                            </div>
-                        </div>
+                <!-- Interest Rate Card (Fixed Format) -->
+                <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 1px solid #FF007F; border-radius: 6px; padding: 1rem; margin-bottom: 1rem;">
+                    <!-- Base Rate -->
+                    <div class="d-flex justify-content-between mb-2" style="padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,0,127,0.2);">
+                        <span style="color: #FF007F; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">{{ t('base_rate') }}:</span>
+                        <span style="color: #FFFEF0; font-size: 0.75rem; font-weight: 700; font-family: 'Courier New', monospace;">
+                            {% set rate_text = product.rate_display or '-' %}
+                            {% if 'BR' in rate_text and 'SBR' not in rate_text %}BR
+                            {% elif 'SBR' in rate_text %}SBR
+                            {% elif 'IBR' in rate_text %}IBR
+                            {% elif 'SBRI' in rate_text %}SBRI
+                            {% elif 'EIR' in rate_text %}EIR
+                            {% elif 'EPR' in rate_text %}EPR
+                            {% else %}-
+                            {% endif %}
+                        </span>
                     </div>
-                    <div class="col-6">
-                        <div style="text-align: center; padding: 1.25rem 0.75rem; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 1px solid #322446; border-radius: 6px; min-height: 95px; display: flex; flex-direction: column; justify-content: center;">
-                            <div style="color: #FFFEF0; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem;">
-                                {{ t('loan_amount') }}
-                            </div>
-                            <div style="color: #FFFEF0; font-size: 1.2rem; font-weight: 900; line-height: 1.3; min-height: 40px; display: flex; align-items: center; justify-content: center;">
-                                {% if product.amount_min and product.amount_max %}
-                                    {% if product.amount_max >= 1000000 %}
-                                        <div style="font-size: 1.4rem;">{{ "{:,.1f}".format(product.amount_max/1000000) }}<span style="font-size: 0.9rem;">M</span></div>
-                                    {% else %}
-                                        <div style="font-size: 1.4rem;">{{ "{:,.0f}".format(product.amount_max/1000) }}<span style="font-size: 0.9rem;">K</span></div>
-                                    {% endif %}
-                                {% elif product.amount_min %}
-                                    <div style="font-size: 1.4rem;">{{ "{:,.0f}".format(product.amount_min/1000) }}<span style="font-size: 0.9rem;">K+</span></div>
-                                {% elif product.amount_max %}
-                                    {% if product.amount_max >= 1000000 %}
-                                        <div style="font-size: 1.4rem;">{{ "{:,.1f}".format(product.amount_max/1000000) }}<span style="font-size: 0.9rem;">M</span></div>
-                                    {% else %}
-                                        <div style="font-size: 1.4rem;">{{ "{:,.0f}".format(product.amount_max/1000) }}<span style="font-size: 0.9rem;">K</span></div>
-                                    {% endif %}
+                    
+                    <!-- Loan Type -->
+                    <div class="d-flex justify-content-between mb-2" style="padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,0,127,0.2);">
+                        <span style="color: #FF007F; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">{{ t('loan_type') }}:</span>
+                        <span style="color: #FFFEF0; font-size: 0.75rem; font-weight: 700;">
+                            {% if 'fixed' in rate_text.lower() or 'flat' in rate_text.lower() %}FLAT
+                            {% elif 'spread' in rate_text.lower() or '+' in rate_text %}SPREAD
+                            {% else %}-
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <!-- Tenure -->
+                    <div class="d-flex justify-content-between mb-2" style="padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,0,127,0.2);">
+                        <span style="color: #FF007F; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">{{ t('tenure') }}:</span>
+                        <span style="color: #FFFEF0; font-size: 0.75rem; font-weight: 700;">
+                            {% if product.tenure_min_months and product.tenure_max_months %}
+                                {% if product.tenure_max_months >= 12 %}
+                                    {{ product.tenure_min_months // 12 }}-{{ product.tenure_max_months // 12 }} {{ t('years') }}
                                 {% else %}
-                                    <span style="font-size: 0.9rem; color: #999;">TBD</span>
+                                    {{ product.tenure_min_months }}-{{ product.tenure_max_months }} {{ t('months') }}
                                 {% endif %}
-                            </div>
+                            {% elif product.tenure_max_months %}
+                                {{ product.tenure_max_months // 12 if product.tenure_max_months >= 12 else product.tenure_max_months }} {{ t('years') if product.tenure_max_months >= 12 else t('months') }}
+                            {% else %}-
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <!-- Remark (2 lines max) -->
+                    <div style="margin-top: 0.75rem;">
+                        <div style="color: #FF007F; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.4rem;">{{ t('remark') }}:</div>
+                        <div style="color: #FFFEF0; font-size: 0.7rem; line-height: 1.4; height: 2.8em; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                            {{ product.rate_display or '-' }}
                         </div>
                     </div>
                 </div>
                 
-                {% if product.approval_days %}
-                <div style="padding: 0.5rem 0.75rem; background: rgba(255, 0, 127, 0.05); border-left: 3px solid #FF007F; margin-bottom: 1rem;">
-                    <span style="color: #FFFEF0; font-size: 0.8rem; font-weight: 600;">
-                        <i class="bi bi-clock-fill" style="color: #FF007F;"></i> {{ product.approval_days }}
-                    </span>
+                <!-- Loan Amount -->
+                <div style="text-align: center; padding: 0.75rem; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 1px solid #322446; border-radius: 6px; margin-bottom: 1rem;">
+                    <div style="color: #FFFEF0; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.4rem;">
+                        {{ t('loan_amount') }}
+                    </div>
+                    <div style="color: #FFFEF0; font-size: 1.4rem; font-weight: 900;">
+                        {% if product.amount_max %}
+                            {% if product.amount_max >= 1000000 %}
+                                {{ "{:,.1f}".format(product.amount_max/1000000) }}<span style="font-size: 0.8rem;">M</span>
+                            {% else %}
+                                {{ "{:,.0f}".format(product.amount_max/1000) }}<span style="font-size: 0.8rem;">K</span>
+                            {% endif %}
+                        {% else %}-
+                        {% endif %}
+                    </div>
                 </div>
-                {% endif %}
                 
                 <!-- Actions -->
                 <div class="d-grid gap-2">
                     {% if product.link %}
-                    <a href="{{ product.link }}" target="_blank" class="btn-professional">
+                    <a href="{{ product.link }}" target="_blank" class="btn-professional" style="padding: 0.6rem; font-size: 0.85rem;">
                         {{ t('official_link') }} <i class="bi bi-box-arrow-up-right ms-1"></i>
                     </a>
                     {% endif %}
@@ -182,7 +198,9 @@
                        style="background: linear-gradient(135deg, #FFFEF0 0%, #F5F5DC 100%); 
                               border: 2px solid #322446; 
                               color: #322446;
-                              font-weight: 900;">
+                              font-weight: 900;
+                              padding: 0.6rem;
+                              font-size: 0.85rem;">
                         {{ t('view_details') }} <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>
