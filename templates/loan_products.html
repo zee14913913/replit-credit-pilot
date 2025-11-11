@@ -116,11 +116,11 @@
                 <div class="divider-professional"></div>
                 
                 <!-- Interest Rate Card (Fixed Format) -->
-                <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 1px solid #FF007F; border-radius: 6px; padding: 1rem; margin-bottom: 1rem;">
+                <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 1px solid #FF007F; border-radius: 6px; padding: 1.1rem; margin-bottom: 1rem;">
                     <!-- Base Rate -->
-                    <div class="d-flex justify-content-between mb-2" style="padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,0,127,0.2);">
-                        <span style="color: #FF007F; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">{{ t('base_rate') }}:</span>
-                        <span style="color: #FFFEF0; font-size: 0.75rem; font-weight: 700; font-family: 'Courier New', monospace;">
+                    <div class="d-flex justify-content-between mb-2" style="padding-bottom: 0.6rem; border-bottom: 1px solid rgba(255,0,127,0.2);">
+                        <span style="color: #FF007F; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; text-shadow: 0 0 8px rgba(255,0,127,0.4);">{{ t('base_rate') }}:</span>
+                        <span style="color: #FFFEF0; font-size: 0.85rem; font-weight: 700; font-family: 'Courier New', monospace; text-shadow: 0 0 6px rgba(255,254,240,0.3);">
                             {% set rate_text = product.rate_display or '-' %}
                             {% if 'BR' in rate_text and 'SBR' not in rate_text %}BR
                             {% elif 'SBR' in rate_text %}SBR
@@ -134,9 +134,9 @@
                     </div>
                     
                     <!-- Loan Type -->
-                    <div class="d-flex justify-content-between mb-2" style="padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,0,127,0.2);">
-                        <span style="color: #FF007F; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">{{ t('loan_type') }}:</span>
-                        <span style="color: #FFFEF0; font-size: 0.75rem; font-weight: 700;">
+                    <div class="d-flex justify-content-between mb-2" style="padding-bottom: 0.6rem; border-bottom: 1px solid rgba(255,0,127,0.2);">
+                        <span style="color: #FF007F; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; text-shadow: 0 0 8px rgba(255,0,127,0.4);">{{ t('loan_type') }}:</span>
+                        <span style="color: #FFFEF0; font-size: 0.85rem; font-weight: 700; text-shadow: 0 0 6px rgba(255,254,240,0.3);">
                             {% if 'fixed' in rate_text.lower() or 'flat' in rate_text.lower() %}FLAT
                             {% elif 'spread' in rate_text.lower() or '+' in rate_text %}SPREAD
                             {% else %}-
@@ -145,9 +145,9 @@
                     </div>
                     
                     <!-- Tenure -->
-                    <div class="d-flex justify-content-between mb-2" style="padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,0,127,0.2);">
-                        <span style="color: #FF007F; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">{{ t('tenure') }}:</span>
-                        <span style="color: #FFFEF0; font-size: 0.75rem; font-weight: 700;">
+                    <div class="d-flex justify-content-between mb-2" style="padding-bottom: 0.6rem; border-bottom: 1px solid rgba(255,0,127,0.2);">
+                        <span style="color: #FF007F; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; text-shadow: 0 0 8px rgba(255,0,127,0.4);">{{ t('tenure') }}:</span>
+                        <span style="color: #FFFEF0; font-size: 0.85rem; font-weight: 700; text-shadow: 0 0 6px rgba(255,254,240,0.3);">
                             {% if product.tenure_min_months and product.tenure_max_months %}
                                 {% if product.tenure_max_months >= 12 %}
                                     {{ product.tenure_min_months // 12 }}-{{ product.tenure_max_months // 12 }} {{ t('years') }}
@@ -162,25 +162,25 @@
                     </div>
                     
                     <!-- Remark (2 lines max) -->
-                    <div style="margin-top: 0.75rem;">
-                        <div style="color: #FF007F; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.4rem;">{{ t('remark') }}:</div>
-                        <div style="color: #FFFEF0; font-size: 0.7rem; line-height: 1.4; height: 2.8em; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                    <div style="margin-top: 0.8rem;">
+                        <div style="color: #FF007F; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem; text-shadow: 0 0 8px rgba(255,0,127,0.4);">{{ t('remark') }}:</div>
+                        <div style="color: #FFFEF0; font-size: 0.8rem; line-height: 1.5; height: 3em; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; text-shadow: 0 0 6px rgba(255,254,240,0.3);">
                             {{ product.rate_display or '-' }}
                         </div>
                     </div>
                 </div>
                 
                 <!-- Loan Amount -->
-                <div style="text-align: center; padding: 0.75rem; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 1px solid #322446; border-radius: 6px; margin-bottom: 1rem;">
-                    <div style="color: #FFFEF0; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.4rem;">
+                <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 1px solid #322446; border-radius: 6px; margin-bottom: 1rem;">
+                    <div style="color: #FFFEF0; font-size: 0.75rem; font-weight: 900; text-transform: uppercase; margin-bottom: 0.6rem; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,254,240,0.5);">
                         {{ t('loan_amount') }}
                     </div>
-                    <div style="color: #FFFEF0; font-size: 1.4rem; font-weight: 900;">
+                    <div style="color: #FFFEF0; font-size: 1.6rem; font-weight: 900; text-shadow: 0 0 12px rgba(255,254,240,0.4);">
                         {% if product.amount_max %}
                             {% if product.amount_max >= 1000000 %}
-                                {{ "{:,.1f}".format(product.amount_max/1000000) }}<span style="font-size: 0.8rem;">M</span>
+                                {{ "{:,.1f}".format(product.amount_max/1000000) }}<span style="font-size: 0.9rem;">M</span>
                             {% else %}
-                                {{ "{:,.0f}".format(product.amount_max/1000) }}<span style="font-size: 0.8rem;">K</span>
+                                {{ "{:,.0f}".format(product.amount_max/1000) }}<span style="font-size: 0.9rem;">K</span>
                             {% endif %}
                         {% else %}-
                         {% endif %}
