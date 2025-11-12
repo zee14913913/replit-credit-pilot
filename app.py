@@ -3187,6 +3187,7 @@ def savings_report():
     return render_template('savings_report.html')
 
 @app.route('/savings/customers')
+@require_admin_or_accountant
 def savings_customers():
     """Layer 1: 查看所有拥有储蓄账户的客户列表"""
     with get_db() as conn:
@@ -3221,6 +3222,7 @@ def savings_accounts_redirect():
     return redirect(url_for('savings_customers'))
 
 @app.route('/savings/accounts/<int:customer_id>')
+@require_admin_or_accountant
 def savings_accounts(customer_id):
     """Layer 2: 查看特定客户的所有储蓄账户和账单"""
     import re
@@ -3346,6 +3348,7 @@ def savings_accounts(customer_id):
                          recipients=recipients)
 
 @app.route('/savings/account/<int:account_id>')
+@require_admin_or_accountant
 def savings_account_detail(account_id):
     """查看特定账户的详细信息、账单和交易记录"""
     with get_db() as conn:
@@ -3973,6 +3976,7 @@ def loan_product_detail(product_id):
 # ============================================================================
 
 @app.route('/credit-card/ledger', methods=['GET', 'POST'])
+@require_admin_or_accountant
 def credit_card_ledger():
     """
     第一层：客户列表 (Admin) or 直接跳转到时间线 (Customer)
@@ -3980,8 +3984,6 @@ def credit_card_ledger():
     - Customer: 直接跳转到自己的时间线
     """
     from utils.name_utils import get_customer_code
-    
-    # No authentication required - public access
     
     # POST: 处理上传
     if request.method == 'POST':
@@ -4344,6 +4346,7 @@ def credit_card_ledger():
 
 
 @app.route('/credit-card/ledger/<int:customer_id>/timeline')
+@require_admin_or_accountant
 def credit_card_ledger_timeline(customer_id):
     """第二层：年月网格 - 显示客户所有账单的年月分布"""
     from datetime import datetime
@@ -4421,6 +4424,7 @@ def credit_card_ledger_timeline(customer_id):
 
 
 @app.route('/credit-card/ledger/<int:customer_id>/<year>/<month>')
+@require_admin_or_accountant
 def credit_card_ledger_monthly(customer_id, year, month):
     """第三层：月度详情 - 按银行分组显示该客户该月所有账单的完整分析"""
     from datetime import datetime
@@ -4579,13 +4583,12 @@ def credit_card_ledger_monthly(customer_id, year, month):
 
 
 @app.route('/credit-card/ledger/statement/<int:statement_id>')
+@require_admin_or_accountant
 def credit_card_ledger_detail(statement_id):
     """单个账单的OWNER vs INFINITE详细分析"""
     from services.owner_infinite_classifier import OwnerInfiniteClassifier
     
     classifier = OwnerInfiniteClassifier()
-    
-    # 权限检查：验证statement属于当前用户可访问的客户
     with get_db() as conn:
         cursor = conn.cursor()
         cursor.execute('''
