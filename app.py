@@ -198,6 +198,7 @@ def set_language(lang):
     return redirect(request.referrer or url_for('index'))
 
 @app.route('/view_statement_file/<int:statement_id>')
+@require_admin_or_accountant
 def view_statement_file(statement_id):
     """查看账单原始文件（支持新组织结构 + 向后兼容旧路径）"""
     from flask import send_file, make_response
@@ -244,6 +245,7 @@ def view_statement_file(statement_id):
         return response
 
 @app.route('/static/uploads/<path:filename>')
+@require_admin_or_accountant
 def serve_uploaded_file(filename):
     """Serve uploaded PDF files with correct MIME type (legacy support)"""
     from flask import send_from_directory, make_response
@@ -316,11 +318,13 @@ def index():
     return render_template('index.html', customers=customers)
 
 @app.route('/add_customer_page')
+@require_admin_or_accountant
 def add_customer_page():
     """Show add customer form page - Admin only"""
     return render_template('add_customer.html')
 
 @app.route('/add_customer', methods=['POST'])
+@require_admin_or_accountant
 def add_customer():
     """Admin: Add a new customer"""
     try:
@@ -372,6 +376,7 @@ def add_customer():
         return redirect(url_for('index'))
 
 @app.route('/customer/<int:customer_id>')
+@require_admin_or_accountant
 def customer_dashboard(customer_id):
     with get_db() as conn:
         cursor = conn.cursor()
@@ -483,6 +488,7 @@ def customer_dashboard(customer_id):
 
 
 @app.route('/customer/<int:customer_id>/add-card', methods=['GET', 'POST'])
+@require_admin_or_accountant
 def add_credit_card(customer_id):
     """添加信用卡"""
     with get_db() as conn:
@@ -557,6 +563,7 @@ def add_credit_card(customer_id):
 
 
 @app.route('/validate_statement/<int:statement_id>')
+@require_admin_or_accountant
 def validate_statement_view(statement_id):
     with get_db() as conn:
         cursor = conn.cursor()
@@ -590,6 +597,7 @@ def validate_statement_view(statement_id):
                          inconsistencies=inconsistencies)
 
 @app.route('/confirm_statement/<int:statement_id>', methods=['POST'])
+@require_admin_or_accountant
 def confirm_statement(statement_id):
     with get_db() as conn:
         cursor = conn.cursor()
@@ -602,11 +610,13 @@ def confirm_statement(statement_id):
     return redirect(url_for('index'))
 
 @app.route('/reminders')
+@require_admin_or_accountant
 def reminders():
     pending_reminders = get_pending_reminders()
     return render_template('reminders.html', reminders=pending_reminders)
 
 @app.route('/create_reminder', methods=['POST'])
+@require_admin_or_accountant
 def create_reminder_route():
     card_id = request.form.get('card_id')
     due_date = request.form.get('due_date')
@@ -624,6 +634,7 @@ def create_reminder_route():
     return redirect(url_for('reminders'))
 
 @app.route('/mark_paid/<int:reminder_id>', methods=['POST'])
+@require_admin_or_accountant
 def mark_paid_route(reminder_id):
     mark_as_paid(reminder_id)
     log_audit(None, 'MARK_PAID', 'reminder', reminder_id, 'Marked reminder as paid')
@@ -642,6 +653,7 @@ def notification_settings():
     return render_template('notification_settings.html')
 
 @app.route('/loan_evaluation/<int:customer_id>')
+@require_admin_or_accountant
 def loan_evaluation(customer_id):
     with get_db() as conn:
         cursor = conn.cursor()
@@ -684,6 +696,7 @@ def loan_evaluation(customer_id):
                          current_repayments=current_repayments)
 
 @app.route('/generate_report/<int:customer_id>')
+@require_admin_or_accountant
 def generate_report(customer_id):
     with get_db() as conn:
         cursor = conn.cursor()
@@ -727,6 +740,7 @@ def generate_report(customer_id):
     return send_file(output_path, as_attachment=True, download_name=output_filename)
 
 @app.route('/analytics/<int:customer_id>')
+@require_admin_or_accountant
 def analytics(customer_id):
     with get_db() as conn:
         cursor = conn.cursor()
@@ -3689,6 +3703,7 @@ def export_transaction_image(transaction_id):
         return f"Error generating screenshot: {str(e)}", 500
 
 @app.route('/view_savings_statement_file/<int:statement_id>')
+@require_admin_or_accountant
 def view_savings_statement_file(statement_id):
     """查看储蓄账户账单原始PDF文件"""
     from flask import send_file
@@ -3716,11 +3731,13 @@ def view_savings_statement_file(statement_id):
 # ============================================================================
 
 @app.route('/loan-matcher')
+@require_admin_or_accountant
 def loan_matcher():
     """贷款产品匹配系统 - 表单页面"""
     return render_template('loan_matcher.html')
 
 @app.route('/loan-matcher/analyze', methods=['POST'])
+@require_admin_or_accountant
 def loan_matcher_analyze():
     """分析客户资料并匹配贷款产品"""
     from modules.parsers.ctos_parser import extract_commitment_from_ctos
@@ -4700,6 +4717,7 @@ def credit_card_optimizer():
     return render_template('credit_card_optimizer.html', customers=customers)
 
 @app.route('/credit-card-optimizer/report/<int:customer_id>')
+@require_admin_or_accountant
 def credit_card_optimizer_report(customer_id):
     """生成并显示客户信用卡优化报告"""
     try:
@@ -4722,6 +4740,7 @@ def credit_card_optimizer_report(customer_id):
         return redirect(url_for('credit_card_optimizer'))
 
 @app.route('/credit-card-optimizer/download/<int:customer_id>')
+@require_admin_or_accountant
 def download_credit_card_report(customer_id):
     """下载HTML格式的信用卡优化报告"""
     try:
@@ -4737,6 +4756,7 @@ def download_credit_card_report(customer_id):
 # ============================================================================
 
 @app.route('/monthly-summary')
+@require_admin_or_accountant
 def monthly_summary_index():
     """月度汇总报告 - 主页面"""
     user_role = session.get('user_role')
@@ -4768,6 +4788,7 @@ def monthly_summary_index():
                           current_month=datetime.now().month)
 
 @app.route('/monthly-summary/report/<int:customer_id>/<int:year>/<int:month>')
+@require_admin_or_accountant
 def monthly_summary_report(customer_id, year, month):
     """生成并显示月度汇总报告"""
     try:
@@ -4796,6 +4817,7 @@ def monthly_summary_report(customer_id, year, month):
         return redirect(url_for('monthly_summary_index'))
 
 @app.route('/monthly-summary/yearly/<int:customer_id>/<int:year>')
+@require_admin_or_accountant
 def monthly_summary_yearly(customer_id, year):
     """显示客户全年的月度汇总（1-12月）"""
     try:
@@ -4831,6 +4853,7 @@ def monthly_summary_yearly(customer_id, year):
         return redirect(url_for('monthly_summary_index'))
 
 @app.route('/monthly-summary/download/monthly/<int:customer_id>/<int:year>/<int:month>')
+@require_admin_or_accountant
 def download_monthly_summary_pdf(customer_id, year, month):
     """下载月度汇总PDF报告"""
     try:
@@ -4857,6 +4880,7 @@ def download_monthly_summary_pdf(customer_id, year, month):
         return redirect(url_for('monthly_summary_index'))
 
 @app.route('/monthly-summary/download/yearly/<int:customer_id>/<int:year>')
+@require_admin_or_accountant
 def download_yearly_summary_pdf(customer_id, year):
     """下载年度汇总PDF报告"""
     try:
