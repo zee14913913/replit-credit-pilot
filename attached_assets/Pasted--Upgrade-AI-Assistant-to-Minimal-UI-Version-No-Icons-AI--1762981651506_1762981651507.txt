@@ -1,3 +1,20 @@
+📦 任务标题：
+Upgrade AI Assistant to Minimal UI Version (No Icons)
+
+🎯 目标：
+简化现有 AI 智能顾问界面，去除所有按钮图标与表情，仅保留纯文字按钮；
+保留原有智能问答与系统财务分析功能。
+
+---
+
+✅ 实施内容：
+
+1️⃣ 修改文件：
+路径：templates/partials/chatbot.html
+
+替换内容如下（请完全覆盖原文件）：
+
+────────────────────────────
 <div id="ai-chatbox" style="position:fixed;bottom:40px;right:40px;z-index:9999;">
   <button id="chat-toggle" style="background:#ff007f;color:#fff;border:none;border-radius:999px;padding:12px 18px;font-weight:700;box-shadow:0 0 18px rgba(255,0,127,0.6);">
     智能顾问
@@ -41,3 +58,25 @@ input.addEventListener("keypress",e=>{
 
 analyze.onclick=()=>send("请分析整个系统的资金健康状况","/api/ai-assistant/analyze-system");
 </script>
+────────────────────────────
+
+2️⃣ 重新部署：
+保持所有后端文件不变，只需在控制台执行：
+
+pkill -f uvicorn; python app.py
+
+---
+
+💡 升级后效果：
+
+✅ 按钮变为纯文字：
+- 「智能顾问」  
+- 「系统分析」  
+
+✅ 功能不变：
+- 问答功能 (`/api/ai-assistant/query`)
+- 系统分析功能 (`/api/ai-assistant/analyze-system`)
+
+✅ 样式保持原色系（#ff007f 热粉色 + 深色背景）
+
+✅ 无图标，无表情，风格更简洁、更专业。
