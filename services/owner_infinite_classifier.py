@@ -95,13 +95,19 @@ class OwnerInfiniteClassifier:
         finally:
             conn.close()
     
-    def classify_expense(self, description: str, amount: float) -> Dict:
+    def classify_expense(self, description: str, amount: float, is_merchant_fee: bool = False, is_fee_split: bool = False) -> Dict:
         """
         分类消费交易：OWNER Expenses vs INFINITE Expenses
         
         ⚠️ v5.1新规则：Supplier交易的1%手续费独立计入OWNER账户
         - Supplier本金 → infinite_expense（GZ支付）
         - 1%手续费 → owner_expense（客户支付）
+        
+        Args:
+            description: 交易描述
+            amount: 交易金额
+            is_merchant_fee: 是否为手续费交易（防止重复分类）
+            is_fee_split: 是否已拆分过
         
         Returns:
             {
@@ -112,6 +118,16 @@ class OwnerInfiniteClassifier:
                 'should_split_fee': bool (是否需要拆分手续费)
             }
         """
+        # 🔒 CRITICAL FIX: 如果是手续费交易，强制分类为owner_expense
+        if is_merchant_fee:
+            return {
+                'expense_type': 'owner',
+                'is_supplier': False,
+                'supplier_name': None,
+                'supplier_fee': 0.0,
+                'should_split_fee': False
+            }
+        
         if not description:
             return {
                 'expense_type': 'owner',
@@ -146,7 +162,7 @@ class OwnerInfiniteClassifier:
     
     def create_fee_transaction(self, original_txn: Dict) -> Dict:
         """
-        为Supplier交易创建独立的1%手续费记录
+        为Supplier交易创建独立的1%手续费记录（向后兼容方法）
         
         Args:
             original_txn: 原始Supplier交易记录
@@ -159,7 +175,7 @@ class OwnerInfiniteClassifier:
         return {
             'statement_id': original_txn['statement_id'],
             'transaction_date': original_txn['transaction_date'],
-            'description': f"{original_txn['description']} - Merchant Fee (1%)",
+            'description': f"[MERCHANT FEE 1%] {original_txn['description']}",
             'amount': round(fee_amount, 2),
             'category': 'owner_expense',  # 手续费归OWNER
             'transaction_type': 'fee',
@@ -170,6 +186,162 @@ class OwnerInfiniteClassifier:
             'fee_reference_id': original_txn['id'],  # 关联原始交易
             'is_fee_split': True
         }
+    
+    def classify_and_split_supplier_fee(self, transaction_id: int) -> Dict:
+        """
+        完整实现：Supplier交易拆分逻辑 v5.1
+        
+        规则：
+        - Supplier本金 → infinite_expense（GZ支付）
+        - 1%手续费 → owner_expense（Owner应付）
+        - 生成两条交易：一条"本金"，一条"手续费"
+        - 若已拆分（is_fee_split=True），跳过
+        
+        Args:
+            transaction_id: 要处理的交易ID
+        
+        Returns:
+            {
+                'status': 'success' | 'skipped' | 'error',
+                'principal_txn_id': int,
+                'fee_txn_id': int or None,
+                'principal_amount': float,
+                'fee_amount': float,
+                'message': str
+            }
+        """
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        try:
+            # 1. 获取原始交易
+            cursor.execute('''
+                SELECT * FROM transactions WHERE id = ?
+            ''', (transaction_id,))
+            
+            txn = cursor.fetchone()
+            if not txn:
+                return {'status': 'error', 'message': 'Transaction not found'}
+            
+            # 2. 检查是否已拆分
+            if txn['is_fee_split']:
+                return {'status': 'skipped', 'message': 'Already split'}
+            
+            # 3. 检查金额是否为支出（amount > 0）- 🔒 FIX: 使用原始金额判断
+            original_amount = float(txn['amount'])
+            if original_amount <= 0:
+                # 负数金额 = 退款/Credit，不拆分手续费
+                return {'status': 'skipped', 'message': 'Refund/credit transaction, no fee split'}
+            
+            amount = abs(original_amount)  # 确保正数用于计算
+            
+            # 4. 检查是否为Supplier交易
+            description = txn['description'] or ''
+            if not self._is_supplier_txn(description):
+                # 非Supplier，标记为owner_expense
+                cursor.execute('''
+                    UPDATE transactions
+                    SET category = 'owner_expense',
+                        is_supplier = 0,
+                        supplier_name = NULL,
+                        is_fee_split = 0,
+                        is_merchant_fee = 0,
+                        fee_reference_id = NULL
+                    WHERE id = ?
+                ''', (transaction_id,))
+                conn.commit()
+                return {'status': 'success', 'message': 'Classified as owner_expense'}
+            
+            # 5. 走Supplier逻辑：本金=INFINITE，手续费=OWNER
+            supplier_name = self._find_supplier_name(description)
+            principal = round(amount, 2)
+            fee = round(amount * self.SUPPLIER_FEE_RATE, 2)
+            
+            # 6. 更新当前交易为"本金"（INFINITE）
+            cursor.execute('''
+                UPDATE transactions
+                SET category = 'infinite_expense',
+                    is_supplier = 1,
+                    supplier_name = ?,
+                    supplier_fee = ?,
+                    is_fee_split = 1,
+                    is_merchant_fee = 0,
+                    fee_reference_id = NULL
+                WHERE id = ?
+            ''', (supplier_name, fee, transaction_id))
+            
+            # 7. 新增"手续费"一条（OWNER）
+            cursor.execute('''
+                INSERT INTO transactions (
+                    statement_id, transaction_date, description, amount,
+                    transaction_type, category, is_supplier, supplier_name,
+                    supplier_fee, is_merchant_fee, is_fee_split, fee_reference_id
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                txn['statement_id'],
+                txn['transaction_date'],
+                f"[MERCHANT FEE 1%] {description}",
+                fee,
+                'purchase',
+                'owner_expense',
+                0,  # is_supplier
+                None,  # supplier_name
+                None,  # supplier_fee
+                1,  # is_merchant_fee
+                1,  # is_fee_split
+                transaction_id  # fee_reference_id
+            ))
+            
+            fee_txn_id = cursor.lastrowid
+            
+            # 8. 审计日志
+            cursor.execute('''
+                INSERT INTO audit_logs (
+                    user_id, action_type, entity_type, entity_id, description
+                ) VALUES (?, ?, ?, ?, ?)
+            ''', (
+                1,  # system user
+                'FEE_SPLIT_APPLIED',
+                'transactions',
+                transaction_id,
+                f'Fee split: Principal RM{principal}, Fee RM{fee}, Fee Txn ID {fee_txn_id}'
+            ))
+            
+            conn.commit()
+            
+            return {
+                'status': 'success',
+                'principal_txn_id': transaction_id,
+                'fee_txn_id': fee_txn_id,
+                'principal_amount': principal,
+                'fee_amount': fee,
+                'message': f'Split completed: Principal RM{principal} + Fee RM{fee}'
+            }
+        
+        except Exception as e:
+            conn.rollback()
+            return {'status': 'error', 'message': str(e)}
+        
+        finally:
+            conn.close()
+    
+    def _is_supplier_txn(self, description: str) -> bool:
+        """检查是否为Supplier交易"""
+        if not description:
+            return False
+        desc_lower = description.lower()
+        return any(s in desc_lower for s in self.infinite_suppliers)
+    
+    def _find_supplier_name(self, description: str) -> str:
+        """从描述中提取Supplier名称"""
+        if not description:
+            return None
+        desc_lower = description.lower()
+        for supplier in self.infinite_suppliers:
+            if supplier in desc_lower:
+                return supplier
+        return None
     
     def classify_payment(self, description: str, customer_id: int, customer_name: str = None) -> Dict:
         """
@@ -271,9 +443,13 @@ class OwnerInfiniteClassifier:
                            amount: float,
                            transaction_type: str,
                            customer_id: int,
-                           customer_name: str = None) -> Dict:
+                           customer_name: str = None,
+                           is_merchant_fee: bool = False,
+                           is_fee_split: bool = False) -> Dict:
         """
         完整分类单笔交易
+        
+        ⚠️ v5.1 FIX: 添加is_merchant_fee/is_fee_split防护，避免重复分类
         
         Args:
             transaction_id: 交易ID
@@ -282,6 +458,8 @@ class OwnerInfiniteClassifier:
             transaction_type: 'debit' or 'credit'
             customer_id: 客户ID
             customer_name: 客户姓名
+            is_merchant_fee: 是否为手续费交易（防护标志）
+            is_fee_split: 是否已拆分过
         
         Returns:
             {
@@ -315,8 +493,8 @@ class OwnerInfiniteClassifier:
             result['payer_name'] = payment_class['payer_name']
         
         else:  # debit
-            # 消费交易
-            expense_class = self.classify_expense(description, amount)
+            # 消费交易 - 传递防护标志
+            expense_class = self.classify_expense(description, amount, is_merchant_fee, is_fee_split)
             result['category'] = f"{expense_class['expense_type']}_expense"
             result['is_supplier'] = expense_class['is_supplier']
             result['supplier_name'] = expense_class['supplier_name']
@@ -359,9 +537,10 @@ class OwnerInfiniteClassifier:
         customer_id = customer['id']
         customer_name = customer['name']
         
-        # 获取所有交易
+        # 获取所有交易（包含防护标志）
         cursor.execute('''
-            SELECT id, description, amount, transaction_type
+            SELECT id, description, amount, transaction_type, 
+                   is_merchant_fee, is_fee_split
             FROM transactions
             WHERE statement_id = ?
         ''', (statement_id,))
@@ -377,13 +556,27 @@ class OwnerInfiniteClassifier:
         infinite_payments = 0.0
         
         for txn in transactions:
+            # 🔒 FIX: 传递防护标志，避免手续费被重复分类
+            # sqlite3.Row对象使用[]访问，不是.get()
+            try:
+                is_merchant_fee = bool(txn['is_merchant_fee']) if txn['is_merchant_fee'] is not None else False
+            except (KeyError, IndexError):
+                is_merchant_fee = False
+            
+            try:
+                is_fee_split = bool(txn['is_fee_split']) if txn['is_fee_split'] is not None else False
+            except (KeyError, IndexError):
+                is_fee_split = False
+            
             classification = self.classify_transaction(
                 txn['id'],
                 txn['description'],
                 txn['amount'],
                 txn['transaction_type'],
                 customer_id,
-                customer_name
+                customer_name,
+                is_merchant_fee=is_merchant_fee,
+                is_fee_split=is_fee_split
             )
             
             # 更新数据库
@@ -433,15 +626,21 @@ class OwnerInfiniteClassifier:
 
 # 便捷函数
 def classify_transaction(transaction_id: int, customer_id: int, customer_name: str = None):
-    """分类单个交易"""
+    """
+    分类单个交易（模块级helper）
+    
+    ⚠️ v5.1 FIX: 加载防护标志，避免手续费被重复分类
+    """
     classifier = OwnerInfiniteClassifier()
     
     conn = sqlite3.connect('db/smart_loan_manager.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     
+    # 🔒 FIX: 加载防护标志
     cursor.execute('''
-        SELECT description, amount, transaction_type
+        SELECT description, amount, transaction_type, 
+               is_merchant_fee, is_fee_split
         FROM transactions
         WHERE id = ?
     ''', (transaction_id,))
@@ -452,13 +651,26 @@ def classify_transaction(transaction_id: int, customer_id: int, customer_name: s
     if not txn:
         return None
     
+    # 安全读取标志
+    try:
+        is_merchant_fee = bool(txn['is_merchant_fee']) if txn['is_merchant_fee'] is not None else False
+    except (KeyError, IndexError):
+        is_merchant_fee = False
+    
+    try:
+        is_fee_split = bool(txn['is_fee_split']) if txn['is_fee_split'] is not None else False
+    except (KeyError, IndexError):
+        is_fee_split = False
+    
     return classifier.classify_transaction(
         transaction_id,
         txn['description'],
         txn['amount'],
         txn['transaction_type'],
         customer_id,
-        customer_name
+        customer_name,
+        is_merchant_fee=is_merchant_fee,
+        is_fee_split=is_fee_split
     )
 
 
@@ -466,3 +678,71 @@ def classify_statement(statement_id: int):
     """分类整个账单"""
     classifier = OwnerInfiniteClassifier()
     return classifier.batch_classify_statement(statement_id)
+
+
+def split_supplier_fees_batch(statement_id: int) -> Dict:
+    """
+    批量处理账单的所有Supplier交易手续费拆分
+    
+    Args:
+        statement_id: 账单ID
+    
+    Returns:
+        {
+            'total_processed': int,
+            'split_count': int,
+            'skipped_count': int,
+            'error_count': int,
+            'total_principal': float,
+            'total_fees': float,
+            'details': List[Dict]
+        }
+    """
+    import sqlite3
+    
+    classifier = OwnerInfiniteClassifier()
+    conn = sqlite3.connect('db/smart_loan_manager.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    # 获取账单所有交易
+    cursor.execute('''
+        SELECT id, description, amount, category, is_fee_split
+        FROM transactions
+        WHERE statement_id = ?
+        ORDER BY id ASC
+    ''', (statement_id,))
+    
+    transactions = cursor.fetchall()
+    conn.close()
+    
+    results = {
+        'total_processed': 0,
+        'split_count': 0,
+        'skipped_count': 0,
+        'error_count': 0,
+        'total_principal': 0.0,
+        'total_fees': 0.0,
+        'details': []
+    }
+    
+    for txn in transactions:
+        result = classifier.classify_and_split_supplier_fee(txn['id'])
+        results['total_processed'] += 1
+        
+        if result['status'] == 'success' and 'fee_txn_id' in result:
+            results['split_count'] += 1
+            results['total_principal'] += result.get('principal_amount', 0)
+            results['total_fees'] += result.get('fee_amount', 0)
+        elif result['status'] == 'skipped':
+            results['skipped_count'] += 1
+        elif result['status'] == 'error':
+            results['error_count'] += 1
+        
+        results['details'].append({
+            'txn_id': txn['id'],
+            'description': txn['description'],
+            'result': result
+        })
+    
+    return results
