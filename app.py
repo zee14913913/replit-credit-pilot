@@ -1995,6 +1995,13 @@ def run_scheduler():
     # 每天上午9点检查是否为1号，如果是则发送报表邮件
     schedule.every().day.at("09:00").do(auto_send_monthly_reports)
     
+    # ============================================================
+    # AI财务日报自动化系统 - 每天早上08:00生成
+    # ============================================================
+    from accounting_app.tasks.ai_daily_report import generate_daily_report
+    schedule.every().day.at("08:00").do(generate_daily_report)
+    print("⏰ AI日报计划任务已注册：每天 08:00 自动生成")
+    
     while True:
         schedule.run_pending()
         time.sleep(60)
