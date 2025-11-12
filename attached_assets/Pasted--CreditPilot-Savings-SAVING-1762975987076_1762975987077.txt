@@ -1,0 +1,232 @@
+# ============================================
+# CreditPilot — Savings 页面“现状盘点”一键脚本
+# 目标：自动生成《SAVINGS_CURRENT_STATE.md》
+# 适用：当前 Replit 环境（Flask 5000 / FastAPI 8000 已运行）
+# ============================================
+
+set -euo pipefail
+
+echo ">> [1/10] 准备目录"
+mkdir -p docs/tmp_out tests
+
+REPORT_MD="docs/SAVINGS_CURRENT_STATE.md"
+TMP_DIR="docs/tmp_out"
+: > "$REPORT_MD"
+
+echo ">> [2/10] 代码仓库静态扫描（Savings 相关）"
+# 代码位置清点
+{
+  echo "## 1. 代码结构与文件定位"
+  echo ""
+  echo "### 1.1 关键词 'savings' 全仓库扫描（含大小写）"
+  echo '```text'
+  rg -n --hidden -S "savings|Savings|SAVINGS" || true
+  echo '```'
+  echo ""
+  echo "### 1.2 可能的页面模板位置（templates/）"
+  echo '```text'
+  rg -n --hidden -S "savings" templates || true
+  echo '```'
+  echo ""
+  echo "### 1.3 可能的路由位置（routers/routes/）"
+  echo '```text'
+  rg -n --hidden -S "savings" routers routes || true
+  echo '```'
+  echo ""
+} >> "$REPORT_MD"
+
+echo ">> [3/10] Flask / FastAPI 路由清单（导出 Savings 相关）"
+python - <<'PY' > "$TMP_DIR/routes_dump.txt" || true
+import json, os, sys
+
+OUT = []
+
+# Flask routes (app.py / utils/main.py等)
+for candidate in ["app.py","utils/main.py","main.py"]:
+    if os.path.exists(candidate):
+        try:
+            modname = candidate[:-3].replace("/","_")
+            import importlib.util
+            spec = importlib.util.spec_from_file_location(modname, candidate)
+            m = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(m)
+            app = getattr(m, "app", None)
+            if app:
+                for rule in app.url_map.iter_rules():
+                    OUT.append(("flask", str(rule), ",".join(sorted(rule.methods))))
+        except Exception as e:
+            OUT.append(("flask_error", candidate, str(e)))
+
+# FastAPI routes (accounting_app/main.py)
+try:
+    import importlib.util
+    p = "accounting_app/main.py"
+    if os.path.exists(p):
+        spec = importlib.util.spec_from_file_location("acc_main", p)
+        m = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(m)
+        app = getattr(m, "app", None)
+        if app:
+            for r in app.routes:
+                try:
+                    OUT.append(("fastapi", getattr(r, "path", ""), ",".join(getattr(r, "methods", []) or [])))
+                except Exception as _:
+                    pass
+except Exception as e:
+    OUT.append(("fastapi_error","accounting_app/main.py", str(e)))
+
+print(json.dumps(OUT, ensure_ascii=False, indent=2))
+PY
+
+{
+  echo "## 2. 路由与接口"
+  echo ""
+  echo "### 2.1 Flask / FastAPI 路由快照（仅摘录 Savings 相关）"
+  echo '```json'
+  cat "$TMP_DIR/routes_dump.txt" | jq -r '.[] | select(.[1]|test("sav|Sav|SAV"))' | jq -s '.' || cat "$TMP_DIR/routes_dump.txt"
+  echo '```'
+  echo ""
+  echo "### 2.2 FastAPI OpenAPI（/openapi.json）中 Savings 端点"
+  echo '```json'
+  curl -s http://localhost:8000/openapi.json | jq '.paths | to_entries[] | select(.key|test("sav|Sav|SAV"))' || true
+  echo '```'
+  echo ""
+} >> "$REPORT_MD"
+
+echo ">> [4/10] RBAC/权限检查（Savings 相关端点）"
+{
+  echo "## 3. 访问控制与合规"
+  echo ""
+  echo "### 3.1 Savings 端点中的 RBAC 装饰器/中间件引用扫描"
+  echo '```text'
+  rg -n -S "@require_admin_or_accountant|rbac" routers routes templates services || true
+  echo '```'
+  echo ""
+  echo "### 3.2 认证相关模块快照（auth/、middleware/）"
+  echo '```text'
+  rg -n "savings|ledger|account" auth middleware || true
+  echo '```'
+  echo ""
+} >> "$REPORT_MD"
+
+echo ">> [5/10] 数据库结构导出（Savings 相关表）"
+DB_PATH="db/creditpilot.db"
+if [ -f "$DB_PATH" ]; then
+  {
+    echo "## 4. 数据库结构与数据样本"
+    echo ""
+    echo "### 4.1 Savings 相关表结构（自动匹配表名包含 'savings'）"
+    echo '```sql'
+    echo ".headers on"
+    echo "SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '%savings%';"
+    echo '```'
+    echo ""
+    echo "#### 结构详情"
+    echo '```sql'
+    sqlite3 "$DB_PATH" ".schema" | sed -n '/CREATE TABLE .*savings.*/,+20p' || true
+    echo '```'
+    echo ""
+    echo "### 4.2 样本数据（每表前20行）"
+    echo '```text'
+    for t in $(sqlite3 "$DB_PATH" "SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '%savings%';"); do
+      echo "# Table: $t"
+      sqlite3 -header -csv "$DB_PATH" "SELECT * FROM $t LIMIT 20;"
+      echo ""
+    done
+    echo '```'
+    echo ""
+  } >> "$REPORT_MD"
+else
+  {
+    echo "## 4. 数据库结构与数据样本"
+    echo ""
+    echo "> 警告：未找到数据库文件 $DB_PATH ，请确认路径。"
+    echo ""
+  } >> "$REPORT_MD"
+fi
+
+echo ">> [6/10] 文件与上传路径（Savings 相关）"
+{
+  echo "## 5. 文件/上传目录"
+  echo ""
+  echo "### 5.1 约定的上传目录（按代码约定匹配）"
+  echo '```text'
+  rg -n -S "uploads|static/uploads|statements|receipts|slip" | rg -n -S "sav|Sav|SAV|transfer|fund|deposit|withdraw" || true
+  echo '```'
+  echo ""
+} >> "$REPORT_MD"
+
+echo ">> [7/10] 前端模板与UI元素（Savings 页）"
+{
+  echo "## 6. 前端模板 & UI 元素"
+  echo ""
+  echo "### 6.1 模板关键块（form/表格/按钮/导入导出/筛选）"
+  echo '```text'
+  rg -n -S "(form|table|button|export|import|filter|upload)" templates | rg -n -S "sav|Sav|SAV" || true
+  echo '```'
+  echo ""
+} >> "$REPORT_MD"
+
+echo ">> [8/10] 业务流程与数据校验（从代码解析）"
+{
+  echo "## 7. 业务流程（按代码注释与函数名推断）"
+  echo ""
+  echo "### 7.1 解析/导入/分类/对账 相关函数（Savings）"
+  echo '```text'
+  rg -n -S "parse|import|classif|recon|verify|validate" services routers routes | rg -n -S "sav|Sav|SAV|transfer|deposit|withdraw" || true
+  echo '```'
+  echo ""
+} >> "$REPORT_MD"
+
+echo ">> [9/10] 现有校验项与日志（完整性、审计）"
+{
+  echo "## 8. 校验与审计"
+  echo ""
+  echo "### 8.1 数据完整性校验调用点（Savings）"
+  echo '```text'
+  rg -n -S "audit|log|validate|integrity|hash|evidence" | rg -n -S "sav|Sav|SAV" || true
+  echo '```'
+  echo ""
+  echo "### 8.2 已实现的三次验证/双账本/对账在 Savings 的适配情况（代码痕迹）"
+  echo '```text'
+  rg -n -S "owner|infinite|gz|dual|ledger|closing|previous|balance" | rg -n -S "sav|Sav|SAV|transfer" || true
+  echo '```'
+  echo ""
+} >> "$REPORT_MD"
+
+echo ">> [10/10] 汇总：生成评审清单与改造入口"
+{
+  cat <<'EOF' >> "$REPORT_MD"
+## 9. 现状结论（自动摘要草案）
+> 说明：以上为自动扫描与运行时探测的结果。若某项为空，通常表示“未实现或未命中关键字”。此文档用于评审当前 Savings 页功能覆盖范围与技术实现位置。
+
+### 9.1 已可确认的功能点（从路由、模板、SQL中抽取）
+- [ ] 账单/流水导入（文件类型、入口、字段映射）
+- [ ] 交易记录展示（字段列、筛选器、分页）
+- [ ] 转账/充值/提现（业务动作及分类）
+- [ ] 证据文件（转账回执、银行流水）挂载位置
+- [ ] 三次验证（笔数/金额/跨账本对账）在 Savings 的落地
+- [ ] 供应商/对方账户识别（INFINITE/GZ 账户列表匹配）
+- [ ] 安全与权限（RBAC 装饰器、审计日志）
+
+### 9.2 待确认或缺失项（需要人工补充）
+- [ ] 缺少的 API 端点 / 页面模板
+- [ ] DB 表与字段不完整或需扩展
+- [ ] 与 Credit Card 页一致的对账与证据链
+- [ ] 导出报表（Excel/PDF）与编号规范
+- [ ] UAT 用例覆盖清单（将于功能冻结后制定）
+
+---
+
+## 10. 下一步建议（为“最佳状态”改造预留位）
+> 待我们阅读本报告后，再对症下药：补 API、补表结构、补验证、补UI/导出，最后做专属 UAT（仅针对 Savings 页）。
+
+EOF
+} 
+
+echo ""
+echo "==============================="
+echo "✅ 生成完成：$REPORT_MD"
+echo "   临时输出：$TMP_DIR/"
+echo "请在编辑器左侧打开文档进行评审。"
+echo "==============================="
