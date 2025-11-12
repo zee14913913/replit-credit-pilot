@@ -125,7 +125,8 @@ def require_admin_or_accountant(f):
         from i18n.translations import get_translation
         lang = session.get('language', 'en')
         flash(get_translation('please_login_admin', lang), 'error')
-        return redirect(url_for('admin_login'))
+        # 保存用户原本想访问的相对路径（包含查询参数），登录后返回
+        return redirect(url_for('admin_login', next=request.full_path))
     
     return decorated_function
 
@@ -193,7 +194,8 @@ def require_admin_only(f):
         from i18n.translations import get_translation
         lang = session.get('language', 'en')
         flash(get_translation('please_login_admin', lang), 'error')
-        return redirect(url_for('admin_login'))
+        # 保存用户原本想访问的相对路径（包含查询参数），登录后返回
+        return redirect(url_for('admin_login', next=request.full_path))
     
     return decorated_function
 

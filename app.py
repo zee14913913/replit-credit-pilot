@@ -5881,7 +5881,19 @@ def admin_login():
             
             flash(f'欢迎回来，{user["username"]}！', 'success')
             
-            # 根据角色跳转到不同页面
+            # 检查是否有原访问页面（next参数）
+            next_page = request.args.get('next')
+            if next_page:
+                # 安全检查：防止开放式重定向
+                from werkzeug.urls import url_parse
+                parsed_url = url_parse(next_page)
+                
+                # 只允许相对路径（无scheme、无netloc）
+                # 且不允许scheme-relative URL（如 //evil.com）
+                if not parsed_url.netloc and not parsed_url.scheme and next_page.startswith('/') and not next_page.startswith('//'):
+                    return redirect(next_page)
+            
+            # 没有next参数或安全检查失败，根据角色跳转到默认页面
             if user['role'] in ['admin', 'accountant']:
                 return redirect(url_for('admin_dashboard'))
             else:
