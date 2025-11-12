@@ -1,0 +1,266 @@
+<!-- AI智能助手聊天窗口 -->
+<div id="ai-chatbox" style="position:fixed;bottom:40px;right:40px;z-index:9999;">
+  <!-- 触发按钮 -->
+  <button id="chat-toggle" 
+    style="background:#ff007f;color:#fff;border:none;border-radius:999px;padding:14px 22px;font-weight:700;box-shadow:0 0 20px rgba(255,0,127,0.7);cursor:pointer;transition:all 0.3s;font-size:15px;">
+    💬 智能顾问
+  </button>
+  
+  <!-- 聊天窗口 -->
+  <div id="chat-window" 
+    style="display:none;width:380px;height:520px;background:#1a1a1a;border:2px solid #ff007f;border-radius:18px;padding:16px;color:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.5);margin-bottom:10px;">
+    
+    <!-- 标题栏 -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #ff007f;">
+      <h4 style="margin:0;color:#ff007f;font-size:16px;">🤖 CreditPilot 智能顾问</h4>
+      <button id="chat-close" 
+        style="background:transparent;border:none;color:#fff;cursor:pointer;font-size:18px;">✕</button>
+    </div>
+    
+    <!-- 对话日志区域 -->
+    <div id="chat-log" 
+      style="height:360px;overflow-y:auto;font-size:13px;line-height:1.6;padding:8px;background:#0a0a0a;border-radius:8px;margin-bottom:12px;">
+      <div style="color:#888;text-align:center;padding:20px;">
+        欢迎使用智能财务顾问！<br>
+        您可以询问关于储蓄账户、信用卡、贷款的任何问题。
+      </div>
+    </div>
+    
+    <!-- 快捷按钮 -->
+    <div style="display:flex;gap:6px;margin-bottom:10px;">
+      <button id="sys-analyze" 
+        style="flex:1;background:#322446;border:none;border-radius:10px;padding:10px;color:#fff;cursor:pointer;font-size:12px;font-weight:600;transition:background 0.3s;">
+        📊 系统分析
+      </button>
+      <button id="clear-chat" 
+        style="background:#444;border:none;border-radius:10px;padding:10px 12px;color:#fff;cursor:pointer;font-size:12px;">
+        🗑️
+      </button>
+    </div>
+    
+    <!-- 输入区域 -->
+    <div style="display:flex;gap:8px;">
+      <input id="chat-input" 
+        placeholder="输入您的问题..." 
+        style="flex:1;padding:10px 14px;border-radius:10px;border:1px solid #322446;color:#fff;background:#222;font-size:13px;"
+        autocomplete="off">
+      <button id="chat-send" 
+        style="background:#ff007f;border:none;border-radius:10px;padding:10px 16px;color:#fff;cursor:pointer;font-weight:600;">
+        发送
+      </button>
+    </div>
+    
+    <!-- 加载指示器 -->
+    <div id="chat-loading" style="display:none;text-align:center;margin-top:10px;color:#ff007f;font-size:12px;">
+      <span class="spinner">⏳</span> AI正在思考...
+    </div>
+  </div>
+</div>
+
+<style>
+/* 按钮悬停效果 */
+#chat-toggle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(255,0,127,0.9);
+}
+
+#sys-analyze:hover {
+  background: #ff007f;
+}
+
+#chat-send:hover {
+  background: #cc0066;
+}
+
+/* 滚动条美化 */
+#chat-log::-webkit-scrollbar {
+  width: 6px;
+}
+
+#chat-log::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+#chat-log::-webkit-scrollbar-thumb {
+  background: #ff007f;
+  border-radius: 3px;
+}
+
+/* 消息气泡样式 */
+.user-message {
+  background: #322446;
+  padding: 8px 12px;
+  border-radius: 12px;
+  margin: 8px 0;
+  max-width: 80%;
+  margin-left: auto;
+  text-align: right;
+}
+
+.ai-message {
+  background: #1a3a3a;
+  padding: 8px 12px;
+  border-radius: 12px;
+  margin: 8px 0;
+  max-width: 80%;
+  border-left: 3px solid #ff007f;
+}
+
+.system-message {
+  background: #2a2a2a;
+  padding: 8px 12px;
+  border-radius: 12px;
+  margin: 8px 0;
+  text-align: center;
+  font-size: 12px;
+  color: #888;
+}
+
+.spinner {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+</style>
+
+<script>
+// AI聊天窗口逻辑
+(function() {
+  const toggle = document.getElementById("chat-toggle");
+  const win = document.getElementById("chat-window");
+  const closeBtn = document.getElementById("chat-close");
+  const log = document.getElementById("chat-log");
+  const input = document.getElementById("chat-input");
+  const sendBtn = document.getElementById("chat-send");
+  const analyze = document.getElementById("sys-analyze");
+  const clear = document.getElementById("clear-chat");
+  const loading = document.getElementById("chat-loading");
+  
+  // 切换聊天窗口显示
+  toggle.onclick = () => {
+    if (win.style.display === "none") {
+      win.style.display = "block";
+      input.focus();
+    } else {
+      win.style.display = "none";
+    }
+  };
+  
+  closeBtn.onclick = () => {
+    win.style.display = "none";
+  };
+  
+  // 添加用户消息到日志
+  function addUserMessage(msg) {
+    const div = document.createElement('div');
+    div.className = 'user-message';
+    div.innerHTML = `<b>您：</b> ${escapeHtml(msg)}`;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+  }
+  
+  // 添加AI消息到日志
+  function addAIMessage(msg) {
+    const div = document.createElement('div');
+    div.className = 'ai-message';
+    div.innerHTML = `<b>AI：</b> ${formatMessage(msg)}`;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+  }
+  
+  // 添加系统消息
+  function addSystemMessage(msg) {
+    const div = document.createElement('div');
+    div.className = 'system-message';
+    div.textContent = msg;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+  }
+  
+  // HTML转义
+  function escapeHtml(text) {
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
+  }
+  
+  // 格式化消息（支持换行）
+  function formatMessage(text) {
+    return escapeHtml(text).replace(/\n/g, '<br>');
+  }
+  
+  // 发送消息到AI
+  async function sendMessage(msg, endpoint) {
+    if (!msg || !msg.trim()) {
+      addSystemMessage('请输入问题');
+      return;
+    }
+    
+    addUserMessage(msg);
+    loading.style.display = 'block';
+    
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg })
+      });
+      
+      const data = await response.json();
+      
+      if (data.error) {
+        addAIMessage(`❌ 错误: ${data.error}`);
+      } else {
+        const reply = data.reply || data.analysis || '未收到回复';
+        addAIMessage(reply);
+      }
+    } catch (error) {
+      addAIMessage(`❌ 网络错误: ${error.message}`);
+    } finally {
+      loading.style.display = 'none';
+    }
+  }
+  
+  // 发送按钮点击
+  sendBtn.onclick = () => {
+    const msg = input.value.trim();
+    if (msg) {
+      sendMessage(msg, '/api/ai-assistant/query');
+      input.value = '';
+    }
+  };
+  
+  // 回车发送
+  input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      const msg = input.value.trim();
+      if (msg) {
+        sendMessage(msg, '/api/ai-assistant/query');
+        input.value = '';
+      }
+    }
+  });
+  
+  // 系统分析按钮
+  analyze.onclick = () => {
+    addSystemMessage('正在生成全局财务分析报告...');
+    sendMessage('请分析整个系统的财务状况', '/api/ai-assistant/analyze-system');
+  };
+  
+  // 清空对话
+  clear.onclick = () => {
+    if (confirm('确定要清空对话记录吗？')) {
+      log.innerHTML = '<div style="color:#888;text-align:center;padding:20px;">对话已清空</div>';
+    }
+  };
+})();
+</script>
