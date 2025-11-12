@@ -182,6 +182,22 @@ class SupplierInvoiceGenerator:
                 pdf_path
             ))
             
+            invoice_id = cursor.lastrowid
+            
+            # 记录审计日志
+            cursor.execute('''
+                INSERT INTO audit_logs 
+                (entity_type, entity_id, action_type, description, user_id, created_at)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (
+                'supplier_invoice',
+                invoice_id,
+                'INVOICE_GENERATED',
+                f'Generated invoice {invoice_number} for {supplier_name} - Total: RM {grand_total:.2f}',
+                None,
+                datetime.now()
+            ))
+            
             conn.commit()
             
             return {

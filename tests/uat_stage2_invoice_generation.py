@@ -238,7 +238,7 @@ def verify_pdf_files(invoices):
 def check_audit_logs(statement_id):
     """检查审计日志"""
     print("\n" + "=" * 80)
-    print("📝 审计日志验证")
+    print("📝 审计日志验证（INVOICE_GENERATED）")
     print("=" * 80)
     
     conn = sqlite3.connect('db/smart_loan_manager.db')
@@ -246,26 +246,34 @@ def check_audit_logs(statement_id):
     cursor = conn.cursor()
     
     cursor.execute('''
-        SELECT action_type, description, created_at
-        FROM audit_logs
-        WHERE entity_type = 'supplier_invoice' 
-        OR description LIKE '%invoice%'
-        ORDER BY created_at DESC
-        LIMIT 10
-    ''')
+        SELECT al.action_type, al.description, al.created_at, si.invoice_number
+        FROM audit_logs al
+        JOIN supplier_invoices si ON al.entity_id = si.id
+        WHERE al.entity_type = 'supplier_invoice' 
+        AND si.statement_id = ?
+        ORDER BY al.created_at DESC
+    ''', (statement_id,))
     
     logs = cursor.fetchall()
     
+    expected_count = 3
+    actual_count = len(logs)
+    
+    print(f"\n{'发票编号':<40} {'操作类型':<20} {'描述':<60}")
+    print("-" * 125)
+    
     if logs:
-        print(f"\n✅ 找到 {len(logs)} 条审计日志:")
         for log in logs:
-            print(f"  - {log['action_type']}: {log['description']}")
+            print(f"{log['invoice_number']:<40} {log['action_type']:<20} {log['description']:<60}")
+        print(f"\n✅ 审计日志: {actual_count}/{expected_count}")
     else:
-        print("⚠️ 未找到审计日志（可能在PostgreSQL中）")
+        print("❌ 未找到审计日志")
     
     conn.close()
+    
+    return actual_count == expected_count
 
-def generate_uat_report(statement_id, invoices, amount_passed, pdf_passed):
+def generate_uat_report(statement_id, invoices, amount_passed, pdf_passed, audit_passed):
     """生成UAT阶段2测试报告"""
     print("\n" + "=" * 80)
     print("📊 UAT阶段2测试报告")
@@ -282,8 +290,9 @@ def generate_uat_report(statement_id, invoices, amount_passed, pdf_passed):
     print(f"  ✅ 金额计算: {'PASS' if amount_passed else 'FAIL'} (本金+1%手续费)")
     print(f"  ✅ PDF文件生成: {'PASS' if pdf_passed else 'FAIL'} (文件存在)")
     print(f"  ✅ 数据库记录: PASS (supplier_invoices表)")
+    print(f"  ✅ 审计日志: {'PASS' if audit_passed else 'FAIL'} (INVOICE_GENERATED)")
     
-    all_pass = count_pass and amount_passed and pdf_passed
+    all_pass = count_pass and amount_passed and pdf_passed and audit_passed
     
     print("\n" + "=" * 80)
     if all_pass:
@@ -294,6 +303,7 @@ def generate_uat_report(statement_id, invoices, amount_passed, pdf_passed):
         print("  - 金额计算: ✅")
         print("  - 文件生成: ✅")
         print("  - 数据库记录: ✅")
+        print("  - 审计日志: ✅")
         return True
     else:
         print("❌ UAT阶段2失败")
@@ -308,26 +318,74 @@ def cleanup(statement_id):
     print("=" * 80)
     
     conn = sqlite3.connect('db/smart_loan_manager.db')
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     
-    # 删除发票记录
+    # Step 1: 获取supplier invoice IDs和PDF路径（在删除前）
+    cursor.execute('SELECT id, pdf_path FROM supplier_invoices WHERE statement_id = ?', (statement_id,))
+    invoices = cursor.fetchall()
+    invoice_ids = [inv['id'] for inv in invoices]
+    pdf_paths = [inv['pdf_path'] for inv in invoices]
+    
+    # Step 2: 删除PDF文件
+    deleted_pdfs = 0
+    for pdf_path in pdf_paths:
+        if pdf_path and os.path.exists(pdf_path):
+            os.remove(pdf_path)
+            deleted_pdfs += 1
+    
+    # Step 3: 删除审计日志（使用预先获取的invoice_ids）
+    deleted_logs = 0
+    if invoice_ids:
+        placeholders = ','.join('?' * len(invoice_ids))
+        cursor.execute(f'''
+            DELETE FROM audit_logs 
+            WHERE entity_type = 'supplier_invoice' 
+            AND entity_id IN ({placeholders})
+        ''', invoice_ids)
+        deleted_logs = cursor.rowcount
+    
+    # Step 4: 删除发票记录
     cursor.execute('DELETE FROM supplier_invoices WHERE statement_id = ?', (statement_id,))
     deleted_invoices = cursor.rowcount
     
-    # 删除交易记录
+    # Step 5: 删除交易记录
     cursor.execute('DELETE FROM transactions WHERE statement_id = ?', (statement_id,))
     deleted_txns = cursor.rowcount
     
-    # 删除Statement
+    # Step 6: 删除Statement
     cursor.execute('DELETE FROM statements WHERE id = ?', (statement_id,))
     
     conn.commit()
+    
+    # Step 7: 验证清理完成（检查是否还有残留audit logs）
+    # 使用预先获取的invoice_ids验证，确保这些ID相关的日志已删除
+    if invoice_ids:
+        placeholders_check = ','.join('?' * len(invoice_ids))
+        cursor.execute(f'''
+            SELECT COUNT(*) FROM audit_logs 
+            WHERE entity_type = 'supplier_invoice' 
+            AND entity_id IN ({placeholders_check})
+        ''', invoice_ids)
+        remaining_logs = cursor.fetchone()[0]
+    else:
+        remaining_logs = 0
+    
     conn.close()
     
     print(f"✅ 已删除:")
     print(f"  - {deleted_invoices} 条发票记录")
     print(f"  - {deleted_txns} 条交易记录")
     print(f"  - 1 条Statement记录")
+    print(f"  - {deleted_pdfs} 个PDF文件")
+    print(f"  - {deleted_logs} 条审计日志")
+    
+    if remaining_logs > 0:
+        print(f"\n⚠️ 警告: 仍有 {remaining_logs} 条审计日志残留")
+        return False
+    else:
+        print("\n✅ 清理验证通过：无数据残留")
+        return True
 
 def main():
     """执行完整的UAT阶段2测试"""
@@ -353,13 +411,17 @@ def main():
         pdf_passed = verify_pdf_files(invoices)
         
         # Step 6: 检查审计日志
-        check_audit_logs(statement_id)
+        audit_passed = check_audit_logs(statement_id)
         
         # Step 7: 生成测试报告
-        success = generate_uat_report(statement_id, invoices, amount_passed, pdf_passed)
+        success = generate_uat_report(statement_id, invoices, amount_passed, pdf_passed, audit_passed)
         
         # 清理测试数据
-        cleanup(statement_id)
+        cleanup_success = cleanup(statement_id)
+        
+        if not cleanup_success:
+            print("\n❌ 清理验证失败：发现数据残留")
+            return 1
         
         return 0 if success else 1
         
