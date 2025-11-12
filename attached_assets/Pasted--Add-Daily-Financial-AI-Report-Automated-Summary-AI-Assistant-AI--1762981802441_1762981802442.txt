@@ -1,0 +1,128 @@
+📦 任务标题：
+Add Daily Financial AI Report (Automated Summary)
+
+🎯 目标：
+在现有 AI Assistant 模块中新增“AI日报”自动生成系统，
+每天早上 08:00 自动生成一份财务健康日报，
+并存入数据库与日志中，可随时在前端查看。
+
+---
+
+✅ 实施步骤：
+
+1️⃣ 新建文件：
+路径： accounting_app/tasks/ai_daily_report.py
+
+────────────────────────────
+from datetime import datetime, timedelta
+from openai import OpenAI
+from accounting_app.db import get_db
+
+client = OpenAI()
+
+def generate_daily_report():
+    """生成 AI 财务日报"""
+    db = next(get_db())
+    today = datetime.utcnow().date()
+    yesterday = today - timedelta(days=1)
+
+    # 读取昨日的主要财务数据
+    savings = db.execute("SELECT SUM(amount) AS total FROM savings_transactions WHERE DATE(created_at)=?", (yesterday,)).fetchone()
+    cards = db.execute("SELECT SUM(balance) AS total FROM credit_cards").fetchone() if db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='credit_cards'").fetchone() else {"total": 0}
+    loans = db.execute("SELECT SUM(principal) AS total FROM loan_accounts").fetchone() if db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='loan_accounts'").fetchone() else {"total": 0}
+
+    context = f"日期 {yesterday}：储蓄交易总额 {round(savings['total'] or 0,2)}，信用卡余额 {round(cards['total'] or 0,2)}，贷款本金 {round(loans['total'] or 0,2)}。请生成简洁的财务日报摘要。"
+
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "你是CreditPilot系统的AI财务分析师，请生成每日财务报告，用简洁、专业、易懂的语气描述资金变化与建议。"},
+            {"role": "user", "content": context}
+        ]
+    )
+    report = completion.choices[0].message.content
+
+    # 存入日志表
+    db.execute(
+        "INSERT INTO ai_logs (query, response, created_at) VALUES (?, ?, ?)",
+        (f"AI日报 {yesterday}", report, datetime.utcnow())
+    )
+    db.commit()
+    print(f"[✅] AI日报已生成：{yesterday}")
+────────────────────────────
+
+
+2️⃣ 新建定时任务文件：
+路径： accounting_app/tasks/scheduler.py
+
+────────────────────────────
+import schedule, time
+from accounting_app.tasks.ai_daily_report import generate_daily_report
+
+def run_scheduler():
+    schedule.every().day.at("08:00").do(generate_daily_report)
+    print("[⏰] AI日报计划任务已启动，每天 08:00 执行。")
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
+────────────────────────────
+
+
+3️⃣ 修改启动文件：
+路径： app.py（或 main.py）
+
+在底部添加（保持主服务不变）：
+
+────────────────────────────
+import threading
+from accounting_app.tasks.scheduler import run_scheduler
+
+if __name__ == "__main__":
+    threading.Thread(target=run_scheduler, daemon=True).start()
+    app.run(host="0.0.0.0", port=8000)
+────────────────────────────
+
+
+4️⃣ 检查数据库表：
+确保存在 ai_logs 表：
+
+────────────────────────────
+CREATE TABLE IF NOT EXISTS ai_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    query TEXT,
+    response TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+────────────────────────────
+
+
+5️⃣ 测试命令：
+你可手动运行一次日报以验证是否成功：
+
+────────────────────────────
+python -m accounting_app.tasks.ai_daily_report
+────────────────────────────
+
+
+6️⃣ 前端查看：
+日报会存入 ai_logs 表，可在后台页面中查看，
+查询关键字包含 “AI日报”。
+
+---
+
+📊 成功后系统每天早上将自动：
+1️⃣ 汇总储蓄、信用卡、贷款主要数据  
+2️⃣ 调用 AI 生成简短日报  
+3️⃣ 写入 ai_logs  
+4️⃣ 输出控制台日志 "[✅] AI日报已生成"  
+
+---
+
+💡 可选增强（未来阶段）：
+- 自动推送日报至管理员邮箱或Telegram通知
+- 在Dashboard上显示最近7天日报趋势
+
+---
+
+🟢 重启服务器执行：
+pkill -f uvicorn; python app.py
