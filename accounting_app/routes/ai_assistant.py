@@ -128,32 +128,39 @@ async def analyze_system(request: Request):
         savings = dict(cursor.fetchone())
         savings_balance = savings['total_credits'] - savings['total_debits']
         
-        # 2. 信用卡统计（如果表存在）
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='credit_cards'")
+        # 2. 信用卡统计（从月结单获取最新余额）
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='monthly_statements'")
         if cursor.fetchone():
             cursor.execute("""
                 SELECT 
-                    COUNT(*) as cards,
-                    COALESCE(SUM(credit_limit), 0) as total_limit,
-                    COALESCE(SUM(current_balance), 0) as total_balance
-                FROM credit_cards
+                    COUNT(DISTINCT cc.id) as cards,
+                    COALESCE(SUM(cc.credit_limit), 0) as total_limit,
+                    COALESCE(
+                        (SELECT SUM(closing_balance_total) 
+                         FROM monthly_statements 
+                         WHERE id IN (
+                             SELECT MAX(id) FROM monthly_statements GROUP BY customer_id, bank_name
+                         )), 0
+                    ) as total_balance
+                FROM credit_cards cc
             """)
             credit = dict(cursor.fetchone())
         else:
             credit = {"cards": 0, "total_limit": 0, "total_balance": 0}
         
         # 3. 贷款统计（如果表存在）
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='loan_accounts'")
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='loans'")
         if cursor.fetchone():
             cursor.execute("""
                 SELECT 
                     COUNT(*) as loans,
-                    COALESCE(SUM(principal_amount), 0) as total_principal
-                FROM loan_accounts
+                    COALESCE(SUM(loan_amount), 0) as total_amount,
+                    COALESCE(SUM(remaining_balance), 0) as total_remaining
+                FROM loans
             """)
             loans = dict(cursor.fetchone())
         else:
-            loans = {"loans": 0, "total_principal": 0}
+            loans = {"loans": 0, "total_amount": 0, "total_remaining": 0}
         
         # 构建综合分析上下文
         context = f"""
@@ -173,7 +180,8 @@ async def analyze_system(request: Request):
 
 🏦 贷款：
 - 贷款数：{loans['loans']}笔
-- 总本金：RM {loans['total_principal']:.2f}
+- 总贷款额：RM {loans['total_amount']:.2f}
+- 剩余欠款：RM {loans['total_remaining']:.2f}
 
 请分析：
 1. 整体资金流动性
@@ -223,7 +231,8 @@ async def analyze_system(request: Request):
                 },
                 "loans": {
                     "count": loans['loans'],
-                    "principal": round(loans['total_principal'], 2)
+                    "total_amount": round(loans['total_amount'], 2),
+                    "remaining": round(loans['total_remaining'], 2)
                 }
             },
             "timestamp": datetime.utcnow().isoformat()
