@@ -41,6 +41,7 @@ The backend uses Flask with SQLite and a context manager for database interactio
 **Core Features:**
 - **Financial Management:** Statement ingestion (PDF OCR, Excel), transaction categorization, savings tracking, dual verification for data accuracy.
 - **AI-Powered Advisory:** Credit card recommendations, financial optimization, cash flow prediction, anomaly detection, and financial health scoring.
+- **AI Smart Assistant (Savings Module):** Integrated ChatGPT-powered assistant using OpenAI gpt-4o-mini model. Features floating chatbot UI (💬智能顾问) with real-time financial Q&A, cross-module analysis (Savings + Credit Card + Loans), system analytics, and conversation history logging to `ai_logs` table. Accessible via `/api/ai-assistant/*` endpoints.
 - **Reporting & Export:** Professional Excel/CSV/PDF reports, automated monthly reports.
 - **Workflow Automation:** Batch operations, rule engine for transaction matching.
 - **Security & Compliance:** Multi-role authentication & authorization (RBAC), audit logging, data integrity validation.
@@ -76,10 +77,11 @@ A production-ready Unified RBAC Implementation protects 32 functions across Core
 - **Bank Negara Malaysia Public API**: `https://api.bnm.gov.my` for interest rates.
 - **SendGrid API**: Email delivery.
 - **Twilio API**: SMS delivery.
-- **FastAPI Backend (Port 8000)**: Handles audit logging, notifications, and real-time APIs.
+- **OpenAI API**: AI smart assistant integration using gpt-4o-mini model, with API key managed via Replit Secrets (`AI_INTEGRATIONS_OPENAI_API_KEY`).
+- **FastAPI Backend (Port 8000)**: Handles audit logging, notifications, AI assistant endpoints, and real-time APIs.
 
 ### Database
-- **SQLite**: Primary file-based relational database (`db/smart_loan_manager.db`).
+- **SQLite**: Primary file-based relational database (`db/smart_loan_manager.db`). Includes `ai_logs` table for AI assistant conversation history.
 - **PostgreSQL**: Used for notifications and audit logs, including SFTP synchronization history.
 
 ### File Storage
