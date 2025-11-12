@@ -187,7 +187,7 @@ class OwnerInfiniteClassifier:
             'is_fee_split': True
         }
     
-    def classify_and_split_supplier_fee(self, transaction_id: int) -> Dict:
+    def classify_and_split_supplier_fee(self, transaction_id: int, conn=None, cursor=None) -> Dict:
         """
         完整实现：Supplier交易拆分逻辑 v5.1
         
@@ -199,6 +199,8 @@ class OwnerInfiniteClassifier:
         
         Args:
             transaction_id: 要处理的交易ID
+            conn: 可选的外部数据库连接（用于原子性）
+            cursor: 可选的外部游标（用于原子性）
         
         Returns:
             {
@@ -210,9 +212,12 @@ class OwnerInfiniteClassifier:
                 'message': str
             }
         """
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
+        # 🔒 FIX: 支持外部DB连接以确保原子性
+        external_conn = conn is not None
+        if not external_conn:
+            conn = sqlite3.connect(self.db_path)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
         
         try:
             # 1. 获取原始交易
@@ -250,7 +255,8 @@ class OwnerInfiniteClassifier:
                         fee_reference_id = NULL
                     WHERE id = ?
                 ''', (transaction_id,))
-                conn.commit()
+                if not external_conn:
+                    conn.commit()
                 return {'status': 'success', 'message': 'Classified as owner_expense'}
             
             # 5. 走Supplier逻辑：本金=INFINITE，手续费=OWNER
@@ -308,7 +314,9 @@ class OwnerInfiniteClassifier:
                 f'Fee split: Principal RM{principal}, Fee RM{fee}, Fee Txn ID {fee_txn_id}'
             ))
             
-            conn.commit()
+            # 🔒 FIX: 只在自己创建连接时commit
+            if not external_conn:
+                conn.commit()
             
             return {
                 'status': 'success',
@@ -320,11 +328,20 @@ class OwnerInfiniteClassifier:
             }
         
         except Exception as e:
-            conn.rollback()
-            return {'status': 'error', 'message': str(e)}
+            # 🔒 FIX: 只在自己创建连接时rollback，外部连接由调用者处理
+            if not external_conn:
+                conn.rollback()
+                conn.close()
+            # 外部连接：通过异常传播错误给调用者
+            raise
         
         finally:
-            conn.close()
+            # 🔒 FIX: 只在自己创建连接时关闭
+            if not external_conn and conn:
+                try:
+                    conn.close()
+                except:
+                    pass  # Connection可能已经关闭
     
     def _is_supplier_txn(self, description: str) -> bool:
         """检查是否为Supplier交易"""
@@ -598,6 +615,21 @@ class OwnerInfiniteClassifier:
                 txn['id']
             ))
             
+            # 🔥 CRITICAL: 如果是Supplier交易且flags正确，执行手续费拆分
+            if classification.get('is_supplier') and not is_fee_split and not is_merchant_fee and txn['amount'] > 0:
+                try:
+                    split_result = self.classify_and_split_supplier_fee(txn['id'], conn, cursor)
+                    if split_result['status'] == 'success':
+                        # 从拆分结果中调整聚合统计
+                        fee_amount = split_result.get('fee_amount', 0.0)
+                        owner_expenses += fee_amount  # 新生成的手续费交易是owner_expense
+                        total_supplier_fees += fee_amount
+                except Exception as e:
+                    # 回滚并中止
+                    conn.rollback()
+                    conn.close()
+                    return {'error': f'Fee split failed for txn {txn["id"]}: {str(e)}'}
+            
             # 累计统计
             if classification['category'] == 'owner_expense':
                 owner_expenses += abs(txn['amount'])
@@ -646,9 +678,9 @@ def classify_transaction(transaction_id: int, customer_id: int, customer_name: s
     ''', (transaction_id,))
     
     txn = cursor.fetchone()
-    conn.close()
     
     if not txn:
+        conn.close()
         return None
     
     # 安全读取标志
@@ -662,7 +694,8 @@ def classify_transaction(transaction_id: int, customer_id: int, customer_name: s
     except (KeyError, IndexError):
         is_fee_split = False
     
-    return classifier.classify_transaction(
+    # 调用分类方法
+    result = classifier.classify_transaction(
         transaction_id,
         txn['description'],
         txn['amount'],
@@ -672,6 +705,22 @@ def classify_transaction(transaction_id: int, customer_id: int, customer_name: s
         is_merchant_fee=is_merchant_fee,
         is_fee_split=is_fee_split
     )
+    
+    # 🔥 CRITICAL: 如果是Supplier交易且flags正确，执行手续费拆分
+    if result and result.get('is_supplier') and not is_fee_split and not is_merchant_fee and txn['amount'] > 0:
+        try:
+            split_result = classifier.classify_and_split_supplier_fee(transaction_id, conn, cursor)
+            conn.commit()
+            # 增强返回值
+            result['fee_split_status'] = split_result['status']
+            result['fee_amount'] = split_result.get('fee_amount', 0.0)
+        except Exception as e:
+            conn.rollback()
+            result['fee_split_status'] = 'error'
+            result['fee_split_error'] = str(e)
+    
+    conn.close()
+    return result
 
 
 def classify_statement(statement_id: int):
