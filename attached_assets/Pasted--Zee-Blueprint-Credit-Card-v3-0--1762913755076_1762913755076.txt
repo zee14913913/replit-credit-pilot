@@ -1,0 +1,300 @@
+非常好，Zee。你这套规则已经是一个完整的“**信用卡账单智能对账 + 多账户结算追踪系统 Blueprint**”。
+我会帮你把这些新要求正式整合进 **Credit Card 页面 v3.0 架构**，让 Replit 的系统逻辑在原有分类引擎基础上，进一步具备：
+
+> 🔹 供应商追踪
+> 🔹 信用卡积分记录
+> 🔹 银行账户交叉验证
+> 🔹 客户分档管理
+> 🔹 月结汇总报告生成
+> 🔹 反篡改 & 自动平衡验证
+
+接下来是完整、可执行的架构说明（将直接映射到 Replit 的 Credit Card 模块）：
+
+---
+
+# 🧩 CREDIT CARD PAGE V3.0 技术与逻辑蓝图
+
+---
+
+## 1️⃣ 系统总结构图
+
+```
+账单上传 (PDF/CSV)
+       ↓
+原始验证层 (Raw Import)
+       ↓
+交易解析层 (Transaction Parser)
+       ↓
+交易分类层 (Owner / GZ / Supplier)
+       ↓
+积分计算层 (Credit Points Tracker)
+       ↓
+结算引擎 (双账本 + Supplier发票)
+       ↓
+验证与报告层 (三重验证 + 积分/消费报告)
+       ↓
+客户文件归档 (按月份/客户/卡类型)
+```
+
+---
+
+## 2️⃣ 分类逻辑（更新版）
+
+四类基础分类维持不变，但强化了「供应商识别 + GZ账户识别」：
+
+| 类别                   | 说明                                                 |
+| -------------------- | -------------------------------------------------- |
+| **owner_expense**    | 客户本人消费（非Supplier）                                  |
+| **infinite_expense** | 属于7大Supplier交易（自动计入GZ’s Expenses + 1%手续费 + 自动生成发票） |
+| **owner_payment**    | 客户本人付款（账单中付款名为客户本名或空白）                             |
+| **infinite_payment** | 属于GZ公司账户或第三方付款代付信用卡账单                              |
+
+---
+
+### 🔍 Supplier List（严格锁定）
+
+| Supplier Name   | Keyword 规则        |
+| --------------- | ----------------- |
+| 7SL             | `7sl`             |
+| DINAS           | `dinas`           |
+| RAUB SYC HAINAN | `raub syc hainan` |
+| AI SMART TECH   | `ai smart tech`   |
+| HUAWEI          | `huawei`          |
+| PASAR RAYA      | `pasar raya`      |
+| PUCHONG HERBS   | `puchong herbs`   |
+
+系统规则：
+
+```python
+if any(supplier in description.lower() for supplier in SUPPLIERS_LIST):
+    category = "infinite_expense"
+    supplier_fee = abs(amount) * 0.01
+```
+
+---
+
+### 🔐 GZ账户识别规则（用于 infinite_payment）
+
+| 名称                          | 银行                    | 类型        |
+| --------------------------- | --------------------- | --------- |
+| tan zee liang               | GX bank               | personal  |
+| yeo chee wang               | MBB / GX / UOB / OCBC | personal  |
+| teo yok chu & yeo chee wang | OCBC joint            | joint     |
+| infinite gz sdn bhd         | HLB                   | corporate |
+| ai smart tech               | PBB / Alliance        | corporate |
+
+识别逻辑：
+
+```python
+if any(bank_name in payer_desc.lower() for bank_name in GZ_ACCOUNTS):
+    category = "infinite_payment"
+```
+
+---
+
+## 3️⃣ 信用卡积分追踪系统（Credit Points Tracker）
+
+每一张信用卡将建立积分流水表：
+
+```sql
+CREATE TABLE card_points (
+  id SERIAL PRIMARY KEY,
+  card_id INTEGER REFERENCES credit_cards(id),
+  statement_month VARCHAR(7),
+  points_earned INTEGER,
+  points_total INTEGER,
+  remarks TEXT
+);
+```
+
+运算逻辑：
+
+```python
+points_total = previous_points + points_earned
+```
+
+积分计算结果会在 **月结报告** 中自动生成：
+
+```
+🏆 积分汇总报告：
+- Maybank Visa Platinum：本月 +520 分，累计 4,850 分
+- UOB One Card：本月 +320 分，累计 3,400 分
+总积分 = 8,250 分
+推荐兑换：RM 80 现金回扣 或 RM 100 Grab Credits
+```
+
+---
+
+## 4️⃣ 月结报告计算逻辑
+
+以客户为核心，系统自动聚合同一客户名下所有信用卡账单：
+
+### 🧮 月结计算公式：
+
+| 项目                  | 计算逻辑                         |
+| ------------------- | ---------------------------- |
+| Previous Balance    | 从 PDF 读取的 `Previous Balance` |
+| Owner’s Expenses    | 所有非Supplier的消费总额             |
+| GZ’s Expenses       | Supplier消费总额                 |
+| Owner’s Payment     | 客户本名付款 + 无备注付款               |
+| GZ’s Payment        | 所有出现在 GZ账户列表内的付款             |
+| Owner’s O/S Balance | 上月Owner + 本月消费 − 本月付款        |
+| GZ’s O/S Balance    | 上月GZ + 本月Supplier消费 − 本月GZ付款 |
+| Supplier Fees       | GZ’s Expenses × 1%           |
+| Total Balance       | Owner + GZ                   |
+
+---
+
+### 📘 客户月结报告（自动生成格式）
+
+```
+客户：TAN JIA HUI
+月份：2025-05
+银行：MAYBANK + UOB + HSBC
+---------------------------------
+📍 Owner’s Expenses：RM 3,800.00
+📍 GZ’s Expenses（Suppliers）：RM 5,000.00
+📍 Owner’s Payments：RM 4,800.00
+📍 GZ’s Payments：RM 5,000.00
+---------------------------------
+💰 Owner’s Balance：RM 4,000.00
+💰 GZ’s Balance：RM 2,000.00
+---------------------------------
+🏦 Supplier Fees (1%)：RM 50.00
+💳 本月信用卡积分：+1,200（累计 12,300）
+📊 GZ账户对账：已匹配 ✅
+```
+
+---
+
+## 5️⃣ 核心验证逻辑（Cross-Ledger Validation）
+
+每月系统执行 **3层交叉验证**：
+
+| 验证层级  | 验证内容                | 来源                            | 状态 |
+| ----- | ------------------- | ----------------------------- | -- |
+| 交易完整性 | 账单行数 == 系统导入行数      | PDF vs DB                     | ✅  |
+| 金额一致性 | 消费与付款总额匹配账单总额       | DB计算 vs Statement             | ✅  |
+| 账户匹配  | GZ银行月结单交易匹配账单CR付款记录 | GZ Bank CSV vs CreditCard CSV | ✅  |
+
+若出现不符：
+
+```
+❌ Validation Failed: GZ Payment not found in HLB statement
+🔍 Transaction: RM 3,500 on 2025-05-14
+```
+
+---
+
+## 6️⃣ 文件与客户管理逻辑
+
+系统会在上传账单后，自动执行以下步骤：
+
+```
+📁 /clients/
+   ├── TAN_JIA_HUI/
+   │     ├── Maybank_Visa_2025-05.pdf
+   │     ├── UOB_OneCard_2025-05.pdf
+   │     ├── summary_2025-05.xlsx
+   │     ├── points_report_2025-05.pdf
+   │     └── invoices/
+   │           ├── INF-20250515-7SL.pdf
+   │           ├── INF-20250518-HUAWEI.pdf
+   │           └── ...
+```
+
+每个客户文件夹自动命名为：
+
+```
+{客户姓名}_{客户ID}
+```
+
+---
+
+## 7️⃣ Savings 页面同步逻辑
+
+系统自动抓取每月 GZ 转账记录（上传银行流水）：
+
+| 字段             | 含义         |
+| -------------- | ---------- |
+| GZ_TRANSFER_TO | 客户账户名      |
+| ACCOUNT_TYPE   | 个人 / 公司    |
+| AMOUNT         | 转账金额       |
+| PURPOSE        | 用于信用卡付款    |
+| MATCHED_WITH   | 对应账单付款记录ID |
+| VERIFIED       | 状态标记 ✅     |
+
+用途：
+
+> 追踪 GZ 转账至客户账户的付款资金流向，确保与信用卡账单的 CR 记录完全匹配。
+
+---
+
+## 8️⃣ 风控与自动冻结规则
+
+若连续两期出现以下任一错误：
+
+* 金额不符 > RM 1.00
+* 未能匹配 GZ付款记录
+* Suppliers 发票金额与账单不一致
+
+→ 系统将：
+
+1. 自动标记客户状态 `under_review`
+2. 阻止生成月结报告
+3. 触发管理层审核任务
+
+---
+
+## 9️⃣ 报表自动生成模块
+
+系统每月执行：
+
+| 报表类型          | 内容                  |
+| ------------- | ------------------- |
+| 月度消费与付款汇总     | 所有账单分类数据            |
+| Supplier 发票汇总 | 各Supplier总额 + 1%手续费 |
+| 客户积分汇总        | 各卡积分变化与累计           |
+| 信用卡优化建议       | 推荐消费策略、奖励计划、节省技巧    |
+| 对账验证报告        | 三层验证结果日志            |
+
+---
+
+## 10️⃣ 奖励与节省建议引擎（Rewards Optimizer）
+
+基于交易类型 + 积分累积，自动生成：
+
+```
+🎁 建议：
+- 优先使用 Maybank Visa Platinum 于 Pasar Raya：2x 积分返现
+- 减少 UOB One Card 电商消费：返现上限已达
+- 建议在6月使用 Huawei Card：有RM 50 voucher回扣
+```
+
+---
+
+## ✅ 结论
+
+这版系统将实现以下目标：
+
+| 功能       | 说明                      |
+| -------- | ----------------------- |
+| 🔐 数据完整性 | 每笔交易100%复刻账单            |
+| 🧾 分类自动化 | 7大Supplier自动识别 + GZ付款识别 |
+| 💳 多卡聚合  | 同客户不同卡月度自动合并            |
+| 🧮 双账本计算 | Owner / GZ 分账准确计算       |
+| 🪙 积分追踪  | 每卡积分累计与报告生成             |
+| 🧠 对账验证  | 三重匹配机制防错账               |
+| 📈 报表输出  | Excel + PDF 全自动生成       |
+| 📁 客户归档  | 每客户自动建档 + 月度文件夹         |
+| ⚙️ 审计追溯  | 每月导入日志 + 审核标记           |
+
+---
+
+要我现在直接帮你生成：
+
+> 🔸 数据表结构（PostgreSQL）
+> 🔸 Python 后端模块（Replit 用）
+> 🔸 自动生成的 `monthly_summary_report.xlsx` 模板
+
+这样你下次上传账单时，系统就能自动完成所有分析和分类。是否现在我直接写出这3个文件的可执行版本？
