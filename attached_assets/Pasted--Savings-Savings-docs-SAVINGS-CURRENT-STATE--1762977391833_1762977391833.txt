@@ -1,0 +1,70 @@
+# 📘 Savings 页面完整功能盘点脚本
+# 目标：生成 Savings 页面所有功能、表结构、逻辑与安全配置的详细报告
+# 输出文件路径：docs/SAVINGS_CURRENT_STATE.md
+
+echo "📊 Generating Savings Module Status Report..."
+
+# 创建文档目录
+mkdir -p docs
+
+# 扫描所有 Savings 相关文件与代码逻辑
+echo "🧩 Scanning codebase for Savings-related modules..."
+
+# 输出 Savings 页面详细结构报告
+echo "# 💾 SAVINGS MODULE - CURRENT STATE REPORT" > docs/SAVINGS_CURRENT_STATE.md
+echo "" >> docs/SAVINGS_CURRENT_STATE.md
+echo "## 1️⃣ 路由与页面文件 (Routes & Templates)" >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "savings" accounting_app/routers/ >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "savings" accounting_app/routes/ >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "savings" accounting_app/templates/ >> docs/SAVINGS_CURRENT_STATE.md
+
+echo "" >> docs/SAVINGS_CURRENT_STATE.md
+echo "## 2️⃣ 数据库结构 (Database Schema)" >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "CREATE TABLE" accounting_app/core/db/ | grep -i "savings" >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "savings" accounting_app/models.py >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "savings" accounting_app/schemas/ >> docs/SAVINGS_CURRENT_STATE.md
+
+echo "" >> docs/SAVINGS_CURRENT_STATE.md
+echo "## 3️⃣ 逻辑服务 (Backend Logic)" >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "savings" accounting_app/services/ >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "savings" accounting_app/tasks/ >> docs/SAVINGS_CURRENT_STATE.md
+
+echo "" >> docs/SAVINGS_CURRENT_STATE.md
+echo "## 4️⃣ 权限与安全控制 (RBAC & Security)" >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "@require_admin" accounting_app/routers/ | grep "savings" >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "@require_accountant" accounting_app/routers/ | grep "savings" >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "rbac" accounting_app/middleware/ | grep "savings" >> docs/SAVINGS_CURRENT_STATE.md
+
+echo "" >> docs/SAVINGS_CURRENT_STATE.md
+echo "## 5️⃣ 模板逻辑 (Frontend & HTML Integration)" >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "savings" accounting_app/templates/ >> docs/SAVINGS_CURRENT_STATE.md
+
+echo "" >> docs/SAVINGS_CURRENT_STATE.md
+echo "## 6️⃣ 审计日志与调用点 (Audit Logs & Triggers)" >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "audit" accounting_app/utils/ | grep "savings" >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "audit" accounting_app/services/ | grep "savings" >> docs/SAVINGS_CURRENT_STATE.md
+
+echo "" >> docs/SAVINGS_CURRENT_STATE.md
+echo "## 7️⃣ API端点 (API Endpoints)" >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "api/savings" accounting_app/routes/ >> docs/SAVINGS_CURRENT_STATE.md
+
+echo "" >> docs/SAVINGS_CURRENT_STATE.md
+echo "## 8️⃣ 依赖模块 (Dependencies)" >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "import" accounting_app/ | grep "savings" >> docs/SAVINGS_CURRENT_STATE.md
+
+echo "" >> docs/SAVINGS_CURRENT_STATE.md
+echo "## 9️⃣ 日志与任务 (Logging & Background Jobs)" >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "logger" accounting_app/ | grep "savings" >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "BackgroundTask" accounting_app/ | grep "savings" >> docs/SAVINGS_CURRENT_STATE.md
+
+echo "" >> docs/SAVINGS_CURRENT_STATE.md
+echo "## 🔟 前端调用路径 (Frontend Calls & JS Hooks)" >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "fetch" accounting_app/static/ | grep "savings" >> docs/SAVINGS_CURRENT_STATE.md
+grep -r "axios" accounting_app/static/ | grep "savings" >> docs/SAVINGS_CURRENT_STATE.md
+
+echo "" >> docs/SAVINGS_CURRENT_STATE.md
+echo "✅ Savings 页面状态报告已生成：" >> docs/SAVINGS_CURRENT_STATE.md
+echo "docs/SAVINGS_CURRENT_STATE.md" >> docs/SAVINGS_CURRENT_STATE.md
+
+echo "✅ Savings Module Report Generated Successfully!"
+cat docs/SAVINGS_CURRENT_STATE.md | head -n 50
