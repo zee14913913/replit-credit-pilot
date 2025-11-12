@@ -74,6 +74,9 @@ from admin.portfolio_manager import PortfolioManager
 # Dashboard Metrics Service
 from services.dashboard_metrics import get_customer_monthly_metrics, get_all_cards_summary
 
+# Card Optimizer API (Fixed Version)
+from api.card_optimizer_routes_fixed import register_card_optimizer_routes
+
 # Business Plan AI Service
 from services.business_plan_ai import generate_business_plan
 
@@ -176,6 +179,9 @@ def get_current_language():
     
     # 3. 新会话默认英文
     return 'en'
+
+# Register Card Optimizer API Blueprint
+register_card_optimizer_routes(app)
 
 @app.context_processor
 def inject_language():
