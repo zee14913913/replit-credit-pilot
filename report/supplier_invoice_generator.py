@@ -34,8 +34,10 @@ class SupplierInvoiceGenerator:
                     s.card_full_number,
                     cc.bank_name,
                     cc.card_type,
+                    cc.customer_id,
                     c.name as customer_name,
-                    c.ic_number
+                    c.email as customer_email,
+                    c.phone as customer_phone
                 FROM transactions t
                 JOIN statements s ON t.statement_id = s.id
                 JOIN credit_cards cc ON s.card_id = cc.id
@@ -96,7 +98,7 @@ class SupplierInvoiceGenerator:
             client_info = [
                 ['<b>Bill To:</b>', '<b>Supplier:</b>'],
                 [transactions[0]['customer_name'], supplier_name],
-                [f"IC: {transactions[0]['ic_number']}", ''],
+                [f"Email: {transactions[0].get('customer_email', 'N/A')}", ''],
                 [f"{transactions[0]['bank_name']} - {transactions[0]['card_type']}", ''],
                 [f"Card: {transactions[0]['card_full_number']}", '']
             ]
