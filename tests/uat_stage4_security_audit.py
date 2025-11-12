@@ -75,23 +75,36 @@ def check_audit_log_completeness():
         print(f"{row['action_type']:<30} {row['count']:>10}")
     
     # 验证关键操作是否有审计日志
-    critical_actions = [
+    # 强制要求的操作（必须有审计）
+    mandatory_actions = [
         'UPLOAD_STATEMENT',
         'FEE_SPLIT_APPLIED',
+    ]
+    
+    # 可选的操作（可能没有审计记录）
+    optional_actions = [
         'INVOICE_GENERATED',
         'CONFIRM_STATEMENT',
         'DELETE_STATEMENT'
     ]
     
     print("\n关键操作审计验证:")
+    print("  【强制要求】必须有审计记录:")
     all_logged = True
-    for action in critical_actions:
+    for action in mandatory_actions:
+        c.execute('SELECT COUNT(*) as count FROM audit_logs WHERE action_type = ?', (action,))
+        count = c.fetchone()['count']
+        status = "✅" if count > 0 else "❌"
+        print(f"  {status} {action:<25} {count:>5} 条")
+        if count == 0:
+            all_logged = False
+    
+    print("\n  【可选项】可能没有记录:")
+    for action in optional_actions:
         c.execute('SELECT COUNT(*) as count FROM audit_logs WHERE action_type = ?', (action,))
         count = c.fetchone()['count']
         status = "✅" if count > 0 else "⚠️"
         print(f"  {status} {action:<25} {count:>5} 条")
-        if count == 0 and action in ['UPLOAD_STATEMENT', 'FEE_SPLIT_APPLIED']:
-            all_logged = False
     
     # 检查最近的审计日志
     c.execute('''
@@ -192,7 +205,7 @@ def check_rbac_decorator_usage():
         return False
 
 def check_protected_routes():
-    """检查受保护的路由"""
+    """检查受保护的路由（严格验证 - 实际检查装饰器配对）"""
     print("\n" + "=" * 80)
     print("5️⃣ 受保护路由验证")
     print("=" * 80)
@@ -201,34 +214,81 @@ def check_protected_routes():
     
     try:
         with open('app.py', 'r', encoding='utf-8') as f:
-            content = f.read()
+            lines = f.readlines()
         
         # 统计@require_admin_or_accountant使用次数
-        decorator_count = content.count('@require_admin_or_accountant')
-        
+        decorator_count = sum(1 for line in lines if '@require_admin_or_accountant' in line)
         print(f"  发现 {decorator_count} 处使用@require_admin_or_accountant装饰器")
         
-        # 检查关键路由是否受保护
-        critical_routes = [
-            '/admin',
-            '/credit-card',
-            '/upload',
-            '/delete',
-            '/edit',
+        # 查找被装饰的函数
+        protected_functions = []
+        for i, line in enumerate(lines):
+            if '@require_admin_or_accountant' in line:
+                # 查找下一个函数定义
+                for j in range(i+1, min(i+5, len(lines))):
+                    if 'def ' in lines[j]:
+                        # 提取函数名
+                        import re
+                        match = re.search(r'def\s+(\w+)\s*\(', lines[j])
+                        if match:
+                            func_name = match.group(1)
+                            protected_functions.append(func_name)
+                        break
+        
+        print(f"  发现 {len(protected_functions)} 个受保护的函数")
+        
+        # 基于风险的关键业务函数列表（高风险操作）
+        critical_functions = [
+            # 数据变更操作（高风险）
+            'add_customer',
+            'confirm_statement',
+            'generate_report',
+            'loan_matcher',
+            'create_reminder_route',
+            'mark_paid_route',
+            # 敏感文档访问（高风险）
+            'view_statement_file',
+            'serve_uploaded_file',
+            'download_credit_card_report',
+            'download_monthly_summary_pdf',
+            # 管理功能（高权限）
+            'admin_dashboard',
+            'admin_portfolio',
+            'api_keys_management',
+            'monthly_summary_index',
         ]
         
+        print("\n关键业务函数RBAC保护检查:")
         protected_count = 0
-        for route in critical_routes:
-            if f"'{route}" in content or f'"{route}"' in content:
+        for func in critical_functions:
+            if func in protected_functions:
+                status = "✅"
                 protected_count += 1
+            else:
+                status = "⚠️"
+            print(f"  {status} {func:<30}")
         
-        print(f"  关键路由覆盖: {protected_count}/{len(critical_routes)}")
+        print(f"\n关键函数保护覆盖: {protected_count}/{len(critical_functions)}")
         
-        if decorator_count >= 10:
-            print("\n✅ RBAC装饰器使用充分")
+        # 评估标准（基于风险）：
+        # 1. 装饰器数量充足（>= 30）
+        # 2. 关键高风险函数100%受保护
+        coverage_percent = (protected_count / len(critical_functions)) * 100 if len(critical_functions) > 0 else 0
+        
+        if decorator_count >= 30 and coverage_percent == 100:
+            print(f"\n✅ RBAC装饰器使用充分")
+            print(f"   装饰器总数: {decorator_count}")
+            print(f"   关键函数保护: {protected_count}/{len(critical_functions)} (100%)")
+            return True
+        elif decorator_count >= 30 and coverage_percent >= 90:
+            print(f"\n✅ RBAC保护基本达标")
+            print(f"   装饰器总数: {decorator_count}")
+            print(f"   关键函数保护: {protected_count}/{len(critical_functions)} ({coverage_percent:.1f}%)")
             return True
         else:
-            print("\n⚠️ RBAC装饰器使用较少，可能存在未保护的路由")
+            print(f"\n❌ RBAC保护未达标")
+            print(f"   装饰器数量: {decorator_count} (需要>=30)")
+            print(f"   关键函数保护: {protected_count}/{len(critical_functions)} ({coverage_percent:.1f}%, 需要>=90%)")
             return False
             
     except FileNotFoundError:
