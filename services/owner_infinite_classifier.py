@@ -99,12 +99,17 @@ class OwnerInfiniteClassifier:
         """
         分类消费交易：OWNER Expenses vs INFINITE Expenses
         
+        ⚠️ v5.1新规则：Supplier交易的1%手续费独立计入OWNER账户
+        - Supplier本金 → infinite_expense（GZ支付）
+        - 1%手续费 → owner_expense（客户支付）
+        
         Returns:
             {
                 'expense_type': 'owner' or 'infinite',
                 'is_supplier': True/False,
                 'supplier_name': str or None,
-                'supplier_fee': float (1% for infinite expenses)
+                'supplier_fee': float (1% for infinite expenses),
+                'should_split_fee': bool (是否需要拆分手续费)
             }
         """
         if not description:
@@ -112,7 +117,8 @@ class OwnerInfiniteClassifier:
                 'expense_type': 'owner',
                 'is_supplier': False,
                 'supplier_name': None,
-                'supplier_fee': 0.0
+                'supplier_fee': 0.0,
+                'should_split_fee': False
             }
         
         description_lower = description.lower()
@@ -125,7 +131,8 @@ class OwnerInfiniteClassifier:
                     'expense_type': 'infinite',
                     'is_supplier': True,
                     'supplier_name': supplier,
-                    'supplier_fee': round(supplier_fee, 2)
+                    'supplier_fee': round(supplier_fee, 2),
+                    'should_split_fee': True  # 需要拆分手续费
                 }
         
         # 未匹配供应商 = OWNER Expenses
@@ -133,7 +140,35 @@ class OwnerInfiniteClassifier:
             'expense_type': 'owner',
             'is_supplier': False,
             'supplier_name': None,
-            'supplier_fee': 0.0
+            'supplier_fee': 0.0,
+            'should_split_fee': False
+        }
+    
+    def create_fee_transaction(self, original_txn: Dict) -> Dict:
+        """
+        为Supplier交易创建独立的1%手续费记录
+        
+        Args:
+            original_txn: 原始Supplier交易记录
+        
+        Returns:
+            手续费交易记录（owner_expense类型）
+        """
+        fee_amount = abs(original_txn['amount']) * self.SUPPLIER_FEE_RATE
+        
+        return {
+            'statement_id': original_txn['statement_id'],
+            'transaction_date': original_txn['transaction_date'],
+            'description': f"{original_txn['description']} - Merchant Fee (1%)",
+            'amount': round(fee_amount, 2),
+            'category': 'owner_expense',  # 手续费归OWNER
+            'transaction_type': 'fee',
+            'supplier_fee': round(fee_amount, 2),
+            'supplier_name': original_txn.get('supplier_name'),
+            'is_supplier': False,  # 手续费本身不是Supplier交易
+            'is_merchant_fee': True,  # 标记为手续费记录
+            'fee_reference_id': original_txn['id'],  # 关联原始交易
+            'is_fee_split': True
         }
     
     def classify_payment(self, description: str, customer_id: int, customer_name: str = None) -> Dict:
