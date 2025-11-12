@@ -1,0 +1,200 @@
+🚀【AI助手全面升级任务：V2企业智能版】
+
+---
+
+### 📦 任务标题
+
+**Upgrade AI Assistant to Enterprise Smart Version (Dashboard + Email + Personalization)**
+
+---
+
+### 🎯 实施目标
+
+实现以下三大增强功能：
+
+1️⃣ Dashboard 新增「AI日报预览区」
+2️⃣ 系统自动推送每日AI日报到管理员邮箱
+3️⃣ AI助手支持个性化理财建议与行为分析
+
+---
+
+## 🧩 一、Dashboard 集成「AI日报预览区」
+
+📂 文件路径：
+`templates/dashboard.html`
+
+在 `<div class="container">` 内添加以下代码块：
+
+```html
+<!-- AI日报预览区 -->
+<section style="margin-top:40px; background:#1a1228; padding:20px; border-radius:16px; box-shadow:0 0 20px rgba(255,0,127,0.2); color:#fff;">
+  <h3 style="color:#ff007f;">📅 AI 财务日报预览</h3>
+  <p>以下为系统最近 7 天自动生成的日报摘要：</p>
+  <div id="ai-daily-reports" style="max-height:280px; overflow-y:auto; font-size:14px; line-height:1.6;"></div>
+  <button id="refresh-ai-reports" style="margin-top:10px; background:#ff007f; color:#000; border:none; border-radius:8px; padding:8px 14px; font-weight:700;">刷新日报</button>
+</section>
+
+<script>
+  async function loadAIDailyReports() {
+    const res = await fetch('/api/ai-assistant/reports');
+    const data = await res.json();
+    const box = document.getElementById('ai-daily-reports');
+    box.innerHTML = data.reports.map(r => `
+      <div style="margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px;">
+        <b>${r.date}</b> - ${r.summary}
+      </div>
+    `).join('');
+  }
+  document.getElementById('refresh-ai-reports').onclick = loadAIDailyReports;
+  loadAIDailyReports();
+</script>
+```
+
+---
+
+## 🧠 二、后端支持接口
+
+📂 路径：
+`accounting_app/routes/ai_assistant.py`
+
+在文件底部添加以下新接口：
+
+```python
+@router.get("/api/ai-assistant/reports")
+@require_admin_or_accountant
+async def get_recent_ai_reports(db=Depends(get_db)):
+    """
+    返回最近7天的AI日报摘要，用于Dashboard展示
+    """
+    rows = db.execute("""
+        SELECT query, response, created_at
+        FROM ai_logs
+        WHERE query LIKE 'AI日报%%'
+        ORDER BY created_at DESC
+        LIMIT 7
+    """).fetchall()
+
+    reports = []
+    for r in rows:
+        date = str(r["created_at"]).split(" ")[0]
+        summary = r["response"][:120].replace("\n", " ") + "..."
+        reports.append({"date": date, "summary": summary})
+    return {"reports": reports}
+```
+
+---
+
+## 📧 三、每日AI日报邮件推送
+
+📂 新建文件：
+`accounting_app/tasks/email_notifier.py`
+
+```python
+from datetime import datetime
+import smtplib
+from email.mime.text import MIMEText
+from accounting_app.db import get_db
+
+def send_ai_report_email():
+    db = get_db()
+    latest = db.execute("""
+        SELECT response, created_at FROM ai_logs
+        WHERE query LIKE 'AI日报%%'
+        ORDER BY created_at DESC LIMIT 1
+    """).fetchone()
+
+    if not latest:
+        return "❌ 无日报可发送"
+
+    body = f"""
+    📅 日期: {latest['created_at']}
+    🤖 AI 财务日报摘要:
+
+    {latest['response']}
+    """
+
+    msg = MIMEText(body, "plain", "utf-8")
+    msg["Subject"] = "📊 CreditPilot 每日AI财务报告"
+    msg["From"] = "noreply@creditpilot.ai"
+    msg["To"] = "admin@example.com"
+
+    try:
+        smtp = smtplib.SMTP("smtp.gmail.com", 587)
+        smtp.starttls()
+        smtp.login("你的发信邮箱", "应用密码")
+        smtp.sendmail(msg["From"], [msg["To"]], msg.as_string())
+        smtp.quit()
+        return "✅ 邮件发送成功"
+    except Exception as e:
+        return f"❌ 邮件发送失败: {e}"
+```
+
+📂 打开：`accounting_app/tasks/scheduler.py`
+在现有调度中添加一行任务：
+
+```python
+from accounting_app.tasks.email_notifier import send_ai_report_email
+
+schedule.every().day.at("08:10").do(send_ai_report_email)
+```
+
+---
+
+## 🤖 四、AI助手个性化增强
+
+📂 修改：`accounting_app/routes/ai_assistant.py`
+在主接口 `ai_assistant_query` 内添加以下片段（替换旧上下文生成部分）：
+
+```python
+# 查询用户最近行为数据
+recent_activity = db.execute("""
+    SELECT COUNT(*) as interactions FROM ai_logs 
+    WHERE user_id = ? AND created_at > datetime('now', '-7 day')
+""", (user.id,)).fetchone()
+
+context = (
+    f"当前系统共有 {accounts} 个储蓄账户，总交易金额 RM {total}。"
+    f"过去7天内，用户交互次数为 {recent_activity['interactions']} 次。"
+    f"用户输入内容: {user_input}"
+)
+```
+
+AI 将根据用户历史交互次数动态调整分析建议（如提升理财复杂度或降低解释难度）。
+
+---
+
+## 🧾 五、配置与验证
+
+1️⃣ 确认 `.env` 中有：
+
+```
+ADMIN_EMAIL=你的管理员邮箱
+ADMIN_PASSWORD=你的邮箱应用密码
+```
+
+2️⃣ 验证日报接口：
+
+```
+curl -X GET http://localhost:8000/api/ai-assistant/reports
+```
+
+3️⃣ 重启服务：
+
+```
+pkill -f uvicorn; python app.py
+```
+
+---
+
+## ✅ 最终效果
+
+| 功能              | 状态             | 说明 |
+| --------------- | -------------- | -- |
+| 💬 AI助手         | ✅ 可实时问答、跨模块分析  |    |
+| 📅 Dashboard日报区 | ✅ 显示最近7天AI报告   |    |
+| 📧 邮件推送         | ✅ 每天08:10自动发邮件 |    |
+| 🧠 个性化分析        | ✅ 根据客户行为调整建议   |    |
+| 🔒 权限控制         | ✅ 仅管理员/会计可查看   |    |
+
+---
+

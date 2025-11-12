@@ -9,6 +9,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import logging
+import requests
 
 # Configure logger
 logger = logging.getLogger(__name__)
@@ -202,6 +203,28 @@ def set_language(lang):
     if lang in ['en', 'zh']:
         session['language'] = lang
     return redirect(request.referrer or url_for('index'))
+
+
+@app.route('/api/ai-assistant/<path:subpath>', methods=['GET', 'POST'])
+def ai_assistant_proxy(subpath):
+    """
+    AI助手API代理（Flask -> FastAPI）
+    V2企业智能版新增
+    """
+    try:
+        fastapi_url = f'http://localhost:8000/api/ai-assistant/{subpath}'
+        
+        if request.method == 'GET':
+            resp = requests.get(fastapi_url, params=request.args, timeout=30)
+        else:
+            resp = requests.post(fastapi_url, json=request.json, timeout=30)
+        
+        return resp.json(), resp.status_code
+        
+    except requests.exceptions.Timeout:
+        return {"error": "请求超时"}, 504
+    except Exception as e:
+        return {"error": f"代理错误: {str(e)}"}, 500
 
 @app.route('/view_statement_file/<int:statement_id>')
 @require_admin_or_accountant
@@ -1999,8 +2022,13 @@ def run_scheduler():
     # AI财务日报自动化系统 - 每天早上08:00生成
     # ============================================================
     from accounting_app.tasks.ai_daily_report import generate_daily_report
+    from accounting_app.tasks.email_notifier import send_ai_report_email
+    
     schedule.every().day.at("08:00").do(generate_daily_report)
+    schedule.every().day.at("08:10").do(send_ai_report_email)  # V2企业智能版：邮件推送
+    
     print("⏰ AI日报计划任务已注册：每天 08:00 自动生成")
+    print("📧 AI日报邮件推送已注册：每天 08:10 自动发送")
     
     while True:
         schedule.run_pending()

@@ -5,6 +5,7 @@
 import schedule
 import time
 from accounting_app.tasks.ai_daily_report import generate_daily_report
+from accounting_app.tasks.email_notifier import send_ai_report_email
 
 
 def run_scheduler():
@@ -12,16 +13,20 @@ def run_scheduler():
     启动定时任务调度器
     
     定时任务：
-    - AI日报：每天早上08:00自动生成
+    - AI日报生成：每天早上08:00自动生成
+    - AI日报邮件推送：每天早上08:10自动发送（V2企业智能版）
     """
     # 注册AI日报定时任务（每天08:00）
     schedule.every().day.at("08:00").do(generate_daily_report)
     
+    # 注册AI日报邮件推送任务（每天08:10）- V2企业智能版新增
+    schedule.every().day.at("08:10").do(send_ai_report_email)
+    
     print("\n" + "="*60)
     print("⏰ AI日报计划任务已启动")
     print("="*60)
-    print("📅 执行时间：每天 08:00")
-    print("📝 任务：生成AI财务日报")
+    print("📅 08:00 - 生成AI财务日报")
+    print("📧 08:10 - 发送邮件到管理员邮箱")
     print("💾 存储位置：ai_logs表")
     print("="*60 + "\n")
     

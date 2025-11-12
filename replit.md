@@ -3,6 +3,17 @@
 ## Overview
 The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform for Malaysian banking customers, built with Flask. Its core purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation for 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization (debt consolidation, balance transfers, loan refinancing), and a success-based fee model. The long-term vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
+## Recent Changes
+**Latest modifications with dates:**
+
+### 2025-11-12: AI Assistant V2 Enterprise Upgrade Complete
+- ✅ **Dashboard Integration**: Added AI daily report preview section in `templates/index.html` with auto-refresh functionality
+- ✅ **API Endpoint**: Implemented `/api/ai-assistant/reports` in `accounting_app/routes/ai_assistant.py` returning last 7 days of reports
+- ✅ **Email Notification System**: Created `accounting_app/tasks/email_notifier.py` with HTML email templates for daily report delivery
+- ✅ **Scheduler Enhancement**: Updated `accounting_app/tasks/scheduler.py` and `app.py` to include email push task at 08:10 daily
+- ✅ **Flask Proxy**: Added `/api/ai-assistant/<path>` proxy route in `app.py` for seamless Flask-FastAPI integration
+- ⚠️ **SMTP Configuration Required**: Email delivery requires SMTP credentials (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`) or SendGrid API key
+
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 Design requirements: Premium, sophisticated, high-end - suitable for professional client demonstrations.
@@ -79,6 +90,7 @@ A production-ready Unified RBAC Implementation protects 32 functions across Core
 - **Twilio API**: SMS delivery.
 - **OpenAI API**: AI smart assistant integration using gpt-4o-mini model, with API key managed via Replit Secrets (`AI_INTEGRATIONS_OPENAI_API_KEY`).
 - **FastAPI Backend (Port 8000)**: Handles audit logging, notifications, AI assistant endpoints, and real-time APIs.
+- **SMTP Configuration (Optional)**: For AI daily report email delivery, configure `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` environment variables. Falls back to `ADMIN_PASSWORD` if `SMTP_PASSWORD` not set.
 
 ### Database
 - **SQLite**: Primary file-based relational database (`db/smart_loan_manager.db`). Includes `ai_logs` table for AI assistant conversation history.

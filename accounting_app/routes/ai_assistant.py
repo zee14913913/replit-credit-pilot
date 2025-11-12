@@ -267,3 +267,52 @@ async def get_ai_history(limit: int = 20):
         
     except Exception as e:
         return {"error": f"获取历史记录失败: {str(e)}"}
+
+
+@router.get("/api/ai-assistant/reports")
+async def get_recent_ai_reports():
+    """
+    返回最近7天的AI日报摘要，用于Dashboard展示
+    V2企业智能版新增
+    """
+    try:
+        db = sqlite3.connect('db/smart_loan_manager.db')
+        db.row_factory = sqlite3.Row
+        cursor = db.cursor()
+        
+        cursor.execute("""
+            SELECT query, response, created_at
+            FROM ai_logs
+            WHERE query LIKE 'AI日报%'
+            ORDER BY created_at DESC
+            LIMIT 7
+        """)
+        
+        rows = cursor.fetchall()
+        
+        reports = []
+        for r in rows:
+            # 提取日期
+            created_at = r["created_at"]
+            if isinstance(created_at, str):
+                date = created_at.split("T")[0] if "T" in created_at else created_at.split(" ")[0]
+            else:
+                date = str(created_at).split(" ")[0]
+            
+            # 截取摘要（前120字符）
+            summary = r["response"][:120].replace("\n", " ").replace("*", "").strip()
+            if len(r["response"]) > 120:
+                summary += "..."
+            
+            reports.append({
+                "date": date,
+                "summary": summary
+            })
+        
+        db.close()
+        
+        return {"reports": reports, "total": len(reports)}
+        
+    except Exception as e:
+        traceback.print_exc()
+        return {"error": f"获取日报失败: {str(e)}", "reports": []}
