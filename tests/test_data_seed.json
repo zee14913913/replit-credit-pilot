@@ -1,0 +1,288 @@
+{
+  "description": "Card Optimizer v5.1 测试数据集",
+  "version": "5.1.0",
+  "test_scenarios": {
+    "scenario_1_normal_usage": {
+      "name": "正常刷卡场景 - 低利用率",
+      "customer": {
+        "customer_id": "CJY001",
+        "customer_code": "CJY001",
+        "name": "陈嘉阳",
+        "email": "chen@example.com"
+      },
+      "cards": [
+        {
+          "card_id": 1,
+          "bank_name": "Maybank",
+          "card_number": "MBB-1234",
+          "credit_limit": 20000.00,
+          "current_balance": 5000.00,
+          "statement_cutoff_day": 5,
+          "payment_due_day": 25,
+          "min_payment_rate": 0.05,
+          "annual_interest_rate": 0.18
+        },
+        {
+          "card_id": 2,
+          "bank_name": "CIMB",
+          "card_number": "CIMB-4567",
+          "credit_limit": 15000.00,
+          "current_balance": 3000.00,
+          "statement_cutoff_day": 12,
+          "payment_due_day": 30,
+          "min_payment_rate": 0.05,
+          "annual_interest_rate": 0.18
+        },
+        {
+          "card_id": 3,
+          "bank_name": "Public Bank",
+          "card_number": "PBB-7890",
+          "credit_limit": 30000.00,
+          "current_balance": 8000.00,
+          "statement_cutoff_day": 20,
+          "payment_due_day": 10,
+          "min_payment_rate": 0.05,
+          "annual_interest_rate": 0.15
+        }
+      ],
+      "expected_consumption": {
+        "amount": 5000.00,
+        "date": "2025-12-01",
+        "description": "正常月度消费"
+      },
+      "expected_results": {
+        "free_days_range": "48-52",
+        "recommended_card": "根据免息期最长的卡",
+        "risk_level": "LOW"
+      }
+    },
+    "scenario_2_high_utilization": {
+      "name": "高风险场景 - 高利用率",
+      "customer": {
+        "customer_id": "CJY001",
+        "customer_code": "CJY001",
+        "name": "陈嘉阳",
+        "email": "chen@example.com"
+      },
+      "cards": [
+        {
+          "card_id": 1,
+          "bank_name": "Maybank",
+          "card_number": "MBB-1234",
+          "credit_limit": 20000.00,
+          "current_balance": 18000.00,
+          "utilization_rate": 0.90,
+          "statement_cutoff_day": 5,
+          "payment_due_day": 25
+        },
+        {
+          "card_id": 2,
+          "bank_name": "CIMB",
+          "card_number": "CIMB-4567",
+          "credit_limit": 15000.00,
+          "current_balance": 13500.00,
+          "utilization_rate": 0.90,
+          "statement_cutoff_day": 12,
+          "payment_due_day": 30
+        }
+      ],
+      "expected_consumption": {
+        "amount": 3000.00,
+        "date": "2025-11-15",
+        "description": "紧急大额消费"
+      },
+      "expected_results": {
+        "risk_level": "EXTREME",
+        "warning": "所有卡片利用率 >90%",
+        "recommendation": "建议还款后再消费"
+      }
+    },
+    "scenario_3_fee_splitting": {
+      "name": "手续费拆分场景 - Supplier消费",
+      "customer": {
+        "customer_id": "CJY001",
+        "customer_code": "CJY001",
+        "name": "陈嘉阳",
+        "email": "chen@example.com"
+      },
+      "transactions": [
+        {
+          "description": "7SL TECH SDN BHD",
+          "amount": 1000.00,
+          "merchant_category": "supplier",
+          "expected_split": {
+            "infinite_expense": 990.00,
+            "owner_fee": 10.00,
+            "fee_percentage": 0.01
+          }
+        },
+        {
+          "description": "ABC SUPPLIER",
+          "amount": 5000.00,
+          "merchant_category": "supplier",
+          "expected_split": {
+            "infinite_expense": 4950.00,
+            "owner_fee": 50.00,
+            "fee_percentage": 0.01
+          }
+        },
+        {
+          "description": "STARBUCKS",
+          "amount": 50.00,
+          "merchant_category": "personal",
+          "expected_split": {
+            "owner_expense": 50.00,
+            "infinite_expense": 0.00,
+            "fee_percentage": 0.00
+          }
+        }
+      ],
+      "expected_results": {
+        "total_supplier_consumption": 6000.00,
+        "total_infinite_expense": 5940.00,
+        "total_owner_fee": 60.00,
+        "total_personal_expense": 50.00,
+        "total_transactions": 5
+      }
+    },
+    "scenario_4_optimal_float_days": {
+      "name": "免息期优化场景",
+      "customer": {
+        "customer_id": "CJY001",
+        "customer_code": "CJY001",
+        "name": "陈嘉阳",
+        "email": "chen@example.com"
+      },
+      "test_cases": [
+        {
+          "consumption_date": "2025-11-06",
+          "card": {
+            "statement_cutoff_day": 5,
+            "payment_due_day": 25
+          },
+          "expected_free_days": 49,
+          "explanation": "刚过账单日，可用到下月25日"
+        },
+        {
+          "consumption_date": "2025-11-04",
+          "card": {
+            "statement_cutoff_day": 5,
+            "payment_due_day": 25
+          },
+          "expected_free_days": 21,
+          "explanation": "账单日前一天，只能到本月25日"
+        },
+        {
+          "consumption_date": "2025-11-20",
+          "card": {
+            "statement_cutoff_day": 20,
+            "payment_due_day": 10
+          },
+          "expected_free_days": 21,
+          "explanation": "当天是账单日，可到下月10日"
+        }
+      ]
+    },
+    "scenario_5_payment_prioritization": {
+      "name": "还款优先级场景",
+      "cards_with_debt": [
+        {
+          "card_id": 1,
+          "bank_name": "Maybank",
+          "current_balance": 10000.00,
+          "min_payment": 500.00,
+          "payment_due_date": "2025-11-25",
+          "days_to_due": 13,
+          "priority_score": 8.5,
+          "reason": "临近到期 + 高余额"
+        },
+        {
+          "card_id": 2,
+          "bank_name": "CIMB",
+          "current_balance": 3000.00,
+          "min_payment": 150.00,
+          "payment_due_date": "2025-11-30",
+          "days_to_due": 18,
+          "priority_score": 5.0,
+          "reason": "中等余额 + 中等时间"
+        },
+        {
+          "card_id": 3,
+          "bank_name": "Public Bank",
+          "current_balance": 500.00,
+          "min_payment": 50.00,
+          "payment_due_date": "2025-12-10",
+          "days_to_due": 28,
+          "priority_score": 2.0,
+          "reason": "低余额 + 时间充足"
+        }
+      ],
+      "expected_payment_order": [1, 2, 3],
+      "explanation": "优先还最紧急和金额最高的卡"
+    }
+  },
+  "database_verification_queries": {
+    "check_fee_splitting": "SELECT * FROM transactions WHERE is_fee_split = true AND customer_id = 'CJY001' ORDER BY transaction_date DESC LIMIT 10;",
+    "check_optimizer_plans": "SELECT * FROM card_optimizer_plans WHERE customer_id = 'CJY001' ORDER BY created_at DESC LIMIT 5;",
+    "check_risk_consents": "SELECT * FROM card_risk_consents WHERE customer_id = 'CJY001' ORDER BY created_at DESC;",
+    "check_payment_schedules": "SELECT * FROM card_payment_schedules WHERE plan_id IN (SELECT plan_id FROM card_optimizer_plans WHERE customer_id = 'CJY001') ORDER BY payment_date;",
+    "monthly_balance_check": "SELECT account_type, SUM(amount) as total FROM transactions WHERE customer_id = 'CJY001' AND strftime('%Y-%m', transaction_date) = '2025-11' GROUP BY account_type;",
+    "audit_trail": "SELECT * FROM audit_logs WHERE entity_type = 'card_optimizer_plan' ORDER BY created_at DESC LIMIT 20;"
+  },
+  "api_response_examples": {
+    "generate_plan_success": {
+      "status": "success",
+      "plan_id": "PLAN-20251112-CJY001-12345",
+      "customer_id": "CJY001",
+      "total_cards": 3,
+      "recommended_cards": [
+        {
+          "card_id": 2,
+          "bank_name": "CIMB",
+          "score": 8.5,
+          "free_days": 51,
+          "available_credit": 12000.00,
+          "risk_level": "LOW",
+          "optimal_window": {
+            "start": "2025-11-13",
+            "end": "2025-12-11"
+          }
+        },
+        {
+          "card_id": 3,
+          "bank_name": "Public Bank",
+          "score": 7.2,
+          "free_days": 50,
+          "available_credit": 22000.00,
+          "risk_level": "LOW"
+        }
+      ],
+      "high_risk_cards": [],
+      "expires_at": "2025-11-13T00:00:00Z"
+    },
+    "generate_plan_high_risk": {
+      "status": "warning",
+      "plan_id": "PLAN-20251112-CJY001-12346",
+      "message": "检测到高风险卡片，请谨慎使用",
+      "high_risk_cards": [
+        {
+          "card_id": 1,
+          "bank_name": "Maybank",
+          "risk_level": "EXTREME",
+          "utilization_rate": 0.95,
+          "risk_amount": 1000.00,
+          "warning": "利用率过高，建议还款后再使用"
+        }
+      ]
+    },
+    "confirm_plan_success": {
+      "status": "success",
+      "plan_id": "PLAN-20251112-CJY001-12345",
+      "selected_card_id": 2,
+      "execution_status": "executed",
+      "risk_consent_recorded": true,
+      "payment_schedule_created": true,
+      "message": "优化方案已确认并执行"
+    }
+  }
+}
