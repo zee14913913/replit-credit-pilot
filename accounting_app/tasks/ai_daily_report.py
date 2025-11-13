@@ -1,22 +1,12 @@
 """
 AI财务日报自动生成系统
 功能：每天早上08:00自动生成财务健康日报
+V3智能升级：支持Perplexity实时搜索 + OpenAI备用
 """
 import os
 import sqlite3
 from datetime import datetime, timedelta
-from openai import OpenAI
-
-
-def get_openai_client():
-    """获取OpenAI客户端（使用Replit集成）"""
-    api_key = os.getenv("AI_INTEGRATIONS_OPENAI_API_KEY")
-    base_url = os.getenv("AI_INTEGRATIONS_OPENAI_BASE_URL", "https://api.openai.com/v1")
-    
-    if not api_key:
-        raise ValueError("OpenAI API密钥未配置")
-    
-    return OpenAI(api_key=api_key, base_url=base_url)
+from accounting_app.utils.ai_client import get_ai_client
 
 
 def generate_daily_report():
@@ -124,26 +114,20 @@ def generate_daily_report():
 3. 一条具体的优化建议
 """
         
-        # 调用OpenAI生成日报
+        # 调用AI生成日报（自动选择Perplexity或OpenAI）
         print(f"\n🤖 正在调用AI生成日报...")
-        client = get_openai_client()
-        completion = client.chat.completions.create(
-            model="gpt-4o-mini",
+        client = get_ai_client()  # V3智能升级：自动选择Perplexity/OpenAI
+        
+        system_prompt = "你是CreditPilot系统的AI财务分析师。请生成每日财务报告，用简洁、专业、易懂的语气描述资金变化与建议。回答要控制在200字以内。"
+        
+        report = client.chat(
             messages=[
-                {
-                    "role": "system",
-                    "content": "你是CreditPilot系统的AI财务分析师。请生成每日财务报告，用简洁、专业、易懂的语气描述资金变化与建议。回答要控制在200字以内。"
-                },
-                {
-                    "role": "user",
-                    "content": context
-                }
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": context}
             ],
             temperature=0.7,
             max_tokens=400
         )
-        
-        report = completion.choices[0].message.content
         
         # 存入ai_logs表
         cursor.execute("""

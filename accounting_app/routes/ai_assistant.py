@@ -1,29 +1,19 @@
 """
 AI智能助手路由
 功能：跨模块财务分析（Savings + Credit Card + Loans）
+V3智能升级：支持Perplexity实时搜索 + OpenAI备用
 """
 import os
+import sys
 from fastapi import APIRouter, Depends, Request, HTTPException
 from datetime import datetime
 import traceback
 import sqlite3
 
-router = APIRouter()
+# 导入统一AI客户端
+from accounting_app.utils.ai_client import get_ai_client
 
-def get_openai_client():
-    """获取OpenAI客户端（使用Replit集成）"""
-    try:
-        from openai import OpenAI
-        api_key = os.getenv("AI_INTEGRATIONS_OPENAI_API_KEY")
-        base_url = os.getenv("AI_INTEGRATIONS_OPENAI_BASE_URL", "https://api.openai.com/v1")
-        
-        if not api_key:
-            raise ValueError("OpenAI API密钥未配置")
-        
-        return OpenAI(api_key=api_key, base_url=base_url)
-    except Exception as e:
-        print(f"❌ OpenAI客户端初始化失败: {e}")
-        raise
+router = APIRouter()
 
 @router.post("/api/ai-assistant/query")
 async def ai_assistant_query(request: Request):
@@ -68,10 +58,9 @@ async def ai_assistant_query(request: Request):
 客户提问：{msg}
 """
         
-        # 调用OpenAI
-        client = get_openai_client()
-        completion = client.chat.completions.create(
-            model="gpt-4o-mini",
+        # 调用AI（V3智能升级：自动选择Perplexity/OpenAI）
+        client = get_ai_client()
+        response = client.chat(
             messages=[
                 {
                     "role": "system", 
@@ -86,7 +75,7 @@ async def ai_assistant_query(request: Request):
             max_tokens=500
         )
         
-        reply = completion.choices[0].message.content
+        reply = response  # AI客户端已返回字符串
         
         # 记录到数据库
         cursor.execute("""
@@ -189,10 +178,9 @@ async def analyze_system(request: Request):
 3. 优化建议
 """
         
-        # 调用OpenAI生成报告
-        client = get_openai_client()
-        completion = client.chat.completions.create(
-            model="gpt-4o-mini",
+        # 调用AI生成报告（V3智能升级）
+        client = get_ai_client()
+        report = client.chat(
             messages=[
                 {
                     "role": "system",
@@ -206,8 +194,6 @@ async def analyze_system(request: Request):
             temperature=0.7,
             max_tokens=800
         )
-        
-        report = completion.choices[0].message.content
         
         # 记录到数据库
         cursor.execute("""
