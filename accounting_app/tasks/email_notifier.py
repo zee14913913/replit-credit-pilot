@@ -64,9 +64,13 @@ def send_ai_report_email():
             return "❌ 无日报可发送"
         
         # 获取收件人邮箱
-        recipient_email = os.getenv("ADMIN_EMAIL")
+        # 优先使用SENDGRID_FROM_EMAIL（发信和收件人统一），否则使用ADMIN_EMAIL
+        recipient_email = os.getenv("SENDGRID_FROM_EMAIL")
         if not recipient_email:
-            print("⚠️ AI日报邮件推送：未配置ADMIN_EMAIL环境变量")
+            recipient_email = os.getenv("ADMIN_EMAIL")
+        
+        if not recipient_email:
+            print("⚠️ AI日报邮件推送：未配置收件人邮箱")
             return "⚠️ 未配置管理员邮箱"
         
         # 获取SendGrid凭据（包含验证过的发件人邮箱）
