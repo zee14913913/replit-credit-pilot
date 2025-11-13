@@ -1,6 +1,7 @@
 """
 AI日报邮件推送模块
 功能：每天早上08:10自动发送AI日报到管理员邮箱
+V2企业智能版：优先使用SendGrid API（生产级稳定性）
 """
 import os
 import sqlite3
@@ -9,10 +10,68 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 
+try:
+    from sendgrid import SendGridAPIClient
+    from sendgrid.helpers.mail import Mail, Content
+    import requests as req_lib
+    SENDGRID_AVAILABLE = True
+except ImportError:
+    SENDGRID_AVAILABLE = False
+    print("⚠️ SendGrid库未安装，将使用SMTP备用方案")
+
+
+def get_sendgrid_credentials():
+    """
+    从Replit Connectors API获取SendGrid验证凭据
+    返回: (api_key, from_email) 或 (None, None)
+    """
+    try:
+        hostname = os.getenv('REPLIT_CONNECTORS_HOSTNAME')
+        x_replit_token = None
+        
+        if os.getenv('REPL_IDENTITY'):
+            x_replit_token = 'repl ' + os.getenv('REPL_IDENTITY')
+        elif os.getenv('WEB_REPL_RENEWAL'):
+            x_replit_token = 'depl ' + os.getenv('WEB_REPL_RENEWAL')
+        
+        if not x_replit_token or not hostname:
+            # 回退到直接使用环境变量
+            api_key = os.getenv("SENDGRID_API_KEY")
+            from_email = os.getenv("SENDGRID_FROM_EMAIL") or os.getenv("ADMIN_EMAIL")
+            return (api_key, from_email)
+        
+        url = f'https://{hostname}/api/v2/connection?include_secrets=true&connector_names=sendgrid'
+        response = req_lib.get(url, headers={
+            'Accept': 'application/json',
+            'X_REPLIT_TOKEN': x_replit_token
+        })
+        
+        if response.status_code == 200:
+            data = response.json()
+            items = data.get('items', [])
+            if items:
+                settings = items[0].get('settings', {})
+                api_key = settings.get('api_key')
+                from_email = settings.get('from_email')
+                return (api_key, from_email)
+        
+        # 回退方案
+        api_key = os.getenv("SENDGRID_API_KEY")
+        from_email = os.getenv("SENDGRID_FROM_EMAIL") or os.getenv("ADMIN_EMAIL")
+        return (api_key, from_email)
+        
+    except Exception as e:
+        print(f"⚠️ 获取SendGrid凭据失败: {e}")
+        # 回退到环境变量
+        api_key = os.getenv("SENDGRID_API_KEY")
+        from_email = os.getenv("SENDGRID_FROM_EMAIL") or os.getenv("ADMIN_EMAIL")
+        return (api_key, from_email)
+
 
 def send_ai_report_email():
     """
     发送最新的AI日报到管理员邮箱
+    V2企业智能版：优先使用SendGrid API
     
     返回:
         str: 发送状态消息
@@ -36,11 +95,18 @@ def send_ai_report_email():
             print("❌ AI日报邮件推送：无日报可发送")
             return "❌ 无日报可发送"
         
-        # 获取管理员邮箱
-        admin_email = os.getenv("ADMIN_EMAIL")
-        if not admin_email:
+        # 获取收件人邮箱
+        recipient_email = os.getenv("ADMIN_EMAIL")
+        if not recipient_email:
             print("⚠️ AI日报邮件推送：未配置ADMIN_EMAIL环境变量")
             return "⚠️ 未配置管理员邮箱"
+        
+        # 获取SendGrid凭据（包含验证过的发件人邮箱）
+        sendgrid_api_key, sendgrid_from_email = get_sendgrid_credentials()
+        use_sendgrid = SENDGRID_AVAILABLE and sendgrid_api_key and sendgrid_from_email
+        
+        if use_sendgrid:
+            print(f"✅ 使用SendGrid发送（发件人: {sendgrid_from_email}）")
         
         # 构建邮件内容
         report_date = latest['created_at'].split("T")[0] if "T" in latest['created_at'] else latest['created_at'].split(" ")[0]
@@ -85,49 +151,83 @@ def send_ai_report_email():
 © 2025 CreditPilot - Smart Credit & Loan Manager
         """
         
-        # 创建邮件消息
-        msg = MIMEMultipart('alternative')
-        msg["Subject"] = f"📊 CreditPilot AI财务日报 - {report_date}"
-        msg["From"] = f"CreditPilot AI <{admin_email}>"
-        msg["To"] = admin_email
+        # ===========================================
+        # 优先方案：SendGrid API（企业级稳定性）
+        # ===========================================
+        if use_sendgrid:
+            try:
+                # 使用SendGrid验证过的发件人邮箱
+                message = Mail(
+                    from_email=sendgrid_from_email,
+                    to_emails=recipient_email,
+                    subject=f"📊 CreditPilot AI财务日报 - {report_date}",
+                    plain_text_content=text_body,
+                    html_content=html_body
+                )
+                
+                sg = SendGridAPIClient(sendgrid_api_key)
+                response = sg.send(message)
+                
+                success_msg = f"✅ AI日报邮件已通过SendGrid发送到 {recipient_email}"
+                print(f"\n{'='*60}")
+                print(success_msg)
+                print(f"📧 SendGrid状态码: {response.status_code}")
+                print(f"📤 发件人: {sendgrid_from_email}")
+                print(f"📥 收件人: {recipient_email}")
+                print(f"{'='*60}\n")
+                return success_msg
+                
+            except Exception as sg_error:
+                error_msg = f"⚠️ SendGrid发送失败: {str(sg_error)}"
+                print(error_msg)
+                print("尝试使用SMTP备用方案...")
+                use_sendgrid = False  # 降级到SMTP
         
-        # 添加纯文本和HTML版本
-        msg.attach(MIMEText(text_body, 'plain', 'utf-8'))
-        msg.attach(MIMEText(html_body, 'html', 'utf-8'))
-        
-        # 发送邮件（使用Gmail SMTP作为示例）
-        # 注意：生产环境建议使用SendGrid或其他专业邮件服务
-        smtp_host = os.getenv("SMTP_HOST", "smtp.gmail.com")
-        smtp_port = int(os.getenv("SMTP_PORT", "587"))
-        smtp_user = os.getenv("SMTP_USER", admin_email)
-        smtp_password = os.getenv("SMTP_PASSWORD", os.getenv("ADMIN_PASSWORD", ""))
-        
-        if not smtp_password:
-            print("⚠️ AI日报邮件推送：未配置SMTP密码")
-            return "⚠️ 未配置SMTP密码（需要SMTP_PASSWORD或ADMIN_PASSWORD）"
-        
-        try:
-            smtp = smtplib.SMTP(smtp_host, smtp_port, timeout=10)
-            smtp.starttls()
-            smtp.login(smtp_user, smtp_password)
-            smtp.sendmail(msg["From"], [admin_email], msg.as_string())
-            smtp.quit()
+        # ===========================================
+        # 备用方案：SMTP（当SendGrid不可用时）
+        # ===========================================
+        if not use_sendgrid:
+            # 创建邮件消息
+            msg = MIMEMultipart('alternative')
+            msg["Subject"] = f"📊 CreditPilot AI财务日报 - {report_date}"
+            msg["From"] = f"CreditPilot AI <{recipient_email}>"
+            msg["To"] = recipient_email
             
-            success_msg = f"✅ AI日报邮件已发送到 {admin_email}"
-            print(f"\n{'='*60}")
-            print(success_msg)
-            print(f"{'='*60}\n")
-            return success_msg
+            # 添加纯文本和HTML版本
+            msg.attach(MIMEText(text_body, 'plain', 'utf-8'))
+            msg.attach(MIMEText(html_body, 'html', 'utf-8'))
             
-        except smtplib.SMTPAuthenticationError:
-            error_msg = "❌ SMTP认证失败，请检查邮箱密码"
-            print(f"⚠️ {error_msg}")
-            return error_msg
+            smtp_host = os.getenv("SMTP_HOST", "smtp.gmail.com")
+            smtp_port = int(os.getenv("SMTP_PORT", "587"))
+            smtp_user = os.getenv("SMTP_USER", recipient_email)
+            smtp_password = os.getenv("SMTP_PASSWORD", os.getenv("ADMIN_PASSWORD", ""))
             
-        except Exception as smtp_error:
-            error_msg = f"❌ SMTP发送失败: {str(smtp_error)}"
-            print(f"⚠️ {error_msg}")
-            return error_msg
+            if not smtp_password:
+                print("⚠️ AI日报邮件推送：未配置SMTP密码")
+                return "⚠️ 未配置SMTP密码（需要SMTP_PASSWORD或ADMIN_PASSWORD）"
+            
+            try:
+                smtp = smtplib.SMTP(smtp_host, smtp_port, timeout=10)
+                smtp.starttls()
+                smtp.login(smtp_user, smtp_password)
+                smtp.sendmail(msg["From"], [recipient_email], msg.as_string())
+                smtp.quit()
+                
+                success_msg = f"✅ AI日报邮件已通过SMTP发送到 {recipient_email}"
+                print(f"\n{'='*60}")
+                print(success_msg)
+                print(f"{'='*60}\n")
+                return success_msg
+                
+            except smtplib.SMTPAuthenticationError:
+                error_msg = "❌ SMTP认证失败，请检查邮箱密码"
+                print(f"⚠️ {error_msg}")
+                return error_msg
+                
+            except Exception as smtp_error:
+                error_msg = f"❌ SMTP发送失败: {str(smtp_error)}"
+                print(f"⚠️ {error_msg}")
+                return error_msg
         
     except Exception as e:
         error_msg = f"❌ 邮件发送失败: {str(e)}"
