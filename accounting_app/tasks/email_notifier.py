@@ -22,50 +22,18 @@ except ImportError:
 
 def get_sendgrid_credentials():
     """
-    从Replit Connectors API获取SendGrid验证凭据
-    返回: (api_key, from_email) 或 (None, None)
+    获取SendGrid凭据（优先使用环境变量）
+    返回: (api_key, from_email)
     """
-    try:
-        hostname = os.getenv('REPLIT_CONNECTORS_HOSTNAME')
-        x_replit_token = None
-        
-        if os.getenv('REPL_IDENTITY'):
-            x_replit_token = 'repl ' + os.getenv('REPL_IDENTITY')
-        elif os.getenv('WEB_REPL_RENEWAL'):
-            x_replit_token = 'depl ' + os.getenv('WEB_REPL_RENEWAL')
-        
-        if not x_replit_token or not hostname:
-            # 回退到直接使用环境变量
-            api_key = os.getenv("SENDGRID_API_KEY")
-            from_email = os.getenv("SENDGRID_FROM_EMAIL") or os.getenv("ADMIN_EMAIL")
-            return (api_key, from_email)
-        
-        url = f'https://{hostname}/api/v2/connection?include_secrets=true&connector_names=sendgrid'
-        response = req_lib.get(url, headers={
-            'Accept': 'application/json',
-            'X_REPLIT_TOKEN': x_replit_token
-        })
-        
-        if response.status_code == 200:
-            data = response.json()
-            items = data.get('items', [])
-            if items:
-                settings = items[0].get('settings', {})
-                api_key = settings.get('api_key')
-                from_email = settings.get('from_email')
-                return (api_key, from_email)
-        
-        # 回退方案
-        api_key = os.getenv("SENDGRID_API_KEY")
-        from_email = os.getenv("SENDGRID_FROM_EMAIL") or os.getenv("ADMIN_EMAIL")
-        return (api_key, from_email)
-        
-    except Exception as e:
-        print(f"⚠️ 获取SendGrid凭据失败: {e}")
-        # 回退到环境变量
-        api_key = os.getenv("SENDGRID_API_KEY")
-        from_email = os.getenv("SENDGRID_FROM_EMAIL") or os.getenv("ADMIN_EMAIL")
-        return (api_key, from_email)
+    # 直接使用环境变量中的API Key（用户已在Secrets中配置）
+    api_key = os.getenv("SENDGRID_API_KEY")
+    
+    # 发件人邮箱：优先使用SENDGRID_FROM_EMAIL，否则使用ADMIN_EMAIL
+    from_email = os.getenv("SENDGRID_FROM_EMAIL")
+    if not from_email:
+        from_email = os.getenv("ADMIN_EMAIL")
+    
+    return (api_key, from_email)
 
 
 def send_ai_report_email():
