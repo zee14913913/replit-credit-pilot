@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}CTOS Company Consent - 公司信用报告授权{% endblock %}
+{% block title %}{{ t('ctos_company_consent_title') }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid" style="padding: 40px 60px; background: #000000;">
@@ -24,14 +24,14 @@
                         <!-- 模块A: 公司信息 -->
                         <div style="background: #1a1a1a; padding: 24px; border-radius: 16px; border: 1px solid #322446; margin-bottom: 24px;">
                             <h3 style="color: #D4AF37; margin-bottom: 20px; font-size: 20px;">
-                                <i class="bi bi-building me-2"></i>公司信息 | Company Information
+                                <i class="bi bi-building me-2"></i>{{ t('company_info_section') }}
                             </h3>
                             
                             <div class="mb-3">
                                 <label class="form-label" style="color: #FFFFFF;">{{ t('company_name_1') }}<span style="color: #D4AF37;">*</span></label>
                                 <input type="text" name="company_name" class="form-control" required 
                                        style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
-                                       placeholder="Enter company name (e.g., ABC Trading Sdn Bhd)">
+                                       placeholder="{{ t('enter_company_name_placeholder') }}">
                             </div>
 
                             <div class="mb-3">
@@ -46,21 +46,21 @@
                                 <label class="form-label" style="color: #FFFFFF;">{{ t('company_address') }}<span style="color: #D4AF37;">*</span></label>
                                 <textarea name="company_address" class="form-control" rows="3" required 
                                           style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
-                                          placeholder="Enter complete registered business address"></textarea>
+                                          placeholder="{{ t('enter_complete_address_placeholder') }}"></textarea>
                             </div>
                         </div>
 
                         <!-- 授权代表信息 -->
                         <div style="background: #1a1a1a; padding: 24px; border-radius: 16px; border: 1px solid #322446; margin-bottom: 24px;">
                             <h3 style="color: #D4AF37; margin-bottom: 20px; font-size: 20px;">
-                                <i class="bi bi-person-badge-fill me-2"></i>授权代表 | Authorized Representative
+                                <i class="bi bi-person-badge-fill me-2"></i>{{ t('authorized_rep_section') }}
                             </h3>
                             
                             <div class="mb-3">
                                 <label class="form-label" style="color: #FFFFFF;">{{ t('authorized_person_name') }}<span style="color: #D4AF37;">*</span></label>
                                 <input type="text" name="authorized_person" class="form-control" required 
                                        style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
-                                       placeholder="Director / Authorized Signatory">
+                                       placeholder="{{ t('director_auth_signatory_placeholder') }}">
                             </div>
 
                             <div class="mb-3">
@@ -73,7 +73,7 @@
                             <div style="background: #0d0d0d; padding: 16px; border-radius: 8px; border-left: 4px solid #D4AF37;">
                                 <small style="color: rgba(255, 255, 255, 0.7); font-size: 13px;">
                                     <i class="bi bi-info-circle me-2"></i>
-                                    按照Phase 7要求，无需上传Director IC。只需公司文件和授权代表信息。
+                                    {{ t('phase7_no_director_ic_note') }}
                                 </small>
                             </div>
                         </div>
@@ -81,7 +81,7 @@
                         <!-- 模块B: SSM文件上传 -->
                         <div style="background: #1a1a1a; padding: 24px; border-radius: 16px; border: 1px solid #322446; margin-bottom: 24px;">
                             <h3 style="color: #D4AF37; margin-bottom: 20px; font-size: 20px;">
-                                <i class="bi bi-file-earmark-text me-2"></i>SSM Document Upload
+                                <i class="bi bi-file-earmark-text me-2"></i>{{ t('ssm_document_upload_section') }}
                             </h3>
                             
                             <div class="mb-3">
@@ -100,7 +100,7 @@
                         <!-- 模块C: 公司盖章上传 -->
                         <div style="background: #1a1a1a; padding: 24px; border-radius: 16px; border: 1px solid #322446; margin-bottom: 24px;">
                             <h3 style="color: #D4AF37; margin-bottom: 20px; font-size: 20px;">
-                                <i class="bi bi-patch-check me-2"></i>Company Stamp / Authorization
+                                <i class="bi bi-patch-check me-2"></i>{{ t('company_stamp_section') }}
                             </h3>
                             
                             <div class="mb-3">
