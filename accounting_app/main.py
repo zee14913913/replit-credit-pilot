@@ -72,7 +72,8 @@ from .routes import (
     ai_predict,  # AI预测分析模块（AI V3 扩展）
     income_documents,  # 收入证明文件管理系统
     loans,  # Phase B: 贷款资格评估模块（DSR/DSRC Integration）
-    loan_eligibility  # Phase B: 贷款资格计算引擎（基于月结单债务）
+    loan_eligibility,  # Phase B: 贷款资格计算引擎（基于月结单债务）
+    loan_products  # Phase C: 多贷款产品模拟（等额本息/等额本金）
 )
 
 # 注册路由
@@ -108,6 +109,7 @@ app.include_router(ai_predict.router, tags=["AI Predict"])  # AI预测分析（A
 app.include_router(income_documents.router, tags=["Income Documents"])  # 收入证明文件管理系统
 app.include_router(loans.router, tags=["Loans"])  # Phase B: 贷款资格评估（DSR/DSRC Integration）
 app.include_router(loan_eligibility.router, tags=["Loan Eligibility"])  # Phase B: 贷款资格引擎（月结单债务计算）
+app.include_router(loan_products.router, tags=["Loan Products"])  # Phase C: 多贷款产品模拟（等额本息/等额本金）
 
 
 # 启动事件：初始化数据库
