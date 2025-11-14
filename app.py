@@ -4008,6 +4008,12 @@ def customer_360_dashboard(customer_id):
     """Phase 10: Customer 360° Loan Dashboard - 个人贷款画像总览"""
     return render_template('customer_360.html', customer_id=customer_id)
 
+@app.route('/sme-360/<company_id>')
+@require_admin_or_accountant
+def sme_360_dashboard(company_id):
+    """Phase 11: SME 360° Business Loan Dashboard - 企业融资画像总览"""
+    return render_template('sme_360.html', company_id=company_id)
+
 @app.route('/loan-products/<int:product_id>')
 def loan_product_detail(product_id):
     """贷款产品详情页"""
