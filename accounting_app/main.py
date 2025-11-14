@@ -74,7 +74,8 @@ from .routes import (
     loans,  # Phase B: 贷款资格评估模块（DSR/DSRC Integration）
     loan_products,  # Phase C: 多贷款产品模拟（等额本息/等额本金）
     business_loans,  # Phase D: 企业贷款评估（基于DSCR + Modern Risk Engine）
-    loan_reports  # PHASE 5: 贷款报告生成系统（HTML/PDF）
+    loan_reports,  # PHASE 5: 贷款报告生成系统（HTML/PDF）
+    loans_quick  # PHASE 8.1: Quick Estimate API（Income Only / Income+Commitments）
 )
 
 # 注册路由
@@ -112,6 +113,7 @@ app.include_router(loans.router, tags=["Loans"])  # Phase B: 贷款资格评估�
 app.include_router(loan_products.router, tags=["Loan Products"])  # Phase C: 多贷款产品模拟（等额本息/等额本金）
 app.include_router(business_loans.router, tags=["Business Loans"])  # Phase D: Modern/SME引擎（基于DTI/FOIR/CCRIS/BRR/DSCR）
 app.include_router(loan_reports.router, tags=["Loan Reports"])  # PHASE 5: 贷款报告生成系统（HTML/PDF）
+app.include_router(loans_quick.router, tags=["Loans Quick Estimate"])  # PHASE 8.1: Quick Estimate API
 
 
 # 启动事件：初始化数据库

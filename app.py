@@ -4082,8 +4082,8 @@ def loan_product_detail(product_id):
 @app.route('/loan-evaluate')
 @require_admin_or_accountant
 def loan_modern_evaluate():
-    """Modern Loan Engine - 前端表单页面（DTI/FOIR/CCRIS风控评估）"""
-    return render_template('loan_modern_evaluate.html')
+    """Phase 8.1: Modern Loan Evaluate - 三模式评估页面（Full Auto / Quick Income / Quick Income+Commit）"""
+    return render_template('loan_evaluate.html')
 
 
 @app.route('/loan-evaluate/submit', methods=['POST'])
@@ -6476,6 +6476,42 @@ def file_detail(file_id):
     except Exception as e:
         flash(f'查询失败：{str(e)}', 'error')
         return redirect(url_for('files_list'))
+
+
+# ==================== Phase 8.1: Quick Estimate Routes ====================
+@app.route('/loan-evaluate/quick_income', methods=['POST'])
+@require_admin_or_accountant
+def quick_income_route():
+    """Quick Estimate - Income Only（调用FastAPI）"""
+    import requests
+    
+    income = request.json.get('income')
+    payload = {'income': income}
+    
+    try:
+        res = requests.post('http://localhost:8000/api/loans/quick-income', json=payload, timeout=10)
+        res.raise_for_status()
+        return jsonify(res.json())
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/loan-evaluate/quick_income_commitment', methods=['POST'])
+@require_admin_or_accountant
+def quick_income_commit_route():
+    """Quick Estimate - Income + Commitments（调用FastAPI）"""
+    import requests
+    
+    income = request.json.get('income')
+    commitments = request.json.get('commitments')
+    payload = {'income': income, 'commitments': commitments}
+    
+    try:
+        res = requests.post('http://localhost:8000/api/loans/quick-income-commitment', json=payload, timeout=10)
+        res.raise_for_status()
+        return jsonify(res.json())
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 # ==================== CTOS Consent Routes (Phase 7) ====================

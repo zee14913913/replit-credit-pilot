@@ -183,3 +183,105 @@ class PersonalLoanRules:
         
         pv = monthly_emi * ((1 - (1 + monthly_rate) ** -tenure_months) / monthly_rate)
         return pv
+
+
+# ============================================================================
+# PHASE 8.1: QUICK ESTIMATE FUNCTIONS (Client-Side快速评估)
+# ============================================================================
+
+def estimate_risk_income_only(income: float) -> dict:
+    """
+    Quick Estimate - Income Only
+    基于月收入快速估算贷款资格（无需CTOS数据）
+    """
+    if not income or income <= 0:
+        return {"error": "Invalid income"}
+
+    # 简易默认参数
+    commitments = 0
+    dti = commitments / income
+    foir = dti
+
+    # 风险等级估算（基于收入区间）
+    if income >= 8000:
+        grade = "A"
+        odds = 92
+    elif income >= 5000:
+        grade = "B+"
+        odds = 82
+    elif income >= 3000:
+        grade = "B"
+        odds = 68
+    else:
+        grade = "C"
+        odds = 45
+
+    # EMI计算：保守使用35%收入作为EMI capacity
+    max_emi = income * 0.35
+    # 假设7年期限（84个月）
+    max_loan = max_emi * 50  # 简化计算
+
+    return {
+        "mode": "quick_income_only",
+        "income": income,
+        "dti": round(dti, 3),
+        "foir": round(foir, 3),
+        "risk_grade": grade,
+        "approval_odds": odds,
+        "max_emi": round(max_emi, 2),
+        "max_loan_amount": round(max_loan, 2),
+        "recommended_products": []
+    }
+
+
+def estimate_risk_income_commitments(income: float, commitments: float) -> dict:
+    """
+    Quick Estimate - Income + Commitments
+    基于月收入和现有债务快速估算贷款资格
+    """
+    if not income or income <= 0:
+        return {"error": "Invalid income"}
+
+    if commitments < 0:
+        return {"error": "Invalid commitments"}
+
+    # 计算DTI
+    dti = commitments / income
+    foir = dti  # 简化：FOIR = DTI
+
+    # 风险等级估计（基于DTI区间）
+    if dti <= 0.25:
+        grade = "A"
+        odds = 90
+    elif dti <= 0.40:
+        grade = "B+"
+        odds = 75
+    elif dti <= 0.55:
+        grade = "B"
+        odds = 60
+    else:
+        grade = "C"
+        odds = 35
+
+    # 计算剩余EMI capacity
+    # 保守策略：允许最高DTI 60%
+    max_emi = income * (0.6 - dti)
+    if max_emi < 0:
+        max_emi = 0
+
+    # 假设7年期限
+    max_loan = max_emi * 50  # 简化计算
+
+    return {
+        "mode": "quick_income_commitment",
+        "income": income,
+        "commitments": commitments,
+        "dti": round(dti, 3),
+        "foir": round(foir, 3),
+        "risk_grade": grade,
+        "approval_odds": odds,
+        "max_emi": round(max_emi, 2),
+        "max_loan_amount": round(max_loan, 2),
+        "recommended_products": []
+    }
+
