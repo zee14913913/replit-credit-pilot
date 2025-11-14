@@ -1,5 +1,16 @@
 # Smart Credit & Loan Manager
 
+## 🎯 AI V3 Stable Baseline
+**Version**: `AI_V3_BASELINE`  
+**Date**: 2025-11-13  
+**Status**: ✅ STABLE - All AI features tested and running in production
+
+This marks the **stable foundation** for all future AI enhancements. No core AI functionality will be removed or redesigned. All new features will be built on top of this baseline.
+
+**Baseline Documentation**: See `docs/AI_V3_STABLE_BASELINE.md` for complete technical details.
+
+---
+
 ## Overview
 The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform for Malaysian banking customers, built with Flask. Its core purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation for 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization (debt consolidation, balance transfers, loan refinancing), and a success-based fee model. The long-term vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
