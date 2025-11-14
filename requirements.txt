@@ -43,3 +43,4 @@ beautifulsoup4
 lxml
 paramiko
 schedule
+weasyprint

@@ -114,6 +114,7 @@ app.include_router(loan_eligibility.router, tags=["Loan Eligibility"])  # Phase 
 app.include_router(loan_products.router, tags=["Loan Products"])  # Phase C: 多贷款产品模拟（等额本息/等额本金）
 app.include_router(business_loans.router, tags=["Business Loans"])  # Phase D: 企业贷款评估（基于DSCR）
 app.include_router(loan_affordability.router, tags=["Loan Affordability"])  # Phase E: 个人贷款承受能力（基于DSR限制）
+app.include_router(loan_reports.router, tags=["Loan Reports"])  # PHASE 5: 贷款报告生成系统（HTML/PDF）
 
 
 # 启动事件：初始化数据库
