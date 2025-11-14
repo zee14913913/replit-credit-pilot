@@ -29,11 +29,12 @@ def get_business_loan_eligibility(
     annual_commitment: Optional[float] = Query(None, description="年度承诺还款（从CTOS报告获取）"),
     company_id: int = Query(1, description="公司ID"),
     mode: str = Query("dscr", description="引擎模式 (dscr=传统DSCR | modern=马来西亚SME标准)"),
-    ctos_sme_score: int = Query(650, description="CTOS SME分数 - 仅modern模式"),
-    cashflow_variance: float = Query(0.30, description="现金流波动率 - 仅modern模式"),
-    industry_sector: str = Query("trading", description="行业分类 - 仅modern模式"),
-    company_age_years: int = Query(5, description="公司年龄 - 仅modern模式"),
-    employee_count: int = Query(10, description="员工数量 - 仅modern模式"),
+    data_mode: str = Query("manual", description="数据模式 (manual=手动输入 | auto=自动采集)"),
+    ctos_sme_score: Optional[int] = Query(None, description="CTOS SME分数 - manual模式需要"),
+    cashflow_variance: Optional[float] = Query(None, description="现金流波动率 - manual模式需要"),
+    industry_sector: Optional[str] = Query(None, description="行业分类 - manual模式需要"),
+    company_age_years: Optional[int] = Query(None, description="公司年龄 - manual模式需要"),
+    employee_count: Optional[int] = Query(None, description="员工数量 - manual模式需要"),
     target_bank: str = Query("maybank_sme", description="目标银行 - 仅modern模式"),
     db: Session = Depends(get_db)
 ):
@@ -89,12 +90,48 @@ def get_business_loan_eligibility(
         if mode == "modern":
             from accounting_app.services.risk_engine import SMELoanRules
             from accounting_app.services.loan_products import LoanProductMatcher
+            from accounting_app.services.data_intake import AutoEnrichment
             
             # 获取营业收入
             operating_income = BusinessLoanEngine._get_operating_income(db, customer_id, company_id)
             
             if annual_commitment is None:
                 raise HTTPException(status_code=400, detail="Debt commitment is required based on CTOS.")
+            
+            # Auto模式：自动填充缺失数据
+            if data_mode == "auto":
+                provided_data = {
+                    "operating_income": operating_income,
+                    "ctos_sme_score": ctos_sme_score,
+                    "cashflow_variance": cashflow_variance,
+                    "industry_sector": industry_sector,
+                    "company_age_years": company_age_years,
+                    "employee_count": employee_count
+                }
+                
+                enriched_data = AutoEnrichment.enrich_sme_loan_data(
+                    customer_id=customer_id,
+                    db=db,
+                    provided_data=provided_data
+                )
+                
+                # 使用增强后的数据
+                ctos_sme_score = enriched_data.get("ctos_sme_score", 650)
+                cashflow_variance = enriched_data.get("cashflow_variance", 0.30)
+                industry_sector = enriched_data.get("industry_sector", "trading")
+                company_age_years = enriched_data.get("company_age_years", 5)
+                employee_count = enriched_data.get("employee_count", 10)
+                
+                # 获取增强摘要
+                enrichment_summary = AutoEnrichment.get_enrichment_summary(enriched_data)
+            else:
+                # Manual模式：使用默认值
+                ctos_sme_score = ctos_sme_score if ctos_sme_score is not None else 650
+                cashflow_variance = cashflow_variance if cashflow_variance is not None else 0.30
+                industry_sector = industry_sector if industry_sector is not None else "trading"
+                company_age_years = company_age_years if company_age_years is not None else 5
+                employee_count = employee_count if employee_count is not None else 10
+                enrichment_summary = None
             
             # 调用新风控引擎
             result = SMELoanRules.evaluate_sme_loan_eligibility(
@@ -120,7 +157,12 @@ def get_business_loan_eligibility(
             result["recommended_products"] = recommended_products
             result["customer_id"] = customer_id
             result["mode"] = "modern"
+            result["data_mode"] = data_mode
             result["engine"] = "Malaysian SME Standard (BRR/DSCR/DSR/Industry)"
+            
+            # 添加数据增强摘要
+            if enrichment_summary:
+                result["data_enrichment"] = enrichment_summary
             
             return result
         

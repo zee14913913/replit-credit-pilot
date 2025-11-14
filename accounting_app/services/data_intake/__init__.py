@@ -16,6 +16,7 @@ from .bank_statement_analyzer import BankStatementAnalyzer
 from .employment_detector import EmploymentDetector
 from .industry_classifier import IndustryClassifier
 from .income_detector import IncomeDetector
+from .auto_enrichment import AutoEnrichment
 
 __all__ = [
     "CCRISParser",
@@ -23,5 +24,6 @@ __all__ = [
     "BankStatementAnalyzer",
     "EmploymentDetector",
     "IndustryClassifier",
-    "IncomeDetector"
+    "IncomeDetector",
+    "AutoEnrichment"
 ]

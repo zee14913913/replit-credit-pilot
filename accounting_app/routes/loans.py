@@ -120,30 +120,33 @@ async def get_loan_eligibility(
     monthly_commitment: Optional[float] = None,
     company_id: int = 1,
     mode: str = "dsr",
-    ccris_bucket: int = 0,
-    age: int = 30,
-    employment_years: float = 3.0,
-    credit_score: int = 700,
+    data_mode: str = "manual",
+    ccris_bucket: Optional[int] = None,
+    age: Optional[int] = None,
+    employment_years: Optional[float] = None,
+    credit_score: Optional[int] = None,
     target_bank: str = "maybank",
     db: Session = Depends(get_db)
 ):
     """
-    获取客户贷款资格评估（双引擎模式）
+    获取客户贷款资格评估（双引擎模式 + 自动数据采集）
     
     Args:
         customer_id: 客户ID
         monthly_commitment: 月度承诺还款（从CTOS报告获取，必填）
         company_id: 公司ID（默认1）
         mode: 引擎模式 (dsr=传统DSR模式 | modern=马来西亚银行DTI/FOIR模式)
-        ccris_bucket: CCRIS bucket (0~3+) - 仅modern模式
-        age: 年龄 - 仅modern模式
-        employment_years: 工作年限 - 仅modern模式
-        credit_score: 信用分数 - 仅modern模式
+        data_mode: 数据模式 (manual=手动输入 | auto=自动采集)
+        ccris_bucket: CCRIS bucket (0~3+) - manual模式需要
+        age: 年龄 - manual模式需要
+        employment_years: 工作年限 - manual模式需要
+        credit_score: 信用分数 - manual模式需要
         target_bank: 目标银行 - 仅modern模式
         
     Returns:
         DSR模式: 传统输出格式
         Modern模式: 马来西亚银行标准格式（DTI/FOIR/Risk Grade/Product Matching）
+        Auto模式: 自动填充缺失数据后再评估
         
     Raises:
         HTTPException 400: monthly_commitment缺失
@@ -153,6 +156,7 @@ async def get_loan_eligibility(
         if mode == "modern":
             from ..services.risk_engine import PersonalLoanRules
             from ..services.loan_products import LoanProductMatcher
+            from ..services.data_intake import AutoEnrichment
             
             # 获取收入数据
             income_data = IncomeService.get_customer_income(db, customer_id, company_id)
@@ -163,6 +167,38 @@ async def get_loan_eligibility(
             
             if monthly_commitment is None:
                 raise HTTPException(status_code=400, detail="Debt commitment is required based on CTOS.")
+            
+            # Auto模式：自动填充缺失数据
+            if data_mode == "auto":
+                provided_data = {
+                    "income": income,
+                    "ccris_bucket": ccris_bucket,
+                    "age": age,
+                    "employment_years": employment_years,
+                    "credit_score": credit_score
+                }
+                
+                enriched_data = AutoEnrichment.enrich_personal_loan_data(
+                    customer_id=customer_id,
+                    db=db,
+                    provided_data=provided_data
+                )
+                
+                # 使用增强后的数据
+                ccris_bucket = enriched_data.get("ccris_bucket", 0)
+                age = enriched_data.get("age", 30)
+                employment_years = enriched_data.get("employment_years", 3.0)
+                credit_score = enriched_data.get("credit_score", 700)
+                
+                # 获取增强摘要
+                enrichment_summary = AutoEnrichment.get_enrichment_summary(enriched_data)
+            else:
+                # Manual模式：使用默认值
+                ccris_bucket = ccris_bucket if ccris_bucket is not None else 0
+                age = age if age is not None else 30
+                employment_years = employment_years if employment_years is not None else 3.0
+                credit_score = credit_score if credit_score is not None else 700
+                enrichment_summary = None
             
             # 调用新风控引擎
             result = PersonalLoanRules.evaluate_loan_eligibility(
@@ -187,7 +223,12 @@ async def get_loan_eligibility(
             result["recommended_products"] = recommended_products
             result["customer_id"] = customer_id
             result["mode"] = "modern"
+            result["data_mode"] = data_mode
             result["engine"] = "Malaysian Banking Standard (DTI/FOIR/CCRIS)"
+            
+            # 添加数据增强摘要
+            if enrichment_summary:
+                result["data_enrichment"] = enrichment_summary
             
             return result
         
