@@ -75,7 +75,8 @@ from .routes import (
     loan_products,  # Phase C: 多贷款产品模拟（等额本息/等额本金）
     business_loans,  # Phase D: 企业贷款评估（基于DSCR + Modern Risk Engine）
     loan_reports,  # PHASE 5: 贷款报告生成系统（HTML/PDF）
-    loans_quick  # PHASE 8.1: Quick Estimate API（Income Only / Income+Commitments）
+    loans_quick,  # PHASE 8.1: Quick Estimate API（Income Only / Income+Commitments）
+    loans_ai  # PHASE 8.2: AI & Product Matching（Product Recommendations + AI Advisor）
 )
 
 # 注册路由
@@ -114,6 +115,7 @@ app.include_router(loan_products.router, tags=["Loan Products"])  # Phase C: 多
 app.include_router(business_loans.router, tags=["Business Loans"])  # Phase D: Modern/SME引擎（基于DTI/FOIR/CCRIS/BRR/DSCR）
 app.include_router(loan_reports.router, tags=["Loan Reports"])  # PHASE 5: 贷款报告生成系统（HTML/PDF）
 app.include_router(loans_quick.router, tags=["Loans Quick Estimate"])  # PHASE 8.1: Quick Estimate API
+app.include_router(loans_ai.router, tags=["Loans AI"])  # PHASE 8.2: AI & Product Matching（Product Recommendations + AI Advisor）
 
 
 # 启动事件：初始化数据库

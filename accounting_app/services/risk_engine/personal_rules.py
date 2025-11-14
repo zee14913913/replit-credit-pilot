@@ -285,3 +285,57 @@ def estimate_risk_income_commitments(income: float, commitments: float) -> dict:
         "recommended_products": []
     }
 
+
+def personal_risk_grade_explainer(risk_grade: str, dti: float, income: float, commitments: float) -> str:
+    """
+    Phase 8.2: AI Loan Advisor - 风险评级解释器
+    生成基于风险评级的贷款建议文本
+    """
+    # DTI百分比
+    dti_pct = dti * 100 if dti < 1 else dti
+    
+    # 基础评级解释
+    grade_explanations = {
+        "A+": "您的财务状况非常优秀！高收入、低债务比率使您成为银行的首选客户。",
+        "A": "您的财务状况良好，具备强劲的还款能力，银行会优先考虑您的贷款申请。",
+        "B+": "您的财务状况稳健，符合大多数银行的贷款标准，批准几率较高。",
+        "B": "您的财务状况中等，部分银行可能需要额外担保或较高利率。",
+        "C": "您的债务负担较重，建议优先偿还现有债务后再申请新贷款。",
+        "D": "您的财务风险较高，建议先改善收入状况或减少债务负担。"
+    }
+    
+    base_text = grade_explanations.get(risk_grade, "您的财务状况需要进一步评估。")
+    
+    # DTI分析
+    if dti_pct <= 30:
+        dti_advice = f"您的债务与收入比({dti_pct:.1f}%)非常健康，还有充足的借贷空间。"
+    elif dti_pct <= 40:
+        dti_advice = f"您的债务与收入比({dti_pct:.1f}%)在合理范围内，仍有一定借贷能力。"
+    elif dti_pct <= 55:
+        dti_advice = f"您的债务与收入比({dti_pct:.1f}%)略高，建议谨慎控制新增债务。"
+    else:
+        dti_advice = f"您的债务与收入比({dti_pct:.1f}%)过高，强烈建议优先偿还现有债务。"
+    
+    # 收入分析
+    if income >= 10000:
+        income_text = "您的高收入水平为贷款申请提供了坚实基础。"
+    elif income >= 5000:
+        income_text = "您的收入水平符合大多数贷款产品的要求。"
+    elif income >= 3000:
+        income_text = "您的收入水平符合基础贷款标准，但可选产品可能有限。"
+    else:
+        income_text = "建议提高收入水平以获得更多贷款选项。"
+    
+    # 组合建议
+    advisor_text = f"{base_text} {dti_advice} {income_text}"
+    
+    # 行动建议
+    if risk_grade in ["A+", "A"]:
+        action = "建议货比三家，选择利率最优的贷款产品。"
+    elif risk_grade in ["B+", "B"]:
+        action = "建议咨询银行顾问，了解具体贷款条款和利率。"
+    else:
+        action = "建议优先改善财务状况，减少债务负担或增加收入，再考虑申请新贷款。"
+    
+    return f"{advisor_text} {action}"
+

@@ -6514,6 +6514,48 @@ def quick_income_commit_route():
         return jsonify({'error': str(e)}), 500
 
 
+# ============================================================
+# PHASE 8.2 — NEW FLASK ROUTES (PRODUCTS + AI ADVISOR API)
+# ============================================================
+
+@app.route("/loan-evaluate/products", methods=["POST"])
+@require_admin_or_accountant
+def loan_products_route():
+    """产品推荐API（调用FastAPI）"""
+    try:
+        payload = request.json
+
+        res = requests.post(
+            "http://localhost:8000/api/loans/product-recommendations",
+            json=payload,
+            timeout=10
+        )
+        res.raise_for_status()
+        return jsonify(res.json())
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/loan-evaluate/advisor", methods=["POST"])
+@require_admin_or_accountant
+def loan_advisor_route():
+    """AI贷款顾问API（调用FastAPI）"""
+    try:
+        payload = request.json
+
+        res = requests.post(
+            "http://localhost:8000/api/loans/advisor",
+            json=payload,
+            timeout=10
+        )
+        res.raise_for_status()
+        return jsonify(res.json())
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 # ==================== CTOS Consent Routes (Phase 7) ====================
 @app.route('/ctos/personal', endpoint='ctos_personal')
 def ctos_personal_route():
