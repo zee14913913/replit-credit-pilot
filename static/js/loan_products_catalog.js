@@ -19,6 +19,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup event listeners
     setupSearchListener();
     setupFilterButtons();
+    
+    // Listen for language change events and re-render cards
+    window.addEventListener('languageChanged', function(e) {
+        console.log('Language changed to:', e.detail.lang);
+        // Re-render all products with new translations
+        renderProducts(filteredProducts);
+        
+        // If modal is open, refresh it with new translations
+        if (currentProduct && !document.getElementById('productModal').classList.contains('hidden')) {
+            openProductModal(currentProduct);
+        }
+    });
 });
 
 // ========== SEARCH FUNCTIONALITY ==========
@@ -278,12 +290,13 @@ function selectProduct(product) {
 
 // ========== HELPER FUNCTIONS ==========
 function formatProductType(type) {
-    const typeMap = {
-        'traditional_bank': 'Bank',
-        'digital_bank': 'Digital Bank',
-        'fintech': 'Fintech'
+    const typeKeyMap = {
+        'traditional_bank': 'product_type_traditional_bank',
+        'digital_bank': 'product_type_digital_bank',
+        'fintech': 'product_type_fintech'
     };
-    return typeMap[type] || 'Bank';
+    const key = typeKeyMap[type] || 'product_type_traditional_bank';
+    return window.i18n ? window.i18n.translate(key) : 'Bank';
 }
 
 function formatNumber(num) {

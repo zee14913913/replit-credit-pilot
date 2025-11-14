@@ -1043,5 +1043,8 @@
   "varies": "视情况而定",
   "no_features_listed": "无特色功能。",
   "minimum_income": "最低收入",
-  "standard_eligibility": "适用标准银行资格要求。"
+  "standard_eligibility": "适用标准银行资格要求。",
+  "product_type_traditional_bank": "传统银行",
+  "product_type_digital_bank": "数字银行",
+  "product_type_fintech": "金融科技"
 }

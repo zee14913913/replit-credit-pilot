@@ -433,5 +433,8 @@
   "varies": "Varies",
   "no_features_listed": "No features listed.",
   "minimum_income": "Minimum income",
-  "standard_eligibility": "Standard bank eligibility applies."
+  "standard_eligibility": "Standard bank eligibility applies.",
+  "product_type_traditional_bank": "Traditional Bank",
+  "product_type_digital_bank": "Digital Bank",
+  "product_type_fintech": "Fintech"
 }
