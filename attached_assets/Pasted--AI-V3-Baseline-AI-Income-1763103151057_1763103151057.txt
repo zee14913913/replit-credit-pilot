@@ -1,0 +1,86 @@
+请执行以下任务并严格遵守要求（AI V3 Baseline 不可修改）：
+
+====================================================
+AI Income Expansion – Phase B（贷款资格计算模块）
+====================================================
+
+请逐步实现以下内容：
+
+----------------------------------------------------
+B-1：创建 LoanEligibilityEngine 服务
+----------------------------------------------------
+文件路径：
+accounting_app/services/loan_eligibility_engine.py
+
+实现函数：
+calculate(customer_id: int)
+
+返回 JSON 示例：
+{
+  "customer_id": 1,
+  "dsr_income": ...,
+  "dsrc_income": ...,
+  "best_source": ...,
+  "income_confidence": ...,
+
+  "total_monthly_debt": ..., 
+  "dsr_ratio": ...,
+  "dsrc_ratio": ...,
+
+  "eligibility_status": "Eligible | Borderline | Not Eligible",
+  "recommended_loan_amount": ...   # dsrc_income × 8
+}
+
+债务计算逻辑（请使用 monthly_statements 表）：
+
+1. min_payment = closing_balance_total * 0.05
+2. total_monthly_debt = owner_payments + gz_payments + min_payment
+
+若无月结单，total_monthly_debt = 0
+
+----------------------------------------------------
+B-2：新增贷款资格路由文件
+----------------------------------------------------
+创建文件：
+accounting_app/routes/loan_eligibility.py
+
+新增端点：
+GET /api/loans/eligibility/{customer_id}
+
+功能：
+调用 LoanEligibilityEngine.calculate()
+返回 JSON（不可进行任何 AI 调用）
+
+----------------------------------------------------
+B-3：注册新路由（不影响 AI V3 Baseline）
+----------------------------------------------------
+修改：
+accounting_app/main.py
+
+新增：
+from accounting_app.routes.loan_eligibility import router as loan_eligibility_router
+app.include_router(loan_eligibility_router)
+
+放置位置：
+在 ai_predict 路由注册之后即可
+
+----------------------------------------------------
+B-4：请绝对不要修改以下文件（Baseline Protected）
+----------------------------------------------------
+❌ ai_assistant.py  
+❌ ai_predict.py  
+❌ ai_client.py  
+❌ scheduler  
+❌ email_notifier  
+❌ templates/index.html（AI日报区域禁止修改）
+
+----------------------------------------------------
+B-5：完成后请执行
+----------------------------------------------------
+1. 重启 FastAPI (Port 8000)
+2. 重启 Flask (Port 5000)
+3. 输出 final report，包括：
+   - Debt extraction logic
+   - Income source used
+   - Final DSR & DSRC
+   - Eligibility result
