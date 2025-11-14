@@ -14,6 +14,7 @@ from ..services.file_storage_manager import AccountingFileStorageManager
 from ..services.raw_document_service import RawDocumentService
 from ..services.unified_file_service import UnifiedFileService
 from ..services.pdf_parser import PDFParser
+from ..services.income_parser import IncomeParser
 from ..utils.file_hash import calculate_uploaded_file_hash
 from ..models import Customer
 
@@ -175,7 +176,10 @@ async def upload_income_document(
                 document_type
             )
         
-        # 10. 注册到file_index统一索引
+        # 10. 解析结构化收入数据
+        parsed_income = IncomeParser.parse_income_from_text(raw_text)
+        
+        # 11. 注册到file_index统一索引
         file_size_kb = int(file_size / 1024)
         
         file_index = UnifiedFileService.register_file(
@@ -196,11 +200,12 @@ async def upload_income_document(
                 'document_type': document_type,
                 'income_detected': extracted_income,
                 'ocr_confidence': confidence,
-                'ocr_method': ocr_method
+                'ocr_method': ocr_method,
+                'structured_income': parsed_income
             }
         )
         
-        # 11. 返回结果
+        # 12. 返回结果
         return {
             "status": "success",
             "message": "收入文件上传成功",
@@ -211,12 +216,10 @@ async def upload_income_document(
             "document_type": document_type,
             "document_month": document_month,
             "storage_path": storage_path,
-            "ocr_result": {
-                "income_detected": extracted_income,
-                "confidence": confidence,
-                "method": ocr_method,
-                "text_length": len(raw_text)
-            }
+            "income_detected": extracted_income,
+            "confidence": confidence,
+            "raw_text": raw_text,
+            "structured_income": parsed_income
         }
         
     except HTTPException:

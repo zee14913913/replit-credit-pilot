@@ -1,0 +1,100 @@
+我需要你新增 IncomeParser（收入解析器），用于从 OCR 文本中自动提取结构化收入数据。
+
+请创建文件：
+
+➡️ accounting_app/services/income_parser.py
+
+写入以下内容：
+
+import re
+from typing import Dict
+
+class IncomeParser:
+
+    @staticmethod
+    def parse_income_from_text(text: str) -> Dict:
+        """
+        提取工资单 / 税单 / EPF / 银行流水中的收入数据。
+        返回统一结构。
+        """
+
+        # 清洗文本
+        clean = text.replace(",", "").lower()
+
+        results = {
+            "basic_salary": 0.0,
+            "allowance": 0.0,
+            "epf_contribution": 0.0,
+            "net_salary": 0.0,
+            "gross_salary": 0.0,
+            "annual_income": 0.0,
+            "bank_inflow": 0.0
+        }
+
+        # 匹配 Basic Salary
+        m = re.search(r"basic salary[:\s]+(\d+\.?\d*)", clean)
+        if m:
+            results["basic_salary"] = float(m.group(1))
+
+        # 匹配 Allowance
+        m = re.search(r"allowance[:\s]+(\d+\.?\d*)", clean)
+        if m:
+            results["allowance"] = float(m.group(1))
+
+        # 匹配 EPF
+        m = re.search(r"epf (?:employee|contribution)[:\s]+(\d+\.?\d*)", clean)
+        if m:
+            results["epf_contribution"] = float(m.group(1))
+
+        # 匹配 Net Salary
+        m = re.search(r"net salary[:\s]+(\d+\.?\d*)", clean)
+        if m:
+            results["net_salary"] = float(m.group(1))
+
+        # 匹配 Gross Salary
+        m = re.search(r"gross salary[:\s]+(\d+\.?\d*)", clean)
+        if m:
+            results["gross_salary"] = float(m.group(1))
+
+        # 匹配 Annual Income（Tax Return）
+        m = re.search(r"annual income[:\s]+(\d+\.?\d*)", clean)
+        if m:
+            results["annual_income"] = float(m.group(1))
+
+        # 匹配银行流水 Monthly Inflow
+        m = re.search(r"total inflow[:\s]+(\d+\.?\d*)", clean)
+        if m:
+            results["bank_inflow"] = float(m.group(1))
+
+        return results
+
+
+并修改：
+
+➡️ accounting_app/routes/income_documents.py
+
+在 OCR 完成后，新增解析逻辑：
+
+from accounting_app.services.income_parser import IncomeParser
+
+parsed_income = IncomeParser.parse_income_from_text(raw_text)
+
+return {
+    "status": "success",
+    "customer_id": customer_id,
+    "document_type": document_type,
+    "document_month": document_month,
+    "file_id": file_index.id,
+    "raw_document_id": raw_doc.id,
+
+    # OCR
+    "income_detected": extracted_income,
+    "confidence": confidence,
+    "raw_text": raw_text,
+
+    # Income Parsing
+    "structured_income": parsed_income
+}
+
+
+请完成以上文件创建与更新。
