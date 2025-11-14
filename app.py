@@ -4068,6 +4068,285 @@ def loan_product_detail(product_id):
 
 
 # ============================================================================
+# PHASE 6: MODERN LOAN ENGINE & SME LOAN FRONTEND PAGES
+# ============================================================================
+
+@app.route('/loan-evaluate')
+@require_admin_or_accountant
+def loan_modern_evaluate():
+    """Modern Loan Engine - 前端表单页面（DTI/FOIR/CCRIS风控评估）"""
+    return render_template('loan_modern_evaluate.html')
+
+
+@app.route('/loan-evaluate/submit', methods=['POST'])
+@require_admin_or_accountant
+def loan_modern_evaluate_submit():
+    """提交Modern Loan评估请求并调用FastAPI"""
+    import requests
+    
+    # 获取表单数据
+    customer_id = request.form.get('customer_id')
+    data_mode = request.form.get('data_mode', 'manual')
+    income = request.form.get('income', '')
+    monthly_commitment = request.form.get('monthly_commitment')
+    ccris_bucket = request.form.get('ccris_bucket', '')
+    credit_score = request.form.get('credit_score', '')
+    age = request.form.get('age', '')
+    employment_years = request.form.get('employment_years', '')
+    job_type = request.form.get('job_type', '')
+    target_bank = request.form.get('target_bank', '')
+    
+    # 构建API URL
+    api_url = f"http://localhost:8000/api/loans/evaluate/{customer_id}"
+    params = {
+        'mode': 'modern',
+        'data_mode': data_mode,
+        'monthly_commitment': monthly_commitment
+    }
+    
+    # 添加可选参数
+    if income:
+        params['income'] = income
+    if ccris_bucket:
+        params['ccris_bucket'] = ccris_bucket
+    if credit_score:
+        params['credit_score'] = credit_score
+    if age:
+        params['age'] = age
+    if employment_years:
+        params['employment_years'] = employment_years
+    if job_type:
+        params['job_type'] = job_type
+    if target_bank:
+        params['target_bank'] = target_bank
+    
+    try:
+        # 调用FastAPI
+        response = requests.get(api_url, params=params, timeout=30)
+        response.raise_for_status()
+        result = response.json()
+        
+        # 记录审计日志
+        log_audit(
+            user_id=session.get('user_id', 0),
+            action_type='MODERN_LOAN_EVALUATION',
+            description=f'Customer {customer_id}, Risk Grade: {result.get("risk_grade", "N/A")}, Mode: modern'
+        )
+        
+        # 渲染结果页面（扩展版loan_matcher_result.html）
+        return render_template(
+            'loan_matcher_result.html',
+            client_name=f"Customer #{customer_id}",
+            dsr=result.get('dti_ratio', 0) * 100,  # 使用DTI作为DSR显示
+            total_commitment=float(monthly_commitment),
+            ctos_notes="Modern Engine Analysis",
+            eligible=[{'product': prod} for prod in result.get('recommended_products', [])],
+            ineligible=[],
+            eligible_by_type={},
+            ineligible_by_type={},
+            category_names={},
+            category_icons={},
+            # Phase 6 新增字段
+            modern_result=result,  # 完整的Modern引擎结果
+            is_modern_mode=True
+        )
+    except Exception as e:
+        flash(f'评估失败: {str(e)}', 'error')
+        return redirect(url_for('loan_modern_evaluate'))
+
+
+@app.route('/sme-loan-evaluate')
+@require_admin_or_accountant
+def sme_loan_evaluate():
+    """SME Loan Engine - 前端表单页面（BRR/DSCR风控评估）"""
+    return render_template('sme_loan_evaluate.html')
+
+
+@app.route('/sme-loan-evaluate/submit', methods=['POST'])
+@require_admin_or_accountant
+def sme_loan_evaluate_submit():
+    """提交SME Loan评估请求并调用FastAPI"""
+    import requests
+    
+    # 获取表单数据
+    customer_id = request.form.get('customer_id')
+    data_mode = request.form.get('data_mode', 'manual')
+    monthly_revenue = request.form.get('monthly_revenue')
+    monthly_commitment = request.form.get('monthly_commitment')
+    industry = request.form.get('industry', '')
+    years_in_business = request.form.get('years_in_business', '')
+    ctos_sme_score = request.form.get('ctos_sme_score', '')
+    cashflow_variance = request.form.get('cashflow_variance', '')
+    target_bank = request.form.get('target_bank', '')
+    
+    # 构建API URL
+    api_url = f"http://localhost:8000/api/business-loans/evaluate/{customer_id}"
+    params = {
+        'mode': 'modern',
+        'data_mode': data_mode,
+        'monthly_revenue': monthly_revenue,
+        'monthly_commitment': monthly_commitment
+    }
+    
+    # 添加可选参数
+    if industry:
+        params['industry'] = industry
+    if years_in_business:
+        params['years_in_business'] = years_in_business
+    if ctos_sme_score:
+        params['ctos_sme_score'] = ctos_sme_score
+    if cashflow_variance:
+        params['cashflow_variance'] = cashflow_variance
+    if target_bank:
+        params['target_bank'] = target_bank
+    
+    try:
+        # 调用FastAPI
+        response = requests.get(api_url, params=params, timeout=30)
+        response.raise_for_status()
+        result = response.json()
+        
+        # 记录审计日志
+        log_audit(
+            user_id=session.get('user_id', 0),
+            action_type='SME_LOAN_EVALUATION',
+            description=f'Business {customer_id}, Risk Grade: {result.get("risk_grade", "N/A")}, Mode: modern'
+        )
+        
+        # 渲染结果页面
+        return render_template(
+            'loan_matcher_result.html',
+            client_name=f"Business #{customer_id}",
+            dsr=result.get('brr_ratio', 0) * 100,  # 使用BRR作为DSR显示
+            total_commitment=float(monthly_commitment),
+            ctos_notes="SME Modern Engine Analysis",
+            eligible=[{'product': prod} for prod in result.get('recommended_products', [])],
+            ineligible=[],
+            eligible_by_type={},
+            ineligible_by_type={},
+            category_names={},
+            category_icons={},
+            # Phase 6 新增字段
+            modern_result=result,
+            is_modern_mode=True,
+            is_sme=True
+        )
+    except Exception as e:
+        flash(f'SME评估失败: {str(e)}', 'error')
+        return redirect(url_for('sme_loan_evaluate'))
+
+
+@app.route('/loan-reports')
+@require_admin_or_accountant
+def loan_reports():
+    """Loan Reports Generator - 报告生成入口页面"""
+    return render_template('loan_reports.html')
+
+
+@app.route('/loan-reports/generate/personal', methods=['POST'])
+@require_admin_or_accountant
+def loan_reports_generate_personal():
+    """生成个人贷款报告（调用Phase 5 API）"""
+    # 获取表单数据
+    customer_id = request.form.get('customer_id')
+    format_type = request.form.get('format', 'html')
+    data_mode = request.form.get('data_mode', 'manual')
+    
+    # 构建API URL
+    api_url = f"http://localhost:8000/api/loan-reports/personal/{customer_id}"
+    params = {
+        'format': format_type,
+        'mode': 'modern',
+        'data_mode': data_mode,
+        'monthly_commitment': request.form.get('monthly_commitment')
+    }
+    
+    # 添加可选参数
+    for field in ['income', 'ccris_bucket', 'credit_score', 'age', 'employment_years', 'target_bank']:
+        value = request.form.get(field, '')
+        if value:
+            params[field] = value
+    
+    try:
+        import requests
+        response = requests.get(api_url, params=params, timeout=60)
+        response.raise_for_status()
+        
+        # 记录审计日志
+        log_audit(
+            user_id=session.get('user_id', 0),
+            action_type='LOAN_REPORT_GENERATED',
+            description=f'Personal loan report for customer {customer_id}, format: {format_type}'
+        )
+        
+        if format_type == 'html':
+            # 直接返回HTML
+            return response.text
+        else:
+            # 返回PDF下载
+            from flask import make_response
+            response_pdf = make_response(response.content)
+            response_pdf.headers['Content-Type'] = 'application/pdf'
+            response_pdf.headers['Content-Disposition'] = f'attachment; filename=personal_loan_report_{customer_id}.pdf'
+            return response_pdf
+    except Exception as e:
+        flash(f'报告生成失败: {str(e)}', 'error')
+        return redirect(url_for('loan_reports'))
+
+
+@app.route('/loan-reports/generate/sme', methods=['POST'])
+@require_admin_or_accountant
+def loan_reports_generate_sme():
+    """生成SME贷款报告（调用Phase 5 API）"""
+    # 获取表单数据
+    customer_id = request.form.get('customer_id')
+    format_type = request.form.get('format', 'html')
+    data_mode = request.form.get('data_mode', 'manual')
+    
+    # 构建API URL
+    api_url = f"http://localhost:8000/api/loan-reports/sme/{customer_id}"
+    params = {
+        'format': format_type,
+        'mode': 'modern',
+        'data_mode': data_mode,
+        'monthly_revenue': request.form.get('monthly_revenue'),
+        'monthly_commitment': request.form.get('monthly_commitment')
+    }
+    
+    # 添加可选参数
+    for field in ['industry', 'years_in_business', 'ctos_sme_score', 'cashflow_variance', 'target_bank']:
+        value = request.form.get(field, '')
+        if value:
+            params[field] = value
+    
+    try:
+        import requests
+        response = requests.get(api_url, params=params, timeout=60)
+        response.raise_for_status()
+        
+        # 记录审计日志
+        log_audit(
+            user_id=session.get('user_id', 0),
+            action_type='LOAN_REPORT_GENERATED',
+            description=f'SME loan report for business {customer_id}, format: {format_type}'
+        )
+        
+        if format_type == 'html':
+            # 直接返回HTML
+            return response.text
+        else:
+            # 返回PDF下载
+            from flask import make_response
+            response_pdf = make_response(response.content)
+            response_pdf.headers['Content-Type'] = 'application/pdf'
+            response_pdf.headers['Content-Disposition'] = f'attachment; filename=sme_loan_report_{customer_id}.pdf'
+            return response_pdf
+    except Exception as e:
+        flash(f'SME报告生成失败: {str(e)}', 'error')
+        return redirect(url_for('loan_reports'))
+
+
+# ============================================================================
 # CREDIT CARD LEDGER - 信用卡账本系统 (OWNER vs INFINITE)
 # ============================================================================
 

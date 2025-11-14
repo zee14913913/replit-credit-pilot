@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}Modern Loan Evaluation{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Page Header -->
+            <div class="text-center mb-5">
+                <h1 class="galaxy-gradient-text mb-3">
+                    <i class="bi bi-graph-up-arrow me-2"></i>Modern Loan Evaluation
+                </h1>
+                <p class="fs-5" style="color: #FF007F; font-weight: 700;">
+                    Advanced Risk Assessment | DTI · FOIR · CCRIS Analysis
+                </p>
+            </div>
+
+            <!-- Features Card -->
+            <div class="galaxy-card mb-5">
+                <div class="card-body">
+                    <div class="section-header mb-4">
+                        <h5 class="galaxy-gradient-text mb-3">
+                            <i class="bi bi-stars me-2"></i>Modern Engine Features
+                        </h5>
+                        <div class="title-divider"></div>
+                    </div>
+                    
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-calculator text-golden fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="text-white mb-1">DTI & FOIR Analysis</h6>
+                                    <small class="text-silver-pearl">Debt-to-Income & Fixed Obligation to Income Ratio</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-bar-chart-line text-golden fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="text-white mb-1">CCRIS Risk Scoring</h6>
+                                    <small class="text-silver-pearl">Credit Bureau risk bucket classification (0-6)</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-trophy text-golden fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="text-white mb-1">AI Risk Grading</h6>
+                                    <small class="text-silver-pearl">Risk grade A1-E with approval probability</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Mode Toggle -->
+            <div class="galaxy-card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white mb-1">Data Collection Mode</h6>
+                            <small class="text-silver-pearl">Choose how to provide loan application data</small>
+                        </div>
+                        <div class="btn-group" role="group">
+                            <input type="radio" class="btn-check" name="data_mode_toggle" id="mode_manual" value="manual" checked>
+                            <label class="btn btn-outline-light" for="mode_manual">
+                                <i class="bi bi-pencil-square me-1"></i>Manual Input
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="data_mode_toggle" id="mode_auto" value="auto">
+                            <label class="btn btn-outline-light" for="mode_auto">
+                                <i class="bi bi-cpu me-1"></i>Auto Enrichment
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Evaluation Form -->
+            <div class="galaxy-card">
+                <div class="card-body">
+                    <div class="section-header mb-5">
+                        <h5 class="galaxy-gradient-text mb-3">
+                            <i class="bi bi-person-badge-fill me-2"></i>Loan Application Details
+                        </h5>
+                        <div class="title-divider"></div>
+                    </div>
+                    
+                    <form id="modernLoanForm" action="/loan-evaluate/submit" method="post">
+                        <input type="hidden" name="data_mode" id="data_mode_input" value="manual">
+                        
+                        <div class="row g-4">
+                            <!-- Customer ID -->
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-hash me-2"></i>Customer ID
+                                </label>
+                                <input type="number" name="customer_id" class="form-control galaxy-input" required min="1" placeholder="Enter customer ID">
+                                <small class="text-golden">
+                                    <i class="bi bi-info-circle me-1"></i>System will auto-fetch income data if available
+                                </small>
+                            </div>
+
+                            <!-- Monthly Income -->
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-cash-stack me-2"></i>Monthly Income (RM)
+                                </label>
+                                <input type="number" name="income" class="form-control galaxy-input" step="0.01" min="0" placeholder="Optional - auto-fetched from income documents">
+                                <small class="text-silver-pearl">
+                                    <i class="bi bi-lightbulb me-1"></i>Leave blank to use uploaded income documents
+                                </small>
+                            </div>
+
+                            <!-- Monthly Commitment -->
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-credit-card-2-back me-2"></i>Monthly Debt Commitment (RM) <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" name="monthly_commitment" class="form-control galaxy-input" required step="0.01" min="0" placeholder="Total monthly loan repayments">
+                                <small class="text-golden">
+                                    <i class="bi bi-shield-check me-1"></i>From CTOS report
+                                </small>
+                            </div>
+
+                            <!-- CCRIS Bucket -->
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-bar-chart me-2"></i>CCRIS Bucket
+                                </label>
+                                <select name="ccris_bucket" class="form-select galaxy-input">
+                                    <option value="">Auto-detect</option>
+                                    <option value="0">Bucket 0 (Excellent - No arrears)</option>
+                                    <option value="1">Bucket 1 (1 month arrears)</option>
+                                    <option value="2">Bucket 2 (2 months arrears)</option>
+                                    <option value="3">Bucket 3 (3 months arrears)</option>
+                                    <option value="4">Bucket 4 (4 months arrears)</option>
+                                    <option value="5">Bucket 5 (5 months arrears)</option>
+                                    <option value="6">Bucket 6 (6+ months arrears)</option>
+                                </select>
+                            </div>
+
+                            <!-- Credit Score -->
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-star-fill me-2"></i>Credit Score
+                                </label>
+                                <input type="number" name="credit_score" class="form-control galaxy-input" min="300" max="850" placeholder="300-850 (Optional)">
+                                <small class="text-silver-pearl">
+                                    <i class="bi bi-info-circle me-1"></i>CTOS/CCRIS score, leave blank for auto-estimate
+                                </small>
+                            </div>
+
+                            <!-- Age -->
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-calendar-check me-2"></i>Age
+                                </label>
+                                <input type="number" name="age" class="form-control galaxy-input" min="18" max="100" placeholder="18-100">
+                            </div>
+
+                            <!-- Employment Years -->
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-briefcase me-2"></i>Employment Years
+                                </label>
+                                <input type="number" name="employment_years" class="form-control galaxy-input" step="0.5" min="0" placeholder="Years in current employment">
+                            </div>
+
+                            <!-- Job Type -->
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-building me-2"></i>Job Type
+                                </label>
+                                <select name="job_type" class="form-select galaxy-input">
+                                    <option value="">Auto-detect</option>
+                                    <option value="permanent">Permanent Employee</option>
+                                    <option value="government">Government</option>
+                                    <option value="glc">GLC (Government-Linked Company)</option>
+                                    <option value="mnc">MNC (Multinational Corporation)</option>
+                                    <option value="sme">SME Employee</option>
+                                    <option value="self_employed">Self-Employed</option>
+                                    <option value="contract">Contract Worker</option>
+                                </select>
+                            </div>
+
+                            <!-- Target Bank -->
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-bank2 me-2"></i>Target Bank (Optional)
+                                </label>
+                                <input type="text" name="target_bank" class="form-control galaxy-input" placeholder="e.g., Maybank, CIMB (leave blank for all banks)">
+                                <small class="text-golden">
+                                    <i class="bi bi-filter me-1"></i>Filter products by specific bank
+                                </small>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="col-12 text-center pt-5 mt-4">
+                                <button type="submit" class="btn btn-lg px-5 py-3 galaxy-shimmer white-glow-btn" style="font-size: 1.2rem;">
+                                    <i class="bi bi-graph-up-arrow me-2"></i>
+                                    Run Modern Risk Assessment
+                                </button>
+                                <div class="mt-3">
+                                    <small class="text-silver-pearl">
+                                        <i class="bi bi-shield-check me-1"></i>
+                                        Powered by Malaysian Banking Standards (DTI · FOIR · CCRIS)
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="text-center mt-4">
+                <a href="{{ url_for('loan_matcher') }}" class="btn btn-outline-light">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Loan Matcher
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Data mode toggle handler
+document.querySelectorAll('input[name="data_mode_toggle"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.getElementById('data_mode_input').value = this.value;
+        
+        // Visual feedback
+        const modeInfo = document.createElement('div');
+        modeInfo.className = 'alert alert-info mt-3';
+        modeInfo.innerHTML = '<i class="bi bi-info-circle me-2"></i>' + 
+            (this.value === 'auto' 
+                ? 'Auto mode: System will intelligently fill missing fields based on customer data and statistical models.' 
+                : 'Manual mode: All fields must be provided manually.');
+        
+        const existingInfo = document.querySelector('.alert-info');
+        if (existingInfo) existingInfo.remove();
+        
+        this.closest('.galaxy-card').after(modeInfo);
+        setTimeout(() => modeInfo.remove(), 5000);
+    });
+});
+</script>
+
+<style>
+.btn-check:checked + .btn-outline-light {
+    background: linear-gradient(135deg, #FF007F, #D4AF37);
+    color: white;
+    font-weight: 700;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,332 @@
+{% extends "base.html" %}
+
+{% block title %}Loan Reports Generator{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Page Header -->
+            <div class="text-center mb-5">
+                <h1 class="galaxy-gradient-text mb-3">
+                    <i class="bi bi-file-earmark-pdf-fill me-2"></i>Loan Reports Generator
+                </h1>
+                <p class="fs-5" style="color: #FF007F; font-weight: 700;">
+                    Professional HTML/PDF Loan Assessment Reports with AI Insights
+                </p>
+            </div>
+
+            <!-- Features Card -->
+            <div class="galaxy-card mb-5">
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <i class="bi bi-file-earmark-text text-golden fs-1 mb-2"></i>
+                                <h6 class="text-white mb-1">Professional Reports</h6>
+                                <small class="text-silver-pearl">Bank-grade assessment reports</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <i class="bi bi-graph-up-arrow text-golden fs-1 mb-2"></i>
+                                <h6 class="text-white mb-1">Risk Analysis</h6>
+                                <small class="text-silver-pearl">DTI, FOIR, CCRIS, BRR, DSCR</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <i class="bi bi-robot text-golden fs-1 mb-2"></i>
+                                <h6 class="text-white mb-1">AI Explanations</h6>
+                                <small class="text-silver-pearl">Intelligent advisor insights</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <i class="bi bi-download text-golden fs-1 mb-2"></i>
+                                <h6 class="text-white mb-1">PDF Export</h6>
+                                <small class="text-silver-pearl">Instant download with branding</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Type Selection -->
+            <div class="galaxy-card mb-4">
+                <div class="card-body">
+                    <div class="section-header mb-4">
+                        <h5 class="galaxy-gradient-text mb-3">
+                            <i class="bi bi-bookmark-star me-2"></i>Select Report Type
+                        </h5>
+                        <div class="title-divider"></div>
+                    </div>
+                    
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="report-type-card" data-type="personal" style="cursor: pointer; border: 2px solid rgba(255, 0, 127, 0.3); border-radius: 10px; padding: 2rem; text-align: center; transition: all 0.3s ease;">
+                                <i class="bi bi-person-badge fs-1 mb-3" style="color: #FF007F;"></i>
+                                <h5 class="text-white mb-2">Personal Loan Report</h5>
+                                <p class="text-silver-pearl mb-3">Individual loan assessment with DTI, FOIR & CCRIS analysis</p>
+                                <ul class="text-start text-silver-pearl" style="list-style: none; padding-left: 0;">
+                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Personal income analysis</li>
+                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Risk grade (A1-E)</li>
+                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Product recommendations (3-10 banks)</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Approval probability</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="report-type-card" data-type="sme" style="cursor: pointer; border: 2px solid rgba(212, 175, 55, 0.3); border-radius: 10px; padding: 2rem; text-align: center; transition: all 0.3s ease;">
+                                <i class="bi bi-building-gear fs-1 mb-3" style="color: #D4AF37;"></i>
+                                <h5 class="text-white mb-2">SME Business Loan Report</h5>
+                                <p class="text-silver-pearl mb-3">Business loan assessment with BRR, DSCR & industry analysis</p>
+                                <ul class="text-start text-silver-pearl" style="list-style: none; padding-left: 0;">
+                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Business revenue analysis</li>
+                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Industry risk scoring</li>
+                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>SME product matching</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Cashflow stability metrics</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personal Loan Report Form -->
+            <div id="personalReportForm" class="galaxy-card" style="display: none;">
+                <div class="card-body">
+                    <div class="section-header mb-5">
+                        <h5 class="galaxy-gradient-text mb-3">
+                            <i class="bi bi-person-badge-fill me-2"></i>Personal Loan Report Parameters
+                        </h5>
+                        <div class="title-divider"></div>
+                    </div>
+                    
+                    <form action="/loan-reports/generate/personal" method="post" target="_blank">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-hash me-2"></i>Customer ID <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" name="customer_id" class="form-control galaxy-input" required min="1">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-cash-stack me-2"></i>Monthly Income (RM)
+                                </label>
+                                <input type="number" name="income" class="form-control galaxy-input" step="0.01" min="0" placeholder="Optional - auto-fetched">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-credit-card-2-back me-2"></i>Monthly Commitment (RM) <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" name="monthly_commitment" class="form-control galaxy-input" required step="0.01" min="0">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-bar-chart me-2"></i>CCRIS Bucket
+                                </label>
+                                <input type="number" name="ccris_bucket" class="form-control galaxy-input" min="0" max="6" placeholder="0-6">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-star-fill me-2"></i>Credit Score
+                                </label>
+                                <input type="number" name="credit_score" class="form-control galaxy-input" min="300" max="850" placeholder="300-850">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-calendar-check me-2"></i>Age
+                                </label>
+                                <input type="number" name="age" class="form-control galaxy-input" min="18" max="100">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-briefcase me-2"></i>Employment Years
+                                </label>
+                                <input type="number" name="employment_years" class="form-control galaxy-input" step="0.5" min="0">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-bank2 me-2"></i>Target Bank (Optional)
+                                </label>
+                                <input type="text" name="target_bank" class="form-control galaxy-input" placeholder="e.g., Maybank">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-file-earmark me-2"></i>Report Format <span class="text-danger">*</span>
+                                </label>
+                                <select name="format" class="form-select galaxy-input" required>
+                                    <option value="html">HTML (View in Browser)</option>
+                                    <option value="pdf">PDF (Download)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-cpu me-2"></i>Data Mode
+                                </label>
+                                <select name="data_mode" class="form-select galaxy-input">
+                                    <option value="manual">Manual Input</option>
+                                    <option value="auto">Auto Enrichment</option>
+                                </select>
+                            </div>
+                            <div class="col-12 text-center pt-4">
+                                <button type="submit" class="btn btn-lg px-5 py-3" style="background: linear-gradient(135deg, #FF007F, #D4AF37); color: white; font-weight: 700;">
+                                    <i class="bi bi-file-earmark-pdf-fill me-2"></i>
+                                    Generate Personal Loan Report
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- SME Loan Report Form -->
+            <div id="smeReportForm" class="galaxy-card" style="display: none;">
+                <div class="card-body">
+                    <div class="section-header mb-5">
+                        <h5 class="galaxy-gradient-text mb-3">
+                            <i class="bi bi-building-fill-gear me-2"></i>SME Business Loan Report Parameters
+                        </h5>
+                        <div class="title-divider"></div>
+                    </div>
+                    
+                    <form action="/loan-reports/generate/sme" method="post" target="_blank">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-hash me-2"></i>Customer ID / Business ID <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" name="customer_id" class="form-control galaxy-input" required min="1">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-currency-dollar me-2"></i>Monthly Revenue (RM) <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" name="monthly_revenue" class="form-control galaxy-input" required step="0.01" min="0">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-credit-card-2-back me-2"></i>Monthly Commitment (RM) <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" name="monthly_commitment" class="form-control galaxy-input" required step="0.01" min="0">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-diagram-3 me-2"></i>Industry
+                                </label>
+                                <input type="text" name="industry" class="form-control galaxy-input" placeholder="e.g., Technology">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-calendar-event me-2"></i>Years in Business
+                                </label>
+                                <input type="number" name="years_in_business" class="form-control galaxy-input" step="0.5" min="0">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-star-fill me-2"></i>CTOS SME Score
+                                </label>
+                                <input type="number" name="ctos_sme_score" class="form-control galaxy-input" min="300" max="850" placeholder="300-850">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-arrow-left-right me-2"></i>Cashflow Variance
+                                </label>
+                                <input type="number" name="cashflow_variance" class="form-control galaxy-input" step="0.01" min="0" max="1" placeholder="0.00 - 1.00">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-bank2 me-2"></i>Target Bank (Optional)
+                                </label>
+                                <input type="text" name="target_bank" class="form-control galaxy-input" placeholder="e.g., SME Bank">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-file-earmark me-2"></i>Report Format <span class="text-danger">*</span>
+                                </label>
+                                <select name="format" class="form-select galaxy-input" required>
+                                    <option value="html">HTML (View in Browser)</option>
+                                    <option value="pdf">PDF (Download)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-silver-pearl">
+                                    <i class="bi bi-cpu me-2"></i>Data Mode
+                                </label>
+                                <select name="data_mode" class="form-select galaxy-input">
+                                    <option value="manual">Manual Input</option>
+                                    <option value="auto">Auto Enrichment</option>
+                                </select>
+                            </div>
+                            <div class="col-12 text-center pt-4">
+                                <button type="submit" class="btn btn-lg px-5 py-3" style="background: linear-gradient(135deg, #D4AF37, #FF007F); color: white; font-weight: 700;">
+                                    <i class="bi bi-file-earmark-pdf-fill me-2"></i>
+                                    Generate SME Loan Report
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="text-center mt-4">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-light">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Report type selection
+document.querySelectorAll('.report-type-card').forEach(card => {
+    card.addEventListener('click', function() {
+        const type = this.dataset.type;
+        
+        // Remove active class from all cards
+        document.querySelectorAll('.report-type-card').forEach(c => {
+            c.style.boxShadow = 'none';
+            c.style.transform = 'scale(1)';
+        });
+        
+        // Add active class to selected card
+        this.style.boxShadow = '0 0 30px rgba(255, 0, 127, 0.5)';
+        this.style.transform = 'scale(1.02)';
+        
+        // Show appropriate form
+        document.getElementById('personalReportForm').style.display = 'none';
+        document.getElementById('smeReportForm').style.display = 'none';
+        
+        if (type === 'personal') {
+            document.getElementById('personalReportForm').style.display = 'block';
+        } else if (type === 'sme') {
+            document.getElementById('smeReportForm').style.display = 'block';
+        }
+        
+        // Scroll to form
+        setTimeout(() => {
+            const form = document.getElementById(type === 'personal' ? 'personalReportForm' : 'smeReportForm');
+            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    });
+});
+
+// Hover effects for report type cards
+document.querySelectorAll('.report-type-card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+        if (!this.style.transform.includes('1.02')) {
+            this.style.boxShadow = '0 0 20px rgba(212, 175, 55, 0.3)';
+        }
+    });
+    card.addEventListener('mouseleave', function() {
+        if (!this.style.transform.includes('1.02')) {
+            this.style.boxShadow = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}

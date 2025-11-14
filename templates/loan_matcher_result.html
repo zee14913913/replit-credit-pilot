@@ -47,6 +47,186 @@
                 </div>
             </div>
 
+            <!-- PHASE 6: Modern Engine Risk Analysis Panel -->
+            {% if is_modern_mode and modern_result %}
+            <div class="galaxy-card" style="margin-bottom: 5rem; border: 2px solid #FF007F;">
+                <div class="card-body">
+                    <h5 class="galaxy-gradient-text mb-4">
+                        <i class="bi bi-graph-up-arrow me-2"></i>{% if is_sme %}SME Risk Assessment{% else %}Modern Risk Assessment{% endif %} - Detailed Analysis
+                    </h5>
+                    
+                    <div class="row g-4">
+                        <!-- Risk Grade -->
+                        <div class="col-md-3">
+                            <div class="text-center p-3" style="background: rgba(255, 0, 127, 0.1); border-radius: 10px; border: 1px solid #FF007F;">
+                                <div class="text-silver-pearl small mb-2">Risk Grade</div>
+                                <div class="fs-1 fw-bold" style="color: {% if modern_result.risk_grade in ['A1', 'A2'] %}#00FF00{% elif modern_result.risk_grade in ['B1', 'B2'] %}#FFD700{% elif modern_result.risk_grade in ['C1', 'C2'] %}#FFA500{% else %}#FF4444{% endif %};">
+                                    {{ modern_result.risk_grade }}
+                                </div>
+                                <div class="text-golden small mt-2">{{ modern_result.risk_grade_description }}</div>
+                            </div>
+                        </div>
+                        
+                        <!-- DTI Ratio (Personal) or BRR (SME) -->
+                        <div class="col-md-3">
+                            <div class="text-center p-3" style="background: rgba(50, 36, 70, 0.3); border-radius: 10px;">
+                                <div class="text-silver-pearl small mb-2">{% if is_sme %}BRR Ratio{% else %}DTI Ratio{% endif %}</div>
+                                <div class="fs-2 fw-bold {% if (is_sme and modern_result.brr_ratio >= 2.0) or (not is_sme and modern_result.dti_ratio <= 0.4) %}text-success{% elif (is_sme and modern_result.brr_ratio >= 1.5) or (not is_sme and modern_result.dti_ratio <= 0.6) %}text-warning{% else %}text-danger{% endif %}">
+                                    {% if is_sme %}{{ '%.2f' | format(modern_result.brr_ratio) }}{% else %}{{ '%.1f' | format(modern_result.dti_ratio * 100) }}%{% endif %}
+                                </div>
+                                <div class="text-silver-pearl small mt-2">
+                                    {% if is_sme %}
+                                        Optimal: ≥2.0
+                                    {% else %}
+                                        Optimal: ≤40%
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- FOIR (Personal) or DSCR (SME) -->
+                        {% if not is_sme %}
+                        <div class="col-md-3">
+                            <div class="text-center p-3" style="background: rgba(50, 36, 70, 0.3); border-radius: 10px;">
+                                <div class="text-silver-pearl small mb-2">FOIR Ratio</div>
+                                <div class="fs-2 fw-bold {% if modern_result.foir_ratio <= 0.35 %}text-success{% elif modern_result.foir_ratio <= 0.50 %}text-warning{% else %}text-danger{% endif %}">
+                                    {{ '%.1f' | format(modern_result.foir_ratio * 100) }}%
+                                </div>
+                                <div class="text-silver-pearl small mt-2">Optimal: ≤35%</div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="col-md-3">
+                            <div class="text-center p-3" style="background: rgba(50, 36, 70, 0.3); border-radius: 10px;">
+                                <div class="text-silver-pearl small mb-2">DSCR Ratio</div>
+                                <div class="fs-2 fw-bold {% if modern_result.dscr_ratio >= 1.25 %}text-success{% elif modern_result.dscr_ratio >= 1.0 %}text-warning{% else %}text-danger{% endif %}">
+                                    {{ '%.2f' | format(modern_result.dscr_ratio) }}
+                                </div>
+                                <div class="text-silver-pearl small mt-2">Optimal: ≥1.25</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Approval Odds -->
+                        <div class="col-md-3">
+                            <div class="text-center p-3" style="background: rgba(255, 0, 127, 0.1); border-radius: 10px; border: 1px solid #FF007F;">
+                                <div class="text-silver-pearl small mb-2">Approval Probability</div>
+                                <div class="fs-1 fw-bold" style="color: {% if modern_result.approval_odds >= 70 %}#00FF00{% elif modern_result.approval_odds >= 50 %}#FFD700{% else %}#FFA500{% endif %};">
+                                    {{ modern_result.approval_odds }}%
+                                </div>
+                                <div class="text-golden small mt-2">
+                                    {% if modern_result.approval_odds >= 70 %}High Chance{% elif modern_result.approval_odds >= 50 %}Moderate{% else %}Consider Alternatives{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Metrics Row -->
+                    <div class="row g-4 mt-3">
+                        {% if not is_sme %}
+                        <!-- CCRIS Bucket -->
+                        <div class="col-md-4">
+                            <div class="p-3" style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; border: 1px solid rgba(255, 0, 127, 0.3);">
+                                <div class="text-silver-pearl small mb-2"><i class="bi bi-bar-chart me-2"></i>CCRIS Bucket</div>
+                                <div class="text-white fs-5 fw-bold">
+                                    Bucket {{ modern_result.ccris_bucket }}
+                                    <span class="badge {% if modern_result.ccris_bucket == 0 %}bg-success{% elif modern_result.ccris_bucket <= 2 %}bg-warning{% else %}bg-danger{% endif %} ms-2">
+                                        {{ modern_result.ccris_status }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <!-- Industry Risk -->
+                        <div class="col-md-4">
+                            <div class="p-3" style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.3);">
+                                <div class="text-silver-pearl small mb-2"><i class="bi bi-diagram-3 me-2"></i>Industry Risk</div>
+                                <div class="text-white fs-6">{{ modern_result.industry_risk_level }}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Max Loan Amount -->
+                        <div class="col-md-4">
+                            <div class="p-3" style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; border: 1px solid rgba(255, 0, 127, 0.3);">
+                                <div class="text-silver-pearl small mb-2"><i class="bi bi-currency-dollar me-2"></i>Max Loan Amount</div>
+                                <div class="text-golden fs-5 fw-bold">RM {{ '{:,}'.format(modern_result.max_loan_amount) }}</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Max EMI -->
+                        <div class="col-md-4">
+                            <div class="p-3" style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; border: 1px solid rgba(255, 0, 127, 0.3);">
+                                <div class="text-silver-pearl small mb-2"><i class="bi bi-calendar-month me-2"></i>Max Monthly EMI</div>
+                                <div class="text-white fs-5 fw-bold">RM {{ '{:,.2f}'.format(modern_result.max_emi) }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PHASE 6: AI Risk Advisor Panel -->
+            {% if modern_result and modern_result.get('ai_explanations') %}
+            <div class="galaxy-card" style="margin-bottom: 5rem; border: 2px solid #D4AF37;">
+                <div class="card-body">
+                    <h5 class="galaxy-gradient-text mb-4">
+                        <i class="bi bi-robot me-2"></i>AI Risk Advisor - Intelligent Analysis
+                    </h5>
+                    
+                    <div class="row g-4">
+                        <!-- Risk Grade Explanation -->
+                        {% if modern_result.ai_explanations.risk_grade_explanation %}
+                        <div class="col-12">
+                            <div class="p-4" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(0, 0, 0, 0.5)); border-radius: 10px; border-left: 4px solid #D4AF37;">
+                                <h6 class="text-golden mb-3">
+                                    <i class="bi bi-trophy-fill me-2"></i>Risk Grade Analysis
+                                </h6>
+                                <p class="text-white mb-0">{{ modern_result.ai_explanations.risk_grade_explanation }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- CCRIS Explanation (Personal) -->
+                        {% if not is_sme and modern_result.ai_explanations.ccris_explanation %}
+                        <div class="col-12">
+                            <div class="p-4" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1), rgba(0, 0, 0, 0.5)); border-radius: 10px; border-left: 4px solid #FF007F;">
+                                <h6 class="text-white mb-3" style="color: #FF007F;">
+                                    <i class="bi bi-bar-chart-fill me-2"></i>CCRIS Impact Analysis
+                                </h6>
+                                <p class="text-white mb-0">{{ modern_result.ai_explanations.ccris_explanation }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- DTI/FOIR Explanation (Personal) or BRR/DSCR Explanation (SME) -->
+                        {% if modern_result.ai_explanations.ratio_explanation %}
+                        <div class="col-12">
+                            <div class="p-4" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3), rgba(0, 0, 0, 0.5)); border-radius: 10px; border-left: 4px solid #322446;">
+                                <h6 class="text-white mb-3">
+                                    <i class="bi bi-calculator-fill me-2"></i>{% if is_sme %}BRR & DSCR Analysis{% else %}DTI & FOIR Analysis{% endif %}
+                                </h6>
+                                <p class="text-white mb-0">{{ modern_result.ai_explanations.ratio_explanation }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Product Recommendation Reasoning -->
+                        {% if modern_result.ai_explanations.recommendation_reason %}
+                        <div class="col-12">
+                            <div class="p-4" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1), rgba(0, 0, 0, 0.5)); border-radius: 10px; border-left: 4px solid #FF007F;">
+                                <h6 class="text-golden mb-3">
+                                    <i class="bi bi-lightbulb-fill me-2"></i>Why These Products Were Recommended
+                                </h6>
+                                <p class="text-white mb-0">{{ modern_result.ai_explanations.recommendation_reason }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+
             <!-- First Level: Category Selection -->
             <div class="galaxy-card" style="margin-bottom: 5rem;">
                 <div class="card-body">
