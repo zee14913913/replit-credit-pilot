@@ -15,6 +15,7 @@ from ..services.raw_document_service import RawDocumentService
 from ..services.unified_file_service import UnifiedFileService
 from ..services.pdf_parser import PDFParser
 from ..services.income_parser import IncomeParser
+from ..services.income_standardizer import IncomeStandardizer
 from ..utils.file_hash import calculate_uploaded_file_hash
 from ..models import Customer
 
@@ -179,7 +180,14 @@ async def upload_income_document(
         # 10. 解析结构化收入数据
         parsed_income = IncomeParser.parse_income_from_text(raw_text)
         
-        # 11. 注册到file_index统一索引
+        # 11. 标准化收入数据（统一收入模型）
+        standardized_income = IncomeStandardizer.standardize(
+            structured_income=parsed_income,
+            document_type=document_type,
+            confidence=confidence
+        )
+        
+        # 12. 注册到file_index统一索引
         file_size_kb = int(file_size / 1024)
         
         file_index = UnifiedFileService.register_file(
@@ -201,11 +209,12 @@ async def upload_income_document(
                 'income_detected': extracted_income,
                 'ocr_confidence': confidence,
                 'ocr_method': ocr_method,
-                'structured_income': parsed_income
+                'structured_income': parsed_income,
+                'standardized_income': standardized_income
             }
         )
         
-        # 12. 返回结果
+        # 13. 返回结果
         return {
             "status": "success",
             "message": "收入文件上传成功",
@@ -219,7 +228,8 @@ async def upload_income_document(
             "income_detected": extracted_income,
             "confidence": confidence,
             "raw_text": raw_text,
-            "structured_income": parsed_income
+            "structured_income": parsed_income,
+            "standardized_income": standardized_income
         }
         
     except HTTPException:
