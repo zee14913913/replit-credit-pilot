@@ -95,7 +95,8 @@ function renderProducts(products) {
     grid.innerHTML = '';
 
     if (products.length === 0) {
-        grid.innerHTML = '<p style="color: #aaa; text-align: center; grid-column: 1/-1;">No products found.</p>';
+        const noProductsText = window.i18n ? window.i18n.translate('no_products_found_dot') : 'No products found.';
+        grid.innerHTML = `<p style="color: #aaa; text-align: center; grid-column: 1/-1;">${noProductsText}</p>`;
         return;
     }
 
@@ -120,6 +121,9 @@ function createProductCard(product) {
                      (product.rate_range ? (product.rate_range[1] * 100).toFixed(2) : 
                      (product.base_rate ? (product.base_rate * 100).toFixed(2) : '0.00'));
 
+    const interestRateLabel = window.i18n ? window.i18n.translate('interest_rate_label') : 'Interest Rate';
+    const maxLoanLabel = window.i18n ? window.i18n.translate('max_loan_label') : 'Max Loan';
+    
     card.innerHTML = `
         <div class="product-card-header">
             <div class="bank-logo">${bankInitial}</div>
@@ -134,11 +138,11 @@ function createProductCard(product) {
 
         <div class="product-details">
             <div class="detail-row">
-                <label>Interest Rate</label>
+                <label>${interestRateLabel}</label>
                 <span class="rate-highlight">${minRate}% - ${maxRate}%</span>
             </div>
             <div class="detail-row">
-                <label>Max Loan</label>
+                <label>${maxLoanLabel}</label>
                 <span>RM ${formatNumber(product.max_loan_amount || product.max_amount || 0)}</span>
             </div>
             <div class="detail-row">

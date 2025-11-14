@@ -1018,5 +1018,20 @@
   "ai_loan_advisor": "AI贷款顾问",
   "recommended_loan_products": "推荐贷款产品",
   "placeholder_income": "例如：5000",
-  "placeholder_commitments": "例如：1200"
+  "placeholder_commitments": "例如：1200",
+  "ai_driven_malaysia_bank_approval_simulation": "AI驱动的马来西亚银行审批模拟",
+  "ctos_ccris_salary_slip_epf_bank_statement": "CTOS / CCRIS / 薪资单 / EPF / 银行对账单",
+  "provide_your_monthly_nett_income": "请提供您的月度净收入。",
+  "estimate_your_monthly_income_debts": "估算您的月收入和负债。",
+  "based_on_malaysia_bank_scoring": "基于马来西亚银行评分标准",
+  "max_emi": "最高月供",
+  "max_loan_amount_value": "最高贷款额",
+  "dti": "负债收入比",
+  "foir": "固定收入负担比",
+  "ccris_bucket": "CCRIS评级",
+  "credit_score": "信用评分",
+  "employment_status": "就业状态",
+  "no_products_found_dot": "未找到产品。",
+  "interest_rate_label": "利率",
+  "max_loan_label": "最高贷款额"
 }

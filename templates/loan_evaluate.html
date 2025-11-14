@@ -14,7 +14,7 @@
     <!-- ========================================================= -->
     <div class="page-header">
         <h1 class="title">{{ t('modern_personal_loan_evaluation') }}</h1>
-        <p class="subtitle">AI-Driven Malaysia Bank Approval Simulation</p>
+        <p class="subtitle">{{ t('ai_driven_malaysia_bank_approval_simulation') }}</p>
     </div>
 
     <!-- ========================================================= -->
@@ -36,7 +36,7 @@
             <!-- ================= FULL AUTO MODE ================= -->
             <div id="auto_mode_block" class="input-section">
                 <h2>{{ t('upload_financial_documents') }}</h2>
-                <p class="section-desc">CTOS / CCRIS / Salary Slip / EPF / Bank Statement</p>
+                <p class="section-desc">{{ t('ctos_ccris_salary_slip_epf_bank_statement') }}</p>
 
                 <div class="upload-box">
                     <label>{{ t('payslip_pdf') }}</label>
@@ -69,7 +69,7 @@
             <!-- ================= QUICK INCOME MODE ================= -->
             <div id="income_mode_block" class="input-section hidden">
                 <h2>{{ t('quick_estimate_income_only') }}</h2>
-                <p class="section-desc">Provide your monthly nett income.</p>
+                <p class="section-desc">{{ t('provide_your_monthly_nett_income') }}</p>
 
                 <div class="form-group">
                     <label>{{ t('nett_income_rm') }}</label>
@@ -82,7 +82,7 @@
             <!-- ================= QUICK INCOME + COMMIT ================= -->
             <div id="commit_mode_block" class="input-section hidden">
                 <h2>{{ t('quick_estimate_income_commitments') }}</h2>
-                <p class="section-desc">Estimate your monthly income & debts.</p>
+                <p class="section-desc">{{ t('estimate_your_monthly_income_debts') }}</p>
 
                 <div class="form-group">
                     <label>{{ t('nett_income_rm') }}</label>
@@ -108,25 +108,25 @@
             <div id="risk_card" class="card hidden">
                 <h3>{{ t('risk_assessment') }}</h3>
                 <div id="risk_grade" class="risk-grade">—</div>
-                <p><strong>DTI:</strong> <span id="r_dti">—</span></p>
-                <p><strong>FOIR:</strong> <span id="r_foir">—</span></p>
-                <p><strong>CCRIS Bucket:</strong> <span id="r_bucket">—</span></p>
-                <p><strong>Credit Score:</strong> <span id="r_credit">—</span></p>
-                <p><strong>Employment Status:</strong> <span id="r_emp">—</span></p>
+                <p><strong>{{ t('dti') }}:</strong> <span id="r_dti">—</span></p>
+                <p><strong>{{ t('foir') }}:</strong> <span id="r_foir">—</span></p>
+                <p><strong>{{ t('ccris_bucket') }}:</strong> <span id="r_bucket">—</span></p>
+                <p><strong>{{ t('credit_score') }}:</strong> <span id="r_credit">—</span></p>
+                <p><strong>{{ t('employment_status') }}:</strong> <span id="r_emp">—</span></p>
             </div>
 
             <!-- ========== APPROVAL ODDS ========== -->
             <div id="odds_card" class="card hidden">
                 <h3>{{ t('approval_odds') }}</h3>
                 <div id="odds_circle" class="odds-circle">—%</div>
-                <p class="odds-subtext">Based on Malaysia bank scoring</p>
+                <p class="odds-subtext">{{ t('based_on_malaysia_bank_scoring') }}</p>
             </div>
 
             <!-- ========== LOAN SUMMARY ========== -->
             <div id="loan_summary" class="card hidden">
                 <h3>{{ t('loan_eligibility') }}</h3>
-                <p><strong>Max EMI:</strong> RM <span id="r_max_emi">—</span></p>
-                <p><strong>Max Loan Amount:</strong> RM <span id="r_max_loan">—</span></p>
+                <p><strong>{{ t('max_emi') }}:</strong> RM <span id="r_max_emi">—</span></p>
+                <p><strong>{{ t('max_loan_amount_value') }}:</strong> RM <span id="r_max_loan">—</span></p>
             </div>
 
             <!-- ========== AI ADVISOR ========== -->

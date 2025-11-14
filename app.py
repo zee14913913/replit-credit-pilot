@@ -3970,7 +3970,7 @@ def loan_products():
     
     return render_template(
         'loan_products.html',
-        products_json=json.dumps(products_json),
+        products_json=products_json,
         total_products=total_products,
         total_banks=total_banks
     )

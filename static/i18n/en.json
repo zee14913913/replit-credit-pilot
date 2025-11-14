@@ -408,5 +408,20 @@
   "ai_loan_advisor": "AI Loan Advisor",
   "recommended_loan_products": "Recommended Loan Products",
   "placeholder_income": "e.g. 5000",
-  "placeholder_commitments": "e.g. 1200"
+  "placeholder_commitments": "e.g. 1200",
+  "ai_driven_malaysia_bank_approval_simulation": "AI-Driven Malaysia Bank Approval Simulation",
+  "ctos_ccris_salary_slip_epf_bank_statement": "CTOS / CCRIS / Salary Slip / EPF / Bank Statement",
+  "provide_your_monthly_nett_income": "Provide your monthly nett income.",
+  "estimate_your_monthly_income_debts": "Estimate your monthly income & debts.",
+  "based_on_malaysia_bank_scoring": "Based on Malaysia bank scoring",
+  "max_emi": "Max EMI",
+  "max_loan_amount_value": "Max Loan Amount",
+  "dti": "DTI",
+  "foir": "FOIR",
+  "ccris_bucket": "CCRIS Bucket",
+  "credit_score": "Credit Score",
+  "employment_status": "Employment Status",
+  "no_products_found_dot": "No products found.",
+  "interest_rate_label": "Interest Rate",
+  "max_loan_label": "Max Loan"
 }
