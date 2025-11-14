@@ -3002,6 +3002,44 @@ def admin_automation_status():
     })
 
 
+# ==================== 收入证明文件系统 Income Document System ====================
+
+@app.route('/income')
+def income_home():
+    """收入文件管理首页"""
+    return render_template('income/index.html')
+
+@app.route('/income/upload')
+def income_upload():
+    """收入文件上传页面"""
+    return render_template('income/upload.html')
+
+@app.route('/api/customers/list')
+def api_customers_list():
+    """获取客户列表API（供前端使用）"""
+    try:
+        db = get_db()
+        customers = get_all_customers(db)
+        return jsonify({
+            'status': 'success',
+            'customers': [
+                {
+                    'id': c['id'],
+                    'name': c['name'],
+                    'email': c['email'],
+                    'phone': c.get('phone', ''),
+                    'customer_code': c.get('customer_code', '')
+                }
+                for c in customers
+            ]
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+
 # ==================== 储蓄账户追踪系统 Savings Account Tracking ====================
 
 from ingest.savings_parser import parse_savings_statement

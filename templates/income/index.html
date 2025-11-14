@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}Income Documents{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- 页面标题 -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 style="color: #FF007F;">
+                <i class="bi bi-file-earmark-text"></i> Income Document System
+            </h1>
+            <p class="text-muted">Manage customer income verification documents with OCR technology</p>
+        </div>
+    </div>
+    
+    <!-- 操作按钮 -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <a href="{{ url_for('income_upload') }}" class="btn btn-lg"
+               style="background: linear-gradient(135deg, #FF007F, #FF4DA6); color: white; font-weight: 700;">
+                <i class="bi bi-cloud-upload"></i> Upload Income Document
+            </a>
+        </div>
+    </div>
+    
+    <!-- 客户选择 -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card" style="background: rgba(0,0,0,0.7); border: 2px solid #322446;">
+                <div class="card-body">
+                    <label class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
+                        <i class="bi bi-person"></i> Filter by Customer
+                    </label>
+                    <select id="customerFilter" class="form-select bg-dark text-white"
+                            style="border: 2px solid rgba(255,0,127,0.3);">
+                        <option value="">All Customers</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card" style="background: rgba(0,0,0,0.7); border: 2px solid #322446;">
+                <div class="card-body">
+                    <label class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
+                        <i class="bi bi-file-earmark-medical"></i> Filter by Document Type
+                    </label>
+                    <select id="typeFilter" class="form-select bg-dark text-white"
+                            style="border: 2px solid rgba(255,0,127,0.3);">
+                        <option value="">All Types</option>
+                        <option value="salary_slip">Salary Slip</option>
+                        <option value="tax_return">Tax Return</option>
+                        <option value="epf">EPF Statement</option>
+                        <option value="bank_inflow">Bank Statement</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 统计卡片 -->
+    <div class="row mb-4" id="statsCards">
+        <div class="col-md-3">
+            <div class="card" style="background: linear-gradient(135deg, rgba(255,0,127,0.2), rgba(255,0,127,0.1)); border: 2px solid #FF007F;">
+                <div class="card-body text-center">
+                    <h3 style="color: #FF007F;" id="totalFiles">0</h3>
+                    <p class="text-muted mb-0">Total Documents</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card" style="background: linear-gradient(135deg, rgba(50,36,70,0.3), rgba(50,36,70,0.2)); border: 2px solid #322446;">
+                <div class="card-body text-center">
+                    <h3 style="color: #322446;" id="totalCustomers">0</h3>
+                    <p class="text-muted mb-0">Customers</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card" style="background: linear-gradient(135deg, rgba(255,0,127,0.15), rgba(255,0,127,0.05)); border: 2px solid rgba(255,0,127,0.5);">
+                <div class="card-body text-center">
+                    <h3 style="color: #FF007F;" id="avgIncome">RM 0</h3>
+                    <p class="text-muted mb-0">Avg Income Detected</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card" style="background: linear-gradient(135deg, rgba(50,36,70,0.25), rgba(50,36,70,0.15)); border: 2px solid rgba(50,36,70,0.6);">
+                <div class="card-body text-center">
+                    <h3 style="color: #322446;" id="avgConfidence">0%</h3>
+                    <p class="text-muted mb-0">Avg OCR Confidence</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 文件列表 -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card" style="background: rgba(0,0,0,0.7); border: 2px solid #322446;">
+                <div class="card-header" style="background: rgba(255,0,127,0.1); border-bottom: 2px solid #FF007F;">
+                    <h5 style="color: #FF007F; margin: 0;">
+                        <i class="bi bi-list-ul"></i> Income Documents
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr style="border-bottom: 2px solid #FF007F;">
+                                    <th>ID</th>
+                                    <th>Customer</th>
+                                    <th>Document Type</th>
+                                    <th>Month</th>
+                                    <th>Income Detected</th>
+                                    <th>Confidence</th>
+                                    <th>Uploaded At</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="documentsTableBody">
+                                <tr>
+                                    <td colspan="9" class="text-center">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let allDocuments = [];
+let allCustomers = new Map();
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadCustomers();
+    loadDocuments();
+    
+    // 设置过滤器事件
+    document.getElementById('customerFilter').addEventListener('change', filterDocuments);
+    document.getElementById('typeFilter').addEventListener('change', filterDocuments);
+});
+
+async function loadCustomers() {
+    try {
+        const response = await fetch('/api/customers/list');
+        const data = await response.json();
+        
+        const select = document.getElementById('customerFilter');
+        data.customers.forEach(customer => {
+            allCustomers.set(customer.id, customer);
+            const option = document.createElement('option');
+            option.value = customer.id;
+            option.textContent = customer.name;
+            select.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading customers:', error);
+    }
+}
+
+async function loadDocuments() {
+    try {
+        const response = await fetch('/api/file-index/files?module=income');
+        const data = await response.json();
+        
+        allDocuments = data.files || [];
+        
+        // 更新统计
+        updateStats();
+        
+        // 渲染表格
+        renderTable(allDocuments);
+        
+    } catch (error) {
+        console.error('Error loading documents:', error);
+        document.getElementById('documentsTableBody').innerHTML = `
+            <tr>
+                <td colspan="9" class="text-center text-danger">
+                    <i class="bi bi-exclamation-triangle"></i> Error loading documents: ${error.message}
+                </td>
+            </tr>
+        `;
+    }
+}
+
+function updateStats() {
+    const totalFiles = allDocuments.length;
+    const uniqueCustomers = new Set(allDocuments.map(doc => {
+        const metadata = doc.metadata || {};
+        return metadata.customer_id;
+    }).filter(id => id)).size;
+    
+    const incomes = allDocuments
+        .map(doc => (doc.metadata || {}).income_detected || 0)
+        .filter(income => income > 0);
+    const avgIncome = incomes.length > 0 
+        ? incomes.reduce((a, b) => a + b, 0) / incomes.length 
+        : 0;
+    
+    const confidences = allDocuments
+        .map(doc => (doc.metadata || {}).ocr_confidence || 0)
+        .filter(conf => conf > 0);
+    const avgConfidence = confidences.length > 0
+        ? (confidences.reduce((a, b) => a + b, 0) / confidences.length) * 100
+        : 0;
+    
+    document.getElementById('totalFiles').textContent = totalFiles;
+    document.getElementById('totalCustomers').textContent = uniqueCustomers;
+    document.getElementById('avgIncome').textContent = `RM ${avgIncome.toFixed(2)}`;
+    document.getElementById('avgConfidence').textContent = `${avgConfidence.toFixed(1)}%`;
+}
+
+function filterDocuments() {
+    const customerFilter = document.getElementById('customerFilter').value;
+    const typeFilter = document.getElementById('typeFilter').value;
+    
+    const filtered = allDocuments.filter(doc => {
+        const metadata = doc.metadata || {};
+        
+        if (customerFilter && metadata.customer_id != customerFilter) {
+            return false;
+        }
+        
+        if (typeFilter && metadata.document_type !== typeFilter) {
+            return false;
+        }
+        
+        return true;
+    });
+    
+    renderTable(filtered);
+}
+
+function renderTable(documents) {
+    const tbody = document.getElementById('documentsTableBody');
+    
+    if (documents.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="9" class="text-center text-muted">
+                    <i class="bi bi-inbox"></i> No documents found
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    tbody.innerHTML = documents.map(doc => {
+        const metadata = doc.metadata || {};
+        const income = metadata.income_detected || 0;
+        const confidence = (metadata.ocr_confidence || 0) * 100;
+        const customerName = metadata.customer_name || 'Unknown';
+        const documentType = formatDocumentType(metadata.document_type || 'unknown');
+        const uploadedAt = doc.uploaded_at ? new Date(doc.uploaded_at).toLocaleDateString() : 'N/A';
+        
+        const statusBadge = doc.status === 'active' 
+            ? '<span class="badge bg-success">Active</span>'
+            : '<span class="badge bg-secondary">Pending</span>';
+        
+        const confidenceBadge = confidence >= 70
+            ? `<span class="badge bg-success">${confidence.toFixed(1)}%</span>`
+            : confidence >= 40
+            ? `<span class="badge bg-warning">${confidence.toFixed(1)}%</span>`
+            : `<span class="badge bg-danger">${confidence.toFixed(1)}%</span>`;
+        
+        return `
+            <tr>
+                <td>${doc.file_id}</td>
+                <td>${customerName}</td>
+                <td>${documentType}</td>
+                <td>${doc.period || 'N/A'}</td>
+                <td style="color: #FF007F; font-weight: 600;">RM ${income.toFixed(2)}</td>
+                <td>${confidenceBadge}</td>
+                <td>${uploadedAt}</td>
+                <td>${statusBadge}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary" onclick="viewDocument(${doc.file_id})">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function formatDocumentType(type) {
+    const types = {
+        'salary_slip': 'Salary Slip',
+        'tax_return': 'Tax Return',
+        'epf': 'EPF Statement',
+        'bank_inflow': 'Bank Statement'
+    };
+    return types[type] || type;
+}
+
+function viewDocument(fileId) {
+    window.location.href = `/files/${fileId}`;
+}
+</script>
+{% endblock %}

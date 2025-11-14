@@ -69,7 +69,8 @@ from .routes import (
     metrics,  # Phase 1-10: 分银行指标监控
     sftp_sync,  # SFTP ERP自动同步系统
     ai_assistant,  # AI智能助手（Savings页面集成）
-    ai_predict  # AI预测分析模块（AI V3 扩展）
+    ai_predict,  # AI预测分析模块（AI V3 扩展）
+    income_documents  # 收入证明文件管理系统
 )
 
 # 注册路由
@@ -102,6 +103,7 @@ app.include_router(metrics.router, tags=["Metrics"])  # Phase 1-10: 分银行指
 app.include_router(sftp_sync.router, tags=["SFTP Sync"])  # SFTP ERP自动同步系统
 app.include_router(ai_assistant.router, tags=["AI Assistant"])  # AI智能助手（Savings页面集成）
 app.include_router(ai_predict.router, tags=["AI Predict"])  # AI预测分析（AI V3 扩展 - 不修改现有ai_assistant）
+app.include_router(income_documents.router, tags=["Income Documents"])  # 收入证明文件管理系统
 
 
 # 启动事件：初始化数据库
