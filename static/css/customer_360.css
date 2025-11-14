@@ -1,0 +1,546 @@
+.customer-360-container {
+    background: #000;
+    min-height: 100vh;
+    padding: 20px;
+    color: #fff;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 30px 0;
+    border-bottom: 2px solid #322446;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #FF007F, #322446);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+}
+
+.page-header .subtitle {
+    color: #aaa;
+    font-size: 1.1rem;
+}
+
+.customer-info-banner {
+    background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+    border: 2px solid #FF007F;
+    border-radius: 15px;
+    padding: 20px 30px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.customer-name {
+    font-size: 1.5rem;
+    color: #FF007F;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.customer-name i {
+    font-size: 2rem;
+}
+
+.customer-id {
+    color: #aaa;
+}
+
+.customer-id strong {
+    color: #fff;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+@media (max-width: 1400px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.panel {
+    background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+    border: 2px solid #322446;
+    border-radius: 20px;
+    padding: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.panel:hover {
+    border-color: #FF007F;
+    box-shadow: 0 0 30px rgba(255, 0, 127, 0.3);
+}
+
+.panel-header {
+    background: linear-gradient(135deg, #322446, #1a0d1f);
+    padding: 20px 25px;
+    border-bottom: 2px solid #FF007F;
+}
+
+.panel-header h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #FF007F;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.panel-body {
+    padding: 25px;
+}
+
+.credit-profile-panel {
+    grid-column: 1;
+}
+
+.cashflow-panel {
+    grid-column: 2;
+    grid-row: 1 / 3;
+}
+
+.loan-capabilities-panel {
+    grid-column: 1;
+}
+
+.product-matches-panel {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 1400px) {
+    .credit-profile-panel,
+    .cashflow-panel,
+    .loan-capabilities-panel,
+    .product-matches-panel {
+        grid-column: 1;
+        grid-row: auto;
+    }
+}
+
+.risk-grade-section {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 30px;
+}
+
+.risk-grade-badge {
+    text-align: center;
+    padding: 30px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+    border: 3px solid #322446;
+    min-width: 150px;
+}
+
+.grade-text {
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.grade-label {
+    color: #aaa;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.risk-grade-badge.grade-a { border-color: #00ff87; color: #00ff87; }
+.risk-grade-badge.grade-b { border-color: #ffeb3b; color: #ffeb3b; }
+.risk-grade-badge.grade-c { border-color: #ff9800; color: #ff9800; }
+.risk-grade-badge.grade-d { border-color: #ff5722; color: #ff5722; }
+.risk-grade-badge.grade-e { border-color: #f44336; color: #f44336; }
+
+.approval-odds-circle {
+    position: relative;
+    width: 180px;
+    height: 180px;
+}
+
+.odds-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #FF007F;
+}
+
+.odds-label {
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-top: 5px;
+    text-transform: uppercase;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.metric-card {
+    background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
+    border: 2px solid #322446;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.metric-card:hover {
+    border-color: #FF007F;
+    transform: translateY(-3px);
+}
+
+.metric-label {
+    color: #aaa;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #FF007F;
+    margin-bottom: 8px;
+}
+
+.metric-status {
+    font-size: 0.85rem;
+    padding: 5px 12px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.metric-status.excellent { background: rgba(0, 255, 135, 0.2); color: #00ff87; }
+.metric-status.good { background: rgba(255, 235, 59, 0.2); color: #ffeb3b; }
+.metric-status.fair { background: rgba(255, 152, 0, 0.2); color: #ff9800; }
+.metric-status.poor { background: rgba(244, 67, 54, 0.2); color: #f44336; }
+
+.income-summary {
+    background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
+    border: 2px solid #322446;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #322446;
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.summary-row.highlight-row {
+    background: rgba(255, 0, 127, 0.1);
+    margin: 0 -20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+}
+
+.summary-label {
+    color: #aaa;
+}
+
+.summary-value {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.income-value { color: #00ff87; }
+.commitment-value { color: #ff5722; }
+.disposable-value { color: #FF007F; }
+
+.chart-container {
+    background: rgba(13, 13, 13, 0.5);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.capability-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+    .capability-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+.capability-card {
+    background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
+    border: 2px solid #322446;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.capability-card.highlight {
+    border-color: #FF007F;
+    background: linear-gradient(135deg, rgba(255, 0, 127, 0.1), rgba(50, 36, 70, 0.1));
+}
+
+.capability-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(255, 0, 127, 0.3);
+}
+
+.capability-icon {
+    font-size: 2.5rem;
+    color: #FF007F;
+    margin-bottom: 15px;
+}
+
+.capability-label {
+    color: #aaa;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+
+.capability-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.loan-simulator {
+    background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+    border: 2px solid #FF007F;
+    border-radius: 15px;
+    padding: 25px;
+}
+
+.loan-simulator h3 {
+    color: #FF007F;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+.simulator-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 15px;
+    align-items: end;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .simulator-inputs {
+        grid-template-columns: 1fr;
+    }
+}
+
+.input-group label {
+    color: #aaa;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.input-group .form-control {
+    background: #0d0d0d;
+    border: 2px solid #322446;
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.input-group .form-control:focus {
+    border-color: #FF007F;
+    outline: none;
+    box-shadow: 0 0 10px rgba(255, 0, 127, 0.3);
+}
+
+.btn-simulate {
+    background: linear-gradient(135deg, #FF007F, #d6006a);
+    border: none;
+    color: #fff;
+    padding: 12px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-simulate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(255, 0, 127, 0.5);
+}
+
+.simulator-results {
+    background: rgba(13, 13, 13, 0.5);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #322446;
+}
+
+.result-row:last-child {
+    border-bottom: none;
+}
+
+.result-row span {
+    color: #aaa;
+}
+
+.result-row strong {
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+.result-row.highlight-row {
+    background: rgba(255, 0, 127, 0.1);
+    margin: 0 -20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+}
+
+#productMatchesList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.product-match-card {
+    background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+    border: 2px solid #322446;
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.product-match-card:hover {
+    border-color: #FF007F;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(255, 0, 127, 0.3);
+}
+
+.product-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 15px;
+}
+
+.product-bank {
+    font-weight: bold;
+    color: #FF007F;
+    font-size: 1.1rem;
+}
+
+.product-odds {
+    background: rgba(0, 255, 135, 0.2);
+    color: #00ff87;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.product-name {
+    color: #fff;
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+.product-details {
+    margin-bottom: 15px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #322446;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.detail-value {
+    color: #fff;
+    font-weight: bold;
+}
+
+.product-reason {
+    background: rgba(50, 36, 70, 0.3);
+    border-left: 3px solid #FF007F;
+    padding: 12px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    color: #ddd;
+    border-radius: 5px;
+}
+
+.btn-apply {
+    width: 100%;
+    background: linear-gradient(135deg, #FF007F, #d6006a);
+    border: none;
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-apply:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 15px rgba(255, 0, 127, 0.5);
+}
+
+.loading-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #aaa;
+    font-size: 1.1rem;
+}
+
+.loading-state i {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 15px;
+    color: #FF007F;
+}
