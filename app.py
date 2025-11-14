@@ -4002,12 +4002,6 @@ def loan_products_dashboard():
     """Phase 9: Loan Marketplace Dashboard（三个入口卡片）"""
     return render_template('loan_products_dashboard.html')
 
-@app.route('/customer-360/<customer_id>')
-@require_admin_or_accountant
-def customer_360_dashboard(customer_id):
-    """Phase 10: Customer 360° Loan Dashboard - 个人贷款画像总览"""
-    return render_template('customer_360.html', customer_id=customer_id)
-
 @app.route('/loan-products/<int:product_id>')
 def loan_product_detail(product_id):
     """贷款产品详情页"""

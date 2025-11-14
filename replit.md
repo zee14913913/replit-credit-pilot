@@ -1,12 +1,17 @@
 # Smart Credit & Loan Manager
 
 ## Recent Changes
-- **Phase CLEAN: SME 360 Removal** (Nov 14, 2025) - 删除非核心Dashboard模块（❌ 已删除）：
+- **Phase CLEAN: Customer 360 Removal** (Nov 14, 2025) - 删除个人Dashboard模块（❌ 已删除）：
+  - **删除理由**: Customer 360° Dashboard非贷款顾问业务，图表数据推算无意义，PDPA高风险，占用资源且与核心业务无关
+  - **删除文件**: templates/customer_360.html, static/css/customer_360.css, static/js/customer_360.js, accounting_app/routes/customer_360.py
+  - **移除路由**: FastAPI router注册、Flask /customer-360/<customer_id>路由
+  - **保留核心**: Modern Loan Evaluate、Loan Products Catalog、CTOS Consent、Auto Enrichment、风控引擎全部保留
+- **Phase CLEAN: SME 360 Removal** (Nov 14, 2025) - 删除企业Dashboard模块（❌ 已删除）：
   - **删除理由**: SME 360° Dashboard中看不中用，对核心贷款业务无实际价值
   - **删除文件**: templates/sme_360.html, static/css/sme_360.css, static/js/sme_360.js, accounting_app/routes/sme_360.py
   - **移除路由**: FastAPI router注册、Flask /sme-360/<company_id>路由
   - **保留核心**: Modern Loan Evaluate、Loan Products Catalog、CTOS Consent、Auto Enrichment、风控引擎全部保留
-- **Phase 10: Customer 360° Loan Dashboard** (Nov 14, 2025) - 个人贷款画像总览系统（✅ 已完成）：
+- **Phase 10: Customer 360° Loan Dashboard** (Nov 14, 2025) - 个人贷款画像总览系统（❌ 已删除于Phase CLEAN）：
   - **创建customer_360.html**: Galaxy Theme 4面板布局（Credit Profile / Cashflow Insights / Loan Capabilities / Product Matches）
   - **创建customer_360.css（520行）**: 响应式Grid Layout、风险等级颜色映射（A/B/C/D/E）、Approval Odds SVG圆形进度条
   - **创建customer_360.js（365行）**: 完整前端引擎，包含4个render函数、Chart.js双图表、Loan Simulator、产品选择联动
