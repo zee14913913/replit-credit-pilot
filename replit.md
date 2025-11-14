@@ -8,6 +8,20 @@ Preferred communication style: Simple, everyday language.
 Design requirements: Premium, sophisticated, high-end - suitable for professional client demonstrations.
 User language: Chinese (使用中文与我沟通).
 
+## Recent Changes
+- **Phase 6: Modern Loan & SME Frontend Complete UI Coverage** (Nov 14, 2025) - Comprehensive frontend interface for Modern/SME loan engines featuring:
+  - **3 New Frontend Pages**: `/loan-evaluate` (Modern Loan Engine), `/sme-loan-evaluate` (SME Loan Engine), `/loan-reports` (Report Generator Hub)
+  - **7 New Flask Routes**: All protected with `@require_admin_or_accountant` RBAC, handling form-to-API marshalling, error handling, and audit logging
+  - **Enhanced loan_matcher_result.html**: Conditional rendering of complete risk analytics (DTI/FOIR/CCRIS/BRR/DSCR/Risk Grade/Approval Odds) and AI Risk Advisor explanations panel when `is_modern_mode=True`
+  - **Updated Navigation**: Loan Matcher dropdown now contains 5 entries (Smart Matcher, Modern Engine, SME Loans, Reports, Products) with visual separators
+  - **Design Compliance**: All new pages strictly follow galaxy-theme (Black #000000, Pink #FF007F, Purple #322446) with bilingual support
+  - **Data Mode Toggle**: Manual vs Auto enrichment modes for flexible data collection
+  - **Backward Compatible**: No modifications to Phase 1-5 legacy routes or existing functionality
+- **Dual-Engine Loan Evaluation System (CREDITPILOT)** - Production-ready dual-mode architecture supporting both legacy DSR/DSCR engines and modern Malaysian banking standards (DTI/FOIR/CCRIS/BRR).
+- **AI Smart Assistant V3 (Enterprise Intelligence)** - Multi-provider architecture (Perplexity primary, OpenAI fallback) with real-time web search and automated daily financial reports (08:00 generation, 08:10 email delivery via SendGrid).
+- **Income Document System** - Upload, OCR processing, and standardization of income proof documents with intelligent aggregation and confidence scoring.
+- **Multi-Channel Notifications** - Unified notification system supporting in-app, email (SendGrid), and SMS (Twilio) channels.
+
 ## System Architecture
 
 ### UI/UX Decisions
