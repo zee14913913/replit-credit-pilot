@@ -14,13 +14,13 @@
             <!-- 过滤器 -->
             <div style="margin-bottom: 20px; display: flex; gap: 12px; align-items: center;">
                 <button class="btn-action" onclick="loadNotifications('all')" id="btn-all">
-                    <i class="bi bi-list"></i> 全部
+                    <i class="bi bi-list"></i> <span data-i18n="all">{{ t('all') }}</span>
                 </button>
                 <button class="btn-secondary" onclick="loadNotifications('unread')" id="btn-unread">
-                    <i class="bi bi-envelope"></i> 未读
+                    <i class="bi bi-envelope"></i> <span data-i18n="unread">{{ t('unread') }}</span>
                 </button>
                 <button class="btn-secondary" onclick="loadNotifications('read')" id="btn-read">
-                    <i class="bi bi-envelope-open"></i> 已读
+                    <i class="bi bi-envelope-open"></i> <span data-i18n="read">{{ t('read') }}</span>
                 </button>
             </div>
             
@@ -118,7 +118,8 @@
         document.getElementById(`btn-${filter}`).classList.add('btn-action');
         
         const container = document.getElementById('notificationsList');
-        container.innerHTML = '<div class="text-center" style="padding: 40px;"><i class="bi bi-hourglass-split"></i> 加载中...</div>';
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+        container.innerHTML = `<div class="text-center" style="padding: 40px;"><i class="bi bi-hourglass-split"></i> ${t('loading', '加载中...')}</div>`;
         
         try {
             const apiBaseUrl = `${window.location.protocol}//${window.location.hostname}:8000`;
@@ -145,6 +146,7 @@
     }
     
     // {{ t('____function_displaynotificationsnotifications') }}) {
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         const container = document.getElementById('notificationsList');
         
         if (notifications.length === 0) {
@@ -164,7 +166,7 @@
                 <div class="notification-footer">
                     <div>
                         <span class="priority-badge priority-${n.priority || 'normal'}">
-                            ${n.priority === 'high' ? '高优先级' : n.priority === 'low' ? '低优先级' : '普通'}
+                            ${n.priority === 'high' ? t('high_priority', '高优先级') : n.priority === 'low' ? t('low_priority', '低优先级') : t('normal_priority', '普通')}
                         </span>
                         <span style="margin-left: 12px;">{{ t('formattimencreated_at') }}</span>
                     </div>
@@ -175,19 +177,20 @@
     }
     
     // {{ t('____function_formattimeisostring') }}) {
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         const date = new Date(isoString);
         const now = new Date();
         const diff = now - date;
         
         const minutes = Math.floor(diff / 60000);
-        if (minutes < 1) return '刚刚';
-        if (minutes < 60) return `${minutes}分钟前`;
+        if (minutes < 1) return t('just_now', '刚刚');
+        if (minutes < 60) return t('minutes_ago', '{n}分钟前').replace('{n}', minutes);
         
         const hours = Math.floor(minutes / 60);
-        if (hours < 24) return `${hours}小时前`;
+        if (hours < 24) return t('hours_ago', '{n}小时前').replace('{n}', hours);
         
         const days = Math.floor(hours / 24);
-        if (days < 7) return `${days}天前`;
+        if (days < 7) return t('days_ago', '{n}天前').replace('{n}', days);
         
         return date.toLocaleString('zh-CN');
     }

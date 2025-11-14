@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}优化方案 - {{ customer_name }}{% endblock %}
+{% block title %}<span data-i18n="optimization_proposal">{{ t('optimization_proposal') }}</span> - {{ customer_name }}{% endblock %}
 
 {% block content %}
 <div class="fade-in">
@@ -17,7 +17,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-8">
                         <h2 style="color: #FFFFFF; font-weight: 900; font-size: 2rem; margin-bottom: 1rem;">
-                            🎯 使用我们的方案，您每月可以净赚：
+                            <span data-i18n="use_our_plan_monthly_profit">{{ t('use_our_plan_monthly_profit') }}</span>
                         </h2>
                         <div style="font-size: 4rem; font-weight: 900; color: #FFFFFF; text-shadow: 0 0 20px rgba(255,255,255,0.5);">
                             RM {{ "%.2f"|format(proposal.total_benefit.customer_net_monthly) }}
@@ -29,12 +29,12 @@
                     <div class="col-md-4 text-end">
                         <div style="background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); padding: 1.5rem; border-radius: 12px;">
                             <div style="color: #FFFFFF; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">
-                                50/50 零风险利润分成
+                                <span data-i18n="fifty_fifty_risk_free">{{ t('fifty_fifty_risk_free') }}</span>
                             </div>
                             <div style="color: rgba(255,255,255,0.9); font-weight: 600; font-size: 0.95rem;">
-                                ✅ {{ t('rm_3') }} {{ "%.2f"|format(proposal.total_benefit.customer_net_monthly) }}/月<br>
-                                ✅ {{ t('rm_4') }} {{ "%.2f"|format(proposal.total_benefit.advisor_monthly_fee) }}/月<br>
-                                ✅ 只在实际节省后收费
+                                ✅ {{ t('rm_3') }} {{ "%.2f"|format(proposal.total_benefit.customer_net_monthly) }}<span data-i18n="per_month">{{ t('per_month') }}</span><br>
+                                ✅ {{ t('rm_4') }} {{ "%.2f"|format(proposal.total_benefit.advisor_monthly_fee) }}<span data-i18n="per_month">{{ t('per_month') }}</span><br>
+                                <span data-i18n="only_charge_after_savings">{{ t('only_charge_after_savings') }}</span>
                             </div>
                         </div>
                     </div>
@@ -48,7 +48,7 @@
         <div class="col-md-6">
             <div class="professional-card" style="border: 3px solid rgba(255,122,67,0.3);">
                 <h3 style="color: rgba(255,255,255,0.95); font-weight: 700; margin-bottom: 1.5rem;">
-                    📊 您当前的财务状况
+                    <span data-i18n="your_current_financial_status">{{ t('your_current_financial_status') }}</span>
                 </h3>
                 <div class="mb-3">
                     <div style="color: rgba(255,255,255,0.8); font-weight: 600; margin-bottom: 0.5rem;">{{ t('auto_text_1015') }}</div>
@@ -80,7 +80,7 @@
         <div class="col-md-6">
             <div class="professional-card" style="border: 3px solid #4CAF50;">
                 <h3 style="color: #4CAF50; font-weight: 700; margin-bottom: 1.5rem;">
-                    ✨ 使用优化方案后
+                    <span data-i18n="after_using_optimization">{{ t('after_using_optimization') }}</span>
                 </h3>
                 <div class="mb-3">
                     <div style="color: rgba(255,255,255,0.8); font-weight: 600; margin-bottom: 0.5rem;">{{ t('auto_text_1015') }}</div>
@@ -114,7 +114,7 @@
     <!-- 详细优化方案列表 -->
     <div class="professional-card mb-4">
         <h3 style="color: rgba(255,255,255,0.95); font-weight: 700; margin-bottom: 2rem;">
-            📋 优化方案详情（{{ proposal.num_proposals }} 个方案）
+            📋 <span data-i18n="optimization_details">{{ t('optimization_details') }}</span>（{{ proposal.num_proposals }}<span data-i18n="plans_count">{{ t('plans_count') }}</span>）
         </h3>
 
         {% for item in proposal.proposals %}
@@ -158,7 +158,7 @@
                             <tr>
                                 <td style="color: rgba(255,255,255,0.9); font-weight: 700; white-space: nowrap;">{{ t('auto_text_1029') }}</td>
                                 <td style="color: #FF007F; font-weight: 700; white-space: nowrap;">RM {{ "%.2f"|format(item.current.promo_period_cost) }}</td>
-                                <td style="color: #4CAF50; font-weight: 700; white-space: nowrap;">RM {{ "%.2f"|format(item.proposed.transfer_fee) }} (手续费)</td>
+                                <td style="color: #4CAF50; font-weight: 700; white-space: nowrap;">RM {{ "%.2f"|format(item.proposed.transfer_fee) }} <span data-i18n="transfer_fee">{{ t('transfer_fee') }}</span></td>
                             </tr>
                             {% elif item.type == 'cashback_optimization' %}
                             <tr>
@@ -179,7 +179,7 @@
                 <div class="col-md-4">
                     <div style="background: rgba(76,175,80,0.15); border: 2px solid #4CAF50; padding: 1.5rem; border-radius: 12px;">
                         <div style="color: #4CAF50; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">
-                            💰 节省金额
+                            <span data-i18n="savings_amount">{{ t('savings_amount') }}</span>
                         </div>
                         {% if item.type == 'debt_consolidation' %}
                         <div style="font-size: 2rem; font-weight: 900; color: #4CAF50;">
@@ -215,7 +215,7 @@
     <!-- {{ t('cta___') }}！ -->
     <div class="professional-card" style="background: linear-gradient(135deg, #322446 0%, #322446 100%); border: 3px solid #FFFFFF; text-align: center; padding: 3rem;">
         <h2 style="color: #2C2416; font-weight: 900; font-size: 2.5rem; margin-bottom: 1rem;">
-            🚀 立即行动，开始省钱！
+            <span data-i18n="take_action_start_saving">{{ t('take_action_start_saving') }}</span>
         </h2>
         <p style="color: #3D3020; font-weight: 700; font-size: 1.3rem; margin-bottom: 2rem;">
             {{ t('_rm_4') }} {{ "%.2f"|format(proposal.total_benefit.customer_net_monthly) }}，{{ t('_rm_5') }} {{ "%.2f"|format(proposal.total_benefit.customer_net_annual) }}
@@ -225,17 +225,17 @@
             <a href="{{ url_for('request_optimization_consultation', customer_id=customer_id) }}" 
                class="btn-white-glow" 
                style="font-size: 1.5rem; padding: 1.25rem 3rem; background: #FFFFFF; color: #2C2416; font-weight: 900; box-shadow: 0 8px 20px rgba(0,0,0,0.3);">
-                <i class="bi bi-rocket-takeoff"></i> 申请了解完整优化方案
+                <i class="bi bi-rocket-takeoff"></i> <span data-i18n="apply_for_full_proposal">{{ t('apply_for_full_proposal') }}</span>
             </a>
             <a href="{{ url_for('customer_dashboard', customer_id=customer_id) }}" 
                class="btn" 
                style="font-size: 1.2rem; padding: 1.25rem 2rem; background: rgba(255,255,255,0.3); color: #2C2416; font-weight: 700; border: 2px solid #FFFFFF;">
-                <i class="bi bi-arrow-left"></i> 返回仪表板
+                <i class="bi bi-arrow-left"></i> <span data-i18n="back_to_dashboard">{{ t('back_to_dashboard') }}</span>
             </a>
         </div>
 
         <div style="margin-top: 2rem; color: #3D3020; font-weight: 600; font-size: 1.1rem;">
-            ✅ 零风险保证 | ✅ 只在实际节省后收费 | ✅ 50/50利润分成
+            <span data-i18n="zero_risk_guarantee">{{ t('zero_risk_guarantee') }}</span>
         </div>
     </div>
 </div>

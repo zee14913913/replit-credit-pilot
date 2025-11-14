@@ -2122,5 +2122,7 @@
   "just_now": "刚刚",
   "minutes_ago": "{n}分钟前",
   "hours_ago": "{n}小时前",
-  "days_ago": "{n}天前"
+  "days_ago": "{n}天前",
+  "optimization_details": "优化方案详情",
+  "plans_count": " 个方案"
 }

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}财务仪表板 - {{ customer_name }}{% endblock %}
+{% block title %}<span data-i18n="financial_dashboard">{{ t('financial_dashboard') }}</span> - {{ customer_name }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid mt-4">
@@ -8,10 +8,10 @@
         <div class="col-md-12">
             <div class="d-flex justify-content-between align-items-center">
                 <h2 class="mb-0">
-                    <i class="bi bi-speedometer2"></i> 财务仪表板
+                    <i class="bi bi-speedometer2"></i> <span data-i18n="financial_dashboard">{{ t('financial_dashboard') }}</span>
                 </h2>
                 <a href="/customer/{{ customer_id }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> 返回客户中心
+                    <i class="bi bi-arrow-left"></i> <span data-i18n="back_to_customer_center">{{ t('back_to_customer_center') }}</span>
                 </a>
             </div>
             <p class="text-muted mt-2"><span data-i18n="customer_colon">{{ t('customer_colon') }}</span> {{ customer_name }}</p>
@@ -38,7 +38,7 @@
     <div class="row mb-4">
         <div class="col-md-12">
             <h4 class="mb-3">
-                <i class="bi bi-person-circle"></i> 客户总览指标
+                <i class="bi bi-person-circle"></i> <span data-i18n="customer_overview_metrics">{{ t('customer_overview_metrics') }}</span>
             </h4>
         </div>
         
@@ -91,7 +91,7 @@
     <div class="row">
         <div class="col-md-12">
             <h4 class="mb-3">
-                <i class="bi bi-credit-card-2-front"></i> 信用卡详细指标
+                <i class="bi bi-credit-card-2-front"></i> <span data-i18n="credit_card_detailed_metrics">{{ t('credit_card_detailed_metrics') }}</span>
             </h4>
         </div>
     </div>
@@ -157,7 +157,7 @@
                             <div class="metric-box">
                                 <small class="text-muted d-block">{{ t('auto_text_723') }}</small>
                                 <strong class="text-purple d-block fs-5">
-                                    {{ "{:,}".format(card.cumulative_points) }} 分
+                                    {{ "{:,}".format(card.cumulative_points) }} <span data-i18n="points_unit">{{ t('points_unit') }}</span>
                                 </strong>
                             </div>
                         </div>
@@ -169,7 +169,7 @@
     </div>
     {% else %}
     <div class="alert alert-info">
-        <i class="bi bi-info-circle"></i> 该客户暂无信用卡数据
+        <i class="bi bi-info-circle"></i> <span data-i18n="no_credit_card_data">{{ t('no_credit_card_data') }}</span>
     </div>
     {% endif %}
 
@@ -185,7 +185,7 @@
                         <i class="bi bi-list-ul"></i> {{ t('_owner_vs_infinite') }} 账本
                     </a>
                     <a href="/customer/{{ customer_id }}/generate_monthly_report?month={{ selected_month }}" class="btn btn-outline-info">
-                        <i class="bi bi-file-earmark-pdf"></i> 生成月度报告
+                        <i class="bi bi-file-earmark-pdf"></i> <span data-i18n="generate_monthly_report">{{ t('generate_monthly_report') }}</span>
                     </a>
                 </div>
             </div>

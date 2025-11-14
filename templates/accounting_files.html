@@ -815,51 +815,15 @@
                 modalBody.innerHTML = html;
                 
             } catch (error) {
-                modalBody.innerHTML = `<div class="empty">{{ t('_errormessage') }}</div>{{ t('_____________________________________________async') }}<div class="loading">{{ t('auto_text_95') }}</div>';
-            
-            try {
-                const url = `/api/proxy/files/view?company_id=${companyId}&file_path=${encodeURIComponent(filePath)}`;
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                if (data.format === 'csv') {
-                    // {{ t('csv') }}
-                    let html = `
-                        <div style="color: #0f0; margin-bottom: 1rem;">
-                            📊 {{ t('csv__') }}: ${data.row_count} | 列数: ${data.headers.length}
-                        </div>
-                        <table class="csv-table">
-                            <thead>
-                                <tr>
-                    `;
-                    
-                    // {{ t('____________________dataheadersforeachheader') }} => {
-                        html += `<th>{{ t('header') }}</th>{{ t('________________________________________html__') }}</tr></thead><tbody>';
-                    
-                    // {{ t('____________________datarowsforeachrow_idx') }}) => {
-                        html += '<tr>';
-                        data.headers.forEach(header => {
-                            html += `<td>{{ t('rowheader__') }}</td>{{ t('________________________________________________ht_1') }}</tr>{{ t('___________________________________________________2') }}</tbody></table>';
-                    modalBody.innerHTML = html;
-                    
-                } else {
-                    const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
-                    // {{ t('____________________modalbodyinnerhtml') }} = `
-                    modalBody.innerHTML = `
-                        <div style="color: #0f0; margin-bottom: 1rem;">
-                            📝 ${t('text_content', '文本内容')} | ${t('total_rows', '总行数')}: ${data.line_count}
-                        </div>
-                        <div class="file-viewer" style="color: #0f0;">
-                            ${data.content.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
-                        </div>
-                    `;
-                }
-                
-            } catch (error) {
-                modalBody.innerHTML = `<div class="empty">{{ t('_errormessage') }}</div>{{ t('____________________________________function_close') }}<div class="loading">{{ t('_pdfcsv') }}</div>{{ t('________________________________const_conversionre') }}<div class="loading">{{ t('_pdfcsv_conversionresultrowcountn_') }}</div>{{ t('_____________else_________________fileslistinnerht') }}<div class="loading">{{ t('_csv') }}</div>`;
+                modalBody.innerHTML = `<div class="empty">Error loading file</div>`;
             }
+        }
+        
+        async function handleFileUpload(event) {
+            const uploadFile = event.target.files[0];
+            if (!uploadFile) return;
             
-            // {{ t('csvpdfcsv____________const_formdata__') }}new FormData();
+            const formData = new FormData();
             formData.append('file', uploadFile);
             
             try {
@@ -868,16 +832,15 @@
                     body: formData
                 });
                 
-                {{ t('const_result__await_responsejson__________________') }}           // Phase 1-10: 统一跳转策略 - 无论成功/失败都跳转到detail页
-                // 只要有raw_document_id就跳转（文件已封存到vault）
+                const result = await response.json();
                 const fileId = result.raw_document_id || result.file_id;
                 if (fileId) {
-                    // {{ t('duplicatestatus__________________') }}  window.location.href = `/files/detail/${fileId}?highlight=${fileId}`;
+                    window.location.href = `/files/detail/${fileId}?highlight=${fileId}`;
                     return;
                 }
                 
                 const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
-                // {{ t('raw_document_idtoast_____________') }}   const errorMessage = result.status_reason || result.message || result.error || t('upload_failed', '上传失败');
+                const errorMessage = result.status_reason || result.message || result.error || t('upload_failed', '上传失败');
                 if (window.Toast) {
                     Toast.error(errorMessage);
                 } else {
@@ -895,7 +858,7 @@
                 loadFiles();
             }
             
-            // {{ t('____________eventtargetvalue') }} = '';
+            event.target.value = '';
         }
         
         // {{ t('________loadfiles_________________url') }}并高亮指定文件
