@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Loan Products Marketplace{% endblock %}
+{% block title %}{{ t('loan_products_marketplace') }}{% endblock %}
 {% block content %}
 
 <link rel="stylesheet" href="/static/css/loan_products_catalog.css">
@@ -11,8 +11,8 @@
     <!-- PAGE HEADER -->
     <!-- ========================================================= -->
     <div class="marketplace-header">
-        <h1 class="title">Loan Products Marketplace</h1>
-        <p class="subtitle">Browse <span class="highlight">{{ total_products }}</span> loan products from <span class="highlight">{{ total_banks }}</span> Malaysian banks & fintechs</p>
+        <h1 class="title">{{ t('loan_products_marketplace') }}</h1>
+        <p class="subtitle">{{ t('browse_products_desc').replace('{products}', '<span class="highlight">' + total_products|string + '</span>').replace('{banks}', '<span class="highlight">' + total_banks|string + '</span>')|safe }}</p>
     </div>
 
     <!-- ========================================================= -->
@@ -21,27 +21,27 @@
     <div class="search-filter-bar">
         <div class="search-box">
             <i class="bi bi-search"></i>
-            <input type="text" id="searchInput" placeholder="Search by bank or product name...">
+            <input type="text" id="searchInput" placeholder="{{ t('search_by_bank_or_product') }}">
         </div>
 
         <div class="filter-buttons">
             <button class="filter-btn active" data-filter="all">
-                <i class="bi bi-grid-fill"></i> All Products
+                <i class="bi bi-grid-fill"></i> {{ t('all_products') }}
             </button>
             <button class="filter-btn" data-filter="traditional_bank">
-                <i class="bi bi-bank"></i> Banks
+                <i class="bi bi-bank"></i> {{ t('banks') }}
             </button>
             <button class="filter-btn" data-filter="digital_bank">
-                <i class="bi bi-phone"></i> Digital Banks
+                <i class="bi bi-phone"></i> {{ t('digital_banks') }}
             </button>
             <button class="filter-btn" data-filter="fintech">
-                <i class="bi bi-lightning-charge"></i> Fintech
+                <i class="bi bi-lightning-charge"></i> {{ t('fintech') }}
             </button>
             <button class="filter-btn" data-filter="lowest_rate">
-                <i class="bi bi-arrow-down-circle"></i> Lowest Rate
+                <i class="bi bi-arrow-down-circle"></i> {{ t('lowest_rate') }}
             </button>
             <button class="filter-btn" data-filter="highest_amount">
-                <i class="bi bi-cash-stack"></i> Highest Amount
+                <i class="bi bi-cash-stack"></i> {{ t('highest_amount') }}
             </button>
         </div>
     </div>
@@ -74,7 +74,7 @@
             <div class="modal-body">
                 <!-- Interest Rate Section -->
                 <div class="detail-section">
-                    <h3><i class="bi bi-percent"></i> Interest Rate</h3>
+                    <h3><i class="bi bi-percent"></i> {{ t('interest_rate') }}</h3>
                     <div class="rate-display">
                         <span id="modalRateMin"></span> - <span id="modalRateMax"></span>
                     </div>
@@ -82,22 +82,22 @@
 
                 <!-- Loan Details -->
                 <div class="detail-section">
-                    <h3><i class="bi bi-info-circle"></i> Loan Details</h3>
+                    <h3><i class="bi bi-info-circle"></i> {{ t('loan_details') }}</h3>
                     <div class="details-grid">
                         <div class="detail-item">
-                            <label>Max Loan Amount</label>
+                            <label>{{ t('max_loan_amount') }}</label>
                             <span id="modalMaxAmount"></span>
                         </div>
                         <div class="detail-item">
-                            <label>Max Tenure</label>
+                            <label>{{ t('max_tenure') }}</label>
                             <span id="modalMaxTenure"></span>
                         </div>
                         <div class="detail-item">
-                            <label>Min Income</label>
+                            <label>{{ t('min_income') }}</label>
                             <span id="modalMinIncome"></span>
                         </div>
                         <div class="detail-item">
-                            <label>Approval Time</label>
+                            <label>{{ t('approval_time') }}</label>
                             <span id="modalApprovalTime"></span>
                         </div>
                     </div>
@@ -105,23 +105,23 @@
 
                 <!-- Features -->
                 <div class="detail-section">
-                    <h3><i class="bi bi-star-fill"></i> Features</h3>
+                    <h3><i class="bi bi-star-fill"></i> {{ t('features') }}</h3>
                     <div id="modalFeatures" class="features-list"></div>
                 </div>
 
                 <!-- Eligibility -->
                 <div class="detail-section">
-                    <h3><i class="bi bi-check-circle"></i> Eligibility Requirements</h3>
+                    <h3><i class="bi bi-check-circle"></i> {{ t('eligibility_requirements') }}</h3>
                     <div id="modalEligibility" class="eligibility-list"></div>
                 </div>
 
                 <!-- Action Buttons -->
                 <div class="modal-actions">
                     <button class="btn-select-product" onclick="selectProductForEvaluation()">
-                        <i class="bi bi-calculator"></i> Select For Loan Evaluation
+                        <i class="bi bi-calculator"></i> {{ t('select_for_evaluation') }}
                     </button>
                     <button class="btn-secondary" onclick="closeProductModal()">
-                        Close
+                        {{ t('close') }}
                     </button>
                 </div>
             </div>
