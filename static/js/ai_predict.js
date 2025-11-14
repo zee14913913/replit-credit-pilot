@@ -26,14 +26,15 @@ class AIPredictManager {
         const scoreBox = document.getElementById('ai-health-score');
         if (!scoreBox) return;
 
-        const loadingText = window.i18n ? window.i18n.translate('loading') : '加载中...';
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+        const loadingText = t('loading_text', '加载中...');
         scoreBox.innerHTML = `<div style="text-align:center; color:#888;">${loadingText}</div>`;
 
         try {
             const res = await fetch(`/api/ai-assistant/health-score/${this.customerId}`);
             const data = await res.json();
 
-            const noDataText = window.i18n ? window.i18n.translate('no_data') : '暂无数据';
+            const noDataText = t('no_data_available', '暂无数据');
             if (data.error || !data.score) {
                 scoreBox.innerHTML = `<div style="color:#ff4444;">❌ ${data.error || noDataText}</div>`;
                 return;
@@ -43,8 +44,8 @@ class AIPredictManager {
             const explanation = data.ai_explanation;
 
             // Translatable text
-            const scoreBreakdownText = window.i18n ? window.i18n.translate('score_breakdown') : '分数明细';
-            const aiAdvisorText = window.i18n ? window.i18n.translate('ai_advisor_recommendation') : 'AI顾问建议';
+            const scoreBreakdownText = t('score_breakdown_details', '分数明细');
+            const aiAdvisorText = t('ai_advisor_recommendations', 'AI顾问建议');
 
             // 评分颜色
             let scoreColor = '#FF007F'; // Hot Pink
@@ -84,7 +85,7 @@ class AIPredictManager {
                 </div>
             `;
         } catch (error) {
-            const loadingFailedText = window.i18n ? window.i18n.translate('loading_failed') : '加载失败';
+            const loadingFailedText = t('loading_failed_error', '加载失败');
             scoreBox.innerHTML = `<div style="color:#ff4444;">❌ ${loadingFailedText}: ${error.message}</div>`;
         }
     }
@@ -96,11 +97,13 @@ class AIPredictManager {
         const chartBox = document.getElementById('ai-trend-chart');
         if (!chartBox) return;
 
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+
         try {
             const res = await fetch(`/api/ai-assistant/trends/${this.customerId}`);
             const data = await res.json();
 
-            const noTrendDataText = window.i18n ? window.i18n.translate('no_trend_data') : '暂无趋势数据';
+            const noTrendDataText = t('no_trend_data_available', '暂无趋势数据');
             if (data.count === 0) {
                 chartBox.innerHTML = `<div style="color:#888; text-align:center; padding:40px;">${noTrendDataText}</div>`;
                 return;
@@ -109,7 +112,7 @@ class AIPredictManager {
             // 创建图表
             this.renderTrendChart(chartBox, data);
         } catch (error) {
-            const loadingFailedText = window.i18n ? window.i18n.translate('loading_failed') : '加载失败';
+            const loadingFailedText = t('loading_failed_error', '加载失败');
             chartBox.innerHTML = `<div style="color:#ff4444;">❌ ${loadingFailedText}: ${error.message}</div>`;
         }
     }
@@ -121,6 +124,8 @@ class AIPredictManager {
         container.innerHTML = '<canvas id="ai-trend-canvas"></canvas>';
         const canvas = document.getElementById('ai-trend-canvas');
         const ctx = canvas.getContext('2d');
+
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
 
         // 销毁旧图表
         if (this.chartInstance) {
@@ -134,14 +139,14 @@ class AIPredictManager {
                 labels: data.labels,
                 datasets: [
                     {
-                        label: '支出 (RM)',
+                        label: t('chart_expenses_rm', '支出 (RM)'),
                         data: data.expenses,
                         borderColor: '#322446',
                         backgroundColor: 'rgba(50, 36, 70, 0.1)',
                         tension: 0.3
                     },
                     {
-                        label: '还款 (RM)',
+                        label: t('chart_payments_rm', '还款 (RM)'),
                         data: data.payments,
                         borderColor: '#FF007F',
                         backgroundColor: 'rgba(255, 0, 127, 0.1)',
@@ -191,7 +196,8 @@ class AIPredictManager {
         const predBox = document.getElementById('ai-prediction');
         if (!predBox) return;
 
-        predBox.innerHTML = '<div style="text-align:center; color:#888;">⏳ 加载中...</div>';
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+        predBox.innerHTML = `<div style="text-align:center; color:#888;">⏳ ${t('loading_text', '加载中...')}</div>`;
 
         try {
             const res = await fetch('/api/ai-assistant/predict', {
@@ -212,36 +218,36 @@ class AIPredictManager {
 
             predBox.innerHTML = `
                 <div style="margin-bottom:20px;">
-                    <div style="color:#FF007F; font-weight:700; margin-bottom:12px;">📈 未来 3 个月预测</div>
+                    <div style="color:#FF007F; font-weight:700; margin-bottom:12px;">📈 ${t('future_3_months_prediction', '未来 3 个月预测')}</div>
                     ${pred.predictions.map(p => `
                         <div style="background:#0a0a0a; padding:12px; border-radius:8px; margin-bottom:10px; border-left:3px solid #FF007F;">
                             <div style="color:#ddd; font-weight:600; margin-bottom:8px;">${p.statement_month}</div>
                             <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                                <span style="color:#ccc;">预测支出:</span>
+                                <span style="color:#ccc;">${t('predicted_expenses_label', '预测支出:')}</span>
                                 <span style="color:#322446; font-weight:700;">RM ${p.predicted_expenses.toFixed(2)}</span>
                             </div>
                             <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                                <span style="color:#ccc;">预测还款:</span>
+                                <span style="color:#ccc;">${t('predicted_payments_label', '预测还款:')}</span>
                                 <span style="color:#FF007F; font-weight:700;">RM ${p.predicted_payments.toFixed(2)}</span>
                             </div>
                             <div style="display:flex; justify-content:space-between;">
-                                <span style="color:#ccc;">预测余额:</span>
+                                <span style="color:#ccc;">${t('predicted_balance_label', '预测余额:')}</span>
                                 <span style="color:#00BFFF; font-weight:700;">RM ${p.predicted_balance.toFixed(2)}</span>
                             </div>
                             <div style="margin-top:6px; text-align:right; color:#888; font-size:0.85rem;">
-                                置信度: ${(p.confidence * 100).toFixed(0)}%
+                                ${t('confidence_label', '置信度:')} ${(p.confidence * 100).toFixed(0)}%
                             </div>
                         </div>
                     `).join('')}
                 </div>
                 
                 <div style="background:#1a1228; padding:14px; border-radius:8px; border-left:4px solid #FF007F;">
-                    <div style="color:#FF007F; font-weight:700; margin-bottom:8px;">🤖 AI洞察</div>
+                    <div style="color:#FF007F; font-weight:700; margin-bottom:8px;">🤖 ${t('ai_insights', 'AI洞察')}</div>
                     <div style="color:#ddd; line-height:1.6;">${insights}</div>
                 </div>
             `;
         } catch (error) {
-            predBox.innerHTML = `<div style="color:#ff4444;">❌ 加载失败: ${error.message}</div>`;
+            predBox.innerHTML = `<div style="color:#ff4444;">❌ ${t('loading_failed_error', '加载失败')}: ${error.message}</div>`;
         }
     }
 }
