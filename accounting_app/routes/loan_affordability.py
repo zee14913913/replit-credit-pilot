@@ -25,7 +25,7 @@ router = APIRouter(prefix="/api/loans", tags=["Loan Affordability"])
 @router.get("/affordability/{customer_id}")
 def get_loan_affordability(
     customer_id: int,
-    current_monthly_debt: Optional[float] = Query(None, description="当前月度债务（从CTOS报告获取）"),
+    monthly_commitment: Optional[float] = Query(None, description="当前月度承诺还款（从CTOS报告获取）"),
     company_id: int = Query(1, description="公司ID"),
     db: Session = Depends(get_db)
 ) -> Dict:
@@ -36,7 +36,7 @@ def get_loan_affordability(
     
     Args:
         customer_id: 客户ID
-        current_monthly_debt: 当前月度债务（从CTOS报告获取，必填）
+        monthly_commitment: 当前月度承诺还款（从CTOS报告获取，必填）
         company_id: 公司ID（默认1）
         db: 数据库会话
         
@@ -69,7 +69,7 @@ def get_loan_affordability(
             db=db,
             customer_id=customer_id,
             company_id=company_id,
-            current_monthly_debt=current_monthly_debt
+            monthly_commitment=monthly_commitment
         )
         
         # 检查是否有错误

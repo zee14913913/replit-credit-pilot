@@ -158,20 +158,26 @@ class LoanAffordabilityEngine:
             )
             affordability[f"tenure_{tenure}"] = round(max_loan, 2)
         
+        # 计算DSR来判断资格
+        current_dsr = monthly_commitment / dsr_income if dsr_income > 0 else 0.0
+        if current_dsr <= cls.RECOMMENDED_DSR_LIMIT:
+            eligibility = "Eligible"
+        elif current_dsr <= cls.MAX_DSR_LIMIT:
+            eligibility = "Borderline"
+        else:
+            eligibility = "Not Eligible"
+        
         return {
             "customer_id": customer_id,
             "income": round(dsr_income, 2),
             "commitment": round(monthly_commitment, 2),
-            "dsr_income": round(dsr_income, 2),
-            "dsrc_income": round(dsrc_income, 2),
-            "current_monthly_debt": round(monthly_commitment, 2),
+            "eligibility": eligibility,
             "recommended_dsr_limit": cls.RECOMMENDED_DSR_LIMIT,
             "max_dsr_limit": cls.MAX_DSR_LIMIT,
             "max_monthly_payment_recommended": round(max_monthly_payment_recommended, 2),
             "max_monthly_payment_strict": round(max_monthly_payment_strict, 2),
             "affordability": affordability,
             "data_source": best_source,
-            "income_source": best_source,
             "threshold": cls.RECOMMENDED_DSR_LIMIT,
             "threshold_type": "Standard",
             "available_capacity": round(max_monthly_payment_recommended, 2),

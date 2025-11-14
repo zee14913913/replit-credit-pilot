@@ -26,7 +26,7 @@ router = APIRouter(prefix="/api/business-loans", tags=["Business Loans"])
 @router.get("/eligibility/{customer_id}")
 def get_business_loan_eligibility(
     customer_id: int,
-    annual_debt_service: Optional[float] = Query(None, description="年度债务服务（从CTOS报告获取）"),
+    annual_commitment: Optional[float] = Query(None, description="年度承诺还款（从CTOS报告获取）"),
     company_id: int = Query(1, description="公司ID"),
     db: Session = Depends(get_db)
 ):
@@ -52,7 +52,7 @@ def get_business_loan_eligibility(
     
     Args:
         customer_id: 客户ID
-        annual_debt_service: 年度债务服务（从CTOS报告获取，必填）
+        annual_commitment: 年度承诺还款（从CTOS报告获取，必填）
         company_id: 公司ID
         db: 数据库会话
         
@@ -82,7 +82,7 @@ def get_business_loan_eligibility(
             db=db,
             customer_id=customer_id,
             company_id=company_id,
-            annual_debt_service=annual_debt_service
+            annual_commitment=annual_commitment
         )
         
         if "error" in result:

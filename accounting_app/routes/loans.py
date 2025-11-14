@@ -19,7 +19,7 @@ router = APIRouter(prefix="/api/loans", tags=["Loans"])
 def calculate_loan_eligibility(
     db: Session,
     customer_id: int,
-    monthly_debt: Optional[float] = None,
+    monthly_commitment: Optional[float] = None,
     company_id: int = 1
 ) -> dict:
     """
@@ -28,7 +28,7 @@ def calculate_loan_eligibility(
     Args:
         db: 数据库会话
         customer_id: 客户ID
-        monthly_debt: 月度债务（从CTOS报告获取，必填）
+        monthly_commitment: 月度承诺还款（从CTOS报告获取，必填）
         company_id: 公司ID
         
     Returns:
@@ -68,13 +68,13 @@ def calculate_loan_eligibility(
         )
     
     # ⚠️ 债务数据必须从CTOS报告获取
-    if monthly_debt is None:
+    if monthly_commitment is None:
         raise HTTPException(
             status_code=400,
-            detail="missing_commitment_data - 月度债务数据缺失，请上传CTOS报告或通过API参数提供monthly_debt"
+            detail="Debt commitment is required based on CTOS."
         )
     
-    dsr_ratio = monthly_debt / dsr_income if dsr_income > 0 else 0.0
+    dsr_ratio = monthly_commitment / dsr_income if dsr_income > 0 else 0.0
     
     if dsr_ratio <= 0.6:
         status = "Eligible"
@@ -91,24 +91,24 @@ def calculate_loan_eligibility(
     
     suggested_loan_amount = dsr_income * 8
     
-    max_monthly_debt_at_60 = dsr_income * 0.6
-    available_borrowing_capacity = max(0, max_monthly_debt_at_60 - monthly_debt)
+    max_monthly_commitment_at_60 = dsr_income * 0.6
+    available_capacity = max(0, max_monthly_commitment_at_60 - monthly_commitment)
     
     return {
         "customer_id": customer_id,
         "customer_name": customer.name,
-        "dsr_income": round(dsr_income, 2),
-        "dsrc_income": round(dsrc_income, 2),
-        "total_debt": round(monthly_debt, 2),
+        "income": round(dsr_income, 2),
+        "commitment": round(monthly_commitment, 2),
         "dsr_ratio": round(dsr_ratio, 4),
-        "dsr_limit_used": dsr_limit_used,
-        "status": status,
+        "eligibility": status,
+        "threshold": dsr_limit_used,
+        "threshold_type": "Standard",
+        "data_source": income_data.get("best_source"),
+        "available_capacity": round(available_capacity, 2),
         "status_cn": status_cn,
         "source": income_data.get("best_source"),
         "confidence": round(income_data.get("confidence", 0.0), 4),
         "suggested_loan_amount": round(suggested_loan_amount, 2),
-        "max_monthly_debt_at_60": round(max_monthly_debt_at_60, 2),
-        "available_borrowing_capacity": round(available_borrowing_capacity, 2),
         "income_timestamp": income_data.get("timestamp"),
         "components": income_data.get("components", [])
     }
@@ -117,7 +117,7 @@ def calculate_loan_eligibility(
 @router.get("/eligibility/{customer_id}")
 async def get_loan_eligibility(
     customer_id: int,
-    monthly_debt: Optional[float] = None,
+    monthly_commitment: Optional[float] = None,
     company_id: int = 1,
     db: Session = Depends(get_db)
 ):
@@ -126,7 +126,7 @@ async def get_loan_eligibility(
     
     Args:
         customer_id: 客户ID
-        monthly_debt: 月度债务（从CTOS报告获取，必填）
+        monthly_commitment: 月度承诺还款（从CTOS报告获取，必填）
         company_id: 公司ID（默认1）
         
     Returns:
@@ -143,13 +143,13 @@ async def get_loan_eligibility(
         - available_borrowing_capacity: 可用借款能力
         
     Raises:
-        HTTPException 400: monthly_debt缺失
+        HTTPException 400: monthly_commitment缺失
     """
     try:
         result = calculate_loan_eligibility(
             db=db,
             customer_id=customer_id,
-            monthly_debt=monthly_debt,
+            monthly_commitment=monthly_commitment,
             company_id=company_id
         )
         return result
