@@ -298,7 +298,7 @@ const API_BASE_URL = {{ api_base_url|tojson }};
         keys.forEach(key => {
             const statusBadge = key.is_active 
                 ? '<span class="badge bg-success">{{ t('auto_text_344') }}</span>' 
-                : '<span class="badge bg-secondary">{{ t('auto_text_345') }}</span>{{ t('________________________const_lastused__keylast_us') }}<span class="text-muted">{{ t('auto_text_347') }}</span>{{ t('____________const_createdat__new_datekeycreated_at') }}<span class="text-muted">无</span>{{ t('____________const_envbadge__keyenvironment__live__') }}<span class="badge bg-danger">{{ t('live_1') }}</span>'
+                : '<span class="badge bg-secondary">{{ t('auto_text_345') }}</span>{{ t('________________________const_lastused__keylast_us') }}<span class="text-muted">{{ t('auto_text_347') }}</span>{{ t('____________const_createdat__new_datekeycreated_at') }}<span class="text-muted" data-i18n="none">{{ t('none') }}</span>{{ t('____________const_envbadge__keyenvironment__live__') }}<span class="badge bg-danger">{{ t('live_1') }}</span>'
                 : '<span class="badge bg-info">{{ t('test_1') }}</span>{{ t('____________const_actions__keyis_active___________') }}<button class="btn btn-sm btn-danger" onclick="showRevokeModal(${key.id}, \'${key.name}\')">
                        <i class="bi bi-x-circle"></i> <span data-i18n="revoke_button">{{ t('revoke_button') }}</span>
                    </button>`
