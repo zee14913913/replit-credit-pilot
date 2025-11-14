@@ -6518,6 +6518,50 @@ def quick_income_commit_route():
 # PHASE 8.2 — NEW FLASK ROUTES (PRODUCTS + AI ADVISOR API)
 # ============================================================
 
+@app.route("/loan-evaluate/full-auto", methods=["POST"])
+@require_admin_or_accountant
+def loan_full_auto_route():
+    """Full Automated Mode - 文件上传自动评估（调用FastAPI）"""
+    try:
+        # 构建multipart/form-data请求
+        files = {}
+        
+        if 'payslip_pdf' in request.files:
+            f = request.files['payslip_pdf']
+            files['payslip_pdf'] = (f.filename, f.stream, f.content_type)
+        
+        if 'epf_pdf' in request.files:
+            f = request.files['epf_pdf']
+            files['epf_pdf'] = (f.filename, f.stream, f.content_type)
+        
+        if 'bank_statement_pdf' in request.files:
+            f = request.files['bank_statement_pdf']
+            files['bank_statement_pdf'] = (f.filename, f.stream, f.content_type)
+        
+        if 'ctos_pdf' in request.files:
+            f = request.files['ctos_pdf']
+            files['ctos_pdf'] = (f.filename, f.stream, f.content_type)
+        
+        if 'ccris_pdf' in request.files:
+            f = request.files['ccris_pdf']
+            files['ccris_pdf'] = (f.filename, f.stream, f.content_type)
+        
+        if not files:
+            return jsonify({"error": "No files uploaded"}), 400
+        
+        # 转发到FastAPI
+        res = requests.post(
+            "http://localhost:8000/api/loans/full-auto",
+            files=files,
+            timeout=30
+        )
+        res.raise_for_status()
+        return jsonify(res.json())
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route("/loan-evaluate/products", methods=["POST"])
 @require_admin_or_accountant
 def loan_products_route():

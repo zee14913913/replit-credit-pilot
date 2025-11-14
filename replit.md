@@ -9,6 +9,20 @@ Design requirements: Premium, sophisticated, high-end - suitable for professiona
 User language: Chinese (使用中文与我沟通).
 
 ## Recent Changes
+- **Phase 8.3: Full Automated Mode补齐** (Nov 14, 2025) - 完整文件上传自动评估流程：
+  - **Flask路由**: 新增POST /loan-evaluate/full-auto（multipart/form-data文件上传代理）
+  - **FastAPI端点**: 新建loans_full_auto.py router，提供POST /api/loans/full-auto端点
+  - **自动数据提取**: 调用AutoEnrichment.extract_from_documents()自动解析上传文件（Payslip/EPF/Bank Statement/CTOS/CCRIS）
+  - **风控评估**: PersonalLoanRules.evaluate_loan_eligibility()执行Modern引擎分析（DTI/FOIR/CCRIS标准）
+  - **产品匹配**: LoanProductMatcher.match_personal_loan_v2()推荐10家银行产品
+  - **AI顾问**: personal_risk_grade_explainer()生成中文贷款建议
+  - **前端JS**: handleFullAutoEvaluation()完整实现文件上传→API调用→结果渲染
+  - **HTML增强**: 添加Payslip/EPF/Bank Statement上传字段，按钮绑定onclick事件
+  - **完整调用链**: 文件上传 → Flask代理 → FastAPI → AutoEnrichment → Risk Engine → Product Matcher → AI Advisor → 前端渲染
+- **Phase 8.2: Products + AI Advisor API补齐** (Nov 14, 2025) - 产品推荐和AI顾问后端路由：
+  - Flask routes: POST /loan-evaluate/products, POST /loan-evaluate/advisor
+  - FastAPI端点: loans_ai.py（product-recommendations + advisor）
+  - 风控函数: personal_risk_grade_explainer()智能生成中文贷款建议
 - **Phase 8.1: Modern Loan Evaluate三模式系统** (Nov 14, 2025) - 银行级贷款评估页面全面重建（GXBank/Maybank MAE风格）：
   - **三模式架构**: Full Automated Mode（文件上传自动解析）、Quick Estimate - Income Only（仅收入快速估算）、Quick Estimate - Income + Commitments（收入+债务估算）
   - **前端系统**: loan_evaluate.html（142行）+ loan_evaluate.css（273行）+ loan_evaluate.js（391行），严格遵循Galaxy Theme设计

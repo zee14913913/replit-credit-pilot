@@ -318,3 +318,75 @@ function renderAIAdvisor(text) {
         <p>${text}</p>
     `;
 }
+
+
+/* ============================================================
+   Phase 8.3 — Full Automated Mode Handler
+   ============================================================ */
+
+async function handleFullAutoEvaluation() {
+    console.log("Starting Full Auto Evaluation...");
+
+    // 收集上传文件（匹配HTML的ID）
+    const payslipFile = document.getElementById("payslip_file")?.files[0];
+    const epfFile = document.getElementById("epf_file")?.files[0];
+    const bankStatementFile = document.getElementById("bank_statement_file")?.files[0];
+    const ctosFile = document.getElementById("ctos_file")?.files[0];
+    const ccrisFile = document.getElementById("ccris_file")?.files[0];
+
+    // 验证至少上传一个文件
+    if (!payslipFile && !epfFile && !bankStatementFile && !ctosFile && !ccrisFile) {
+        alert("Please upload at least one document to start Full Auto evaluation.");
+        return;
+    }
+
+    // 构建FormData
+    const formData = new FormData();
+    if (payslipFile) formData.append("payslip_pdf", payslipFile);
+    if (epfFile) formData.append("epf_pdf", epfFile);
+    if (bankStatementFile) formData.append("bank_statement_pdf", bankStatementFile);
+    if (ctosFile) formData.append("ctos_pdf", ctosFile);
+    if (ccrisFile) formData.append("ccris_pdf", ccrisFile);
+
+    // 显示加载状态
+    const btnFullAuto = document.getElementById("btn-full-auto");
+    if (btnFullAuto) {
+        btnFullAuto.disabled = true;
+        btnFullAuto.textContent = "Processing...";
+    }
+
+    try {
+        // POST到Flask端点
+        const res = await fetch("/loan-evaluate/full-auto", {
+            method: "POST",
+            body: formData
+        });
+
+        if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.error || "Full Auto evaluation failed");
+        }
+
+        const data = await res.json();
+        console.log("Full Auto evaluation result:", data);
+
+        // 渲染评估结果（使用eligibility对象）
+        showEvaluationResult(data.eligibility);
+
+        // 渲染推荐产品
+        renderProducts(data.products || []);
+
+        // 渲染AI顾问
+        renderAIAdvisor(data.advisor || "No advisor data available.");
+
+    } catch (err) {
+        console.error("Full Auto evaluation error:", err);
+        alert("Full Auto evaluation failed: " + err.message);
+    } finally {
+        // 恢复按钮状态
+        if (btnFullAuto) {
+            btnFullAuto.disabled = false;
+            btnFullAuto.textContent = "Start Automatic Evaluation";
+        }
+    }
+}

@@ -34,7 +34,22 @@
             <!-- ================= FULL AUTO MODE ================= -->
             <div id="auto_mode_block" class="input-section">
                 <h2>Upload Financial Documents</h2>
-                <p class="section-desc">CTOS / CCRIS / Salary Slip / Bank Statement</p>
+                <p class="section-desc">CTOS / CCRIS / Salary Slip / EPF / Bank Statement</p>
+
+                <div class="upload-box">
+                    <label>Payslip PDF</label>
+                    <input id="payslip_file" type="file" accept="application/pdf">
+                </div>
+
+                <div class="upload-box">
+                    <label>EPF Statement PDF</label>
+                    <input id="epf_file" type="file" accept="application/pdf">
+                </div>
+
+                <div class="upload-box">
+                    <label>Bank Statement PDF</label>
+                    <input id="bank_statement_file" type="file" accept="application/pdf">
+                </div>
 
                 <div class="upload-box">
                     <label>CTOS PDF</label>
@@ -46,17 +61,7 @@
                     <input id="ccris_file" type="file" accept="application/pdf">
                 </div>
 
-                <div class="upload-box">
-                    <label>IC (Front)</label>
-                    <input id="ic_front" type="file" accept="image/*">
-                </div>
-
-                <div class="upload-box">
-                    <label>IC (Back)</label>
-                    <input id="ic_back" type="file" accept="image/*">
-                </div>
-
-                <button id="btn_auto_submit" class="primary-btn">Start Automated Evaluation</button>
+                <button id="btn_auto_submit" class="primary-btn" onclick="handleFullAutoEvaluation()">Start Automated Evaluation</button>
             </div>
 
             <!-- ================= QUICK INCOME MODE ================= -->
