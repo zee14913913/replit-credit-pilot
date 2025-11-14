@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Loan Marketplace Dashboard{% endblock %}
+{% block content %}
+
+<link rel="stylesheet" href="/static/css/loan_marketplace_dashboard.css">
+
+<div class="marketplace-dashboard-container">
+
+    <!-- ========================================================= -->
+    <!-- HEADER -->
+    <!-- ========================================================= -->
+    <div class="dashboard-header">
+        <h1 class="title">Loan Marketplace</h1>
+        <p class="subtitle">Your One-Stop Solution for Personal & Business Loans</p>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- MAIN ENTRY CARDS -->
+    <!-- ========================================================= -->
+    <div class="entry-cards-grid">
+
+        <!-- Personal Loans Card -->
+        <div class="entry-card" onclick="window.location.href='/loan-products?category=personal'">
+            <div class="card-icon">
+                <i class="bi bi-person-fill"></i>
+            </div>
+            <h2>Personal Loans</h2>
+            <p>Compare rates from 10+ banks & fintechs</p>
+            <div class="card-stats">
+                <span class="stat-badge">4.8% - 12% APR</span>
+                <span class="stat-badge">Up to RM 200,000</span>
+            </div>
+            <button class="btn-explore">
+                Explore Products <i class="bi bi-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- SME Loans Card -->
+        <div class="entry-card" onclick="window.location.href='/loan-products?category=sme'">
+            <div class="card-icon">
+                <i class="bi bi-briefcase-fill"></i>
+            </div>
+            <h2>SME Loans</h2>
+            <p>Business financing for growth & expansion</p>
+            <div class="card-stats">
+                <span class="stat-badge">4.5% - 9.5% APR</span>
+                <span class="stat-badge">Up to RM 10M</span>
+            </div>
+            <button class="btn-explore">
+                Explore Products <i class="bi bi-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- Digital Bank Loans Card -->
+        <div class="entry-card" onclick="window.location.href='/loan-products?type=digital_bank'">
+            <div class="card-icon">
+                <i class="bi bi-phone-fill"></i>
+            </div>
+            <h2>Digital Bank Loans</h2>
+            <p>Fast approval & 100% online application</p>
+            <div class="card-stats">
+                <span class="stat-badge">24-hour approval</span>
+                <span class="stat-badge">Zero paperwork</span>
+            </div>
+            <button class="btn-explore">
+                Explore Products <i class="bi bi-arrow-right"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- QUICK ACTIONS -->
+    <!-- ========================================================= -->
+    <div class="quick-actions-section">
+        <h3>Quick Actions</h3>
+        <div class="actions-grid">
+            <button class="action-btn" onclick="window.location.href='/loan-evaluate'">
+                <i class="bi bi-calculator"></i>
+                <span>Loan Eligibility Calculator</span>
+            </button>
+            <button class="action-btn" onclick="window.location.href='/loan-products'">
+                <i class="bi bi-grid-3x3-gap"></i>
+                <span>View All Products</span>
+            </button>
+            <button class="action-btn" onclick="window.location.href='/loan-reports'">
+                <i class="bi bi-file-earmark-text"></i>
+                <span>Generate Loan Report</span>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

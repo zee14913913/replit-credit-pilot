@@ -1,0 +1,478 @@
+/* ===========================================================
+   Phase 9 — Loan Products Marketplace (Galaxy Theme)
+   =========================================================== */
+
+.loan-marketplace-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* ========== HEADER ========== */
+.marketplace-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.marketplace-header .title {
+    font-size: 42px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #FF007F, #D4AF37);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 15px;
+}
+
+.marketplace-header .subtitle {
+    font-size: 16px;
+    color: #ccc;
+}
+
+.marketplace-header .highlight {
+    color: #FF007F;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* ========== SEARCH & FILTER BAR ========== */
+.search-filter-bar {
+    background: #1a1a1a;
+    border: 2px solid #322446;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 40px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    background: #000;
+    border: 2px solid #FF007F;
+    border-radius: 10px;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+}
+
+.search-box i {
+    color: #FF007F;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.search-box input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 16px;
+}
+
+.search-box input::placeholder {
+    color: #666;
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filter-btn {
+    background: #322446;
+    border: 2px solid #322446;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-btn i {
+    margin-right: 6px;
+}
+
+.filter-btn:hover {
+    border-color: #FF007F;
+    background: rgba(255, 0, 127, 0.1);
+}
+
+.filter-btn.active {
+    background: #FF007F;
+    border-color: #FF007F;
+    color: #000;
+}
+
+/* ========== PRODUCTS GRID (Masonry Layout) ========== */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.product-card {
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+    border: 2px solid #322446;
+    border-radius: 12px;
+    padding: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    border-color: #FF007F;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(255, 0, 127, 0.3);
+}
+
+.product-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.bank-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #FF007F;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 900;
+    color: #000;
+    margin-right: 15px;
+}
+
+.product-info h3 {
+    font-size: 18px;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.product-info p {
+    font-size: 13px;
+    color: #aaa;
+}
+
+.product-type-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 5px;
+}
+
+.product-type-badge.traditional_bank {
+    background: rgba(212, 175, 55, 0.2);
+    color: #D4AF37;
+    border: 1px solid #D4AF37;
+}
+
+.product-type-badge.digital_bank {
+    background: rgba(0, 255, 135, 0.2);
+    color: #00ff87;
+    border: 1px solid #00ff87;
+}
+
+.product-type-badge.fintech {
+    background: rgba(255, 0, 127, 0.2);
+    color: #FF007F;
+    border: 1px solid #FF007F;
+}
+
+.product-details {
+    margin: 15px 0;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.detail-row label {
+    color: #aaa;
+}
+
+.detail-row span {
+    color: #fff;
+    font-weight: 600;
+}
+
+.rate-highlight {
+    color: #00ff87;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.product-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-view-details,
+.btn-select {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid;
+    text-align: center;
+}
+
+.btn-view-details {
+    background: transparent;
+    border-color: #FF007F;
+    color: #FF007F;
+}
+
+.btn-view-details:hover {
+    background: #FF007F;
+    color: #000;
+}
+
+.btn-select {
+    background: #322446;
+    border-color: #322446;
+    color: #fff;
+}
+
+.btn-select:hover {
+    background: #D4AF37;
+    border-color: #D4AF37;
+    color: #000;
+}
+
+/* ========== PRODUCT MODAL ========== */
+.product-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-modal.hidden {
+    display: none;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+}
+
+.modal-content {
+    position: relative;
+    background: #1a1a1a;
+    border: 3px solid #FF007F;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    z-index: 10000;
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #FF007F;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #000;
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    background: #fff;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    padding: 30px;
+    border-bottom: 2px solid #322446;
+}
+
+.bank-logo-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #FF007F;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: 900;
+    color: #000;
+    margin-right: 20px;
+}
+
+.modal-title-section h2 {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.modal-title-section p {
+    font-size: 14px;
+    color: #aaa;
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+.detail-section {
+    margin-bottom: 30px;
+}
+
+.detail-section h3 {
+    font-size: 18px;
+    color: #FF007F;
+    margin-bottom: 15px;
+}
+
+.detail-section h3 i {
+    margin-right: 8px;
+}
+
+.rate-display {
+    font-size: 32px;
+    font-weight: 900;
+    color: #00ff87;
+    text-align: center;
+    padding: 20px;
+    background: rgba(0, 255, 135, 0.1);
+    border-radius: 10px;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.detail-item {
+    background: #000;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #322446;
+}
+
+.detail-item label {
+    display: block;
+    color: #aaa;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.detail-item span {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.features-list,
+.eligibility-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.feature-item,
+.eligibility-item {
+    background: rgba(50, 36, 70, 0.3);
+    padding: 12px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+    border-left: 3px solid #FF007F;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-select-product,
+.btn-secondary {
+    flex: 1;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid;
+    text-align: center;
+}
+
+.btn-select-product {
+    background: #FF007F;
+    border-color: #FF007F;
+    color: #000;
+}
+
+.btn-select-product:hover {
+    background: #D4AF37;
+    border-color: #D4AF37;
+}
+
+.btn-secondary {
+    background: transparent;
+    border-color: #666;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    border-color: #fff;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-buttons {
+        flex-direction: column;
+    }
+
+    .filter-btn {
+        width: 100%;
+    }
+}

@@ -1,0 +1,175 @@
+/* ===========================================================
+   Phase 9 — Loan Marketplace Dashboard
+   =========================================================== */
+
+.marketplace-dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+/* ========== HEADER ========== */
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.dashboard-header .title {
+    font-size: 48px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #FF007F, #D4AF37);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 15px;
+}
+
+.dashboard-header .subtitle {
+    font-size: 20px;
+    color: #aaa;
+    font-weight: 300;
+}
+
+/* ========== ENTRY CARDS GRID ========== */
+.entry-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+}
+
+.entry-card {
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+    border: 3px solid #322446;
+    border-radius: 20px;
+    padding: 40px 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.entry-card:hover {
+    border-color: #FF007F;
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(255, 0, 127, 0.4);
+}
+
+.card-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 25px;
+    background: #FF007F;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    color: #000;
+}
+
+.entry-card h2 {
+    font-size: 26px;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.entry-card p {
+    color: #aaa;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+.card-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.stat-badge {
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid #D4AF37;
+    color: #D4AF37;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.btn-explore {
+    background: #FF007F;
+    border: none;
+    color: #000;
+    padding: 12px 30px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+}
+
+.btn-explore:hover {
+    background: #D4AF37;
+}
+
+/* ========== QUICK ACTIONS ========== */
+.quick-actions-section {
+    background: #1a1a1a;
+    border: 2px solid #322446;
+    border-radius: 16px;
+    padding: 40px;
+}
+
+.quick-actions-section h3 {
+    font-size: 24px;
+    color: #FF007F;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.action-btn {
+    background: #322446;
+    border: 2px solid #322446;
+    color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.action-btn i {
+    font-size: 28px;
+    color: #FF007F;
+}
+
+.action-btn:hover {
+    border-color: #FF007F;
+    background: rgba(255, 0, 127, 0.1);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .entry-cards-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-header .title {
+        font-size: 36px;
+    }
+
+    .actions-grid {
+        grid-template-columns: 1fr;
+    }
+}

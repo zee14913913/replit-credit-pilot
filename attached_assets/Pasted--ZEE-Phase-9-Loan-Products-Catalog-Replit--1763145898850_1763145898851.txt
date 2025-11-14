@@ -1,0 +1,257 @@
+好的，ZEE，我继续推进 **Phase 9 — Loan Products Catalog 全面升级**。
+
+为了避免你再被迫回答任何技术问题，我直接 **一步到位给 Replit 可执行的完整指令包**。
+
+下面内容你只需要 **复制 → 贴给 Replit → 等它执行**。
+
+---
+
+# ✅ Phase 9 — Loan Products Catalog（前端 + 后端）升级指令包
+
+**（可直接复制给 Replit）**
+
+---
+
+# ============================================================
+
+# PHASE 9 — LOAN PRODUCTS CATALOG 全面升级
+
+# （供 Replit 直接执行）
+
+# ============================================================
+
+请一次性执行以下任务，不要跳过任何一条。
+
+---
+
+# ============================================================
+
+# 任务 1：Loan Products Catalog 前端页面重做（Galaxy Theme）
+
+# ============================================================
+
+重写页面：
+
+```
+templates/loan_products.html
+```
+
+要求：
+
+1. Galaxy Theme 风格（Black / Hot Pink / Dark Purple）
+2. 使用卡片瀑布流布局（类似 GrabPay / GXBank Marketplace）
+3. 每个产品显示：
+
+   * 银行 Logo（如无 logo 用首字母圈）
+   * 产品名称
+   * 利率范围（min_rate ~ max_rate）
+   * Max Loan Amount
+   * Max Tenure
+   * 产品类型（Bank / Digital Bank / Fintech）
+   * “View Details”按钮
+4. 增加：
+
+   * 搜索框（按银行名 / 产品名搜索）
+   * Filter 条件：
+
+     * Bank Only
+     * Digital Bank Only
+     * Fintech Only
+     * Lowest Interest
+     * Highest Loan Amount
+5. 点击“View Details”打开一个 Modal，显示：
+
+   * 完整产品条款
+   * Eligibility Requirements
+   * Fees & Charges
+   * 还款示例
+   * Approval Time
+   * Lending Category（Salary / SME / Microloan）
+
+---
+
+# ============================================================
+
+# 任务 2：新增 Loan Products API（统一目录输出）
+
+# ============================================================
+
+创建文件：
+
+```
+accounting_app/routes/loan_products_catalog.py
+```
+
+新增端点：
+
+```
+GET /api/loan-products/all
+GET /api/loan-products/{product_id}
+GET /api/loan-products/filter?type=&min_rate=&max_rate=
+```
+
+数据来源：
+使用现有产品数据库：
+
+```
+accounting_app/services/risk_engine/product_catalog.py
+```
+
+输出格式必须统一为：
+
+```
+{
+  "product_id": "...",
+  "bank": "...",
+  "product_name": "...",
+  "type": "traditional_bank|digital_bank|fintech",
+  "interest_rate": {
+      "min": 0.048,
+      "max": 0.095
+  },
+  "max_loan_amount": 200000,
+  "max_tenure": 84,
+  "features": [...],
+  "eligibility": [...],
+  "fees": [...],
+  "approval_time": "48 hours"
+}
+```
+
+---
+
+# ============================================================
+
+# 任务 3：Loan Products 页面与 Loan Evaluate 系统联动
+
+# ============================================================
+
+新增功能：
+
+1. 在 loan_products.html 每个卡片加按钮：
+
+   ```
+   <button>Select For Loan Evaluation</button>
+   ```
+2. 点击后：
+
+   * 将 product_id 写入 session
+   * 自动跳转到：
+
+     ```
+     /loan-evaluate?product_id=xxx
+     ```
+3. loan_evaluate.js 在渲染产品推荐时：
+
+   * 如果用户预先选了 product_id
+   * 优先渲染该产品（置顶）
+   * 其他产品按匹配分数排序
+
+---
+
+# ============================================================
+
+# 任务 4：Loan Products 数据扩展（ZEE 的 1000+ 产品）
+
+# ============================================================
+
+扩充产品数据库：
+
+文件：
+
+```
+accounting_app/services/risk_engine/product_catalog.py
+```
+
+加入结构：
+
+```
+EXTENDED_LOAN_PRODUCTS = {
+    "maybank_mortgage_xxx": {...},
+    "cimb_auto_financing_xxx": {...},
+    ...
+}
+```
+
+要求：
+
+1. 保留现有产品不变。
+2. 新增字段：
+
+   * loan_category（Personal / Mortgage / Auto / SME / Microloan）
+   * min_income_requirement
+   * employment_requirement
+3. 所有产品必须符合：
+
+```
+LoanProductCatalog.get_all_products() → 返回合并后的完整目录
+LoanProductCatalog.get_product(product_id)
+```
+
+---
+
+# ============================================================
+
+# 任务 5：Loan Products Dashboard（未来扩展位）
+
+# ============================================================
+
+新增页面：
+
+```
+templates/loan_products_dashboard.html
+```
+
+（暂不实现功能，仅创建空白结构）
+
+目的：
+
+未来作为 Loan Marketplace（贷款超市主页）。
+
+页面内容：
+
+* Header：Loan Marketplace
+* 3 个入口卡片：
+
+  * Personal Loans
+  * SME Loans
+  * Digital Bank Loans
+
+---
+
+# ============================================================
+
+# 完成后：
+
+# ============================================================
+
+回覆：
+
+“PHASE 9 PRODUCT CATALOG UPGRADE COMPLETE”
+
+---
+
+# 文档更新
+
+更新 replit.md：
+
+* 新增 Phase 9
+* 更新 loan_products.html 结构
+* 新增 Loan Products APIs
+* 更新 产品数据库扩展规范
+
+---
+
+# ============================================================
+
+# END OF PHASE 9 指令包
+
+# ============================================================
+
+---
+
+ZEE，你只需回复我一句：
+
+**“已复制给 Replit”**
+
+我就继续准备 Phase 10（Loan Dashboard + Customer 360）。

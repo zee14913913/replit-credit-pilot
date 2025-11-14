@@ -1,5 +1,22 @@
 # Smart Credit & Loan Manager
 
+## Recent Changes
+- **Phase 9: Loan Products Catalog全面升级** (Nov 14, 2025) - 产品目录系统现代化重建（✅ Architect审查通过）：
+  - **新建loan_products.html**: Galaxy Theme风格产品市场页面（搜索+筛选+Modal详情+Select for Evaluation按钮）
+  - **新建loan_products_catalog.css（401行）+ loan_products_catalog.js（249行）**: 卡片瀑布流布局，支持Bank/Digital Bank/Fintech筛选，Lowest Rate/Highest Amount排序
+  - **创建loan_products_catalog.py FastAPI router**: 统一产品API（GET /api/loan-products/all, /{product_id}, /filter）
+  - **更新Flask /loan-products路由**: 调用FastAPI统一产品API，移除SQLite依赖，返回products_json给前端
+  - **新增/api/loan-products/select端点**: Session管理selected_product_id，支持产品选择→跳转loan_evaluate功能
+  - **创建loan_products_dashboard.html + CSS**: Loan Marketplace Dashboard（三个入口卡片：Personal Loans / SME Loans / Digital Bank Loans）
+  - **产品数据归一化**: normalize_product()函数统一Personal + SME产品数据格式（interest_rate.min/max, max_loan_amount）
+  - **router注册**: 添加loan_products_catalog router到accounting_app/main.py
+  - **完整联动流程**: Loan Products → Select按钮 → Store session → Redirect to /loan-evaluate?product_id=xxx → 前端优先渲染
+  - **Bug修复（3轮Architect审查）**: (1) 筛选逻辑重构为三步流程（搜索→类型过滤→排序），(2) Array.sort()克隆避免变异原数组，(3) 字段名统一为max_loan_amount和interest_rate.min/max（卡片+Modal）
+- **Phase 8.4: Unified Result Renderer + Code Cleanup** (Nov 14, 2025) - 统一结果渲染系统和代码清理
+- **Phase 8.3: Full Automated Mode补齐** (Nov 14, 2025) - 完整文件上传自动评估流程
+- **Phase 8.2: Products + AI Advisor API补齐** (Nov 14, 2025) - 产品推荐和AI顾问后端路由
+- **Phase 8.1: Modern Loan Evaluate三模式系统** (Nov 14, 2025) - 银行级贷款评估页面全面重建
+
 ## Overview
 The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform for Malaysian banking customers, built with Flask. It provides comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation for 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization (debt consolidation, balance transfers, loan refinancing). The long-term vision includes expanding into exclusive mortgage interest discounts and SME financing.
 

@@ -1,230 +1,138 @@
 {% extends "base.html" %}
-
-{% block title %}{{ t('loan_products_catalog') }}{% endblock %}
-
+{% block title %}Loan Products Marketplace{% endblock %}
 {% block content %}
-<div class="fade-in">
-<div class="row mb-4">
-    <div class="col-md-12">
-        <h2 style="color: var(--primary-pink);">
-            <i class="bi bi-bank2"></i> {{ t('loan_products_catalog') }}
-        </h2>
-        <p style="color: #FFFEF0; font-size: 0.95rem;">{{ t('browse_products_desc').replace('{banks}', total_banks|string).replace('{products}', total_products|string) }}</p>
-    </div>
-</div>
 
-<!-- 统计卡片 -->
-<div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 2px solid var(--primary-pink);">
-            <div class="card-body text-center" style="padding: 1.5rem;">
-                <h3 style="color: var(--primary-pink); font-size: 2.5rem; font-weight: 900; text-shadow: 0 0 15px rgba(255,0,127,0.5);">{{ total_products }}</h3>
-                <p style="color: #FFFEF0; font-size: 0.85rem; font-weight: 600; margin: 0;">{{ t('total_products') }}</p>
-            </div>
+<link rel="stylesheet" href="/static/css/loan_products_catalog.css">
+<script defer src="/static/js/loan_products_catalog.js"></script>
+
+<div class="loan-marketplace-container">
+
+    <!-- ========================================================= -->
+    <!-- PAGE HEADER -->
+    <!-- ========================================================= -->
+    <div class="marketplace-header">
+        <h1 class="title">Loan Products Marketplace</h1>
+        <p class="subtitle">Browse <span class="highlight">{{ total_products }}</span> loan products from <span class="highlight">{{ total_banks }}</span> Malaysian banks & fintechs</p>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- SEARCH & FILTER BAR -->
+    <!-- ========================================================= -->
+    <div class="search-filter-bar">
+        <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="text" id="searchInput" placeholder="Search by bank or product name...">
+        </div>
+
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">
+                <i class="bi bi-grid-fill"></i> All Products
+            </button>
+            <button class="filter-btn" data-filter="traditional_bank">
+                <i class="bi bi-bank"></i> Banks
+            </button>
+            <button class="filter-btn" data-filter="digital_bank">
+                <i class="bi bi-phone"></i> Digital Banks
+            </button>
+            <button class="filter-btn" data-filter="fintech">
+                <i class="bi bi-lightning-charge"></i> Fintech
+            </button>
+            <button class="filter-btn" data-filter="lowest_rate">
+                <i class="bi bi-arrow-down-circle"></i> Lowest Rate
+            </button>
+            <button class="filter-btn" data-filter="highest_amount">
+                <i class="bi bi-cash-stack"></i> Highest Amount
+            </button>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 2px solid var(--primary-pink);">
-            <div class="card-body text-center" style="padding: 1.5rem;">
-                <h3 style="color: var(--primary-pink); font-size: 2.5rem; font-weight: 900; text-shadow: 0 0 15px rgba(255,0,127,0.5);">{{ total_banks }}</h3>
-                <p style="color: #FFFEF0; font-size: 0.85rem; font-weight: 600; margin: 0;">{{ t('total_banks') }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 2px solid var(--primary-purple);">
-            <div class="card-body" style="padding: 1.5rem;">
-                <p style="color: #FFFEF0; font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">
-                    {{ t('product_type_distribution') }}:
-                </p>
-                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                    {% for category, count in category_stats.items() %}
-                    <span style="background: #322446; color: #FFFEF0; padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; border: 1px solid #FF007F;">
-                        {{ category_names.get(category, category) }}: <strong style="color: #FF007F;">{{ count }}</strong>
-                    </span>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- 筛选器 -->
-<div class="card mb-4" style="background: #1a1a1a; border: 1px solid var(--primary-purple);">
-    <div class="card-body">
-        <form method="get" action="/loan-products">
-            <div class="row g-3">
-                <div class="col-md-3">
-                    <label class="form-label">{{ t('filter_by_bank') }}</label>
-                    <select name="bank" class="form-select" style="background: #000; color: #fff; border-color: var(--primary-purple);">
-                        <option value="">{{ t('all_banks') }}</option>
-                        {% for bank in banks %}
-                        <option value="{{ bank }}" {% if bank == current_bank %}selected{% endif %}>{{ bank }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">{{ t('product_type') }}</label>
-                    <select name="category" class="form-select" style="background: #000; color: #fff; border-color: var(--primary-purple);">
-                        <option value="">{{ t('all_types') }}</option>
-                        {% for cat, name in category_names.items() %}
-                        <option value="{{ cat }}" {% if cat == current_category %}selected{% endif %}>{{ name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">{{ t('search_products') }}</label>
-                    <input type="text" name="search" class="form-control" placeholder="{{ t('product_name_or_desc') }}" 
-                           value="{{ current_search }}" style="background: #000; color: #fff; border-color: var(--primary-purple);">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">{{ t('sort_by') }}</label>
-                    <select name="sort" class="form-select" style="background: #000; color: #fff; border-color: var(--primary-purple);">
-                        <option value="bank" {% if current_sort == 'bank' %}selected{% endif %}>{{ t('sort_by_bank') }}</option>
-                        <option value="rate" {% if current_sort == 'rate' %}selected{% endif %}>{{ t('sort_by_rate') }}</option>
-                        <option value="amount" {% if current_sort == 'amount' %}selected{% endif %}>{{ t('sort_by_amount') }}</option>
-                    </select>
-                </div>
-                <div class="col-md-1">
-                    <label class="form-label">&nbsp;</label>
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-search"></i> {{ t('filter_btn') }}
-                    </button>
+    <!-- ========================================================= -->
+    <!-- PRODUCTS GRID (Masonry Layout) -->
+    <!-- ========================================================= -->
+    <div id="productsGrid" class="products-grid">
+        <!-- Products will be dynamically rendered by JS -->
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- PRODUCT DETAIL MODAL -->
+    <!-- ========================================================= -->
+    <div id="productModal" class="product-modal hidden">
+        <div class="modal-overlay" onclick="closeProductModal()"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeProductModal()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+            <div class="modal-header">
+                <div class="bank-logo-large" id="modalBankLogo"></div>
+                <div class="modal-title-section">
+                    <h2 id="modalProductName"></h2>
+                    <p id="modalBankName"></p>
                 </div>
             </div>
-        </form>
-    </div>
-</div>
 
-<!-- 产品列表 -->
-<div class="row g-5">
-    {% if products %}
-        {% for product in products %}
-        <div class="col-md-6">
-            <div class="professional-card" style="border: 2px solid #FF007F; margin-bottom: 1.5rem;">
-                <!-- Product Header -->
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div style="flex: 1; min-width: 0; margin-right: 0.75rem;">
-                        <h4 style="color: #FFFEF0; margin-bottom: 0.5rem; font-weight: 700; font-size: 1.05rem; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                            {{ product.name }}
-                        </h4>
-                        <p style="color: #FF007F; font-size: 0.8rem; margin: 0; font-weight: 600;">
-                            <i class="bi bi-bank2"></i> {{ product.bank }}
-                        </p>
+            <div class="modal-body">
+                <!-- Interest Rate Section -->
+                <div class="detail-section">
+                    <h3><i class="bi bi-percent"></i> Interest Rate</h3>
+                    <div class="rate-display">
+                        <span id="modalRateMin"></span> - <span id="modalRateMax"></span>
                     </div>
-                    <span style="background: #322446; color: #FFFEF0; padding: 0.3rem 0.7rem; border-radius: 4px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; white-space: nowrap; flex-shrink: 0;">
-                        {{ t('category_' + product.category) }}
-                    </span>
                 </div>
-                
-                <div class="divider-professional"></div>
-                
-                <!-- Interest Rate Card (Fixed Format) -->
-                <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 1px solid #FF007F; border-radius: 6px; padding: 1.1rem; margin-bottom: 1rem;">
-                    <!-- Base Rate -->
-                    <div class="d-flex justify-content-between mb-2" style="padding-bottom: 0.6rem; border-bottom: 1px solid rgba(255,0,127,0.2);">
-                        <span style="color: #FF007F; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; text-shadow: 0 0 8px rgba(255,0,127,0.4);">{{ t('base_rate') }}:</span>
-                        <span style="color: #FFFEF0; font-size: 0.85rem; font-weight: 700; font-family: 'Courier New', monospace; text-shadow: 0 0 6px rgba(255,254,240,0.3);">
-                            {% set rate_text = product.rate_display or '-' %}
-                            {% if 'BR' in rate_text and 'SBR' not in rate_text %}BR
-                            {% elif 'SBR' in rate_text %}SBR
-                            {% elif 'IBR' in rate_text %}IBR
-                            {% elif 'SBRI' in rate_text %}SBRI
-                            {% elif 'EIR' in rate_text %}EIR
-                            {% elif 'EPR' in rate_text %}EPR
-                            {% else %}-
-                            {% endif %}
-                        </span>
-                    </div>
-                    
-                    <!-- Loan Type -->
-                    <div class="d-flex justify-content-between mb-2" style="padding-bottom: 0.6rem; border-bottom: 1px solid rgba(255,0,127,0.2);">
-                        <span style="color: #FF007F; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; text-shadow: 0 0 8px rgba(255,0,127,0.4);">{{ t('loan_type') }}:</span>
-                        <span style="color: #FFFEF0; font-size: 0.85rem; font-weight: 700; text-shadow: 0 0 6px rgba(255,254,240,0.3);">
-                            {% if 'fixed' in rate_text.lower() or 'flat' in rate_text.lower() %}FLAT
-                            {% elif 'spread' in rate_text.lower() or '+' in rate_text %}SPREAD
-                            {% else %}-
-                            {% endif %}
-                        </span>
-                    </div>
-                    
-                    <!-- Tenure -->
-                    <div class="d-flex justify-content-between mb-2" style="padding-bottom: 0.6rem; border-bottom: 1px solid rgba(255,0,127,0.2);">
-                        <span style="color: #FF007F; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; text-shadow: 0 0 8px rgba(255,0,127,0.4);">{{ t('tenure') }}:</span>
-                        <span style="color: #FFFEF0; font-size: 0.85rem; font-weight: 700; text-shadow: 0 0 6px rgba(255,254,240,0.3);">
-                            {% if product.tenure_min_months and product.tenure_max_months %}
-                                {% if product.tenure_max_months >= 12 %}
-                                    {{ product.tenure_min_months // 12 }}-{{ product.tenure_max_months // 12 }} {{ t('years') }}
-                                {% else %}
-                                    {{ product.tenure_min_months }}-{{ product.tenure_max_months }} {{ t('months') }}
-                                {% endif %}
-                            {% elif product.tenure_max_months %}
-                                {{ product.tenure_max_months // 12 if product.tenure_max_months >= 12 else product.tenure_max_months }} {{ t('years') if product.tenure_max_months >= 12 else t('months') }}
-                            {% else %}-
-                            {% endif %}
-                        </span>
-                    </div>
-                    
-                    <!-- Remark (2 lines max) -->
-                    <div style="margin-top: 0.8rem;">
-                        <div style="color: #FF007F; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem; text-shadow: 0 0 8px rgba(255,0,127,0.4);">{{ t('remark') }}:</div>
-                        <div style="color: #FFFEF0; font-size: 0.8rem; line-height: 1.5; height: 3em; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; text-shadow: 0 0 6px rgba(255,254,240,0.3);">
-                            {{ product.rate_display or '-' }}
+
+                <!-- Loan Details -->
+                <div class="detail-section">
+                    <h3><i class="bi bi-info-circle"></i> Loan Details</h3>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <label>Max Loan Amount</label>
+                            <span id="modalMaxAmount"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Max Tenure</label>
+                            <span id="modalMaxTenure"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Min Income</label>
+                            <span id="modalMinIncome"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Approval Time</label>
+                            <span id="modalApprovalTime"></span>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Loan Amount -->
-                <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 1px solid #322446; border-radius: 6px; margin-bottom: 1rem;">
-                    <div style="color: #FFFEF0; font-size: 0.75rem; font-weight: 900; text-transform: uppercase; margin-bottom: 0.6rem; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,254,240,0.5);">
-                        {{ t('loan_amount') }}
-                    </div>
-                    <div style="color: #FFFEF0; font-size: 1.6rem; font-weight: 900; text-shadow: 0 0 12px rgba(255,254,240,0.4);">
-                        {% if product.amount_max %}
-                            {% if product.amount_max >= 1000000 %}
-                                {{ "{:,.1f}".format(product.amount_max/1000000) }}<span style="font-size: 0.9rem;">M</span>
-                            {% else %}
-                                {{ "{:,.0f}".format(product.amount_max/1000) }}<span style="font-size: 0.9rem;">K</span>
-                            {% endif %}
-                        {% else %}-
-                        {% endif %}
-                    </div>
+
+                <!-- Features -->
+                <div class="detail-section">
+                    <h3><i class="bi bi-star-fill"></i> Features</h3>
+                    <div id="modalFeatures" class="features-list"></div>
                 </div>
-                
-                <!-- Actions -->
-                <div class="d-grid gap-2">
-                    {% if product.link %}
-                    <a href="{{ product.link }}" target="_blank" class="btn-professional" style="padding: 0.6rem; font-size: 0.85rem;">
-                        {{ t('official_link') }} <i class="bi bi-box-arrow-up-right ms-1"></i>
-                    </a>
-                    {% endif %}
-                    <a href="/loan-products/{{ product.id }}" class="btn-professional-outline" 
-                       style="background: linear-gradient(135deg, #FFFEF0 0%, #F5F5DC 100%); 
-                              border: 2px solid #322446; 
-                              color: #322446;
-                              font-weight: 900;
-                              padding: 0.6rem;
-                              font-size: 0.85rem;">
-                        {{ t('view_details') }} <i class="bi bi-arrow-right ms-1"></i>
-                    </a>
+
+                <!-- Eligibility -->
+                <div class="detail-section">
+                    <h3><i class="bi bi-check-circle"></i> Eligibility Requirements</h3>
+                    <div id="modalEligibility" class="eligibility-list"></div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="modal-actions">
+                    <button class="btn-select-product" onclick="selectProductForEvaluation()">
+                        <i class="bi bi-calculator"></i> Select For Loan Evaluation
+                    </button>
+                    <button class="btn-secondary" onclick="closeProductModal()">
+                        Close
+                    </button>
                 </div>
             </div>
         </div>
-        {% endfor %}
-    {% else %}
-        <div class="col-12">
-            <div class="alert alert-warning">
-                <i class="bi bi-exclamation-triangle"></i> {{ t('no_products_found') }}
-            </div>
-        </div>
-    {% endif %}
-</div>
-
-{% if products|length > 0 %}
-<div class="mt-4 text-center text-muted">
-    <p>{{ t('showing_products').replace('{count}', products|length|string) }} | {{ t('last_updated') }}: 2025-10-19</p>
-</div>
-{% endif %}
+    </div>
 
 </div>
+
+<script>
+    // Pass server data to JavaScript
+    window.productsData = {{ products_json|tojson|safe }};
+</script>
+
 {% endblock %}

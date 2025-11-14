@@ -3941,113 +3941,66 @@ def loan_matcher_analyze():
 # ============================================================================
 
 @app.route('/loan-products')
+@require_admin_or_accountant
 def loan_products():
-    """贷款产品目录 - 浏览所有银行产品"""
-    with get_db() as conn:
-        cursor = conn.cursor()
-        
-        # 获取筛选参数
-        bank_filter = request.args.get('bank', '')
-        category_filter = request.args.get('category', '')
-        search_query = request.args.get('search', '')
-        sort_by = request.args.get('sort', 'bank')  # bank, rate, amount
-        
-        # 构建SQL查询
-        sql = "SELECT * FROM loan_products WHERE 1=1"
-        params = []
-        
-        if bank_filter:
-            sql += " AND bank = ?"
-            params.append(bank_filter)
-        
-        if category_filter:
-            sql += " AND category = ?"
-            params.append(category_filter)
-        
-        if search_query:
-            sql += " AND (name LIKE ? OR description LIKE ? OR product_id LIKE ?)"
-            search_term = f'%{search_query}%'
-            params.extend([search_term, search_term, search_term])
-        
-        # 排序
-        if sort_by == 'rate':
-            sql += " ORDER BY rate_display ASC"
-        elif sort_by == 'amount':
-            sql += " ORDER BY amount_max IS NULL, amount_max DESC"
-        else:
-            sql += " ORDER BY bank, category, name"
-        
-        cursor.execute(sql, params)
-        products = [dict(row) for row in cursor.fetchall()]
-        
-        # 获取所有银行列表
-        cursor.execute("SELECT DISTINCT bank FROM loan_products ORDER BY bank")
-        banks = [row['bank'] for row in cursor.fetchall()]
-        
-        # 获取产品统计
-        cursor.execute("SELECT COUNT(*) as total FROM loan_products")
-        total_products = cursor.fetchone()['total']
-        
-        cursor.execute("SELECT COUNT(DISTINCT bank) as total FROM loan_products")
-        total_banks = cursor.fetchone()['total']
-        
-        # 类型统计
-        cursor.execute("SELECT category, COUNT(*) as count FROM loan_products GROUP BY category ORDER BY count DESC")
-        category_stats = {row['category']: row['count'] for row in cursor.fetchall()}
+    """Phase 9: 贷款产品目录 - 调用FastAPI统一产品API"""
+    import requests
     
-    # 类型名称映射
-    category_names = {
-        'personal': '个人贷款',
-        'home': '房屋贷款',
-        'auto': '汽车贷款',
-        'sme': '企业贷款',
-        'refinance': '再融资',
-        'debt_consolidation': '债务整合',
-        'home_reno': '装修贷款',
-        'investment': '投资贷款',
-        'other': '其他'
-    }
-    
-    # 解析 JSON 字段
-    import json
-    for product in products:
-        if product.get('channel'):
-            try:
-                product['channel'] = json.loads(product['channel'])
-            except:
-                product['channel'] = []
+    try:
+        # 调用FastAPI /api/loan-products/all端点
+        response = requests.get('http://localhost:8000/api/loan-products/all', timeout=10)
+        response.raise_for_status()
+        data = response.json()
         
-        if product.get('docs_required'):
-            try:
-                product['docs_required'] = json.loads(product['docs_required'])
-            except:
-                product['docs_required'] = []
+        products = data.get('products', [])
+        total_products = data.get('total', 0)
         
-        if product.get('special_features'):
-            try:
-                product['special_features'] = json.loads(product['special_features'])
-            except:
-                product['special_features'] = []
+        # 统计银行数量
+        banks = list(set([p['bank'] for p in products]))
+        total_banks = len(banks)
         
-        if product.get('links'):
-            try:
-                product['links'] = json.loads(product['links'])
-            except:
-                product['links'] = []
+        # 转换产品数据格式为前端需要的JSON
+        products_json = products
+        
+    except Exception as e:
+        print(f"Error fetching loan products from API: {e}")
+        products_json = []
+        total_products = 0
+        total_banks = 0
     
     return render_template(
         'loan_products.html',
-        products=products,
-        banks=banks,
-        category_names=category_names,
-        category_stats=category_stats,
+        products_json=json.dumps(products_json),
         total_products=total_products,
-        total_banks=total_banks,
-        current_bank=bank_filter,
-        current_category=category_filter,
-        current_search=search_query,
-        current_sort=sort_by
+        total_banks=total_banks
     )
+
+
+@app.route('/api/loan-products/select', methods=['POST'])
+@require_admin_or_accountant
+def select_product_for_evaluation():
+    """Phase 9: Store selected product_id in session for loan evaluation"""
+    try:
+        data = request.json
+        product_id = data.get('product_id')
+        
+        if not product_id:
+            return jsonify({'error': 'product_id required'}), 400
+        
+        # Store in Flask session
+        session['selected_product_id'] = product_id
+        
+        return jsonify({'success': True, 'product_id': product_id})
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/loan-products-dashboard')
+@require_admin_or_accountant
+def loan_products_dashboard():
+    """Phase 9: Loan Marketplace Dashboard（三个入口卡片）"""
+    return render_template('loan_products_dashboard.html')
 
 @app.route('/loan-products/<int:product_id>')
 def loan_product_detail(product_id):
