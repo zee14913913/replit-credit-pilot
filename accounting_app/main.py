@@ -79,8 +79,7 @@ from .routes import (
     loans_ai,  # PHASE 8.2: AI & Product Matching（Product Recommendations + AI Advisor）
     loans_full_auto,  # PHASE 8.3: Full Automated Mode（File Upload + Auto Enrichment）
     loan_products_catalog,  # PHASE 9: Loan Products Catalog（产品目录统一API）
-    customer_360,  # PHASE 10: Customer 360° Loan Dashboard（个人贷款画像总览）
-    sme_360  # PHASE 11: SME 360° Business Loan Dashboard（企业融资画像总览）
+    customer_360  # PHASE 10: Customer 360° Loan Dashboard（个人贷款画像总览）
 )
 
 # 注册路由
@@ -123,7 +122,6 @@ app.include_router(loans_ai.router, tags=["Loans AI"])  # PHASE 8.2: AI & Produc
 app.include_router(loans_full_auto.router, tags=["Loans Full Auto"])  # PHASE 8.3: Full Automated Mode（File Upload + Auto Enrichment）
 app.include_router(loan_products_catalog.router, tags=["Loan Products Catalog"])  # PHASE 9: Loan Products Catalog（产品目录统一API）
 app.include_router(customer_360.router, tags=["Customer 360"])  # PHASE 10: Customer 360° Loan Dashboard（个人贷款画像总览）
-app.include_router(sme_360.router, tags=["SME 360"])  # PHASE 11: SME 360° Business Loan Dashboard（企业融资画像总览）
 
 
 # 启动事件：初始化数据库

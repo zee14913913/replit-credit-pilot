@@ -1,16 +1,11 @@
 # Smart Credit & Loan Manager
 
 ## Recent Changes
-- **Phase 11: SME 360° Business Loan Dashboard** (Nov 14, 2025) - 企业融资画像总览系统（✅ 已完成）：
-  - **创建sme_360.html**: Galaxy Theme 4面板布局（Business Credit Profile / Cashflow Insights / Loan Capabilities / Product Recommendations）
-  - **创建sme_360.css（550行）**: 响应式Grid Layout、BRR等级颜色映射（1-10）、Approval Odds SVG圆形进度条、Industry Risk颜色编码
-  - **创建sme_360.js（450行）**: 完整前端引擎，包含4个render函数、Chart.js双图表（Revenue/Expenses + AR/AP Aging）、SME Loan Simulator
-  - **创建sme_360.py FastAPI router**: GET /api/sme/{company_id}/loan-profile端点，整合BRR/DSCR/Variance/Revenue/AR/AP数据
-  - **数据整合**: (1) file_index表查询银行流水获取Revenue/Expenses，(2) suppliers_invoices表查询AR/AP账龄，(3) sme_loan_products表查询推荐产品
-  - **BRR算法**: calculate_brr_grade()基于DSCR/Variance/Industry Risk，calculate_sme_approval_odds()基于BRR + DSCR + Revenue
-  - **融资能力计算**: Max EMI（40% Net Cashflow限制）+ Max Loan Amount（PMT公式反算）+ CGC Eligibility（DSCR≥1.25）
-  - **4大面板功能**: BRR Badge动态颜色（1-10等级）、Approval Odds圆形进度条、12月Revenue/Expenses Chart.js图表、AR/AP Aging柱状图、SME Loan Simulator（实时EMI+DSCR计算）、Top 5 SME产品推荐卡片
-  - **路由注册**: FastAPI router注册 + Flask /sme-360/<company_id>路由（RBAC保护）
+- **Phase CLEAN: SME 360 Removal** (Nov 14, 2025) - 删除非核心Dashboard模块（❌ 已删除）：
+  - **删除理由**: SME 360° Dashboard中看不中用，对核心贷款业务无实际价值
+  - **删除文件**: templates/sme_360.html, static/css/sme_360.css, static/js/sme_360.js, accounting_app/routes/sme_360.py
+  - **移除路由**: FastAPI router注册、Flask /sme-360/<company_id>路由
+  - **保留核心**: Modern Loan Evaluate、Loan Products Catalog、CTOS Consent、Auto Enrichment、风控引擎全部保留
 - **Phase 10: Customer 360° Loan Dashboard** (Nov 14, 2025) - 个人贷款画像总览系统（✅ 已完成）：
   - **创建customer_360.html**: Galaxy Theme 4面板布局（Credit Profile / Cashflow Insights / Loan Capabilities / Product Matches）
   - **创建customer_360.css（520行）**: 响应式Grid Layout、风险等级颜色映射（A/B/C/D/E）、Approval Odds SVG圆形进度条
