@@ -299,8 +299,8 @@ const API_BASE_URL = {{ api_base_url|tojson }};
             const statusBadge = key.is_active 
                 ? '<span class="badge bg-success">{{ t('auto_text_344') }}</span>' 
                 : '<span class="badge bg-secondary">{{ t('auto_text_345') }}</span>{{ t('________________________const_lastused__keylast_us') }}<span class="text-muted">{{ t('auto_text_347') }}</span>{{ t('____________const_createdat__new_datekeycreated_at') }}<span class="text-muted">无</span>{{ t('____________const_envbadge__keyenvironment__live__') }}<span class="badge bg-danger">{{ t('live_1') }}</span>'
-                : '<span class="badge bg-info">{{ t('test_1') }}</span>{{ t('____________const_actions__keyis_active___________') }}<button class="btn btn-sm btn-danger" onclick="showRevokeModal(${key.id}, '${key.name}')">
-                       <i class="bi bi-x-circle"></i> 撤销
+                : '<span class="badge bg-info">{{ t('test_1') }}</span>{{ t('____________const_actions__keyis_active___________') }}<button class="btn btn-sm btn-danger" onclick="showRevokeModal(${key.id}, \'${key.name}\')">
+                       <i class="bi bi-x-circle"></i> <span data-i18n="revoke_button">{{ t('revoke_button') }}</span>
                    </button>`
                 : '<span class="text-muted">{{ t('auto_text_345') }}</span>';
 
@@ -373,14 +373,16 @@ const API_BASE_URL = {{ api_base_url|tojson }};
         document.getElementById('newApiKey').value = result.api_key;
         document.getElementById('newApiKeyName').textContent = result.name;
         document.getElementById('newApiKeyEnv').textContent = result.environment === 'live' ? '{{ t('live_3') }}）' : '{{ t('test_3') }}）';
-        document.getElementById('newApiKeyRate').textContent = `${data.rate_limit} 请求/分钟`;
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+        document.getElementById('newApiKeyRate').textContent = `${data.rate_limit} ${t('requests_per_minute', '请求/分钟')}`;
 
         const showModal = new bootstrap.Modal(document.getElementById('showApiKeyModal'));
         {{ t('showmodalshow_________') }}
         document.getElementById('createApiKeyForm').reset();
 
     } catch (error) {
-        alert(`创建失败：${error.message}`);
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+        alert(`${t('creation_failed_prefix', '创建失败：')}${error.message}`);
     }
 }
 
@@ -389,9 +391,10 @@ const API_BASE_URL = {{ api_base_url|tojson }};
     input.select();
     document.execCommand('copy');
     
+    const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
     // {{ t('____const_btn__eventtargetclosest') }}('button');
     const originalHTML = btn.innerHTML;
-    btn.innerHTML = '<i class="bi bi-check"></i> 已复制';
+    btn.innerHTML = `<i class="bi bi-check"></i> ${t('copied', '已复制')}`;
     btn.classList.remove('btn-outline-primary');
     btn.classList.add('btn-success');
     
@@ -413,9 +416,10 @@ const API_BASE_URL = {{ api_base_url|tojson }};
 
 // {{ t('apiasync_function_confirmrevokeapikey') }}() {
     const reason = document.getElementById('revokeReason').value.trim();
+    const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
     
     if (!reason) {
-        alert('请填写撤销原因');
+        alert(t('please_fill_revoke_reason', '请填写撤销原因'));
         return;
     }
 
@@ -441,7 +445,8 @@ const API_BASE_URL = {{ api_base_url|tojson }};
         alert('{{ t('api_16') }}');
 
     } catch (error) {
-        alert(`撤销失败：${error.message}`);
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+        alert(`${t('revoke_failed_prefix', '撤销失败：')}${error.message}`);
     }
 }
 </script>
