@@ -1,6 +1,16 @@
 # Smart Credit & Loan Manager
 
 ## Recent Changes
+- **Phase 10: Customer 360° Loan Dashboard** (Nov 14, 2025) - 个人贷款画像总览系统（✅ 已完成）：
+  - **创建customer_360.html**: Galaxy Theme 4面板布局（Credit Profile / Cashflow Insights / Loan Capabilities / Product Matches）
+  - **创建customer_360.css（520行）**: 响应式Grid Layout、风险等级颜色映射（A/B/C/D/E）、Approval Odds SVG圆形进度条
+  - **创建customer_360.js（365行）**: 完整前端引擎，包含4个render函数、Chart.js双图表、Loan Simulator、产品选择联动
+  - **创建customer_360.py FastAPI router**: GET /api/customers/{customer_id}/loan-profile端点，整合Income/Spending/Risk/Products数据
+  - **数据整合**: (1) file_index表JSON查询获取Income Documents，(2) transactions表聚合查询获取月度消费，(3) personal_loan_products表查询推荐产品
+  - **风险算法**: calculate_risk_grade()基于DTI/FOIR/CCRIS，calculate_approval_odds()基于Risk Grade + Income
+  - **贷款能力计算**: Max EMI（40% DTI限制）+ Max Loan Amount（PMT公式反算）
+  - **4大面板功能**: Risk Badge动态颜色、Approval Odds圆形进度条、12月Cashflow/Spending Chart.js图表、Loan Simulator（实时EMI+DTI+FOIR计算）、Top 5产品推荐卡片
+  - **路由注册**: FastAPI router注册 + Flask /customer-360/<customer_id>路由（RBAC保护）
 - **Phase 9: Loan Products Catalog全面升级** (Nov 14, 2025) - 产品目录系统现代化重建（✅ Architect审查通过）：
   - **新建loan_products.html**: Galaxy Theme风格产品市场页面（搜索+筛选+Modal详情+Select for Evaluation按钮）
   - **新建loan_products_catalog.css（401行）+ loan_products_catalog.js（249行）**: 卡片瀑布流布局，支持Bank/Digital Bank/Fintech筛选，Lowest Rate/Highest Amount排序
