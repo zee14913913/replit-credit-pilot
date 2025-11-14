@@ -68,19 +68,36 @@ class LoanEligibilityEngine:
                 "recommended_loan_amount": 0.0
             }
         
-        dsr_income = income_data.get("dsr_income", 0.0)
-        dsrc_income = income_data.get("dsrc_income", 0.0)
+        dsr_income = income_data.get("dsr_income") or 0.0
+        dsrc_income = income_data.get("dsrc_income") or 0.0
         best_source = income_data.get("best_source")
         income_confidence = income_data.get("confidence", 0.0)
         
         total_monthly_debt = cls._calculate_monthly_debt(customer_id)
         
-        dsr_ratio = total_monthly_debt / dsr_income if dsr_income > 0 else 0.0
-        dsrc_ratio = total_monthly_debt / dsrc_income if dsrc_income > 0 else 0.0
+        invalid_dsr_income = dsr_income <= 0
+        invalid_dsrc_income = dsrc_income <= 0
+        
+        if invalid_dsr_income:
+            return {
+                "customer_id": customer_id,
+                "dsr_income": round(dsr_income, 2),
+                "dsrc_income": round(dsrc_income, 2),
+                "best_source": best_source,
+                "income_confidence": round(income_confidence, 4),
+                "total_monthly_debt": round(total_monthly_debt, 2),
+                "dsr_ratio": None,
+                "dsrc_ratio": None,
+                "eligibility_status": "Not Eligible - Invalid Income",
+                "recommended_loan_amount": 0.0
+            }
+        
+        dsr_ratio = total_monthly_debt / dsr_income
+        dsrc_ratio = total_monthly_debt / dsrc_income if not invalid_dsrc_income else None
         
         eligibility_status = cls._determine_eligibility(dsr_ratio)
         
-        recommended_loan_amount = dsrc_income * 8 if dsrc_income > 0 else 0.0
+        recommended_loan_amount = dsrc_income * 8 if not invalid_dsrc_income else 0.0
         
         return {
             "customer_id": customer_id,
@@ -89,8 +106,8 @@ class LoanEligibilityEngine:
             "best_source": best_source,
             "income_confidence": round(income_confidence, 4),
             "total_monthly_debt": round(total_monthly_debt, 2),
-            "dsr_ratio": round(dsr_ratio, 4),
-            "dsrc_ratio": round(dsrc_ratio, 4),
+            "dsr_ratio": round(dsr_ratio, 4) if dsr_ratio is not None else None,
+            "dsrc_ratio": round(dsrc_ratio, 4) if dsrc_ratio is not None else None,
             "eligibility_status": eligibility_status,
             "recommended_loan_amount": round(recommended_loan_amount, 2)
         }
@@ -156,7 +173,7 @@ class LoanEligibilityEngine:
         - DSR > 0.8 → Not Eligible
         
         Args:
-            dsr_ratio: DSR比率
+            dsr_ratio: DSR比率（必须是有效值，无效收入在调用前已处理）
             
         Returns:
             资格状态
