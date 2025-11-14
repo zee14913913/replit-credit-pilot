@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from typing import Literal, Optional
 from fastapi import Depends
 
-from ..database import get_db
+from ..db import get_db
 from ..services.reporting import LoanReportBuilder
 from ..services.reporting.pdf_renderer import (
     generate_personal_pdf,
@@ -96,7 +96,7 @@ async def generate_personal_loan_report(
             target_bank=target_bank
         )
         
-        # 产品匹配
+        # 产品匹配（传递target_bank参数）
         recommended_products = LoanProductMatcher.match_personal_loan_v2(
             risk_grade=evaluation_result["risk_grade"],
             income=income or customer_data["income"],
@@ -104,7 +104,8 @@ async def generate_personal_loan_report(
             ccris_bucket=ccris_bucket,
             credit_score=credit_score,
             max_emi=evaluation_result["max_emi"],
-            top_n=10
+            top_n=10,
+            target_bank=target_bank
         )
         
         evaluation_result["recommended_products"] = recommended_products
@@ -216,7 +217,7 @@ async def generate_sme_loan_report(
             target_bank=target_bank
         )
         
-        # 产品匹配
+        # 产品匹配（传递target_bank参数）
         recommended_products = LoanProductMatcher.match_sme_loan_v2(
             brr_grade=evaluation_result["brr_grade"],
             dscr=evaluation_result["dscr"],
@@ -226,7 +227,8 @@ async def generate_sme_loan_report(
             company_age_years=company_age_years,
             max_loan_amount=evaluation_result["max_loan_amount"],
             cgc_eligible=evaluation_result["cgc_eligibility"],
-            top_n=10
+            top_n=10,
+            target_bank=target_bank
         )
         
         evaluation_result["recommended_products"] = recommended_products

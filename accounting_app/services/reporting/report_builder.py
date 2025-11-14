@@ -92,7 +92,7 @@ class LoanReportBuilder:
         """
         
         # 6. 批准概率说明
-        approval_odds = products[0]["approval_odds"] if products else 50
+        approval_odds = products[0].get("approval_odds", 50) if products else 50
         html += f"""
         <div class="report-section">
             <h2>📈 批准概率分析 | Approval Probability</h2>
@@ -198,7 +198,7 @@ class LoanReportBuilder:
         """
         
         # 6. 批准概率说明
-        approval_odds = products[0]["approval_odds"] if products else 50
+        approval_odds = products[0].get("approval_odds", 50) if products else 50
         html += f"""
         <div class="report-section">
             <h2>📈 批准概率分析 | Approval Probability</h2>

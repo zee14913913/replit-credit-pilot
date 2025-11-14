@@ -371,3 +371,53 @@ class TestProductMatchingEdgeCases:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "-s"])
+
+    def test_target_bank_filter_personal(self):
+        """测试target_bank参数正确过滤个人贷款产品"""
+        all_products = LoanProductMatcher.match_personal_loan_v2(
+            risk_grade="A",
+            income=7000,
+            monthly_commitment=1500,
+            ccris_bucket=0,
+            credit_score=750
+        )
+        
+        # 筛选Maybank产品
+        maybank_products = LoanProductMatcher.match_personal_loan_v2(
+            risk_grade="A",
+            income=7000,
+            monthly_commitment=1500,
+            ccris_bucket=0,
+            credit_score=750,
+            target_bank="Maybank"
+        )
+        
+        # 验证只返回Maybank产品
+        assert len(maybank_products) > 0
+        assert all(p["bank"] == "Maybank" for p in maybank_products)
+        assert len(maybank_products) < len(all_products)
+    
+    def test_target_bank_filter_sme(self):
+        """测试target_bank参数正确过滤SME贷款产品"""
+        all_products = LoanProductMatcher.match_sme_loan_v2(
+            brr_grade=3,
+            dscr=2.0,
+            operating_income=2000000,
+            industry_sector="trading",
+            ctos_sme_score=720
+        )
+        
+        # 筛选Public Bank产品
+        pb_products = LoanProductMatcher.match_sme_loan_v2(
+            brr_grade=3,
+            dscr=2.0,
+            operating_income=2000000,
+            industry_sector="trading",
+            ctos_sme_score=720,
+            target_bank="Public Bank"
+        )
+        
+        # 验证只返回Public Bank产品
+        assert len(pb_products) > 0
+        assert all(p["bank"] == "Public Bank" for p in pb_products)
+        assert len(pb_products) < len(all_products)

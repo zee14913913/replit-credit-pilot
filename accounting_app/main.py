@@ -75,7 +75,8 @@ from .routes import (
     loan_eligibility,  # Phase B: 贷款资格计算引擎（基于月结单债务）
     loan_products,  # Phase C: 多贷款产品模拟（等额本息/等额本金）
     business_loans,  # Phase D: 企业贷款评估（基于DSCR）
-    loan_affordability  # Phase E: 个人贷款承受能力计算（基于DSR限制）
+    loan_affordability,  # Phase E: 个人贷款承受能力计算（基于DSR限制）
+    loan_reports  # PHASE 5: 贷款报告生成系统（HTML/PDF）
 )
 
 # 注册路由

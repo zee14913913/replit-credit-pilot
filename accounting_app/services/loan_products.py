@@ -34,7 +34,8 @@ class LoanProductMatcher:
         ccris_bucket: int = 0,
         credit_score: int = 700,
         max_emi: float = None,
-        top_n: int = None
+        top_n: int = None,
+        target_bank: str = None
     ) -> List[Dict]:
         """
         PHASE 4 增强版个人贷款匹配
@@ -47,6 +48,7 @@ class LoanProductMatcher:
             credit_score: 信用分数
             max_emi: 最大月供能力（可选）
             top_n: 返回前N个产品（None=全部）
+            target_bank: 目标银行筛选（可选）
             
         Returns:
             推荐产品列表（智能评分+动态利率+批准概率）
@@ -60,6 +62,10 @@ class LoanProductMatcher:
             max_emi = max(0, available_capacity)
         
         for product_id, product_data in PERSONAL_LOAN_CATALOG.items():
+            # 0. 目标银行筛选（如指定）
+            if target_bank and product_data["bank"].lower() != target_bank.lower():
+                continue
+            
             # 1. 基本筛选
             if income < product_data["min_income"]:
                 continue
@@ -139,7 +145,8 @@ class LoanProductMatcher:
         company_age_years: int = 5,
         max_loan_amount: float = None,
         cgc_eligible: bool = False,
-        top_n: int = None
+        top_n: int = None,
+        target_bank: str = None
     ) -> List[Dict]:
         """
         PHASE 4 增强版SME贷款匹配
@@ -154,6 +161,7 @@ class LoanProductMatcher:
             max_loan_amount: 风控引擎计算的最大可贷额
             cgc_eligible: CGC资格
             top_n: 返回前N个产品
+            target_bank: 目标银行筛选（可选）
             
         Returns:
             推荐产品列表
@@ -161,6 +169,10 @@ class LoanProductMatcher:
         recommended_products = []
         
         for product_id, product_data in SME_LOAN_CATALOG.items():
+            # 0. 目标银行筛选（如指定）
+            if target_bank and product_data["bank"].lower() != target_bank.lower():
+                continue
+            
             # 1. 基本筛选
             if operating_income < product_data["min_revenue"]:
                 continue
