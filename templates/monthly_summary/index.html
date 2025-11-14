@@ -138,11 +138,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const langToggle = document.getElementById('langToggle');
     const langBtnText = document.getElementById('langBtnText');
 
-    // {{ t('____let_currentlang__localstoragegetitem') }}('preferredLanguage') || 'zh';
+    // 语言切换功能
+    let currentLang = localStorage.getItem('preferredLanguage') || 'zh';
     
     function switchLanguage(lang) {
         currentLang = lang;
-        localStorage.setItem('preferredLanguage', {{ t('lang__________________langtext_') }}
+        localStorage.setItem('preferredLanguage', lang);
+        
+        // 更新所有带有 lang-text 类的元素
         document.querySelectorAll('.lang-text').forEach(element => {
             const text = element.getAttribute(`data-${lang}`);
             if (text) {
@@ -150,15 +153,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // {{ t('________langbtntexttextcontent__lang') }} === 'zh' ? 'English' : '中文';
+        // 更新按钮文字
+        langBtnText.textContent = lang === 'zh' ? 'English' : '中文';
     }
     
-    // {{ t('____switchlanguagecurrentlang_________') }}    langToggle.addEventListener('click', function() {
+    // 初始化语言
+    switchLanguage(currentLang);
+    
+    // 语言切换按钮事件
+    langToggle.addEventListener('click', function() {
         const newLang = currentLang === 'zh' ? 'en' : 'zh';
         switchLanguage(newLang);
     });
 
-    // {{ t('____viewmonthlybtnaddeventlistener') }}('click', function() {
+    // 查看月度报告
+    viewMonthlyBtn.addEventListener('click', function() {
         const customerId = customerSelect.value;
         const year = yearSelect.value;
         const month = monthSelect.value;
@@ -172,7 +181,8 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = `/monthly-summary/report/${customerId}/${year}/${month}`;
     });
 
-    // {{ t('____viewyearlybtnaddeventlistener') }}('click', function() {
+    // 查看年度汇总
+    viewYearlyBtn.addEventListener('click', function() {
         const customerId = customerSelect.value;
         const year = yearSelect.value;
 
@@ -186,4 +196,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
 {% endblock %}

@@ -135,17 +135,21 @@
 </style>
 
 <script>
-    // {{ t('____documentaddeventlistener') }}('DOMContentLoaded', async function() {
+    // 页面加载时获取当前设置
+    document.addEventListener('DOMContentLoaded', async function() {
         await loadSettings();
     });
     
-    // {{ t('____async_function_loadsettings') }}() {
-        // {{ t('todo_api_________') }}
+    // 加载用户设置
+    async function loadSettings() {
+        // TODO: 从API加载用户偏好设置
+        // 暂时使用默认值
         document.getElementById('emailEnabled').checked = true;
         document.getElementById('smsEnabled').checked = false;
     }
     
-    // {{ t('____documentgetelementbyid') }}('settingsForm').addEventListener('submit', async function(e) {
+    // 保存设置
+    document.getElementById('settingsForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const settings = {
@@ -157,7 +161,7 @@
         };
         
         try {
-            // {{ t('todo_api') }}
+            // TODO: 调用API保存设置
             console.log('Saving settings:', settings);
             
             alert('✅ 设置已保存！');
@@ -168,4 +172,5 @@
         }
     });
 </script>
+
 {% endblock %}

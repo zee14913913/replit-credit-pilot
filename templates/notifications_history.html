@@ -104,12 +104,16 @@
 <script>
     let currentFilter = 'all';
     
-    // {{ t('____documentaddeventlistener_1') }}('DOMContentLoaded', function() {
+    // 页面加载时获取所有通知
+    document.addEventListener('DOMContentLoaded', function() {
         loadNotifications('all');
     });
     
-    // {{ t('____async_function_loadnotificationsfilter') }}) {
-        {{ t('currentfilter__filter_________________') }}
+    // 加载通知列表
+    async function loadNotifications(filter) {
+        currentFilter = filter;
+        
+        // 更新按钮状态
         document.querySelectorAll('.btn-action, .btn-secondary').forEach(btn => {
             btn.classList.remove('btn-action');
             btn.classList.add('btn-secondary');
@@ -118,8 +122,7 @@
         document.getElementById(`btn-${filter}`).classList.add('btn-action');
         
         const container = document.getElementById('notificationsList');
-        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
-        container.innerHTML = `<div class="text-center" style="padding: 40px;"><i class="bi bi-hourglass-split"></i> ${t('loading', '加载中...')}</div>`;
+        container.innerHTML = '<div class="text-center" style="padding: 40px;"><i class="bi bi-hourglass-split"></i> 加载中...</div>';
         
         try {
             const apiBaseUrl = `${window.location.protocol}//${window.location.hostname}:8000`;
@@ -139,21 +142,21 @@
             container.innerHTML = `
                 <div class="text-center" style="padding: 40px; color: var(--text-muted);">
                     <i class="bi bi-exclamation-triangle" style="font-size: 48px; color: #DC3545;"></i>
-                    <p style="margin-top: 16px;">{{ t('auto_text_1000') }}</p>
+                    <p style="margin-top: 16px;">加载失败，请稍后重试</p>
                 </div>
             `;
         }
     }
     
-    // {{ t('____function_displaynotificationsnotifications') }}) {
-        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+    // 显示通知列表
+    function displayNotifications(notifications) {
         const container = document.getElementById('notificationsList');
         
         if (notifications.length === 0) {
             container.innerHTML = `
                 <div class="text-center" style="padding: 60px 20px; color: var(--text-muted);">
                     <i class="bi bi-inbox" style="font-size: 48px;"></i>
-                    <p style="margin-top: 16px;">{{ t('auto_text_407') }}</p>
+                    <p style="margin-top: 16px;">暂无通知</p>
                 </div>
             `;
             return;
@@ -161,38 +164,39 @@
         
         container.innerHTML = notifications.map(n => `
             <div class="notification-card ${n.status === 'read' ? 'read' : ''}">
-                <div class="notification-title">{{ t('ntitle') }}</div>
-                <div class="notification-message">{{ t('nmessage') }}</div>
+                <div class="notification-title">${n.title}</div>
+                <div class="notification-message">${n.message}</div>
                 <div class="notification-footer">
                     <div>
                         <span class="priority-badge priority-${n.priority || 'normal'}">
-                            ${n.priority === 'high' ? t('high_priority', '高优先级') : n.priority === 'low' ? t('low_priority', '低优先级') : t('normal_priority', '普通')}
+                            ${n.priority === 'high' ? '高优先级' : n.priority === 'low' ? '低优先级' : '普通'}
                         </span>
-                        <span style="margin-left: 12px;">{{ t('formattimencreated_at') }}</span>
+                        <span style="margin-left: 12px;">${formatTime(n.created_at)}</span>
                     </div>
-                    ${n.action_url ? `<a href="${n.action_url}" class="btn-sm btn-action">{{ t('naction_label__') }}</a>` : ''}
+                    ${n.action_url ? `<a href="${n.action_url}" class="btn-sm btn-action">${n.action_label || '查看详情'}</a>` : ''}
                 </div>
             </div>
         `).join('');
     }
     
-    // {{ t('____function_formattimeisostring') }}) {
-        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+    // 格式化时间
+    function formatTime(isoString) {
         const date = new Date(isoString);
         const now = new Date();
         const diff = now - date;
         
         const minutes = Math.floor(diff / 60000);
-        if (minutes < 1) return t('just_now', '刚刚');
-        if (minutes < 60) return t('minutes_ago', '{n}分钟前').replace('{n}', minutes);
+        if (minutes < 1) return '刚刚';
+        if (minutes < 60) return `${minutes}分钟前`;
         
         const hours = Math.floor(minutes / 60);
-        if (hours < 24) return t('hours_ago', '{n}小时前').replace('{n}', hours);
+        if (hours < 24) return `${hours}小时前`;
         
         const days = Math.floor(hours / 24);
-        if (days < 7) return t('days_ago', '{n}天前').replace('{n}', days);
+        if (days < 7) return `${days}天前`;
         
         return date.toLocaleString('zh-CN');
     }
 </script>
+
 {% endblock %}
