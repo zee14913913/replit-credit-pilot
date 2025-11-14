@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Add Customer - {{ t('company_name') }}{% endblock %}
+{% block title %}{{ t('add_customer') }} - {{ t('company_name') }}{% endblock %}
 
 {% block content %}
 <div class="fade-in">
     <!-- Page Header -->
     <div class="section-header">
-        <h1 class="section-title"><i class="bi bi-person-plus"></i> Add New Customer</h1>
-        <p class="section-subtitle">Quickly add a customer to the system</p>
+        <h1 class="section-title"><i class="bi bi-person-plus"></i> {{ t('add_new_customer') }}</h1>
+        <p class="section-subtitle">{{ t('quickly_add_customer') }}</p>
     </div>
 
     <!-- Add Customer Form Card -->
@@ -17,58 +17,58 @@
                 <form method="POST" action="{{ url_for('add_customer') }}">
                     <div class="mb-3">
                         <label for="customerName" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
-                            <i class="bi bi-person"></i> Full Name
+                            <i class="bi bi-person"></i> {{ t('full_name') }}
                         </label>
                         <input type="text" class="form-control" id="customerName" name="name" required
                                style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;"
-                               placeholder="e.g., John Tan Wei Ming">
+                               placeholder="{{ t('eg_full_name') }}">
                     </div>
 
                     <div class="mb-3">
                         <label for="customerEmail" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
-                            <i class="bi bi-envelope"></i> Email Address
+                            <i class="bi bi-envelope"></i> {{ t('email_address') }}
                         </label>
                         <input type="email" class="form-control" id="customerEmail" name="email" required
                                style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;"
-                               placeholder="e.g., john.tan@gmail.com">
+                               placeholder="{{ t('eg_email') }}">
                         <small style="color: rgba(255,255,255,0.7); display: block; margin-top: 0.5rem;">
-                            <i class="bi bi-info-circle"></i> Customer will use this email to register and login
+                            <i class="bi bi-info-circle"></i> {{ t('customer_email_login_hint') }}
                         </small>
                     </div>
 
                     <div class="mb-3">
                         <label for="customerPhone" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
-                            <i class="bi bi-phone"></i> Phone Number
+                            <i class="bi bi-phone"></i> {{ t('phone_number') }}
                         </label>
                         <input type="tel" class="form-control" id="customerPhone" name="phone" required
                                style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;"
-                               placeholder="e.g., +60123456789">
+                               placeholder="{{ t('eg_phone') }}">
                     </div>
 
                     <div class="mb-4">
                         <label for="customerIncome" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
-                            <i class="bi bi-cash-coin"></i> Monthly Income (RM)
+                            <i class="bi bi-cash-coin"></i> {{ t('monthly_income_rm') }}
                         </label>
                         <input type="number" class="form-control" id="customerIncome" name="monthly_income" step="0.01" required
                                style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;"
-                               placeholder="e.g., 5000.00">
+                               placeholder="{{ t('eg_income') }}">
                     </div>
 
                     <div class="alert-professional alert-info-pro mb-4">
-                        <i class="bi bi-lightbulb"></i> <strong>Next Steps:</strong><br>
-                        After adding this customer, you can:<br>
-                        • Add their credit cards<br>
-                        • Upload their statements<br>
-                        • Generate reports<br>
-                        • Customer can register using the email above
+                        <i class="bi bi-lightbulb"></i> <strong>{{ t('next_steps') }}:</strong><br>
+                        {{ t('after_adding_customer') }}<br>
+                        • {{ t('add_credit_cards') }}<br>
+                        • {{ t('upload_statements') }}<br>
+                        • {{ t('generate_reports') }}<br>
+                        • {{ t('customer_can_register') }}
                     </div>
 
                     <div class="d-flex gap-2">
                         <a href="{{ url_for('index') }}" class="btn-professional-outline flex-fill">
-                            <i class="bi bi-arrow-left"></i> Cancel
+                            <i class="bi bi-arrow-left"></i> {{ t('cancel') }}
                         </a>
                         <button type="submit" class="btn-white-glow flex-fill">
-                            <i class="bi bi-check-circle"></i> Add Customer
+                            <i class="bi bi-check-circle"></i> {{ t('add_customer') }}
                         </button>
                     </div>
                 </form>

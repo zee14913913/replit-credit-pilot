@@ -213,30 +213,30 @@
     <!-- AI预测分析区（AI V3 扩展 - 不修改现有AI日报预览区） -->
     <section style="margin-top:40px; background:#1a1228; padding:20px; border-radius:16px; box-shadow:0 0 20px rgba(50,36,70,0.3); color:#fff; border:2px solid #322446;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-            <h3 style="color:#322446; font-weight:800; margin:0;">🔮 AI 智能预测分析</h3>
+            <h3 style="color:#322446; font-weight:800; margin:0;">🔮 {{ t('ai_intelligent_prediction') }}</h3>
             <button onclick="loadAllPredictions()" style="background:#FF007F; color:#fff; border:none; border-radius:8px; padding:8px 16px; font-weight:700; cursor:pointer; transition:all 0.3s;">
-                🔄 刷新预测
+                🔄 {{ t('refresh_predictions') }}
             </button>
         </div>
-        <p style="color:#ccc; margin-bottom:20px;">基于历史数据的AI智能预测与财务健康评分</p>
+        <p style="color:#ccc; margin-bottom:20px;">{{ t('ai_prediction_desc') }}</p>
         
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
             <!-- 财务健康评分卡片 -->
             <div style="background:#0a0a0a; padding:20px; border-radius:12px; border:2px solid #322446;">
-                <h4 style="color:#FF007F; font-weight:700; margin-bottom:16px;">💯 财务健康评分</h4>
+                <h4 style="color:#FF007F; font-weight:700; margin-bottom:16px;">💯 {{ t('financial_health_score') }}</h4>
                 <div id="ai-health-score" style="min-height:200px;">
                     <div style="text-align:center; color:#888; padding:40px;">
-                        点击"刷新预测"加载评分
+                        {{ t('click_refresh_to_load') }}
                     </div>
                 </div>
             </div>
             
             <!-- 未来预测卡片 -->
             <div style="background:#0a0a0a; padding:20px; border-radius:12px; border:2px solid #322446;">
-                <h4 style="color:#FF007F; font-weight:700; margin-bottom:16px;">📈 未来3个月预测</h4>
+                <h4 style="color:#FF007F; font-weight:700; margin-bottom:16px;">📈 {{ t('future_prediction') }}</h4>
                 <div id="ai-prediction" style="min-height:200px;">
                     <div style="text-align:center; color:#888; padding:40px;">
-                        点击"刷新预测"加载预测
+                        {{ t('click_refresh_load_prediction') }}
                     </div>
                 </div>
             </div>
@@ -244,10 +244,10 @@
         
         <!-- 趋势图表 -->
         <div style="background:#0a0a0a; padding:20px; border-radius:12px; margin-top:20px; border:2px solid #322446;">
-            <h4 style="color:#FF007F; font-weight:700; margin-bottom:16px;">📊 趋势分析</h4>
+            <h4 style="color:#FF007F; font-weight:700; margin-bottom:16px;">📊 {{ t('cashflow_trend') }}</h4>
             <div id="ai-trend-chart" style="height:300px;">
                 <div style="text-align:center; color:#888; padding:80px;">
-                    点击"刷新预测"加载趋势图
+                    {{ t('click_refresh_load_trend') }}
                 </div>
             </div>
         </div>
@@ -263,7 +263,7 @@ function loadAllPredictions() {
     // 获取第一个客户ID（如果有）
     const customerId = getFirstCustomerId();
     if (!customerId) {
-        alert('请先添加客户后再使用AI预测功能');
+        alert(window.i18n.translate('please_add_customer_first'));
         return;
     }
     
@@ -350,18 +350,18 @@ function deleteCustomer(customerId, customerName) {
 
 <!-- AI日报预览区（V2企业智能版新增） -->
 <section style="margin-top:40px; background:#1a1228; padding:20px; border-radius:16px; box-shadow:0 0 20px rgba(255,0,127,0.2); color:#fff; border:2px solid #ff007f;">
-  <h3 style="color:#ff007f; font-weight:800; margin-bottom:16px;">📅 AI 财务日报预览</h3>
-  <p style="color:#ccc; margin-bottom:16px;">以下为系统最近 7 天自动生成的日报摘要：</p>
+  <h3 style="color:#ff007f; font-weight:800; margin-bottom:16px;">📅 {{ t('ai_daily_report_preview') }}</h3>
+  <p style="color:#ccc; margin-bottom:16px;">{{ t('report_summary_last_7_days') }}</p>
   <div id="ai-daily-reports" style="max-height:280px; overflow-y:auto; font-size:14px; line-height:1.6; background:#0a0a0a; padding:12px; border-radius:8px;"></div>
   <button id="refresh-ai-reports" style="margin-top:12px; background:#ff007f; color:#fff; border:none; border-radius:8px; padding:10px 16px; font-weight:700; cursor:pointer; transition:all 0.3s;">
-    🔄 刷新日报
+    🔄 {{ t('refresh_daily_report') }}
   </button>
 </section>
 
 <script>
   async function loadAIDailyReports() {
     const box = document.getElementById('ai-daily-reports');
-    box.innerHTML = '<div style="text-align:center; color:#888;">⏳ 加载中...</div>';
+    box.innerHTML = `<div style="text-align:center; color:#888;">⏳ ${window.i18n.translate('loading')}</div>`;
     
     try {
       const res = await fetch('/api/ai-assistant/reports');
@@ -373,7 +373,7 @@ function deleteCustomer(customerId, customerName) {
       }
       
       if (!data.reports || data.reports.length === 0) {
-        box.innerHTML = '<div style="color:#888;">暂无AI日报记录</div>';
+        box.innerHTML = `<div style="color:#888;">${window.i18n.translate('no_ai_reports')}</div>`;
         return;
       }
       
@@ -384,7 +384,7 @@ function deleteCustomer(customerId, customerName) {
         </div>
       `).join('');
     } catch (error) {
-      box.innerHTML = `<div style="color:#ff4444;">❌ 加载失败: ${error.message}</div>`;
+      box.innerHTML = `<div style="color:#ff4444;">❌ ${window.i18n.translate('loading_failed')}: ${error.message}</div>`;
     }
   }
   
