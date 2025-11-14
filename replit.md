@@ -1,6 +1,14 @@
 # Smart Credit & Loan Manager
 
 ## Recent Changes
+- **Phase 11: Complete Bilingual System (EN/ZH)** (Nov 14, 2025) - 全系统双语支持实现（✅ 已完成）：
+  - **翻译文件完成**: static/i18n/en.json (437 keys) + zh.json (1047 keys)，覆盖所有贷款相关页面
+  - **HTML模板100%翻译**: loan_products.html和loan_evaluate.html全部使用{{ t('key') }}服务器端翻译系统
+  - **JavaScript客户端翻译**: loan_products_catalog.js使用window.i18n.translate()翻译所有动态生成内容（卡片标签、按钮、Modal详情、单位）
+  - **Flask路由修复**: 移除app.py中products_json的双重JSON序列化问题
+  - **翻译范围**: 产品卡片（Interest Rate/Max Loan/Max Tenure/Approval Time/months/hours/View Details/Select）+ Modal（Features/Eligibility/Varies/No features/Standard eligibility）+ Loan Evaluate（全部UI文本）
+  - **语言切换机制**: Flask /set-language/<lang>路由 + 服务器端{{ t() }} + 客户端window.i18n.translate()无缝协作
+  - **用户体验**: 所有贷款产品市场和评估页面文本完全支持EN/ZH一键切换，无任何硬编码英文残留
 - **Phase CLEAN: Customer 360 Removal** (Nov 14, 2025) - 删除个人Dashboard模块（❌ 已删除）：
   - **删除理由**: Customer 360° Dashboard非贷款顾问业务，图表数据推算无意义，PDPA高风险，占用资源且与核心业务无关
   - **删除文件**: templates/customer_360.html, static/css/customer_360.css, static/js/customer_360.js, accounting_app/routes/customer_360.py

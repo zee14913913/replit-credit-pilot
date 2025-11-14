@@ -1033,5 +1033,15 @@
   "employment_status": "就业状态",
   "no_products_found_dot": "未找到产品。",
   "interest_rate_label": "利率",
-  "max_loan_label": "最高贷款额"
+  "max_loan_label": "最高贷款额",
+  "max_tenure_label": "最长期限",
+  "approval_time_label": "批准时间",
+  "view_details_btn": "查看详情",
+  "select_btn": "选择",
+  "months_unit": "个月",
+  "hours_unit": "小时",
+  "varies": "视情况而定",
+  "no_features_listed": "无特色功能。",
+  "minimum_income": "最低收入",
+  "standard_eligibility": "适用标准银行资格要求。"
 }

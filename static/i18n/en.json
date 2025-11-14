@@ -418,10 +418,20 @@
   "max_loan_amount_value": "Max Loan Amount",
   "dti": "DTI",
   "foir": "FOIR",
-  "ccris_bucket": "CCRIS Bucket",
-  "credit_score": "Credit Score",
+  "ccris_bucket": "CCRIS bucket",
+  "credit_score": "Credit score",
   "employment_status": "Employment Status",
   "no_products_found_dot": "No products found.",
   "interest_rate_label": "Interest Rate",
-  "max_loan_label": "Max Loan"
+  "max_loan_label": "Max Loan",
+  "max_tenure_label": "Max Tenure",
+  "approval_time_label": "Approval Time",
+  "view_details_btn": "View Details",
+  "select_btn": "Select",
+  "months_unit": "months",
+  "hours_unit": "hours",
+  "varies": "Varies",
+  "no_features_listed": "No features listed.",
+  "minimum_income": "Minimum income",
+  "standard_eligibility": "Standard bank eligibility applies."
 }

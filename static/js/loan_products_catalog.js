@@ -123,6 +123,12 @@ function createProductCard(product) {
 
     const interestRateLabel = window.i18n ? window.i18n.translate('interest_rate_label') : 'Interest Rate';
     const maxLoanLabel = window.i18n ? window.i18n.translate('max_loan_label') : 'Max Loan';
+    const maxTenureLabel = window.i18n ? window.i18n.translate('max_tenure_label') : 'Max Tenure';
+    const approvalTimeLabel = window.i18n ? window.i18n.translate('approval_time_label') : 'Approval Time';
+    const monthsUnit = window.i18n ? window.i18n.translate('months_unit') : 'months';
+    const hoursUnit = window.i18n ? window.i18n.translate('hours_unit') : 'hours';
+    const viewDetailsBtn = window.i18n ? window.i18n.translate('view_details_btn') : 'View Details';
+    const selectBtn = window.i18n ? window.i18n.translate('select_btn') : 'Select';
     
     card.innerHTML = `
         <div class="product-card-header">
@@ -146,21 +152,21 @@ function createProductCard(product) {
                 <span>RM ${formatNumber(product.max_loan_amount || product.max_amount || 0)}</span>
             </div>
             <div class="detail-row">
-                <label>Max Tenure</label>
-                <span>${product.max_tenure} months</span>
+                <label>${maxTenureLabel}</label>
+                <span>${product.max_tenure} ${monthsUnit}</span>
             </div>
             <div class="detail-row">
-                <label>Approval Time</label>
-                <span>${product.approval_time_hours || 48} hours</span>
+                <label>${approvalTimeLabel}</label>
+                <span>${product.approval_time_hours || 48} ${hoursUnit}</span>
             </div>
         </div>
 
         <div class="product-actions">
             <button class="btn-view-details" onclick="event.stopPropagation(); openProductModal(${JSON.stringify(product).replace(/"/g, '&quot;')})">
-                <i class="bi bi-eye"></i> View Details
+                <i class="bi bi-eye"></i> ${viewDetailsBtn}
             </button>
             <button class="btn-select" onclick="event.stopPropagation(); selectProduct(${JSON.stringify(product).replace(/"/g, '&quot;')})">
-                <i class="bi bi-calculator"></i> Select
+                <i class="bi bi-calculator"></i> ${selectBtn}
             </button>
         </div>
     `;
@@ -172,6 +178,11 @@ function createProductCard(product) {
 function openProductModal(product) {
     currentProduct = product;
     const modal = document.getElementById('productModal');
+    
+    // Get translated units
+    const monthsUnit = window.i18n ? window.i18n.translate('months_unit') : 'months';
+    const hoursUnit = window.i18n ? window.i18n.translate('hours_unit') : 'hours';
+    const variesText = window.i18n ? window.i18n.translate('varies') : 'Varies';
 
     // Fill modal content
     document.getElementById('modalBankLogo').textContent = product.bank.charAt(0).toUpperCase();
@@ -189,13 +200,14 @@ function openProductModal(product) {
     document.getElementById('modalRateMax').textContent = maxRate + '%';
 
     document.getElementById('modalMaxAmount').textContent = 'RM ' + formatNumber(product.max_loan_amount || product.max_amount || 0);
-    document.getElementById('modalMaxTenure').textContent = product.max_tenure + ' months';
-    document.getElementById('modalMinIncome').textContent = product.min_income ? 'RM ' + formatNumber(product.min_income) : 'Varies';
-    document.getElementById('modalApprovalTime').textContent = (product.approval_time_hours || 48) + ' hours';
+    document.getElementById('modalMaxTenure').textContent = product.max_tenure + ' ' + monthsUnit;
+    document.getElementById('modalMinIncome').textContent = product.min_income ? 'RM ' + formatNumber(product.min_income) : variesText;
+    document.getElementById('modalApprovalTime').textContent = (product.approval_time_hours || 48) + ' ' + hoursUnit;
 
     // Features
     const featuresContainer = document.getElementById('modalFeatures');
     featuresContainer.innerHTML = '';
+    const noFeaturesText = window.i18n ? window.i18n.translate('no_features_listed') : 'No features listed.';
     if (product.features && product.features.length > 0) {
         product.features.forEach(feature => {
             const div = document.createElement('div');
@@ -204,16 +216,21 @@ function openProductModal(product) {
             featuresContainer.appendChild(div);
         });
     } else {
-        featuresContainer.innerHTML = '<p style="color: #aaa;">No features listed.</p>';
+        featuresContainer.innerHTML = `<p style="color: #aaa;">${noFeaturesText}</p>`;
     }
 
     // Eligibility
     const eligibilityContainer = document.getElementById('modalEligibility');
     eligibilityContainer.innerHTML = '';
+    const minIncomeLabel = window.i18n ? window.i18n.translate('minimum_income') : 'Minimum income';
+    const creditScoreLabel = window.i18n ? window.i18n.translate('credit_score') : 'Credit score';
+    const ccrisBucketLabel = window.i18n ? window.i18n.translate('ccris_bucket') : 'CCRIS bucket';
+    const standardEligibilityText = window.i18n ? window.i18n.translate('standard_eligibility') : 'Standard bank eligibility applies.';
+    
     const eligibilityItems = [];
-    if (product.min_income) eligibilityItems.push(`Minimum income: RM ${formatNumber(product.min_income)}`);
-    if (product.min_credit_score) eligibilityItems.push(`Credit score: ${product.min_credit_score}+`);
-    if (product.ccris_bucket_max !== undefined) eligibilityItems.push(`CCRIS bucket: ≤${product.ccris_bucket_max}`);
+    if (product.min_income) eligibilityItems.push(`${minIncomeLabel}: RM ${formatNumber(product.min_income)}`);
+    if (product.min_credit_score) eligibilityItems.push(`${creditScoreLabel}: ${product.min_credit_score}+`);
+    if (product.ccris_bucket_max !== undefined) eligibilityItems.push(`${ccrisBucketLabel}: ≤${product.ccris_bucket_max}`);
 
     if (eligibilityItems.length > 0) {
         eligibilityItems.forEach(item => {
@@ -223,7 +240,7 @@ function openProductModal(product) {
             eligibilityContainer.appendChild(div);
         });
     } else {
-        eligibilityContainer.innerHTML = '<p style="color: #aaa;">Standard bank eligibility applies.</p>';
+        eligibilityContainer.innerHTML = `<p style="color: #aaa;">${standardEligibilityText}</p>`;
     }
 
     modal.classList.remove('hidden');
