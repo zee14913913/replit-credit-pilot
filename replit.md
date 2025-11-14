@@ -17,6 +17,18 @@ The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform for 
 ## Recent Changes
 **Latest modifications with dates:**
 
+### 2025-11-14: AI Predictive Analysis Module (AI V3 Expansion) ✅
+- ✅ **AI预测分析模块**: 基于历史数据预测未来3个月财务趋势
+  - 新增3个服务引擎: `PredictEngine`, `TrendEngine`, `HealthEngine`
+  - 新增3个API端点: `/api/ai-assistant/predict`, `/api/ai-assistant/trends`, `/api/ai-assistant/health-score`
+  - Dashboard新增AI智能预测分析卡片（第216-257行）
+  - 前端JS模块: `static/js/ai_predict.js` 支持Chart.js可视化
+  - 数据源: `monthly_statements` 表（不依赖未启用的analytics模块）
+- ✅ **财务健康评分系统**: 0-100分多维度评分（信用利用率、还款能力、债务趋势、数据完整性）
+- ✅ **AI洞察生成**: 自动生成50-120字的专业财务建议（使用V3统一AI客户端）
+- ✅ **趋势图表**: 支出、还款、余额12个月趋势可视化（Chart.js）
+- ✅ **完全兼容AI V3 Baseline**: 不修改现有ai_assistant.py、ai_client.py、AI日报预览区（第339-383行）
+
 ### 2025-11-13: AI Assistant V3 + SendGrid Complete Integration ✅
 - ✅ **Perplexity AI Migration**: Upgraded from OpenAI to Perplexity AI with real-time web search capabilities
   - Created unified AI client (`accounting_app/utils/ai_client.py`) supporting both Perplexity and OpenAI

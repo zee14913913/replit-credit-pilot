@@ -209,7 +209,81 @@
             </div>
         {% endif %}
     </div>
+
+    <!-- AI预测分析区（AI V3 扩展 - 不修改现有AI日报预览区） -->
+    <section style="margin-top:40px; background:#1a1228; padding:20px; border-radius:16px; box-shadow:0 0 20px rgba(50,36,70,0.3); color:#fff; border:2px solid #322446;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h3 style="color:#322446; font-weight:800; margin:0;">🔮 AI 智能预测分析</h3>
+            <button onclick="loadAllPredictions()" style="background:#FF007F; color:#fff; border:none; border-radius:8px; padding:8px 16px; font-weight:700; cursor:pointer; transition:all 0.3s;">
+                🔄 刷新预测
+            </button>
+        </div>
+        <p style="color:#ccc; margin-bottom:20px;">基于历史数据的AI智能预测与财务健康评分</p>
+        
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
+            <!-- 财务健康评分卡片 -->
+            <div style="background:#0a0a0a; padding:20px; border-radius:12px; border:2px solid #322446;">
+                <h4 style="color:#FF007F; font-weight:700; margin-bottom:16px;">💯 财务健康评分</h4>
+                <div id="ai-health-score" style="min-height:200px;">
+                    <div style="text-align:center; color:#888; padding:40px;">
+                        点击"刷新预测"加载评分
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 未来预测卡片 -->
+            <div style="background:#0a0a0a; padding:20px; border-radius:12px; border:2px solid #322446;">
+                <h4 style="color:#FF007F; font-weight:700; margin-bottom:16px;">📈 未来3个月预测</h4>
+                <div id="ai-prediction" style="min-height:200px;">
+                    <div style="text-align:center; color:#888; padding:40px;">
+                        点击"刷新预测"加载预测
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 趋势图表 -->
+        <div style="background:#0a0a0a; padding:20px; border-radius:12px; margin-top:20px; border:2px solid #322446;">
+            <h4 style="color:#FF007F; font-weight:700; margin-bottom:16px;">📊 趋势分析</h4>
+            <div id="ai-trend-chart" style="height:300px;">
+                <div style="text-align:center; color:#888; padding:80px;">
+                    点击"刷新预测"加载趋势图
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/ai_predict.js') }}"></script>
+
+<script>
+// AI预测模块全局加载函数
+function loadAllPredictions() {
+    // 获取第一个客户ID（如果有）
+    const customerId = getFirstCustomerId();
+    if (!customerId) {
+        alert('请先添加客户后再使用AI预测功能');
+        return;
+    }
+    
+    // 初始化AI预测管理器
+    window.aiPredictManager.init(customerId);
+    window.aiPredictManager.loadHealthScore();
+    window.aiPredictManager.loadPrediction();
+    window.aiPredictManager.loadTrends();
+}
+
+// 获取第一个客户ID（从页面中提取）
+function getFirstCustomerId() {
+    // 从客户卡片的URL中提取customer_id
+    const customerLink = document.querySelector('a[href*="customer_dashboard"]');
+    if (!customerLink) return null;
+    
+    const match = customerLink.href.match(/customer_id=(\d+)/);
+    return match ? parseInt(match[1]) : null;
+}
+</script>
 
 <script>
 // Translations for JavaScript
