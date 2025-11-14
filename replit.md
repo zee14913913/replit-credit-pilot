@@ -9,6 +9,14 @@ Design requirements: Premium, sophisticated, high-end - suitable for professiona
 User language: Chinese (使用中文与我沟通).
 
 ## Recent Changes
+- **Phase 7: Legacy删除 + CTOS Consent系统集成** (Nov 14, 2025) - 完整的系统重构和CTOS授权书管理：
+  - **Legacy系统清理**: 删除Legacy模板（loan_matcher.html, loan_evaluation.html）、Legacy引擎文件（loan_eligibility_engine.py, business_loan_engine.py, loan_affordability_engine.py）、Legacy路由注册、导航菜单中的Legacy入口
+  - **business_loans.py重构**: 删除Legacy DSCR模式，保留Modern SME引擎（mode="modern"为默认），添加本地_get_operating_income helper函数
+  - **CTOS Consent系统**: 个人CTOS Consent页面（电子签名 + IC上传 + PDF生成），公司CTOS Consent页面（SSM上传 + 公司盖章 + PDF生成，无Director IC要求）
+  - **CTOS路由处理**: 4个Flask路由（/ctos/personal, /ctos/personal/submit, /ctos/company, /ctos/company/submit），使用reportlab生成专业PDF
+  - **CTOS API Placeholder**: 预留CTOS真实API对接层（accounting_app/services/ctos/api_placeholder.py），未来可直接替换
+  - **设计一致性**: CTOS页面遵循galaxy-theme（个人：粉色#FF007F，公司：金色#D4AF37）
+  - **导航更新**: Loan Matcher下拉菜单现在仅包含：Modern Loan Evaluate, SME Loan Evaluate, Loan Reports, Loan Products
 - **Phase 6: Modern Loan & SME Frontend Complete UI Coverage** (Nov 14, 2025) - Comprehensive frontend interface for Modern/SME loan engines featuring:
   - **3 New Frontend Pages**: `/loan-evaluate` (Modern Loan Engine), `/sme-loan-evaluate` (SME Loan Engine), `/loan-reports` (Report Generator Hub)
   - **7 New Flask Routes**: All protected with `@require_admin_or_accountant` RBAC, handling form-to-API marshalling, error handling, and audit logging

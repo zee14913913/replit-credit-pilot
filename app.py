@@ -73,6 +73,14 @@ from auth.admin_auth_helper import (
 from admin.portfolio_manager import PortfolioManager
 
 # Dashboard Metrics Service
+
+# CTOS Consent Management (Phase 7)
+from app_ctos_routes import (
+    ctos_personal,
+    ctos_personal_submit,
+    ctos_company,
+    ctos_company_submit
+)
 from services.dashboard_metrics import get_customer_monthly_metrics, get_all_cards_summary
 
 # Card Optimizer API (Fixed Version)
@@ -6468,6 +6476,31 @@ def file_detail(file_id):
     except Exception as e:
         flash(f'查询失败：{str(e)}', 'error')
         return redirect(url_for('files_list'))
+
+
+# ==================== CTOS Consent Routes (Phase 7) ====================
+@app.route('/ctos/personal', endpoint='ctos_personal')
+def ctos_personal_route():
+    """个人CTOS Consent页面路由"""
+    return ctos_personal()
+
+
+@app.route('/ctos/personal/submit', methods=['POST'], endpoint='ctos_personal_submit')
+def ctos_personal_submit_route():
+    """个人CTOS Consent提交路由"""
+    return ctos_personal_submit()
+
+
+@app.route('/ctos/company', endpoint='ctos_company')
+def ctos_company_route():
+    """公司CTOS Consent页面路由"""
+    return ctos_company()
+
+
+@app.route('/ctos/company/submit', methods=['POST'], endpoint='ctos_company_submit')
+def ctos_company_submit_route():
+    """公司CTOS Consent提交路由"""
+    return ctos_company_submit()
 
 
 if __name__ == '__main__':

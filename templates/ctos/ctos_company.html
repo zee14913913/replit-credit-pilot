@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block title %}CTOS Company Consent - 公司信用报告授权{% endblock %}
+
+{% block content %}
+<div class="container-fluid" style="padding: 40px 60px; background: #000000;">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%); padding: 32px; border-radius: 16px; border: 2px solid #D4AF37; margin-bottom: 40px; box-shadow: 0 8px 32px rgba(212, 175, 55, 0.2);">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-building-lock" style="font-size: 48px; color: #D4AF37; margin-right: 24px;"></i>
+                    <div>
+                        <h1 style="color: #FFFFFF; font-size: 32px; margin: 0;">CTOS Company Consent</h1>
+                        <p style="color: rgba(255, 255, 255, 0.7); margin: 8px 0 0 0; font-size: 16px;">公司信用报告授权书 | SME Credit Report Authorization</p>
+                    </div>
+                </div>
+            </div>
+
+            <form id="ctosCompanyForm" method="POST" action="{{ url_for('ctos_company_submit') }}" enctype="multipart/form-data">
+                <div class="row">
+                    <!-- 左侧：表单输入区 -->
+                    <div class="col-lg-7">
+                        <!-- 模块A: 公司信息 -->
+                        <div style="background: #1a1a1a; padding: 24px; border-radius: 16px; border: 1px solid #322446; margin-bottom: 24px;">
+                            <h3 style="color: #D4AF37; margin-bottom: 20px; font-size: 20px;">
+                                <i class="bi bi-building me-2"></i>公司信息 | Company Information
+                            </h3>
+                            
+                            <div class="mb-3">
+                                <label class="form-label" style="color: #FFFFFF;">Company Name <span style="color: #D4AF37;">*</span></label>
+                                <input type="text" name="company_name" class="form-control" required 
+                                       style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
+                                       placeholder="Enter company name (e.g., ABC Trading Sdn Bhd)">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" style="color: #FFFFFF;">SSM Registration Number <span style="color: #D4AF37;">*</span></label>
+                                <input type="text" name="ssm_number" class="form-control" required 
+                                       style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
+                                       placeholder="XXXXXXXXXX-X">
+                                <small style="color: rgba(255, 255, 255, 0.5);">Format: 1234567890-A or (1234567-X)</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" style="color: #FFFFFF;">Company Address <span style="color: #D4AF37;">*</span></label>
+                                <textarea name="company_address" class="form-control" rows="3" required 
+                                          style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
+                                          placeholder="Enter complete registered business address"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- 授权代表信息 -->
+                        <div style="background: #1a1a1a; padding: 24px; border-radius: 16px; border: 1px solid #322446; margin-bottom: 24px;">
+                            <h3 style="color: #D4AF37; margin-bottom: 20px; font-size: 20px;">
+                                <i class="bi bi-person-badge-fill me-2"></i>授权代表 | Authorized Representative
+                            </h3>
+                            
+                            <div class="mb-3">
+                                <label class="form-label" style="color: #FFFFFF;">Authorized Person Name <span style="color: #D4AF37;">*</span></label>
+                                <input type="text" name="authorized_person" class="form-control" required 
+                                       style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
+                                       placeholder="Director / Authorized Signatory">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" style="color: #FFFFFF;">Contact Phone <span style="color: #D4AF37;">*</span></label>
+                                <input type="tel" name="authorized_phone" class="form-control" required 
+                                       style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
+                                       placeholder="+60123456789">
+                            </div>
+
+                            <div style="background: #0d0d0d; padding: 16px; border-radius: 8px; border-left: 4px solid #D4AF37;">
+                                <small style="color: rgba(255, 255, 255, 0.7); font-size: 13px;">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    按照Phase 7要求，无需上传Director IC。只需公司文件和授权代表信息。
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- 模块B: SSM文件上传 -->
+                        <div style="background: #1a1a1a; padding: 24px; border-radius: 16px; border: 1px solid #322446; margin-bottom: 24px;">
+                            <h3 style="color: #D4AF37; margin-bottom: 20px; font-size: 20px;">
+                                <i class="bi bi-file-earmark-text me-2"></i>SSM Document Upload
+                            </h3>
+                            
+                            <div class="mb-3">
+                                <label class="form-label" style="color: #FFFFFF;">SSM Form 9 / Form 24 / Form 49 (Front) <span style="color: #D4AF37;">*</span></label>
+                                <input type="file" name="ssm_front" class="form-control" accept="image/*,application/pdf" required
+                                       style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" style="color: #FFFFFF;">SSM Document (Back / Additional Page)</label>
+                                <input type="file" name="ssm_back" class="form-control" accept="image/*,application/pdf"
+                                       style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;">
+                            </div>
+                        </div>
+
+                        <!-- 模块C: 公司盖章上传 -->
+                        <div style="background: #1a1a1a; padding: 24px; border-radius: 16px; border: 1px solid #322446; margin-bottom: 24px;">
+                            <h3 style="color: #D4AF37; margin-bottom: 20px; font-size: 20px;">
+                                <i class="bi bi-patch-check me-2"></i>Company Stamp / Authorization
+                            </h3>
+                            
+                            <div class="mb-3">
+                                <label class="form-label" style="color: #FFFFFF;">Company Stamp / Signed Authorization Letter <span style="color: #D4AF37;">*</span></label>
+                                <input type="file" name="company_stamp" class="form-control" accept="image/*,application/pdf" required
+                                       style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;">
+                                <small style="color: rgba(255, 255, 255, 0.5);">Upload company chop/stamp or signed authorization page</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右侧：预览和说明 -->
+                    <div class="col-lg-5">
+                        <!-- CTOS Company Consent文本 -->
+                        <div style="background: #1a1a1a; padding: 24px; border-radius: 16px; border: 1px solid #322446; margin-bottom: 24px;">
+                            <h3 style="color: #D4AF37; margin-bottom: 16px; font-size: 18px;">
+                                <i class="bi bi-shield-check me-2"></i>CTOS SME Consent Statement
+                            </h3>
+                            
+                            <div style="background: #0d0d0d; padding: 20px; border-radius: 8px; max-height: 450px; overflow-y: auto; color: rgba(255, 255, 255, 0.8); font-size: 14px; line-height: 1.6;">
+                                <p><strong style="color: #D4AF37;">CONSENT TO OBTAIN COMPANY CREDIT REPORT</strong></p>
+                                
+                                <p>The company hereby authorizes <strong>INFINITE GZ SDN BHD</strong> to obtain the company's credit report from CTOS Data Systems Sdn Bhd (CTOS) for the purpose of:</p>
+                                
+                                <ul style="padding-left: 20px;">
+                                    <li>SME loan assessment and business financing evaluation</li>
+                                    <li>Credit risk analysis and debt serviceability review</li>
+                                    <li>Compliance with banking and regulatory requirements</li>
+                                </ul>
+                                
+                                <p><strong style="color: #D4AF37;">Company Information Included:</strong></p>
+                                <ul style="padding-left: 20px;">
+                                    <li>Company credit history and payment track record</li>
+                                    <li>Trade references and supplier payment patterns</li>
+                                    <li>Directors' credit standing (where applicable)</li>
+                                    <li>Outstanding business commitments and liabilities</li>
+                                    <li>Legal suits and winding-up petitions (if any)</li>
+                                </ul>
+                                
+                                <p><strong>Data Protection:</strong></p>
+                                <ul style="padding-left: 20px;">
+                                    <li>All company data will be handled in accordance with PDPA 2010</li>
+                                    <li>Information used strictly for stated business purposes</li>
+                                    <li>This consent is valid for 12 months from authorization date</li>
+                                </ul>
+                                
+                                <p style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #322446;">
+                                    <strong>Authorized By:</strong> INFINITE GZ SDN BHD<br>
+                                    <strong>Date:</strong> {{ current_date }}<br>
+                                    <strong>Purpose:</strong> SME Loan Eligibility Assessment
+                                </p>
+                            </div>
+
+                            <div class="form-check mt-3" style="padding-left: 0;">
+                                <input class="form-check-input" type="checkbox" name="consent_agree" id="consentAgree" required
+                                       style="width: 20px; height: 20px; margin-right: 12px; accent-color: #D4AF37;">
+                                <label class="form-check-label" for="consentAgree" style="color: #FFFFFF; font-size: 15px;">
+                                    <strong style="color: #D4AF37;">✓</strong> The authorized representative confirms having the authority to provide this consent on behalf of the company
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 信息卡片 -->
+                        <div style="background: linear-gradient(135deg, #1a1004 0%, #0d0d0d 100%); padding: 20px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.3);">
+                            <p style="color: rgba(255, 255, 255, 0.7); font-size: 13px; margin: 0; line-height: 1.6;">
+                                <i class="bi bi-shield-fill-check me-2" style="color: #D4AF37;"></i>
+                                Company information and credit report will be treated with strict confidentiality in accordance with Malaysian business data protection laws.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 提交按钮 -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-lg" 
+                            style="background: linear-gradient(135deg, #D4AF37 0%, #C4A033 100%); color: #000000; border: none; padding: 16px 48px; border-radius: 12px; font-size: 18px; font-weight: 700; box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);">
+                        <i class="bi bi-check-circle me-2"></i>Submit Company Consent & Generate PDF
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-control:focus {
+    background: #0d0d0d !important;
+    border-color: #D4AF37 !important;
+    box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25) !important;
+    color: #FFFFFF !important;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+</style>
+{% endblock %}
