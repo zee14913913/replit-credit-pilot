@@ -81,51 +81,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 /* ============================================================
-   Phase 8.2 — JS Engine (Part 2)
-   Quick Estimate Calculation Engine
+   Phase 8.4 — 所有渲染逻辑已迁移到loan_result_renderer.js
+   使用window.renderLoanEvaluationResult()统一渲染
    ============================================================ */
-
-
-// ============================================================
-// Helper: Render evaluation results
-// ============================================================
-
-function showEvaluationResult(data) {
-    console.log("Rendering evaluation result:", data);
-
-    // Reveal panel
-    const resultPanel = document.getElementById("evaluation-result");
-    resultPanel.style.opacity = "1";
-
-    // Risk grade
-    document.getElementById("risk-grade").innerText = data.risk_grade || "—";
-
-    // DTI / FOIR values
-    document.getElementById("dti-value").innerText =
-        data.dti !== undefined ? (data.dti * 100).toFixed(1) + "%" : "—";
-
-    document.getElementById("foir-value").innerText =
-        data.foir !== undefined ? (data.foir * 100).toFixed(1) + "%" : "—";
-
-    // Max EMI / Loan
-    document.getElementById("max-emi").innerText =
-        data.max_emi !== undefined ? "RM " + data.max_emi.toLocaleString() : "—";
-
-    document.getElementById("max-loan-amount").innerText =
-        data.max_loan_amount !== undefined
-            ? "RM " + data.max_loan_amount.toLocaleString()
-            : "—";
-
-    // Approval Odds Circle
-    const odds = data.approval_odds || 0;
-    const circle = document.getElementById("approval-odds");
-    circle.innerText = odds + "%";
-
-    // Color based on approval odds
-    if (odds >= 85) circle.style.color = "#00ff99";
-    else if (odds >= 60) circle.style.color = "#ffcc00";
-    else circle.style.color = "#ff0066";
-}
 
 
 // ============================================================
@@ -157,9 +115,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 const data = await res.json();
                 console.log("Quick Income Only data:", data);
 
-                showEvaluationResult(data);
-                fetchProductRecommendations(data);
-                fetchAIAdvisor(data);
+                // Phase 8.4: Use unified renderer
+                if (window.renderLoanEvaluationResult) {
+                    window.renderLoanEvaluationResult(data);
+                }
 
             } catch (err) {
                 console.error("Quick-income error:", err);
@@ -204,9 +163,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 const data = await res.json();
                 console.log("Quick Income + Commit data:", data);
 
-                showEvaluationResult(data);
-                fetchProductRecommendations(data);
-                fetchAIAdvisor(data);
+                // Phase 8.4: Use unified renderer
+                if (window.renderLoanEvaluationResult) {
+                    window.renderLoanEvaluationResult(data);
+                }
 
             } catch (err) {
                 console.error("Quick-income-commitment error:", err);
@@ -217,107 +177,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 /* ============================================================
-   Phase 8.2 — JS Engine (Part 3)
-   Product Recommendations + AI Advisor Rendering
+   Phase 8.4 — 废弃函数已删除
+   所有渲染逻辑已迁移到loan_result_renderer.js
+   使用window.renderLoanEvaluationResult()统一渲染
    ============================================================ */
-
-
-// ============================================================
-// Fetch Recommended Loan Products
-// ============================================================
-
-async function fetchProductRecommendations(data) {
-    console.log("Fetching recommended products...");
-
-    try {
-        const res = await fetch("/loan-evaluate/products", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        });
-
-        const result = await res.json();
-        console.log("Recommended products:", result);
-
-        renderProducts(result.products || []);
-
-    } catch (error) {
-        console.error("Product recommendation error:", error);
-    }
-}
-
-
-// ============================================================
-// Fetch AI Advisor Explanation
-// ============================================================
-
-async function fetchAIAdvisor(data) {
-    console.log("Fetching AI Advisor...");
-
-    try {
-        const res = await fetch("/loan-evaluate/advisor", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        });
-
-        const result = await res.json();
-        console.log("AI Advisor:", result);
-
-        renderAIAdvisor(result.explanation || "No advisor data.");
-
-    } catch (error) {
-        console.error("AI Advisor fetch error:", error);
-    }
-}
-
-
-// ============================================================
-// Render Product Cards
-// ============================================================
-
-function renderProducts(products) {
-    const container = document.getElementById("products-container");
-    container.innerHTML = "";
-
-    document.getElementById("product-list").style.display = "block";
-
-    if (!products.length) {
-        container.innerHTML = `<p class="no-products">No matching products found.</p>`;
-        return;
-    }
-
-    products.forEach(p => {
-        const card = document.createElement("div");
-        card.classList.add("product-card");
-
-        card.innerHTML = `
-            <div class="product-bank">${p.bank}</div>
-            <div class="match-score">Match: ${p.match_score}%</div>
-            <div class="interest-rate">Rate: ${(p.interest_rate * 100).toFixed(2)}%</div>
-            <div class="loan-limit">Loan Limit: RM ${Number(p.max_loan_amount).toLocaleString()}</div>
-            <div class="approval-odds">Approval: ${p.approval_odds}%</div>
-        `;
-
-        container.appendChild(card);
-    });
-}
-
-
-// ============================================================
-// Render AI Advisor Panel
-// ============================================================
-
-function renderAIAdvisor(text) {
-    const advisorPanel = document.getElementById("ai-advisor-panel");
-
-    advisorPanel.style.display = "block";
-
-    advisorPanel.innerHTML = `
-        <h3>AI Loan Advisor</h3>
-        <p>${text}</p>
-    `;
-}
 
 
 /* ============================================================
@@ -370,14 +233,18 @@ async function handleFullAutoEvaluation() {
         const data = await res.json();
         console.log("Full Auto evaluation result:", data);
 
-        // 渲染评估结果（使用eligibility对象）
-        showEvaluationResult(data.eligibility);
+        // Phase 8.4: 合并payload并使用统一渲染器
+        const mergedPayload = {
+            ...data.eligibility,
+            advisor: data.advisor,
+            ai_advisor: data.advisor,
+            products: data.products,
+            recommended_products: data.products
+        };
 
-        // 渲染推荐产品
-        renderProducts(data.products || []);
-
-        // 渲染AI顾问
-        renderAIAdvisor(data.advisor || "No advisor data available.");
+        if (window.renderLoanEvaluationResult) {
+            window.renderLoanEvaluationResult(mergedPayload);
+        }
 
     } catch (err) {
         console.error("Full Auto evaluation error:", err);

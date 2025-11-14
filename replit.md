@@ -1,56 +1,12 @@
 # Smart Credit & Loan Manager
 
 ## Overview
-The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. Its purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation for 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization (debt consolidation, balance transfers, loan refinancing). The long-term vision includes expanding into exclusive mortgage interest discounts and SME financing.
+The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform for Malaysian banking customers, built with Flask. It provides comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation for 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization (debt consolidation, balance transfers, loan refinancing). The long-term vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 Design requirements: Premium, sophisticated, high-end - suitable for professional client demonstrations.
 User language: Chinese (使用中文与我沟通).
-
-## Recent Changes
-- **Phase 8.3: Full Automated Mode补齐** (Nov 14, 2025) - 完整文件上传自动评估流程：
-  - **Flask路由**: 新增POST /loan-evaluate/full-auto（multipart/form-data文件上传代理）
-  - **FastAPI端点**: 新建loans_full_auto.py router，提供POST /api/loans/full-auto端点
-  - **自动数据提取**: 调用AutoEnrichment.extract_from_documents()自动解析上传文件（Payslip/EPF/Bank Statement/CTOS/CCRIS）
-  - **风控评估**: PersonalLoanRules.evaluate_loan_eligibility()执行Modern引擎分析（DTI/FOIR/CCRIS标准）
-  - **产品匹配**: LoanProductMatcher.match_personal_loan_v2()推荐10家银行产品
-  - **AI顾问**: personal_risk_grade_explainer()生成中文贷款建议
-  - **前端JS**: handleFullAutoEvaluation()完整实现文件上传→API调用→结果渲染
-  - **HTML增强**: 添加Payslip/EPF/Bank Statement上传字段，按钮绑定onclick事件
-  - **完整调用链**: 文件上传 → Flask代理 → FastAPI → AutoEnrichment → Risk Engine → Product Matcher → AI Advisor → 前端渲染
-- **Phase 8.2: Products + AI Advisor API补齐** (Nov 14, 2025) - 产品推荐和AI顾问后端路由：
-  - Flask routes: POST /loan-evaluate/products, POST /loan-evaluate/advisor
-  - FastAPI端点: loans_ai.py（product-recommendations + advisor）
-  - 风控函数: personal_risk_grade_explainer()智能生成中文贷款建议
-- **Phase 8.1: Modern Loan Evaluate三模式系统** (Nov 14, 2025) - 银行级贷款评估页面全面重建（GXBank/Maybank MAE风格）：
-  - **三模式架构**: Full Automated Mode（文件上传自动解析）、Quick Estimate - Income Only（仅收入快速估算）、Quick Estimate - Income + Commitments（收入+债务估算）
-  - **前端系统**: loan_evaluate.html（142行）+ loan_evaluate.css（273行）+ loan_evaluate.js（391行），严格遵循Galaxy Theme设计
-  - **Flask路由**: 更新/loan-evaluate指向新模板，新增/loan-evaluate/quick_income和/loan-evaluate/quick_income_commitment POST路由
-  - **FastAPI端点**: 新建loans_quick.py router，提供POST /api/loans/quick-income和/api/loans/quick-income-commitment端点
-  - **风控引擎增强**: personal_rules.py新增estimate_risk_income_only()和estimate_risk_income_commitments()函数
-  - **动态UI引擎**: JS实时计算DTI/FOIR/Risk Grade/Approval Odds，动态渲染风险卡片、Approval Odds圆圈、AI Advisor、产品推荐卡片
-  - **完整调用链**: Flask→FastAPI→RiskEngine三层架构，端到端验证通过
-- **Phase 7: Legacy删除 + CTOS Consent系统集成** (Nov 14, 2025) - 完整的系统重构和CTOS授权书管理：
-  - **Legacy系统清理**: 删除Legacy模板（loan_matcher.html, loan_evaluation.html）、Legacy引擎文件（loan_eligibility_engine.py, business_loan_engine.py, loan_affordability_engine.py）、Legacy路由注册、导航菜单中的Legacy入口
-  - **business_loans.py重构**: 删除Legacy DSCR模式，保留Modern SME引擎（mode="modern"为默认），添加本地_get_operating_income helper函数
-  - **CTOS Consent系统**: 个人CTOS Consent页面（电子签名 + IC上传 + PDF生成），公司CTOS Consent页面（SSM上传 + 公司盖章 + PDF生成，无Director IC要求）
-  - **CTOS路由处理**: 4个Flask路由（/ctos/personal, /ctos/personal/submit, /ctos/company, /ctos/company/submit），使用reportlab生成专业PDF
-  - **CTOS API Placeholder**: 预留CTOS真实API对接层（accounting_app/services/ctos/api_placeholder.py），未来可直接替换
-  - **设计一致性**: CTOS页面遵循galaxy-theme（个人：粉色#FF007F，公司：金色#D4AF37）
-  - **导航更新**: Loan Matcher下拉菜单现在仅包含：Modern Loan Evaluate, SME Loan Evaluate, Loan Reports, Loan Products
-- **Phase 6: Modern Loan & SME Frontend Complete UI Coverage** (Nov 14, 2025) - Comprehensive frontend interface for Modern/SME loan engines featuring:
-  - **3 New Frontend Pages**: `/loan-evaluate` (Modern Loan Engine), `/sme-loan-evaluate` (SME Loan Engine), `/loan-reports` (Report Generator Hub)
-  - **7 New Flask Routes**: All protected with `@require_admin_or_accountant` RBAC, handling form-to-API marshalling, error handling, and audit logging
-  - **Enhanced loan_matcher_result.html**: Conditional rendering of complete risk analytics (DTI/FOIR/CCRIS/BRR/DSCR/Risk Grade/Approval Odds) and AI Risk Advisor explanations panel when `is_modern_mode=True`
-  - **Updated Navigation**: Loan Matcher dropdown now contains 5 entries (Smart Matcher, Modern Engine, SME Loans, Reports, Products) with visual separators
-  - **Design Compliance**: All new pages strictly follow galaxy-theme (Black #000000, Pink #FF007F, Purple #322446) with bilingual support
-  - **Data Mode Toggle**: Manual vs Auto enrichment modes for flexible data collection
-  - **Backward Compatible**: No modifications to Phase 1-5 legacy routes or existing functionality
-- **Dual-Engine Loan Evaluation System (CREDITPILOT)** - Production-ready dual-mode architecture supporting both legacy DSR/DSCR engines and modern Malaysian banking standards (DTI/FOIR/CCRIS/BRR).
-- **AI Smart Assistant V3 (Enterprise Intelligence)** - Multi-provider architecture (Perplexity primary, OpenAI fallback) with real-time web search and automated daily financial reports (08:00 generation, 08:10 email delivery via SendGrid).
-- **Income Document System** - Upload, OCR processing, and standardization of income proof documents with intelligent aggregation and confidence scoring.
-- **Multi-Channel Notifications** - Unified notification system supporting in-app, email (SendGrid), and SMS (Twilio) channels.
 
 ## System Architecture
 
@@ -62,25 +18,26 @@ The platform enforces a professional design using a **MINIMAL 3-COLOR PALETTE ON
 The design system emphasizes clean layouts with bilingual support (English/Chinese).
 
 **Navigation Structure**:
-The main navigation features 7 core modules aligned with business workflow: DASHBOARD, CREDIT CARDS (unified management hub), SAVINGS, RECEIPTS, LOANS, REPORTS, and ADMIN. The **CREDIT CARDS** page is a central hub for uploading statements, managing suppliers, processing payments, and OCR receipts.
+The main navigation features 7 core modules aligned with business workflow: DASHBOARD, CREDIT CARDS, SAVINGS, RECEIPTS, LOANS, REPORTS, and ADMIN. The **CREDIT CARDS** page is a central hub for uploading statements, managing suppliers, processing payments, and OCR receipts.
 
 ### Technical Implementations
-The backend uses Flask with SQLite and a context manager for database interactions. Jinja2 handles server-side rendering, complemented by Bootstrap 5 and Bootstrap Icons for the UI. Plotly.js provides client-side data visualization, and PDF.js is used for client-side PDF-to-CSV conversion. A robust notification system provides real-time updates via SendGrid (email) and Twilio (SMS). The AI system uses a unified client architecture (`accounting_app/utils/ai_client.py`) supporting multiple providers (Perplexity primary, OpenAI backup) with automatic failover and environment-based configuration.
+The backend uses Flask with SQLite and a context manager for database interactions. Jinja2 handles server-side rendering, complemented by Bootstrap 5 and Bootstrap Icons for the UI. Plotly.js provides client-side data visualization, and PDF.js is used for client-side PDF-to-CSV conversion. A robust notification system provides real-time updates. The AI system uses a unified client architecture supporting multiple providers (Perplexity primary, OpenAI backup) with automatic failover and environment-based configuration.
 
 ### Feature Specifications
 **Core Features:**
 - **Financial Management:** Statement ingestion (PDF OCR, Excel), transaction categorization, savings tracking, dual verification.
 - **AI-Powered Advisory:** Credit card recommendations, financial optimization, cash flow prediction, anomaly detection, financial health scoring, and loan eligibility assessment.
-- **AI Smart Assistant V3 (Enterprise Intelligence):** Advanced multi-provider AI system (Perplexity AI primary, OpenAI fallback) with real-time web search. Features floating chatbot UI, cross-module analysis, automated daily financial reports (08:00 generation, 08:10 email delivery via SendGrid), system analytics, and comprehensive conversation history logging.
-- **Income Document System:** Upload, OCR processing, and standardization of income proof documents (Salary Slip, Tax Return, EPF, Bank Inflow) with intelligent aggregation and confidence scoring.
-- **Dual-Engine Loan Evaluation System (CREDITPILOT):** Production-ready dual-mode architecture supporting both legacy DSR/DSCR engines and modern Malaysian banking standards (DTI/FOIR/CCRIS/BRR). API routes (`/api/loans/eligibility`, `/api/business-loans/eligibility`) support `mode=dsr|modern` parameter for backward-compatible gradual migration. Modern mode implements comprehensive risk scoring (Personal: DTI/FOIR/CCRIS bucket, SME: BRR/DSCR/DSR/Industry/Cashflow Variance) with intelligent product matching across 12+ banks/Fintech providers. CTOS data serves as the exclusive debt commitment source.
+- **AI Smart Assistant V3 (Enterprise Intelligence):** Advanced multi-provider AI system with real-time web search. Features floating chatbot UI, cross-module analysis, automated daily financial reports, system analytics, and comprehensive conversation history logging.
+- **Income Document System:** Upload, OCR processing, and standardization of income proof documents with intelligent aggregation and confidence scoring.
+- **Dual-Engine Loan Evaluation System (CREDITPILOT):** Production-ready dual-mode architecture supporting both legacy DSR/DSCR engines and modern Malaysian banking standards (DTI/FOIR/CCRIS/BRR). Implements comprehensive risk scoring (Personal: DTI/FOIR/CCRIS bucket, SME: BRR/DSCR/DSR/Industry/Cashflow Variance) with intelligent product matching across 12+ banks/Fintech providers. CTOS data serves as the exclusive debt commitment source.
 - **Reporting & Export:** Professional Excel/CSV/PDF reports, automated monthly reports.
 - **Workflow Automation:** Batch operations, rule engine for transaction matching.
 - **Security & Compliance:** Multi-role authentication & authorization (RBAC), audit logging, data integrity validation.
 - **User Experience:** Unified navigation, context-aware buttons, bilingual i18n, responsive design.
 - **Specialized Systems:** Intelligent Loan Matcher (CTOS parsing, DSR calculation), Receipt Management (OCR for JPG/PNG), Credit Card Ledger, Exception Center.
-- **Multi-Channel Notifications:** In-app, email (SendGrid), and SMS (Twilio).
+- **Multi-Channel Notifications:** In-app, email, and SMS.
 - **Admin System:** User registration, secure login, evidence archiving with RBAC.
+- **CTOS Consent System**: Integrates personal (e-signature + IC upload) and company (SSM upload + company stamp) CTOS consent, generating professional PDF reports.
 
 ### System Design Choices
 - **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, and advisory.
@@ -89,7 +46,7 @@ The backend uses Flask with SQLite and a context manager for database interactio
 - **Data Accuracy:** Robust monthly ledger engine ensuring 100% accuracy via previous balance extraction and DR/CR classification.
 - **Monthly Statement Architecture:** One monthly statement record per bank + month, aggregating 6 mandatory classification fields.
 - **AI Architecture:** Unified client interface with automatic provider switching, graceful degradation, and environment-based configuration.
-- **Dual-Engine Loan Architecture:** Legacy DSR/DSCR engines preserved (`loan_eligibility_engine.py`, `business_loan_engine.py`) alongside modern risk_engine (`risk_utils.py`, `personal_rules.py`, `sme_rules.py`, `scoring_matrix.py`, `risk_tables.py`). API layer supports mode-based routing with backward compatibility. Product matcher (`loan_products.py`) recommends 3-10 suitable banks based on risk grade. System uses CTOS commitment data exclusively, never credit card fields, with graceful defaults for missing data (CCRIS bucket=0, CTOS SME Score=650, Cashflow Variance=0.30).
+- **Dual-Engine Loan Architecture:** Legacy DSR/DSCR engines preserved alongside modern risk_engine. API layer supports mode-based routing with backward compatibility. Product matcher recommends 3-10 suitable banks based on risk grade. System uses CTOS commitment data exclusively.
 
 ### Security & Access Control
 A production-ready Unified RBAC Implementation protects 32 functions. The `@require_admin_or_accountant` decorator supports Flask session-based RBAC and FastAPI token verification. Access levels include Admin (full access) and Accountant (full operational access), with Customer and Unauthenticated roles restricted.
@@ -108,15 +65,15 @@ A production-ready Unified RBAC Implementation protects 32 functions. The `@requ
 
 ### External APIs & Integrations
 - **Bank Negara Malaysia Public API**: `https://api.bnm.gov.my` for interest rates.
-- **SendGrid API**: Production email delivery system for AI daily reports and system notifications.
+- **SendGrid API**: Production email delivery system.
 - **Twilio API**: SMS delivery.
 - **Perplexity AI API**: Primary AI provider with real-time web search capabilities (Model: `sonar`).
 - **OpenAI API**: Backup AI provider (gpt-4o-mini model) with automatic fallback.
 - **FastAPI Backend (Port 8000)**: Handles audit logging, notifications, AI assistant endpoints, and real-time APIs.
 
 ### Database
-- **SQLite**: Primary file-based relational database (`db/smart_loan_manager.db`), including `ai_logs` table.
-- **PostgreSQL**: Used for notifications and audit logs, including SFTP synchronization history.
+- **SQLite**: Primary file-based relational database (`db/smart_loan_manager.db`).
+- **PostgreSQL**: Used for notifications and audit logs.
 
 ### File Storage
 - A `FileStorageManager` handles standard path generation and directory management, typically `static/uploads/customers/{customer_code}/`.
