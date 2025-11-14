@@ -20,6 +20,70 @@ from ..models import Customer
 router = APIRouter(prefix="/api/income-documents", tags=["Income Documents"])
 
 
+ALLOWED_DOCUMENT_TYPES = ['salary_slip', 'tax_return', 'epf', 'bank_inflow']
+
+
+def validate_document_type(document_type: str) -> str:
+    """
+    验证document_type有效性
+    
+    Returns:
+        验证通过的document_type
+    
+    Raises:
+        HTTPException: 如果document_type无效
+    """
+    if document_type not in ALLOWED_DOCUMENT_TYPES:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Invalid document_type: '{document_type}'. Allowed values: {', '.join(ALLOWED_DOCUMENT_TYPES)}"
+        )
+    return document_type
+
+
+def validate_document_month(document_month: str) -> tuple:
+    """
+    验证并解析document_month格式（YYYY-MM）
+    
+    Returns:
+        (year, month) tuple
+    
+    Raises:
+        HTTPException: 如果格式无效
+    """
+    pattern = r'^\d{4}-\d{2}$'
+    if not re.match(pattern, document_month):
+        raise HTTPException(
+            status_code=422,
+            detail=f"Invalid document_month format: '{document_month}'. Expected YYYY-MM (e.g., 2025-01)"
+        )
+    
+    try:
+        year, month = document_month.split('-')
+        month_int = int(month)
+        year_int = int(year)
+        
+        if not (1 <= month_int <= 12):
+            raise HTTPException(
+                status_code=422,
+                detail=f"Invalid month: {month}. Month must be between 01 and 12"
+            )
+        
+        if not (2000 <= year_int <= 2100):
+            raise HTTPException(
+                status_code=422,
+                detail=f"Invalid year: {year}. Year must be between 2000 and 2100"
+            )
+        
+        return year, month
+        
+    except ValueError as e:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Invalid document_month value: {str(e)}"
+        )
+
+
 @router.post("/upload")
 async def upload_income_document(
     customer_id: int = Form(...),
@@ -49,16 +113,19 @@ async def upload_income_document(
         if not customer:
             raise HTTPException(status_code=404, detail=f"客户ID {customer_id} 不存在")
         
-        # 2. 读取文件内容
+        # 2. 验证document_type和document_month
+        document_type = validate_document_type(document_type)
+        year, month = validate_document_month(document_month)
+        
+        # 3. 读取文件内容
         file_content = await file.read()
         file_size = len(file_content)
         
-        # 3. 计算文件hash
+        # 4. 计算文件hash
         await file.seek(0)
         file_hash = calculate_uploaded_file_hash(file.file)
         
-        # 4. 生成存储路径（收入文件专用目录）
-        year, month = document_month.split('-')
+        # 5. 生成存储路径（收入文件专用目录）
         sanitized_filename = AccountingFileStorageManager.sanitize_filename(file.filename)
         
         storage_path = os.path.join(
@@ -72,12 +139,13 @@ async def upload_income_document(
         )
         storage_path = storage_path.replace('\\', '/')
         
-        # 5. 保存文件到磁盘
-        AccountingFileStorageManager.ensure_directory(storage_path)
+        # 6. 保存文件到磁盘
+        directory = os.path.dirname(storage_path)
+        AccountingFileStorageManager.ensure_directory(directory)
         with open(storage_path, 'wb') as f:
             f.write(file_content)
         
-        # 6. 创建RawDocument原件记录
+        # 7. 创建RawDocument原件记录
         raw_doc_service = RawDocumentService(db)
         raw_doc = raw_doc_service.create_raw_document(
             company_id=company_id,
@@ -90,11 +158,11 @@ async def upload_income_document(
             uploaded_by=None
         )
         
-        # 7. OCR解析，提取收入金额
+        # 8. OCR解析，提取收入金额
         parser = PDFParser(enable_ocr=True, ocr_language='eng+chi_sim')
         parse_result = parser.parse(storage_path)
         
-        # 8. 提取收入金额（从OCR结果或文本中）
+        # 9. 提取收入金额（从OCR结果或文本中）
         extracted_income = 0.0
         confidence = parse_result.confidence
         ocr_method = parse_result.method
@@ -107,7 +175,7 @@ async def upload_income_document(
                 document_type
             )
         
-        # 9. 注册到file_index统一索引
+        # 10. 注册到file_index统一索引
         file_size_kb = int(file_size / 1024)
         
         file_index = UnifiedFileService.register_file(
@@ -132,7 +200,7 @@ async def upload_income_document(
             }
         )
         
-        # 10. 返回结果
+        # 11. 返回结果
         return {
             "status": "success",
             "message": "收入文件上传成功",

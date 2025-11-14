@@ -17,6 +17,24 @@ The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform for 
 ## Recent Changes
 **Latest modifications with dates:**
 
+### 2025-11-14: Income Document System Implementation ✅
+- ✅ **收入证明文件管理系统**: 完整的客户收入验证文件上传与OCR处理
+  - 新增FastAPI路由: `accounting_app/routes/income_documents.py`（2个端点：上传+查询）
+  - 文件类型支持: Salary Slip, Tax Return, EPF Statement, Bank Inflow
+  - OCR智能提取: 使用PDFParser + pytesseract自动提取收入金额
+  - 数据存储: 复用`file_index`表（module='income'）+ `raw_documents`原件保护
+  - 前端页面: `templates/income/upload.html` (上传) + `templates/income/index.html` (列表)
+  - Flask路由集成: `/income`, `/income/upload`, `/api/customers/list`
+  - 多语言OCR: 支持英文+简体中文（ocr_language='eng+chi_sim'）
+  - 置信度评分: 自动评估OCR提取准确度（0.0-1.0）
+  - 文件存储路径: `/accounting_data/companies/{company_id}/income_documents/{customer_id}/{YYYY}/{MM}/`
+- ✅ **复用现有基础设施**: 
+  - `RawDocumentService`: 原件封存（1:1保护，file_hash验证）
+  - `UnifiedFileService`: 统一文件索引管理
+  - `PDFParser`: 三阶段解析（文本PDF → OCR扫描件 → 人工处理）
+  - `AccountingFileStorageManager`: 标准化路径生成
+- ✅ **完全兼容AI V3 Baseline**: 不修改任何现有AI文件（ai_assistant.py、ai_predict.py）
+
 ### 2025-11-14: AI Predictive Analysis Module (AI V3 Expansion) ✅
 - ✅ **AI预测分析模块**: 基于历史数据预测未来3个月财务趋势
   - 新增3个服务引擎: `PredictEngine`, `TrendEngine`, `HealthEngine`
