@@ -1,6 +1,9 @@
 """
 Loans - 贷款资格评估模块
 集成标准化收入数据进行DSR/DSRC计算
+
+⚠️ 债务来源：仅从 CTOS 报告获取（通过API参数传入）
+⚠️ 不再从 monthly_statements 的信用卡字段推导
 """
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -20,12 +23,12 @@ def calculate_loan_eligibility(
     company_id: int = 1
 ) -> dict:
     """
-    计算客户贷款资格（基于DSR规则）
+    计算客户贷款资格（基于DSR规则 + CTOS commitment）
     
     Args:
         db: 数据库会话
         customer_id: 客户ID
-        monthly_debt: 月度债务（可选，如果不提供则从最新月结单获取）
+        monthly_debt: 月度债务（从CTOS报告获取，必填）
         company_id: 公司ID
         
     Returns:
@@ -64,16 +67,12 @@ def calculate_loan_eligibility(
             detail="收入数据无效，DSR收入必须大于0。请检查上传的收入文件是否正确。"
         )
     
+    # ⚠️ 债务数据必须从CTOS报告获取
     if monthly_debt is None:
-        from ..models import MonthlyStatement
-        try:
-            latest_statement = db.query(MonthlyStatement).filter(
-                MonthlyStatement.customer_id == customer_id
-            ).order_by(MonthlyStatement.statement_month.desc()).first()
-            
-            monthly_debt = latest_statement.total_spending or 0.0 if latest_statement else 0.0
-        except Exception:
-            monthly_debt = 0.0
+        raise HTTPException(
+            status_code=400,
+            detail="missing_commitment_data - 月度债务数据缺失，请上传CTOS报告或通过API参数提供monthly_debt"
+        )
     
     dsr_ratio = monthly_debt / dsr_income if dsr_income > 0 else 0.0
     
@@ -123,11 +122,11 @@ async def get_loan_eligibility(
     db: Session = Depends(get_db)
 ):
     """
-    获取客户贷款资格评估
+    获取客户贷款资格评估（基于CTOS commitment）
     
     Args:
         customer_id: 客户ID
-        monthly_debt: 月度债务（可选，如果不提供则从最新月结单获取）
+        monthly_debt: 月度债务（从CTOS报告获取，必填）
         company_id: 公司ID（默认1）
         
     Returns:
@@ -142,6 +141,9 @@ async def get_loan_eligibility(
         - suggested_loan_amount: 建议贷款额度（= dsr_income × 8）
         - max_monthly_debt: 最大可承受月度债务
         - available_borrowing_capacity: 可用借款能力
+        
+    Raises:
+        HTTPException 400: monthly_debt缺失
     """
     try:
         result = calculate_loan_eligibility(

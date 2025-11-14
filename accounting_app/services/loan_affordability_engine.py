@@ -2,7 +2,11 @@
 Loan Affordability Engine Service
 
 个人贷款承受能力计算引擎
-基于 Phase A (收入系统) + Phase B (DSR资格系统) 计算可承受的最大贷款额度
+基于 Phase A (收入系统) + CTOS Commitment 计算可承受的最大贷款额度
+
+⚠️ 债务来源：
+- 仅从 CTOS 报告获取（通过API参数传入）
+- 不再从 monthly_statements 的信用卡字段推导
 
 Author: AI Loan Evaluation System
 Date: 2025-01-14
@@ -34,14 +38,15 @@ class LoanAffordabilityEngine:
         cls,
         db: Session,
         customer_id: int,
-        company_id: int = 1
+        company_id: int = 1,
+        current_monthly_debt: Optional[float] = None
     ) -> Dict:
         """
-        计算客户可承受的最大贷款额度
+        计算客户可承受的最大贷款额度（基于CTOS commitment）
         
         流程：
         1. 从 IncomeService 获取收入数据
-        2. 从 monthly_statements 获取当前债务
+        2. 使用CTOS报告的当前债务（API参数）
         3. 计算可承受月供（推荐和严格限制）
         4. 反推各期限的最大贷款金额
         
@@ -49,6 +54,7 @@ class LoanAffordabilityEngine:
             db: 数据库会话
             customer_id: 客户ID
             company_id: 公司ID
+            current_monthly_debt: 当前月度债务（从CTOS报告获取，必填）
             
         Returns:
             {
@@ -88,8 +94,18 @@ class LoanAffordabilityEngine:
         if dsr_income <= 0:
             return {"error": "客户收入无效"}
         
-        # 3. 获取当前月度债务
-        current_monthly_debt = cls._calculate_monthly_debt_service(customer_id)
+        # 3. 验证当前月度债务（必须从CTOS获取）
+        if current_monthly_debt is None:
+            return {
+                "error": "missing_commitment_data",
+                "message": "月度债务数据缺失，请上传CTOS报告或手动输入commitment数据",
+                "customer_id": customer_id,
+                "dsr_income": round(dsr_income, 2),
+                "dsrc_income": round(dsrc_income, 2),
+                "current_monthly_debt": 0.0,
+                "income_source": best_source,
+                "confidence": round(confidence, 4)
+            }
         
         # 4. 计算可承受月供
         max_monthly_payment_recommended = dsr_income * cls.RECOMMENDED_DSR_LIMIT - current_monthly_debt
@@ -125,59 +141,6 @@ class LoanAffordabilityEngine:
             "confidence": round(confidence, 4)
         }
     
-    @classmethod
-    def _calculate_monthly_debt_service(cls, customer_id: int) -> float:
-        """
-        计算月度债务服务
-        
-        从最新的月结单提取：
-        - owner_payments（户主还款）
-        - gz_payments（GZ还款）
-        - min_payment = closing_balance_total × 0.05（最低还款）
-        
-        Args:
-            customer_id: 客户ID
-            
-        Returns:
-            月度债务服务总额
-        """
-        conn = None
-        try:
-            conn = sqlite3.connect(cls.DB_PATH)
-            cursor = conn.cursor()
-            
-            cursor.execute('''
-                SELECT 
-                    closing_balance_total,
-                    owner_payments,
-                    gz_payments
-                FROM monthly_statements
-                WHERE customer_id = ?
-                ORDER BY statement_month DESC
-                LIMIT 1
-            ''', (customer_id,))
-            
-            result = cursor.fetchone()
-            
-            if not result:
-                return 0.0
-            
-            closing_balance = result[0] or 0.0
-            owner_payments = result[1] or 0.0
-            gz_payments = result[2] or 0.0
-            
-            min_payment = closing_balance * 0.05
-            
-            total_monthly_debt = owner_payments + gz_payments + min_payment
-            
-            return total_monthly_debt
-            
-        except Exception as e:
-            print(f"计算月度债务失败: {e}")
-            return 0.0
-        finally:
-            if conn:
-                conn.close()
     
     @classmethod
     def _reverse_calculate_max_loan(

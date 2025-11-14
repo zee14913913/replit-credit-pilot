@@ -3,9 +3,9 @@ Business Loan Engine Service
 
 提供企业贷款（SME Loan）评估功能，基于 DSCR（Debt Service Coverage Ratio）计算
 
-Dual-Source DSCR System:
-- source='journal' (默认): 基于 JournalEntry 会计分录，阈值 1.25
-- source='monthly': 基于 MonthlyStatement 月结单，阈值 1.50（SME Enhanced）
+⚠️ 收入来源：仅从 JournalEntry 会计账目获取
+⚠️ 债务来源：仅从 CTOS 报告获取（通过API参数传入）
+⚠️ 不再从 monthly_statements 的信用卡字段推导收入或债务
 
 Author: AI Loan Evaluation System
 Date: 2025-01-14
@@ -37,32 +37,26 @@ class BusinessLoanEngine:
         db: Session,
         customer_id: int,
         company_id: int = 1,
-        source: str = "journal"
+        annual_debt_service: Optional[float] = None
     ) -> Dict:
         """
-        计算企业贷款资格（基于DSCR）- 双数据源支持
+        计算企业贷款资格（基于DSCR）
         
         DSCR (Debt Service Coverage Ratio) = Operating Income / Annual Debt Service
         
-        数据源模式：
-        - source='journal' (默认): 基于 JournalEntry，阈值 1.25
-        - source='monthly': 基于 MonthlyStatement，阈值 1.50（SME Enhanced）
+        ⚠️ 收入：从 JournalEntry 会计账目获取
+        ⚠️ 债务：从 CTOS 报告获取（API参数）
         
-        分类规则（journal模式）：
+        分类规则：
         - DSCR ≥ 1.25 → Eligible
         - 1.00 ≤ DSCR < 1.25 → Borderline
         - DSCR < 1.00 → Not Eligible
-        
-        分类规则（monthly模式）：
-        - DSCR ≥ 1.50 → Eligible
-        - 1.25 ≤ DSCR < 1.50 → Borderline
-        - DSCR < 1.25 → Not Eligible
         
         Args:
             db: 数据库会话
             customer_id: 客户ID
             company_id: 公司ID
-            source: 数据源模式（'journal' 或 'monthly'）
+            annual_debt_service: 年度债务服务（从CTOS报告获取，必填）
             
         Returns:
             {
@@ -75,18 +69,11 @@ class BusinessLoanEngine:
                 "max_debt_service": float,
                 "available_capacity": float,
                 "max_annual_loan": float,
-                "max_monthly_loan": float,
-                "data_source": str,
-                "threshold_type": str
+                "max_monthly_loan": float
             }
         """
-        # 根据数据源选择收入提取方法
-        if source == "monthly":
-            operating_income = cls._get_operating_income_from_monthly(customer_id)
-            threshold_type = "SME Enhanced"
-        else:
-            operating_income = cls._get_operating_income(db, customer_id, company_id)
-            threshold_type = "Standard"
+        # 从会计账目获取营业收入
+        operating_income = cls._get_operating_income(db, customer_id, company_id)
         
         if operating_income is None or operating_income <= 0:
             return {
@@ -100,14 +87,27 @@ class BusinessLoanEngine:
                 "max_debt_service": 0.0,
                 "available_capacity": 0.0,
                 "max_annual_loan": 0.0,
-                "max_monthly_loan": 0.0,
-                "data_source": source,
-                "threshold_type": threshold_type
+                "max_monthly_loan": 0.0
             }
         
-        monthly_debt = cls._calculate_monthly_debt_service(customer_id)
+        # ⚠️ 债务数据必须从CTOS报告获取
+        if annual_debt_service is None:
+            return {
+                "customer_id": customer_id,
+                "error": "missing_commitment_data",
+                "message": "年度债务数据缺失，请上传CTOS报告或手动输入commitment数据",
+                "operating_income": round(operating_income, 2),
+                "annual_debt_service": 0.0,
+                "monthly_debt_service": 0.0,
+                "dscr": None,
+                "eligibility_status": "Missing Commitment Data",
+                "max_debt_service": 0.0,
+                "available_capacity": 0.0,
+                "max_annual_loan": 0.0,
+                "max_monthly_loan": 0.0
+            }
         
-        if monthly_debt is None or monthly_debt <= 0:
+        if annual_debt_service <= 0:
             max_capacity = operating_income * 0.8
             return {
                 "customer_id": customer_id,
@@ -115,18 +115,16 @@ class BusinessLoanEngine:
                 "annual_debt_service": 0.0,
                 "monthly_debt_service": 0.0,
                 "dscr": None,
-                "eligibility_status": "No Debt Data - Full Capacity Available",
+                "eligibility_status": "No Debt - Full Capacity Available",
                 "max_debt_service": round(max_capacity, 2),
                 "available_capacity": round(max_capacity, 2),
                 "max_annual_loan": round(max_capacity, 2),
-                "max_monthly_loan": round(max_capacity / 12, 2),
-                "data_source": source,
-                "threshold_type": threshold_type
+                "max_monthly_loan": round(max_capacity / 12, 2)
             }
         
-        annual_debt_service = monthly_debt * 12
         dscr = operating_income / annual_debt_service
-        eligibility_status = cls._determine_eligibility(dscr, source)
+        monthly_debt_service = annual_debt_service / 12
+        eligibility_status = cls._determine_eligibility(dscr)
         
         max_debt_service = operating_income * 0.8
         
@@ -139,15 +137,13 @@ class BusinessLoanEngine:
             "customer_id": customer_id,
             "operating_income": round(operating_income, 2),
             "annual_debt_service": round(annual_debt_service, 2),
-            "monthly_debt_service": round(monthly_debt, 2),
+            "monthly_debt_service": round(monthly_debt_service, 2),
             "dscr": round(dscr, 4) if dscr != float('inf') else 999.9999,
             "eligibility_status": eligibility_status,
             "max_debt_service": round(max_debt_service, 2),
             "available_capacity": round(available_capacity, 2),
             "max_annual_loan": round(max_annual_loan, 2),
-            "max_monthly_loan": round(max_monthly_loan, 2),
-            "data_source": source,
-            "threshold_type": threshold_type
+            "max_monthly_loan": round(max_monthly_loan, 2)
         }
     
     @classmethod
@@ -229,150 +225,26 @@ class BusinessLoanEngine:
             print(f"获取营业收入失败: {e}")
             return None
     
-    @classmethod
-    def _get_operating_income_from_monthly(
-        cls,
-        customer_id: int
-    ) -> Optional[float]:
-        """
-        从 MonthlyStatement 提取企业营业收入（新增方法 - monthly模式）
-        
-        收入来源：
-        - operating_income = (owner_payments + gz_payments) × 12
-        
-        Args:
-            customer_id: 客户ID
-            
-        Returns:
-            年度营业收入，如果无月结单则返回None
-        """
-        conn = None
-        try:
-            conn = sqlite3.connect(cls.DB_PATH)
-            cursor = conn.cursor()
-            
-            cursor.execute('''
-                SELECT 
-                    owner_payments,
-                    gz_payments
-                FROM monthly_statements
-                WHERE customer_id = ?
-                ORDER BY statement_month DESC
-                LIMIT 1
-            ''', (customer_id,))
-            
-            result = cursor.fetchone()
-            
-            if not result:
-                return None
-            
-            owner_payments = result[0] or 0.0
-            gz_payments = result[1] or 0.0
-            
-            monthly_income = owner_payments + gz_payments
-            annual_income = monthly_income * 12
-            
-            return annual_income if annual_income > 0 else None
-            
-        except Exception as e:
-            print(f"从月结单提取营业收入失败: {e}")
-            return None
-        finally:
-            if conn:
-                conn.close()
     
     @classmethod
-    def _calculate_monthly_debt_service(
-        cls,
-        customer_id: int
-    ) -> Optional[float]:
+    def _determine_eligibility(cls, dscr: float) -> str:
         """
-        计算月度债务服务
+        根据DSCR确定资格状态
         
-        从最新的月结单提取：
-        - owner_payments（户主还款）
-        - gz_payments（GZ还款）
-        - min_payment = closing_balance_total × 0.05（最低还款）
-        
-        Args:
-            customer_id: 客户ID
-            
-        Returns:
-            月度债务服务总额，如果无月结单则返回None
-        """
-        conn = None
-        try:
-            conn = sqlite3.connect(cls.DB_PATH)
-            cursor = conn.cursor()
-            
-            cursor.execute('''
-                SELECT 
-                    closing_balance_total,
-                    owner_payments,
-                    gz_payments
-                FROM monthly_statements
-                WHERE customer_id = ?
-                ORDER BY statement_month DESC
-                LIMIT 1
-            ''', (customer_id,))
-            
-            result = cursor.fetchone()
-            
-            if not result:
-                return None
-            
-            closing_balance = result[0] or 0.0
-            owner_payments = result[1] or 0.0
-            gz_payments = result[2] or 0.0
-            
-            min_payment = closing_balance * 0.05
-            
-            total_monthly_debt = owner_payments + gz_payments + min_payment
-            
-            return total_monthly_debt
-            
-        except Exception as e:
-            print(f"计算月度债务失败: {e}")
-            return None
-        finally:
-            if conn:
-                conn.close()
-    
-    @classmethod
-    def _determine_eligibility(cls, dscr: float, source: str = "journal") -> str:
-        """
-        根据DSCR确定资格状态（支持双阈值）
-        
-        规则（journal模式 - Standard）：
+        规则：
         - DSCR ≥ 1.25 → Eligible
         - 1.00 ≤ DSCR < 1.25 → Borderline
         - DSCR < 1.00 → Not Eligible
         
-        规则（monthly模式 - SME Enhanced）：
-        - DSCR ≥ 1.50 → Eligible
-        - 1.25 ≤ DSCR < 1.50 → Borderline
-        - DSCR < 1.25 → Not Eligible
-        
         Args:
             dscr: DSCR比率
-            source: 数据源模式（'journal' 或 'monthly'）
             
         Returns:
             资格状态
         """
-        if source == "monthly":
-            # SME Enhanced 标准（更严格）
-            if dscr >= 1.50:
-                return "Eligible"
-            elif dscr >= 1.25:
-                return "Borderline"
-            else:
-                return "Not Eligible"
+        if dscr >= 1.25:
+            return "Eligible"
+        elif dscr >= 1.00:
+            return "Borderline"
         else:
-            # Standard 标准
-            if dscr >= 1.25:
-                return "Eligible"
-            elif dscr >= 1.00:
-                return "Borderline"
-            else:
-                return "Not Eligible"
+            return "Not Eligible"

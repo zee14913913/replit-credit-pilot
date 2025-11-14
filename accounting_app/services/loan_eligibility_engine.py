@@ -1,6 +1,10 @@
 """
 LoanEligibilityEngine - 贷款资格计算引擎
-基于标准化收入和月结单债务计算DSR/DSRC
+基于标准化收入和CTOS commitment计算DSR/DSRC
+
+⚠️ 债务来源：
+- 仅从 CTOS 报告获取（通过API参数传入）
+- 不再从 monthly_statements 的信用卡字段推导
 """
 import sqlite3
 from typing import Dict, Optional
@@ -10,13 +14,15 @@ from sqlalchemy.orm import Session
 
 class LoanEligibilityEngine:
     """
-    贷款资格计算引擎
+    贷款资格计算引擎（基于CTOS commitment）
     
     功能：
-    1. 从 IncomeStandardizer 获取 dsr_income, dsrc_income
-    2. 从 monthly_statements 计算 total_monthly_debt
+    1. 从 IncomeService 获取 dsr_income, dsrc_income
+    2. 使用 CTOS 报告的 monthly_debt（API参数）
     3. 计算 DSR/DSRC 比率
     4. 评估资格状态（Eligible/Borderline/Not Eligible）
+    
+    ⚠️ 债务来源：仅从 CTOS 报告获取，不再从 monthly_statements 推导
     """
     
     DB_PATH = "db/smart_loan_manager.db"
@@ -26,15 +32,17 @@ class LoanEligibilityEngine:
         cls,
         db: Session,
         customer_id: int,
-        company_id: int = 1
+        company_id: int = 1,
+        monthly_debt: Optional[float] = None
     ) -> Dict:
         """
-        计算客户贷款资格
+        计算客户贷款资格（基于CTOS commitment）
         
         Args:
             db: SQLAlchemy Session (用于 IncomeService)
             customer_id: 客户ID
             company_id: 公司ID
+            monthly_debt: 月度债务（从CTOS报告获取，必填）
             
         Returns:
             {
@@ -73,7 +81,24 @@ class LoanEligibilityEngine:
         best_source = income_data.get("best_source")
         income_confidence = income_data.get("confidence", 0.0)
         
-        total_monthly_debt = cls._calculate_monthly_debt(customer_id)
+        # ⚠️ 债务数据必须从CTOS报告获取
+        if monthly_debt is None:
+            return {
+                "customer_id": customer_id,
+                "error": "missing_commitment_data",
+                "message": "月度债务数据缺失，请上传CTOS报告或手动输入commitment数据",
+                "dsr_income": round(dsr_income, 2),
+                "dsrc_income": round(dsrc_income, 2),
+                "best_source": best_source,
+                "income_confidence": round(income_confidence, 4),
+                "total_monthly_debt": 0.0,
+                "dsr_ratio": None,
+                "dsrc_ratio": None,
+                "eligibility_status": "Missing Commitment Data",
+                "recommended_loan_amount": 0.0
+            }
+        
+        total_monthly_debt = monthly_debt
         
         invalid_dsr_income = dsr_income <= 0
         invalid_dsrc_income = dsrc_income <= 0
@@ -112,55 +137,6 @@ class LoanEligibilityEngine:
             "recommended_loan_amount": round(recommended_loan_amount, 2)
         }
     
-    @classmethod
-    def _calculate_monthly_debt(cls, customer_id: int) -> float:
-        """
-        从 monthly_statements 计算月度债务
-        
-        债务计算公式：
-        - min_payment = closing_balance_total * 0.05
-        - total_monthly_debt = owner_payments + gz_payments + min_payment
-        
-        Args:
-            customer_id: 客户ID
-            
-        Returns:
-            月度债务总额
-        """
-        try:
-            conn = sqlite3.connect(cls.DB_PATH)
-            cursor = conn.cursor()
-            
-            cursor.execute('''
-                SELECT 
-                    closing_balance_total,
-                    owner_payments,
-                    gz_payments
-                FROM monthly_statements
-                WHERE customer_id = ?
-                ORDER BY statement_month DESC
-                LIMIT 1
-            ''', (customer_id,))
-            
-            result = cursor.fetchone()
-            conn.close()
-            
-            if not result:
-                return 0.0
-            
-            closing_balance_total = result[0] or 0.0
-            owner_payments = result[1] or 0.0
-            gz_payments = result[2] or 0.0
-            
-            min_payment = closing_balance_total * 0.05
-            
-            total_monthly_debt = owner_payments + gz_payments + min_payment
-            
-            return total_monthly_debt
-            
-        except Exception as e:
-            print(f"Error calculating monthly debt: {e}")
-            return 0.0
     
     @classmethod
     def _determine_eligibility(cls, dsr_ratio: float) -> str:

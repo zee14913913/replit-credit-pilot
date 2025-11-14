@@ -4,13 +4,16 @@ Loan Affordability Routes
 个人贷款承受能力API端点
 提供客户可承受的最大贷款额度查询
 
+⚠️ 债务来源：仅从 CTOS 报告获取（通过API参数传入）
+⚠️ 不再从 monthly_statements 的信用卡字段推导
+
 Author: AI Loan Evaluation System
 Date: 2025-01-14
 """
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
-from typing import Dict
+from typing import Dict, Optional
 
 from ..db import get_db
 from ..services.loan_affordability_engine import LoanAffordabilityEngine
@@ -22,16 +25,18 @@ router = APIRouter(prefix="/api/loans", tags=["Loan Affordability"])
 @router.get("/affordability/{customer_id}")
 def get_loan_affordability(
     customer_id: int,
-    company_id: int = 1,
+    current_monthly_debt: Optional[float] = Query(None, description="当前月度债务（从CTOS报告获取）"),
+    company_id: int = Query(1, description="公司ID"),
     db: Session = Depends(get_db)
 ) -> Dict:
     """
-    获取客户的个人贷款承受能力评估
+    获取客户的个人贷款承受能力评估（基于CTOS commitment）
     
-    基于 Phase A (收入系统) + Phase B (DSR资格系统) 计算可承受的最大贷款额度
+    基于 Phase A (收入系统) + CTOS债务数据 计算可承受的最大贷款额度
     
     Args:
         customer_id: 客户ID
+        current_monthly_debt: 当前月度债务（从CTOS报告获取，必填）
         company_id: 公司ID（默认1）
         db: 数据库会话
         
@@ -63,13 +68,16 @@ def get_loan_affordability(
         result = LoanAffordabilityEngine.calculate_affordability(
             db=db,
             customer_id=customer_id,
-            company_id=company_id
+            company_id=company_id,
+            current_monthly_debt=current_monthly_debt
         )
         
         # 检查是否有错误
         if "error" in result:
             error_msg = result["error"]
-            if "不存在" in error_msg:
+            if error_msg == "missing_commitment_data":
+                raise HTTPException(status_code=400, detail=result.get("message", "月度债务数据缺失，请上传CTOS报告"))
+            elif "不存在" in error_msg:
                 raise HTTPException(status_code=404, detail=f"客户不存在: customer_id={customer_id}")
             elif "无法获取客户收入数据" in error_msg:
                 raise HTTPException(status_code=404, detail=f"客户无收入数据: customer_id={customer_id}")
