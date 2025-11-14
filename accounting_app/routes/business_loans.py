@@ -23,7 +23,7 @@ from accounting_app.services.business_loan_engine import BusinessLoanEngine
 router = APIRouter(prefix="/api/business-loans", tags=["Business Loans"])
 
 
-@router.get("/eligibility/{customer_id}")
+@router.get("/evaluate/{customer_id}")
 def get_business_loan_eligibility(
     customer_id: int,
     annual_commitment: Optional[float] = Query(None, description="年度承诺还款（从CTOS报告获取）"),

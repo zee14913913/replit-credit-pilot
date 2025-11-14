@@ -114,7 +114,7 @@ def calculate_loan_eligibility(
     }
 
 
-@router.get("/eligibility/{customer_id}")
+@router.get("/evaluate/{customer_id}")
 async def get_loan_eligibility(
     customer_id: int,
     monthly_commitment: Optional[float] = None,
