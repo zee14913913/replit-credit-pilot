@@ -9,6 +9,14 @@ Design requirements: Premium, sophisticated, high-end - suitable for professiona
 User language: Chinese (使用中文与我沟通).
 
 ## Recent Changes
+- **Phase 8.1: Modern Loan Evaluate三模式系统** (Nov 14, 2025) - 银行级贷款评估页面全面重建（GXBank/Maybank MAE风格）：
+  - **三模式架构**: Full Automated Mode（文件上传自动解析）、Quick Estimate - Income Only（仅收入快速估算）、Quick Estimate - Income + Commitments（收入+债务估算）
+  - **前端系统**: loan_evaluate.html（142行）+ loan_evaluate.css（273行）+ loan_evaluate.js（391行），严格遵循Galaxy Theme设计
+  - **Flask路由**: 更新/loan-evaluate指向新模板，新增/loan-evaluate/quick_income和/loan-evaluate/quick_income_commitment POST路由
+  - **FastAPI端点**: 新建loans_quick.py router，提供POST /api/loans/quick-income和/api/loans/quick-income-commitment端点
+  - **风控引擎增强**: personal_rules.py新增estimate_risk_income_only()和estimate_risk_income_commitments()函数
+  - **动态UI引擎**: JS实时计算DTI/FOIR/Risk Grade/Approval Odds，动态渲染风险卡片、Approval Odds圆圈、AI Advisor、产品推荐卡片
+  - **完整调用链**: Flask→FastAPI→RiskEngine三层架构，端到端验证通过
 - **Phase 7: Legacy删除 + CTOS Consent系统集成** (Nov 14, 2025) - 完整的系统重构和CTOS授权书管理：
   - **Legacy系统清理**: 删除Legacy模板（loan_matcher.html, loan_evaluation.html）、Legacy引擎文件（loan_eligibility_engine.py, business_loan_engine.py, loan_affordability_engine.py）、Legacy路由注册、导航菜单中的Legacy入口
   - **business_loans.py重构**: 删除Legacy DSCR模式，保留Modern SME引擎（mode="modern"为默认），添加本地_get_operating_income helper函数
