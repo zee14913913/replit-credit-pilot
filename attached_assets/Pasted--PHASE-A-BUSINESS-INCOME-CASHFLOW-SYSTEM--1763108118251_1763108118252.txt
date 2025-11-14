@@ -1,0 +1,148 @@
+━━━━━━━━━━━━━━━━━━
+PHASE A – BUSINESS INCOME & CASHFLOW SYSTEM
+━━━━━━━━━━━━━━━━━━
+目标：从企业数据提取真实营业收入、支出与现金流，符合马来西亚银行审核要求
+
+A-1 新建服务：BusinessIncomeEngine  
+路径：accounting_app/services/business_income_engine.py  
+功能：
+- 提取客户最近12个月 monthly_statements：
+   * closing_balance_total
+   * owner_expenses + gz_expenses
+   * owner_payments + gz_payments
+- 计算：
+   operating_income = (owner_payments + gz_payments) × 12
+   operating_cost   = (owner_expenses + gz_expenses) × 12
+   net_cashflow     = operating_income − operating_cost
+- 返回结构：
+{
+  "customer_id": ...,
+  "operating_income": ...,
+  "operating_cost": ...,
+  "net_cashflow": ...
+}
+- 错误处理：
+   404 若无月结单
+   422 若数据异常
+
+A-2 新建路由：business_income.py  
+路径：accounting_app/routes/business_income.py  
+端点：GET /api/business/income/{customer_id}  
+返回上述结构。
+
+A-3 注册路由  
+修改 main.py:
+from accounting_app.routes.business_income import router as business_income_router  
+app.include_router(business_income_router)
+
+──────────────────────────────────
+PHASE B – BUSINESS LOAN ELIGIBILITY (DSCR)
+──────────────────────────────────
+目标：按照金融机构 SME 贷款标准，评估企业贷款资格
+
+B-1 新建服务：BusinessLoanEngine  
+路径：accounting_app/services/business_loan_engine.py  
+功能：
+- 提取 operating_income（使用 BusinessIncomeEngine）
+- 提取 annual_debt_service：
+   * monthly_debt = owner_payments + gz_payments + (closing_balance_total × 0.05)
+   * annual_debt_service = monthly_debt × 12
+- 计算 DSCR = operating_income / annual_debt_service
+- 条件：
+   DSCR ≥ 1.50 → Eligible
+   1.25 ≤ DSCR < 1.50 → Borderline
+   DSCR < 1.25 → Not Eligible
+- 计算承受能力：
+   max_debt_service = operating_income × 0.8
+   available_capacity = max_debt_service − annual_debt_service
+   max_annual_loan = available_capacity
+   max_monthly_loan = available_capacity ÷ 12
+- 返回：
+{
+  "customer_id": ...,
+  "operating_income": ...,
+  "annual_debt_service": ...,
+  "dscr": ...,
+  "eligibility_status": "...",
+  "max_debt_service": ...,
+  "available_capacity": ...,
+  "max_annual_loan": ...,
+  "max_monthly_loan": ...
+}
+
+B-2 新建路由：business_loans.py  
+路径：accounting_app/routes/business_loans.py  
+端点：GET /api/business-loans/eligibility/{customer_id}  
+查询参数：customer_id, company_id (可选，默认1)  
+返回上述结构  
+错误处理：
+404 若无企业收入
+404 若无月结单
+500 系统错误
+
+B-3 注册路由  
+修改 main.py:
+from accounting_app.routes.business_loans import router as business_loans_router  
+app.include_router(business_loans_router)
+
+──────────────────────────────────
+PHASE C – BUSINESS LOAN PRODUCTS SIMULATION
+──────────────────────────────────
+目标：提供企业贷款产品模拟（符合马来西亚银行及 FinTech 标准）
+
+C-1 新建服务：BusinessLoanProductEngine  
+路径：accounting_app/services/business_loan_product_engine.py  
+定义产品：
+1. SME Term Loan – reducing balance – 年利率 6.0% – 期限 5/7/10 年  
+2. Working Capital Loan – flat rate – 年利率 7.5% – 期限 1-5 年  
+3. Revolving Credit – interest only – 年利率 8.5% – 期限 12 个月（可续）  
+4. Commercial Property Loan – reducing balance – 年利率 4.6% – 期限 20/25 年  
+功能：
+- 方法 calculate_products(loan_amount)  
+- 返回每个产品：
+{
+  "name": "...",
+  "interest_rate": ...,
+  "tenure_years": ...,
+  "monthly_payment": ...,
+  "total_interest": ...,
+  "total_cost": ...
+}
+
+C-2 新建路由：business_loan_products.py  
+路径：accounting_app/routes/business_loan_products.py  
+端点：GET /api/business-loans/products/{customer_id}?loan_amount=xxxx  
+若 loan_amount 未给 → 使用：max_annual_loan（Phase B） ÷ 年限  
+返回结构：
+{
+  "customer_id": ...,
+  "loan_amount": ...,
+  "products": [ {...}, {...} ]
+}
+
+C-3 注册路由  
+修改 main.py:
+from accounting_app.routes.business_loan_products import router as business_loan_products_router  
+app.include_router(business_loan_products_router)
+
+──────────────────────────────────
+🛡️ 不可修改文件（保持 Baseline 安全）
+ai_assistant.py  
+ai_predict.py  
+ai_client.py  
+scheduler.py  
+email_notifier.py  
+templates/index.html（AI日报区）
+
+━━━━━━━━━━━━━━━━━━
+📅 完成后操作
+重启 FastAPI（8000）  
+重启 Flask（5000）  
+输出 Final Report，内容包含：
+- operating_income 提取来源  
+- annual_debt_service 计算方式  
+- DSCR 结果  
+- 可借款额度（年 + 月）  
+- 产品模拟结果
+
+━━━━━━━━━━━━━━━━━━
