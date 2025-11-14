@@ -29,6 +29,7 @@ The backend uses Flask with SQLite and a context manager for database interactio
 - **AI-Powered Advisory:** Credit card recommendations, financial optimization, cash flow prediction, anomaly detection, financial health scoring, and loan eligibility assessment.
 - **AI Smart Assistant V3 (Enterprise Intelligence):** Advanced multi-provider AI system (Perplexity AI primary, OpenAI fallback) with real-time web search. Features floating chatbot UI, cross-module analysis, automated daily financial reports (08:00 generation, 08:10 email delivery via SendGrid), system analytics, and comprehensive conversation history logging.
 - **Income Document System:** Upload, OCR processing, and standardization of income proof documents (Salary Slip, Tax Return, EPF, Bank Inflow) with intelligent aggregation and confidence scoring.
+- **Dual-Engine Loan Evaluation System (CREDITPILOT):** Production-ready dual-mode architecture supporting both legacy DSR/DSCR engines and modern Malaysian banking standards (DTI/FOIR/CCRIS/BRR). API routes (`/api/loans/eligibility`, `/api/business-loans/eligibility`) support `mode=dsr|modern` parameter for backward-compatible gradual migration. Modern mode implements comprehensive risk scoring (Personal: DTI/FOIR/CCRIS bucket, SME: BRR/DSCR/DSR/Industry/Cashflow Variance) with intelligent product matching across 12+ banks/Fintech providers. CTOS data serves as the exclusive debt commitment source.
 - **Reporting & Export:** Professional Excel/CSV/PDF reports, automated monthly reports.
 - **Workflow Automation:** Batch operations, rule engine for transaction matching.
 - **Security & Compliance:** Multi-role authentication & authorization (RBAC), audit logging, data integrity validation.
@@ -44,6 +45,7 @@ The backend uses Flask with SQLite and a context manager for database interactio
 - **Data Accuracy:** Robust monthly ledger engine ensuring 100% accuracy via previous balance extraction and DR/CR classification.
 - **Monthly Statement Architecture:** One monthly statement record per bank + month, aggregating 6 mandatory classification fields.
 - **AI Architecture:** Unified client interface with automatic provider switching, graceful degradation, and environment-based configuration.
+- **Dual-Engine Loan Architecture:** Legacy DSR/DSCR engines preserved (`loan_eligibility_engine.py`, `business_loan_engine.py`) alongside modern risk_engine (`risk_utils.py`, `personal_rules.py`, `sme_rules.py`, `scoring_matrix.py`, `risk_tables.py`). API layer supports mode-based routing with backward compatibility. Product matcher (`loan_products.py`) recommends 3-10 suitable banks based on risk grade. System uses CTOS commitment data exclusively, never credit card fields, with graceful defaults for missing data (CCRIS bucket=0, CTOS SME Score=650, Cashflow Variance=0.30).
 
 ### Security & Access Control
 A production-ready Unified RBAC Implementation protects 32 functions. The `@require_admin_or_accountant` decorator supports Flask session-based RBAC and FastAPI token verification. Access levels include Admin (full access) and Accountant (full operational access), with Customer and Unauthenticated roles restricted.
