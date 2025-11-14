@@ -1,26 +1,81 @@
 """
-Business Loans API Routes
+Business Loans API Routes - Modern SME Evaluation Only
 
-提供企业贷款（SME Loan）评估功能，基于 DSCR 计算
+提供企业贷款（SME Loan）评估功能，基于现代马来西亚SME标准（BRR/DSCR/DSR/Industry）
 
 ⚠️ 收入来源：仅从 JournalEntry 会计账目获取
 ⚠️ 债务来源：仅从 CTOS 报告获取（通过API参数传入）
-⚠️ 不再从 monthly_statements 的信用卡字段推导
+⚠️ Legacy DSCR模式已删除 - Phase 7重构
 
 Author: AI Loan Evaluation System
-Date: 2025-01-14
+Date: 2025-11-14 (Phase 7 Refactor)
 """
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from typing import Optional
+from datetime import datetime, timedelta
+from decimal import Decimal
 
 from accounting_app.db import get_db
-from accounting_app.models import Customer
-from accounting_app.services.business_loan_engine import BusinessLoanEngine
+from accounting_app.models import Customer, JournalEntry, JournalEntryLine, ChartOfAccounts
 
 
 router = APIRouter(prefix="/api/business-loans", tags=["Business Loans"])
+
+
+def _get_operating_income(db: Session, customer_id: int, company_id: int) -> Optional[float]:
+    """
+    获取企业营业收入
+    
+    从JournalEntry的收入科目汇总（过去12个月）
+    
+    Args:
+        db: 数据库会话
+        customer_id: 客户ID
+        company_id: 公司ID
+        
+    Returns:
+        年度营业收入，如果无法获取则返回None
+    """
+    try:
+        period_end = datetime.now()
+        period_start = period_end - timedelta(days=365)
+        
+        income_query = (
+            db.query(
+                func.sum(JournalEntryLine.credit_amount - JournalEntryLine.debit_amount).label('total_income')
+            )
+            .join(JournalEntry, JournalEntry.id == JournalEntryLine.journal_entry_id)
+            .join(ChartOfAccounts, ChartOfAccounts.id == JournalEntryLine.account_id)
+            .filter(
+                ChartOfAccounts.company_id == company_id,
+                JournalEntry.company_id == company_id,
+                JournalEntry.entry_date >= period_start,
+                JournalEntry.entry_date < period_end,
+                JournalEntry.status == 'posted',
+                ChartOfAccounts.account_type == 'income'
+            )
+        )
+        
+        result = income_query.first()
+        
+        if result and result.total_income:
+            total_income = float(Decimal(str(result.total_income)))
+            if total_income > 0:
+                return total_income
+        
+        # Fallback: 尝试从Customer表获取
+        customer = db.query(Customer).filter(Customer.id == customer_id).first()
+        if customer and hasattr(customer, 'annual_income') and customer.annual_income:
+            return float(customer.annual_income)
+        
+        return None
+        
+    except Exception as e:
+        print(f"Error getting operating income: {e}")
+        return None
 
 
 @router.get("/evaluate/{customer_id}")
@@ -28,7 +83,7 @@ def get_business_loan_eligibility(
     customer_id: int,
     annual_commitment: Optional[float] = Query(None, description="年度承诺还款（从CTOS报告获取）"),
     company_id: int = Query(1, description="公司ID"),
-    mode: str = Query("dscr", description="引擎模式 (dscr=传统DSCR | modern=马来西亚SME标准)"),
+    mode: str = Query("modern", description="引擎模式 (仅支持modern=马来西亚SME标准，Legacy DSCR已删除)"),
     data_mode: str = Query("manual", description="数据模式 (manual=手动输入 | auto=自动采集)"),
     ctos_sme_score: Optional[int] = Query(None, description="CTOS SME分数 - manual模式需要"),
     cashflow_variance: Optional[float] = Query(None, description="现金流波动率 - manual模式需要"),
@@ -93,7 +148,7 @@ def get_business_loan_eligibility(
             from accounting_app.services.data_intake import AutoEnrichment
             
             # 获取营业收入
-            operating_income = BusinessLoanEngine._get_operating_income(db, customer_id, company_id)
+            operating_income = _get_operating_income(db, customer_id, company_id)
             
             if annual_commitment is None:
                 raise HTTPException(status_code=400, detail="Debt commitment is required based on CTOS.")
@@ -170,29 +225,12 @@ def get_business_loan_eligibility(
             
             return result
         
-        # DSCR模式：使用现有引擎（向后兼容）
+        # Legacy DSCR模式已删除 - Phase 7重构
         else:
-            result = BusinessLoanEngine.calculate_dscr(
-                db=db,
-                customer_id=customer_id,
-                company_id=company_id,
-                annual_commitment=annual_commitment
+            raise HTTPException(
+                status_code=400,
+                detail="Legacy DSCR mode has been removed. Please use mode=modern for Malaysian SME standards."
             )
-            
-            if "error" in result:
-                if result["error"] == "missing_commitment_data":
-                    raise HTTPException(
-                        status_code=400,
-                        detail=result.get("message", "年度债务数据缺失，请上传CTOS报告")
-                    )
-                raise HTTPException(
-                    status_code=404,
-                    detail=result["error"]
-                )
-            
-            result["mode"] = "dscr"
-            result["engine"] = "Traditional DSCR"
-            return result
         
     except HTTPException:
         raise
