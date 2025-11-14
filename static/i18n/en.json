@@ -436,5 +436,19 @@
   "standard_eligibility": "Standard bank eligibility applies.",
   "product_type_traditional_bank": "Traditional Bank",
   "product_type_digital_bank": "Digital Bank",
-  "product_type_fintech": "Fintech"
+  "product_type_fintech": "Fintech",
+  "nav_modern_loan_evaluate": "Modern Loan Evaluate",
+  "nav_sme_loan_evaluate": "SME Loan Evaluate",
+  "nav_loan_reports": "Loan Reports",
+  "notification_center": "Notification Center",
+  "mark_all_read": "Mark All Read",
+  "no_notifications": "No notifications",
+  "toggle_theme": "Toggle Theme",
+  "footer_credit_card": "Credit Card",
+  "footer_upload": "Upload",
+  "footer_monthly_summary": "Monthly Summary",
+  "footer_customers": "Customers",
+  "footer_services": "Services",
+  "footer_loans": "Loans",
+  "all_rights_reserved": "All Rights Reserved"
 }

@@ -61,13 +61,13 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="loansDropdown" style="background: #1a1a1a; border: 2px solid #FF007F;">
                         <li><a class="dropdown-item" href="{{ url_for('loan_modern_evaluate') }}" style="color: #FFFFFF;">
-                            <i class="bi bi-graph-up-arrow me-2" style="color: #FF007F;"></i>Modern Loan Evaluate
+                            <i class="bi bi-graph-up-arrow me-2" style="color: #FF007F;"></i>{{ t('nav_modern_loan_evaluate') }}
                         </a></li>
                         <li><a class="dropdown-item" href="{{ url_for('sme_loan_evaluate') }}" style="color: #FFFFFF;">
-                            <i class="bi bi-building-gear me-2" style="color: #D4AF37;"></i>SME Loan Evaluate
+                            <i class="bi bi-building-gear me-2" style="color: #D4AF37;"></i>{{ t('nav_sme_loan_evaluate') }}
                         </a></li>
                         <li><a class="dropdown-item" href="{{ url_for('loan_reports') }}" style="color: #FFFFFF;">
-                            <i class="bi bi-file-earmark-pdf me-2" style="color: #FF007F;"></i>Loan Reports
+                            <i class="bi bi-file-earmark-pdf me-2" style="color: #FF007F;"></i>{{ t('nav_loan_reports') }}
                         </a></li>
                         <li><hr class="dropdown-divider" style="border-color: rgba(255, 0, 127, 0.3);"></li>
                         <li><a class="dropdown-item" href="{{ url_for('loan_products') }}" style="color: #FFFFFF;">
@@ -90,24 +90,24 @@
             <!-- Right side utilities -->
             <div class="nav-utilities">
                 <div class="notification-bell-container" style="position: relative; display: inline-block;">
-                    <button class="theme-toggle-btn" id="notificationBell" onclick="toggleNotifications()" title="通知中心">
+                    <button class="theme-toggle-btn" id="notificationBell" onclick="toggleNotifications()" title="{{ t('notification_center') }}">
                         <i class="bi bi-bell-fill"></i>
                         <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
                     </button>
                     <div class="notification-dropdown" id="notificationDropdown" style="display: none;">
                         <div class="notification-header">
-                            <h6>通知中心</h6>
-                            <button class="btn btn-sm btn-link" onclick="markAllAsRead()">全部已读</button>
+                            <h6 data-i18n="notification_center">{{ t('notification_center') }}</h6>
+                            <button class="btn btn-sm btn-link" onclick="markAllAsRead()" data-i18n="mark_all_read">{{ t('mark_all_read') }}</button>
                         </div>
                         <div class="notification-list" id="notificationList">
                             <div class="text-center text-muted p-3">
                                 <i class="bi bi-inbox"></i><br>
-                                暂无通知
+                                <span data-i18n="no_notifications">{{ t('no_notifications') }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Theme">
+                <button class="theme-toggle-btn" onclick="toggleTheme()" title="{{ t('toggle_theme') }}">
                     <i id="theme-icon-sun" class="bi bi-sun-fill" style="display: inline-block;"></i>
                     <i id="theme-icon-moon" class="bi bi-moon-fill" style="display: none;"></i>
                 </button>

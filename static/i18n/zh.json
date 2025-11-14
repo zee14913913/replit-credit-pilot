@@ -243,7 +243,7 @@
   "footer_customers": "客户",
   "footer_services": "服务",
   "footer_upload": "上传",
-  "footer_monthly_summary": "月度汇总",
+  "footer_monthly_summary": "月度总结",
   "footer_loans": "贷款",
   "footer_business": "业务",
   "footer_agreements": "协议",
@@ -1046,5 +1046,12 @@
   "standard_eligibility": "适用标准银行资格要求。",
   "product_type_traditional_bank": "传统银行",
   "product_type_digital_bank": "数字银行",
-  "product_type_fintech": "金融科技"
+  "product_type_fintech": "金融科技",
+  "nav_modern_loan_evaluate": "现代贷款评估",
+  "nav_sme_loan_evaluate": "中小企业贷款评估",
+  "nav_loan_reports": "贷款报告",
+  "notification_center": "通知中心",
+  "mark_all_read": "全部已读",
+  "no_notifications": "暂无通知",
+  "toggle_theme": "切换主题"
 }
