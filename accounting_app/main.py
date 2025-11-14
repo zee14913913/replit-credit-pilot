@@ -74,7 +74,8 @@ from .routes import (
     loans,  # Phase B: 贷款资格评估模块（DSR/DSRC Integration）
     loan_eligibility,  # Phase B: 贷款资格计算引擎（基于月结单债务）
     loan_products,  # Phase C: 多贷款产品模拟（等额本息/等额本金）
-    business_loans  # Phase D: 企业贷款评估（基于DSCR）
+    business_loans,  # Phase D: 企业贷款评估（基于DSCR）
+    loan_affordability  # Phase E: 个人贷款承受能力计算（基于DSR限制）
 )
 
 # 注册路由
@@ -112,6 +113,7 @@ app.include_router(loans.router, tags=["Loans"])  # Phase B: 贷款资格评估�
 app.include_router(loan_eligibility.router, tags=["Loan Eligibility"])  # Phase B: 贷款资格引擎（月结单债务计算）
 app.include_router(loan_products.router, tags=["Loan Products"])  # Phase C: 多贷款产品模拟（等额本息/等额本金）
 app.include_router(business_loans.router, tags=["Business Loans"])  # Phase D: 企业贷款评估（基于DSCR）
+app.include_router(loan_affordability.router, tags=["Loan Affordability"])  # Phase E: 个人贷款承受能力（基于DSR限制）
 
 
 # 启动事件：初始化数据库

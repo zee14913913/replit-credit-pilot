@@ -1,0 +1,187 @@
+✅【可直接复制给 Replit】
+
+📦 AI Personal Loan System – Phase E
+
+Loan Affordability Engine（个人贷款承受能力计算模块）
+
+以下内容已格式化成 Replit 可立即执行的开发任务。
+
+⸻
+
+━━━━━━━━━━━━━━━━━━━
+
+PHASE E – PERSONAL LOAN AFFORDABILITY ENGINE
+
+━━━━━━━━━━━━━━━━━━━
+
+目标：计算客户可以承受的最大贷款额度、最大月供、
+并返回符合银行真实行为的贷款承受能力报告。
+
+⚠️ 要求：
+完全基于 Phase A (收入系统) + Phase B (DSR资格系统) 的输出来运作。
+
+⸻
+
+E-1 新建 LoanAffordabilityEngine 服务
+
+路径：
+accounting_app/services/loan_affordability_engine.py
+
+功能需求：
+
+1. 从 IncomeService 获取：
+	•	dsr_income（个人贷款用月度收入）
+	•	dsrc_income（全收入，用于参考）
+	•	income_confidence
+	•	best_source
+
+2. 从 monthly_statements 获取当前总债务
+
+min_payment = closing_balance_total × 0.05
+current_monthly_debt = owner_payments + gz_payments + min_payment
+
+3. 使用马来西亚银行真实标准（不是官方网页数字）：
+
+⚠️ 注意：银行真实使用的是：
+
+客户类型	真实 DSR 限制
+Normal borrowers	0.70–0.85
+High risk	≤ 0.60
+
+统一采用可控算法：
+
+recommended_dsr_limit = 0.75
+max_dsr_limit = 0.85
+
+4. 计算可承受月供
+
+max_monthly_payment_recommended = dsr_income × recommended_dsr_limit - current_monthly_debt
+max_monthly_payment_strict = dsr_income × max_dsr_limit - current_monthly_debt
+
+若结果 < 0 → 设置为 0。
+
+5. 使用 LoanProductEngine 生成可承受贷款金额模拟（同 Phase C 使用）
+	•	用贷款金额反推可承受额度
+	•	期限：12 / 24 / 36 / 60 / 84 个月
+	•	针对每个期限计算最大贷款金额：
+
+max_loan_amount = solve reverse_monthly_payment()  
+
+（由 LoanProductEngine 内部公式处理）
+
+6. 返回结构：
+
+{
+  "customer_id": 1,
+  "dsr_income": 6000,
+  "current_monthly_debt": 1800,
+
+  "recommended_dsr_limit": 0.75,
+  "max_dsr_limit": 0.85,
+
+  "max_monthly_payment_recommended": 2700,
+  "max_monthly_payment_strict": 3300,
+
+  "affordability": {
+    "tenure_12": 28000,
+    "tenure_24": 52000,
+    "tenure_36": 76000,
+    "tenure_60": 108000,
+    "tenure_84": 138000
+  }
+}
+
+
+⸻
+
+━━━━━━━━━━━━━━━━━━━
+
+E-2 新建个人贷款承受能力路由文件
+
+━━━━━━━━━━━━━━━━━━━
+
+路径：
+accounting_app/routes/loan_affordability.py
+
+新增端点：
+
+GET /api/loans/affordability/{customer_id}
+
+返回：
+
+{
+  "customer_id": 1,
+  "status": "OK",
+  "recommended_dsr_limit": 0.75,
+  "max_monthly_payment_recommended": 2700,
+  "max_monthly_payment_strict": 3300,
+  "max_loan_amounts": {
+      "12m": ...,
+      "24m": ...,
+      "36m": ...,
+      "60m": ...,
+      "84m": ...
+  },
+  "income_source": "salary_slip",
+  "confidence": 0.91
+}
+
+错误处理：
+
+状态码	场景
+404	客户不存在
+404	无收入文件
+500	无法计算
+
+
+⸻
+
+━━━━━━━━━━━━━━━━━━━
+
+E-3 注册路由到 main.py
+
+━━━━━━━━━━━━━━━━━━━
+
+新增：
+
+from accounting_app.routes.loan_affordability import router as loan_affordability_router
+app.include_router(loan_affordability_router)
+
+Placement：紧跟在 loan_products 之后即可。
+
+⸻
+
+━━━━━━━━━━━━━━━━━━━
+
+❗ 完全不可修改文件（保持 AI V3 Baseline 完整）
+
+━━━━━━━━━━━━━━━━━━━
+
+ai_assistant.py
+ai_predict.py
+ai_client.py
+scheduler.py
+email_notifier.py
+templates/index.html（AI日报区域）
+
+
+⸻
+
+━━━━━━━━━━━━━━━━━━━
+
+完成后执行
+
+━━━━━━━━━━━━━━━━━━━
+
+✔ 重启 FastAPI（8000）
+✔ 重启 Flask（5000）
+✔ 输出 Final Report：
+
+内容要求：
+	•	dsr_income 来源
+	•	current_monthly_debt 来源
+	•	recommended_dsr_limit + max_dsr_limit
+	•	可承受月供结果
+	•	每个期限的最大贷款金额
+
+⸻
