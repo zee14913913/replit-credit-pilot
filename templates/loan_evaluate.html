@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Modern Loan Evaluation{% endblock %}
+{% block title %}{{ t('modern_personal_loan_evaluation') }}{% endblock %}
 {% block content %}
 
 <link rel="stylesheet" href="/static/css/loan_evaluate.css">
@@ -13,7 +13,7 @@
     <!-- PAGE HEADER -->
     <!-- ========================================================= -->
     <div class="page-header">
-        <h1 class="title">Modern Personal Loan Evaluation</h1>
+        <h1 class="title">{{ t('modern_personal_loan_evaluation') }}</h1>
         <p class="subtitle">AI-Driven Malaysia Bank Approval Simulation</p>
     </div>
 
@@ -21,9 +21,9 @@
     <!-- MODE SELECTOR -->
     <!-- ========================================================= -->
     <div class="mode-selector">
-        <button id="mode_auto"    class="mode-btn active">Full Automated Mode</button>
-        <button id="mode_income"  class="mode-btn">Quick Estimate – Income Only</button>
-        <button id="mode_commit"  class="mode-btn">Quick Estimate – Income + Commitments</button>
+        <button id="mode_auto"    class="mode-btn active">{{ t('full_automated_mode') }}</button>
+        <button id="mode_income"  class="mode-btn">{{ t('quick_estimate_income_only') }}</button>
+        <button id="mode_commit"  class="mode-btn">{{ t('quick_estimate_income_commitments') }}</button>
     </div>
 
     <div class="main-layout">
@@ -35,66 +35,66 @@
 
             <!-- ================= FULL AUTO MODE ================= -->
             <div id="auto_mode_block" class="input-section">
-                <h2>Upload Financial Documents</h2>
+                <h2>{{ t('upload_financial_documents') }}</h2>
                 <p class="section-desc">CTOS / CCRIS / Salary Slip / EPF / Bank Statement</p>
 
                 <div class="upload-box">
-                    <label>Payslip PDF</label>
+                    <label>{{ t('payslip_pdf') }}</label>
                     <input id="payslip_file" type="file" accept="application/pdf">
                 </div>
 
                 <div class="upload-box">
-                    <label>EPF Statement PDF</label>
+                    <label>{{ t('epf_statement_pdf') }}</label>
                     <input id="epf_file" type="file" accept="application/pdf">
                 </div>
 
                 <div class="upload-box">
-                    <label>Bank Statement PDF</label>
+                    <label>{{ t('bank_statement_pdf') }}</label>
                     <input id="bank_statement_file" type="file" accept="application/pdf">
                 </div>
 
                 <div class="upload-box">
-                    <label>CTOS PDF</label>
+                    <label>{{ t('ctos_pdf') }}</label>
                     <input id="ctos_file" type="file" accept="application/pdf">
                 </div>
 
                 <div class="upload-box">
-                    <label>CCRIS PDF</label>
+                    <label>{{ t('ccris_pdf') }}</label>
                     <input id="ccris_file" type="file" accept="application/pdf">
                 </div>
 
-                <button id="btn_auto_submit" class="primary-btn" onclick="handleFullAutoEvaluation()">Start Automated Evaluation</button>
+                <button id="btn_auto_submit" class="primary-btn" onclick="handleFullAutoEvaluation()">{{ t('start_automated_evaluation') }}</button>
             </div>
 
             <!-- ================= QUICK INCOME MODE ================= -->
             <div id="income_mode_block" class="input-section hidden">
-                <h2>Quick Estimate – Income Only</h2>
+                <h2>{{ t('quick_estimate_income_only') }}</h2>
                 <p class="section-desc">Provide your monthly nett income.</p>
 
                 <div class="form-group">
-                    <label>Nett Income (RM)</label>
-                    <input id="qe_income" type="number" placeholder="e.g. 5000">
+                    <label>{{ t('nett_income_rm') }}</label>
+                    <input id="qe_income" type="number" placeholder="{{ t('placeholder_income') }}">
                 </div>
 
-                <button id="btn_qe_income" class="primary-btn">Calculate</button>
+                <button id="btn_qe_income" class="primary-btn">{{ t('calculate') }}</button>
             </div>
 
             <!-- ================= QUICK INCOME + COMMIT ================= -->
             <div id="commit_mode_block" class="input-section hidden">
-                <h2>Quick Estimate – Income + Commitments</h2>
+                <h2>{{ t('quick_estimate_income_commitments') }}</h2>
                 <p class="section-desc">Estimate your monthly income & debts.</p>
 
                 <div class="form-group">
-                    <label>Nett Income (RM)</label>
-                    <input id="qe2_income" type="number" placeholder="e.g. 5000">
+                    <label>{{ t('nett_income_rm') }}</label>
+                    <input id="qe2_income" type="number" placeholder="{{ t('placeholder_income') }}">
                 </div>
 
                 <div class="form-group">
-                    <label>Monthly Commitments (RM)</label>
-                    <input id="qe2_commit" type="number" placeholder="e.g. 1200">
+                    <label>{{ t('monthly_commitments_rm') }}</label>
+                    <input id="qe2_commit" type="number" placeholder="{{ t('placeholder_commitments') }}">
                 </div>
 
-                <button id="btn_qe_commit" class="primary-btn">Calculate</button>
+                <button id="btn_qe_commit" class="primary-btn">{{ t('calculate') }}</button>
             </div>
 
         </div>
@@ -106,7 +106,7 @@
 
             <!-- ========== RISK SUMMARY CARD ========== -->
             <div id="risk_card" class="card hidden">
-                <h3>Risk Assessment</h3>
+                <h3>{{ t('risk_assessment') }}</h3>
                 <div id="risk_grade" class="risk-grade">—</div>
                 <p><strong>DTI:</strong> <span id="r_dti">—</span></p>
                 <p><strong>FOIR:</strong> <span id="r_foir">—</span></p>
@@ -117,27 +117,27 @@
 
             <!-- ========== APPROVAL ODDS ========== -->
             <div id="odds_card" class="card hidden">
-                <h3>Approval Odds</h3>
+                <h3>{{ t('approval_odds') }}</h3>
                 <div id="odds_circle" class="odds-circle">—%</div>
                 <p class="odds-subtext">Based on Malaysia bank scoring</p>
             </div>
 
             <!-- ========== LOAN SUMMARY ========== -->
             <div id="loan_summary" class="card hidden">
-                <h3>Loan Eligibility</h3>
+                <h3>{{ t('loan_eligibility') }}</h3>
                 <p><strong>Max EMI:</strong> RM <span id="r_max_emi">—</span></p>
                 <p><strong>Max Loan Amount:</strong> RM <span id="r_max_loan">—</span></p>
             </div>
 
             <!-- ========== AI ADVISOR ========== -->
             <div id="ai_advisor" class="card hidden">
-                <h3>AI Loan Advisor</h3>
+                <h3>{{ t('ai_loan_advisor') }}</h3>
                 <div id="advisor_text" class="advisor-text">—</div>
             </div>
 
             <!-- ========== TOP 3 PRODUCTS ========== -->
             <div id="product_list" class="product-list hidden">
-                <h3>Recommended Loan Products</h3>
+                <h3>{{ t('recommended_loan_products') }}</h3>
                 <div id="products_container"></div>
             </div>
 
