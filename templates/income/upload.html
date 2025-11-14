@@ -31,10 +31,10 @@
                             </label>
                             <select name="document_type" id="document_type" class="form-select bg-dark text-white" required
                                     style="border: 2px solid rgba(255,0,127,0.3);">
-                                <option value="salary_slip">{{ t('salary_slip__payslip') }}</option>
-                                <option value="tax_return">{{ t('income_tax_return_ea_form') }}</option>
-                                <option value="epf">{{ t('epf_statement') }}</option>
-                                <option value="bank_inflow">{{ t('bank_statement_income_focus') }}</option>
+                                <option value="{{ t('salary_slip_1') }}">{{ t('salary_slip__payslip') }}</option>
+                                <option value="{{ t('tax_return_1') }}">{{ t('income_tax_return_ea_form') }}</option>
+                                <option value="{{ t('epf') }}">{{ t('epf_statement') }}</option>
+                                <option value="{{ t('bank_inflow') }}">{{ t('bank_statement_income_focus') }}</option>
                             </select>
                             <small class="text-muted">
                                 Select the type of income proof document
@@ -67,7 +67,7 @@
                             </small>
                         </div>
                         
-                        <!-- OCR 提示 -->
+                        <!-- {{ t('ocr_') }} -->
                         <div class="alert" style="background: rgba(255,0,127,0.1); border: 2px solid rgba(255,0,127,0.3); color: #FF007F;">
                             <h6><i class="bi bi-magic"></i>{{ t('smart_ocr_features') }}</h6>
                             <ul class="mb-0" style="color: rgba(255,255,255,0.9);">
@@ -111,8 +111,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // 加载客户列表
-    fetch('/api/customers/list')
+    // {{ t('____fetch') }}('/api/customers/list')
         .then(response => response.json())
         .then(data => {
             const select = document.getElementById('customer_id');
@@ -127,12 +126,8 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error loading customers:', error);
         });
     
-    // 设置默认月份为当前月
-    const now = new Date();
-    const currentMonth = now.toISOString().slice(0, 7);
-    document.getElementById('document_month').value = currentMonth;
-    
-    // 处理表单提交
+    // {{ t('____const_now__new_date____const_currentmont') }}h = now.toISOString().slice(0, 7);
+    document.getElementById('document_month').{{ t('value__currentmonth_________') }}
     document.getElementById('incomeUploadForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -140,8 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const progressDiv = document.getElementById('uploadProgress');
         const resultDiv = document.getElementById('uploadResult');
         
-        // 显示进度条
-        progressDiv.style.display = 'block';
+        // {{ t('________progressdivstyledisplay') }} = 'block';
         resultDiv.style.display = 'none';
         
         try {
@@ -150,14 +144,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: formData
             });
             
-            const result = await response.json();
-            
-            // 隐藏进度条
+            {{ t('const_result__await_responsejson___________________1') }}   // 隐藏进度条
             progressDiv.style.display = 'none';
             
             if (response.ok && result.status === 'success') {
-                // 显示成功结果
-                resultDiv.innerHTML = `
+                // {{ t('________________resultdivinnerhtml') }} = `
                     <div class="alert alert-success">
                         <h5><i class="bi bi-check-circle"></i>{{ t('upload_successful') }}</h5>
                         <hr>
@@ -176,12 +167,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
                 resultDiv.style.display = 'block';
                 
-                // 重置表单
-                this.reset();
-                document.getElementById('document_month').value = currentMonth;
+                // {{ t('________________thisreset________________document') }}getElementById('document_month').value = currentMonth;
             } else {
-                // 显示错误
-                resultDiv.innerHTML = `
+                // {{ t('________________resultdivinnerhtml_1') }} = `
                     <div class="alert alert-danger">
                         <h5><i class="bi bi-exclamation-triangle"></i>{{ t('upload_failed') }}</h5>
                         <p>{{ t('resultdetail__resultmessage__unknown_error') }}</p>

@@ -25,7 +25,7 @@
     {% for bank_name, bank_data in bank_summaries.items() %}
     <div style="margin-bottom: 4rem; padding-bottom: 2rem; border-bottom: 3px solid rgba(255, 20, 147, 0.3);">
         
-        <!-- I. 客户摘要 (Client Summary) -->
+        <!-- {{ t('i_') }} (Client Summary) -->
         <div class="professional-card mb-4">
             <h2 class="section-title mb-4" style="color: #FF1493;">
                 I. {{ t('client_summary') }} - {{ bank_name }}
@@ -59,7 +59,7 @@
             </div>
         </div>
 
-        <!-- II. 银行账户总览 (Accounts Overview) -->
+        <!-- {{ t('ii_') }} (Accounts Overview) -->
         <div class="professional-card mb-4">
             <h2 class="section-title mb-4" style="color: #FF1493;">
                 II. {{ t('accounts_overview') }}
@@ -104,7 +104,7 @@
             </div>
         </div>
 
-        <!-- III. 各账户交易明细 (Transaction Details) -->
+        <!-- {{ t('iii_') }} (Transaction Details) -->
         <div class="professional-card mb-4">
             <h2 class="section-title mb-4" style="color: #FF1493;">
                 III. {{ t('transaction_details') }}
@@ -224,7 +224,7 @@
             {% endfor %}
         </div>
 
-        <!-- IV. 月度汇总 (Monthly Summary) - 该银行所有卡的总和 -->
+        <!-- {{ t('iv__monthly_summary__') }} -->
         <div class="professional-card mb-4">
             <h2 class="section-title mb-4" style="color: #FF1493;">
                 IV. {{ t('monthly_summary') }} - {{ bank_name }}
@@ -291,7 +291,7 @@
             </div>
         </div>
 
-        <!-- V. 对账验证 (Reconciliation Check) -->
+        <!-- {{ t('v_') }} (Reconciliation Check) -->
         <div class="professional-card mb-4">
             <h2 class="section-title mb-4" style="color: #FF1493;">
                 V. {{ t('reconciliation_check') }} - {{ bank_name }}

@@ -12,7 +12,7 @@
     <!-- ========================================================= -->
     <div class="marketplace-header">
         <h1 class="title">{{ t('loan_products_marketplace') }}</h1>
-        <p class="subtitle">{{ t('browse_products_desc').replace('{products}', '<span class="highlight">' + total_products|string + '</span>').replace('{banks}', '<span class="highlight">' + total_banks|string + '</span>')|safe }}</p>
+        <p class="subtitle">{{ t('browse_products_desc').replace('{products}', '<span class="highlight">{{ t('__total_productsstring__') }}</span>{{ t('replacebanks_') }}<span class="highlight">{{ t('__total_banksstring__') }}</span>{{ t('safe_') }}</p>
     </div>
 
     <!-- ========================================================= -->

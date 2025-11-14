@@ -11,7 +11,7 @@ Usage: Set timeline and coverage_percentage variables before including this temp
         </h5>
         {% if coverage_percentage is defined %}
         <div style="background: rgba(0,0,0,0.4); padding: 0.5rem 1rem; border-radius: 8px;">
-            <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">覆盖率：</span>
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">{{ t('auto_text_527') }}</span>
             <span style="color: #4CAF50; font-weight: 700; font-size: 1.1rem;">{{ coverage_percentage|round(1) }}%</span>
         </div>
         {% endif %}
@@ -75,15 +75,15 @@ Usage: Set timeline and coverage_percentage variables before including this temp
     <div class="timeline-legend mt-3" style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
         <div style="display: flex; align-items: center; gap: 0.5rem;">
             <i class="bi bi-check-circle-fill" style="color: #4CAF50;"></i>
-            <span style="color: rgba(255,255,255,0.7); font-size: 0.85rem;">已上传</span>
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.85rem;">{{ t('auto_text_529') }}</span>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
             <i class="bi bi-shield-check" style="color: #2196F3;"></i>
-            <span style="color: rgba(255,255,255,0.7); font-size: 0.85rem;">已验证</span>
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.85rem;">{{ t('auto_text_530') }}</span>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
             <i class="bi bi-dash-circle" style="color: rgba(255,255,255,0.3);"></i>
-            <span style="color: rgba(255,255,255,0.7); font-size: 0.85rem;">缺失（点击上传）</span>
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.85rem;">{{ t('auto_text_531') }}</span>
         </div>
     </div>
 </div>

@@ -15,8 +15,8 @@
                     <div class="mb-4">
                         <label class="form-label text-silver">{{ t('receipt_type') }}</label>
                         <select name="receipt_type" class="form-select bg-dark text-white" required>
-                            <option value="merchant_swipe">{{ t('merchant_swipe_receipt') }}</option>
-                            <option value="payment">{{ t('credit_card_payment') }}</option>
+                            <option value="{{ t('merchant_swipe') }}">{{ t('merchant_swipe_receipt') }}</option>
+                            <option value="{{ t('payment_1') }}">{{ t('credit_card_payment') }}</option>
                         </select>
                         <small class="form-text text-muted">
                             {{ t('receipt_type_help') }}

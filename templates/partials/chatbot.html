@@ -5,7 +5,7 @@
   <div id="chat-window" style="display:none;width:340px;height:460px;background:#111;border:1px solid #ff007f;border-radius:16px;padding:10px;color:#fff;">
     <div id="chat-log" style="height:360px;overflow-y:auto;font-size:14px;line-height:1.5;"></div>
     <div style="display:flex;gap:6px;margin-top:6px;">
-      <input id="chat-input" placeholder="请输入您的问题..." 
+      <input id="chat-input" placeholder="{{ t('auto_text_1055') }}" 
              style="flex:1;padding:8px;border-radius:10px;border:none;color:#fff;background:#222;">
       <button id="sys-analyze" 
               style="background:#ff007f;border:none;border-radius:10px;padding:8px 10px;color:#fff;">
@@ -22,13 +22,7 @@ const log=document.getElementById("chat-log");
 const input=document.getElementById("chat-input");
 const analyze=document.getElementById("sys-analyze");
 
-toggle.onclick=()=>win.style.display=(win.style.display==="none")?"block":"none";
-
-async function send(msg,endpoint){
- log.innerHTML+=`<div><b>您：</b>{{ t('msg') }}</div>`;
- const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:msg})});
- const d=await r.json();
- log.innerHTML+=`<div style='color:#ff007f;'><b>{{ t('ai_3') }}</b>{{ t('dreplydanalysisderror') }}</div>`;
+toggle.onclick=()=>{{ t('winstyledisplaywinstyledisplaynoneblocknoneasync_f') }}<div><b>{{ t('auto_text_1052') }}</b>{{ t('msg') }}</div>{{ t('_const_rawait_fetchendpointmethodpostheadersconten') }}<div style='color:#ff007f;'><b>{{ t('ai_3') }}</b>{{ t('dreplydanalysisderror') }}</div>`;
  log.scrollTop=log.scrollHeight;
 }
 

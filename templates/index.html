@@ -210,7 +210,7 @@
         {% endif %}
     </div>
 
-    <!-- AI预测分析区（AI V3 扩展 - 不修改现有AI日报预览区） -->
+    <!-- {{ t('aiai_v3___ai') }}） -->
     <section style="margin-top:40px; background:#1a1228; padding:20px; border-radius:16px; box-shadow:0 0 20px rgba(50,36,70,0.3); color:#fff; border:2px solid #322446;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
             <h3 style="color:#322446; font-weight:800; margin:0;">🔮 {{ t('ai_intelligent_prediction') }}</h3>
@@ -258,26 +258,20 @@
 <script src="{{ url_for('static', filename='js/ai_predict.js') }}"></script>
 
 <script>
-// AI预测模块全局加载函数
+// {{ t('ai_8') }}
 function loadAllPredictions() {
-    // 获取第一个客户ID（如果有）
-    const customerId = getFirstCustomerId();
-    if (!customerId) {
+    // {{ t('id____const_customerid__getfirstcustomerid') }}    if (!customerId) {
         alert(window.i18n.translate('please_add_customer_first'));
         return;
     }
     
-    // 初始化AI预测管理器
-    window.aiPredictManager.init(customerId);
-    window.aiPredictManager.loadHealthScore();
+    // {{ t('ai____windowaipredictmanagerinitcustomerid___') }} window.aiPredictManager.loadHealthScore();
     window.aiPredictManager.loadPrediction();
     window.aiPredictManager.loadTrends();
 }
 
-// 获取第一个客户ID（从页面中提取）
-function getFirstCustomerId() {
-    // 从客户卡片的URL中提取customer_id
-    const customerLink = document.querySelector('a[href*="customer_dashboard"]');
+// {{ t('idfunction_getfirstcustomerid') }}() {
+    // {{ t('urlcustomer_id____const_customerlink__documentqu') }}erySelector('a[href*="customer_dashboard"]');
     if (!customerLink) return null;
     
     const match = customerLink.href.match(/customer_id=(\d+)/);
@@ -348,7 +342,7 @@ function deleteCustomer(customerId, customerName) {
 }
 </script>
 
-<!-- AI日报预览区（V2企业智能版新增） -->
+<!-- {{ t('aiv2') }}） -->
 <section style="margin-top:40px; background:#1a1228; padding:20px; border-radius:16px; box-shadow:0 0 20px rgba(255,0,127,0.2); color:#fff; border:2px solid #ff007f;">
   <h3 style="color:#ff007f; font-weight:800; margin-bottom:16px;">📅 {{ t('ai_daily_report_preview') }}</h3>
   <p style="color:#ccc; margin-bottom:16px;">{{ t('report_summary_last_7_days') }}</p>
@@ -361,36 +355,24 @@ function deleteCustomer(customerId, customerName) {
 <script>
   async function loadAIDailyReports() {
     const box = document.getElementById('ai-daily-reports');
-    box.innerHTML = `<div style="text-align:center; color:#888;">⏳ ${window.i18n.translate('loading')}</div>`;
-    
-    try {
-      const res = await fetch('/api/ai-assistant/reports');
-      const data = await res.json();
-      
-      if (data.error) {
-        box.innerHTML = `<div style="color:#ff4444;">❌ ${data.error}</div>`;
-        return;
-      }
-      
-      if (!data.reports || data.reports.length === 0) {
-        box.innerHTML = `<div style="color:#888;">${window.i18n.translate('no_ai_reports')}</div>`;
+    box.innerHTML = `<div style="text-align:center; color:#888;">{{ t('_windowi18ntranslateloading') }}</div>{{ t('________try_______const_res__await_fetchapiaiassis') }}<div style="color:#ff4444;">{{ t('_dataerror') }}</div>{{ t('________return__________________if_datareports__da') }}<div style="color:#888;">{{ t('windowi18ntranslateno_ai_reports') }}</div>`;
         return;
       }
       
       box.innerHTML = data.reports.map(r => `
         <div style="margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
-          <div style="color:#ff007f; font-weight:700; margin-bottom:4px;">📅 ${r.date}</div>
-          <div style="color:#ddd;">${r.summary}</div>
+          <div style="color:#ff007f; font-weight:700; margin-bottom:4px;">{{ t('_rdate') }}</div>
+          <div style="color:#ddd;">{{ t('rsummary') }}</div>
         </div>
       `).join('');
     } catch (error) {
-      box.innerHTML = `<div style="color:#ff4444;">❌ ${window.i18n.translate('loading_failed')}: ${error.message}</div>`;
+      box.innerHTML = `<div style="color:#ff4444;">{{ t('_windowi18ntranslateloading_failed_errormessage') }}</div>`;
     }
   }
   
   document.getElementById('refresh-ai-reports').onclick = loadAIDailyReports;
   
-  // 页面加载时自动加载日报
-  document.addEventListener('DOMContentLoaded', loadAIDailyReports);
+  // 等待i18n初始化完成后再加载日报
+  window.addEventListener('i18nReady', loadAIDailyReports);
 </script>
 {% endblock %}

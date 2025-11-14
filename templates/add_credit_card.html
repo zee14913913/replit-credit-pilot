@@ -6,7 +6,7 @@
 <div class="fade-in">
     <!-- 页面标题 -->
     <div class="section-header">
-        <h1 class="section-title">💳 添加新信用卡</h1>
+        <h1 class="section-title">{{ t('__1') }}</h1>
         <p class="section-subtitle">为 {{ customer.name }} 添加信用卡账户</p>
     </div>
 
@@ -31,33 +31,33 @@
                             required
                             style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;">
                             <option value="">{{ t('___select_bank_') }}</option>
-                            <optgroup label="本地商业银行 / Local Commercial Banks">
+                            <optgroup label="{{ t('__local_commercial_banks') }}">
                                 <option value="Maybank">{{ t('maybank_') }}</option>
-                                <option value="Maybank Islamic">{{ t('maybank_islamic_') }}</option>
+                                <option value="{{ t('maybank_islamic') }}">{{ t('maybank_islamic_') }}</option>
                                 <option value="CIMB">{{ t('cimb_bank_') }}</option>
-                                <option value="CIMB Islamic">{{ t('cimb_islamic_bank_') }}</option>
+                                <option value="{{ t('cimb_islamic') }}">{{ t('cimb_islamic_bank_') }}</option>
                                 <option value="Public Bank">{{ t('public_bank_') }}</option>
-                                <option value="RHB Bank">{{ t('rhb_bank_') }}</option>
+                                <option value="{{ t('rhb_bank') }}">{{ t('rhb_bank_') }}</option>
                                 <option value="Hong Leong Bank">{{ t('hong_leong_bank_') }}</option>
-                                <option value="AmBank">{{ t('ambank_') }}</option>
-                                <option value="AmBank Islamic">{{ t('ambank_islamic_') }}</option>
-                                <option value="Alliance Bank">{{ t('alliance_bank_') }}</option>
-                                <option value="Affin Bank">{{ t('affin_bank_') }}</option>
+                                <option value="{{ t('ambank') }}">{{ t('ambank_') }}</option>
+                                <option value="{{ t('ambank_islamic') }}">{{ t('ambank_islamic_') }}</option>
+                                <option value="{{ t('alliance_bank') }}">{{ t('alliance_bank_') }}</option>
+                                <option value="{{ t('affin_bank') }}">{{ t('affin_bank_') }}</option>
                             </optgroup>
-                            <optgroup label="外资银行 / Foreign Banks">
-                                <option value="HSBC">{{ t('hsbc_') }}</option>
-                                <option value="Standard Chartered">{{ t('standard_chartered_') }}</option>
-                                <option value="Citibank">{{ t('citibank_') }}</option>
+                            <optgroup label="{{ t('__foreign_banks') }}">
+                                <option value="{{ t('hsbc') }}">{{ t('hsbc_') }}</option>
+                                <option value="{{ t('standard_chartered') }}">{{ t('standard_chartered_') }}</option>
+                                <option value="{{ t('citibank') }}">{{ t('citibank_') }}</option>
                                 <option value="OCBC">{{ t('ocbc_bank_') }}</option>
                                 <option value="UOB">{{ t('uob_') }}</option>
                             </optgroup>
-                            <optgroup label="伊斯兰银行 / Islamic Banks">
-                                <option value="Bank Islam">{{ t('bank_islam_') }}</option>
-                                <option value="Bank Rakyat">{{ t('bank_rakyat_') }}</option>
-                                <option value="Bank Muamalat">{{ t('bank_muamalat_') }}</option>
+                            <optgroup label="{{ t('__islamic_banks') }}">
+                                <option value="{{ t('bank_islam') }}">{{ t('bank_islam_') }}</option>
+                                <option value="{{ t('bank_rakyat') }}">{{ t('bank_rakyat_') }}</option>
+                                <option value="{{ t('bank_muamalat') }}">{{ t('bank_muamalat_') }}</option>
                             </optgroup>
                         </select>
-                        <small style="color: rgba(255,255,255,0.7);">支持马来西亚15家主要银行</small>
+                        <small style="color: rgba(255,255,255,0.7);">{{ t('15') }}</small>
                     </div>
 
                     <!-- 卡号后四位 -->
@@ -73,9 +73,9 @@
                             required
                             maxlength="4"
                             pattern="[0-9]{4}"
-                            placeholder="例如: 1234"
+                            placeholder="{{ t('_1234') }}"
                             style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;">
-                        <small style="color: rgba(255,255,255,0.7);">仅输入信用卡号码的最后4位数字</small>
+                        <small style="color: rgba(255,255,255,0.7);">{{ t('4') }}</small>
                     </div>
 
                     <!-- 信用额度 -->
@@ -91,9 +91,9 @@
                             required
                             min="0"
                             step="0.01"
-                            placeholder="例如: 10000.00"
+                            placeholder="{{ t('_1000000') }}"
                             style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;">
-                        <small style="color: rgba(255,255,255,0.7);">您的信用卡最高可用额度</small>
+                        <small style="color: rgba(255,255,255,0.7);">{{ t('auto_text_180') }}</small>
                     </div>
 
                     <!-- 还款日 -->
@@ -112,14 +112,14 @@
                             <option value="{{ day }}">{{ day }} 号</option>
                             {% endfor %}
                         </select>
-                        <small style="color: rgba(255,255,255,0.7);">每月需要还款的日期（例如：每月15号）</small>
+                        <small style="color: rgba(255,255,255,0.7);">{{ t('15_1') }}</small>
                     </div>
 
                     <!-- 提示信息 -->
                     <div class="alert-professional alert-info-pro mb-4">
-                        <i class="bi bi-info-circle"></i> <strong>温馨提示</strong><br>
+                        <i class="bi bi-info-circle"></i> <strong>{{ t('auto_text_182') }}</strong><br>
                         • 添加信用卡后，您可以上传该卡的账单进行分析<br>
-                        • 系统支持PDF和Excel格式的账单文件<br>
+                        • {{ t('pdfexcel') }}格式的账单文件<br>
                         • 所有信息将被安全加密保存
                     </div>
 
@@ -150,7 +150,7 @@
                                 {{ card.bank_name }}
                             </div>
                             <div style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">
-                                ****{{ card.card_number_last4 }} | 额度: RM {{ "{:,.0f}".format(card.credit_limit) }}
+                                ****{{ card.card_number_last4 }} | {{ t('_rm_2') }} {{ "{:,.0f}".format(card.credit_limit) }}
                             </div>
                         </div>
                     </div>

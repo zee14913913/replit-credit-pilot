@@ -115,7 +115,7 @@
                                 <label class="form-label text-silver-pearl">
                                     <i class="bi bi-cash-stack me-2"></i>Monthly Income (RM)
                                 </label>
-                                <input type="number" name="income" class="form-control galaxy-input" step="0.01" min="0" placeholder="Optional - auto-fetched">
+                                <input type="number" name="income" class="form-control galaxy-input" step="0.01" min="0" placeholder="{{ t('optional__autofetched') }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
@@ -151,15 +151,15 @@
                                 <label class="form-label text-silver-pearl">
                                     <i class="bi bi-bank2 me-2"></i>Target Bank (Optional)
                                 </label>
-                                <input type="text" name="target_bank" class="form-control galaxy-input" placeholder="e.g., Maybank">
+                                <input type="text" name="target_bank" class="form-control galaxy-input" placeholder="{{ t('eg_maybank') }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
                                     <i class="bi bi-file-earmark me-2"></i>{{ t('report_format') }}<span class="text-danger">*</span>
                                 </label>
                                 <select name="format" class="form-select galaxy-input" required>
-                                    <option value="html">{{ t('html_view_in_browser') }}</option>
-                                    <option value="pdf">{{ t('pdf_download') }}</option>
+                                    <option value="{{ t('html') }}">{{ t('html_view_in_browser') }}</option>
+                                    <option value="{{ t('pdf_4') }}">{{ t('pdf_download') }}</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -167,8 +167,8 @@
                                     <i class="bi bi-cpu me-2"></i>Data Mode
                                 </label>
                                 <select name="data_mode" class="form-select galaxy-input">
-                                    <option value="manual">{{ t('manual_input') }}</option>
-                                    <option value="auto">{{ t('auto_enrichment') }}</option>
+                                    <option value="{{ t('manual') }}">{{ t('manual_input') }}</option>
+                                    <option value="{{ t('auto') }}">{{ t('auto_enrichment') }}</option>
                                 </select>
                             </div>
                             <div class="col-12 text-center pt-4">
@@ -216,7 +216,7 @@
                                 <label class="form-label text-silver-pearl">
                                     <i class="bi bi-diagram-3 me-2"></i>Industry
                                 </label>
-                                <input type="text" name="industry" class="form-control galaxy-input" placeholder="e.g., Technology">
+                                <input type="text" name="industry" class="form-control galaxy-input" placeholder="{{ t('eg_technology') }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
@@ -240,15 +240,15 @@
                                 <label class="form-label text-silver-pearl">
                                     <i class="bi bi-bank2 me-2"></i>Target Bank (Optional)
                                 </label>
-                                <input type="text" name="target_bank" class="form-control galaxy-input" placeholder="e.g., SME Bank">
+                                <input type="text" name="target_bank" class="form-control galaxy-input" placeholder="{{ t('eg_sme_bank') }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
                                     <i class="bi bi-file-earmark me-2"></i>{{ t('report_format') }}<span class="text-danger">*</span>
                                 </label>
                                 <select name="format" class="form-select galaxy-input" required>
-                                    <option value="html">{{ t('html_view_in_browser') }}</option>
-                                    <option value="pdf">{{ t('pdf_download') }}</option>
+                                    <option value="{{ t('html') }}">{{ t('html_view_in_browser') }}</option>
+                                    <option value="{{ t('pdf_4') }}">{{ t('pdf_download') }}</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -256,8 +256,8 @@
                                     <i class="bi bi-cpu me-2"></i>Data Mode
                                 </label>
                                 <select name="data_mode" class="form-select galaxy-input">
-                                    <option value="manual">{{ t('manual_input') }}</option>
-                                    <option value="auto">{{ t('auto_enrichment') }}</option>
+                                    <option value="{{ t('manual') }}">{{ t('manual_input') }}</option>
+                                    <option value="{{ t('auto') }}">{{ t('auto_enrichment') }}</option>
                                 </select>
                             </div>
                             <div class="col-12 text-center pt-4">

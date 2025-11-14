@@ -168,7 +168,7 @@
         </div>
     </div>
 
-    <!-- Quick Actions - 专业管理模块 -->
+    <!-- {{ t('quick_actions__') }} -->
     <div class="row g-5 mb-5 justify-content-center">
         <div class="col-12 mb-4">
             <h3 style="color: #FF007F; text-shadow: 0 0 15px rgba(255,0,127,0.5); font-weight: 700; font-size: 2rem; margin: 0;">
@@ -276,7 +276,7 @@
             </a>
         </div>
 
-        <!-- 4. Supplier Invoices 管理 -->
+        <!-- 4. {{ t('supplier_invoices_') }} -->
         <div class="col-md-6 col-lg-4 col-xl-2">
             <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
                 <div class="quick-action-card" style="
@@ -917,11 +917,7 @@ class SimpleDataTable {
         }
 
         for (let i = startPage; i <= endPage; i++) {
-            html += `<button class="${i === this.currentPage ? 'active' : ''}" onclick="window.${this.table.id}_dt.displayPage(${i})">{{ t('i') }}</button>`;
-        }
-        
-        // Next button
-        html += `<button ${this.currentPage === totalPages ? 'disabled' : ''} onclick="window.${this.table.id}_dt.displayPage(${this.currentPage + 1})">{{ t('next_') }}</button>`;
+            html += `<button class="${i === this.currentPage ? 'active' : ''}" onclick="window.${this.table.id}_dt.displayPage(${i})">{{ t('i') }}</button>{{ t('_________________________next_button________html__') }}<button ${this.currentPage === totalPages ? 'disabled' : ''} onclick="window.${this.table.id}_dt.displayPage(${this.currentPage + 1})">{{ t('next_') }}</button>`;
         
         paginationDiv.innerHTML = html;
     }
@@ -1007,13 +1003,13 @@ function testEditFunction() {
             input.focus();
             
             resultDiv.innerHTML = `
-                ✅ <strong>测试成功！</strong><br>
+                ✅ <strong>{{ t('auto_text_218') }}</strong><br>
                 - 对话框已弹出<br>
                 - 输入框已填充测试数据<br>
                 - 输入框已聚焦<br>
                 <br>
-                <strong style="color: #FF007F;">👉 请尝试在输入框中输入数字！</strong><br>
-                <small>如果还是无法输入，请告诉我您看到了什么。</small>
+                <strong style="color: #FF007F;">{{ t('__8') }}</strong><br>
+                <small>{{ t('auto_text_223') }}</small>
             `;
         }, 500);
         
@@ -1072,7 +1068,7 @@ function openEditModal(stmtId, customerName, bank, month, prevBal, ownerBal, gzB
                 if (debugDiv) {
                     debugDiv.style.display = 'block';
                     debugDiv.innerHTML = `✅ Modal opened! Input focused. Value: ${firstInput.value}<br>
-                                          请尝试输入数字。如果不能输入，请按F12打开浏览器控制台查看错误。`;
+                                          {{ t('f') }}12打开浏览器控制台查看错误。`;
                 }
             }
         }, 300);
@@ -1174,7 +1170,7 @@ function saveRowEdit(stmtId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('✅ 保存成功！页面将刷新。\n✅ Saved successfully! Page will refresh.');
+            alert('✅ {{ t('n_saved_successfully_page_will_refresh') }}.');
             location.reload();
         } else {
             alert('❌ 保存失败：' + data.message + '\n❌ Save failed: ' + data.message);
@@ -1182,7 +1178,7 @@ function saveRowEdit(stmtId) {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('❌ 更新失败，请稍后重试。\n❌ Update failed, please try again later.');
+        alert('❌ {{ t('n_update_failed_please_try_again_later') }}.');
     });
 }
 </script>
@@ -1193,16 +1189,16 @@ function saveRowEdit(stmtId) {
         <div class="modal-content" style="background: #1a1a1a; border: 2px solid #FF007F;">
             <div class="modal-header" style="border-bottom: 2px solid #FF007F;">
                 <h5 class="modal-title" style="color: #FF007F; font-weight: 700;">
-                    <i class="bi bi-pencil-square"></i> 编辑月度账单 / Edit Monthly Statement
+                    <i class="bi bi-pencil-square"></i> {{ t('__edit_monthly_statement') }}
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" style="color: #FFFEF0;">
                 <div class="alert alert-info" style="background: rgba(255,0,127,0.15); border: 1px solid #FF007F; color: #FFFFFF;">
-                    <strong>📝 提示：</strong> 点击白色输入框即可修改数值。所有输入框都是白色背景，黑色文字。
+                    <strong>{{ t('__9') }}</strong> 点击白色输入框即可修改数值。所有输入框都是白色背景，黑色文字。
                 </div>
                 <div id="edit_debug_info" style="background: rgba(255,255,0,0.1); padding: 10px; margin-bottom: 10px; color: yellow; font-size: 12px; display: none;">
-                    Debug: 等待测试...
+                    {{ t('debug__1') }}...
                 </div>
                 <form id="editStatementForm">
                     <input type="hidden" id="edit_statement_id" name="statement_id">
@@ -1229,7 +1225,7 @@ function saveRowEdit(stmtId) {
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label" style="color: #FFFEF0; font-weight: 600;">
-                                <i class="bi bi-arrow-left-circle"></i> Previous Balance / 前期余额
+                                <i class="bi bi-arrow-left-circle"></i> {{ t('previous_balance__') }}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text" style="background: #322446; color: #FFFEF0; border-color: #FF007F;">{{ t('rm') }}</span>
@@ -1244,13 +1240,13 @@ function saveRowEdit(stmtId) {
                                               padding: 10px !important;
                                               pointer-events: auto !important;
                                               user-select: text !important;" 
-                                       placeholder="输入数字 / Enter number">
+                                       placeholder="{{ t('__enter_number') }}">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label" style="color: #FFFEF0; font-weight: 600;">
-                                <i class="bi bi-check-circle"></i> Closing Balance / 期末余额
+                                <i class="bi bi-check-circle"></i> {{ t('closing_balance__') }}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text" style="background: #322446; color: #FFFEF0; border-color: #FF007F;">{{ t('rm') }}</span>
@@ -1265,7 +1261,7 @@ function saveRowEdit(stmtId) {
                                               padding: 10px !important;
                                               pointer-events: auto !important;
                                               user-select: text !important;" 
-                                       placeholder="输入数字 / Enter number">
+                                       placeholder="{{ t('__enter_number') }}">
                             </div>
                         </div>
 
@@ -1273,7 +1269,7 @@ function saveRowEdit(stmtId) {
 
                         <div class="col-md-6">
                             <label class="form-label" style="color: #FF007F; font-weight: 600;">
-                                💳 OWNER Expenses / OWNER消费
+                                💳 {{ t('owner_expenses__owner') }}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text" style="background: #322446; color: #FF007F; border-color: #FF007F;">{{ t('rm') }}</span>
@@ -1288,13 +1284,13 @@ function saveRowEdit(stmtId) {
                                               padding: 10px !important;
                                               pointer-events: auto !important;
                                               user-select: text !important;" 
-                                       placeholder="输入数字 / Enter number">
+                                       placeholder="{{ t('__enter_number') }}">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label" style="color: #FF007F; font-weight: 600;">
-                                💰 OWNER Payments / OWNER还款
+                                💰 {{ t('owner_payments__owner') }}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text" style="background: #322446; color: #FF007F; border-color: #FF007F;">{{ t('rm') }}</span>
@@ -1309,13 +1305,13 @@ function saveRowEdit(stmtId) {
                                               padding: 10px !important;
                                               pointer-events: auto !important;
                                               user-select: text !important;" 
-                                       placeholder="输入数字 / Enter number">
+                                       placeholder="{{ t('__enter_number') }}">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label" style="color: #FFFEF0; font-weight: 600;">
-                                🏢 INFINITE Expenses / INFINITE消费
+                                🏢 {{ t('infinite_expenses__infinite') }}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text" style="background: #322446; color: #FFFFFF; border-color: #322446;">{{ t('rm') }}</span>
@@ -1330,13 +1326,13 @@ function saveRowEdit(stmtId) {
                                               padding: 10px !important;
                                               pointer-events: auto !important;
                                               user-select: text !important;" 
-                                       placeholder="输入数字 / Enter number">
+                                       placeholder="{{ t('__enter_number') }}">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label" style="color: #FFFEF0; font-weight: 600;">
-                                💵 INFINITE Payments / INFINITE还款
+                                💵 {{ t('infinite_payments__infinite') }}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text" style="background: #322446; color: #FFFFFF; border-color: #322446;">{{ t('rm') }}</span>
@@ -1351,7 +1347,7 @@ function saveRowEdit(stmtId) {
                                               padding: 10px !important;
                                               pointer-events: auto !important;
                                               user-select: text !important;" 
-                                       placeholder="输入数字 / Enter number">
+                                       placeholder="{{ t('__enter_number') }}">
                             </div>
                         </div>
 
@@ -1359,7 +1355,7 @@ function saveRowEdit(stmtId) {
 
                         <div class="col-md-6">
                             <label class="form-label" style="color: #FF007F; font-weight: 600;">
-                                📊 OWNER Balance / OWNER余额
+                                📊 {{ t('owner_balance__owner') }}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text" style="background: #322446; color: #FF007F; border-color: #FF007F;">{{ t('rm') }}</span>
@@ -1374,13 +1370,13 @@ function saveRowEdit(stmtId) {
                                               padding: 10px !important;
                                               pointer-events: auto !important;
                                               user-select: text !important;" 
-                                       placeholder="输入数字 / Enter number">
+                                       placeholder="{{ t('__enter_number') }}">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label" style="color: #FFFEF0; font-weight: 600;">
-                                📈 INFINITE Balance / INFINITE余额
+                                📈 {{ t('infinite_balance__infinite') }}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text" style="background: #322446; color: #FFFFFF; border-color: #322446;">{{ t('rm') }}</span>
@@ -1395,7 +1391,7 @@ function saveRowEdit(stmtId) {
                                               padding: 10px !important;
                                               pointer-events: auto !important;
                                               user-select: text !important;" 
-                                       placeholder="输入数字 / Enter number">
+                                       placeholder="{{ t('__enter_number') }}">
                             </div>
                         </div>
                     </div>
@@ -1403,10 +1399,10 @@ function saveRowEdit(stmtId) {
             </div>
             <div class="modal-footer" style="border-top: 2px solid #FF007F;">
                 <button type="button" class="btn" style="background: #322446; color: #FFFEF0; border: 1px solid #999;" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle"></i> 取消 / Cancel
+                    <i class="bi bi-x-circle"></i> {{ t('__cancel') }}
                 </button>
                 <button type="button" class="btn" style="background: linear-gradient(135deg, #FF007F 0%, #c9005f 100%); color: #FFFFFF; border: none;" onclick="saveStatementEdit()">
-                    <i class="bi bi-save"></i> 保存 / Save Changes
+                    <i class="bi bi-save"></i> {{ t('__save_changes') }}
                 </button>
             </div>
         </div>

@@ -26,14 +26,14 @@ class AIPredictManager {
         const scoreBox = document.getElementById('ai-health-score');
         if (!scoreBox) return;
 
-        const loadingText = window.i18n ? window.i18n.translate('loading_text') : '⏳ 加载中...';
+        const loadingText = window.i18n ? window.i18n.translate('loading') : '加载中...';
         scoreBox.innerHTML = `<div style="text-align:center; color:#888;">${loadingText}</div>`;
 
         try {
             const res = await fetch(`/api/ai-assistant/health-score/${this.customerId}`);
             const data = await res.json();
 
-            const noDataText = window.i18n ? window.i18n.translate('no_data') : '无数据';
+            const noDataText = window.i18n ? window.i18n.translate('no_data') : '暂无数据';
             if (data.error || !data.score) {
                 scoreBox.innerHTML = `<div style="color:#ff4444;">❌ ${data.error || noDataText}</div>`;
                 return;
@@ -43,8 +43,8 @@ class AIPredictManager {
             const explanation = data.ai_explanation;
 
             // Translatable text
-            const scoreBreakdownText = window.i18n ? window.i18n.translate('score_breakdown') : '评分细分';
-            const aiAdvisorText = window.i18n ? window.i18n.translate('ai_advisor_recommendation') : 'AI 顾问建议';
+            const scoreBreakdownText = window.i18n ? window.i18n.translate('score_breakdown') : '分数明细';
+            const aiAdvisorText = window.i18n ? window.i18n.translate('ai_advisor_recommendation') : 'AI顾问建议';
 
             // 评分颜色
             let scoreColor = '#FF007F'; // Hot Pink
@@ -236,7 +236,7 @@ class AIPredictManager {
                 </div>
                 
                 <div style="background:#1a1228; padding:14px; border-radius:8px; border-left:4px solid #FF007F;">
-                    <div style="color:#FF007F; font-weight:700; margin-bottom:8px;">🤖 AI 洞察建议</div>
+                    <div style="color:#FF007F; font-weight:700; margin-bottom:8px;">🤖 AI洞察</div>
                     <div style="color:#ddd; line-height:1.6;">${insights}</div>
                 </div>
             `;

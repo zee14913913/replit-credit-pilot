@@ -18,7 +18,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <div style="background-color: #000000; border: 1px solid #322446; border-radius: 8px; padding: 25px;">
-                <h4 style="color: #FF007F; margin-bottom: 20px;">📋 账单信息</h4>
+                <h4 style="color: #FF007F; margin-bottom: 20px;">{{ t('__34') }}</h4>
                 
                 <div class="row">
                     <div class="col-md-3 mb-3">
@@ -26,31 +26,31 @@
                         <div style="color: #FFFEF0; font-size: 16px; font-weight: bold;">{{ statement.id }}</div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div style="color: #FFFEF0; opacity: 0.7; font-size: 12px;">客户名称</div>
+                        <div style="color: #FFFEF0; opacity: 0.7; font-size: 12px;">{{ t('auto_text_1121') }}</div>
                         <div style="color: #FFFEF0; font-size: 16px; font-weight: bold;">{{ statement.customer_name }}</div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div style="color: #FFFEF0; opacity: 0.7; font-size: 12px;">银行账户</div>
+                        <div style="color: #FFFEF0; opacity: 0.7; font-size: 12px;">{{ t('auto_text_1122') }}</div>
                         <div style="color: #FFFEF0; font-size: 16px; font-weight: bold;">{{ statement.bank_name }} ****{{ statement.account_number_last4 }}</div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div style="color: #FFFEF0; opacity: 0.7; font-size: 12px;">账单日期</div>
+                        <div style="color: #FFFEF0; opacity: 0.7; font-size: 12px;">{{ t('auto_text_933') }}</div>
                         <div style="color: #FFFEF0; font-size: 16px; font-weight: bold;">{{ statement.statement_date }}</div>
                     </div>
                 </div>
 
                 <div class="row mt-3">
                     <div class="col-md-3 mb-3">
-                        <div style="color: #FFFEF0; opacity: 0.7; font-size: 12px;">交易总数</div>
+                        <div style="color: #FFFEF0; opacity: 0.7; font-size: 12px;">{{ t('auto_text_1123') }}</div>
                         <div style="color: #FF007F; font-size: 18px; font-weight: bold;">{{ statement.total_transactions }} 笔</div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div style="color: #FFFEF0; opacity: 0.7; font-size: 12px;">验证状态</div>
+                        <div style="color: #FFFEF0; opacity: 0.7; font-size: 12px;">{{ t('auto_text_1124') }}</div>
                         <div>
                             {% if statement.verification_status == 'verified' %}
-                                <span style="color: #FF007F; font-size: 16px; font-weight: bold;">✅ 已验证</span>
+                                <span style="color: #FF007F; font-size: 16px; font-weight: bold;">{{ t('__35') }}</span>
                             {% else %}
-                                <span style="color: #FF007F; font-size: 16px; font-weight: bold;">⏳ 待验证</span>
+                                <span style="color: #FF007F; font-size: 16px; font-weight: bold;">{{ t('__36') }}</span>
                             {% endif %}
                         </div>
                     </div>
@@ -67,44 +67,44 @@
     <div class="row mb-4">
         <div class="col-12">
             <div style="background-color: #000000; border: 2px solid #FF007F; border-radius: 8px; padding: 25px;">
-                <h4 style="color: #FF007F; margin-bottom: 20px;">📝 双重验证步骤（必须完成）</h4>
+                <h4 style="color: #FF007F; margin-bottom: 20px;">{{ t('__37') }}</h4>
                 
                 <div style="color: #FFFEF0; line-height: 1.8;">
                     <p style="margin-bottom: 15px; font-size: 14px; color: #FF007F; font-weight: bold;">
-                        ⚠️ 核心要求：每条交易的序号、日期、描述、金额、类型、余额都必须与PDF原件100%一致，一字不差！
+                        ⚠️ {{ t('pdf_6') }}原件100%一致，一字不差！
                     </p>
                     
                     <div style="margin-bottom: 20px;">
-                        <div style="color: #FF007F; font-weight: bold; margin-bottom: 10px;">第一遍验证：</div>
+                        <div style="color: #FF007F; font-weight: bold; margin-bottom: 10px;">{{ t('auto_text_1129') }}</div>
                         <ol style="margin-left: 20px;">
                             <li>{{ t('pdf_1') }}<code style="color: #322446; background-color: #FFFEF0; padding: 2px 6px; border-radius: 3px;">static/uploads/{{ statement.file_path }}</code></li>
                             <li>从第1笔交易开始，逐行对比下方表格：
                                 <ul style="margin-left: 20px; margin-top: 5px;">
-                                    <li>序号是否一致</li>
-                                    <li>交易日期是否一致</li>
-                                    <li>描述内容是否一致（100%准确，一字不差）</li>
-                                    <li>金额是否一致</li>
+                                    <li>{{ t('auto_text_1131') }}</li>
+                                    <li>{{ t('auto_text_1132') }}</li>
+                                    <li>{{ t('100') }}</li>
+                                    <li>{{ t('auto_text_1134') }}</li>
                                     <li>{{ t('crdr_1') }}</li>
-                                    <li>余额是否一致</li>
+                                    <li>{{ t('auto_text_1135') }}</li>
                                 </ul>
                             </li>
-                            <li>在纸上记录：<strong style="color: #FF007F;">第1遍验证通过 ✓</strong></li>
+                            <li>{{ t('auto_text_1136') }}<strong style="color: #FF007F;">{{ t('1__1') }}</strong></li>
                         </ol>
                     </div>
 
                     <div style="margin-bottom: 20px;">
-                        <div style="color: #FF007F; font-weight: bold; margin-bottom: 10px;">第二遍验证：</div>
+                        <div style="color: #FF007F; font-weight: bold; margin-bottom: 10px;">{{ t('auto_text_1138') }}</div>
                         <ol style="margin-left: 20px;">
-                            <li>休息5分钟，让眼睛放松</li>
-                            <li>再次从第1笔交易开始，重新逐行对比一遍</li>
-                            <li>特别注意描述是否有遗漏、多字、错字</li>
-                            <li>在纸上记录：<strong style="color: #FF007F;">第2遍验证通过 ✓</strong></li>
+                            <li>{{ t('5') }}</li>
+                            <li>{{ t('1_4') }}</li>
+                            <li>{{ t('auto_text_1141') }}</li>
+                            <li>{{ t('auto_text_1136') }}<strong style="color: #FF007F;">{{ t('2__1') }}</strong></li>
                         </ol>
                     </div>
 
                     <div>
-                        <div style="color: #FF007F; font-weight: bold; margin-bottom: 10px;">标记为已验证：</div>
-                        <p style="margin-left: 20px;">确认两遍验证都通过后，点击下方"确认验证完成"按钮。</p>
+                        <div style="color: #FF007F; font-weight: bold; margin-bottom: 10px;">{{ t('auto_text_1143') }}</div>
+                        <p style="margin-left: 20px;">{{ t('auto_text_1144') }}</p>
                     </div>
                 </div>
             </div>
@@ -121,10 +121,10 @@
                     <table class="table table-dark table-hover" style="margin-bottom: 0;">
                         <thead>
                             <tr style="background-color: #322446; border-bottom: 2px solid #FF007F;">
-                                <th style="color: #FFFEF0; text-align: center; width: 50px;">序号</th>
-                                <th style="color: #FFFEF0; text-align: left; width: 120px;">交易日期</th>
+                                <th style="color: #FFFEF0; text-align: center; width: 50px;">{{ t('auto_text_513') }}</th>
+                                <th style="color: #FFFEF0; text-align: left; width: 120px;">{{ t('auto_text_514') }}</th>
                                 <th style="color: #FFFEF0; text-align: left;">{{ t('description_1') }}</th>
-                                <th style="color: #FFFEF0; text-align: center; width: 60px;">类型</th>
+                                <th style="color: #FFFEF0; text-align: center; width: 60px;">{{ t('auto_text_1145') }}</th>
                                 <th style="color: #FFFEF0; text-align: right; width: 130px;">{{ t('amount_1') }}</th>
                                 <th style="color: #FFFEF0; text-align: right; width: 150px;">{{ t('balance_1') }}</th>
                             </tr>
@@ -167,7 +167,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <div style="background-color: #000000; border: 2px solid #FF007F; border-radius: 8px; padding: 25px;">
-                <h4 style="color: #FF007F; margin-bottom: 20px;">💰 财务汇总</h4>
+                <h4 style="color: #FF007F; margin-bottom: 20px;">{{ t('__38') }}</h4>
                 
                 <div class="row">
                     <div class="col-md-4 mb-3">
@@ -218,7 +218,7 @@
 
 <script>
 function confirmVerification() {
-    return confirm('⚠️ 确认已完成双重人工验证？\n\n请确保：\n✓ 第一遍验证通过\n✓ 第二遍验证通过\n✓ 所有交易记录与PDF原件100%一致\n\n点击"确定"标记为已验证。');
+    return confirm('⚠️ {{ t('nnn_n_n_pdf10') }}0%一致\n\n点击"确定"标记为已验证。');
 }
 </script>
 

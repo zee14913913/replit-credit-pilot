@@ -19,7 +19,7 @@
                 <div>
                     <a href="{{ url_for('download_yearly_summary_pdf', customer_id=monthly_data[0].customer_id, year=year) }}" 
                        class="btn me-2" style="background: linear-gradient(135deg, #FF007F 0%, #C1006C 100%); color: white; border: none;">
-                        <i class="bi bi-file-pdf"></i> 导出PDF
+                        <i class="bi bi-file-pdf"></i> {{ t('pdf_5') }}
                     </a>
                     <a href="{{ url_for('monthly_summary_index') }}" class="btn btn-outline-light">
                         <i class="bi bi-arrow-left"></i> 返回
@@ -35,7 +35,7 @@
             <div style="background: linear-gradient(135deg, rgba(255,0,127,0.3) 0%, rgba(193,0,108,0.3) 100%); 
                         border: 2px solid #FF007F; border-radius: 12px; padding: 20px;">
                 <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 10px;">
-                    <i class="bi bi-cart3"></i> 年度Supplier消费
+                    <i class="bi bi-cart3"></i> {{ t('supplier_8') }}消费
                 </div>
                 <div style="color: #FFFFFF; font-size: 2rem; font-weight: bold;">
                     RM {{ "{:,.2f}".format(year_total.total_supplier_spending) }}
@@ -79,11 +79,11 @@
                 </div>
                 <div style="font-size: 0.8rem; margin-top: 5px;">
                     {% if year_total.net_balance > 0 %}
-                        <span style="color: #FF007F;">⚠️ 客户需补款</span>
+                        <span style="color: #FF007F;">{{ t('__16') }}</span>
                     {% elif year_total.net_balance < 0 %}
-                        <span style="color: #00FF7F;">💰 我们需退款</span>
+                        <span style="color: #00FF7F;">{{ t('__17') }}</span>
                     {% else %}
-                        <span style="color: #FFFFFF;">✅ 已结清</span>
+                        <span style="color: #FFFFFF;">{{ t('__18') }}</span>
                     {% endif %}
                 </div>
             </div>
@@ -102,13 +102,13 @@
                     <table class="table table-hover" style="color: #FFFFFF;">
                         <thead style="background: rgba(255,0,127,0.1);">
                             <tr>
-                                <th style="border-color: #322446; color: #FF007F;">月份</th>
-                                <th style="border-color: #322446; color: #FF007F;" class="text-center">信用卡数</th>
+                                <th style="border-color: #322446; color: #FF007F;">{{ t('auto_text_906') }}</th>
+                                <th style="border-color: #322446; color: #FF007F;" class="text-center">{{ t('auto_text_956') }}</th>
                                 <th style="border-color: #322446; color: #FF007F;" class="text-end">{{ t('supplier_1') }}</th>
-                                <th style="border-color: #322446; color: #FF007F;" class="text-end">手续费</th>
-                                <th style="border-color: #322446; color: #FF007F;" class="text-end">付款金额</th>
-                                <th style="border-color: #322446; color: #FF007F;" class="text-end">净余额</th>
-                                <th style="border-color: #322446; color: #FF007F;" class="text-center">操作</th>
+                                <th style="border-color: #322446; color: #FF007F;" class="text-end">{{ t('auto_text_631') }}</th>
+                                <th style="border-color: #322446; color: #FF007F;" class="text-end">{{ t('auto_text_934') }}</th>
+                                <th style="border-color: #322446; color: #FF007F;" class="text-end">{{ t('auto_text_915') }}</th>
+                                <th style="border-color: #322446; color: #FF007F;" class="text-center">{{ t('auto_text_342') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -182,7 +182,7 @@
                 
                 <div style="font-size: 1.1rem; color: #FFFFFF; line-height: 2;">
                     <p>
-                        全年共<strong style="color: #FF007F;">{{ monthly_data|length }}个月</strong>有Supplier消费记录
+                        全年共<strong style="color: #FF007F;">{{ monthly_data|length }}个月</strong>{{ t('supplier_9') }}消费记录
                     </p>
                     <p>
                         总消费（含费用）：<strong style="color: #FF007F;">RM {{ "{:,.2f}".format(year_total.total_supplier_spending + year_total.total_supplier_fee) }}</strong>
@@ -196,11 +196,11 @@
                             RM {{ "{:,.2f}".format(year_total.net_balance|abs) }}
                         </strong>
                         {% if year_total.net_balance > 0 %}
-                            <span style="color: #FF007F;">(客户需补款)</span>
+                            <span style="color: #FF007F;">{{ t('auto_text_963') }}</span>
                         {% elif year_total.net_balance < 0 %}
-                            <span style="color: #00FF7F;">(我们需退款)</span>
+                            <span style="color: #00FF7F;">{{ t('auto_text_964') }}</span>
                         {% else %}
-                            <span style="color: #FFFFFF;">(已完全结清)</span>
+                            <span style="color: #FFFFFF;">{{ t('auto_text_965') }}</span>
                         {% endif %}
                     </p>
                 </div>

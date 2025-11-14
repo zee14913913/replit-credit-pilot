@@ -32,8 +32,8 @@
             <a href="{{ url_for('index') }}" class="nav-brand" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
                 <img src="{{ url_for('static', filename='logo.png') }}" alt="{{ t('company_name') }}" class="nav-logo">
                 <div style="display: flex; flex-direction: column; line-height: 1.2;">
-                    <span style="color: #FFFFFF; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.5px; text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);">INFINITE GZ</span>
-                    <span style="color: #FF007F; font-weight: 700; font-size: 0.75rem; letter-spacing: 1px;">SDN BHD</span>
+                    <span style="color: #FFFFFF; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.5px; text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);">{{ t('infinite_gz') }}</span>
+                    <span style="color: #FF007F; font-weight: 700; font-size: 0.75rem; letter-spacing: 1px;">{{ t('sdn_bhd') }}</span>
                 </div>
             </a>
             
@@ -96,13 +96,13 @@
                     </button>
                     <div class="notification-dropdown" id="notificationDropdown" style="display: none;">
                         <div class="notification-header">
-                            <h6 data-i18n="notification_center">{{ t('notification_center') }}</h6>
-                            <button class="btn btn-sm btn-link" onclick="markAllAsRead()" data-i18n="mark_all_read">{{ t('mark_all_read') }}</button>
+                            <h6 data-i18n="{{ t('notification_center_1') }}">{{ t('notification_center') }}</h6>
+                            <button class="btn btn-sm btn-link" onclick="markAllAsRead()" data-i18n="{{ t('mark_all_read_1') }}">{{ t('mark_all_read') }}</button>
                         </div>
                         <div class="notification-list" id="notificationList">
                             <div class="text-center text-muted p-3">
                                 <i class="bi bi-inbox"></i><br>
-                                <span data-i18n="no_notifications">{{ t('no_notifications') }}</span>
+                                <span data-i18n="{{ t('no_notifications_1') }}">{{ t('no_notifications') }}</span>
                             </div>
                         </div>
                     </div>
@@ -190,47 +190,47 @@
         </div>
     </footer>
 
-    <!-- User Guide Modal / 用户使用指南弹窗 -->
+    <!-- {{ t('user_guide_modal__') }} -->
     <div class="modal fade" id="userGuideModal" tabindex="-1" aria-labelledby="userGuideModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(30, 30, 30, 0.95)); border: 2px solid rgba(229, 228, 226, 0.3);">
                 <div class="modal-header" style="border-bottom: 1px solid rgba(229, 228, 226, 0.2);">
                     <h5 class="modal-title galaxy-gradient-text" id="userGuideModalLabel">
-                        <i class="bi bi-info-circle-fill me-2"></i><span data-i18n="guide_modal_title">{{ t('guide_modal_title') }}</span>
+                        <i class="bi bi-info-circle-fill me-2"></i><span data-i18n="{{ t('guide_modal_title_1') }}">{{ t('guide_modal_title') }}</span>
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" style="color: #e8e6e3;">
                     <div class="mb-4">
                         <h6 class="text-silver-pearl mb-3">
-                            <i class="bi bi-rocket-takeoff me-2"></i><span data-i18n="guide_quick_start">{{ t('guide_quick_start') }}</span>
+                            <i class="bi bi-rocket-takeoff me-2"></i><span data-i18n="{{ t('guide_quick_start_1') }}">{{ t('guide_quick_start') }}</span>
                         </h6>
                         
                         <!-- Admin Features -->
                         <div class="guide-section mb-4">
                             <h6 class="text-golden">
-                                <i class="bi bi-shield-check me-2"></i><span data-i18n="guide_admin_features">{{ t('guide_admin_features') }}</span>
+                                <i class="bi bi-shield-check me-2"></i><span data-i18n="{{ t('guide_admin_features_1') }}">{{ t('guide_admin_features') }}</span>
                             </h6>
                             <ol class="guide-list">
                                 <li>
-                                    <strong data-i18n="guide_login_system">{{ t('guide_login_system') }}:</strong>
-                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_login_desc">{{ t('guide_login_desc') }}</div>
+                                    <strong data-i18n="{{ t('guide_login_system_1') }}">{{ t('guide_login_system') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_login_desc_1') }}">{{ t('guide_login_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong data-i18n="guide_upload_cc">{{ t('guide_upload_cc') }}:</strong>
-                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_upload_cc_desc">{{ t('guide_upload_cc_desc') }}</div>
+                                    <strong data-i18n="{{ t('guide_upload_cc_1') }}">{{ t('guide_upload_cc') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_upload_cc_desc_1') }}">{{ t('guide_upload_cc_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong data-i18n="guide_upload_savings">{{ t('guide_upload_savings') }}:</strong>
-                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_upload_savings_desc">{{ t('guide_upload_savings_desc') }}</div>
+                                    <strong data-i18n="{{ t('guide_upload_savings_1') }}">{{ t('guide_upload_savings') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_upload_savings_desc_1') }}">{{ t('guide_upload_savings_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong data-i18n="guide_customer_mgmt">{{ t('guide_customer_mgmt') }}:</strong>
-                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_customer_mgmt_desc">{{ t('guide_customer_mgmt_desc') }}</div>
+                                    <strong data-i18n="{{ t('guide_customer_mgmt_1') }}">{{ t('guide_customer_mgmt') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_customer_mgmt_desc_1') }}">{{ t('guide_customer_mgmt_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong data-i18n="guide_generate_reports">{{ t('guide_generate_reports') }}:</strong>
-                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_generate_reports_desc">{{ t('guide_generate_reports_desc') }}</div>
+                                    <strong data-i18n="{{ t('guide_generate_reports_1') }}">{{ t('guide_generate_reports') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_generate_reports_desc_1') }}">{{ t('guide_generate_reports_desc') }}</div>
                                 </li>
                             </ol>
                         </div>
@@ -238,43 +238,43 @@
                         <!-- Core Features -->
                         <div class="guide-section mb-4">
                             <h6 class="text-golden">
-                                <i class="bi bi-stars me-2"></i><span data-i18n="guide_core_features">{{ t('guide_core_features') }}</span>
+                                <i class="bi bi-stars me-2"></i><span data-i18n="{{ t('guide_core_features_1') }}">{{ t('guide_core_features') }}</span>
                             </h6>
                             <div class="feature-grid">
                                 <div class="feature-item">
                                     <i class="bi bi-credit-card text-silver-pearl"></i>
-                                    <strong data-i18n="guide_cc_tracking">{{ t('guide_cc_tracking') }}</strong>
-                                    <small data-i18n="guide_cc_tracking_desc">{{ t('guide_cc_tracking_desc') }}</small>
+                                    <strong data-i18n="{{ t('guide_cc_tracking_1') }}">{{ t('guide_cc_tracking') }}</strong>
+                                    <small data-i18n="{{ t('guide_cc_tracking_desc_1') }}">{{ t('guide_cc_tracking_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-piggy-bank text-silver-pearl"></i>
-                                    <strong data-i18n="guide_savings_account">{{ t('guide_savings_account') }}</strong>
-                                    <small data-i18n="guide_savings_account_desc">{{ t('guide_savings_account_desc') }}</small>
+                                    <strong data-i18n="{{ t('guide_savings_account_1') }}">{{ t('guide_savings_account') }}</strong>
+                                    <small data-i18n="{{ t('guide_savings_account_desc_1') }}">{{ t('guide_savings_account_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-receipt text-silver-pearl"></i>
-                                    <strong data-i18n="guide_receipt_mgmt">{{ t('guide_receipt_mgmt') }}</strong>
-                                    <small data-i18n="guide_receipt_mgmt_desc">{{ t('guide_receipt_mgmt_desc') }}</small>
+                                    <strong data-i18n="{{ t('guide_receipt_mgmt_1') }}">{{ t('guide_receipt_mgmt') }}</strong>
+                                    <small data-i18n="{{ t('guide_receipt_mgmt_desc_1') }}">{{ t('guide_receipt_mgmt_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-calculator text-silver-pearl"></i>
-                                    <strong data-i18n="guide_loan_matcher">{{ t('guide_loan_matcher') }}</strong>
-                                    <small data-i18n="guide_loan_matcher_desc">{{ t('guide_loan_matcher_desc') }}</small>
+                                    <strong data-i18n="{{ t('guide_loan_matcher_1') }}">{{ t('guide_loan_matcher') }}</strong>
+                                    <small data-i18n="{{ t('guide_loan_matcher_desc_1') }}">{{ t('guide_loan_matcher_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-graph-up text-silver-pearl"></i>
-                                    <strong data-i18n="guide_ai_analytics">{{ t('guide_ai_analytics') }}</strong>
-                                    <small data-i18n="guide_ai_analytics_desc">{{ t('guide_ai_analytics_desc') }}</small>
+                                    <strong data-i18n="{{ t('guide_ai_analytics_1') }}">{{ t('guide_ai_analytics') }}</strong>
+                                    <small data-i18n="{{ t('guide_ai_analytics_desc_1') }}">{{ t('guide_ai_analytics_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-file-earmark-text text-silver-pearl"></i>
-                                    <strong data-i18n="guide_auto_reports">{{ t('guide_auto_reports') }}</strong>
-                                    <small data-i18n="guide_auto_reports_desc">{{ t('guide_auto_reports_desc') }}</small>
+                                    <strong data-i18n="{{ t('guide_auto_reports_1') }}">{{ t('guide_auto_reports') }}</strong>
+                                    <small data-i18n="{{ t('guide_auto_reports_desc_1') }}">{{ t('guide_auto_reports_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-bell text-silver-pearl"></i>
-                                    <strong data-i18n="guide_payment_reminders">{{ t('guide_payment_reminders') }}</strong>
-                                    <small data-i18n="guide_payment_reminders_desc">{{ t('guide_payment_reminders_desc') }}</small>
+                                    <strong data-i18n="{{ t('guide_payment_reminders_1') }}">{{ t('guide_payment_reminders') }}</strong>
+                                    <small data-i18n="{{ t('guide_payment_reminders_desc_1') }}">{{ t('guide_payment_reminders_desc') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -282,24 +282,24 @@
                         <!-- Customer Features -->
                         <div class="guide-section mb-4">
                             <h6 class="text-golden">
-                                <i class="bi bi-person-circle me-2"></i><span data-i18n="guide_customer_features">{{ t('guide_customer_features') }}</span>
+                                <i class="bi bi-person-circle me-2"></i><span data-i18n="{{ t('guide_customer_features_1') }}">{{ t('guide_customer_features') }}</span>
                             </h6>
                             <ol class="guide-list">
                                 <li>
-                                    <strong data-i18n="guide_customer_login">{{ t('guide_customer_login') }}:</strong>
-                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_customer_login_desc">{{ t('guide_customer_login_desc') }}</div>
+                                    <strong data-i18n="{{ t('guide_customer_login_1') }}">{{ t('guide_customer_login') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_customer_login_desc_1') }}">{{ t('guide_customer_login_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong data-i18n="guide_view_statements">{{ t('guide_view_statements') }}:</strong>
-                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_view_statements_desc">{{ t('guide_view_statements_desc') }}</div>
+                                    <strong data-i18n="{{ t('guide_view_statements_1') }}">{{ t('guide_view_statements') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_view_statements_desc_1') }}">{{ t('guide_view_statements_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong data-i18n="guide_view_reports">{{ t('guide_view_reports') }}:</strong>
-                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_view_reports_desc">{{ t('guide_view_reports_desc') }}</div>
+                                    <strong data-i18n="{{ t('guide_view_reports_1') }}">{{ t('guide_view_reports') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_view_reports_desc_1') }}">{{ t('guide_view_reports_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong data-i18n="guide_apply_loans">{{ t('guide_apply_loans') }}:</strong>
-                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="guide_apply_loans_desc">{{ t('guide_apply_loans_desc') }}</div>
+                                    <strong data-i18n="{{ t('guide_apply_loans_1') }}">{{ t('guide_apply_loans') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_apply_loans_desc_1') }}">{{ t('guide_apply_loans_desc') }}</div>
                                 </li>
                             </ol>
                         </div>
@@ -307,28 +307,28 @@
                         <!-- Tips & Tricks -->
                         <div class="guide-section">
                             <h6 class="text-golden">
-                                <i class="bi bi-lightbulb me-2"></i><span data-i18n="guide_tips">{{ t('guide_tips') }}</span>
+                                <i class="bi bi-lightbulb me-2"></i><span data-i18n="{{ t('guide_tips_1') }}">{{ t('guide_tips') }}</span>
                             </h6>
                             <ul class="guide-list">
                                 <li>
                                     <i class="bi bi-check-circle text-success me-2"></i>
-                                    <span data-i18n="guide_tip_batch">{{ t('guide_tip_batch') }}</span>
+                                    <span data-i18n="{{ t('guide_tip_batch_1') }}">{{ t('guide_tip_batch') }}</span>
                                 </li>
                                 <li>
                                     <i class="bi bi-check-circle text-success me-2"></i>
-                                    <span data-i18n="guide_tip_organize">{{ t('guide_tip_organize') }}</span>
+                                    <span data-i18n="{{ t('guide_tip_organize_1') }}">{{ t('guide_tip_organize') }}</span>
                                 </li>
                                 <li>
                                     <i class="bi bi-check-circle text-success me-2"></i>
-                                    <span data-i18n="guide_tip_timeline">{{ t('guide_tip_timeline') }}</span>
+                                    <span data-i18n="{{ t('guide_tip_timeline_1') }}">{{ t('guide_tip_timeline') }}</span>
                                 </li>
                                 <li>
                                     <i class="bi bi-check-circle text-success me-2"></i>
-                                    <span data-i18n="guide_tip_match">{{ t('guide_tip_match') }}</span>
+                                    <span data-i18n="{{ t('guide_tip_match_1') }}">{{ t('guide_tip_match') }}</span>
                                 </li>
                                 <li>
                                     <i class="bi bi-check-circle text-success me-2"></i>
-                                    <span data-i18n="guide_tip_accuracy">{{ t('guide_tip_accuracy') }}</span>
+                                    <span data-i18n="{{ t('guide_tip_accuracy_1') }}">{{ t('guide_tip_accuracy') }}</span>
                                 </li>
                             </ul>
                         </div>
@@ -336,17 +336,17 @@
                     
                     <div class="alert" style="background: rgba(229, 228, 226, 0.1); border: 1px solid rgba(229, 228, 226, 0.3); color: #e8e6e3;">
                         <i class="bi bi-info-circle me-2"></i>
-                        <strong data-i18n="guide_need_help">{{ t('guide_need_help') }}</strong> 
-                        <span data-i18n="guide_help_desc">{{ t('guide_help_desc') }}</span>
+                        <strong data-i18n="{{ t('guide_need_help_1') }}">{{ t('guide_need_help') }}</strong> 
+                        <span data-i18n="{{ t('guide_help_desc_1') }}">{{ t('guide_help_desc') }}</span>
                     </div>
                 </div>
                 <div class="modal-footer" style="border-top: 1px solid rgba(229, 228, 226, 0.2);">
                     <label class="text-silver-pearl me-auto" style="font-size: 0.9rem;">
                         <input type="checkbox" id="dontShowAgain" class="me-2">
-                        <span data-i18n="guide_dont_show">{{ t('guide_dont_show') }}</span>
+                        <span data-i18n="{{ t('guide_dont_show_1') }}">{{ t('guide_dont_show') }}</span>
                     </label>
                     <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
-                        <span data-i18n="guide_got_it">{{ t('guide_got_it') }}</span>
+                        <span data-i18n="{{ t('guide_got_it_1') }}">{{ t('guide_got_it') }}</span>
                     </button>
                 </div>
             </div>
@@ -475,19 +475,16 @@
     <!-- 用户指南自动弹出脚本 -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // 检查是否已经看过指南
-        const dontShowAgain = localStorage.getItem('userGuideDontShow');
+        // {{ t('________const_dontshowagain__localstoragegetite') }}m('userGuideDontShow');
         
         if (!dontShowAgain) {
-            // 延迟1秒后显示，给页面加载时间
-            setTimeout(function() {
+            // {{ t('1____________settimeoutfunction') }}() {
                 const guideModal = new bootstrap.Modal(document.getElementById('userGuideModal'));
                 guideModal.show();
             }, 1000);
         }
         
-        // 处理"不再显示"复选框
-        document.getElementById('userGuideModal').addEventListener('hidden.bs.modal', function() {
+        // 处理"不再显示"{{ t('________documentgetelementbyid') }}('userGuideModal').addEventListener('hidden.bs.modal', function() {
             const checkbox = document.getElementById('dontShowAgain');
             if (checkbox.checked) {
                 localStorage.setItem('userGuideDontShow', 'true');
@@ -641,10 +638,8 @@
         let isAuthenticated = null;
         const API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:8000`;
         
-        // 页面加载时初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            checkNotifications();
-            startNotificationPolling();
+        // {{ t('________documentaddeventlistener') }}('DOMContentLoaded', function() {
+            {{ t('checknotifications____________startnotificationpol') }};
             
             // 点击外部关闭下拉菜单
             document.addEventListener('click', function(event) {
@@ -656,21 +651,18 @@
             });
         });
         
-        // 开始轮询通知
-        function startNotificationPolling() {
+        // {{ t('________function_startnotificationpolling') }}() {
             notificationCheckInterval = setInterval(checkNotifications, 30000);
         }
         
-        // 停止轮询通知
-        function stopNotificationPolling() {
+        // {{ t('________function_stopnotificationpolling') }}() {
             if (notificationCheckInterval) {
                 clearInterval(notificationCheckInterval);
                 notificationCheckInterval = null;
             }
         }
         
-        // 检查未读通知
-        async function checkNotifications() {
+        // {{ t('________async_function_checknotifications') }}() {
             if (isAuthenticated === false) {
                 return;
             }
@@ -698,8 +690,7 @@
             }
         }
         
-        // 更新通知角标
-        function updateNotificationBadge(count) {
+        // {{ t('________function_updatenotificationbadgecount') }}) {
             const badge = document.getElementById('notificationBadge');
             if (count > 0) {
                 badge.textContent = count > 99 ? '99+' : count;
@@ -709,8 +700,7 @@
             }
         }
         
-        // 切换通知下拉菜单
-        async function toggleNotifications() {
+        // {{ t('________async_function_togglenotifications') }}() {
             const dropdown = document.getElementById('notificationDropdown');
             const isVisible = dropdown.style.display === 'block';
             
@@ -722,8 +712,7 @@
             }
         }
         
-        // 加载通知列表
-        async function loadNotifications() {
+        // {{ t('________async_function_loadnotifications') }}() {
             try {
                 const response = await fetch(`${API_BASE_URL}/api/notifications/list`, {
                     credentials: 'include'
@@ -731,25 +720,7 @@
                 
                 if (!response.ok) {
                     document.getElementById('notificationList').innerHTML = 
-                        '<div class="text-center text-muted p-3">加载失败</div>';
-                    return;
-                }
-                
-                const notifications = await response.json();
-                displayNotifications(notifications);
-            } catch (error) {
-                console.error('Failed to load notifications:', error);
-                document.getElementById('notificationList').innerHTML = 
-                    '<div class="text-center text-muted p-3">加载失败</div>';
-            }
-        }
-        
-        // 显示通知列表
-        function displayNotifications(notifications) {
-            const listContainer = document.getElementById('notificationList');
-            
-            if (notifications.length === 0) {
-                listContainer.innerHTML = '<div class="text-center text-muted p-3"><i class="bi bi-inbox"></i><br>暂无通知</div>';
+                        '<div class="text-center text-muted p-3">{{ t('auto_text_404') }}</div>{{ t('____________________return_________________________1') }}<div class="text-center text-muted p-3">{{ t('auto_text_404') }}</div>{{ t('_____________________________________________funct') }}<div class="text-center text-muted p-3"><i class="bi bi-inbox"></i><br>{{ t('auto_text_407') }}</div>';
                 return;
             }
             
@@ -763,20 +734,16 @@
             `).join('');
         }
         
-        // 处理通知点击
-        async function handleNotificationClick(notificationId, actionUrl) {
+        // {{ t('________async_function_handlenotificationclicknoti') }}cationId, actionUrl) {
             try {
-                // 标记为已读
-                await fetch(`${API_BASE_URL}/api/notifications/mark-as-read`, {
+                // {{ t('________________await_fetch') }}(`${API_BASE_URL}/api/notifications/mark-as-read`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
                     body: JSON.stringify({ notification_id: notificationId })
                 });
                 
-                // 刷新通知
-                await checkNotifications();
-                
+                // {{ t('________________await_checknotifications__________') }}     
                 // 跳转到相关页面
                 if (actionUrl) {
                     window.location.href = actionUrl;
@@ -786,8 +753,7 @@
             }
         }
         
-        // 全部标记为已读
-        async function markAllAsRead() {
+        // {{ t('________async_function_markallasread') }}() {
             try {
                 await fetch(`${API_BASE_URL}/api/notifications/mark-all-as-read`, {
                     method: 'POST',
@@ -801,8 +767,7 @@
             }
         }
         
-        // 格式化时间
-        function formatTime(isoString) {
+        // {{ t('________function_formattimeisostring') }}) {
             const date = new Date(isoString);
             const now = new Date();
             const diff = now - date;
@@ -823,15 +788,15 @@
     
     {% block scripts %}{% endblock %}
     
-    <!-- 全局组件：Toast通知、NextActions面板、StatusBadge状态徽章 -->
+    <!-- {{ t('toastnextactionsstatusbadge') }}状态徽章 -->
     <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
     <script src="{{ url_for('static', filename='js/next-actions.js') }}"></script>
     <script src="{{ url_for('static', filename='js/status-badge.js') }}"></script>
     
-    <!-- i18n客户端语言切换支持 -->
+    <!-- {{ t('i18n') }} -->
     <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
     
-    <!-- AI智能助手聊天窗口（Savings页面专用） -->
+    <!-- {{ t('aisavings') }}） -->
     {% include 'partials/chatbot.html' %}
 </body>
 </html>

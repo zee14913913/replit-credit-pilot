@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}API密钥管理 - {{ t('system_name') }}{% endblock %}
+{% block title %}{{ t('api_5') }} - {{ t('system_name') }}{% endblock %}
 
 {% block content %}
 <div class="galaxy-container">
     <div class="galaxy-header">
         <h1 class="galaxy-title">
-            <i class="bi bi-key-fill"></i> API密钥管理
+            <i class="bi bi-key-fill"></i> {{ t('api_5') }}
         </h1>
         <p class="galaxy-subtitle">{{ t('api') }}</p>
     </div>
 
-    <!-- 创建API密钥按钮 -->
+    <!-- {{ t('api_10') }}密钥按钮 -->
     <div class="mb-4">
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createApiKeyModal">
             <i class="bi bi-plus-circle"></i> 创建新密钥
@@ -21,7 +21,7 @@
         </button>
     </div>
 
-    <!-- API密钥列表 -->
+    <!-- {{ t('api_11') }} -->
     <div class="card shadow-sm">
         <div class="card-header bg-dark text-white">
             <h5 class="mb-0">
@@ -39,7 +39,7 @@
             <div id="apiKeysContainer">
                 <div class="text-center py-5">
                     <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">加载中...</span>
+                        <span class="visually-hidden">{{ t('auto_text_66') }}</span>
                     </div>
                     <p class="mt-2">{{ t('api_1') }}</p>
                 </div>
@@ -48,44 +48,44 @@
     </div>
 </div>
 
-<!-- 创建API密钥模态框 -->
+<!-- {{ t('api_10') }}密钥模态框 -->
 <div class="modal fade" id="createApiKeyModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">
-                    <i class="bi bi-key-fill"></i> 创建新的API密钥
+                    <i class="bi bi-key-fill"></i> {{ t('api_12') }}密钥
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form id="createApiKeyForm">
                     <div class="mb-3">
-                        <label for="keyName" class="form-label">密钥名称 *</label>
+                        <label for="keyName" class="form-label">{{ t('__10') }}</label>
                         <input type="text" class="form-control" id="keyName" required 
-                               placeholder="例如：Production API Key">
-                        <div class="form-text">为密钥提供一个易于识别的名称</div>
+                               placeholder="{{ t('production_api_key') }}">
+                        <div class="form-text">{{ t('auto_text_294') }}</div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="keyEnvironment" class="form-label">环境 *</label>
+                        <label for="keyEnvironment" class="form-label">{{ t('__11') }}</label>
                         <select class="form-select" id="keyEnvironment" required>
-                            <option value="live">{{ t('live') }}</option>
-                            <option value="test" selected>{{ t('test') }}</option>
+                            <option value="{{ t('live_2') }}">{{ t('live') }}</option>
+                            <option value="{{ t('test_2') }}" selected>{{ t('test') }}</option>
                         </select>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">权限 * <small class="text-muted">（补充改进④：默认仅上传权限）</small></label>
+                        <label class="form-label">权限 * <small class="text-muted">{{ t('auto_text_297') }}</small></label>
                         <div class="border rounded p-3">
                             <!-- 补充改进④：默认权限 - 上传 -->
                             <div class="bg-light p-2 mb-2 rounded">
-                                <strong>基础权限（默认授予）</strong>
+                                <strong>{{ t('auto_text_298') }}</strong>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="upload:bank_statements" id="perm0" checked disabled>
+                                <input class="form-check-input" type="checkbox" value="{{ t('uploadbank_statements') }}" id="perm0" checked disabled>
                                 <label class="form-check-label" for="perm0">
-                                    <i class="bi bi-upload"></i> 上传银行结单 <span class="badge bg-success">默认</span>
+                                    <i class="bi bi-upload"></i> 上传银行结单 <span class="badge bg-success">{{ t('auto_text_300') }}</span>
                                 </label>
                             </div>
                             
@@ -93,58 +93,58 @@
                             
                             <!-- 补充改进④：需要单独授权的权限 - 导出 -->
                             <div class="bg-light p-2 mb-2 rounded">
-                                <strong>高级权限（需单独授权）</strong>
+                                <strong>{{ t('auto_text_301') }}</strong>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="export:bank_statements" id="perm1">
+                                <input class="form-check-input" type="checkbox" value="{{ t('exportbank_statements') }}" id="perm1">
                                 <label class="form-check-label" for="perm1">
-                                    <i class="bi bi-download"></i> 导出银行结单 <span class="badge bg-warning">需授权</span>
+                                    <i class="bi bi-download"></i> 导出银行结单 <span class="badge bg-warning">{{ t('auto_text_303') }}</span>
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="export:invoices" id="perm2">
+                                <input class="form-check-input" type="checkbox" value="{{ t('exportinvoices') }}" id="perm2">
                                 <label class="form-check-label" for="perm2">
                                     <i class="bi bi-download"></i> 导出发票
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="export:journal_entries" id="perm3">
+                                <input class="form-check-input" type="checkbox" value="{{ t('exportjournal_entries') }}" id="perm3">
                                 <label class="form-check-label" for="perm3">
                                     <i class="bi bi-download"></i> 导出会计分录
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="read:audit_logs" id="perm4">
+                                <input class="form-check-input" type="checkbox" value="{{ t('readaudit_logs') }}" id="perm4">
                                 <label class="form-check-label" for="perm4">
                                     <i class="bi bi-eye"></i> 读取审计日志
                                 </label>
                             </div>
                         </div>
                         <div class="form-text">
-                            <i class="bi bi-info-circle"></i> 补充改进④：API密钥默认仅有上传权限，导出等高级功能需单独授权
+                            <i class="bi bi-info-circle"></i> {{ t('api_13') }}密钥默认仅有上传权限，导出等高级功能需单独授权
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="rateLimit" class="form-label">速率限制（请求/分钟）*</label>
+                        <label for="rateLimit" class="form-label">{{ t('auto_text_308') }}</label>
                         <input type="number" class="form-control" id="rateLimit" value="60" min="1" max="1000" required>
-                        <div class="form-text">每分钟允许的最大请求数</div>
+                        <div class="form-text">{{ t('auto_text_309') }}</div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="expiresInDays" class="form-label">有效期（天）</label>
-                        <input type="number" class="form-control" id="expiresInDays" placeholder="留空表示永不过期" min="1">
-                        <div class="form-text">密钥的有效天数，留空表示永久有效</div>
+                        <label for="expiresInDays" class="form-label">{{ t('auto_text_310') }}</label>
+                        <input type="number" class="form-control" id="expiresInDays" placeholder="{{ t('auto_text_367') }}" min="1">
+                        <div class="form-text">{{ t('auto_text_311') }}</div>
                     </div>
 
                     <div class="alert alert-warning">
                         <i class="bi bi-exclamation-triangle-fill"></i>
-                        <strong>重要提示：</strong>密钥明文仅在创建时显示一次，请妥善保存！
+                        <strong>{{ t('auto_text_312') }}</strong>密钥明文仅在创建时显示一次，请妥善保存！
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ t('auto_text_314') }}</button>
                 <button type="button" class="btn btn-primary" onclick="createApiKey()">
                     <i class="bi bi-plus-circle"></i> 创建密钥
                 </button>
@@ -153,19 +153,19 @@
     </div>
 </div>
 
-<!-- 显示新创建的API密钥模态框 -->
+<!-- {{ t('api_14') }}密钥模态框 -->
 <div class="modal fade" id="showApiKeyModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-success text-white">
                 <h5 class="modal-title">
-                    <i class="bi bi-check-circle-fill"></i> API密钥创建成功
+                    <i class="bi bi-check-circle-fill"></i> {{ t('api_8') }}
                 </h5>
             </div>
             <div class="modal-body">
                 <div class="alert alert-danger">
                     <i class="bi bi-exclamation-triangle-fill"></i>
-                    <strong>请立即复制并保存此密钥！</strong>密钥明文将仅显示此一次，关闭后将无法再次查看。
+                    <strong>{{ t('auto_text_317') }}</strong>密钥明文将仅显示此一次，关闭后将无法再次查看。
                 </div>
 
                 <div class="mb-3">
@@ -179,17 +179,17 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">密钥名称：</label>
+                    <label class="form-label">{{ t('auto_text_320') }}</label>
                     <p id="newApiKeyName" class="mb-0"></p>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">环境：</label>
+                    <label class="form-label">{{ t('auto_text_321') }}</label>
                     <p id="newApiKeyEnv" class="mb-0"></p>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">速率限制：</label>
+                    <label class="form-label">{{ t('auto_text_322') }}</label>
                     <p id="newApiKeyRate" class="mb-0"></p>
                 </div>
             </div>
@@ -202,13 +202,13 @@
     </div>
 </div>
 
-<!-- 撤销API密钥模态框 -->
+<!-- {{ t('api_15') }}密钥模态框 -->
 <div class="modal fade" id="revokeApiKeyModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title">
-                    <i class="bi bi-x-circle-fill"></i> 撤销API密钥
+                    <i class="bi bi-x-circle-fill"></i> {{ t('api_15') }}密钥
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
@@ -217,14 +217,14 @@
                 <p class="text-danger">{{ t('api_3') }}</p>
 
                 <div class="mb-3">
-                    <label for="revokeReason" class="form-label">撤销原因 *</label>
+                    <label for="revokeReason" class="form-label">{{ t('__13') }}</label>
                     <textarea class="form-control" id="revokeReason" rows="3" required 
-                              placeholder="请说明撤销此密钥的原因..."></textarea>
-                    <div class="form-text">此信息将记录在审计日志中</div>
+                              placeholder="{{ t('auto_text_368') }}"></textarea>
+                    <div class="form-text">{{ t('auto_text_328') }}</div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ t('auto_text_314') }}</button>
                 <button type="button" class="btn btn-danger" onclick="confirmRevokeApiKey()">
                     <i class="bi bi-x-circle"></i> 确认撤销
                 </button>
@@ -234,27 +234,22 @@
 </div>
 
 <script>
-// 全局变量
-let currentRevokeKeyId = null;
-
-// API Base URL (从服务器端传递，支持生产环境配置)
+// {{ t('let_currentrevokekeyid__null_api_base_url_') }}递，支持生产环境配置)
 // 使用tojson过滤器确保安全的JSON编码
 const API_BASE_URL = {{ api_base_url|tojson }};
 
-// 页面加载时获取API密钥列表
-document.addEventListener('DOMContentLoaded', function() {
+// {{ t('apidocumentaddeventlistener') }}('DOMContentLoaded', function() {
     refreshApiKeys();
 });
 
-// 刷新API密钥列表
-async function refreshApiKeys() {
+// {{ t('apiasync_function_refreshapikeys') }}() {
     const container = document.getElementById('apiKeysContainer');
     const includeInactive = document.getElementById('showInactive').checked;
     
     container.innerHTML = `
         <div class="text-center py-5">
             <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">加载中...</span>
+                <span class="visually-hidden">{{ t('auto_text_66') }}</span>
             </div>
             <p class="mt-2">{{ t('api_1') }}</p>
         </div>
@@ -276,26 +271,25 @@ async function refreshApiKeys() {
                 <div class="text-center py-5 text-muted">
                     <i class="bi bi-key" style="font-size: 3rem;"></i>
                     <p class="mt-3">{{ t('api_4') }}</p>
-                    <p>点击"创建新密钥"按钮开始</p>
+                    <p>{{ t('auto_text_331') }}</p>
                 </div>
             `;
             return;
         }
 
-        // 渲染密钥列表
-        let html = '<div class="table-responsive"><table class="table table-hover">';
+        // {{ t('________let_html') }} = '<div class="table-responsive"><table class="table table-hover">';
         html += `
             <thead class="table-dark">
                 <tr>
-                    <th>名称</th>
-                    <th>密钥前缀</th>
-                    <th>环境</th>
-                    <th>权限</th>
-                    <th>速率限制</th>
-                    <th>状态</th>
-                    <th>最后使用</th>
-                    <th>创建时间</th>
-                    <th>操作</th>
+                    <th>{{ t('auto_text_334') }}</th>
+                    <th>{{ t('auto_text_335') }}</th>
+                    <th>{{ t('auto_text_336') }}</th>
+                    <th>{{ t('auto_text_337') }}</th>
+                    <th>{{ t('auto_text_338') }}</th>
+                    <th>{{ t('auto_text_339') }}</th>
+                    <th>{{ t('auto_text_340') }}</th>
+                    <th>{{ t('auto_text_341') }}</th>
+                    <th>{{ t('auto_text_342') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -303,26 +297,12 @@ async function refreshApiKeys() {
 
         keys.forEach(key => {
             const statusBadge = key.is_active 
-                ? '<span class="badge bg-success">活跃</span>' 
-                : '<span class="badge bg-secondary">已撤销</span>';
-            
-            const lastUsed = key.last_used_at 
-                ? new Date(key.last_used_at).toLocaleString('zh-CN')
-                : '<span class="text-muted">从未使用</span>';
-
-            const createdAt = new Date(key.created_at).toLocaleString('zh-CN');
-
-            const permissions = key.permissions.join(', ') || '<span class="text-muted">无</span>';
-
-            const envBadge = key.environment === 'live'
-                ? '<span class="badge bg-danger">{{ t('live_1') }}</span>'
-                : '<span class="badge bg-info">{{ t('test_1') }}</span>';
-
-            const actions = key.is_active
-                ? `<button class="btn btn-sm btn-danger" onclick="showRevokeModal(${key.id}, '${key.name}')">
+                ? '<span class="badge bg-success">{{ t('auto_text_344') }}</span>' 
+                : '<span class="badge bg-secondary">{{ t('auto_text_345') }}</span>{{ t('________________________const_lastused__keylast_us') }}<span class="text-muted">{{ t('auto_text_347') }}</span>{{ t('____________const_createdat__new_datekeycreated_at') }}<span class="text-muted">无</span>{{ t('____________const_envbadge__keyenvironment__live__') }}<span class="badge bg-danger">{{ t('live_1') }}</span>'
+                : '<span class="badge bg-info">{{ t('test_1') }}</span>{{ t('____________const_actions__keyis_active___________') }}<button class="btn btn-sm btn-danger" onclick="showRevokeModal(${key.id}, '${key.name}')">
                        <i class="bi bi-x-circle"></i> 撤销
                    </button>`
-                : '<span class="text-muted">已撤销</span>';
+                : '<span class="text-muted">{{ t('auto_text_345') }}</span>';
 
             html += `
                 <tr>
@@ -347,26 +327,20 @@ async function refreshApiKeys() {
         container.innerHTML = `
             <div class="alert alert-danger">
                 <i class="bi bi-exclamation-triangle-fill"></i>
-                <strong>加载失败：</strong>${error.message}
+                <strong>{{ t('auto_text_355') }}</strong>${error.message}
             </div>
         `;
     }
 }
 
-// 创建API密钥
-async function createApiKey() {
-    // 补充改进④：收集权限，始终包含默认的上传权限
-    const permissions = ['upload:bank_statements'];  // 默认权限
-    
-    // 收集用户勾选的额外权限
-    document.querySelectorAll('#createApiKeyForm input[type="checkbox"]:checked:not([disabled])').forEach(checkbox => {
+// {{ t('apiasync_function_createapikey') }}() {
+    // {{ t('____const_permissions') }} = ['upload:bank_statements'];  // {{ t('_____________documentqueryselectorall') }}('#createApiKeyForm input[type="checkbox"]:checked:not([disabled])').forEach(checkbox => {
         if (!permissions.includes(checkbox.value)) {
             permissions.push(checkbox.value);
         }
     });
 
-    // 权限列表现在至少包含默认的upload:bank_statements
-    console.log('补充改进④ - API密钥权限:', permissions);
+    // {{ t('uploadbank_statements____consolelog') }}('{{ t('__api') }}密钥权限:', permissions);
 
     const data = {
         name: document.getElementById('keyName').value,
@@ -393,22 +367,16 @@ async function createApiKey() {
             throw new Error(error.detail || `HTTP ${response.status}`);
         }
 
-        const result = await response.json();
-
-        // 关闭创建模态框
+        {{ t('const_result__await_responsejson_________') }}
         const createModal = bootstrap.Modal.getInstance(document.getElementById('createApiKeyModal'));
-        createModal.hide();
-
-        // 显示新密钥
+        {{ t('createmodalhide_________') }}
         document.getElementById('newApiKey').value = result.api_key;
         document.getElementById('newApiKeyName').textContent = result.name;
-        document.getElementById('newApiKeyEnv').textContent = result.environment === 'live' ? 'Live（生产环境）' : 'Test（测试环境）';
+        document.getElementById('newApiKeyEnv').textContent = result.environment === 'live' ? '{{ t('live_3') }}）' : '{{ t('test_3') }}）';
         document.getElementById('newApiKeyRate').textContent = `${data.rate_limit} 请求/分钟`;
 
         const showModal = new bootstrap.Modal(document.getElementById('showApiKeyModal'));
-        showModal.show();
-
-        // 重置表单
+        {{ t('showmodalshow_________') }}
         document.getElementById('createApiKeyForm').reset();
 
     } catch (error) {
@@ -416,14 +384,12 @@ async function createApiKey() {
     }
 }
 
-// 复制API密钥到剪贴板
-function copyApiKey() {
+// {{ t('apifunction_copyapikey') }}() {
     const input = document.getElementById('newApiKey');
     input.select();
     document.execCommand('copy');
     
-    // 显示复制成功提示
-    const btn = event.target.closest('button');
+    // {{ t('____const_btn__eventtargetclosest') }}('button');
     const originalHTML = btn.innerHTML;
     btn.innerHTML = '<i class="bi bi-check"></i> 已复制';
     btn.classList.remove('btn-outline-primary');
@@ -436,8 +402,7 @@ function copyApiKey() {
     }, 2000);
 }
 
-// 显示撤销模态框
-function showRevokeModal(keyId, keyName) {
+// {{ t('function_showrevokemodalkeyid_keyname') }}) {
     currentRevokeKeyId = keyId;
     document.getElementById('revokeKeyName').textContent = keyName;
     document.getElementById('revokeReason').value = '';
@@ -446,8 +411,7 @@ function showRevokeModal(keyId, keyName) {
     modal.show();
 }
 
-// 确认撤销API密钥
-async function confirmRevokeApiKey() {
+// {{ t('apiasync_function_confirmrevokeapikey') }}() {
     const reason = document.getElementById('revokeReason').value.trim();
     
     if (!reason) {
@@ -470,14 +434,11 @@ async function confirmRevokeApiKey() {
             throw new Error(error.detail || `HTTP ${response.status}`);
         }
 
-        // 关闭模态框
-        const modal = bootstrap.Modal.getInstance(document.getElementById('revokeApiKeyModal'));
-        modal.hide();
-
-        // 刷新列表
+        // {{ t('________const_modal__bootstrapmodalgetinstancedocu') }}ment.getElementById('revokeApiKeyModal'));
+        {{ t('modalhide_________') }}
         refreshApiKeys();
 
-        alert('API密钥已成功撤销');
+        alert('{{ t('api_16') }}');
 
     } catch (error) {
         alert(`撤销失败：${error.message}`);

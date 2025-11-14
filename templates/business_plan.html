@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}AI商业计划 - {{ customer_name }}{% endblock %}
+{% block title %}{{ t('ai_6') }} - {{ customer_name }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid mt-4">
@@ -8,7 +8,7 @@
         <div class="col-md-12">
             <div class="d-flex justify-content-between align-items-center">
                 <h2 class="mb-0">
-                    <i class="bi bi-robot"></i> AI商业计划分析
+                    <i class="bi bi-robot"></i> {{ t('ai_5') }}
                 </h2>
                 <div>
                     <a href="/customer/{{ customer_id }}/business_plans" class="btn btn-outline-info me-2">
@@ -35,11 +35,11 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <h5 class="text-primary">推荐商业类型</h5>
+                            <h5 class="text-primary">{{ t('auto_text_493') }}</h5>
                             <p class="lead">{{ plan[1] }}</p>
                         </div>
                         <div class="col-md-6">
-                            <h5 class="text-success">投资需求</h5>
+                            <h5 class="text-success">{{ t('auto_text_494') }}</h5>
                             <p class="lead">{{ plan[3] }}</p>
                         </div>
                     </div>
@@ -101,14 +101,14 @@
                         {% endfor %}
                     </ol>
                     {% else %}
-                    <p class="text-muted">暂无行动步骤</p>
+                    <p class="text-muted">{{ t('auto_text_498') }}</p>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- AI完整分析 -->
+    <!-- {{ t('ai_7') }} -->
     {% if ai_analysis %}
     <div class="row mb-4">
         <div class="col-md-12">
@@ -119,7 +119,7 @@
                 <div class="card-body">
                     {% if ai_analysis.business_types %}
                     <div class="mb-3">
-                        <h6 class="text-primary">可选商业类型：</h6>
+                        <h6 class="text-primary">{{ t('auto_text_499') }}</h6>
                         <ul>
                             {% for type in ai_analysis.business_types %}
                             <li>{{ type }}</li>
@@ -130,14 +130,14 @@
                     
                     {% if ai_analysis.resource_utilization %}
                     <div class="mb-3">
-                        <h6 class="text-success">资源利用建议：</h6>
+                        <h6 class="text-success">{{ t('auto_text_500') }}</h6>
                         <p>{{ ai_analysis.resource_utilization }}</p>
                     </div>
                     {% endif %}
                     
                     {% if ai_analysis.malaysia_insights %}
                     <div class="mb-3">
-                        <h6 class="text-info">马来西亚市场洞察：</h6>
+                        <h6 class="text-info">{{ t('auto_text_501') }}</h6>
                         <p>{{ ai_analysis.malaysia_insights }}</p>
                     </div>
                     {% endif %}

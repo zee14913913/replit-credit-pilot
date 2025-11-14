@@ -83,14 +83,14 @@
             <div style="font-size: 3rem; color: rgba(255,122,67,0.3); margin-bottom: 1rem;">
                 <i class="bi bi-credit-card-2-front"></i>
             </div>
-            <h4 style="color: rgba(255,255,255,0.9); margin-bottom: 1rem;" data-i18n="no_credit_cards">{{ t('no_credit_cards') }}</h4>
-            <p style="color: rgba(255,255,255,0.6); margin-bottom: 2rem;" data-i18n="add_first_card_desc">
+            <h4 style="color: rgba(255,255,255,0.9); margin-bottom: 1rem;" data-i18n="{{ t('no_credit_cards_1') }}">{{ t('no_credit_cards') }}</h4>
+            <p style="color: rgba(255,255,255,0.6); margin-bottom: 2rem;" data-i18n="{{ t('add_first_card_desc_1') }}">
                 {{ t('add_first_card_desc') }}
             </p>
             <a href="{{ url_for('add_credit_card', customer_id=customer.id) }}" 
                class="btn-white-glow" 
                style="padding: 1rem 2rem; font-size: 1.1rem;">
-                <i class="bi bi-plus-circle"></i> <span data-i18n="add_new_card">{{ t('add_new_card') }}</span>
+                <i class="bi bi-plus-circle"></i> <span data-i18n="{{ t('add_new_card_1') }}">{{ t('add_new_card') }}</span>
             </a>
         </div>
         {% endif %}
@@ -101,7 +101,7 @@
     <div class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 style="color: var(--text-primary); margin: 0;">
-                <i class="bi bi-calculator"></i> 月度财务账本 / Monthly Financial Ledger
+                <i class="bi bi-calculator"></i> {{ t('__monthly_financial_ledger') }}
             </h3>
             <small style="color: var(--text-secondary);">{{ t('__infinite') }}</small>
         </div>
@@ -123,10 +123,10 @@
             
             <div class="divider-professional mb-4"></div>
             
-            <!-- Customer Ledger (客户账本) -->
+            <!-- {{ t('customer_ledger_') }}) -->
             <div class="mb-4">
                 <h5 style="color: var(--accent-primary); margin-bottom: 1.5rem; font-weight: 600;">
-                    <i class="bi bi-person-circle"></i> 客户账本 / Customer Ledger
+                    <i class="bi bi-person-circle"></i> {{ t('__customer_ledger') }}
                 </h5>
                 <div class="row g-4">
                     <div class="col-md-3 col-sm-6">
@@ -175,17 +175,17 @@
                 <div style="margin-top: 1rem; padding: 0.75rem 1rem; background: rgba(212,175,55,0.05); border-radius: 6px; border-left: 3px solid var(--accent-primary);">
                     <small style="color: var(--text-secondary); font-family: 'Courier New', monospace;">
                         <i class="bi bi-calculator"></i> 计算公式: 
-                        <span style="color: var(--text-primary);">上月余额 ({{ "{:,.2f}".format(ledger.customer.previous_balance) }}) + 本月消费 ({{ "{:,.2f}".format(ledger.customer.total_spend) }}) - 本月付款 ({{ "{:,.2f}".format(ledger.customer.total_payments) }}) = <strong style="color: var(--accent-primary);">余额 RM {{ "{:,.2f}".format(ledger.customer.rolling_balance) }}</strong></span>
+                        <span style="color: var(--text-primary);">上月余额 ({{ "{:,.2f}".format(ledger.customer.previous_balance) }}) + 本月消费 ({{ "{:,.2f}".format(ledger.customer.total_spend) }}) - 本月付款 ({{ "{:,.2f}".format(ledger.customer.total_payments) }}) = <strong style="color: var(--accent-primary);">{{ t('_rm_3') }} {{ "{:,.2f}".format(ledger.customer.rolling_balance) }}</strong></span>
                     </small>
                 </div>
             </div>
             
             <div class="divider-professional my-4"></div>
             
-            <!-- INFINITE Ledger (INFINITE账本) -->
+            <!-- {{ t('infinite_ledger_infinite') }}) -->
             <div>
                 <h5 style="color: var(--accent-secondary); margin-bottom: 1.5rem; font-weight: 600;">
-                    <i class="bi bi-building"></i> INFINITE 账本 / INFINITE Ledger
+                    <i class="bi bi-building"></i> {{ t('infinite__1') }} / INFINITE Ledger
                 </h5>
                 <div class="row g-4">
                     <div class="col-md-2 col-sm-6">
@@ -254,7 +254,7 @@
                 <div style="margin-top: 1rem; padding: 0.75rem 1rem; background: rgba(139,92,246,0.05); border-radius: 6px; border-left: 3px solid var(--accent-secondary);">
                     <small style="color: var(--text-secondary); font-family: 'Courier New', monospace;">
                         <i class="bi bi-calculator"></i> 计算公式: 
-                        <span style="color: var(--text-primary);">上月余额 ({{ "{:,.2f}".format(ledger.infinite.previous_balance) }}) + 本月消费 ({{ "{:,.2f}".format(ledger.infinite.total_spend) }}) - 本月付款 ({{ "{:,.2f}".format(ledger.infinite.total_payments) }}) = <strong style="color: var(--accent-secondary);">余额 RM {{ "{:,.2f}".format(ledger.infinite.rolling_balance) }}</strong></span>
+                        <span style="color: var(--text-primary);">上月余额 ({{ "{:,.2f}".format(ledger.infinite.previous_balance) }}) + 本月消费 ({{ "{:,.2f}".format(ledger.infinite.total_spend) }}) - 本月付款 ({{ "{:,.2f}".format(ledger.infinite.total_payments) }}) = <strong style="color: var(--accent-secondary);">{{ t('_rm_3') }} {{ "{:,.2f}".format(ledger.infinite.rolling_balance) }}</strong></span>
                     </small>
                 </div>
                 
@@ -274,14 +274,14 @@
                 <i class="bi bi-info-circle-fill" style="color: var(--accent-primary); font-size: 1.5rem; margin-right: 1rem; margin-top: 0.25rem;"></i>
                 <div>
                     <h6 style="color: var(--accent-primary); margin-bottom: 0.75rem; font-weight: 600;">
-                        双轨账本系统说明 / Dual-Ledger System Explanation
+                        {{ t('__dualledger_system_explanation') }}
                     </h6>
                     <p style="margin-bottom: 0.5rem; color: var(--text-secondary); line-height: 1.6;">
-                        <strong style="color: var(--text-primary);">客户账本（1-4项）：</strong>{{ t('keng_chow') }}<br>
+                        <strong style="color: var(--text-primary);">{{ t('14') }}</strong>{{ t('keng_chow') }}<br>
                         <strong style="color: var(--text-primary);">{{ t('infinite58') }}</strong>记录7个供应商的消费（含1%手续费）、其他付款、滚动余额、以及转账到客户私人户口的金额
                     </p>
                     <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">
-                        💡 <strong>第8项转账</strong>从储蓄账户系统自动提取，显示该月份转给客户户口的总金额，用于Build Profile和信用卡还款。
+                        💡 <strong>{{ t('8_1') }}</strong>{{ t('build_profile_1') }}和信用卡还款。
                     </p>
                 </div>
             </div>
@@ -359,7 +359,7 @@
                                 <a href="{{ url_for('validate', statement_id=stmt.id) }}" class="btn-professional-outline" style="padding: 0.4rem 1rem; font-size: 0.85rem;">{{ t('view') }}</a>
                                 {% if stmt.is_confirmed %}
                                 <a href="{{ url_for('statement_comparison', statement_id=stmt.id) }}" class="btn-professional" style="padding: 0.4rem 1rem; font-size: 0.85rem;">
-                                    <i class="bi bi-layout-split"></i> Comparison / 对比
+                                    <i class="bi bi-layout-split"></i> {{ t('comparison__') }}
                                 </a>
                                 {% endif %}
                             </div>

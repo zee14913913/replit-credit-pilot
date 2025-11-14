@@ -132,31 +132,31 @@
     <div class="action-buttons">
         <a href="/downloads/evidence/latest" class="btn-action" target="_blank">
             <i class="bi bi-download"></i>
-            <span data-i18n="download_latest">{{ t('download_latest') }}</span>
+            <span data-i18n="{{ t('download_latest_1') }}">{{ t('download_latest') }}</span>
         </a>
         
         {% if user.role == 'admin' %}
         <button id="btn-run-rotation" class="btn-action admin-only">
             <i class="bi bi-arrow-repeat"></i>
-            <span data-i18n="rotation_run_now">{{ t('rotation_run_now') }}</span>
+            <span data-i18n="{{ t('rotation_run_now_1') }}">{{ t('rotation_run_now') }}</span>
         </button>
         {% endif %}
         
         <a href="/accounting_files" class="btn-action" style="border-color: #322446; color: #322446;">
             <i class="bi bi-arrow-left"></i>
-            <span data-i18n="back_to_files">{{ t('back_to_files') }}</span>
+            <span data-i18n="{{ t('back_to_files_1') }}">{{ t('back_to_files') }}</span>
         </a>
     </div>
     
     <table class="evidence-table" id="evidence-table">
         <thead>
             <tr>
-                <th data-i18n="file_name">{{ t('file_name') }}</th>
-                <th data-i18n="created_at">{{ t('created_at') }}</th>
-                <th data-i18n="size">{{ t('size') }}</th>
-                <th data-i18n="sha256">{{ t('sha256') }}</th>
-                <th data-i18n="source">{{ t('source') }}</th>
-                <th data-i18n="actions">{{ t('actions') }}</th>
+                <th data-i18n="{{ t('file_name_1') }}">{{ t('file_name') }}</th>
+                <th data-i18n="{{ t('created_at_1') }}">{{ t('created_at') }}</th>
+                <th data-i18n="{{ t('size_1') }}">{{ t('size') }}</th>
+                <th data-i18n="{{ t('sha256_1') }}">{{ t('sha256') }}</th>
+                <th data-i18n="{{ t('source_1') }}">{{ t('source') }}</th>
+                <th data-i18n="{{ t('actions_3') }}">{{ t('actions') }}</th>
             </tr>
         </thead>
         <tbody id="evidence-tbody">

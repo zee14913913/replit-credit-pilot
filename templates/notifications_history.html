@@ -7,7 +7,7 @@
     <div class="card-professional">
         <div class="card-header-pro">
             <h2><i class="bi bi-clock-history"></i> 通知历史</h2>
-            <p style="margin: 8px 0 0 0; opacity: 0.8;">查看所有历史通知记录</p>
+            <p style="margin: 8px 0 0 0; opacity: 0.8;">{{ t('auto_text_992') }}</p>
         </div>
         
         <div class="card-body-pro">
@@ -28,7 +28,7 @@
             <div id="notificationsList" style="min-height: 300px;">
                 <div class="text-center" style="padding: 60px 20px; color: var(--text-muted);">
                     <i class="bi bi-hourglass-split" style="font-size: 48px;"></i>
-                    <p style="margin-top: 16px;">正在加载通知...</p>
+                    <p style="margin-top: 16px;">{{ t('auto_text_996') }}</p>
                 </div>
             </div>
         </div>
@@ -104,16 +104,12 @@
 <script>
     let currentFilter = 'all';
     
-    // 页面加载时获取所有通知
-    document.addEventListener('DOMContentLoaded', function() {
+    // {{ t('____documentaddeventlistener_1') }}('DOMContentLoaded', function() {
         loadNotifications('all');
     });
     
-    // 加载通知列表
-    async function loadNotifications(filter) {
-        currentFilter = filter;
-        
-        // 更新按钮状态
+    // {{ t('____async_function_loadnotificationsfilter') }}) {
+        {{ t('currentfilter__filter_________________') }}
         document.querySelectorAll('.btn-action, .btn-secondary').forEach(btn => {
             btn.classList.remove('btn-action');
             btn.classList.add('btn-secondary');
@@ -142,21 +138,20 @@
             container.innerHTML = `
                 <div class="text-center" style="padding: 40px; color: var(--text-muted);">
                     <i class="bi bi-exclamation-triangle" style="font-size: 48px; color: #DC3545;"></i>
-                    <p style="margin-top: 16px;">加载失败，请稍后重试</p>
+                    <p style="margin-top: 16px;">{{ t('auto_text_1000') }}</p>
                 </div>
             `;
         }
     }
     
-    // 显示通知列表
-    function displayNotifications(notifications) {
+    // {{ t('____function_displaynotificationsnotifications') }}) {
         const container = document.getElementById('notificationsList');
         
         if (notifications.length === 0) {
             container.innerHTML = `
                 <div class="text-center" style="padding: 60px 20px; color: var(--text-muted);">
                     <i class="bi bi-inbox" style="font-size: 48px;"></i>
-                    <p style="margin-top: 16px;">暂无通知</p>
+                    <p style="margin-top: 16px;">{{ t('auto_text_407') }}</p>
                 </div>
             `;
             return;
@@ -179,8 +174,7 @@
         `).join('');
     }
     
-    // 格式化时间
-    function formatTime(isoString) {
+    // {{ t('____function_formattimeisostring') }}) {
         const date = new Date(isoString);
         const now = new Date();
         const diff = now - date;

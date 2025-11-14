@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}CTOS Personal Consent - 个人信用报告授权{% endblock %}
+{% block title %}{{ t('ctos_personal_consent__') }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid" style="padding: 40px 60px; background: #000000;">
@@ -24,14 +24,14 @@
                         <!-- 模块A: 个人资料 -->
                         <div style="background: #1a1a1a; padding: 24px; border-radius: 16px; border: 1px solid #322446; margin-bottom: 24px;">
                             <h3 style="color: #FF007F; margin-bottom: 20px; font-size: 20px;">
-                                <i class="bi bi-person-badge me-2"></i>个人资料 | Personal Information
+                                <i class="bi bi-person-badge me-2"></i>{{ t('__personal_information') }}
                             </h3>
                             
                             <div class="mb-3">
                                 <label class="form-label" style="color: #FFFFFF;">{{ t('full_name_as_per_ic') }}<span style="color: #FF007F;">*</span></label>
                                 <input type="text" name="full_name" class="form-control" required 
                                        style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
-                                       placeholder="Enter your full name">
+                                       placeholder="{{ t('enter_your_full_name') }}">
                             </div>
 
                             <div class="mb-3">
@@ -39,7 +39,7 @@
                                 <input type="text" name="ic_number" class="form-control" required 
                                        pattern="[0-9]{6}-[0-9]{2}-[0-9]{4}"
                                        style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
-                                       placeholder="XXXXXX-XX-XXXX">
+                                       placeholder="{{ t('xxxxxxxxxxxx') }}">
                                 <small style="color: rgba(255, 255, 255, 0.5);">{{ t('format_900101011234') }}</small>
                             </div>
 
@@ -54,18 +54,18 @@
                                 <label class="form-label" style="color: #FFFFFF;">{{ t('email_address') }}<span style="color: #FF007F;">*</span></label>
                                 <input type="email" name="email" class="form-control" required 
                                        style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
-                                       placeholder="your.email@example.com">
+                                       placeholder="{{ t('youremailexamplecom') }}">
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label" style="color: #FFFFFF;">{{ t('residential_address') }}<span style="color: #FF007F;">*</span></label>
                                 <textarea name="address" class="form-control" rows="3" required 
                                           style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
-                                          placeholder="Enter your complete address"></textarea>
+                                          placeholder="{{ t('enter_your_complete_address') }}"></textarea>
                             </div>
                         </div>
 
-                        <!-- 模块D: IC上传 -->
+                        <!-- {{ t('d_ic') }}上传 -->
                         <div style="background: #1a1a1a; padding: 24px; border-radius: 16px; border: 1px solid #322446; margin-bottom: 24px;">
                             <h3 style="color: #FF007F; margin-bottom: 20px; font-size: 20px;">
                                 <i class="bi bi-credit-card-2-front me-2"></i>IC Document Upload
@@ -105,7 +105,7 @@
 
                     <!-- 右侧：预览和说明 -->
                     <div class="col-lg-5">
-                        <!-- 模块B: CTOS官方Consent文本 -->
+                        <!-- {{ t('b_ctosconsent') }}文本 -->
                         <div style="background: #1a1a1a; padding: 24px; border-radius: 16px; border: 1px solid #322446; margin-bottom: 24px;">
                             <h3 style="color: #FF007F; margin-bottom: 16px; font-size: 18px;">
                                 <i class="bi bi-shield-check me-2"></i>CTOS Consent Statement
@@ -170,7 +170,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script>
-// Signature Pad初始化
+// {{ t('signature_pad') }}
 const canvas = document.getElementById('signaturePad');
 const signaturePad = new SignaturePad(canvas, {
     backgroundColor: 'rgb(255, 255, 255)',
@@ -181,21 +181,18 @@ function clearSignature() {
     signaturePad.clear();
 }
 
-// 表单提交前保存签名
-document.getElementById('ctosPersonalForm').addEventListener('submit', function(e) {
+// {{ t('documentgetelementbyid') }}('ctosPersonalForm').addEventListener('submit', function(e) {
     if (signaturePad.isEmpty()) {
         e.preventDefault();
         alert('Please provide your signature before submitting.');
         return false;
     }
     
-    // 保存签名为base64
-    const signatureData = signaturePad.toDataURL('image/png');
+    // {{ t('base64____const_signaturedata__signaturepadtodatau') }}('image/png');
     document.getElementById('signatureData').value = signatureData;
 });
 
-// 响应式canvas调整
-window.addEventListener('resize', function() {
+// {{ t('canvaswindowaddeventlistener') }}('resize', function() {
     const ratio = Math.max(window.devicePixelRatio || 1, 1);
     canvas.width = canvas.offsetWidth * ratio;
     canvas.height = canvas.offsetHeight * ratio;

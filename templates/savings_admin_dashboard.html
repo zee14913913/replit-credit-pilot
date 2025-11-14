@@ -42,7 +42,7 @@
                 </div>
                 <div class="stat-info">
                     <h3 style="color: #FF007F; text-shadow: 0 0 15px rgba(255, 0, 127, 0.6); font-weight: 700; margin: 0; font-size: 2.5rem;">{{ total_customers }}</h3>
-                    <p style="color: #FFFEF0; margin: 0; font-weight: 600; font-size: 0.9rem;">储蓄账户客户总数</p>
+                    <p style="color: #FFFEF0; margin: 0; font-weight: 600; font-size: 0.9rem;">{{ t('auto_text_1155') }}</p>
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
                 </div>
                 <div class="stat-info">
                     <h3 style="color: #FF007F; text-shadow: 0 0 15px rgba(255, 0, 127, 0.6); font-weight: 700; margin: 0; font-size: 2.5rem;">{{ total_accounts }}</h3>
-                    <p style="color: #FFFEF0; margin: 0; font-weight: 600; font-size: 0.9rem;">储蓄账户总数</p>
+                    <p style="color: #FFFEF0; margin: 0; font-weight: 600; font-size: 0.9rem;">{{ t('auto_text_1156') }}</p>
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
                 </div>
                 <div class="stat-info">
                     <h3 style="color: #FF007F; text-shadow: 0 0 15px rgba(255, 0, 127, 0.6); font-weight: 700; margin: 0; font-size: 2.5rem;">{{ total_statements }}</h3>
-                    <p style="color: #FFFEF0; margin: 0; font-weight: 600; font-size: 0.9rem;">月结单总数</p>
+                    <p style="color: #FFFEF0; margin: 0; font-weight: 600; font-size: 0.9rem;">{{ t('auto_text_1157') }}</p>
                 </div>
             </div>
         </div>
@@ -75,7 +75,7 @@
                 </div>
                 <div class="stat-info">
                     <h3 style="color: #FF007F; text-shadow: 0 0 15px rgba(255, 0, 127, 0.6); font-weight: 700; margin: 0; font-size: 2.5rem;">{{ total_transactions }}</h3>
-                    <p style="color: #FFFEF0; margin: 0; font-weight: 600; font-size: 0.9rem;">交易笔数</p>
+                    <p style="color: #FFFEF0; margin: 0; font-weight: 600; font-size: 0.9rem;">{{ t('auto_text_1158') }}</p>
                 </div>
             </div>
         </div>
@@ -99,15 +99,15 @@
                         <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto;">
                             <thead style="background: rgba(50, 36, 70, 0.3); border-bottom: 2px solid #322446;">
                                 <tr>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">月份</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">客户姓名</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">银行</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">月度入账</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">月度出账</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">结余</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">{{ t('auto_text_906') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">{{ t('auto_text_1160') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">{{ t('auto_text_897') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">{{ t('auto_text_1161') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">{{ t('auto_text_1162') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">{{ t('auto_text_1163') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">{{ t('cc') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">转账总额</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; color: #C0C0C0; white-space: nowrap;">操作</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">{{ t('auto_text_1164') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; color: #C0C0C0; white-space: nowrap;">{{ t('auto_text_342') }}</th>
                                 </tr>
                             </thead>
                             <tbody>

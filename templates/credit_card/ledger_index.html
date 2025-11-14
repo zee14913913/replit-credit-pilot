@@ -333,8 +333,8 @@
                     <div class="col-md-6">
                         <label class="form-label" style="color: #FFFEF0; font-weight: 600;">{{ t('receipt_type') }}</label>
                         <select name="receipt_type" class="form-select" required style="background: rgba(0,0,0,0.5); color: #FFFEF0; border: 1px solid #FF007F;">
-                            <option value="merchant_swipe">{{ t('merchant_swipe_receipt') }}</option>
-                            <option value="payment">{{ t('credit_card_payment') }}</option>
+                            <option value="{{ t('merchant_swipe') }}">{{ t('merchant_swipe_receipt') }}</option>
+                            <option value="{{ t('payment_1') }}">{{ t('credit_card_payment') }}</option>
                         </select>
                     </div>
                     <div class="col-md-12">
@@ -451,8 +451,7 @@
 </div>
 
 <style>
-/* 表格容器样式 */
-.table-container {
+/* {{ t('_tablecontainer') }} {
     background: linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
     border: 2px solid rgba(50, 36, 70, 0.5);
     border-radius: 15px;
@@ -526,8 +525,7 @@
     color: #FFF;
 }
 
-/* 上传表单样式 */
-.file-input-hidden {
+/* {{ t('_fileinputhidden') }} {
     display: none;
 }
 

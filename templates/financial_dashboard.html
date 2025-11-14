@@ -22,7 +22,7 @@
     <div class="row mb-4">
         <div class="col-md-12">
             <form method="get" class="d-flex align-items-center gap-3">
-                <label class="fw-bold">选择月份：</label>
+                <label class="fw-bold">{{ t('auto_text_714') }}</label>
                 <select name="month" class="form-select w-auto" onchange="this.form.submit()">
                     {% for option in month_options %}
                     <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>
@@ -45,7 +45,7 @@
         <div class="col-md-3 mb-3">
             <div class="card border-primary">
                 <div class="card-body text-center">
-                    <h6 class="card-subtitle mb-2 text-muted">当月总消费</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ t('auto_text_716') }}</h6>
                     <h3 class="card-title text-primary">
                         RM {{ "{:,.2f}".format(metrics.total_consumption) }}
                     </h3>
@@ -56,7 +56,7 @@
         <div class="col-md-3 mb-3">
             <div class="card border-success">
                 <div class="card-body text-center">
-                    <h6 class="card-subtitle mb-2 text-muted">当月总付款</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ t('auto_text_717') }}</h6>
                     <h3 class="card-title text-success">
                         RM {{ "{:,.2f}".format(metrics.total_payment) }}
                     </h3>
@@ -67,7 +67,7 @@
         <div class="col-md-3 mb-3">
             <div class="card border-warning">
                 <div class="card-body text-center">
-                    <h6 class="card-subtitle mb-2 text-muted">当月净欠款</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ t('auto_text_718') }}</h6>
                     <h3 class="card-title text-warning">
                         RM {{ "{:,.2f}".format(metrics.monthly_balance) }}
                     </h3>
@@ -78,7 +78,7 @@
         <div class="col-md-3 mb-3">
             <div class="card border-danger">
                 <div class="card-body text-center">
-                    <h6 class="card-subtitle mb-2 text-muted">累计欠款总余额</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ t('auto_text_719') }}</h6>
                     <h3 class="card-title text-danger">
                         RM {{ "{:,.2f}".format(metrics.cumulative_balance) }}
                     </h3>
@@ -110,7 +110,7 @@
                     <div class="row">
                         <div class="col-md-2 mb-3">
                             <div class="metric-box">
-                                <small class="text-muted d-block">当月总消费</small>
+                                <small class="text-muted d-block">{{ t('auto_text_716') }}</small>
                                 <strong class="text-primary d-block fs-5">
                                     RM {{ "{:,.2f}".format(card.monthly_consumption) }}
                                 </strong>
@@ -119,7 +119,7 @@
                         
                         <div class="col-md-2 mb-3">
                             <div class="metric-box">
-                                <small class="text-muted d-block">当月总付款</small>
+                                <small class="text-muted d-block">{{ t('auto_text_717') }}</small>
                                 <strong class="text-success d-block fs-5">
                                     RM {{ "{:,.2f}".format(card.monthly_payment) }}
                                 </strong>
@@ -128,7 +128,7 @@
                         
                         <div class="col-md-2 mb-3">
                             <div class="metric-box">
-                                <small class="text-muted d-block">当月净欠款</small>
+                                <small class="text-muted d-block">{{ t('auto_text_718') }}</small>
                                 <strong class="text-warning d-block fs-5">
                                     RM {{ "{:,.2f}".format(card.monthly_balance) }}
                                 </strong>
@@ -137,7 +137,7 @@
                         
                         <div class="col-md-2 mb-3">
                             <div class="metric-box">
-                                <small class="text-muted d-block">累计欠款余额</small>
+                                <small class="text-muted d-block">{{ t('auto_text_721') }}</small>
                                 <strong class="text-danger d-block fs-5">
                                     RM {{ "{:,.2f}".format(card.cumulative_balance) }}
                                 </strong>
@@ -146,7 +146,7 @@
                         
                         <div class="col-md-2 mb-3">
                             <div class="metric-box">
-                                <small class="text-muted d-block">账单总欠款</small>
+                                <small class="text-muted d-block">{{ t('auto_text_722') }}</small>
                                 <strong class="text-info d-block fs-5">
                                     RM {{ "{:,.2f}".format(card.statement_balance) }}
                                 </strong>
@@ -155,7 +155,7 @@
                         
                         <div class="col-md-2 mb-3">
                             <div class="metric-box">
-                                <small class="text-muted d-block">累计积分</small>
+                                <small class="text-muted d-block">{{ t('auto_text_723') }}</small>
                                 <strong class="text-purple d-block fs-5">
                                     {{ "{:,}".format(card.cumulative_points) }} 分
                                 </strong>
@@ -182,7 +182,7 @@
                 </div>
                 <div class="card-body">
                     <a href="/credit_card_ledger" class="btn btn-outline-primary me-2">
-                        <i class="bi bi-list-ul"></i> 查看 OWNER vs INFINITE 账本
+                        <i class="bi bi-list-ul"></i> {{ t('_owner_vs_infinite') }} 账本
                     </a>
                     <a href="/customer/{{ customer_id }}/generate_monthly_report?month={{ selected_month }}" class="btn btn-outline-info">
                         <i class="bi bi-file-earmark-pdf"></i> 生成月度报告

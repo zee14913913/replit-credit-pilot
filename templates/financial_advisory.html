@@ -120,7 +120,7 @@
                     <div class="col-md-6 text-md-end">
                         <form method="POST" action="{{ url_for('request_consultation', customer_id=customer.id) }}">
                             <input type="hidden" name="optimization_id" value="{{ opt.id }}">
-                            <input type="hidden" name="request_type" value="optimization">
+                            <input type="hidden" name="request_type" value="{{ t('optimization') }}">
                             <button type="submit" class="btn-professional">
                                 {{ t('interested') }}
                             </button>
@@ -145,16 +145,16 @@
                 <div class="col-md-6">
                     <select name="request_type" class="form-control-professional" required>
                         <option value="">{{ t('select_type') }}</option>
-                        <option value="full_optimization">{{ t('full_optimization') }}</option>
-                        <option value="card_recommendation">{{ t('card_consultation') }}</option>
-                        <option value="loan_restructure">{{ t('loan_consultation') }}</option>
+                        <option value="{{ t('full_optimization') }}">{{ t('full_optimization') }}</option>
+                        <option value="{{ t('card_recommendation') }}">{{ t('card_consultation') }}</option>
+                        <option value="{{ t('loan_restructure') }}">{{ t('loan_consultation') }}</option>
                     </select>
                 </div>
                 <div class="col-md-6">
                     <select name="contact_method" class="form-control-professional" required>
-                        <option value="email">{{ t('email_contact') }}</option>
-                        <option value="phone">{{ t('phone_contact') }}</option>
-                        <option value="whatsapp">{{ t('whatsapp_contact') }}</option>
+                        <option value="{{ t('email') }}">{{ t('email_contact') }}</option>
+                        <option value="{{ t('phone') }}">{{ t('phone_contact') }}</option>
+                        <option value="{{ t('whatsapp') }}">{{ t('whatsapp_contact') }}</option>
                     </select>
                 </div>
                 <div class="col-md-12">

@@ -19,7 +19,7 @@
                 <div>
                     <a href="{{ url_for('download_monthly_summary_pdf', customer_id=summary.customer_id, year=summary.year, month=summary.month) }}" 
                        class="btn me-2" style="background: linear-gradient(135deg, #FF007F 0%, #C1006C 100%); color: white; border: none;">
-                        <i class="bi bi-file-pdf"></i> 导出PDF
+                        <i class="bi bi-file-pdf"></i> {{ t('pdf_5') }}
                     </a>
                     <a href="{{ url_for('monthly_summary_index') }}" class="btn btn-outline-light">
                         <i class="bi bi-arrow-left"></i> 返回
@@ -78,7 +78,7 @@
                     {% elif summary.net_balance < 0 %}
                         <span style="color: #00FF7F;">{{ t('_gz') }}</span>
                     {% else %}
-                        <span style="color: #FFFFFF;">(已结清)</span>
+                        <span style="color: #FFFFFF;">{{ t('auto_text_931') }}</span>
                     {% endif %}
                 </div>
                 <div style="color: #FFFFFF; font-size: 1.6rem; font-weight: bold;">
@@ -100,14 +100,14 @@
                     <table class="table table-hover" style="color: #FFFFFF; border-collapse: collapse;">
                         <thead style="background: rgba(0,0,0,0.3);">
                             <tr>
-                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">银行</th>
-                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">卡号</th>
-                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">账单日期</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">{{ t('auto_text_897') }}</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">{{ t('auto_text_932') }}</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">{{ t('auto_text_933') }}</th>
                                 <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">{{ t('supplier_1') }}</th>
-                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">手续费</th>
-                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">付款金额</th>
-                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">滚动余额</th>
-                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">转账次数</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">{{ t('auto_text_631') }}</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">{{ t('auto_text_934') }}</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">{{ t('auto_text_935') }}</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">{{ t('auto_text_936') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -170,12 +170,12 @@
                     <table class="table table-hover" style="color: #FFFFFF; border-collapse: collapse;">
                         <thead style="background: rgba(0,0,0,0.3);">
                             <tr>
-                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">日期</th>
-                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">付款人</th>
-                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">收款人</th>
-                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">信用卡</th>
-                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">金额</th>
-                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">说明</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">{{ t('auto_text_894') }}</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">{{ t('auto_text_938') }}</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">{{ t('auto_text_939') }}</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">{{ t('auto_text_940') }}</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">{{ t('auto_text_895') }}</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">{{ t('auto_text_941') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -255,7 +255,7 @@
                                 {% elif summary.net_balance < 0 %}
                                     <span style="color: #00FF7F;">{{ t('_gz_1') }}</span>
                                 {% else %}
-                                    <span style="color: #FFFFFF;">已完全结清</span>
+                                    <span style="color: #FFFFFF;">{{ t('auto_text_947') }}</span>
                                 {% endif %}
                             </div>
                         </div>

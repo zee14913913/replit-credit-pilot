@@ -26,19 +26,19 @@
                     <div class="row g-3 text-center">
                         <div class="col-md-4">
                             <div class="metric-box">
-                                <div class="metric-label">总消费</div>
+                                <div class="metric-label">{{ t('auto_text_572') }}</div>
                                 <div class="metric-value">RM {{ "{:,.2f}".format(report.spending_summary.total_spending) }}</div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="metric-box">
-                                <div class="metric-label">月均消费</div>
+                                <div class="metric-label">{{ t('auto_text_573') }}</div>
                                 <div class="metric-value">RM {{ "{:,.2f}".format(report.spending_summary.monthly_average) }}</div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="metric-box">
-                                <div class="metric-label">月收入</div>
+                                <div class="metric-label">{{ t('auto_text_574') }}</div>
                                 <div class="metric-value">RM {{ "{:,.2f}".format(report.customer.monthly_income or 0) }}</div>
                             </div>
                         </div>
@@ -46,7 +46,7 @@
                 </div>
             </div>
 
-            <!-- 当前状态 vs 优化方案 对比 -->
+            <!-- {{ t('_vs') }} 优化方案 对比 -->
             <div class="row g-4 mb-4">
                 <!-- 当前状态 -->
                 <div class="col-lg-6">
@@ -64,21 +64,21 @@
                                 </div>
                                 {% endfor %}
                             {% else %}
-                                <div class="alert alert-info">暂无登记信用卡</div>
+                                <div class="alert alert-info">{{ t('auto_text_576') }}</div>
                             {% endif %}
                             
                             <div class="metric-card mt-4">
                                 <div class="metric-row">
-                                    <span>年度返现</span>
+                                    <span>{{ t('auto_text_577') }}</span>
                                     <span class="text-success">RM {{ "{:,.2f}".format(report.current_state.total_annual_cashback) }}</span>
                                 </div>
                                 <div class="metric-row">
-                                    <span>年费支出</span>
+                                    <span>{{ t('auto_text_578') }}</span>
                                     <span class="text-danger">RM {{ "{:,.2f}".format(report.current_state.total_annual_fees) }}</span>
                                 </div>
                                 <hr class="border-golden border-opacity-25">
                                 <div class="metric-row fw-bold">
-                                    <span class="text-golden">净收益</span>
+                                    <span class="text-golden">{{ t('auto_text_579') }}</span>
                                     <span class="text-golden fs-5">RM {{ "{:,.2f}".format(report.current_state.net_annual_benefit) }}</span>
                                 </div>
                             </div>
@@ -107,21 +107,21 @@
                                 </div>
                                 {% endfor %}
                             {% else %}
-                                <div class="alert alert-warning">暂无推荐</div>
+                                <div class="alert alert-warning">{{ t('auto_text_581') }}</div>
                             {% endif %}
                             
                             <div class="metric-card mt-4" style="background: rgba(76, 175, 80, 0.1);">
                                 <div class="metric-row">
-                                    <span>年度返现</span>
+                                    <span>{{ t('auto_text_577') }}</span>
                                     <span class="text-success">RM {{ "{:,.2f}".format(report.optimized_solution.total_annual_cashback) }}</span>
                                 </div>
                                 <div class="metric-row">
-                                    <span>年费支出</span>
+                                    <span>{{ t('auto_text_578') }}</span>
                                     <span class="text-danger">RM {{ "{:,.2f}".format(report.optimized_solution.total_annual_fees) }}</span>
                                 </div>
                                 <hr class="border-success border-opacity-25">
                                 <div class="metric-row fw-bold">
-                                    <span class="text-success">净收益</span>
+                                    <span class="text-success">{{ t('auto_text_579') }}</span>
                                     <span class="text-success fs-5">RM {{ "{:,.2f}".format(report.optimized_solution.net_annual_benefit) }}</span>
                                 </div>
                             </div>
@@ -168,7 +168,7 @@
             <div class="galaxy-card mb-4">
                 <div class="card-body">
                     <h5 class="galaxy-gradient-text mb-4">
-                        <i class="bi bi-card-list me-2"></i>Top 3 推荐信用卡详情
+                        <i class="bi bi-card-list me-2"></i>{{ t('top_3_') }}
                     </h5>
                     {% for rec in report.detailed_recommendations %}
                     <div class="recommendation-card mb-3">
@@ -184,25 +184,25 @@
                         <div class="row g-2">
                             <div class="col-6 col-md-3">
                                 <div class="score-detail">
-                                    <div class="score-label">返现匹配</div>
+                                    <div class="score-label">{{ t('auto_text_585') }}</div>
                                     <div class="score-value">{{ rec.score_breakdown.cashback_match }}</div>
                                 </div>
                             </div>
                             <div class="col-6 col-md-3">
                                 <div class="score-detail">
-                                    <div class="score-label">年费评分</div>
+                                    <div class="score-label">{{ t('auto_text_586') }}</div>
                                     <div class="score-value">{{ rec.score_breakdown.annual_fee }}</div>
                                 </div>
                             </div>
                             <div class="col-6 col-md-3">
                                 <div class="score-detail">
-                                    <div class="score-label">福利评分</div>
+                                    <div class="score-label">{{ t('auto_text_587') }}</div>
                                     <div class="score-value">{{ rec.score_breakdown.benefits }}</div>
                                 </div>
                             </div>
                             <div class="col-6 col-md-3">
                                 <div class="score-detail">
-                                    <div class="score-label">资格匹配</div>
+                                    <div class="score-label">{{ t('auto_text_588') }}</div>
                                     <div class="score-value">{{ rec.score_breakdown.eligibility }}</div>
                                 </div>
                             </div>

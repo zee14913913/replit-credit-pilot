@@ -11,7 +11,7 @@
         <p class="section-subtitle">月度账单汇总报表 - {{ customer.name }}</p>
     </div>
 
-    <!-- Summary Cards - 更宽敞的布局 -->
+    <!-- {{ t('summary_cards__') }} -->
     <div class="row g-5 mb-5">
         <div class="col-12 col-md-6 col-xl-3">
             <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.6) 0%, rgba(36, 25, 52, 0.8) 100%); border: 2px solid rgba(255, 0, 127, 0.4); border-radius: 20px; padding: 3rem 2rem; text-align: center; min-height: 200px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 0, 127, 0.2); transition: all 0.3s ease;">
@@ -39,11 +39,11 @@
         </div>
     </div>
 
-    <!-- Generate New Report - 更大的卡片 -->
+    <!-- {{ t('generate_new_report__') }} -->
     <div class="mb-5">
         <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.6) 0%, rgba(36, 25, 52, 0.8) 100%); border: 2px solid rgba(255, 0, 127, 0.4); border-radius: 24px; padding: 3.5rem 3rem; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 0, 127, 0.2);">
             <h3 style="color: #FFFFFF; margin-bottom: 2rem; font-size: 1.8rem; font-weight: 700;">
-                <i class="bi bi-plus-circle"></i> Generate New Monthly Report / 生成新月度报表
+                <i class="bi bi-plus-circle"></i> {{ t('generate_new_monthly_report__') }}
             </h3>
             <form id="generateReportForm" method="get" class="row g-5">
                 <div class="col-12 col-md-4">
@@ -64,7 +64,7 @@
                 </div>
                 <div class="col-12 col-md-4 d-flex align-items-end">
                     <button type="submit" class="btn-professional w-100" style="padding: 1.2rem 2rem; font-size: 1.2rem; font-weight: 600; border-radius: 12px;">
-                        <i class="bi bi-play-circle"></i> Generate Report / 生成报表
+                        <i class="bi bi-play-circle"></i> {{ t('generate_report__') }}
                     </button>
                 </div>
             </form>
@@ -74,9 +74,9 @@
     <!-- Reports List (Grouped by Period) -->
     <div>
         <h3 class="mb-4" style="color: var(--text-primary);">
-            <i class="bi bi-list-ul"></i> All Monthly Reports / 所有月度报表
+            <i class="bi bi-list-ul"></i> {{ t('all_monthly_reports__') }}
             <small style="color: var(--text-secondary); font-size: 0.9rem; font-weight: normal;">
-                (按期间分组 / Grouped by Period)
+                ({{ t('__grouped_by_period_1') }})
             </small>
         </h3>
         
@@ -174,15 +174,14 @@
         <!-- Legend -->
         <div class="professional-card mt-4" style="background: rgba(52, 152, 219, 0.1); border: 1px solid rgba(52, 152, 219, 0.3);">
             <h5 style="color: var(--text-primary); margin-bottom: 1rem;">
-                <i class="bi bi-info-circle"></i> Understanding Your Reports / 了解您的报表
+                <i class="bi bi-info-circle"></i> {{ t('understanding_your_reports__') }}
             </h5>
             <div class="row g-3">
                 <div class="col-md-6">
                     <div style="padding: 0.75rem; background: rgba(52, 73, 94, 0.1); border-radius: 6px;">
                         <strong style="color: #3498db;">{{ t('customer_transactions__') }}</strong>
                         <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;">
-                            Your personal expenses and payments on this card.
-                            您在此卡上的个人消费和付款。
+                            {{ t('your_personal_expenses_and_payments_on_this_card___1') }}                  您在此卡上的个人消费和付款。
                         </p>
                     </div>
                 </div>
@@ -190,7 +189,7 @@
                     <div style="padding: 0.75rem; background: rgba(142, 68, 173, 0.1); border-radius: 6px;">
                         <strong style="color: #8e44ad;">{{ t('infinite_gz_transactions__infinite') }}</strong>
                         <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;">
-                            Company expenses at 7 designated suppliers and 3rd party payments.
+                            {{ t('company_expenses_at_7_designated_suppliers_and_3rd_1') }}ments.
                             公司在7家指定商家的消费和第三方付款。
                         </p>
                     </div>
@@ -199,7 +198,7 @@
                     <div style="padding: 0.75rem; background: rgba(230, 126, 34, 0.1); border-radius: 6px;">
                         <strong style="color: #e67e22;">{{ t('percard_reports__') }}</strong>
                         <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;">
-                            Each credit card now has a separate report - no mixing of transactions between cards!
+                            {{ t('each_credit_card_now_has_a_separate_report__no_mix_1') }}ansactions between cards!
                             每张信用卡现在有独立的报表 - 不会混合不同卡的交易记录！
                         </p>
                     </div>
@@ -221,7 +220,7 @@
     <!-- Back Button -->
     <div class="mt-5">
         <a href="{{ url_for('customer_dashboard', customer_id=customer.id) }}" class="btn-professional-outline">
-            <i class="bi bi-arrow-left"></i> Back to Dashboard / 返回仪表板
+            <i class="bi bi-arrow-left"></i> {{ t('back_to_dashboard__') }}
         </a>
     </div>
 </div>

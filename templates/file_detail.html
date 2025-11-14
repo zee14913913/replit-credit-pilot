@@ -4,8 +4,7 @@
 
 {% block extra_css %}
 <style>
-    /* 按钮颜色组合模式 - STRICT 3-COLOR PALETTE */
-    .btn-pattern-1 {
+    /* {{ t('__strict_3color_palette_____btnpattern') }}-1 {
         background-color: #FF007F;
         color: white;
         font-weight: bold;
@@ -53,7 +52,7 @@
         color: #FFFFFF;
     }
     
-    /* Badge颜色 */
+    /* {{ t('badge') }} */
     .badge {
         padding: 0.4rem 0.8rem;
         border-radius: 4px;
@@ -91,8 +90,7 @@
         color: white;
     }
     
-    /* 警告框 */
-    .alert-duplicate {
+    /* {{ t('_____alertduplicate') }} {
         background-color: white;
         color: #322446;
         border: 3px solid #FF007F;
@@ -160,7 +158,7 @@
         <h4 style="margin: 0;">{{ t('available_actions') }}</h4>
     </div>
     <div class="card-body">
-        <!-- Phase 1-10: 7状态机驱动的动态按钮（由JavaScript渲染） -->
+        <!-- {{ t('phase_110_7javascript') }}） -->
         <div class="d-flex gap-2 flex-wrap" id="action-buttons-container">
             <span style="color: #999;">{{ t('loading') }}...</span>
         </div>

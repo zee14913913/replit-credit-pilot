@@ -67,12 +67,12 @@
                             <small class="text-silver-pearl">{{ t('choose_how_to_provide_loan_application_data') }}</small>
                         </div>
                         <div class="btn-group" role="group">
-                            <input type="radio" class="btn-check" name="data_mode_toggle" id="mode_manual" value="manual" checked>
+                            <input type="radio" class="btn-check" name="data_mode_toggle" id="mode_manual" value="{{ t('manual') }}" checked>
                             <label class="btn btn-outline-light" for="mode_manual">
                                 <i class="bi bi-pencil-square me-1"></i>Manual Input
                             </label>
                             
-                            <input type="radio" class="btn-check" name="data_mode_toggle" id="mode_auto" value="auto">
+                            <input type="radio" class="btn-check" name="data_mode_toggle" id="mode_auto" value="{{ t('auto') }}">
                             <label class="btn btn-outline-light" for="mode_auto">
                                 <i class="bi bi-cpu me-1"></i>Auto Enrichment
                             </label>
@@ -92,7 +92,7 @@
                     </div>
                     
                     <form id="modernLoanForm" action="/loan-evaluate/submit" method="post">
-                        <input type="hidden" name="data_mode" id="data_mode_input" value="manual">
+                        <input type="hidden" name="data_mode" id="data_mode_input" value="{{ t('manual') }}">
                         
                         <div class="row g-4">
                             <!-- Customer ID -->
@@ -100,7 +100,7 @@
                                 <label class="form-label text-silver-pearl">
                                     <i class="bi bi-hash me-2"></i>Customer ID
                                 </label>
-                                <input type="number" name="customer_id" class="form-control galaxy-input" required min="1" placeholder="Enter customer ID">
+                                <input type="number" name="customer_id" class="form-control galaxy-input" required min="1" placeholder="{{ t('enter_customer_id') }}">
                                 <small class="text-golden">
                                     <i class="bi bi-info-circle me-1"></i>System will auto-fetch income data if available
                                 </small>
@@ -111,7 +111,7 @@
                                 <label class="form-label text-silver-pearl">
                                     <i class="bi bi-cash-stack me-2"></i>Monthly Income (RM)
                                 </label>
-                                <input type="number" name="income" class="form-control galaxy-input" step="0.01" min="0" placeholder="Optional - auto-fetched from income documents">
+                                <input type="number" name="income" class="form-control galaxy-input" step="0.01" min="0" placeholder="{{ t('optional__autofetched_from_income_documents') }}">
                                 <small class="text-silver-pearl">
                                     <i class="bi bi-lightbulb me-1"></i>Leave blank to use uploaded income documents
                                 </small>
@@ -122,7 +122,7 @@
                                 <label class="form-label text-silver-pearl">
                                     <i class="bi bi-credit-card-2-back me-2"></i>{{ t('monthly_debt_commitment_rm') }}<span class="text-danger">*</span>
                                 </label>
-                                <input type="number" name="monthly_commitment" class="form-control galaxy-input" required step="0.01" min="0" placeholder="Total monthly loan repayments">
+                                <input type="number" name="monthly_commitment" class="form-control galaxy-input" required step="0.01" min="0" placeholder="{{ t('total_monthly_loan_repayments') }}">
                                 <small class="text-golden">
                                     <i class="bi bi-shield-check me-1"></i>From CTOS report
                                 </small>
@@ -150,7 +150,7 @@
                                 <label class="form-label text-silver-pearl">
                                     <i class="bi bi-star-fill me-2"></i>Credit Score
                                 </label>
-                                <input type="number" name="credit_score" class="form-control galaxy-input" min="300" max="850" placeholder="300-850 (Optional)">
+                                <input type="number" name="credit_score" class="form-control galaxy-input" min="300" max="850" placeholder="{{ t('300850_optional') }}">
                                 <small class="text-silver-pearl">
                                     <i class="bi bi-info-circle me-1"></i>CTOS/CCRIS score, leave blank for auto-estimate
                                 </small>
@@ -169,7 +169,7 @@
                                 <label class="form-label text-silver-pearl">
                                     <i class="bi bi-briefcase me-2"></i>Employment Years
                                 </label>
-                                <input type="number" name="employment_years" class="form-control galaxy-input" step="0.5" min="0" placeholder="Years in current employment">
+                                <input type="number" name="employment_years" class="form-control galaxy-input" step="0.5" min="0" placeholder="{{ t('years_in_current_employment') }}">
                             </div>
 
                             <!-- Job Type -->
@@ -179,13 +179,13 @@
                                 </label>
                                 <select name="job_type" class="form-select galaxy-input">
                                     <option value="">{{ t('autodetect') }}</option>
-                                    <option value="permanent">{{ t('permanent_employee') }}</option>
-                                    <option value="government">{{ t('government') }}</option>
-                                    <option value="glc">{{ t('glc_governmentlinked_company') }}</option>
-                                    <option value="mnc">{{ t('mnc_multinational_corporation') }}</option>
-                                    <option value="sme">{{ t('sme_employee') }}</option>
-                                    <option value="self_employed">{{ t('selfemployed') }}</option>
-                                    <option value="contract">{{ t('contract_worker') }}</option>
+                                    <option value="{{ t('permanent') }}">{{ t('permanent_employee') }}</option>
+                                    <option value="{{ t('government_1') }}">{{ t('government') }}</option>
+                                    <option value="{{ t('glc') }}">{{ t('glc_governmentlinked_company') }}</option>
+                                    <option value="{{ t('mnc') }}">{{ t('mnc_multinational_corporation') }}</option>
+                                    <option value="{{ t('sme') }}">{{ t('sme_employee') }}</option>
+                                    <option value="{{ t('self_employed') }}">{{ t('selfemployed') }}</option>
+                                    <option value="{{ t('contract') }}">{{ t('contract_worker') }}</option>
                                 </select>
                             </div>
 
@@ -194,7 +194,7 @@
                                 <label class="form-label text-silver-pearl">
                                     <i class="bi bi-bank2 me-2"></i>Target Bank (Optional)
                                 </label>
-                                <input type="text" name="target_bank" class="form-control galaxy-input" placeholder="e.g., Maybank, CIMB (leave blank for all banks)">
+                                <input type="text" name="target_bank" class="form-control galaxy-input" placeholder="{{ t('eg_maybank_cimb_leave_blank_for_all_banks') }}">
                                 <small class="text-golden">
                                     <i class="bi bi-filter me-1"></i>Filter products by specific bank
                                 </small>

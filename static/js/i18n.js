@@ -122,15 +122,26 @@ class I18nManager {
 
 // Initialize I18n Manager when DOM is ready
 let i18n;
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
+const i18nReadyPromise = new Promise((resolve) => {
+    const initI18n = async () => {
         i18n = new I18nManager();
-        window.i18n = i18n; // Re-export after DOMContentLoaded
-    });
-} else {
-    i18n = new I18nManager();
-    window.i18n = i18n;
-}
+        window.i18n = i18n;
+        // Wait for translations to load
+        await i18n.init();
+        // Dispatch ready event
+        window.dispatchEvent(new CustomEvent('i18nReady'));
+        resolve(i18n);
+    };
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initI18n);
+    } else {
+        initI18n();
+    }
+});
+
+// Utility: wait for i18n to be ready
+window.waitForI18n = () => i18nReadyPromise;
 
 // Export for global use
 window.I18nManager = I18nManager;

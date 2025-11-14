@@ -109,30 +109,30 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/" data-i18n="nav_dashboard"></a>
+                        <a class="nav-link" href="/" data-i18n="{{ t('nav_dashboard_1') }}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/customers" data-i18n="nav_customers"></a>
+                        <a class="nav-link" href="/customers" data-i18n="{{ t('nav_customers_1') }}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/credit-card/ledger" data-i18n="nav_credit_cards"></a>
+                        <a class="nav-link" href="/credit-card/ledger" data-i18n="{{ t('nav_credit_cards_1') }}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/savings/customers" data-i18n="nav_savings"></a>
+                        <a class="nav-link" href="/savings/customers" data-i18n="{{ t('nav_savings_1') }}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/receipts/customers" data-i18n="nav_receipts"></a>
+                        <a class="nav-link" href="/receipts/customers" data-i18n="{{ t('nav_receipts_1') }}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/loan/customers" data-i18n="nav_loan"></a>
+                        <a class="nav-link" href="/loan/customers" data-i18n="{{ t('nav_loan_1') }}"></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="http://localhost:8000/accounting" target="_blank">
-                            <span data-i18n="nav_accounting"></span> <i class="bi bi-box-arrow-up-right"></i>
+                            <span data-i18n="{{ t('nav_accounting_1') }}"></span> <i class="bi bi-box-arrow-up-right"></i>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/files/list" data-i18n="nav_files"></a>
+                        <a class="nav-link" href="/files/list" data-i18n="{{ t('nav_files_1') }}"></a>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
@@ -140,14 +140,14 @@
                         <button class="btn btn-sm lang-btn" data-lang="en" style="background: transparent; border: 1px solid var(--primary-pink); color: #fff; margin: 0 5px;">{{ t('en') }}</button>
                     </li>
                     <li class="nav-item">
-                        <button class="btn btn-sm lang-btn" data-lang="zh" style="background: transparent; border: 1px solid var(--primary-pink); color: #fff; margin: 0 5px;">中文</button>
+                        <button class="btn btn-sm lang-btn" data-lang="zh" style="background: transparent; border: 1px solid var(--primary-pink); color: #fff; margin: 0 5px;">{{ t('auto_text_254') }}</button>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Toast容器 -->
+    <!-- {{ t('toast_1') }} -->
     <div id="toast-container"></div>
 
     <!-- 主内容区 -->

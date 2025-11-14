@@ -6,9 +6,9 @@
 <div class="fade-in">
     <div class="section-header">
         <h1 class="section-title">
-            <i class="bi bi-layout-split"></i> Statement Comparison / 账单对比
+            <i class="bi bi-layout-split"></i> {{ t('statement_comparison__') }}
         </h1>
-        <p class="section-subtitle">原始账单 vs 分类报告 - {{ statement.bank_name }} ****{{ statement.card_number_last4 }}</p>
+        <p class="section-subtitle">{{ t('_vs_2') }} 分类报告 - {{ statement.bank_name }} ****{{ statement.card_number_last4 }}</p>
     </div>
 
     <!-- Statement Info Card -->
@@ -39,7 +39,7 @@
         <div class="col-lg-6">
             <div class="professional-card" style="height: 800px; display: flex; flex-direction: column;">
                 <h3 style="color: var(--text-primary); margin-bottom: 1rem; flex-shrink: 0;">
-                    <i class="bi bi-file-pdf"></i> Original Statement / 原始账单
+                    <i class="bi bi-file-pdf"></i> {{ t('original_statement__') }}
                 </h3>
                 <div class="divider-professional" style="flex-shrink: 0;"></div>
                 <div style="flex: 1; overflow: hidden; margin-top: 1rem;">
@@ -64,7 +64,7 @@
         <div class="col-lg-6">
             <div class="professional-card" style="height: 800px; display: flex; flex-direction: column;">
                 <h3 style="color: var(--text-primary); margin-bottom: 1rem; flex-shrink: 0;">
-                    <i class="bi bi-table"></i> Classified Report / 分类报告
+                    <i class="bi bi-table"></i> {{ t('classified_report__') }}
                 </h3>
                 <div class="divider-professional" style="flex-shrink: 0;"></div>
                 

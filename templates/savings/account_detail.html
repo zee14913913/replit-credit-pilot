@@ -5,7 +5,7 @@
 {% block content %}
 <div class="fade-in">
     <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb" class="mb-4">
+    <nav aria-label="{{ t('breadcrumb') }}" class="mb-4">
         <ol class="breadcrumb" style="background: transparent; padding: 0;">
             <li class="breadcrumb-item"><a href="{{ url_for('savings_customers') }}" style="color: #FF007F;">{{ t('nav_savings') }}</a></li>
             <li class="breadcrumb-item active" style="color: var(--text-secondary);">{{ account.bank_name }}</li>

@@ -8,10 +8,10 @@
         <div class="col-lg-10">
             <!-- 页面标题 -->
             <div class="text-center mb-5">
-                <h1 class="galaxy-gradient-text mb-3" data-i18n="credit_card_intelligent_optimization">
+                <h1 class="galaxy-gradient-text mb-3" data-i18n="{{ t('credit_card_intelligent_optimization_1') }}">
                     <i class="bi bi-credit-card-2-front-fill me-2"></i>{{ t('credit_card_intelligent_optimization') }}
                 </h1>
-                <p class="text-silver-pearl fs-5" data-i18n="ai_analyze_consumption">
+                <p class="text-silver-pearl fs-5" data-i18n="{{ t('ai_analyze_consumption_1') }}">
                     {{ t('ai_analyze_consumption') }}
                 </p>
             </div>
@@ -20,15 +20,15 @@
             <div class="galaxy-card mb-4">
                 <div class="card-body">
                     <h5 class="galaxy-gradient-text mb-3">
-                        <i class="bi bi-stars me-2"></i><span data-i18n="system_features">{{ t('system_features') }}</span>
+                        <i class="bi bi-stars me-2"></i><span data-i18n="{{ t('system_features_1') }}">{{ t('system_features') }}</span>
                     </h5>
                     <div class="row g-4">
                         <div class="col-md-3">
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-graph-up text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1" data-i18n="consumption_pattern_analysis_title">{{ t('consumption_pattern_analysis_title') }}</h6>
-                                    <small class="text-silver-pearl" data-i18n="consumption_pattern_analysis_desc">{{ t('consumption_pattern_analysis_desc') }}</small>
+                                    <h6 class="text-white mb-1" data-i18n="{{ t('consumption_pattern_analysis_title_1') }}">{{ t('consumption_pattern_analysis_title') }}</h6>
+                                    <small class="text-silver-pearl" data-i18n="{{ t('consumption_pattern_analysis_desc_1') }}">{{ t('consumption_pattern_analysis_desc') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -36,7 +36,7 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-search text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1" data-i18n="intelligent_recommendation_engine">{{ t('intelligent_recommendation_engine') }}</h6>
+                                    <h6 class="text-white mb-1" data-i18n="{{ t('intelligent_recommendation_engine_1') }}">{{ t('intelligent_recommendation_engine') }}</h6>
                                     <small class="text-silver-pearl">156 {{ t('credit_cards') }}</small>
                                 </div>
                             </div>
@@ -45,7 +45,7 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-coin text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1" data-i18n="revenue_calculation">{{ t('revenue_calculation') }}</h6>
+                                    <h6 class="text-white mb-1" data-i18n="{{ t('revenue_calculation_1') }}">{{ t('revenue_calculation') }}</h6>
                                     <small class="text-silver-pearl">{{ t('revenue_calculation') }}</small>
                                 </div>
                             </div>
@@ -54,8 +54,8 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-clipboard-data text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1" data-i18n="comparison_report">{{ t('comparison_report') }}</h6>
-                                    <small class="text-silver-pearl" data-i18n="current_vs_optimized">{{ t('current_vs_optimized') }}</small>
+                                    <h6 class="text-white mb-1" data-i18n="{{ t('comparison_report_1') }}">{{ t('comparison_report') }}</h6>
+                                    <small class="text-silver-pearl" data-i18n="{{ t('current_vs_optimized_1') }}">{{ t('current_vs_optimized') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -67,7 +67,7 @@
             <div class="galaxy-card">
                 <div class="card-body">
                     <h5 class="galaxy-gradient-text mb-4">
-                        <i class="bi bi-person-badge-fill me-2"></i><span data-i18n="select_customer">{{ t('select_customer') }}</span>
+                        <i class="bi bi-person-badge-fill me-2"></i><span data-i18n="{{ t('select_customer_2') }}">{{ t('select_customer') }}</span>
                     </h5>
                     
                     {% if customers %}
@@ -88,7 +88,7 @@
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <span class="text-silver-pearl">
-                                                <i class="bi bi-arrow-right-circle me-2"></i><span data-i18n="generate_report">{{ t('generate_report') }}</span>
+                                                <i class="bi bi-arrow-right-circle me-2"></i><span data-i18n="{{ t('generate_report_1') }}">{{ t('generate_report') }}</span>
                                             </span>
                                             <i class="bi bi-chevron-right text-golden"></i>
                                         </div>
@@ -100,7 +100,7 @@
                     {% else %}
                         <div class="alert alert-warning">
                             <i class="bi bi-exclamation-triangle me-2"></i>
-                            <span data-i18n="no_customer_data_add_first">{{ t('no_customer_data_add_first') }}</span>
+                            <span data-i18n="{{ t('no_customer_data_add_first_1') }}">{{ t('no_customer_data_add_first') }}</span>
                         </div>
                     {% endif %}
                 </div>
