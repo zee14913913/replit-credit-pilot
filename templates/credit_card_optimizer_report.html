@@ -14,7 +14,7 @@
                 <p class="text-silver-pearl">
                     客户：{{ report.customer.name }} | 报告编号：{{ report.report_id }}
                 </p>
-                <p class="text-silver-pearl small">生成时间：{{ report.generated_at }}</p>
+                <p class="text-silver-pearl small"><span data-i18n="generated_time_colon">{{ t('generated_time_colon') }}</span> {{ report.generated_at }}</p>
             </div>
 
             <!-- 消费概览 -->
@@ -102,7 +102,7 @@
                                             <div class="text-golden fw-bold">{{ card.bank }}</div>
                                             <div class="text-white">{{ card.card_name[:60] }}</div>
                                         </div>
-                                        <div class="badge bg-success">评分: {{ card.score }}/100</div>
+                                        <div class="badge bg-success"><span data-i18n="score_colon">{{ t('score_colon') }}</span> {{ card.score }}/100</div>
                                     </div>
                                 </div>
                                 {% endfor %}
@@ -144,7 +144,7 @@
                     </div>
                     <div class="recommendation-level">
                         <h5 class="text-golden">{{ report.comparison.recommendation_level }}</h5>
-                        <p class="text-silver-pearl mb-0">改进评分：{{ report.comparison.improvement_score }}/100</p>
+                        <p class="text-silver-pearl mb-0"><span data-i18n="improvement_score_colon">{{ t('improvement_score_colon') }}</span> {{ report.comparison.improvement_score }}/100</p>
                     </div>
                 </div>
             </div>

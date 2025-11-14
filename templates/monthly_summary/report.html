@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ summary.period }} 月度汇总报告{% endblock %}
+{% block title %}{{ summary.period }} {{ t('monthly_summary_report') }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid mt-4">
@@ -10,7 +10,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 style="color: #FF007F;">
-                        <i class="bi bi-calendar-check"></i> {{ summary.period }} 月度汇总报告
+                        <i class="bi bi-calendar-check"></i> {{ summary.period }} <span data-i18n="monthly_summary_report">{{ t('monthly_summary_report') }}</span>
                     </h1>
                     <h5 style="color: #FFFFFF;">
                         {{ summary.customer_name }} ({{ summary.customer_code }})
@@ -22,7 +22,7 @@
                         <i class="bi bi-file-pdf"></i> {{ t('pdf_5') }}
                     </a>
                     <a href="{{ url_for('monthly_summary_index') }}" class="btn btn-outline-light">
-                        <i class="bi bi-arrow-left"></i> 返回
+                        <i class="bi bi-arrow-left"></i> <span data-i18n="back">{{ t('back') }}</span>
                     </a>
                 </div>
             </div>
@@ -35,7 +35,7 @@
             <div style="background: rgba(255,0,127,0.1); 
                         border: 1px solid #FF007F; border-radius: 12px; padding: 20px; white-space: nowrap;">
                 <div style="color: #FF007F; font-size: 0.85rem; margin-bottom: 10px;">
-                    Supplier消费
+                    <span data-i18n="supplier_spending">{{ t('supplier_spending') }}</span>
                 </div>
                 <div style="color: #FFFFFF; font-size: 1.6rem; font-weight: bold;">
                     RM {{ "{:,.2f}".format(summary.total_supplier_spending) }}
@@ -47,7 +47,7 @@
             <div style="background: rgba(50, 36, 70, 0.3); 
                         border: 1px solid #322446; border-radius: 12px; padding: 20px; white-space: nowrap;">
                 <div style="color: #FF007F; font-size: 0.85rem; margin-bottom: 10px;">
-                    手续费 (1%)
+                    <span data-i18n="service_fee">{{ t('service_fee') }}</span>
                 </div>
                 <div style="color: #FFFFFF; font-size: 1.6rem; font-weight: bold;">
                     RM {{ "{:,.2f}".format(summary.total_supplier_fee) }}
@@ -59,7 +59,7 @@
             <div style="background: rgba(50, 36, 70, 0.3); 
                         border: 1px solid #322446; border-radius: 12px; padding: 20px; white-space: nowrap;">
                 <div style="color: #FF007F; font-size: 0.85rem; margin-bottom: 10px;">
-                    已付款
+                    <span data-i18n="paid_amount">{{ t('paid_amount') }}</span>
                 </div>
                 <div style="color: #FFFFFF; font-size: 1.6rem; font-weight: bold;">
                     RM {{ "{:,.2f}".format(summary.total_payments) }}
@@ -72,7 +72,7 @@
                         border: 1px solid #322446; 
                         border-radius: 12px; padding: 20px; white-space: nowrap;">
                 <div style="color: #FF007F; font-size: 0.85rem; margin-bottom: 10px;">
-                    净余额
+                    <span data-i18n="net_balance">{{ t('net_balance') }}</span>
                     {% if summary.net_balance > 0 %}
                         <span style="color: #FF007F;">{{ t('gz_') }}</span>
                     {% elif summary.net_balance < 0 %}
@@ -93,7 +93,7 @@
         <div class="col-12">
             <div style="background: rgba(50, 36, 70, 0.3); border: 1px solid #322446; border-radius: 12px; padding: 25px;">
                 <h5 style="color: #FF007F; margin-bottom: 20px;">
-                    <i class="bi bi-credit-card-2-front"></i> 信用卡详情 ({{ summary.total_cards }}张)
+                    <i class="bi bi-credit-card-2-front"></i> <span data-i18n="credit_card_details">{{ t('credit_card_details') }}</span> ({{ summary.total_cards }}<span data-i18n="cards">{{ t('cards') }}</span>)
                 </h5>
 
                 <div class="table-responsive">
@@ -137,7 +137,7 @@
                         <tfoot style="background: rgba(0,0,0,0.5); font-weight: bold;">
                             <tr>
                                 <td colspan="3" style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">
-                                    总计
+                                    <span data-i18n="total">{{ t('total') }}</span>
                                 </td>
                                 <td style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">
                                     RM {{ "{:,.2f}".format(summary.total_supplier_spending) }}
@@ -163,7 +163,7 @@
         <div class="col-12">
             <div style="background: rgba(50, 36, 70, 0.3); border: 1px solid #322446; border-radius: 12px; padding: 25px;">
                 <h5 style="color: #FF007F; margin-bottom: 20px;">
-                    <i class="bi bi-cash-stack"></i> 付款详情 ({{ summary.payment_details|length }}笔)
+                    <i class="bi bi-cash-stack"></i> <span data-i18n="payment_details">{{ t('payment_details') }}</span> ({{ summary.payment_details|length }}<span data-i18n="transactions">{{ t('transactions') }}</span>)
                 </h5>
 
                 <div class="table-responsive">
@@ -209,20 +209,20 @@
             <div style="background: linear-gradient(135deg, rgba(255,0,127,0.1) 0%, rgba(50,36,70,0.2) 100%); 
                         border: 2px solid #FF007F; border-radius: 12px; padding: 30px;">
                 <h5 style="color: #FF007F; margin-bottom: 25px; text-align: center;">
-                    <i class="bi bi-clipboard-check"></i> 月度对账汇总
+                    <i class="bi bi-clipboard-check"></i> <span data-i18n="monthly_reconciliation">{{ t('monthly_reconciliation') }}</span>
                 </h5>
 
                 <div class="row text-center">
                     <div class="col-md-4 mb-3">
                         <div style="padding: 15px;">
                             <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 5px;">
-                                我们使用消费
+                                <span data-i18n="we_use_spending">{{ t('we_use_spending') }}</span>
                             </div>
                             <div style="color: #FFFFFF; font-size: 2rem; font-weight: bold;">
                                 RM {{ "{:,.2f}".format(summary.total_spending_with_fee) }}
                             </div>
                             <div style="color: #AAAAAA; font-size: 0.8rem;">
-                                (含1%手续费)
+                                <span data-i18n="including_fee">{{ t('including_fee') }}</span>
                             </div>
                         </div>
                     </div>
@@ -230,13 +230,13 @@
                     <div class="col-md-4 mb-3">
                         <div style="padding: 15px;">
                             <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 5px;">
-                                为客户付款
+                                <span data-i18n="for_customer_payment">{{ t('for_customer_payment') }}</span>
                             </div>
                             <div style="color: #FFFFFF; font-size: 2rem; font-weight: bold;">
                                 RM {{ "{:,.2f}".format(summary.total_payments) }}
                             </div>
                             <div style="color: #AAAAAA; font-size: 0.8rem;">
-                                (已支付)
+                                <span data-i18n="paid">{{ t('paid') }}</span>
                             </div>
                         </div>
                     </div>
@@ -244,7 +244,7 @@
                     <div class="col-md-4 mb-3">
                         <div style="padding: 15px; border-left: 2px solid #FF007F;">
                             <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 5px;">
-                                净余额
+                                <span data-i18n="net_balance">{{ t('net_balance') }}</span>
                             </div>
                             <div style="color: #FFFFFF; font-size: 2rem; font-weight: bold;">
                                 RM {{ "{:,.2f}".format(summary.net_balance|abs) }}
@@ -265,7 +265,7 @@
                 <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #322446; text-align: center;">
                     <div style="color: #FF007F; font-size: 1rem;">
                         <i class="bi bi-check-circle"></i> 
-                        清晰透明，避免误会，每月及时对账！
+                        <span data-i18n="accounts_clear_monthly">{{ t('accounts_clear_monthly') }}</span>
                     </div>
                 </div>
             </div>

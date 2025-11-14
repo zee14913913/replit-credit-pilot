@@ -561,7 +561,7 @@
                 <span class="close" onclick="closeModal()">{{ t('andtimes') }}</span>
             </div>
             <div id="modalBody" class="file-viewer">
-                加载中...
+                <span data-i18n="loading_ellipsis">{{ t('loading_ellipsis') }}</span>
             </div>
         </div>
     </div>
@@ -642,7 +642,8 @@
                 const data = await response.json();
                 
                 if (!data.success) {
-                    throw new Error(data.message || '加载失败');
+                    const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+                    throw new Error(data.message || t('load_failed', '加载失败'));
                 }
                 
                 {{ t('const_files__datafiles____________________________') }}     // 更新统计
@@ -767,7 +768,8 @@
                 const data = await response.json();
                 
                 if (data.status !== 'found') {
-                    throw new Error(data.message || '文件不存在');
+                    const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+                    throw new Error(data.message || t('file_not_exist', '文件不存在'));
                 }
                 
                 const file = data.file;
@@ -841,9 +843,11 @@
                     modalBody.innerHTML = html;
                     
                 } else {
+                    const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
                     // {{ t('____________________modalbodyinnerhtml') }} = `
+                    modalBody.innerHTML = `
                         <div style="color: #0f0; margin-bottom: 1rem;">
-                            📝 文本内容 | 总行数: ${data.line_count}
+                            📝 ${t('text_content', '文本内容')} | ${t('total_rows', '总行数')}: ${data.line_count}
                         </div>
                         <div class="file-viewer" style="color: #0f0;">
                             ${data.content.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
@@ -872,7 +876,8 @@
                     return;
                 }
                 
-                // {{ t('raw_document_idtoast_____________') }}   const errorMessage = result.status_reason || result.message || result.error || '上传失败';
+                const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+                // {{ t('raw_document_idtoast_____________') }}   const errorMessage = result.status_reason || result.message || result.error || t('upload_failed', '上传失败');
                 if (window.Toast) {
                     Toast.error(errorMessage);
                 } else {
@@ -881,10 +886,11 @@
                 loadFiles();
                 
             } catch (error) {
+                const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
                 if (window.Toast) {
-                    Toast.error(`上传失败: ${error.message}`);
+                    Toast.error(`${t('upload_failed', '上传失败')}: ${error.message}`);
                 } else {
-                    alert(`❌ 上传失败: ${error.message}`);
+                    alert(`❌ ${t('upload_failed', '上传失败')}: ${error.message}`);
                 }
                 loadFiles();
             }

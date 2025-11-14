@@ -7,7 +7,7 @@
     <!-- 页面标题 -->
     <div class="section-header">
         <h1 class="section-title">{{ t('__19') }}</h1>
-        <p class="section-subtitle">为 {{ customer_name }} 量身定制的专业优化建议</p>
+        <p class="section-subtitle"><span data-i18n="personalized_optimization_for">{{ t('personalized_optimization_for') }}</span> {{ customer_name }}</p>
     </div>
 
     <!-- 总体节省对比卡片 - 超大展示吸引注意 -->
@@ -153,7 +153,7 @@
                             <tr>
                                 <td style="color: rgba(255,255,255,0.9); font-weight: 700; white-space: nowrap;">{{ t('auto_text_1028') }}</td>
                                 <td style="color: #FF007F; font-weight: 700; white-space: nowrap;">RM {{ "%.2f"|format(item.current.monthly_interest) }}</td>
-                                <td style="color: #4CAF50; font-weight: 700; white-space: nowrap;">RM 0.00 ({{ item.proposed.promo_months }}个月促销)</td>
+                                <td style="color: #4CAF50; font-weight: 700; white-space: nowrap;">RM 0.00 ({{ item.proposed.promo_months }}<span data-i18n="promo_months">{{ t('promo_months') }}</span>)</td>
                             </tr>
                             <tr>
                                 <td style="color: rgba(255,255,255,0.9); font-weight: 700; white-space: nowrap;">{{ t('auto_text_1029') }}</td>

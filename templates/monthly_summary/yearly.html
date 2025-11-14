@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ customer.name }} - {{ year}}年度汇总{% endblock %}
+{% block title %}{{ customer.name }} - {{ year}} {{ t('yearly_summary_report') }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid mt-4">
@@ -10,7 +10,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 style="color: #FF007F;">
-                        <i class="bi bi-calendar3-range"></i> {{ year }}年度汇总报告
+                        <i class="bi bi-calendar3-range"></i> {{ year }} <span data-i18n="yearly_summary_report">{{ t('yearly_summary_report') }}</span>
                     </h1>
                     <h5 style="color: #FFFFFF;">
                         {{ customer.name }} ({{ customer.customer_code }})
@@ -22,7 +22,7 @@
                         <i class="bi bi-file-pdf"></i> {{ t('pdf_5') }}
                     </a>
                     <a href="{{ url_for('monthly_summary_index') }}" class="btn btn-outline-light">
-                        <i class="bi bi-arrow-left"></i> 返回
+                        <i class="bi bi-arrow-left"></i> <span data-i18n="back">{{ t('back') }}</span>
                     </a>
                 </div>
             </div>
@@ -35,7 +35,7 @@
             <div style="background: linear-gradient(135deg, rgba(255,0,127,0.3) 0%, rgba(193,0,108,0.3) 100%); 
                         border: 2px solid #FF007F; border-radius: 12px; padding: 20px;">
                 <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 10px;">
-                    <i class="bi bi-cart3"></i> {{ t('supplier_8') }}消费
+                    <i class="bi bi-cart3"></i> {{ t('supplier_8') }}<span data-i18n="supplier_spending">{{ t('supplier_spending') }}</span>
                 </div>
                 <div style="color: #FFFFFF; font-size: 2rem; font-weight: bold;">
                     RM {{ "{:,.2f}".format(year_total.total_supplier_spending) }}
@@ -47,7 +47,7 @@
             <div style="background: rgba(50, 36, 70, 0.4); 
                         border: 1px solid #322446; border-radius: 12px; padding: 20px;">
                 <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 10px;">
-                    <i class="bi bi-percent"></i> 年度手续费 (1%)
+                    <i class="bi bi-percent"></i> <span data-i18n="yearly_service_fee">{{ t('yearly_service_fee') }}</span>
                 </div>
                 <div style="color: #FFFFFF; font-size: 2rem; font-weight: bold;">
                     RM {{ "{:,.2f}".format(year_total.total_supplier_fee) }}
@@ -59,7 +59,7 @@
             <div style="background: rgba(50, 36, 70, 0.4); 
                         border: 1px solid #322446; border-radius: 12px; padding: 20px;">
                 <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 10px;">
-                    <i class="bi bi-cash-coin"></i> 年度已付款
+                    <i class="bi bi-cash-coin"></i> <span data-i18n="yearly_paid_amount">{{ t('yearly_paid_amount') }}</span>
                 </div>
                 <div style="color: #00FF7F; font-size: 2rem; font-weight: bold;">
                     RM {{ "{:,.2f}".format(year_total.total_payments) }}
@@ -72,7 +72,7 @@
                         border: 2px solid {% if year_total.net_balance > 0 %}#FF007F{% elif year_total.net_balance < 0 %}#00FF7F{% else %}#322446{% endif %}; 
                         border-radius: 12px; padding: 20px;">
                 <div style="color: #FF007F; font-size: 0.9rem; margin-bottom: 10px;">
-                    <i class="bi bi-calculator"></i> 年度净余额
+                    <i class="bi bi-calculator"></i> <span data-i18n="yearly_net_balance">{{ t('yearly_net_balance') }}</span>
                 </div>
                 <div style="color: #FFFFFF; font-size: 2rem; font-weight: bold;">
                     RM {{ "{:,.2f}".format(year_total.net_balance) }}
@@ -95,7 +95,7 @@
         <div class="col-12">
             <div style="background: rgba(50, 36, 70, 0.3); border: 1px solid #322446; border-radius: 12px; padding: 25px;">
                 <h5 style="color: #FF007F; margin-bottom: 20px;">
-                    <i class="bi bi-calendar2-month"></i> 逐月明细 ({{ monthly_data|length }}个月)
+                    <i class="bi bi-calendar2-month"></i> <span data-i18n="monthly_details">{{ t('monthly_details') }}</span> ({{ monthly_data|length }}<span data-i18n="months">{{ t('months') }}</span>)
                 </h5>
 
                 <div class="table-responsive">
@@ -137,7 +137,7 @@
                                 <td style="border-color: #322446;" class="text-center">
                                     <a href="{{ url_for('monthly_summary_report', customer_id=month_data.customer_id, year=month_data.year, month=month_data.month) }}" 
                                        class="btn btn-sm" style="background: #FF007F; color: white; border: none;">
-                                        <i class="bi bi-eye"></i> 查看
+                                        <i class="bi bi-eye"></i> <span data-i18n="view">{{ t('view') }}</span>
                                     </a>
                                 </td>
                             </tr>
@@ -146,7 +146,7 @@
                         <tfoot style="background: rgba(255,0,127,0.05); font-weight: bold;">
                             <tr>
                                 <td colspan="2" style="border-color: #322446; color: #FF007F;">
-                                    <strong>{{ year }}年总计</strong>
+                                    <strong>{{ year }} <span data-i18n="year_total">{{ t('year_total') }}</span></strong>
                                 </td>
                                 <td style="border-color: #322446; color: #FF007F;" class="text-end">
                                     <strong>RM {{ "{:,.2f}".format(year_total.total_supplier_spending) }}</strong>
@@ -177,21 +177,21 @@
             <div style="background: linear-gradient(135deg, rgba(255,0,127,0.1) 0%, rgba(50,36,70,0.2) 100%); 
                         border: 2px solid #FF007F; border-radius: 12px; padding: 30px; text-align: center;">
                 <h5 style="color: #FF007F; margin-bottom: 20px;">
-                    <i class="bi bi-graph-up"></i> {{ year }}年度总结
+                    <i class="bi bi-graph-up"></i> {{ year }} <span data-i18n="yearly_conclusion">{{ t('yearly_conclusion') }}</span>
                 </h5>
                 
                 <div style="font-size: 1.1rem; color: #FFFFFF; line-height: 2;">
                     <p>
-                        全年共<strong style="color: #FF007F;">{{ monthly_data|length }}个月</strong>{{ t('supplier_9') }}消费记录
+                        <span data-i18n="full_year">{{ t('full_year') }}</span><strong style="color: #FF007F;">{{ monthly_data|length }}<span data-i18n="months">{{ t('months') }}</span></strong>{{ t('supplier_9') }}<span data-i18n="spending_records">{{ t('spending_records') }}</span>
                     </p>
                     <p>
-                        总消费（含费用）：<strong style="color: #FF007F;">RM {{ "{:,.2f}".format(year_total.total_supplier_spending + year_total.total_supplier_fee) }}</strong>
+                        <span data-i18n="total_spending_with_fee">{{ t('total_spending_with_fee') }}</span> <strong style="color: #FF007F;">RM {{ "{:,.2f}".format(year_total.total_supplier_spending + year_total.total_supplier_fee) }}</strong>
                     </p>
                     <p>
-                        总付款金额：<strong style="color: #00FF7F;">RM {{ "{:,.2f}".format(year_total.total_payments) }}</strong>
+                        <span data-i18n="total_payment_amount">{{ t('total_payment_amount') }}</span> <strong style="color: #00FF7F;">RM {{ "{:,.2f}".format(year_total.total_payments) }}</strong>
                     </p>
                     <p style="font-size: 1.3rem; margin-top: 20px;">
-                        净余额：
+                        <span data-i18n="net_balance">{{ t('net_balance') }}</span>：
                         <strong style="color: {% if year_total.net_balance > 0 %}#FF007F{% elif year_total.net_balance < 0 %}#00FF7F{% else %}#FFFFFF{% endif %};">
                             RM {{ "{:,.2f}".format(year_total.net_balance|abs) }}
                         </strong>
@@ -208,7 +208,7 @@
                 <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #322446;">
                     <div style="color: #FF007F;">
                         <i class="bi bi-check-circle-fill"></i> 
-                        账目清晰，数据准确，每月对账无误会！
+                        <span data-i18n="accounts_clear">{{ t('accounts_clear') }}</span>
                     </div>
                 </div>
             </div>
