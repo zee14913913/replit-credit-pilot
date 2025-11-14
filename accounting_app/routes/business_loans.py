@@ -145,13 +145,17 @@ def get_business_loan_eligibility(
                 target_bank=target_bank
             )
             
-            # 产品匹配
-            recommended_products = LoanProductMatcher.match_sme_loan_products(
+            # 产品匹配 (PHASE 4: 使用增强版匹配引擎)
+            recommended_products = LoanProductMatcher.match_sme_loan_v2(
                 brr_grade=result["brr_grade"],
                 dscr=result["dscr"],
+                operating_income=operating_income,
                 industry_sector=industry_sector,
+                ctos_sme_score=ctos_sme_score,
+                company_age_years=company_age_years,
                 max_loan_amount=result["max_loan_amount"],
-                cgc_eligible=result["cgc_eligibility"]
+                cgc_eligible=result["cgc_eligibility"],
+                top_n=10  # 返回前10个产品
             )
             
             result["recommended_products"] = recommended_products

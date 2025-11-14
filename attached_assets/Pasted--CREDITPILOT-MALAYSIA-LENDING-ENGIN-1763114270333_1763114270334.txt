@@ -1,0 +1,148 @@
+# ===========================================================
+# CREDITPILOT — MALAYSIA LENDING ENGINE (DUAL ENGINE MODE)
+# PHASE 4 — PRODUCT INTELLIGENCE ENGINE (银行产品智能匹配)
+# ===========================================================
+
+请继续执行第四阶段任务：构建“贷款产品智能推荐引擎”，
+让系统能够根据 Modern 风控评分自动匹配最适合的银行/Fintech 产品。
+
+目标：
+- 自动匹配 12+ 家银行/Fintech 的真实贷款产品
+- 计算动态利率、最大可贷额度、批准概率
+- 输出 Top 3 / Top 5 / Full List 产品推荐
+
+===============================================================
+【任务 1】扩展 loan_products.py 并创建产品数据库结构
+===============================================================
+在 accounting_app/services/loan_products.py 中新增：
+
+- class ProductMatcher()
+- 方法：
+  - load_product_catalog()
+  - score_product_match(risk_grade, dscr/dti, industry, credit_score, ctos_sme_score)
+  - calculate_dynamic_interest_rate()
+  - calculate_approval_odds()
+  - rank_products()
+
+新增产品字段：
+- bank_name
+- product_name
+- category: "personal" 或 "sme"
+- base_interest_rate
+- min_income
+- max_loan_amount
+- max_tenure
+- risk_band_requirements
+- industry_restrictions (仅SME)
+- ctos_min_score
+- dti_limit / dscr_limit
+
+===============================================================
+【任务 2】引入真实银行与Fintech产品表
+===============================================================
+创建文件：
+accounting_app/services/risk_engine/product_catalog.py
+
+包含至少以下产品（12家）：
+
+传统银行：
+- Maybank Personal Loan
+- CIMB CashPlus
+- Public Bank BAE Loan
+- Hong Leong Personal Financing
+- RHB Smart Instalment
+- Alliance CashVantage
+- AmBank Signature Personal Loan
+- Standard Chartered CashOne
+
+数字银行：
+- GXBank Personal Financing
+- Boost Bank Micro Financing
+
+Fintech：
+- AEON Credit Personal Loan
+- Grab PayLater Personal Loan
+- Funding Societies SME
+- Aspirasi SME
+- CapitalBay SME
+
+每个产品包含字段：
+{
+  "bank": "...",
+  "product": "...",
+  "category": "personal/sme",
+  "base_rate": 0.06,
+  "max_tenure": 84,
+  "max_amount": 150000,
+  "required_risk_band": ["A+", "A", "B+"],
+  "min_ctos_sme_score": 600,
+  "industry_allowed": ["trading", "fnb", "services"]
+}
+
+===============================================================
+【任务 3】开发产品匹配逻辑（核心）
+===============================================================
+在 ProductMatcher 中实现：
+
+(1) interest_rate = base_rate × risk_multiplier  
+(2) max_loan_amount = min(product.max_amount, risk_engine.max_loan_amount)
+(3) match_score = weighted_score(dti/dscr, risk_grade, ctos_score, industry)
+(4) approval_probability = sigmoid(match_score × 风险调整系数)
+(5) 汇总Top 3、Top 5推荐产品
+
+===============================================================
+【任务 4】与 PersonalLoanRules & SMELoanRules 深度整合
+===============================================================
+在 personal_rules.py 中新增：
+
+self.recommended_products = ProductMatcher().match_personal_loan(...)
+
+在 sme_rules.py 中新增：
+
+self.recommended_products = ProductMatcher().match_sme_loan(...)
+
+最终输出结构需包含：
+
+"recommended_products": [
+  {
+    "bank": "...",
+    "product": "...",
+    "match_score": 92,
+    "interest_rate": 0.065,
+    "max_loan_amount": 72500,
+    "approval_odds": 98
+  },
+  ...
+]
+
+===============================================================
+【任务 5】扩展 API 输出
+===============================================================
+更新 routes：
+- loans.py
+- business_loans.py
+
+Modern 模式响应加入：
+
+- recommended_products
+- dynamic_interest_rate
+- approval_odds
+- match_score
+
+===============================================================
+【任务 6】产品排序逻辑测试
+===============================================================
+新增测试：
+
+tests/unit/risk_engine/test_product_matching.py
+
+验证：
+- 高 risk_grade → 推荐高等级产品
+- 中等风险 → 推荐中等产品
+- 高风险 → 推荐数字银行/Fintech 产品
+- SME 行业限制正确生效
+
+===============================================================
+完成后回复：
+“PHASE 4 COMPLETE — READY FOR PHASE 5”
+===============================================================

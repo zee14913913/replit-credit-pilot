@@ -212,12 +212,15 @@ async def get_loan_eligibility(
                 target_bank=target_bank
             )
             
-            # 产品匹配
-            recommended_products = LoanProductMatcher.match_personal_loan_products(
+            # 产品匹配 (PHASE 4: 使用增强版匹配引擎)
+            recommended_products = LoanProductMatcher.match_personal_loan_v2(
                 risk_grade=result["risk_grade"],
                 income=income,
+                monthly_commitment=monthly_commitment,
+                ccris_bucket=ccris_bucket,
+                credit_score=credit_score,
                 max_emi=result["max_emi"],
-                digital_bank_band=result["digital_bank_band"]["risk_band"]
+                top_n=10  # 返回前10个产品
             )
             
             result["recommended_products"] = recommended_products
