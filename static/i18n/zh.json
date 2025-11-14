@@ -1103,5 +1103,8 @@
   "consumption_pattern_analysis_desc": "AI智能分析6个月消费数据",
   "no_customer_data_add_first": "暂无客户数据。请先添加客户。",
   "comparison_report": "对比报告",
-  "current_vs_optimized": "当前 vs 优化方案对比"
+  "current_vs_optimized": "当前 vs 优化方案对比",
+  "score_breakdown": "评分细分",
+  "ai_advisor_recommendation": "AI 顾问建议",
+  "no_trend_data": "暂无趋势数据"
 }

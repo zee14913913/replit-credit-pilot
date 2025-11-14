@@ -42,6 +42,10 @@ class AIPredictManager {
             const score = data.score;
             const explanation = data.ai_explanation;
 
+            // Translatable text
+            const scoreBreakdownText = window.i18n ? window.i18n.translate('score_breakdown') : '评分细分';
+            const aiAdvisorText = window.i18n ? window.i18n.translate('ai_advisor_recommendation') : 'AI 顾问建议';
+
             // 评分颜色
             let scoreColor = '#FF007F'; // Hot Pink
             if (score.total_score >= 80) scoreColor = '#00FF7F'; // 绿色
@@ -60,7 +64,7 @@ class AIPredictManager {
                 </div>
                 
                 <div style="background:#0a0a0a; padding:16px; border-radius:8px; margin-bottom:16px;">
-                    <div style="color:#ccc; margin-bottom:12px; font-weight:600;">📊 评分细分：</div>
+                    <div style="color:#ccc; margin-bottom:12px; font-weight:600;">📊 ${scoreBreakdownText}：</div>
                     ${Object.entries(score.breakdown).map(([key, item]) => `
                         <div style="margin-bottom:10px;">
                             <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
@@ -75,7 +79,7 @@ class AIPredictManager {
                 </div>
                 
                 <div style="background:#1a1228; padding:14px; border-radius:8px; border-left:4px solid #FF007F;">
-                    <div style="color:#FF007F; font-weight:700; margin-bottom:8px;">🤖 AI 顾问建议</div>
+                    <div style="color:#FF007F; font-weight:700; margin-bottom:8px;">🤖 ${aiAdvisorText}</div>
                     <div style="color:#ddd; line-height:1.6;">${explanation}</div>
                 </div>
             `;
@@ -96,15 +100,17 @@ class AIPredictManager {
             const res = await fetch(`/api/ai-assistant/trends/${this.customerId}`);
             const data = await res.json();
 
+            const noTrendDataText = window.i18n ? window.i18n.translate('no_trend_data') : '暂无趋势数据';
             if (data.count === 0) {
-                chartBox.innerHTML = '<div style="color:#888; text-align:center; padding:40px;">暂无趋势数据</div>';
+                chartBox.innerHTML = `<div style="color:#888; text-align:center; padding:40px;">${noTrendDataText}</div>`;
                 return;
             }
 
             // 创建图表
             this.renderTrendChart(chartBox, data);
         } catch (error) {
-            chartBox.innerHTML = `<div style="color:#ff4444;">❌ 加载失败: ${error.message}</div>`;
+            const loadingFailedText = window.i18n ? window.i18n.translate('loading_failed') : '加载失败';
+            chartBox.innerHTML = `<div style="color:#ff4444;">❌ ${loadingFailedText}: ${error.message}</div>`;
         }
     }
 

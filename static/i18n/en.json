@@ -515,5 +515,8 @@
   "select_customer": "Select Customer",
   "no_customer_data_add_first": "No customer data. Please add customers first.",
   "comparison_report": "Comparison Report",
-  "current_vs_optimized": "Current vs Optimized Plan"
+  "current_vs_optimized": "Current vs Optimized Plan",
+  "score_breakdown": "Score Breakdown",
+  "ai_advisor_recommendation": "AI Advisor Recommendation",
+  "no_trend_data": "No trend data available"
 }
