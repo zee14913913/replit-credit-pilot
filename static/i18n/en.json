@@ -65,7 +65,7 @@
   "go_to_exceptions": "Go to Exceptions",
   "view_exceptions": "View Exceptions",
   "reupload": "Re-upload File",
-  "generate_report": "Generate Report",
+  "generate_report": "Generate Optimization Report",
   "view_file": "View Original File",
   "delete": "Delete",
   "confirm_delete": "Are you sure you want to delete this evidence bundle?",
@@ -506,5 +506,14 @@
   "please_upload_document": "Please upload at least one document to start Full Auto evaluation.",
   "evaluation_failed": "Full Auto evaluation failed",
   "alert_title": "Alert",
-  "error_occurred": "An error occurred"
+  "error_occurred": "An error occurred",
+  "credit_card_intelligent_optimization": "Credit Card Intelligent Optimization System",
+  "ai_analyze_consumption": "AI analyzes consumption patterns · Recommends optimal credit cards · Maximizes cashback rewards",
+  "system_features": "System Features",
+  "consumption_pattern_analysis_title": "Consumption Pattern Analysis",
+  "consumption_pattern_analysis_desc": "AI intelligently analyzes 6 months of consumption data",
+  "select_customer": "Select Customer",
+  "no_customer_data_add_first": "No customer data. Please add customers first.",
+  "comparison_report": "Comparison Report",
+  "current_vs_optimized": "Current vs Optimized Plan"
 }

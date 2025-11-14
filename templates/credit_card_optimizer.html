@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}信用卡优化系统{% endblock %}
+{% block title %}{{ t('credit_card_optimizer') }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-4">
@@ -8,11 +8,11 @@
         <div class="col-lg-10">
             <!-- 页面标题 -->
             <div class="text-center mb-5">
-                <h1 class="galaxy-gradient-text mb-3">
-                    <i class="bi bi-credit-card-2-front-fill me-2"></i>信用卡智能优化系统
+                <h1 class="galaxy-gradient-text mb-3" data-i18n="credit_card_intelligent_optimization">
+                    <i class="bi bi-credit-card-2-front-fill me-2"></i>{{ t('credit_card_intelligent_optimization') }}
                 </h1>
-                <p class="text-silver-pearl fs-5">
-                    AI分析消费模式 · 推荐最优信用卡 · 最大化返现收益
+                <p class="text-silver-pearl fs-5" data-i18n="ai_analyze_consumption">
+                    {{ t('ai_analyze_consumption') }}
                 </p>
             </div>
 
@@ -20,15 +20,15 @@
             <div class="galaxy-card mb-4">
                 <div class="card-body">
                     <h5 class="galaxy-gradient-text mb-3">
-                        <i class="bi bi-stars me-2"></i>系统功能
+                        <i class="bi bi-stars me-2"></i><span data-i18n="system_features">{{ t('system_features') }}</span>
                     </h5>
                     <div class="row g-4">
                         <div class="col-md-3">
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-graph-up text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1">消费模式分析</h6>
-                                    <small class="text-silver-pearl">AI智能分析6个月消费数据</small>
+                                    <h6 class="text-white mb-1" data-i18n="consumption_pattern_analysis_title">{{ t('consumption_pattern_analysis_title') }}</h6>
+                                    <small class="text-silver-pearl" data-i18n="consumption_pattern_analysis_desc">{{ t('consumption_pattern_analysis_desc') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -36,8 +36,8 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-search text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1">智能推荐引擎</h6>
-                                    <small class="text-silver-pearl">156张信用卡智能匹配</small>
+                                    <h6 class="text-white mb-1" data-i18n="intelligent_recommendation_engine">{{ t('intelligent_recommendation_engine') }}</h6>
+                                    <small class="text-silver-pearl">156 {{ t('credit_cards') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -45,8 +45,8 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-coin text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1">收益计算</h6>
-                                    <small class="text-silver-pearl">精确计算返现和福利价值</small>
+                                    <h6 class="text-white mb-1" data-i18n="revenue_calculation">{{ t('revenue_calculation') }}</h6>
+                                    <small class="text-silver-pearl">{{ t('revenue_calculation') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -54,8 +54,8 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-clipboard-data text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1">对比报告</h6>
-                                    <small class="text-silver-pearl">当前 vs 优化方案对比</small>
+                                    <h6 class="text-white mb-1" data-i18n="comparison_report">{{ t('comparison_report') }}</h6>
+                                    <small class="text-silver-pearl" data-i18n="current_vs_optimized">{{ t('current_vs_optimized') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -67,7 +67,7 @@
             <div class="galaxy-card">
                 <div class="card-body">
                     <h5 class="galaxy-gradient-text mb-4">
-                        <i class="bi bi-person-badge-fill me-2"></i>选择客户
+                        <i class="bi bi-person-badge-fill me-2"></i><span data-i18n="select_customer">{{ t('select_customer') }}</span>
                     </h5>
                     
                     {% if customers %}
@@ -88,7 +88,7 @@
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <span class="text-silver-pearl">
-                                                <i class="bi bi-arrow-right-circle me-2"></i>生成优化报告
+                                                <i class="bi bi-arrow-right-circle me-2"></i><span data-i18n="generate_report">{{ t('generate_report') }}</span>
                                             </span>
                                             <i class="bi bi-chevron-right text-golden"></i>
                                         </div>
@@ -100,7 +100,7 @@
                     {% else %}
                         <div class="alert alert-warning">
                             <i class="bi bi-exclamation-triangle me-2"></i>
-                            暂无客户数据。请先添加客户。
+                            <span data-i18n="no_customer_data_add_first">{{ t('no_customer_data_add_first') }}</span>
                         </div>
                     {% endif %}
                 </div>

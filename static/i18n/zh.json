@@ -82,7 +82,7 @@
   "go_to_exceptions": "前往异常中心",
   "view_exceptions": "查看异常",
   "reupload": "重新上传",
-  "generate_report": "生成报表",
+  "generate_report": "生成优化报告",
   "view_file": "查看文件",
   "validation_failed": "验证失败",
   "confirmed": "已确认",
@@ -1096,5 +1096,12 @@
   "please_upload_document": "请至少上传一份文件以开始全自动评估。",
   "evaluation_failed": "全自动评估失败",
   "alert_title": "提示",
-  "error_occurred": "发生错误"
+  "error_occurred": "发生错误",
+  "credit_card_intelligent_optimization": "信用卡智能优化系统",
+  "ai_analyze_consumption": "AI分析消费模式 · 推荐最优信用卡 · 最大化返现收益",
+  "consumption_pattern_analysis_title": "消费模式分析",
+  "consumption_pattern_analysis_desc": "AI智能分析6个月消费数据",
+  "no_customer_data_add_first": "暂无客户数据。请先添加客户。",
+  "comparison_report": "对比报告",
+  "current_vs_optimized": "当前 vs 优化方案对比"
 }
