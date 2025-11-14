@@ -221,7 +221,7 @@
                         <th>{{ t('type') }}</th>
                         <th>{{ t('category') }}</th>
                         <th>{{ t('details') }}</th>
-                        <th>CR/DR</th>
+                        <th>{{ t('crdr') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -241,9 +241,9 @@
                         </td>
                         <td style="white-space: nowrap;">
                             {% if txn.category == 'owner_expense' %}
-                            <span style="color: #330066;"><i class="bi bi-person-fill"></i> OWNER</span>
+                            <span style="color: #330066;"><i class="bi bi-person-fill"></i>{{ t('owner_1') }}</span>
                             {% elif txn.category == 'infinite_expense' %}
-                            <span style="color: #FFFEF0;"><i class="bi bi-infinity"></i> INFINITE</span>
+                            <span style="color: #FFFEF0;"><i class="bi bi-infinity"></i>{{ t('infinite') }}</span>
                             {% elif txn.category == 'owner_payment' %}
                             <span style="color: #FF007F;"><i class="bi bi-person-fill"></i> {{ t('owner_pay') }}</span>
                             {% elif txn.category == 'infinite_payment' %}
@@ -261,9 +261,9 @@
                         </td>
                         <td style="font-weight: 700; text-align: center; white-space: nowrap;">
                             {% if txn.transaction_type == 'payment' %}
-                            <span style="color: #FF007F;">CR</span>
+                            <span style="color: #FF007F;">{{ t('cr') }}</span>
                             {% else %}
-                            <span style="color: #FFFEF0;">DR</span>
+                            <span style="color: #FFFEF0;">{{ t('dr') }}</span>
                             {% endif %}
                         </td>
                     </tr>

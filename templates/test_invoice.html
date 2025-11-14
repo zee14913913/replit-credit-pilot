@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>发票预览 - Invoice Preview</title>
+    <title>{{ t('__invoice_preview') }}</title>
     <style>
         * {
             margin: 0;
@@ -83,15 +83,15 @@
         <h1>📄 专业供应商发票预览</h1>
         
         <div class="info">
-            <h2>发票详情 Invoice Details</h2>
-            <p><strong>供应商 Supplier:</strong> HUAWEI</p>
-            <p><strong>客户 Customer:</strong> CHEOK JUN YOON (Be_rich_CJY)</p>
-            <p><strong>发票编号 Invoice No:</strong> INF-202506-HUAWEI-01</p>
-            <p><strong>账单日期 Statement Date:</strong> 2025-06-30</p>
-            <p><strong>交易笔数 Transactions:</strong> 3 笔</p>
-            <p><strong>小计 Subtotal:</strong> RM 7,597.00</p>
-            <p><strong>处理费 Processing Fee (1%):</strong> RM 75.97</p>
-            <p><strong>应付总额 Total Amount Due:</strong> RM 7,672.97</p>
+            <h2>{{ t('_invoice_details') }}</h2>
+            <p><strong>{{ t('_supplier') }}</strong>{{ t('huawei') }}</p>
+            <p><strong>{{ t('_customer') }}</strong>{{ t('cheok_jun_yoon_be_rich_cjy') }}</p>
+            <p><strong>{{ t('_invoice_no') }}</strong>{{ t('inf202506huawei01') }}</p>
+            <p><strong>{{ t('_statement_date') }}</strong> 2025-06-30</p>
+            <p><strong>{{ t('_transactions') }}</strong> 3 笔</p>
+            <p><strong>{{ t('_subtotal') }}</strong>{{ t('rm_759700') }}</p>
+            <p><strong>{{ t('_processing_fee_1') }}</strong>{{ t('rm_7597') }}</p>
+            <p><strong>{{ t('_total_amount_due') }}</strong>{{ t('rm_767297') }}</p>
         </div>
 
         <div style="text-align: center; margin-bottom: 1rem;">

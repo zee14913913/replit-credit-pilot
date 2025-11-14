@@ -9,7 +9,7 @@
             <h1 class="mb-2">
                 🔹Statement Validation
             </h1>
-            <p class="text-silver">Review extracted transactions and verification results before confirming</p>
+            <p class="text-silver">{{ t('review_extracted_transactions_and_verification_results_before_confirming') }}</p>
         </div>
     </div>
 
@@ -18,12 +18,12 @@
             <div class="card {{ 'border-success' if statement.validation_score > 0.8 else 'border-warning' }}" style="border-width: 2px;">
                 <div class="card-body text-center">
                     <div class="mb-3">
-                        <span style="font-size: 3rem;">{{ '✅' if statement.validation_score > 0.8 else '⚠️' }}</span>
+                        <span style="font-size: 3rem;">{{ '✅' if statement.validation_score >{{ t('08_else__') }}</span>
                     </div>
                     <h2 class="{{ 'text-jade' if statement.validation_score > 0.8 else 'text-amber' }}">
                         {{ "{:.0%}".format(statement.validation_score) }}
                     </h2>
-                    <p class="text-silver mb-0">Validation Score</p>
+                    <p class="text-silver mb-0">{{ t('validation_score') }}</p>
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@
                         🔹
                     </div>
                     <h2 class="text-champagne">{{ transactions|length }}</h2>
-                    <p class="text-silver mb-0">Transactions Extracted</p>
+                    <p class="text-silver mb-0">{{ t('transactions_extracted') }}</p>
                 </div>
             </div>
         </div>
@@ -44,7 +44,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="alert alert-danger">
-                <h5>🔹Inconsistencies Detected</h5>
+                <h5>{{ t('inconsistencies_detected') }}</h5>
                 <ul class="mb-0 mt-3">
                     {% for issue in inconsistencies %}
                     <li>{{ issue }}</li>
@@ -59,7 +59,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>🔹Transaction Details</span>
+                    <span>{{ t('transaction_details') }}</span>
                     <span class="badge badge-info">{{ transactions|length }} items</span>
                 </div>
                 <div class="card-body p-0">
@@ -67,10 +67,10 @@
                         <table class="table table-striped mb-0">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Description</th>
-                                    <th>Amount</th>
-                                    <th>Category</th>
+                                    <th>{{ t('date') }}</th>
+                                    <th>{{ t('description') }}</th>
+                                    <th>{{ t('amount') }}</th>
+                                    <th>{{ t('category') }}</th>
                                 </tr>
                             </thead>
                             <tbody>

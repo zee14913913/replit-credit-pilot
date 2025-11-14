@@ -69,7 +69,7 @@
                                     <textarea name="description" class="form-control" rows="3"></textarea>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">预估价值 (RM)</label>
+                                    <label class="form-label">{{ t('_rm') }}</label>
                                     <input type="number" step="0.01" name="estimated_value" class="form-control">
                                 </div>
                                 <div class="mb-3">
@@ -350,7 +350,7 @@
                     <h5 class="card-title">
                         <i class="bi bi-robot"></i> AI智能分析
                     </h5>
-                    <p class="card-text">基于您的资源、人脉和技能，AI将为您生成个性化的商业计划建议</p>
+                    <p class="card-text">{{ t('ai_2') }}</p>
                     <a href="/customer/{{ customer_id }}/generate_business_plan" class="btn btn-lg btn-primary">
                         <i class="bi bi-magic"></i> 生成商业计划
                     </a>

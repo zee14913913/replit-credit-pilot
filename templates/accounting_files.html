@@ -542,7 +542,7 @@
             </div>
             <div class="stat-card">
                 <div class="stat-label">{{ t('stat_total_storage') }}</div>
-                <div class="stat-value" id="total-size">-- MB</div>
+                <div class="stat-value" id="total-size">{{ t('_mb') }}</div>
             </div>
         </div>
         
@@ -563,7 +563,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title" id="modalTitle">文件查看</div>
-                <span class="close" onclick="closeModal()">&times;</span>
+                <span class="close" onclick="closeModal()">{{ t('andtimes') }}</span>
             </div>
             <div id="modalBody" class="file-viewer">
                 加载中...
@@ -678,7 +678,7 @@
                 const filesList = document.getElementById('files-list');
                 
                 if (files.length === 0) {
-                    filesList.innerHTML = `<div class="empty">${window.i18n.no_files_yet}<br/><small>${window.i18n.upload_first_file}</small></div>`;
+                    filesList.innerHTML = `<div class="empty">{{ t('windowi18nno_files_yet') }}<br/><small>{{ t('windowi18nupload_first_file') }}</small></div>`;
                     return;
                 }
                 
@@ -695,13 +695,13 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>${window.i18n.module}</th>
-                                    <th>${window.i18n.file_name}</th>
-                                    <th>${window.i18n.status_validation}</th>
-                                    <th>${window.i18n.next_action}</th>
-                                    <th>${window.i18n.file_size_kb}</th>
-                                    <th>${window.i18n.upload_time}</th>
-                                    <th>${window.i18n.operations}</th>
+                                    <th>{{ t('windowi18nmodule') }}</th>
+                                    <th>{{ t('windowi18nfile_name') }}</th>
+                                    <th>{{ t('windowi18nstatus_validation') }}</th>
+                                    <th>{{ t('windowi18nnext_action') }}</th>
+                                    <th>{{ t('windowi18nfile_size_kb') }}</th>
+                                    <th>{{ t('windowi18nupload_time') }}</th>
+                                    <th>{{ t('windowi18noperations') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -749,11 +749,11 @@
                     }[file.module] || file.module;
                     
                     // 新文件标记
-                    const newBadge = isNew ? '<span style="color: #FF007F; font-weight: bold; margin-left: 8px;">NEW</span>' : '';
+                    const newBadge = isNew ? '<span style="color: #FF007F; font-weight: bold; margin-left: 8px;">{{ t('new') }}</span>' : '';
                     
                     // 重复警告标记
                     const duplicateWarning = file.duplicate_warning ? 
-                        '<span style="color: #ff6600; font-weight: bold; margin-left: 8px;">' + (window.i18n.current_lang === 'zh' ? '本月有多份' : 'Duplicate') + '</span>' : '';
+                        '<span style="color: #ff6600; font-weight: bold; margin-left: 8px;">{{ t('__windowi18ncurrent_lang__zh____duplicate__') }}</span>' : '';
                     
                     // 状态说明
                     const statusReason = file.status_reason || '无说明';
@@ -786,15 +786,15 @@
                     
                     html += `
                         <tr class="${rowClass}" data-file-id="${file.file_id}" style="${file.duplicate_warning ? 'background: rgba(255, 102, 0, 0.1);' : ''}">
-                            <td style="color: #FFFFFF;">${moduleName}</td>
-                            <td style="color: #FFFFFF;">${file.file_name}${newBadge}${duplicateWarning}</td>
+                            <td style="color: #FFFFFF;">{{ t('modulename') }}</td>
+                            <td style="color: #FFFFFF;">{{ t('filefile_namenewbadgeduplicatewarning') }}</td>
                             <td style="color: #FFFFFF;">
-                                <span class="status-badge ${statusClass}">${statusText}</span>
-                                <span class="status-badge" style="background: #322446; color: #FFFFFF;">${validationBadge}</span>
+                                <span class="status-badge ${statusClass}">{{ t('statustext') }}</span>
+                                <span class="status-badge" style="background: #322446; color: #FFFFFF;">{{ t('validationbadge') }}</span>
                             </td>
-                            <td>${nextActionsHtml}</td>
-                            <td style="color: #FFFFFF;">${(file.file_size_kb || 0).toFixed(2)}</td>
-                            <td style="color: #FFFFFF;">${new Date(file.uploaded_at).toLocaleString('zh-CN')}</td>
+                            <td>{{ t('nextactionshtml') }}</td>
+                            <td style="color: #FFFFFF;">{{ t('filefile_size_kb__0tofixed2') }}</td>
+                            <td style="color: #FFFFFF;">{{ t('new_datefileuploaded_attolocalestringzhcn') }}</td>
                             <td>
                                 <button onclick="viewFileDetail(${file.file_id})" class="btn btn-primary btn-small">详情</button>
                             </td>
@@ -808,7 +808,7 @@
             } catch (error) {
                 console.error(window.i18n.load_failed + ':', error);
                 document.getElementById('files-list').innerHTML = 
-                    `<div class="empty">${window.i18n.load_failed}: ${error.message}</div>`;
+                    `<div class="empty">{{ t('windowi18nload_failed_errormessage') }}</div>`;
             }
         }
         
@@ -883,32 +883,32 @@
                             ${file.file_name}
                         </h3>
                         <div style="display: grid; grid-template-columns: 150px 1fr; gap: 10px;">
-                            <div style="color: #999;">文件ID:</div>
-                            <div>${file.file_id}</div>
+                            <div style="color: #999;">{{ t('id_1') }}</div>
+                            <div>{{ t('filefile_id') }}</div>
                             
                             <div style="color: #999;">模块:</div>
-                            <div>${file.module}</div>
+                            <div>{{ t('filemodule') }}</div>
                             
                             <div style="color: #999;">状态:</div>
                             <div>
-                                <span class="status-badge status-${file.file_status}">${file.file_status}</span>
-                                <span class="status-badge" style="background: #322446;">${file.validation_status || 'pending'}</span>
+                                <span class="status-badge status-${file.file_status}">{{ t('filefile_status') }}</span>
+                                <span class="status-badge" style="background: #322446;">{{ t('filevalidation_status__pending') }}</span>
                             </div>
                             
                             <div style="color: #999;">文件路径:</div>
-                            <div style="word-break: break-all;">${file.storage_path}</div>
+                            <div style="word-break: break-all;">{{ t('filestorage_path') }}</div>
                             
                             <div style="color: #999;">文件大小:</div>
-                            <div>${(file.file_size_kb || 0).toFixed(2)} KB</div>
+                            <div>{{ t('filefile_size_kb__0tofixed2_kb') }}</div>
                             
                             <div style="color: #999;">上传者:</div>
-                            <div>${file.uploaded_by}</div>
+                            <div>{{ t('fileuploaded_by') }}</div>
                             
                             <div style="color: #999;">上传时间:</div>
-                            <div>${new Date(file.uploaded_at).toLocaleString('zh-CN')}</div>
+                            <div>{{ t('new_datefileuploaded_attolocalestringzhcn') }}</div>
                             
                             <div style="color: #999;">来源引擎:</div>
-                            <div>${file.from_engine === 'flask' ? 'Flask' : 'FastAPI'}</div>
+                            <div>{{ t('filefrom_engine__flask__flask__fastapi') }}</div>
                         </div>
                         
                         <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #322446;">
@@ -919,7 +919,7 @@
                 modalBody.innerHTML = html;
                 
             } catch (error) {
-                modalBody.innerHTML = `<div class="empty">加载失败: ${error.message}</div>`;
+                modalBody.innerHTML = `<div class="empty">{{ t('_errormessage') }}</div>`;
             }
         }
         
@@ -1037,7 +1037,7 @@
                     
                     // 表头
                     data.headers.forEach(header => {
-                        html += `<th>${header}</th>`;
+                        html += `<th>{{ t('header') }}</th>`;
                     });
                     html += '</tr></thead><tbody>';
                     
@@ -1045,7 +1045,7 @@
                     data.rows.forEach((row, idx) => {
                         html += '<tr>';
                         data.headers.forEach(header => {
-                            html += `<td>${row[header] || ''}</td>`;
+                            html += `<td>{{ t('rowheader__') }}</td>`;
                         });
                         html += '</tr>';
                     });
@@ -1066,7 +1066,7 @@
                 }
                 
             } catch (error) {
-                modalBody.innerHTML = `<div class="empty">加载失败: ${error.message}</div>`;
+                modalBody.innerHTML = `<div class="empty">{{ t('_errormessage') }}</div>`;
             }
         }
         
@@ -1103,7 +1103,7 @@
             
             // 如果是PDF文件，先转换为CSV（完全保留原始数据）
             if (fileName.endsWith('.pdf')) {
-                filesList.innerHTML = `<div class="loading">🔄 正在将PDF转换为CSV格式...</div>`;
+                filesList.innerHTML = `<div class="loading">{{ t('_pdfcsv') }}</div>`;
                 
                 const conversionResult = await convertPDFToCSV(file);
                 
@@ -1123,9 +1123,9 @@
                 const csvBlob = new Blob([conversionResult.csvContent], { type: 'text/csv' });
                 uploadFile = new File([csvBlob], fileName.replace('.pdf', '.csv'), { type: 'text/csv' });
                 
-                filesList.innerHTML = `<div class="loading">✅ PDF已转换为CSV (${conversionResult.rowCount}行)\n📤 正在智能分析并上传...</div>`;
+                filesList.innerHTML = `<div class="loading">{{ t('_pdfcsv_conversionresultrowcountn_') }}</div>`;
             } else {
-                filesList.innerHTML = `<div class="loading">📤 正在智能分析CSV文件并上传...</div>`;
+                filesList.innerHTML = `<div class="loading">{{ t('_csv') }}</div>`;
             }
             
             // 统一上传流程（CSV和PDF转换后的CSV使用相同验证机制）

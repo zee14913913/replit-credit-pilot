@@ -17,7 +17,7 @@
                         <h1 style="color: #FFFEF0; text-shadow: 0 0 20px rgba(255,254,240,0.5); font-weight: 700; margin: 0; font-size: 2.2rem;">
                             <i class="bi bi-bank"></i> 储蓄账户管理中心
                         </h1>
-                        <p style="color: #999; margin: 0.5rem 0 0 0; font-size: 0.95rem;">Savings Account Management Dashboard</p>
+                        <p style="color: #999; margin: 0.5rem 0 0 0; font-size: 0.95rem;">{{ t('savings_account_management_dashboard') }}</p>
                     </div>
                     <div>
                         <a href="{{ url_for('savings_customers') }}" class="btn btn-sm" 
@@ -105,7 +105,7 @@
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">月度入账</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">月度出账</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">结余</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">CC付款总额</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">{{ t('cc') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #C0C0C0; white-space: nowrap;">转账总额</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; color: #C0C0C0; white-space: nowrap;">操作</th>
                                 </tr>

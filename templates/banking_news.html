@@ -6,45 +6,45 @@
 <div class="fade-in">
     <div class="section-header">
         <h1 class="section-title">{{ t('nav_news') }}</h1>
-        <p class="section-subtitle">Stay updated with Bank Negara Malaysia rates and banking industry news</p>
+        <p class="section-subtitle">{{ t('stay_updated_with_bank_negara_malaysia_rates_and_banking_industry_news') }}</p>
     </div>
 
     <div class="row g-4 mb-5">
         <div class="col-lg-6">
             <div class="professional-card h-100">
-                <h3 style="color: var(--text-primary); margin-bottom: 2rem;">Bank Negara Malaysia Rates</h3>
+                <h3 style="color: var(--text-primary); margin-bottom: 2rem;">{{ t('bank_negara_malaysia_rates') }}</h3>
                 <div class="row g-4">
                     <div class="col-md-6">
                         <div class="stat-card">
                             <div class="stat-value">{{ rates.opr.rate_value }}%</div>
-                            <div class="stat-label">OPR</div>
-                            <small style="color: var(--text-tertiary);">Overnight Policy Rate</small>
+                            <div class="stat-label">{{ t('opr') }}</div>
+                            <small style="color: var(--text-tertiary);">{{ t('overnight_policy_rate') }}</small>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="stat-card">
                             <div class="stat-value">{{ rates.sbr.rate_value }}%</div>
-                            <div class="stat-label">SBR</div>
-                            <small style="color: var(--text-tertiary);">Statutory Reserve Rate</small>
+                            <div class="stat-label">{{ t('sbr') }}</div>
+                            <small style="color: var(--text-tertiary);">{{ t('statutory_reserve_rate') }}</small>
                         </div>
                     </div>
                 </div>
                 <div class="divider-professional"></div>
-                <a href="{{ url_for('refresh_rates') }}" class="btn-professional w-100">Refresh Rates</a>
+                <a href="{{ url_for('refresh_rates') }}" class="btn-professional w-100">{{ t('refresh_rates') }}</a>
             </div>
         </div>
         <div class="col-lg-6">
             <div class="professional-card h-100 d-flex align-items-center justify-content-center text-center">
                 <div>
-                    <h4 style="color: var(--text-primary); margin-bottom: 1rem;">Live Rate Updates</h4>
-                    <p style="color: var(--text-secondary); margin: 0;">Real-time data from Bank Negara Malaysia API</p>
+                    <h4 style="color: var(--text-primary); margin-bottom: 1rem;">{{ t('live_rate_updates') }}</h4>
+                    <p style="color: var(--text-secondary); margin: 0;">{{ t('realtime_data_from_bank_negara_malaysia_api') }}</p>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="mb-4">
-        <h3 style="color: var(--text-primary); margin-bottom: 2rem;">Banking News & Updates</h3>
+        <h3 style="color: var(--text-primary); margin-bottom: 2rem;">{{ t('banking_news_and_updates') }}</h3>
         <div class="row g-5 equal-height-cards">
             {% for news in news_items %}
             <div class="col-12">
@@ -65,8 +65,8 @@
 
     {% if not news_items %}
     <div class="professional-card text-center py-5">
-        <h4 class="mt-4 mb-3" style="color: var(--text-primary);">No News Available</h4>
-        <p style="color: var(--text-secondary);">Check back later for banking updates and announcements</p>
+        <h4 class="mt-4 mb-3" style="color: var(--text-primary);">{{ t('no_news_available') }}</h4>
+        <p style="color: var(--text-secondary);">{{ t('check_back_later_for_banking_updates_and_announcements') }}</p>
     </div>
     {% endif %}
 </div>

@@ -164,16 +164,16 @@
         
         container.innerHTML = notifications.map(n => `
             <div class="notification-card ${n.status === 'read' ? 'read' : ''}">
-                <div class="notification-title">${n.title}</div>
-                <div class="notification-message">${n.message}</div>
+                <div class="notification-title">{{ t('ntitle') }}</div>
+                <div class="notification-message">{{ t('nmessage') }}</div>
                 <div class="notification-footer">
                     <div>
                         <span class="priority-badge priority-${n.priority || 'normal'}">
                             ${n.priority === 'high' ? '高优先级' : n.priority === 'low' ? '低优先级' : '普通'}
                         </span>
-                        <span style="margin-left: 12px;">${formatTime(n.created_at)}</span>
+                        <span style="margin-left: 12px;">{{ t('formattimencreated_at') }}</span>
                     </div>
-                    ${n.action_url ? `<a href="${n.action_url}" class="btn-sm btn-action">${n.action_label || '查看详情'}</a>` : ''}
+                    ${n.action_url ? `<a href="${n.action_url}" class="btn-sm btn-action">{{ t('naction_label__') }}</a>` : ''}
                 </div>
             </div>
         `).join('');

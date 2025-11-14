@@ -31,8 +31,8 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-calculator text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1">DTI & FOIR Analysis</h6>
-                                    <small class="text-silver-pearl">Debt-to-Income & Fixed Obligation to Income Ratio</small>
+                                    <h6 class="text-white mb-1">{{ t('dti_and_foir_analysis') }}</h6>
+                                    <small class="text-silver-pearl">{{ t('debttoincome_and_fixed_obligation_to_income_ratio') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -40,8 +40,8 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-bar-chart-line text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1">CCRIS Risk Scoring</h6>
-                                    <small class="text-silver-pearl">Credit Bureau risk bucket classification (0-6)</small>
+                                    <h6 class="text-white mb-1">{{ t('ccris_risk_scoring') }}</h6>
+                                    <small class="text-silver-pearl">{{ t('credit_bureau_risk_bucket_classification_06') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -49,8 +49,8 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-trophy text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1">AI Risk Grading</h6>
-                                    <small class="text-silver-pearl">Risk grade A1-E with approval probability</small>
+                                    <h6 class="text-white mb-1">{{ t('ai_risk_grading') }}</h6>
+                                    <small class="text-silver-pearl">{{ t('risk_grade_a1e_with_approval_probability') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -63,8 +63,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-white mb-1">Data Collection Mode</h6>
-                            <small class="text-silver-pearl">Choose how to provide loan application data</small>
+                            <h6 class="text-white mb-1">{{ t('data_collection_mode') }}</h6>
+                            <small class="text-silver-pearl">{{ t('choose_how_to_provide_loan_application_data') }}</small>
                         </div>
                         <div class="btn-group" role="group">
                             <input type="radio" class="btn-check" name="data_mode_toggle" id="mode_manual" value="manual" checked>
@@ -120,7 +120,7 @@
                             <!-- Monthly Commitment -->
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-credit-card-2-back me-2"></i>Monthly Debt Commitment (RM) <span class="text-danger">*</span>
+                                    <i class="bi bi-credit-card-2-back me-2"></i>{{ t('monthly_debt_commitment_rm') }}<span class="text-danger">*</span>
                                 </label>
                                 <input type="number" name="monthly_commitment" class="form-control galaxy-input" required step="0.01" min="0" placeholder="Total monthly loan repayments">
                                 <small class="text-golden">
@@ -134,14 +134,14 @@
                                     <i class="bi bi-bar-chart me-2"></i>CCRIS Bucket
                                 </label>
                                 <select name="ccris_bucket" class="form-select galaxy-input">
-                                    <option value="">Auto-detect</option>
-                                    <option value="0">Bucket 0 (Excellent - No arrears)</option>
-                                    <option value="1">Bucket 1 (1 month arrears)</option>
-                                    <option value="2">Bucket 2 (2 months arrears)</option>
-                                    <option value="3">Bucket 3 (3 months arrears)</option>
-                                    <option value="4">Bucket 4 (4 months arrears)</option>
-                                    <option value="5">Bucket 5 (5 months arrears)</option>
-                                    <option value="6">Bucket 6 (6+ months arrears)</option>
+                                    <option value="">{{ t('autodetect') }}</option>
+                                    <option value="0">{{ t('bucket_0_excellent__no_arrears') }}</option>
+                                    <option value="1">{{ t('bucket_1_1_month_arrears') }}</option>
+                                    <option value="2">{{ t('bucket_2_2_months_arrears') }}</option>
+                                    <option value="3">{{ t('bucket_3_3_months_arrears') }}</option>
+                                    <option value="4">{{ t('bucket_4_4_months_arrears') }}</option>
+                                    <option value="5">{{ t('bucket_5_5_months_arrears') }}</option>
+                                    <option value="6">{{ t('bucket_6_6_months_arrears') }}</option>
                                 </select>
                             </div>
 
@@ -178,14 +178,14 @@
                                     <i class="bi bi-building me-2"></i>Job Type
                                 </label>
                                 <select name="job_type" class="form-select galaxy-input">
-                                    <option value="">Auto-detect</option>
-                                    <option value="permanent">Permanent Employee</option>
-                                    <option value="government">Government</option>
-                                    <option value="glc">GLC (Government-Linked Company)</option>
-                                    <option value="mnc">MNC (Multinational Corporation)</option>
-                                    <option value="sme">SME Employee</option>
-                                    <option value="self_employed">Self-Employed</option>
-                                    <option value="contract">Contract Worker</option>
+                                    <option value="">{{ t('autodetect') }}</option>
+                                    <option value="permanent">{{ t('permanent_employee') }}</option>
+                                    <option value="government">{{ t('government') }}</option>
+                                    <option value="glc">{{ t('glc_governmentlinked_company') }}</option>
+                                    <option value="mnc">{{ t('mnc_multinational_corporation') }}</option>
+                                    <option value="sme">{{ t('sme_employee') }}</option>
+                                    <option value="self_employed">{{ t('selfemployed') }}</option>
+                                    <option value="contract">{{ t('contract_worker') }}</option>
                                 </select>
                             </div>
 

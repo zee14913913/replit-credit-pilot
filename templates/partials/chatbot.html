@@ -25,10 +25,10 @@ const analyze=document.getElementById("sys-analyze");
 toggle.onclick=()=>win.style.display=(win.style.display==="none")?"block":"none";
 
 async function send(msg,endpoint){
- log.innerHTML+=`<div><b>您：</b> ${msg}</div>`;
+ log.innerHTML+=`<div><b>您：</b>{{ t('msg') }}</div>`;
  const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:msg})});
  const d=await r.json();
- log.innerHTML+=`<div style='color:#ff007f;'><b>AI：</b> ${d.reply||d.analysis||d.error}</div>`;
+ log.innerHTML+=`<div style='color:#ff007f;'><b>{{ t('ai_3') }}</b>{{ t('dreplydanalysisderror') }}</div>`;
  log.scrollTop=log.scrollHeight;
 }
 

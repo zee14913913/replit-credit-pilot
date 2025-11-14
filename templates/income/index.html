@@ -10,7 +10,7 @@
             <h1 style="color: #FF007F;">
                 <i class="bi bi-file-earmark-text"></i> Income Document System
             </h1>
-            <p class="text-muted">Manage customer income verification documents with OCR technology</p>
+            <p class="text-muted">{{ t('manage_customer_income_verification_documents_with_ocr_technology') }}</p>
         </div>
     </div>
     
@@ -34,7 +34,7 @@
                     </label>
                     <select id="customerFilter" class="form-select bg-dark text-white"
                             style="border: 2px solid rgba(255,0,127,0.3);">
-                        <option value="">All Customers</option>
+                        <option value="">{{ t('all_customers') }}</option>
                     </select>
                 </div>
             </div>
@@ -48,11 +48,11 @@
                     </label>
                     <select id="typeFilter" class="form-select bg-dark text-white"
                             style="border: 2px solid rgba(255,0,127,0.3);">
-                        <option value="">All Types</option>
-                        <option value="salary_slip">Salary Slip</option>
-                        <option value="tax_return">Tax Return</option>
-                        <option value="epf">EPF Statement</option>
-                        <option value="bank_inflow">Bank Statement</option>
+                        <option value="">{{ t('all_types') }}</option>
+                        <option value="salary_slip">{{ t('salary_slip') }}</option>
+                        <option value="tax_return">{{ t('tax_return') }}</option>
+                        <option value="epf">{{ t('epf_statement') }}</option>
+                        <option value="bank_inflow">{{ t('module_bank') }}</option>
                     </select>
                 </div>
             </div>
@@ -65,7 +65,7 @@
             <div class="card" style="background: linear-gradient(135deg, rgba(255,0,127,0.2), rgba(255,0,127,0.1)); border: 2px solid #FF007F;">
                 <div class="card-body text-center">
                     <h3 style="color: #FF007F;" id="totalFiles">0</h3>
-                    <p class="text-muted mb-0">Total Documents</p>
+                    <p class="text-muted mb-0">{{ t('total_documents') }}</p>
                 </div>
             </div>
         </div>
@@ -73,15 +73,15 @@
             <div class="card" style="background: linear-gradient(135deg, rgba(50,36,70,0.3), rgba(50,36,70,0.2)); border: 2px solid #322446;">
                 <div class="card-body text-center">
                     <h3 style="color: #322446;" id="totalCustomers">0</h3>
-                    <p class="text-muted mb-0">Customers</p>
+                    <p class="text-muted mb-0">{{ t('footer_customers') }}</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card" style="background: linear-gradient(135deg, rgba(255,0,127,0.15), rgba(255,0,127,0.05)); border: 2px solid rgba(255,0,127,0.5);">
                 <div class="card-body text-center">
-                    <h3 style="color: #FF007F;" id="avgIncome">RM 0</h3>
-                    <p class="text-muted mb-0">Avg Income Detected</p>
+                    <h3 style="color: #FF007F;" id="avgIncome">{{ t('rm_0') }}</h3>
+                    <p class="text-muted mb-0">{{ t('avg_income_detected') }}</p>
                 </div>
             </div>
         </div>
@@ -89,7 +89,7 @@
             <div class="card" style="background: linear-gradient(135deg, rgba(50,36,70,0.25), rgba(50,36,70,0.15)); border: 2px solid rgba(50,36,70,0.6);">
                 <div class="card-body text-center">
                     <h3 style="color: #322446;" id="avgConfidence">0%</h3>
-                    <p class="text-muted mb-0">Avg OCR Confidence</p>
+                    <p class="text-muted mb-0">{{ t('avg_ocr_confidence') }}</p>
                 </div>
             </div>
         </div>
@@ -109,22 +109,22 @@
                         <table class="table table-dark table-hover">
                             <thead>
                                 <tr style="border-bottom: 2px solid #FF007F;">
-                                    <th>ID</th>
+                                    <th>{{ t('id') }}</th>
                                     <th>{{ t('customer') }}</th>
-                                    <th>Document Type</th>
-                                    <th>Month</th>
-                                    <th>Income Detected</th>
-                                    <th>Confidence</th>
-                                    <th>Uploaded At</th>
+                                    <th>{{ t('document_type') }}</th>
+                                    <th>{{ t('month') }}</th>
+                                    <th>{{ t('income_detected') }}</th>
+                                    <th>{{ t('confidence') }}</th>
+                                    <th>{{ t('uploaded_at') }}</th>
                                     <th>{{ t('status') }}</th>
-                                    <th>Actions</th>
+                                    <th>{{ t('actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody id="documentsTableBody">
                                 <tr>
                                     <td colspan="9" class="text-center">
                                         <div class="spinner-border text-primary" role="status">
-                                            <span class="visually-hidden">Loading...</span>
+                                            <span class="visually-hidden">{{ t('loading_text') }}</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -264,25 +264,25 @@ function renderTable(documents) {
         const uploadedAt = doc.uploaded_at ? new Date(doc.uploaded_at).toLocaleDateString() : 'N/A';
         
         const statusBadge = doc.status === 'active' 
-            ? '<span class="badge bg-success">Active</span>'
-            : '<span class="badge bg-secondary">Pending</span>';
+            ? '<span class="badge bg-success">{{ t('status_active') }}</span>'
+            : '<span class="badge bg-secondary">{{ t('validation_pending') }}</span>';
         
         const confidenceBadge = confidence >= 70
-            ? `<span class="badge bg-success">${confidence.toFixed(1)}%</span>`
+            ? `<span class="badge bg-success">{{ t('confidencetofixed1') }}</span>`
             : confidence >= 40
-            ? `<span class="badge bg-warning">${confidence.toFixed(1)}%</span>`
-            : `<span class="badge bg-danger">${confidence.toFixed(1)}%</span>`;
+            ? `<span class="badge bg-warning">{{ t('confidencetofixed1') }}</span>`
+            : `<span class="badge bg-danger">{{ t('confidencetofixed1') }}</span>`;
         
         return `
             <tr>
-                <td>${doc.file_id}</td>
-                <td>${customerName}</td>
-                <td>${documentType}</td>
-                <td>${doc.period || 'N/A'}</td>
-                <td style="color: #FF007F; font-weight: 600;">RM ${income.toFixed(2)}</td>
-                <td>${confidenceBadge}</td>
-                <td>${uploadedAt}</td>
-                <td>${statusBadge}</td>
+                <td>{{ t('docfile_id') }}</td>
+                <td>{{ t('customername') }}</td>
+                <td>{{ t('documenttype') }}</td>
+                <td>{{ t('docperiod__na') }}</td>
+                <td style="color: #FF007F; font-weight: 600;">{{ t('rm_incometofixed2') }}</td>
+                <td>{{ t('confidencebadge') }}</td>
+                <td>{{ t('uploadedat') }}</td>
+                <td>{{ t('statusbadge') }}</td>
                 <td>
                     <button class="btn btn-sm btn-outline-primary" onclick="viewDocument(${doc.file_id})">
                         <i class="bi bi-eye"></i>

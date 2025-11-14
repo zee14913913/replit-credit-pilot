@@ -21,7 +21,7 @@
                 <div class="card-body text-center py-4">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="text-start">
-                            <p class="text-uppercase mb-1" style="font-size: 0.75rem; color: #888; letter-spacing: 1px;">PAYMENT ACCOUNTS</p>
+                            <p class="text-uppercase mb-1" style="font-size: 0.75rem; color: #888; letter-spacing: 1px;">{{ t('payment_accounts') }}</p>
                             <h2 class="mb-0 fw-bold" style="color: #FF007F; font-size: 2.5rem;">{{ payment_accounts|length }}</h2>
                         </div>
                         <i class="bi bi-wallet2" style="font-size: 3rem; color: #322446;"></i>
@@ -35,7 +35,7 @@
                 <div class="card-body text-center py-4">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="text-start">
-                            <p class="text-uppercase mb-1" style="font-size: 0.75rem; color: #888; letter-spacing: 1px;">BANK STATEMENTS</p>
+                            <p class="text-uppercase mb-1" style="font-size: 0.75rem; color: #888; letter-spacing: 1px;">{{ t('bank_statements') }}</p>
                             <h2 class="mb-0 fw-bold" style="color: #FF007F; font-size: 2.5rem;">{{ total_bank_statements }}</h2>
                         </div>
                         <i class="bi bi-file-earmark-text" style="font-size: 3rem; color: #322446;"></i>
@@ -49,7 +49,7 @@
                 <div class="card-body text-center py-4">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="text-start">
-                            <p class="text-uppercase mb-1" style="font-size: 0.75rem; color: #888; letter-spacing: 1px;">VALIDATED TXN</p>
+                            <p class="text-uppercase mb-1" style="font-size: 0.75rem; color: #888; letter-spacing: 1px;">{{ t('validated_txn') }}</p>
                             <h2 class="mb-0 fw-bold" style="color: #00FF7F; font-size: 2.5rem;">{{ validated_transactions }}</h2>
                         </div>
                         <i class="bi bi-shield-check" style="font-size: 3rem; color: #322446;"></i>
@@ -74,12 +74,12 @@
                         <table class="table table-dark table-hover mb-0">
                             <thead style="background: #1a1a1a; border-bottom: 2px solid #322446;">
                                 <tr>
-                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">ID</th>
-                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">ACCOUNT NAME</th>
-                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">HOLDER</th>
-                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">BANK</th>
-                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">TYPE</th>
-                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">STATUS</th>
+                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">{{ t('id') }}</th>
+                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">{{ t('account_name') }}</th>
+                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">{{ t('holder') }}</th>
+                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">{{ t('bank_1') }}</th>
+                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">{{ t('type_1') }}</th>
+                                    <th class="text-uppercase" style="font-size: 0.75rem; color: #FF007F; letter-spacing: 1px;">{{ t('status_1') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -95,11 +95,11 @@
                                     </td>
                                     <td>
                                         {% if account.account_type == 'PERSONAL' %}
-                                            <span class="badge bg-info text-dark">PERSONAL</span>
+                                            <span class="badge bg-info text-dark">{{ t('personal') }}</span>
                                         {% elif account.account_type == 'JOINT' %}
-                                            <span class="badge bg-warning text-dark">JOINT</span>
+                                            <span class="badge bg-warning text-dark">{{ t('joint') }}</span>
                                         {% elif account.account_type == 'CORPORATE' %}
-                                            <span class="badge" style="background: #FF007F; color: #000;">CORPORATE</span>
+                                            <span class="badge" style="background: #FF007F; color: #000;">{{ t('corporate') }}</span>
                                         {% endif %}
                                     </td>
                                     <td>
@@ -108,7 +108,7 @@
                                                 <i class="bi bi-check-circle me-1"></i>ACTIVE
                                             </span>
                                         {% else %}
-                                            <span class="badge bg-secondary">INACTIVE</span>
+                                            <span class="badge bg-secondary">{{ t('inactive_1') }}</span>
                                         {% endif %}
                                     </td>
                                 </tr>

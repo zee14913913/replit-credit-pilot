@@ -105,21 +105,21 @@
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
                 <div class="stat-value" style="color: #FF007F; font-size: 1.8rem;">RM {{ "{:,.0f}".format(total_owner_expenses) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">💳 Own's Expenses</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('_owns_expenses') }}</div>
                 <div class="stat-corner" style="background: #FF007F;"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
                 <div class="stat-value" style="color: #FF007F; font-size: 1.8rem;">RM {{ "{:,.0f}".format(abs(total_owner_payments)) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">💰 Own's Payment</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('_owns_payment') }}</div>
                 <div class="stat-corner" style="background: #FF007F;"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
                 <div class="stat-value" style="color: #FF007F; font-size: 1.8rem;">RM {{ "{:,.0f}".format(total_owner_balance) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">📊 Own's OS Bal</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('_owns_os_bal') }}</div>
                 <div class="stat-corner" style="background: #FF007F;"></div>
             </div>
         </div>
@@ -127,7 +127,7 @@
             <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
                 <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(255,0,127,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                     <div class="stat-value" style="color: #FF007F; font-size: 1.8rem;">{{ invoices_count }}</div>
-                    <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">📋 Supplier Invoices</div>
+                    <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('_supplier_invoices') }}</div>
                     <div class="stat-corner" style="background: #FF007F;"></div>
                 </div>
             </a>
@@ -139,21 +139,21 @@
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
                 <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.0f}".format(total_gz_expenses) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">🏢 GZ's Expenses</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">{{ t('_gzs_expenses') }}</div>
                 <div class="stat-corner" style="background: #322446;"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
                 <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.0f}".format(abs(total_gz_payments)) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">💵 GZ's Payment</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">{{ t('_gzs_payment') }}</div>
                 <div class="stat-corner" style="background: #322446;"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
                 <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.0f}".format(total_gz_balance) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">📈 GZ's OS Bal</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">{{ t('_gzs_os_bal') }}</div>
                 <div class="stat-corner" style="background: #322446;"></div>
             </div>
         </div>
@@ -161,7 +161,7 @@
             <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
                 <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(50,36,70,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                     <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.2f}".format(invoices_total) }}</div>
-                    <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">💼 Total Invoices Amount</div>
+                    <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">{{ t('_total_invoices_amount') }}</div>
                     <div class="stat-corner" style="background: #322446;"></div>
                 </div>
             </a>
@@ -437,7 +437,7 @@
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('admindashboard_email') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('admindashboard_phone') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('monthly_income') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">Total Accounts</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">{{ t('total_accounts') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">{{ t('total_statements') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center;">{{ t('actions') }}</th>
                                 </tr>
@@ -514,15 +514,15 @@
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('month_of_statement') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('name') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('bank') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">PRE BAL</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">Statement OS</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('pre_bal') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('statement_os') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('due_date') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('owner_expenses') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">GZ Expenses</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('gz_expenses') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('owner_payments') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">GZ Payments</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('gz_payments') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('owner_os_bal') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">GZ Balance</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('gz_balance') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ t('actions') }}</th>
                                 </tr>
                             </thead>
@@ -849,15 +849,15 @@ class SimpleDataTable {
         controls.className = 'datatable-controls';
         controls.innerHTML = `
             <div>
-                <span style="color: #999;">Show: </span>
+                <span style="color: #999;">{{ t('show') }}</span>
                 <select id="${this.table.id}_pageSize" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.25rem 0.5rem; border-radius: 4px;">
                     <option value="10">10</option>
                     <option value="25" selected>25</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
-                    <option value="-1">All</option>
+                    <option value="-1">{{ t('all') }}</option>
                 </select>
-                <span style="color: #999; margin-left: 1rem;">entries</span>
+                <span style="color: #999; margin-left: 1rem;">{{ t('entries') }}</span>
             </div>
             <div id="${this.table.id}_pagination" class="datatable-pagination"></div>
         `;
@@ -905,7 +905,7 @@ class SimpleDataTable {
         let html = '';
         
         // Previous button
-        html += `<button ${this.currentPage === 1 ? 'disabled' : ''} onclick="window.${this.table.id}_dt.displayPage(${this.currentPage - 1})">‹ Prev</button>`;
+        html += `<button ${this.currentPage === 1 ? 'disabled' : ''} onclick="window.${this.table.id}_dt.displayPage(${this.currentPage - 1})">{{ t('_prev') }}</button>`;
         
         // Page numbers
         const maxButtons = 5;
@@ -917,11 +917,11 @@ class SimpleDataTable {
         }
 
         for (let i = startPage; i <= endPage; i++) {
-            html += `<button class="${i === this.currentPage ? 'active' : ''}" onclick="window.${this.table.id}_dt.displayPage(${i})">${i}</button>`;
+            html += `<button class="${i === this.currentPage ? 'active' : ''}" onclick="window.${this.table.id}_dt.displayPage(${i})">{{ t('i') }}</button>`;
         }
         
         // Next button
-        html += `<button ${this.currentPage === totalPages ? 'disabled' : ''} onclick="window.${this.table.id}_dt.displayPage(${this.currentPage + 1})">Next ›</button>`;
+        html += `<button ${this.currentPage === totalPages ? 'disabled' : ''} onclick="window.${this.table.id}_dt.displayPage(${this.currentPage + 1})">{{ t('next_') }}</button>`;
         
         paginationDiv.innerHTML = html;
     }
@@ -1211,15 +1211,15 @@ function saveRowEdit(stmtId) {
                     <div class="mb-4 p-3" style="background: rgba(255,0,127,0.1); border: 1px solid #FF007F; border-radius: 8px;">
                         <div class="row">
                             <div class="col-md-4">
-                                <strong style="color: #FF007F;">客户 / Customer:</strong><br>
+                                <strong style="color: #FF007F;">{{ t('__customer') }}</strong><br>
                                 <span id="modal_customer_name"></span>
                             </div>
                             <div class="col-md-4">
-                                <strong style="color: #FF007F;">银行 / Bank:</strong><br>
+                                <strong style="color: #FF007F;">{{ t('__bank') }}</strong><br>
                                 <span id="modal_bank"></span>
                             </div>
                             <div class="col-md-4">
-                                <strong style="color: #FF007F;">账单月 / Month:</strong><br>
+                                <strong style="color: #FF007F;">{{ t('__month') }}</strong><br>
                                 <span id="modal_month"></span>
                             </div>
                         </div>

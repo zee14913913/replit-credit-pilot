@@ -16,25 +16,25 @@
         <div class="col-12 col-md-6 col-xl-3">
             <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.6) 0%, rgba(36, 25, 52, 0.8) 100%); border: 2px solid rgba(255, 0, 127, 0.4); border-radius: 20px; padding: 3rem 2rem; text-align: center; min-height: 200px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 0, 127, 0.2); transition: all 0.3s ease;">
                 <div style="font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #FF007F 0%, #FF4DA6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">{{ reports|length }}</div>
-                <div style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); font-weight: 500;">Total Reports / 报表总数</div>
+                <div style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); font-weight: 500;">{{ t('total_reports__') }}</div>
             </div>
         </div>
         <div class="col-12 col-md-6 col-xl-3">
             <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.6) 0%, rgba(36, 25, 52, 0.8) 100%); border: 2px solid rgba(255, 0, 127, 0.4); border-radius: 20px; padding: 3rem 2rem; text-align: center; min-height: 200px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 0, 127, 0.2); transition: all 0.3s ease;">
                 <div style="font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #FF007F 0%, #FF4DA6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">{{ reports_by_period|length }}</div>
-                <div style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); font-weight: 500;">Periods / 期数</div>
+                <div style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); font-weight: 500;">{{ t('periods__') }}</div>
             </div>
         </div>
         <div class="col-12 col-md-6 col-xl-3">
             <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.6) 0%, rgba(36, 25, 52, 0.8) 100%); border: 2px solid rgba(255, 0, 127, 0.4); border-radius: 20px; padding: 3rem 2rem; text-align: center; min-height: 200px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 0, 127, 0.2); transition: all 0.3s ease;">
                 <div style="font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #FF007F 0%, #FF4DA6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">RM {{ "{:,.2f}".format(reports|sum(attribute='customer_total_debit', start=0)|default(0)) }}</div>
-                <div style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); font-weight: 500;">Customer Debit / 客户消费</div>
+                <div style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); font-weight: 500;">{{ t('customer_debit__') }}</div>
             </div>
         </div>
         <div class="col-12 col-md-6 col-xl-3">
             <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.6) 0%, rgba(36, 25, 52, 0.8) 100%); border: 2px solid rgba(255, 0, 127, 0.4); border-radius: 20px; padding: 3rem 2rem; text-align: center; min-height: 200px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 0, 127, 0.2); transition: all 0.3s ease;">
                 <div style="font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #FF007F 0%, #FF4DA6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">RM {{ "{:,.2f}".format(reports|sum(attribute='infinite_total_debit', start=0)|default(0)) }}</div>
-                <div style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); font-weight: 500;">INFINITE Debit / INFINITE消费</div>
+                <div style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); font-weight: 500;">{{ t('infinite_debit__infinite') }}</div>
             </div>
         </div>
     </div>
@@ -47,7 +47,7 @@
             </h3>
             <form id="generateReportForm" method="get" class="row g-5">
                 <div class="col-12 col-md-4">
-                    <label class="form-label" style="color: rgba(255, 255, 255, 0.85); font-size: 1.2rem; font-weight: 500; margin-bottom: 0.75rem;">Year / 年份</label>
+                    <label class="form-label" style="color: rgba(255, 255, 255, 0.85); font-size: 1.2rem; font-weight: 500; margin-bottom: 0.75rem;">{{ t('year__') }}</label>
                     <select id="reportYear" name="year" class="form-select form-select-lg" style="background: rgba(30, 20, 45, 0.8); color: #FFFFFF; border: 2px solid rgba(255, 0, 127, 0.3); padding: 1rem; font-size: 1.1rem; border-radius: 12px;">
                         <option value="2025">2025</option>
                         <option value="2024">2024</option>
@@ -55,7 +55,7 @@
                     </select>
                 </div>
                 <div class="col-12 col-md-4">
-                    <label class="form-label" style="color: rgba(255, 255, 255, 0.85); font-size: 1.2rem; font-weight: 500; margin-bottom: 0.75rem;">Month / 月份</label>
+                    <label class="form-label" style="color: rgba(255, 255, 255, 0.85); font-size: 1.2rem; font-weight: 500; margin-bottom: 0.75rem;">{{ t('month__') }}</label>
                     <select id="reportMonth" name="month" class="form-select form-select-lg" style="background: rgba(30, 20, 45, 0.8); color: #FFFFFF; border: 2px solid rgba(255, 0, 127, 0.3); padding: 1rem; font-size: 1.1rem; border-radius: 12px;">
                         {% for m in range(1, 13) %}
                         <option value="{{ m }}" {% if m == 9 %}selected{% endif %}>{{ m }}月</option>
@@ -94,14 +94,14 @@
                 <table class="table-professional">
                     <thead>
                         <tr>
-                            <th>Credit Card / 信用卡</th>
-                            <th class="text-end">Customer Debit / 客户消费</th>
-                            <th class="text-end">Customer Credit / 客户付款</th>
-                            <th class="text-end">Customer Outstanding / 客户未清</th>
-                            <th class="text-end">INFINITE Debit / INFINITE消费</th>
-                            <th class="text-end">INFINITE Outstanding / INFINITE未清</th>
-                            <th class="text-end">DSR</th>
-                            <th class="text-center">Actions / 操作</th>
+                            <th>{{ t('credit_card__') }}</th>
+                            <th class="text-end">{{ t('customer_debit__') }}</th>
+                            <th class="text-end">{{ t('customer_credit__') }}</th>
+                            <th class="text-end">{{ t('customer_outstanding__') }}</th>
+                            <th class="text-end">{{ t('infinite_debit__infinite') }}</th>
+                            <th class="text-end">{{ t('infinite_outstanding__infinite') }}</th>
+                            <th class="text-end">{{ t('dsr') }}</th>
+                            <th class="text-center">{{ t('actions__') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -112,7 +112,7 @@
                                     {% if report.bank_name %}
                                         {{ report.bank_name }} ****{{ report.card_number_last4 }}
                                     {% else %}
-                                        <span style="color: var(--text-secondary); font-style: italic;">Legacy Report (All Cards)</span>
+                                        <span style="color: var(--text-secondary); font-style: italic;">{{ t('legacy_report_all_cards') }}</span>
                                     {% endif %}
                                 </div>
                             </td>
@@ -132,7 +132,7 @@
                                 RM {{ "{:,.2f}".format(report.infinite_outstanding or 0) }}
                             </td>
                             <td style="white-space: nowrap;" class="text-end">
-                                <span class="badge-professional {{ 'badge-danger-pro' if report.dsr >= 70 else 'badge-success-pro' if report.dsr < 50 else 'badge-warning-pro' }}">
+                                <span class="badge-professional {{ 'badge-danger-pro' if report.dsr >{{ t('_70_else_badgesuccesspro_if_reportdsr') }}< 50 else 'badge-warning-pro' }}">
                                     {{ "%.1f"|format(report.dsr) }}%
                                 </span>
                             </td>
@@ -147,7 +147,7 @@
                         
                         <!-- Period Totals -->
                         <tr style="background: var(--bg-secondary); font-weight: 600;">
-                            <td style="color: var(--text-primary); white-space: nowrap;">Period Total / 期间合计</td>
+                            <td style="color: var(--text-primary); white-space: nowrap;">{{ t('period_total__') }}</td>
                             <td class="text-end" style="color: var(--text-danger); white-space: nowrap;">
                                 RM {{ "{:,.2f}".format(period_reports|sum(attribute='customer_total_debit', start=0)|default(0)) }}
                             </td>
@@ -179,7 +179,7 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <div style="padding: 0.75rem; background: rgba(52, 73, 94, 0.1); border-radius: 6px;">
-                        <strong style="color: #3498db;">Customer Transactions / 客户交易:</strong>
+                        <strong style="color: #3498db;">{{ t('customer_transactions__') }}</strong>
                         <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;">
                             Your personal expenses and payments on this card.
                             您在此卡上的个人消费和付款。
@@ -188,7 +188,7 @@
                 </div>
                 <div class="col-md-6">
                     <div style="padding: 0.75rem; background: rgba(142, 68, 173, 0.1); border-radius: 6px;">
-                        <strong style="color: #8e44ad;">INFINITE GZ Transactions / INFINITE交易:</strong>
+                        <strong style="color: #8e44ad;">{{ t('infinite_gz_transactions__infinite') }}</strong>
                         <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;">
                             Company expenses at 7 designated suppliers and 3rd party payments.
                             公司在7家指定商家的消费和第三方付款。
@@ -197,7 +197,7 @@
                 </div>
                 <div class="col-12">
                     <div style="padding: 0.75rem; background: rgba(230, 126, 34, 0.1); border-radius: 6px;">
-                        <strong style="color: #e67e22;">Per-Card Reports / 按卡分离报表:</strong>
+                        <strong style="color: #e67e22;">{{ t('percard_reports__') }}</strong>
                         <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;">
                             Each credit card now has a separate report - no mixing of transactions between cards!
                             每张信用卡现在有独立的报表 - 不会混合不同卡的交易记录！

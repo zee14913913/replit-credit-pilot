@@ -8,7 +8,7 @@
     <div class="row mb-3">
         <div class="col-12 text-end">
             <button id="langToggle" class="btn" style="background: linear-gradient(135deg, #FF007F 0%, #C1006C 100%); color: white; border: none; padding: 0.6rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 25px; box-shadow: 0 4px 15px rgba(255, 0, 127, 0.3);">
-                <i class="bi bi-translate"></i> <span id="langBtnText">English</span>
+                <i class="bi bi-translate"></i> <span id="langBtnText">{{ t('english') }}</span>
             </button>
         </div>
     </div>
@@ -99,11 +99,11 @@
                 <div style="color: #F0F0F0; font-size: 1.05rem; line-height: 2;">
                     <p style="font-size: 1.15rem; margin-bottom: 1.5rem;">
                         <strong style="color: #FF007F;">📊 <span class="lang-text" data-zh="月度汇总报告" data-en="Monthly Summary Report">月度汇总报告</span></strong> 
-                        <span style="color: #F0F0F0;" class="lang-text" data-zh="整合该客户所有信用卡的Supplier消费与付款情况：" data-en="Consolidates supplier expenses and payment records across all credit cards for this customer:">整合该客户所有信用卡的Supplier消费与付款情况：</span>
+                        <span style="color: #F0F0F0;" class="lang-text" data-zh="整合该客户所有信用卡的Supplier消费与付款情况：" data-en="Consolidates supplier expenses and payment records across all credit cards for this customer:">{{ t('supplier_2') }}</span>
                     </p>
                     <ul style="list-style: none; padding-left: 0; margin-left: 2rem;">
                         <li style="margin-bottom: 1.2rem; padding: 0.8rem 0; border-bottom: 1px solid rgba(255, 0, 127, 0.2);">
-                            <strong style="color: #FF007F;">✦ <span class="lang-text" data-zh="Supplier消费" data-en="Supplier Expenses">Supplier消费</span></strong>
+                            <strong style="color: #FF007F;">✦ <span class="lang-text" data-zh="Supplier消费" data-en="Supplier Expenses">{{ t('supplier_1') }}</span></strong>
                             <span style="color: #F0F0F0;" class="lang-text" data-zh="：该月在所有信用卡上的供应商消费总额" data-en=": Total supplier expenses across all cards for the month">：该月在所有信用卡上的供应商消费总额</span>
                         </li>
                         <li style="margin-bottom: 1.2rem; padding: 0.8rem 0; border-bottom: 1px solid rgba(255, 0, 127, 0.2);">

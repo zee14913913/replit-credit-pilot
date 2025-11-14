@@ -18,7 +18,7 @@
                 UPLOAD CREDIT CARD STATEMENT
             </h3>
             <button class="btn-professional" onclick="toggleUploadForm()" style="background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%); padding: 0.7rem 1.8rem; font-size: 1rem; font-weight: 700; border: 2px solid #FFFEF0; color: #FFFEF0;">
-                <span id="upload-toggle-text">Show Upload Form</span>
+                <span id="upload-toggle-text">{{ t('show_upload_form') }}</span>
             </button>
         </div>
         
@@ -82,10 +82,10 @@
             <table class="table table-dark table-hover">
                 <thead>
                     <tr style="background: rgba(50, 36, 70, 0.5);">
-                        <th style="width: 15%; color: #FFFEF0; font-size: 1.2rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.5px;">CUSTOMER CODE</th>
-                        <th style="width: 25%; color: #FFFEF0; font-size: 1.2rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.5px;">CUSTOMER NAME</th>
-                        <th style="width: 15%; text-align: center; color: #FFFEF0; font-size: 1.2rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.5px;">STATEMENT COUNT</th>
-                        <th style="width: 15%; text-align: center; color: #FFFEF0; font-size: 1.2rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.5px;">ACTIONS</th>
+                        <th style="width: 15%; color: #FFFEF0; font-size: 1.2rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.5px;">{{ t('customer_code') }}</th>
+                        <th style="width: 25%; color: #FFFEF0; font-size: 1.2rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.5px;">{{ t('customer_name_1') }}</th>
+                        <th style="width: 15%; text-align: center; color: #FFFEF0; font-size: 1.2rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.5px;">{{ t('statement_count') }}</th>
+                        <th style="width: 15%; text-align: center; color: #FFFEF0; font-size: 1.2rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.5px;">{{ t('actions_1') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -288,7 +288,7 @@
         <h2 class="section-title" style="font-size: 2rem; font-weight: 700; color: #E8E8E8; margin: 0; text-transform: uppercase;">
             <i class="bi bi-receipt" style="color: #FF007F;"></i> {{ t('ocr_receipts') }}
         </h2>
-        <p class="section-subtitle" style="color: #FF007F; margin-top: 0.5rem;">Smart OCR Recognition for Merchant Receipts</p>
+        <p class="section-subtitle" style="color: #FF007F; margin-top: 0.5rem;">{{ t('smart_ocr_recognition_for_merchant_receipts') }}</p>
     </div>
 
     <!-- OCR Statistics Cards -->
@@ -297,25 +297,25 @@
         <div class="col-md-3">
             <div class="professional-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F; padding: 1.5rem;">
                 <div style="font-size: 2rem; color: #FF007F; font-weight: 700;">{{ ocr_stats.total or 0 }}</div>
-                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">📄 Total Receipts</div>
+                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">{{ t('_total_receipts') }}</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="professional-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446; padding: 1.5rem;">
                 <div style="font-size: 2rem; color: #FFFEF0; font-weight: 700;">{{ ocr_stats.auto_matched or 0 }}</div>
-                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">🤖 Auto Matched</div>
+                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">{{ t('_auto_matched') }}</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="professional-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F; padding: 1.5rem;">
                 <div style="font-size: 2rem; color: #FFFEF0; font-weight: 700;">{{ ocr_stats.manual_matched or 0 }}</div>
-                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">👤 Manual Matched</div>
+                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">{{ t('_manual_matched') }}</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="professional-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446; padding: 1.5rem;">
                 <div style="font-size: 2rem; color: #FFFEF0; font-weight: 700;">{{ ocr_stats.pending or 0 }}</div>
-                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">⏳ Pending Match</div>
+                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">{{ t('_pending_match') }}</div>
             </div>
         </div>
     </div>
@@ -324,21 +324,21 @@
     <!-- OCR Upload Section (Collapsible) -->
     <div class="professional-card mb-4" style="border: 2px solid #FF007F; padding: 2rem;">
         <button onclick="toggleOCRUploadForm()" class="btn-professional-outline" style="width: 100%; color: #FFFEF0; font-weight: 700; border: 2px solid #FFFEF0;">
-            <span id="ocr-upload-toggle-text">Show OCR Upload Form</span>
+            <span id="ocr-upload-toggle-text">{{ t('show_ocr_upload_form') }}</span>
         </button>
         
         <div id="ocr-upload-form-section" style="display: none; margin-top: 2rem;">
             <form action="{{ url_for('receipts_upload') }}" method="POST" enctype="multipart/form-data">
                 <div class="row g-4">
                     <div class="col-md-6">
-                        <label class="form-label" style="color: #FFFEF0; font-weight: 600;">Receipt Type</label>
+                        <label class="form-label" style="color: #FFFEF0; font-weight: 600;">{{ t('receipt_type') }}</label>
                         <select name="receipt_type" class="form-select" required style="background: rgba(0,0,0,0.5); color: #FFFEF0; border: 1px solid #FF007F;">
-                            <option value="merchant_swipe">Merchant Swipe Receipt</option>
-                            <option value="payment">Credit Card Payment</option>
+                            <option value="merchant_swipe">{{ t('merchant_swipe_receipt') }}</option>
+                            <option value="payment">{{ t('credit_card_payment') }}</option>
                         </select>
                     </div>
                     <div class="col-md-12">
-                        <label class="form-label" style="color: #FFFEF0; font-weight: 600;">Select Receipt Images (JPG/PNG)</label>
+                        <label class="form-label" style="color: #FFFEF0; font-weight: 600;">{{ t('select_receipt_images_jpgpng') }}</label>
                         <input type="file" name="receipt_files" class="form-control" accept="image/*" multiple required style="background: rgba(0,0,0,0.5); color: #FFFEF0; border: 1px solid #FF007F;">
                         <small style="color: #C0C0C0; margin-top: 0.5rem; display: block;">
                             ✨ OCR will auto-extract amount, date, merchant | 🎯 Auto-match to customer & card
@@ -372,8 +372,8 @@
                         <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('date') }}</th>
                         <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('customer') }}</th>
                         <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('ledgerindex_card') }}</th>
-                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">Type</th>
-                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">Match</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('type') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('match') }}</th>
                         <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('action') }}</th>
                     </tr>
                 </thead>
@@ -418,10 +418,10 @@
             <table class="table table-dark table-hover">
                 <thead>
                     <tr style="background: rgba(50, 36, 70, 0.5);">
-                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">Uploaded</th>
-                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">OCR Amount</th>
-                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">OCR Date</th>
-                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">Merchant</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('status_uploaded') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('ocr_amount') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('ocr_date') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('merchant') }}</th>
                         <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('action') }}</th>
                     </tr>
                 </thead>

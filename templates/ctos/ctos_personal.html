@@ -11,8 +11,8 @@
                 <div class="d-flex align-items-center">
                     <i class="bi bi-file-earmark-lock2-fill" style="font-size: 48px; color: #FF007F; margin-right: 24px;"></i>
                     <div>
-                        <h1 style="color: #FFFFFF; font-size: 32px; margin: 0;">CTOS Personal Consent</h1>
-                        <p style="color: rgba(255, 255, 255, 0.7); margin: 8px 0 0 0; font-size: 16px;">个人信用报告授权书 | Credit Report Authorization</p>
+                        <h1 style="color: #FFFFFF; font-size: 32px; margin: 0;">{{ t('ctos_personal_consent') }}</h1>
+                        <p style="color: rgba(255, 255, 255, 0.7); margin: 8px 0 0 0; font-size: 16px;">{{ t('__credit_report_authorization') }}</p>
                     </div>
                 </div>
             </div>
@@ -28,37 +28,37 @@
                             </h3>
                             
                             <div class="mb-3">
-                                <label class="form-label" style="color: #FFFFFF;">Full Name (as per IC) <span style="color: #FF007F;">*</span></label>
+                                <label class="form-label" style="color: #FFFFFF;">{{ t('full_name_as_per_ic') }}<span style="color: #FF007F;">*</span></label>
                                 <input type="text" name="full_name" class="form-control" required 
                                        style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
                                        placeholder="Enter your full name">
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label" style="color: #FFFFFF;">IC Number (NRIC) <span style="color: #FF007F;">*</span></label>
+                                <label class="form-label" style="color: #FFFFFF;">{{ t('ic_number_nric') }}<span style="color: #FF007F;">*</span></label>
                                 <input type="text" name="ic_number" class="form-control" required 
                                        pattern="[0-9]{6}-[0-9]{2}-[0-9]{4}"
                                        style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
                                        placeholder="XXXXXX-XX-XXXX">
-                                <small style="color: rgba(255, 255, 255, 0.5);">Format: 900101-01-1234</small>
+                                <small style="color: rgba(255, 255, 255, 0.5);">{{ t('format_900101011234') }}</small>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label" style="color: #FFFFFF;">Phone Number <span style="color: #FF007F;">*</span></label>
+                                <label class="form-label" style="color: #FFFFFF;">{{ t('phone_number') }}<span style="color: #FF007F;">*</span></label>
                                 <input type="tel" name="phone" class="form-control" required 
                                        style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
                                        placeholder="+60123456789">
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label" style="color: #FFFFFF;">Email Address <span style="color: #FF007F;">*</span></label>
+                                <label class="form-label" style="color: #FFFFFF;">{{ t('email_address') }}<span style="color: #FF007F;">*</span></label>
                                 <input type="email" name="email" class="form-control" required 
                                        style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
                                        placeholder="your.email@example.com">
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label" style="color: #FFFFFF;">Residential Address <span style="color: #FF007F;">*</span></label>
+                                <label class="form-label" style="color: #FFFFFF;">{{ t('residential_address') }}<span style="color: #FF007F;">*</span></label>
                                 <textarea name="address" class="form-control" rows="3" required 
                                           style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
                                           placeholder="Enter your complete address"></textarea>
@@ -72,13 +72,13 @@
                             </h3>
                             
                             <div class="mb-3">
-                                <label class="form-label" style="color: #FFFFFF;">IC Front <span style="color: #FF007F;">*</span></label>
+                                <label class="form-label" style="color: #FFFFFF;">{{ t('ic_front') }}<span style="color: #FF007F;">*</span></label>
                                 <input type="file" name="ic_front" class="form-control" accept="image/*,application/pdf" required
                                        style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;">
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label" style="color: #FFFFFF;">IC Back <span style="color: #FF007F;">*</span></label>
+                                <label class="form-label" style="color: #FFFFFF;">{{ t('ic_back') }}<span style="color: #FF007F;">*</span></label>
                                 <input type="file" name="ic_back" class="form-control" accept="image/*,application/pdf" required
                                        style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;">
                             </div>
@@ -112,28 +112,28 @@
                             </h3>
                             
                             <div style="background: #0d0d0d; padding: 20px; border-radius: 8px; max-height: 400px; overflow-y: auto; color: rgba(255, 255, 255, 0.8); font-size: 14px; line-height: 1.6;">
-                                <p><strong style="color: #FF007F;">CONSENT TO OBTAIN CREDIT REPORT</strong></p>
+                                <p><strong style="color: #FF007F;">{{ t('consent_to_obtain_credit_report') }}</strong></p>
                                 
-                                <p>I hereby authorize <strong>INFINITE GZ SDN BHD</strong> to obtain my personal credit report from CTOS Data Systems Sdn Bhd (CTOS) for the purpose of:</p>
+                                <p>{{ t('i_hereby_authorize') }}<strong>{{ t('infinite_gz_sdn_bhd') }}</strong>{{ t('to_obtain_my_personal_credit_report_from_ctos_data_systems_sdn_bhd_ctos_for_the_purpose_of') }}</p>
                                 
                                 <ul style="padding-left: 20px;">
-                                    <li>Credit assessment and loan application processing</li>
-                                    <li>Financial risk evaluation</li>
-                                    <li>Compliance with banking regulations</li>
+                                    <li>{{ t('credit_assessment_and_loan_application_processing') }}</li>
+                                    <li>{{ t('financial_risk_evaluation') }}</li>
+                                    <li>{{ t('compliance_with_banking_regulations') }}</li>
                                 </ul>
                                 
-                                <p>I understand that:</p>
+                                <p>{{ t('i_understand_that') }}</p>
                                 <ul style="padding-left: 20px;">
-                                    <li>The credit report will contain my credit history, payment records, and outstanding commitments</li>
-                                    <li>This information will be used strictly for the stated purposes</li>
-                                    <li>My personal data will be handled in accordance with PDPA 2010</li>
-                                    <li>This consent is valid for 12 months from the date of signature</li>
+                                    <li>{{ t('the_credit_report_will_contain_my_credit_history_payment_records_and_outstanding_commitments') }}</li>
+                                    <li>{{ t('this_information_will_be_used_strictly_for_the_stated_purposes') }}</li>
+                                    <li>{{ t('my_personal_data_will_be_handled_in_accordance_with_pdpa_2010') }}</li>
+                                    <li>{{ t('this_consent_is_valid_for_12_months_from_the_date_of_signature') }}</li>
                                 </ul>
                                 
                                 <p style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #322446;">
-                                    <strong>Authorized By:</strong> INFINITE GZ SDN BHD<br>
-                                    <strong>Date:</strong> {{ current_date }}<br>
-                                    <strong>Purpose:</strong> Loan Eligibility Assessment
+                                    <strong>{{ t('authorized_by') }}</strong>{{ t('infinite_gz_sdn_bhd') }}<br>
+                                    <strong>{{ t('date_1') }}</strong> {{ current_date }}<br>
+                                    <strong>{{ t('purpose') }}</strong> Loan Eligibility Assessment
                                 </p>
                             </div>
 

@@ -8,7 +8,7 @@
         <h1 class="galaxy-title">
             <i class="bi bi-key-fill"></i> API密钥管理
         </h1>
-        <p class="galaxy-subtitle">管理程序化API访问的安全密钥</p>
+        <p class="galaxy-subtitle">{{ t('api') }}</p>
     </div>
 
     <!-- 创建API密钥按钮 -->
@@ -41,7 +41,7 @@
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">加载中...</span>
                     </div>
-                    <p class="mt-2">正在加载API密钥...</p>
+                    <p class="mt-2">{{ t('api_1') }}</p>
                 </div>
             </div>
         </div>
@@ -70,8 +70,8 @@
                     <div class="mb-3">
                         <label for="keyEnvironment" class="form-label">环境 *</label>
                         <select class="form-select" id="keyEnvironment" required>
-                            <option value="live">Live（生产环境）</option>
-                            <option value="test" selected>Test（测试环境）</option>
+                            <option value="live">{{ t('live') }}</option>
+                            <option value="test" selected>{{ t('test') }}</option>
                         </select>
                     </div>
 
@@ -169,7 +169,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">API密钥：</label>
+                    <label class="form-label fw-bold">{{ t('api_2') }}</label>
                     <div class="input-group">
                         <input type="text" class="form-control font-monospace" id="newApiKey" readonly>
                         <button class="btn btn-outline-primary" onclick="copyApiKey()">
@@ -214,7 +214,7 @@
             </div>
             <div class="modal-body">
                 <p>确定要撤销密钥 <strong id="revokeKeyName"></strong> 吗？</p>
-                <p class="text-danger">撤销后，使用此密钥的API调用将立即失败。此操作不可撤销。</p>
+                <p class="text-danger">{{ t('api_3') }}</p>
 
                 <div class="mb-3">
                     <label for="revokeReason" class="form-label">撤销原因 *</label>
@@ -256,7 +256,7 @@ async function refreshApiKeys() {
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">加载中...</span>
             </div>
-            <p class="mt-2">正在加载API密钥...</p>
+            <p class="mt-2">{{ t('api_1') }}</p>
         </div>
     `;
 
@@ -275,7 +275,7 @@ async function refreshApiKeys() {
             container.innerHTML = `
                 <div class="text-center py-5 text-muted">
                     <i class="bi bi-key" style="font-size: 3rem;"></i>
-                    <p class="mt-3">暂无API密钥</p>
+                    <p class="mt-3">{{ t('api_4') }}</p>
                     <p>点击"创建新密钥"按钮开始</p>
                 </div>
             `;
@@ -315,8 +315,8 @@ async function refreshApiKeys() {
             const permissions = key.permissions.join(', ') || '<span class="text-muted">无</span>';
 
             const envBadge = key.environment === 'live'
-                ? '<span class="badge bg-danger">Live</span>'
-                : '<span class="badge bg-info">Test</span>';
+                ? '<span class="badge bg-danger">{{ t('live_1') }}</span>'
+                : '<span class="badge bg-info">{{ t('test_1') }}</span>';
 
             const actions = key.is_active
                 ? `<button class="btn btn-sm btn-danger" onclick="showRevokeModal(${key.id}, '${key.name}')">
@@ -326,15 +326,15 @@ async function refreshApiKeys() {
 
             html += `
                 <tr>
-                    <td><strong>${key.name}</strong></td>
-                    <td><code class="text-primary">${key.key_prefix}...</code></td>
-                    <td>${envBadge}</td>
-                    <td><small>${permissions}</small></td>
-                    <td>${key.rate_limit}/分钟</td>
-                    <td>${statusBadge}</td>
-                    <td><small>${lastUsed}</small></td>
-                    <td><small>${createdAt}</small></td>
-                    <td>${actions}</td>
+                    <td><strong>{{ t('keyname') }}</strong></td>
+                    <td><code class="text-primary">{{ t('keykey_prefix') }}</code></td>
+                    <td>{{ t('envbadge') }}</td>
+                    <td><small>{{ t('permissions') }}</small></td>
+                    <td>{{ t('keyrate_limit') }}</td>
+                    <td>{{ t('statusbadge') }}</td>
+                    <td><small>{{ t('lastused') }}</small></td>
+                    <td><small>{{ t('createdat') }}</small></td>
+                    <td>{{ t('actions_2') }}</td>
                 </tr>
             `;
         });

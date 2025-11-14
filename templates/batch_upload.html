@@ -6,7 +6,7 @@
 <div class="fade-in">
     <!-- Page Header -->
     <div class="section-header">
-        <h1 class="section-title"><i class="bi bi-cloud-upload"></i> Batch Upload Statements</h1>
+        <h1 class="section-title"><i class="bi bi-cloud-upload"></i>{{ t('batch_upload_statements') }}</h1>
         <p class="section-subtitle">Upload multiple credit card statements for {{ customer.name }}</p>
     </div>
 
@@ -28,7 +28,7 @@
                     </div>
 
                     <div class="alert-professional alert-info-pro mb-4">
-                        <i class="bi bi-magic"></i> <strong>✨ Smart Auto-Detection:</strong><br>
+                        <i class="bi bi-magic"></i> <strong>{{ t('_smart_autodetection') }}</strong><br>
                         • 🤖 System automatically detects bank name and card number from each PDF<br>
                         • 💳 If the credit card doesn't exist, we'll create it for you automatically<br>
                         • 📅 Statement dates and amounts are extracted automatically<br>
@@ -37,7 +37,7 @@
                     </div>
                     
                     <div class="alert-professional alert-warning-pro mb-4" style="background: linear-gradient(135deg, rgba(255,152,0,0.15), rgba(255,193,7,0.1)); border-color: rgba(255,152,0,0.4);">
-                        <i class="bi bi-exclamation-triangle"></i> <strong>Supported Banks:</strong><br>
+                        <i class="bi bi-exclamation-triangle"></i> <strong>{{ t('supported_banks') }}</strong><br>
                         Maybank, CIMB, Public Bank, RHB, Hong Leong, AmBank, Alliance, Affin, HSBC, Standard Chartered, Citibank, OCBC, UOB, Bank Islam, Bank Rakyat, Bank Muamalat
                     </div>
 

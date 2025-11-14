@@ -23,29 +23,29 @@
                         <div class="col-md-3">
                             <div class="text-center">
                                 <i class="bi bi-file-earmark-text text-golden fs-1 mb-2"></i>
-                                <h6 class="text-white mb-1">Professional Reports</h6>
-                                <small class="text-silver-pearl">Bank-grade assessment reports</small>
+                                <h6 class="text-white mb-1">{{ t('professional_reports') }}</h6>
+                                <small class="text-silver-pearl">{{ t('bankgrade_assessment_reports') }}</small>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="text-center">
                                 <i class="bi bi-graph-up-arrow text-golden fs-1 mb-2"></i>
-                                <h6 class="text-white mb-1">Risk Analysis</h6>
-                                <small class="text-silver-pearl">DTI, FOIR, CCRIS, BRR, DSCR</small>
+                                <h6 class="text-white mb-1">{{ t('risk_analysis') }}</h6>
+                                <small class="text-silver-pearl">{{ t('dti_foir_ccris_brr_dscr') }}</small>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="text-center">
                                 <i class="bi bi-robot text-golden fs-1 mb-2"></i>
-                                <h6 class="text-white mb-1">AI Explanations</h6>
-                                <small class="text-silver-pearl">Intelligent advisor insights</small>
+                                <h6 class="text-white mb-1">{{ t('ai_explanations') }}</h6>
+                                <small class="text-silver-pearl">{{ t('intelligent_advisor_insights') }}</small>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="text-center">
                                 <i class="bi bi-download text-golden fs-1 mb-2"></i>
-                                <h6 class="text-white mb-1">PDF Export</h6>
-                                <small class="text-silver-pearl">Instant download with branding</small>
+                                <h6 class="text-white mb-1">{{ t('pdf_export') }}</h6>
+                                <small class="text-silver-pearl">{{ t('instant_download_with_branding') }}</small>
                             </div>
                         </div>
                     </div>
@@ -66,26 +66,26 @@
                         <div class="col-md-6">
                             <div class="report-type-card" data-type="personal" style="cursor: pointer; border: 2px solid rgba(255, 0, 127, 0.3); border-radius: 10px; padding: 2rem; text-align: center; transition: all 0.3s ease;">
                                 <i class="bi bi-person-badge fs-1 mb-3" style="color: #FF007F;"></i>
-                                <h5 class="text-white mb-2">Personal Loan Report</h5>
-                                <p class="text-silver-pearl mb-3">Individual loan assessment with DTI, FOIR & CCRIS analysis</p>
+                                <h5 class="text-white mb-2">{{ t('personal_loan_report') }}</h5>
+                                <p class="text-silver-pearl mb-3">{{ t('individual_loan_assessment_with_dti_foir_and_ccris_analysis') }}</p>
                                 <ul class="text-start text-silver-pearl" style="list-style: none; padding-left: 0;">
-                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Personal income analysis</li>
-                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Risk grade (A1-E)</li>
-                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Product recommendations (3-10 banks)</li>
-                                    <li><i class="bi bi-check-circle text-success me-2"></i>Approval probability</li>
+                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>{{ t('personal_income_analysis') }}</li>
+                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>{{ t('risk_grade_a1e') }}</li>
+                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>{{ t('product_recommendations_310_banks') }}</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>{{ t('approval_probability') }}</li>
                                 </ul>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="report-type-card" data-type="sme" style="cursor: pointer; border: 2px solid rgba(212, 175, 55, 0.3); border-radius: 10px; padding: 2rem; text-align: center; transition: all 0.3s ease;">
                                 <i class="bi bi-building-gear fs-1 mb-3" style="color: #D4AF37;"></i>
-                                <h5 class="text-white mb-2">SME Business Loan Report</h5>
-                                <p class="text-silver-pearl mb-3">Business loan assessment with BRR, DSCR & industry analysis</p>
+                                <h5 class="text-white mb-2">{{ t('sme_business_loan_report') }}</h5>
+                                <p class="text-silver-pearl mb-3">{{ t('business_loan_assessment_with_brr_dscr_and_industry_analysis') }}</p>
                                 <ul class="text-start text-silver-pearl" style="list-style: none; padding-left: 0;">
-                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Business revenue analysis</li>
-                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Industry risk scoring</li>
-                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>SME product matching</li>
-                                    <li><i class="bi bi-check-circle text-success me-2"></i>Cashflow stability metrics</li>
+                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>{{ t('business_revenue_analysis') }}</li>
+                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>{{ t('industry_risk_scoring_1') }}</li>
+                                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>{{ t('sme_product_matching') }}</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>{{ t('cashflow_stability_metrics') }}</li>
                                 </ul>
                             </div>
                         </div>
@@ -107,7 +107,7 @@
                         <div class="row g-4">
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-hash me-2"></i>Customer ID <span class="text-danger">*</span>
+                                    <i class="bi bi-hash me-2"></i>{{ t('customer_id') }}<span class="text-danger">*</span>
                                 </label>
                                 <input type="number" name="customer_id" class="form-control galaxy-input" required min="1">
                             </div>
@@ -119,7 +119,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-credit-card-2-back me-2"></i>Monthly Commitment (RM) <span class="text-danger">*</span>
+                                    <i class="bi bi-credit-card-2-back me-2"></i>{{ t('monthly_commitment_rm') }}<span class="text-danger">*</span>
                                 </label>
                                 <input type="number" name="monthly_commitment" class="form-control galaxy-input" required step="0.01" min="0">
                             </div>
@@ -155,11 +155,11 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-file-earmark me-2"></i>Report Format <span class="text-danger">*</span>
+                                    <i class="bi bi-file-earmark me-2"></i>{{ t('report_format') }}<span class="text-danger">*</span>
                                 </label>
                                 <select name="format" class="form-select galaxy-input" required>
-                                    <option value="html">HTML (View in Browser)</option>
-                                    <option value="pdf">PDF (Download)</option>
+                                    <option value="html">{{ t('html_view_in_browser') }}</option>
+                                    <option value="pdf">{{ t('pdf_download') }}</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -167,8 +167,8 @@
                                     <i class="bi bi-cpu me-2"></i>Data Mode
                                 </label>
                                 <select name="data_mode" class="form-select galaxy-input">
-                                    <option value="manual">Manual Input</option>
-                                    <option value="auto">Auto Enrichment</option>
+                                    <option value="manual">{{ t('manual_input') }}</option>
+                                    <option value="auto">{{ t('auto_enrichment') }}</option>
                                 </select>
                             </div>
                             <div class="col-12 text-center pt-4">
@@ -196,19 +196,19 @@
                         <div class="row g-4">
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-hash me-2"></i>Customer ID / Business ID <span class="text-danger">*</span>
+                                    <i class="bi bi-hash me-2"></i>{{ t('customer_id__business_id') }}<span class="text-danger">*</span>
                                 </label>
                                 <input type="number" name="customer_id" class="form-control galaxy-input" required min="1">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-currency-dollar me-2"></i>Monthly Revenue (RM) <span class="text-danger">*</span>
+                                    <i class="bi bi-currency-dollar me-2"></i>{{ t('monthly_revenue_rm') }}<span class="text-danger">*</span>
                                 </label>
                                 <input type="number" name="monthly_revenue" class="form-control galaxy-input" required step="0.01" min="0">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-credit-card-2-back me-2"></i>Monthly Commitment (RM) <span class="text-danger">*</span>
+                                    <i class="bi bi-credit-card-2-back me-2"></i>{{ t('monthly_commitment_rm') }}<span class="text-danger">*</span>
                                 </label>
                                 <input type="number" name="monthly_commitment" class="form-control galaxy-input" required step="0.01" min="0">
                             </div>
@@ -244,11 +244,11 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-file-earmark me-2"></i>Report Format <span class="text-danger">*</span>
+                                    <i class="bi bi-file-earmark me-2"></i>{{ t('report_format') }}<span class="text-danger">*</span>
                                 </label>
                                 <select name="format" class="form-select galaxy-input" required>
-                                    <option value="html">HTML (View in Browser)</option>
-                                    <option value="pdf">PDF (Download)</option>
+                                    <option value="html">{{ t('html_view_in_browser') }}</option>
+                                    <option value="pdf">{{ t('pdf_download') }}</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -256,8 +256,8 @@
                                     <i class="bi bi-cpu me-2"></i>Data Mode
                                 </label>
                                 <select name="data_mode" class="form-select galaxy-input">
-                                    <option value="manual">Manual Input</option>
-                                    <option value="auto">Auto Enrichment</option>
+                                    <option value="manual">{{ t('manual_input') }}</option>
+                                    <option value="auto">{{ t('auto_enrichment') }}</option>
                                 </select>
                             </div>
                             <div class="col-12 text-center pt-4">

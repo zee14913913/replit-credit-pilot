@@ -74,9 +74,9 @@
                 <div style="color: #FF007F; font-size: 0.85rem; margin-bottom: 10px;">
                     净余额
                     {% if summary.net_balance > 0 %}
-                        <span style="color: #FF007F;">(GZ 欠客户)</span>
+                        <span style="color: #FF007F;">{{ t('gz_') }}</span>
                     {% elif summary.net_balance < 0 %}
-                        <span style="color: #00FF7F;">(客户欠 GZ)</span>
+                        <span style="color: #00FF7F;">{{ t('_gz') }}</span>
                     {% else %}
                         <span style="color: #FFFFFF;">(已结清)</span>
                     {% endif %}
@@ -103,7 +103,7 @@
                                 <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">银行</th>
                                 <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">卡号</th>
                                 <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">账单日期</th>
-                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">Supplier消费</th>
+                                <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">{{ t('supplier_1') }}</th>
                                 <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">手续费</th>
                                 <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">付款金额</th>
                                 <th style="border: 1px solid #000000; color: #FF007F; padding: 1rem 1.5rem;">滚动余额</th>
@@ -251,9 +251,9 @@
                             </div>
                             <div style="font-size: 0.9rem; margin-top: 5px;">
                                 {% if summary.net_balance > 0 %}
-                                    <span style="color: #FF007F;">GZ 欠客户</span>
+                                    <span style="color: #FF007F;">{{ t('gz__1') }}</span>
                                 {% elif summary.net_balance < 0 %}
-                                    <span style="color: #00FF7F;">客户欠 GZ</span>
+                                    <span style="color: #00FF7F;">{{ t('_gz_1') }}</span>
                                 {% else %}
                                     <span style="color: #FFFFFF;">已完全结清</span>
                                 {% endif %}

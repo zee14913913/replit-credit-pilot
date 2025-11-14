@@ -31,8 +31,8 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-graph-up text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1">BRR Analysis</h6>
-                                    <small class="text-silver-pearl">Business Revenue Ratio - Core SME metric</small>
+                                    <h6 class="text-white mb-1">{{ t('brr_analysis') }}</h6>
+                                    <small class="text-silver-pearl">{{ t('business_revenue_ratio__core_sme_metric') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -40,8 +40,8 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-cash-coin text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1">DSCR Calculation</h6>
-                                    <small class="text-silver-pearl">Debt Service Coverage Ratio for cashflow</small>
+                                    <h6 class="text-white mb-1">{{ t('dscr_calculation') }}</h6>
+                                    <small class="text-silver-pearl">{{ t('debt_service_coverage_ratio_for_cashflow') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -49,8 +49,8 @@
                             <div class="d-flex align-items-start">
                                 <i class="bi bi-pie-chart text-golden fs-4 me-3"></i>
                                 <div>
-                                    <h6 class="text-white mb-1">Industry Risk Scoring</h6>
-                                    <small class="text-silver-pearl">Sector-specific risk adjustment</small>
+                                    <h6 class="text-white mb-1">{{ t('industry_risk_scoring') }}</h6>
+                                    <small class="text-silver-pearl">{{ t('sectorspecific_risk_adjustment') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -63,8 +63,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-white mb-1">Data Collection Mode</h6>
-                            <small class="text-silver-pearl">Choose how to provide SME loan application data</small>
+                            <h6 class="text-white mb-1">{{ t('data_collection_mode') }}</h6>
+                            <small class="text-silver-pearl">{{ t('choose_how_to_provide_sme_loan_application_data') }}</small>
                         </div>
                         <div class="btn-group" role="group">
                             <input type="radio" class="btn-check" name="data_mode_toggle" id="mode_manual" value="manual" checked>
@@ -106,7 +106,7 @@
                             <!-- Monthly Revenue -->
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-currency-dollar me-2"></i>Monthly Revenue (RM) <span class="text-danger">*</span>
+                                    <i class="bi bi-currency-dollar me-2"></i>{{ t('monthly_revenue_rm') }}<span class="text-danger">*</span>
                                 </label>
                                 <input type="number" name="monthly_revenue" class="form-control galaxy-input" required step="0.01" min="0" placeholder="Average monthly business revenue">
                                 <small class="text-golden">
@@ -117,7 +117,7 @@
                             <!-- Monthly Commitment -->
                             <div class="col-md-6">
                                 <label class="form-label text-silver-pearl">
-                                    <i class="bi bi-credit-card-2-back me-2"></i>Monthly Debt Commitment (RM) <span class="text-danger">*</span>
+                                    <i class="bi bi-credit-card-2-back me-2"></i>{{ t('monthly_debt_commitment_rm') }}<span class="text-danger">*</span>
                                 </label>
                                 <input type="number" name="monthly_commitment" class="form-control galaxy-input" required step="0.01" min="0" placeholder="Total monthly loan/debt repayments">
                                 <small class="text-golden">
@@ -131,19 +131,19 @@
                                     <i class="bi bi-diagram-3 me-2"></i>Industry Sector
                                 </label>
                                 <select name="industry" class="form-select galaxy-input">
-                                    <option value="">Auto-detect</option>
-                                    <option value="technology">Technology / IT Services</option>
-                                    <option value="manufacturing">Manufacturing</option>
-                                    <option value="retail">Retail / E-commerce</option>
-                                    <option value="fnb">Food & Beverage</option>
-                                    <option value="construction">Construction</option>
-                                    <option value="professional_services">Professional Services</option>
-                                    <option value="healthcare">Healthcare</option>
-                                    <option value="education">Education</option>
-                                    <option value="transportation">Transportation / Logistics</option>
-                                    <option value="agriculture">Agriculture</option>
-                                    <option value="real_estate">Real Estate</option>
-                                    <option value="other">Other</option>
+                                    <option value="">{{ t('autodetect') }}</option>
+                                    <option value="technology">{{ t('technology__it_services') }}</option>
+                                    <option value="manufacturing">{{ t('manufacturing') }}</option>
+                                    <option value="retail">{{ t('retail__ecommerce') }}</option>
+                                    <option value="fnb">{{ t('food_and_beverage') }}</option>
+                                    <option value="construction">{{ t('construction') }}</option>
+                                    <option value="professional_services">{{ t('professional_services') }}</option>
+                                    <option value="healthcare">{{ t('healthcare') }}</option>
+                                    <option value="education">{{ t('education') }}</option>
+                                    <option value="transportation">{{ t('transportation__logistics') }}</option>
+                                    <option value="agriculture">{{ t('agriculture') }}</option>
+                                    <option value="real_estate">{{ t('real_estate') }}</option>
+                                    <option value="other">{{ t('category_other') }}</option>
                                 </select>
                                 <small class="text-silver-pearl">
                                     <i class="bi bi-info-circle me-1"></i>Industry affects risk scoring
@@ -220,20 +220,20 @@
                     </h6>
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <div class="text-silver-pearl small mb-1">Minimum Revenue</div>
-                            <div class="text-white">RM 10,000/month recommended</div>
+                            <div class="text-silver-pearl small mb-1">{{ t('minimum_revenue') }}</div>
+                            <div class="text-white">{{ t('rm_10000month_recommended') }}</div>
                         </div>
                         <div class="col-md-6">
-                            <div class="text-silver-pearl small mb-1">Optimal BRR</div>
-                            <div class="text-success">≥ 2.0 (Revenue 2x Commitment)</div>
+                            <div class="text-silver-pearl small mb-1">{{ t('optimal_brr') }}</div>
+                            <div class="text-success">{{ t('_20_revenue_2x_commitment') }}</div>
                         </div>
                         <div class="col-md-6">
-                            <div class="text-silver-pearl small mb-1">Optimal DSCR</div>
+                            <div class="text-silver-pearl small mb-1">{{ t('optimal_dscr') }}</div>
                             <div class="text-success">≥ 1.25</div>
                         </div>
                         <div class="col-md-6">
-                            <div class="text-silver-pearl small mb-1">Typical Loan Amount</div>
-                            <div class="text-white">RM 50,000 - RM 5,000,000</div>
+                            <div class="text-silver-pearl small mb-1">{{ t('typical_loan_amount') }}</div>
+                            <div class="text-white">{{ t('rm_50000__rm_5000000') }}</div>
                         </div>
                     </div>
                 </div>

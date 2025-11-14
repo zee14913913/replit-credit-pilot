@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Savings Report - CHEOK JUN YOON</title>
+    <title>{{ t('savings_report__cheok_jun_yoon') }}</title>
     <style>
         * {
             margin: 0;
@@ -237,32 +237,32 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>CHEOK JUN YOON - Savings Transfer Report</h1>
-            <p>Account: INFINITE GZ SDN. BHD. - Hong Leong Bank (23600594645)</p>
-            <p>Period: June - September 2025 (按Statement Date)</p>
-            <p>Report Generated: October 30, 2025</p>
+            <h1>{{ t('cheok_jun_yoon__savings_transfer_report') }}</h1>
+            <p>{{ t('account_infinite_gz_sdn_bhd__hong_leong_bank_23600594645') }}</p>
+            <p>{{ t('period_june__september_2025_statement_date') }}</p>
+            <p>{{ t('report_generated_october_30_2025') }}</p>
         </div>
         
         <div class="summary-grid">
             <div class="summary-card">
-                <h3>June Statement</h3>
-                <div class="value">RM 20,000.00</div>
+                <h3>{{ t('june_statement') }}</h3>
+                <div class="value">{{ t('rm_2000000') }}</div>
             </div>
             <div class="summary-card">
-                <h3>July Statement</h3>
-                <div class="value">RM 0.00</div>
+                <h3>{{ t('july_statement') }}</h3>
+                <div class="value">{{ t('rm_000') }}</div>
             </div>
             <div class="summary-card">
-                <h3>August Statement</h3>
-                <div class="value">RM 0.00</div>
+                <h3>{{ t('august_statement') }}</h3>
+                <div class="value">{{ t('rm_000') }}</div>
             </div>
             <div class="summary-card">
-                <h3>September Statement</h3>
-                <div class="value">RM 52,055.51</div>
+                <h3>{{ t('september_statement') }}</h3>
+                <div class="value">{{ t('rm_5205551') }}</div>
             </div>
             <div class="summary-card total">
-                <h3>Total (Jun-Sep)</h3>
-                <div class="value">RM 72,055.51</div>
+                <h3>{{ t('total_junsep') }}</h3>
+                <div class="value">{{ t('rm_7205551') }}</div>
             </div>
         </div>
         
@@ -270,15 +270,15 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 4%;">No.</th>
-                        <th style="width: 10%;">Statement<br>Date</th>
-                        <th style="width: 10%;">Transaction<br>Date</th>
-                        <th style="width: 11%;">Amount<br>(RM)</th>
-                        <th style="width: 8%;">Type</th>
-                        <th style="width: 15%;">Description</th>
-                        <th style="width: 18%;">Recipient / Purpose</th>
-                        <th style="width: 19%;">Reference Number</th>
-                        <th style="width: 5%;">Statement</th>
+                        <th style="width: 4%;">{{ t('no_1') }}</th>
+                        <th style="width: 10%;">{{ t('statement') }}<br>{{ t('date') }}</th>
+                        <th style="width: 10%;">{{ t('transaction') }}<br>{{ t('date') }}</th>
+                        <th style="width: 11%;">{{ t('amount') }}<br>{{ t('rm_1') }}</th>
+                        <th style="width: 8%;">{{ t('type') }}</th>
+                        <th style="width: 15%;">{{ t('description') }}</th>
+                        <th style="width: 18%;">{{ t('recipient__purpose') }}</th>
+                        <th style="width: 19%;">{{ t('reference_number') }}</th>
+                        <th style="width: 5%;">{{ t('statement') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -287,103 +287,103 @@
                         <td><span class="statement-badge">05-06-2025</span></td>
                         <td>03-06-2025</td>
                         <td class="amount">20,000.00</td>
-                        <td><span class="direction">Payment</span></td>
-                        <td>CIB Instant Transfer<br><small>Payment service</small></td>
-                        <td><strong>CHEOK JUN YOON</strong></td>
-                        <td><small>20250603HLBBMYKL010OCB82466022</small></td>
-                        <td>Jun</td>
+                        <td><span class="direction">{{ t('payment') }}</span></td>
+                        <td>{{ t('cib_instant_transfer') }}<br><small>{{ t('payment_service') }}</small></td>
+                        <td><strong>{{ t('cheok_jun_yoon') }}</strong></td>
+                        <td><small>{{ t('20250603hlbbmykl010ocb82466022') }}</small></td>
+                        <td>{{ t('jun') }}</td>
                     </tr>
                     <tr>
                         <td>2</td>
                         <td><span class="statement-badge">05-09-2025</span></td>
                         <td>07-08-2025</td>
                         <td class="amount">22,139.92</td>
-                        <td><span class="direction">Payment</span></td>
-                        <td>CIB Instant Transfer<br><small>Pay On Behalf</small></td>
-                        <td><strong>CHEOK JUN YOON</strong></td>
-                        <td><small>20250807HLBBMYKL010OCB03182528</small></td>
-                        <td>Sep</td>
+                        <td><span class="direction">{{ t('payment') }}</span></td>
+                        <td>{{ t('cib_instant_transfer') }}<br><small>{{ t('pay_on_behalf') }}</small></td>
+                        <td><strong>{{ t('cheok_jun_yoon') }}</strong></td>
+                        <td><small>{{ t('20250807hlbbmykl010ocb03182528') }}</small></td>
+                        <td>{{ t('sep') }}</td>
                     </tr>
                     <tr>
                         <td>3</td>
                         <td><span class="statement-badge">05-09-2025</span></td>
                         <td>11-08-2025</td>
                         <td class="amount">2,300.00</td>
-                        <td><span class="direction">Payment</span></td>
-                        <td>CIB Instant Transfer<br><small>Pay On Behalf (Nocv Studio)</small></td>
-                        <td><strong>ADVANCE MILLER SERVICES</strong><br><small>(Company registration fee)</small></td>
-                        <td><small>20250811HLBBMYKL010OCB07305905</small></td>
-                        <td>Sep</td>
+                        <td><span class="direction">{{ t('payment') }}</span></td>
+                        <td>{{ t('cib_instant_transfer') }}<br><small>{{ t('pay_on_behalf_nocv_studio') }}</small></td>
+                        <td><strong>{{ t('advance_miller_services') }}</strong><br><small>{{ t('company_registration_fee') }}</small></td>
+                        <td><small>{{ t('20250811hlbbmykl010ocb07305905') }}</small></td>
+                        <td>{{ t('sep') }}</td>
                     </tr>
                     <tr>
                         <td>4</td>
                         <td><span class="statement-badge">05-09-2025</span></td>
                         <td>17-08-2025</td>
                         <td class="amount">700.00</td>
-                        <td><span class="direction">Payment</span></td>
-                        <td>CIB Instant Transfer<br><small>pay on behalf</small></td>
-                        <td><strong>CHEOK JUN YOON</strong></td>
-                        <td><small>20250817HLBBMYKL010OCB13275125</small></td>
-                        <td>Sep</td>
+                        <td><span class="direction">{{ t('payment') }}</span></td>
+                        <td>{{ t('cib_instant_transfer') }}<br><small>{{ t('pay_on_behalf_1') }}</small></td>
+                        <td><strong>{{ t('cheok_jun_yoon') }}</strong></td>
+                        <td><small>{{ t('20250817hlbbmykl010ocb13275125') }}</small></td>
+                        <td>{{ t('sep') }}</td>
                     </tr>
                     <tr>
                         <td>5</td>
                         <td><span class="statement-badge">05-09-2025</span></td>
                         <td>17-08-2025</td>
                         <td class="amount">700.00</td>
-                        <td><span class="direction">Payment</span></td>
-                        <td>CIB Instant Transfer<br><small>pay on behalf</small></td>
-                        <td><strong>CHEOK JUN YOON</strong></td>
-                        <td><small>20250817HLBBMYKL010OCB13258145</small></td>
-                        <td>Sep</td>
+                        <td><span class="direction">{{ t('payment') }}</span></td>
+                        <td>{{ t('cib_instant_transfer') }}<br><small>{{ t('pay_on_behalf_1') }}</small></td>
+                        <td><strong>{{ t('cheok_jun_yoon') }}</strong></td>
+                        <td><small>{{ t('20250817hlbbmykl010ocb13258145') }}</small></td>
+                        <td>{{ t('sep') }}</td>
                     </tr>
                     <tr>
                         <td>6</td>
                         <td><span class="statement-badge">05-09-2025</span></td>
                         <td>21-08-2025</td>
                         <td class="amount">10,000.00</td>
-                        <td><span class="direction">Payment</span></td>
-                        <td>CIB Instant Transfer<br><small>Commission</small></td>
-                        <td><strong>CHEOK JUN YOON</strong></td>
-                        <td><small>20250821HLBBMYKL010OCB17130068</small></td>
-                        <td>Sep</td>
+                        <td><span class="direction">{{ t('payment') }}</span></td>
+                        <td>{{ t('cib_instant_transfer') }}<br><small>{{ t('commission') }}</small></td>
+                        <td><strong>{{ t('cheok_jun_yoon') }}</strong></td>
+                        <td><small>{{ t('20250821hlbbmykl010ocb17130068') }}</small></td>
+                        <td>{{ t('sep') }}</td>
                     </tr>
                     <tr>
                         <td>7</td>
                         <td><span class="statement-badge">05-09-2025</span></td>
                         <td>21-08-2025</td>
                         <td class="amount">12,215.59</td>
-                        <td><span class="direction">Payment</span></td>
-                        <td>CIB Instant Transfer<br><small>Comm</small></td>
-                        <td><strong>CHEOK JUN YOON</strong></td>
-                        <td><small>20250821HLBBMYKL010OCB17135100</small></td>
-                        <td>Sep</td>
+                        <td><span class="direction">{{ t('payment') }}</span></td>
+                        <td>{{ t('cib_instant_transfer') }}<br><small>{{ t('comm') }}</small></td>
+                        <td><strong>{{ t('cheok_jun_yoon') }}</strong></td>
+                        <td><small>{{ t('20250821hlbbmykl010ocb17135100') }}</small></td>
+                        <td>{{ t('sep') }}</td>
                     </tr>
                     <tr>
                         <td>8</td>
                         <td><span class="statement-badge">05-09-2025</span></td>
                         <td>23-08-2025</td>
                         <td class="amount">4,000.00</td>
-                        <td><span class="direction">Payment</span></td>
-                        <td>CIB Instant Transfer<br><small>Bonus</small></td>
-                        <td><strong>CHEOK JUN YOON</strong></td>
-                        <td><small>20250823HLBBMYKL010OCB18989792</small></td>
-                        <td>Sep</td>
+                        <td><span class="direction">{{ t('payment') }}</span></td>
+                        <td>{{ t('cib_instant_transfer') }}<br><small>{{ t('bonus') }}</small></td>
+                        <td><strong>{{ t('cheok_jun_yoon') }}</strong></td>
+                        <td><small>{{ t('20250823hlbbmykl010ocb18989792') }}</small></td>
+                        <td>{{ t('sep') }}</td>
                     </tr>
                     <tr class="total-row">
-                        <td colspan="3"><strong>TOTAL (Jun-Sep 2025)</strong></td>
+                        <td colspan="3"><strong>{{ t('total_junsep_2025') }}</strong></td>
                         <td class="total-amount">72,055.51</td>
-                        <td colspan="5"><strong>All transactions are payments from INFINITE GZ to CHEOK JUN YOON</strong></td>
+                        <td colspan="5"><strong>{{ t('all_transactions_are_payments_from_infinite_gz_to_cheok_jun_yoon') }}</strong></td>
                     </tr>
                 </tbody>
             </table>
         </div>
         
         <div class="footer">
-            <p><span class="checkmark">✓</span> Data Source: Original PDF bank statements manually verified</p>
-            <p><span class="checkmark">✓</span> Accuracy: 100% - No deletions, additions, or modifications (1:1 import)</p>
-            <p><span class="checkmark">✓</span> Classification: By Statement Date (05-06-2025, 05-07-2025, 05-08-2025, 05-09-2025)</p>
-            <p><span class="checkmark">✓</span> All amounts in Withdrawal column = Payments from INFINITE GZ</p>
+            <p><span class="checkmark">✓</span>{{ t('data_source_original_pdf_bank_statements_manually_verified') }}</p>
+            <p><span class="checkmark">✓</span>{{ t('accuracy_100__no_deletions_additions_or_modifications_11_import') }}</p>
+            <p><span class="checkmark">✓</span>{{ t('classification_by_statement_date_05062025_05072025_05082025_05092025') }}</p>
+            <p><span class="checkmark">✓</span>{{ t('all_amounts_in_withdrawal_column__payments_from_infinite_gz') }}</p>
         </div>
     </div>
 </body>

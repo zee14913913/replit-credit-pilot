@@ -20,7 +20,7 @@
                             </label>
                             <select name="customer_id" id="customer_id" class="form-select bg-dark text-white" required
                                     style="border: 2px solid rgba(255,0,127,0.3);">
-                                <option value="">Select Customer...</option>
+                                <option value="">{{ t('select_customer_1') }}</option>
                             </select>
                         </div>
                         
@@ -31,10 +31,10 @@
                             </label>
                             <select name="document_type" id="document_type" class="form-select bg-dark text-white" required
                                     style="border: 2px solid rgba(255,0,127,0.3);">
-                                <option value="salary_slip">Salary Slip / Payslip</option>
-                                <option value="tax_return">Income Tax Return (EA Form)</option>
-                                <option value="epf">EPF Statement</option>
-                                <option value="bank_inflow">Bank Statement (Income Focus)</option>
+                                <option value="salary_slip">{{ t('salary_slip__payslip') }}</option>
+                                <option value="tax_return">{{ t('income_tax_return_ea_form') }}</option>
+                                <option value="epf">{{ t('epf_statement') }}</option>
+                                <option value="bank_inflow">{{ t('bank_statement_income_focus') }}</option>
                             </select>
                             <small class="text-muted">
                                 Select the type of income proof document
@@ -69,12 +69,12 @@
                         
                         <!-- OCR 提示 -->
                         <div class="alert" style="background: rgba(255,0,127,0.1); border: 2px solid rgba(255,0,127,0.3); color: #FF007F;">
-                            <h6><i class="bi bi-magic"></i> Smart OCR Features</h6>
+                            <h6><i class="bi bi-magic"></i>{{ t('smart_ocr_features') }}</h6>
                             <ul class="mb-0" style="color: rgba(255,255,255,0.9);">
-                                <li>Automatic income amount extraction</li>
-                                <li>Multi-language support (English + Chinese)</li>
-                                <li>Document text recognition</li>
-                                <li>Confidence scoring</li>
+                                <li>{{ t('automatic_income_amount_extraction') }}</li>
+                                <li>{{ t('multilanguage_support_english__chinese') }}</li>
+                                <li>{{ t('document_text_recognition') }}</li>
+                                <li>{{ t('confidence_scoring') }}</li>
                             </ul>
                         </div>
                         
@@ -159,19 +159,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 显示成功结果
                 resultDiv.innerHTML = `
                     <div class="alert alert-success">
-                        <h5><i class="bi bi-check-circle"></i> Upload Successful!</h5>
+                        <h5><i class="bi bi-check-circle"></i>{{ t('upload_successful') }}</h5>
                         <hr>
-                        <p><strong>Customer:</strong> ${result.customer_name}</p>
-                        <p><strong>Document Type:</strong> ${result.document_type}</p>
-                        <p><strong>Month:</strong> ${result.document_month}</p>
+                        <p><strong>{{ t('customer_1') }}</strong>{{ t('resultcustomer_name') }}</p>
+                        <p><strong>{{ t('document_type_1') }}</strong>{{ t('resultdocument_type') }}</p>
+                        <p><strong>{{ t('month_1') }}</strong>{{ t('resultdocument_month') }}</p>
                         <hr>
-                        <h6 style="color: #FF007F;"><i class="bi bi-magic"></i> OCR Results:</h6>
-                        <p><strong>Income Detected:</strong> RM ${result.ocr_result.income_detected.toFixed(2)}</p>
-                        <p><strong>Confidence:</strong> ${(result.ocr_result.confidence * 100).toFixed(1)}%</p>
-                        <p><strong>Method:</strong> ${result.ocr_result.method}</p>
-                        <p><strong>Text Length:</strong> ${result.ocr_result.text_length} characters</p>
+                        <h6 style="color: #FF007F;"><i class="bi bi-magic"></i>{{ t('ocr_results') }}</h6>
+                        <p><strong>{{ t('income_detected_1') }}</strong>{{ t('rm_resultocr_resultincome_detectedtofixed2') }}</p>
+                        <p><strong>{{ t('confidence_1') }}</strong>{{ t('resultocr_resultconfidence__100tofixed1') }}</p>
+                        <p><strong>{{ t('method') }}</strong>{{ t('resultocr_resultmethod') }}</p>
+                        <p><strong>{{ t('text_length') }}</strong>{{ t('resultocr_resulttext_length_characters') }}</p>
                         <hr>
-                        <a href="/income" class="btn btn-primary">View All Documents</a>
+                        <a href="/income" class="btn btn-primary">{{ t('view_all_documents') }}</a>
                     </div>
                 `;
                 resultDiv.style.display = 'block';
@@ -183,8 +183,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 显示错误
                 resultDiv.innerHTML = `
                     <div class="alert alert-danger">
-                        <h5><i class="bi bi-exclamation-triangle"></i> Upload Failed</h5>
-                        <p>${result.detail || result.message || 'Unknown error'}</p>
+                        <h5><i class="bi bi-exclamation-triangle"></i>{{ t('upload_failed') }}</h5>
+                        <p>{{ t('resultdetail__resultmessage__unknown_error') }}</p>
                     </div>
                 `;
                 resultDiv.style.display = 'block';
@@ -193,8 +193,8 @@ document.addEventListener('DOMContentLoaded', function() {
             progressDiv.style.display = 'none';
             resultDiv.innerHTML = `
                 <div class="alert alert-danger">
-                    <h5><i class="bi bi-exclamation-triangle"></i> Error</h5>
-                    <p>${error.message}</p>
+                    <h5><i class="bi bi-exclamation-triangle"></i>{{ t('error') }}</h5>
+                    <p>{{ t('errormessage') }}</p>
                 </div>
             `;
             resultDiv.style.display = 'block';

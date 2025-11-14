@@ -15,23 +15,23 @@
     <div class="professional-card mb-4">
         <div class="row g-4">
             <div class="col-md-2">
-                <small style="color: var(--text-secondary);">Customer / 客户</small>
+                <small style="color: var(--text-secondary);">{{ t('customer__') }}</small>
                 <div style="color: var(--text-primary); font-weight: 600;">{{ monthly_stmt.customer_name }}</div>
             </div>
             <div class="col-md-2">
-                <small style="color: var(--text-secondary);">Month / 月份</small>
+                <small style="color: var(--text-secondary);">{{ t('month__') }}</small>
                 <div style="color: var(--text-primary); font-weight: 600;">{{ monthly_stmt.statement_month }}</div>
             </div>
             <div class="col-md-2">
-                <small style="color: var(--text-secondary);">Cards / 卡数</small>
+                <small style="color: var(--text-secondary);">{{ t('cards__') }}</small>
                 <div style="color: var(--text-primary); font-weight: 600;">{{ summary.card_count }}</div>
             </div>
             <div class="col-md-2">
-                <small style="color: var(--text-secondary);">Transactions / 交易数</small>
+                <small style="color: var(--text-secondary);">{{ t('transactions___1') }}</small>
                 <div style="color: var(--text-primary); font-weight: 600;">{{ summary.total_transactions }}</div>
             </div>
             <div class="col-md-2">
-                <small style="color: var(--text-secondary);">Total Balance / 总余额</small>
+                <small style="color: var(--text-secondary);">{{ t('total_balance__') }}</small>
                 <div style="color: var(--text-primary); font-weight: 600;">RM {{ "{:,.2f}".format(monthly_stmt.closing_balance_total) }}</div>
             </div>
             <div class="col-md-2">
@@ -70,15 +70,15 @@
                 <div class="divider-professional"></div>
                 <div class="row g-3 mt-3">
                     <div class="col-6">
-                        <small style="color: var(--text-secondary);">Expenses / 消费</small>
+                        <small style="color: var(--text-secondary);">{{ t('expenses__') }}</small>
                         <div style="color: #FF007F; font-weight: 600;">RM {{ "{:,.2f}".format(summary.owner_expenses) }}</div>
                     </div>
                     <div class="col-6">
-                        <small style="color: var(--text-secondary);">Payments / 付款</small>
+                        <small style="color: var(--text-secondary);">{{ t('payments__') }}</small>
                         <div style="color: #FFFFFF; font-weight: 600;">RM {{ "{:,.2f}".format(summary.owner_payments) }}</div>
                     </div>
                     <div class="col-12">
-                        <small style="color: var(--text-secondary);">Outstanding Balance / 未偿余额</small>
+                        <small style="color: var(--text-secondary);">{{ t('outstanding_balance__') }}</small>
                         <div style="color: #FF007F; font-weight: 700; font-size: 1.2rem;">RM {{ "{:,.2f}".format(monthly_stmt.owner_balance) }}</div>
                     </div>
                 </div>
@@ -92,15 +92,15 @@
                 <div class="divider-professional"></div>
                 <div class="row g-3 mt-3">
                     <div class="col-6">
-                        <small style="color: var(--text-secondary);">Expenses / 消费</small>
+                        <small style="color: var(--text-secondary);">{{ t('expenses__') }}</small>
                         <div style="color: #FF007F; font-weight: 600;">RM {{ "{:,.2f}".format(summary.gz_expenses) }}</div>
                     </div>
                     <div class="col-6">
-                        <small style="color: var(--text-secondary);">Payments / 付款</small>
+                        <small style="color: var(--text-secondary);">{{ t('payments__') }}</small>
                         <div style="color: #FFFFFF; font-weight: 600;">RM {{ "{:,.2f}".format(summary.gz_payments) }}</div>
                     </div>
                     <div class="col-12">
-                        <small style="color: var(--text-secondary);">Outstanding Balance / 未偿余额</small>
+                        <small style="color: var(--text-secondary);">{{ t('outstanding_balance__') }}</small>
                         <div style="color: #FF007F; font-weight: 700; font-size: 1.2rem;">RM {{ "{:,.2f}".format(monthly_stmt.gz_balance) }}</div>
                     </div>
                 </div>
@@ -112,7 +112,7 @@
     {% if summary.supplier_fees > 0 %}
     <div class="alert-professional alert-success-pro mb-4">
         <i class="bi bi-cash-coin"></i>
-        <strong>Supplier Merchant Fee (1%):</strong> RM {{ "{:,.2f}".format(summary.supplier_fees) }}
+        <strong>{{ t('supplier_merchant_fee_1') }}</strong> RM {{ "{:,.2f}".format(summary.supplier_fees) }}
     </div>
     {% endif %}
 
@@ -126,13 +126,13 @@
             <table class="table-professional">
                 <thead>
                     <tr>
-                        <th style="min-width: 100px;">Date<br>日期</th>
-                        <th style="min-width: 90px;">Amount<br>金额</th>
-                        <th style="min-width: 120px;">Consumer<br>消费者</th>
-                        <th style="min-width: 100px;">Bank<br>银行</th>
-                        <th style="min-width: 100px;">Card No.<br>消费卡号</th>
-                        <th style="min-width: 250px;">Descriptions<br>描述</th>
-                        <th style="min-width: 100px; text-align: right;">Balance<br>总结Bal</th>
+                        <th style="min-width: 100px;">{{ t('date') }}<br>日期</th>
+                        <th style="min-width: 90px;">{{ t('amount') }}<br>金额</th>
+                        <th style="min-width: 120px;">{{ t('consumer') }}<br>消费者</th>
+                        <th style="min-width: 100px;">{{ t('bank') }}<br>银行</th>
+                        <th style="min-width: 100px;">{{ t('card_no') }}<br>消费卡号</th>
+                        <th style="min-width: 250px;">{{ t('descriptions') }}<br>描述</th>
+                        <th style="min-width: 100px; text-align: right;">{{ t('balance') }}<br>{{ t('bal') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -152,9 +152,9 @@
                             {% elif txn.payer_name %}
                             <span style="color: #2ecc71;">{{ txn.payer_name }}</span>
                             {% elif txn.owner_flag == 'own' %}
-                            <span style="color: #FF007F;">OWNER</span>
+                            <span style="color: #FF007F;">{{ t('owner_1') }}</span>
                             {% elif txn.owner_flag == 'gz' %}
-                            <span style="color: #FFFFFF;">INFINITE</span>
+                            <span style="color: #FFFFFF;">{{ t('infinite') }}</span>
                             {% else %}
                             <span style="color: #999;">-</span>
                             {% endif %}

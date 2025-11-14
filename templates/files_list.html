@@ -75,7 +75,7 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>文件管理 / File Manager</h2>
+    <h2>{{ t('__file_manager') }}</h2>
     <a href="http://localhost:8000/accounting" class="btn btn-pattern-1">
         上传新文件
     </a>
@@ -85,14 +85,14 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>文件名 / File Name</th>
-                <th>公司 / Company</th>
-                <th>月份 / Month</th>
-                <th>状态 / Status</th>
-                <th>验证状态 / Validation</th>
-                <th>上传时间 / Upload Time</th>
-                <th>下一步 / Next Action</th>
+                <th>{{ t('id') }}</th>
+                <th>{{ t('__file_name') }}</th>
+                <th>{{ t('__company') }}</th>
+                <th>{{ t('__month_1') }}</th>
+                <th>{{ t('__status') }}</th>
+                <th>{{ t('__validation') }}</th>
+                <th>{{ t('__upload_time') }}</th>
+                <th>{{ t('__next_action') }}</th>
             </tr>
         </thead>
         <tbody id="files-table-body">

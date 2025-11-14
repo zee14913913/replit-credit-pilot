@@ -10,8 +10,8 @@
     <!-- HEADER -->
     <!-- ========================================================= -->
     <div class="dashboard-header">
-        <h1 class="title">Loan Marketplace</h1>
-        <p class="subtitle">Your One-Stop Solution for Personal & Business Loans</p>
+        <h1 class="title">{{ t('loan_marketplace') }}</h1>
+        <p class="subtitle">{{ t('your_onestop_solution_for_personal_and_business_loans') }}</p>
     </div>
 
     <!-- ========================================================= -->
@@ -24,11 +24,11 @@
             <div class="card-icon">
                 <i class="bi bi-person-fill"></i>
             </div>
-            <h2>Personal Loans</h2>
-            <p>Compare rates from 10+ banks & fintechs</p>
+            <h2>{{ t('personal_loans') }}</h2>
+            <p>{{ t('compare_rates_from_10_banks_and_fintechs') }}</p>
             <div class="card-stats">
-                <span class="stat-badge">4.8% - 12% APR</span>
-                <span class="stat-badge">Up to RM 200,000</span>
+                <span class="stat-badge">{{ t('48__12_apr') }}</span>
+                <span class="stat-badge">{{ t('up_to_rm_200000') }}</span>
             </div>
             <button class="btn-explore">
                 Explore Products <i class="bi bi-arrow-right"></i>
@@ -40,11 +40,11 @@
             <div class="card-icon">
                 <i class="bi bi-briefcase-fill"></i>
             </div>
-            <h2>SME Loans</h2>
-            <p>Business financing for growth & expansion</p>
+            <h2>{{ t('sme_loans') }}</h2>
+            <p>{{ t('business_financing_for_growth_and_expansion') }}</p>
             <div class="card-stats">
-                <span class="stat-badge">4.5% - 9.5% APR</span>
-                <span class="stat-badge">Up to RM 10M</span>
+                <span class="stat-badge">{{ t('45__95_apr') }}</span>
+                <span class="stat-badge">{{ t('up_to_rm_10m') }}</span>
             </div>
             <button class="btn-explore">
                 Explore Products <i class="bi bi-arrow-right"></i>
@@ -56,11 +56,11 @@
             <div class="card-icon">
                 <i class="bi bi-phone-fill"></i>
             </div>
-            <h2>Digital Bank Loans</h2>
-            <p>Fast approval & 100% online application</p>
+            <h2>{{ t('digital_bank_loans') }}</h2>
+            <p>{{ t('fast_approval_and_100_online_application') }}</p>
             <div class="card-stats">
-                <span class="stat-badge">24-hour approval</span>
-                <span class="stat-badge">Zero paperwork</span>
+                <span class="stat-badge">{{ t('24hour_approval') }}</span>
+                <span class="stat-badge">{{ t('zero_paperwork') }}</span>
             </div>
             <button class="btn-explore">
                 Explore Products <i class="bi bi-arrow-right"></i>
@@ -73,19 +73,19 @@
     <!-- QUICK ACTIONS -->
     <!-- ========================================================= -->
     <div class="quick-actions-section">
-        <h3>Quick Actions</h3>
+        <h3>{{ t('quick_actions') }}</h3>
         <div class="actions-grid">
             <button class="action-btn" onclick="window.location.href='/loan-evaluate'">
                 <i class="bi bi-calculator"></i>
-                <span>Loan Eligibility Calculator</span>
+                <span>{{ t('loan_eligibility_calculator') }}</span>
             </button>
             <button class="action-btn" onclick="window.location.href='/loan-products'">
                 <i class="bi bi-grid-3x3-gap"></i>
-                <span>View All Products</span>
+                <span>{{ t('view_all_products') }}</span>
             </button>
             <button class="action-btn" onclick="window.location.href='/loan-reports'">
                 <i class="bi bi-file-earmark-text"></i>
-                <span>Generate Loan Report</span>
+                <span>{{ t('generate_loan_report') }}</span>
             </button>
         </div>
     </div>

@@ -149,9 +149,9 @@
                             </td>
                             <td style="white-space: nowrap;">
                                 {% if txn.category == 'owner_expense' %}
-                                <span style="color: #FF1493;">Owner</span>
+                                <span style="color: #FF1493;">{{ t('owner') }}</span>
                                 {% elif txn.category == 'infinite_expense' %}
-                                <span style="color: #330066;">INFINITE</span>
+                                <span style="color: #330066;">{{ t('infinite') }}</span>
                                 {% elif txn.category == 'owner_payment' %}
                                 <span style="color: #FF007F;">Owner {{ t('payment') }}</span>
                                 {% elif txn.category == 'infinite_payment' %}
@@ -207,13 +207,13 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <div style="text-align: center; padding: 1rem; background: rgba(255, 20, 147, 0.05); border-radius: 8px;">
-                                <small style="color: #FF1493; font-weight: 600;">Owner 累计余额</small>
+                                <small style="color: #FF1493; font-weight: 600;">{{ t('owner_') }}</small>
                                 <div style="color: #FF1493; font-weight: 900; font-size: 1.4rem;">RM {{ "{:,.2f}".format(stmt.owner_cumulative_balance) }}</div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div style="text-align: center; padding: 1rem; background: rgba(51, 0, 102, 0.05); border-radius: 8px;">
-                                <small style="color: #330066; font-weight: 600;">INFINITE 累计余额</small>
+                                <small style="color: #330066; font-weight: 600;">{{ t('infinite_') }}</small>
                                 <div style="color: #330066; font-weight: 900; font-size: 1.4rem;">RM {{ "{:,.2f}".format(stmt.infinite_cumulative_balance) }}</div>
                             </div>
                         </div>
@@ -250,7 +250,7 @@
                         </div>
                         <div style="border-top: 2px solid rgba(255, 20, 147, 0.5); padding-top: 1rem; margin-top: 1rem;">
                             <div class="d-flex justify-content-between">
-                                <span style="color: #FF1493; font-weight: 600;">累计总欠款余额 | Cumulative Balance</span>
+                                <span style="color: #FF1493; font-weight: 600;">{{ t('__cumulative_balance') }}</span>
                                 <span style="color: #FF1493; font-weight: 900; font-size: 1.5rem;">RM {{ "{:,.2f}".format(bank_data.owner_cumulative_balance) }}</span>
                             </div>
                         </div>
@@ -282,7 +282,7 @@
                         </div>
                         <div style="border-top: 2px solid rgba(51, 0, 102, 0.5); padding-top: 1rem; margin-top: 1rem;">
                             <div class="d-flex justify-content-between">
-                                <span style="color: #330066; font-weight: 600;">累计总欠款余额 | Cumulative Balance</span>
+                                <span style="color: #330066; font-weight: 600;">{{ t('__cumulative_balance') }}</span>
                                 <span style="color: #330066; font-weight: 900; font-size: 1.5rem;">RM {{ "{:,.2f}".format(bank_data.infinite_cumulative_balance) }}</span>
                             </div>
                         </div>

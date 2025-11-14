@@ -59,7 +59,7 @@
                         <!-- Risk Grade -->
                         <div class="col-md-3">
                             <div class="text-center p-3" style="background: rgba(255, 0, 127, 0.1); border-radius: 10px; border: 1px solid #FF007F;">
-                                <div class="text-silver-pearl small mb-2">Risk Grade</div>
+                                <div class="text-silver-pearl small mb-2">{{ t('risk_grade') }}</div>
                                 <div class="fs-1 fw-bold" style="color: {% if modern_result.risk_grade in ['A1', 'A2'] %}#00FF00{% elif modern_result.risk_grade in ['B1', 'B2'] %}#FFD700{% elif modern_result.risk_grade in ['C1', 'C2'] %}#FFA500{% else %}#FF4444{% endif %};">
                                     {{ modern_result.risk_grade }}
                                 </div>
@@ -71,7 +71,7 @@
                         <div class="col-md-3">
                             <div class="text-center p-3" style="background: rgba(50, 36, 70, 0.3); border-radius: 10px;">
                                 <div class="text-silver-pearl small mb-2">{% if is_sme %}BRR Ratio{% else %}DTI Ratio{% endif %}</div>
-                                <div class="fs-2 fw-bold {% if (is_sme and modern_result.brr_ratio >= 2.0) or (not is_sme and modern_result.dti_ratio <= 0.4) %}text-success{% elif (is_sme and modern_result.brr_ratio >= 1.5) or (not is_sme and modern_result.dti_ratio <= 0.6) %}text-warning{% else %}text-danger{% endif %}">
+                                <div class="fs-2 fw-bold {% if (is_sme and modern_result.brr_ratio >{{ t('_20_or_not_is_sme_and_modern_resultdti_ratio') }}<= 0.4) %}text-success{% elif (is_sme and modern_result.brr_ratio >{{ t('_15_or_not_is_sme_and_modern_resultdti_ratio') }}<= 0.6) %}text-warning{% else %}text-danger{% endif %}">
                                     {% if is_sme %}{{ '%.2f' | format(modern_result.brr_ratio) }}{% else %}{{ '%.1f' | format(modern_result.dti_ratio * 100) }}%{% endif %}
                                 </div>
                                 <div class="text-silver-pearl small mt-2">
@@ -88,21 +88,21 @@
                         {% if not is_sme %}
                         <div class="col-md-3">
                             <div class="text-center p-3" style="background: rgba(50, 36, 70, 0.3); border-radius: 10px;">
-                                <div class="text-silver-pearl small mb-2">FOIR Ratio</div>
+                                <div class="text-silver-pearl small mb-2">{{ t('foir_ratio') }}</div>
                                 <div class="fs-2 fw-bold {% if modern_result.foir_ratio <= 0.35 %}text-success{% elif modern_result.foir_ratio <= 0.50 %}text-warning{% else %}text-danger{% endif %}">
                                     {{ '%.1f' | format(modern_result.foir_ratio * 100) }}%
                                 </div>
-                                <div class="text-silver-pearl small mt-2">Optimal: ≤35%</div>
+                                <div class="text-silver-pearl small mt-2">{{ t('optimal_35') }}</div>
                             </div>
                         </div>
                         {% else %}
                         <div class="col-md-3">
                             <div class="text-center p-3" style="background: rgba(50, 36, 70, 0.3); border-radius: 10px;">
-                                <div class="text-silver-pearl small mb-2">DSCR Ratio</div>
+                                <div class="text-silver-pearl small mb-2">{{ t('dscr_ratio') }}</div>
                                 <div class="fs-2 fw-bold {% if modern_result.dscr_ratio >= 1.25 %}text-success{% elif modern_result.dscr_ratio >= 1.0 %}text-warning{% else %}text-danger{% endif %}">
                                     {{ '%.2f' | format(modern_result.dscr_ratio) }}
                                 </div>
-                                <div class="text-silver-pearl small mt-2">Optimal: ≥1.25</div>
+                                <div class="text-silver-pearl small mt-2">{{ t('optimal_125') }}</div>
                             </div>
                         </div>
                         {% endif %}
@@ -110,7 +110,7 @@
                         <!-- Approval Odds -->
                         <div class="col-md-3">
                             <div class="text-center p-3" style="background: rgba(255, 0, 127, 0.1); border-radius: 10px; border: 1px solid #FF007F;">
-                                <div class="text-silver-pearl small mb-2">Approval Probability</div>
+                                <div class="text-silver-pearl small mb-2">{{ t('approval_probability_1') }}</div>
                                 <div class="fs-1 fw-bold" style="color: {% if modern_result.approval_odds >= 70 %}#00FF00{% elif modern_result.approval_odds >= 50 %}#FFD700{% else %}#FFA500{% endif %};">
                                     {{ modern_result.approval_odds }}%
                                 </div>
@@ -127,7 +127,7 @@
                         <!-- CCRIS Bucket -->
                         <div class="col-md-4">
                             <div class="p-3" style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; border: 1px solid rgba(255, 0, 127, 0.3);">
-                                <div class="text-silver-pearl small mb-2"><i class="bi bi-bar-chart me-2"></i>CCRIS Bucket</div>
+                                <div class="text-silver-pearl small mb-2"><i class="bi bi-bar-chart me-2"></i>{{ t('ccris_bucket_1') }}</div>
                                 <div class="text-white fs-5 fw-bold">
                                     Bucket {{ modern_result.ccris_bucket }}
                                     <span class="badge {% if modern_result.ccris_bucket == 0 %}bg-success{% elif modern_result.ccris_bucket <= 2 %}bg-warning{% else %}bg-danger{% endif %} ms-2">
@@ -140,7 +140,7 @@
                         <!-- Industry Risk -->
                         <div class="col-md-4">
                             <div class="p-3" style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.3);">
-                                <div class="text-silver-pearl small mb-2"><i class="bi bi-diagram-3 me-2"></i>Industry Risk</div>
+                                <div class="text-silver-pearl small mb-2"><i class="bi bi-diagram-3 me-2"></i>{{ t('industry_risk') }}</div>
                                 <div class="text-white fs-6">{{ modern_result.industry_risk_level }}</div>
                             </div>
                         </div>
@@ -149,7 +149,7 @@
                         <!-- Max Loan Amount -->
                         <div class="col-md-4">
                             <div class="p-3" style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; border: 1px solid rgba(255, 0, 127, 0.3);">
-                                <div class="text-silver-pearl small mb-2"><i class="bi bi-currency-dollar me-2"></i>Max Loan Amount</div>
+                                <div class="text-silver-pearl small mb-2"><i class="bi bi-currency-dollar me-2"></i>{{ t('max_loan_amount_value') }}</div>
                                 <div class="text-golden fs-5 fw-bold">RM {{ '{:,}'.format(modern_result.max_loan_amount) }}</div>
                             </div>
                         </div>
@@ -157,7 +157,7 @@
                         <!-- Max EMI -->
                         <div class="col-md-4">
                             <div class="p-3" style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; border: 1px solid rgba(255, 0, 127, 0.3);">
-                                <div class="text-silver-pearl small mb-2"><i class="bi bi-calendar-month me-2"></i>Max Monthly EMI</div>
+                                <div class="text-silver-pearl small mb-2"><i class="bi bi-calendar-month me-2"></i>{{ t('max_monthly_emi') }}</div>
                                 <div class="text-white fs-5 fw-bold">RM {{ '{:,.2f}'.format(modern_result.max_emi) }}</div>
                             </div>
                         </div>

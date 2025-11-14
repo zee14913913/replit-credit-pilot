@@ -22,7 +22,7 @@
                     <!-- 银行名称 -->
                     <div class="mb-4">
                         <label for="bank_name" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
-                            <i class="bi bi-bank"></i> 银行名称 / Bank Name <span style="color: #FF5722;">*</span>
+                            <i class="bi bi-bank"></i>{{ t('__bank_name') }}<span style="color: #FF5722;">*</span>
                         </label>
                         <select 
                             class="form-control" 
@@ -30,31 +30,31 @@
                             name="bank_name" 
                             required
                             style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;">
-                            <option value="">-- 选择银行 / Select Bank --</option>
+                            <option value="">{{ t('___select_bank_') }}</option>
                             <optgroup label="本地商业银行 / Local Commercial Banks">
-                                <option value="Maybank">Maybank (马来亚银行)</option>
-                                <option value="Maybank Islamic">Maybank Islamic (马来亚伊斯兰银行)</option>
-                                <option value="CIMB">CIMB Bank (联昌国际银行)</option>
-                                <option value="CIMB Islamic">CIMB Islamic Bank (联昌伊斯兰银行)</option>
-                                <option value="Public Bank">Public Bank (大众银行)</option>
-                                <option value="RHB Bank">RHB Bank (丰隆银行)</option>
-                                <option value="Hong Leong Bank">Hong Leong Bank (兴隆银行)</option>
-                                <option value="AmBank">AmBank (安联银行)</option>
-                                <option value="AmBank Islamic">AmBank Islamic (安联伊斯兰银行)</option>
-                                <option value="Alliance Bank">Alliance Bank (联盟银行)</option>
-                                <option value="Affin Bank">Affin Bank (艾芬银行)</option>
+                                <option value="Maybank">{{ t('maybank_') }}</option>
+                                <option value="Maybank Islamic">{{ t('maybank_islamic_') }}</option>
+                                <option value="CIMB">{{ t('cimb_bank_') }}</option>
+                                <option value="CIMB Islamic">{{ t('cimb_islamic_bank_') }}</option>
+                                <option value="Public Bank">{{ t('public_bank_') }}</option>
+                                <option value="RHB Bank">{{ t('rhb_bank_') }}</option>
+                                <option value="Hong Leong Bank">{{ t('hong_leong_bank_') }}</option>
+                                <option value="AmBank">{{ t('ambank_') }}</option>
+                                <option value="AmBank Islamic">{{ t('ambank_islamic_') }}</option>
+                                <option value="Alliance Bank">{{ t('alliance_bank_') }}</option>
+                                <option value="Affin Bank">{{ t('affin_bank_') }}</option>
                             </optgroup>
                             <optgroup label="外资银行 / Foreign Banks">
-                                <option value="HSBC">HSBC (汇丰银行)</option>
-                                <option value="Standard Chartered">Standard Chartered (渣打银行)</option>
-                                <option value="Citibank">Citibank (花旗银行)</option>
-                                <option value="OCBC">OCBC Bank (华侨银行)</option>
-                                <option value="UOB">UOB (大华银行)</option>
+                                <option value="HSBC">{{ t('hsbc_') }}</option>
+                                <option value="Standard Chartered">{{ t('standard_chartered_') }}</option>
+                                <option value="Citibank">{{ t('citibank_') }}</option>
+                                <option value="OCBC">{{ t('ocbc_bank_') }}</option>
+                                <option value="UOB">{{ t('uob_') }}</option>
                             </optgroup>
                             <optgroup label="伊斯兰银行 / Islamic Banks">
-                                <option value="Bank Islam">Bank Islam (伊斯兰银行)</option>
-                                <option value="Bank Rakyat">Bank Rakyat (人民银行)</option>
-                                <option value="Bank Muamalat">Bank Muamalat (木阿马拉银行)</option>
+                                <option value="Bank Islam">{{ t('bank_islam_') }}</option>
+                                <option value="Bank Rakyat">{{ t('bank_rakyat_') }}</option>
+                                <option value="Bank Muamalat">{{ t('bank_muamalat_') }}</option>
                             </optgroup>
                         </select>
                         <small style="color: rgba(255,255,255,0.7);">支持马来西亚15家主要银行</small>
@@ -63,7 +63,7 @@
                     <!-- 卡号后四位 -->
                     <div class="mb-4">
                         <label for="card_number_last4" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
-                            <i class="bi bi-credit-card"></i> 卡号后四位 / Last 4 Digits <span style="color: #FF5722;">*</span>
+                            <i class="bi bi-credit-card"></i>{{ t('__last_4_digits') }}<span style="color: #FF5722;">*</span>
                         </label>
                         <input 
                             type="text" 
@@ -81,7 +81,7 @@
                     <!-- 信用额度 -->
                     <div class="mb-4">
                         <label for="credit_limit" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
-                            <i class="bi bi-cash-stack"></i> 信用额度 / Credit Limit (RM) <span style="color: #FF5722;">*</span>
+                            <i class="bi bi-cash-stack"></i>{{ t('__credit_limit_rm') }}<span style="color: #FF5722;">*</span>
                         </label>
                         <input 
                             type="number" 
@@ -99,7 +99,7 @@
                     <!-- 还款日 -->
                     <div class="mb-4">
                         <label for="due_date" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
-                            <i class="bi bi-calendar-event"></i> 每月还款日 / Monthly Due Date <span style="color: #FF5722;">*</span>
+                            <i class="bi bi-calendar-event"></i>{{ t('__monthly_due_date') }}<span style="color: #FF5722;">*</span>
                         </label>
                         <select 
                             class="form-control" 
@@ -107,7 +107,7 @@
                             name="due_date" 
                             required
                             style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;">
-                            <option value="">-- 选择日期 / Select Date --</option>
+                            <option value="">{{ t('___select_date_') }}</option>
                             {% for day in range(1, 32) %}
                             <option value="{{ day }}">{{ day }} 号</option>
                             {% endfor %}
