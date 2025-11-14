@@ -64,7 +64,7 @@ class IncomeStandardizer:
     
     @staticmethod
     def _standardize_salary_slip(structured_income: Dict, confidence: float) -> Dict:
-        """标准化工资单收入"""
+        """标准化工资单收入（返回月度DSR/DSRC）"""
         basic = structured_income.get("basic_salary", 0.0)
         allowance = structured_income.get("allowance", 0.0)
         gross = structured_income.get("gross_salary", 0.0)
@@ -76,8 +76,8 @@ class IncomeStandardizer:
         best_estimate = gross if gross > 0 else (basic + allowance)
         annualized = best_estimate * 12
         
-        dsr_income = basic * 12
-        dsrc_income = best_estimate * 12
+        dsr_income = basic
+        dsrc_income = best_estimate
         
         income_confidence = confidence * 0.95
         
@@ -101,7 +101,7 @@ class IncomeStandardizer:
     
     @staticmethod
     def _standardize_tax_return(structured_income: Dict, confidence: float) -> Dict:
-        """标准化税单收入"""
+        """标准化税单收入（返回月度DSR/DSRC）"""
         annual = structured_income.get("annual_income", 0.0)
         
         monthly_estimate = annual / 12 if annual > 0 else 0.0
@@ -109,8 +109,8 @@ class IncomeStandardizer:
         fixed_income = monthly_estimate * 0.7
         variable_income = monthly_estimate * 0.3
         
-        dsr_income = annual
-        dsrc_income = annual
+        dsr_income = monthly_estimate
+        dsrc_income = monthly_estimate
         
         income_confidence = confidence * 0.98
         
@@ -132,7 +132,7 @@ class IncomeStandardizer:
     
     @staticmethod
     def _standardize_epf(structured_income: Dict, confidence: float) -> Dict:
-        """标准化EPF收入"""
+        """标准化EPF收入（返回月度DSR/DSRC）"""
         epf_contrib = structured_income.get("epf_contribution", 0.0)
         
         estimated_salary = epf_contrib / 0.11 if epf_contrib > 0 else 0.0
@@ -141,8 +141,8 @@ class IncomeStandardizer:
         variable_income = 0.0
         annualized = estimated_salary * 12
         
-        dsr_income = annualized
-        dsrc_income = annualized
+        dsr_income = estimated_salary
+        dsrc_income = estimated_salary
         
         income_confidence = confidence * 0.85
         
@@ -164,7 +164,7 @@ class IncomeStandardizer:
     
     @staticmethod
     def _standardize_bank_inflow(structured_income: Dict, confidence: float) -> Dict:
-        """标准化银行流水收入"""
+        """标准化银行流水收入（返回月度DSR/DSRC）"""
         inflow = structured_income.get("bank_inflow", 0.0)
         
         fixed_income = 0.0
@@ -173,8 +173,8 @@ class IncomeStandardizer:
         
         bank_verified = inflow
         
-        dsr_income = annualized * 0.8
-        dsrc_income = annualized * 0.9
+        dsr_income = inflow * 0.8
+        dsrc_income = inflow * 0.9
         
         income_confidence = confidence * 0.75
         
@@ -195,24 +195,25 @@ class IncomeStandardizer:
         }
     
     @staticmethod
-    def aggregate_customer_income(standardized_incomes: list) -> Dict:
+    def aggregate_customer_income(standardized_incomes_with_metadata: list) -> Dict:
         """
         聚合客户的多个收入来源，选择最佳估算
+        保留每个文件的详细信息
         
         Args:
-            standardized_incomes: 多个标准化收入记录列表
+            standardized_incomes_with_metadata: 包含file_id, period和standardized_income的列表
             
         Returns:
             聚合后的最佳收入估算
         """
-        if not standardized_incomes:
+        if not standardized_incomes_with_metadata:
             return {
                 "customer_id": None,
                 "dsr_income": 0.0,
                 "dsrc_income": 0.0,
                 "best_source": None,
                 "confidence": 0.0,
-                "components": {}
+                "components": []
             }
         
         sources_priority = {
@@ -223,27 +224,33 @@ class IncomeStandardizer:
         }
         
         best_record = max(
-            standardized_incomes,
+            standardized_incomes_with_metadata,
             key=lambda x: (
-                sources_priority.get(x.get("source", ""), 0),
-                x.get("confidence", 0.0)
+                sources_priority.get(x.get("standardized_income", {}).get("source", ""), 0),
+                x.get("standardized_income", {}).get("confidence", 0.0)
             )
         )
         
-        components = {}
-        for record in standardized_incomes:
-            source = record.get("source", "unknown")
-            components[source] = {
-                "dsr_income": record.get("dsr_income", 0.0),
-                "dsrc_income": record.get("dsrc_income", 0.0),
-                "confidence": record.get("confidence", 0.0),
-                "best_estimate": record.get("best_estimate_income", 0.0)
-            }
+        components = []
+        for item in standardized_incomes_with_metadata:
+            std_income = item.get("standardized_income", {})
+            components.append({
+                "file_id": item.get("file_id"),
+                "period": item.get("period"),
+                "source": std_income.get("source"),
+                "dsr_income": std_income.get("dsr_income", 0.0),
+                "dsrc_income": std_income.get("dsrc_income", 0.0),
+                "confidence": std_income.get("confidence", 0.0),
+                "best_estimate": std_income.get("best_estimate_income", 0.0),
+                "annualized_income": std_income.get("annualized_income", 0.0)
+            })
+        
+        best_std_income = best_record.get("standardized_income", {})
         
         return {
-            "dsr_income": best_record.get("dsr_income", 0.0),
-            "dsrc_income": best_record.get("dsrc_income", 0.0),
-            "best_source": best_record.get("source"),
-            "confidence": best_record.get("confidence", 0.0),
+            "dsr_income": best_std_income.get("dsr_income", 0.0),
+            "dsrc_income": best_std_income.get("dsrc_income", 0.0),
+            "best_source": best_std_income.get("source"),
+            "confidence": best_std_income.get("confidence", 0.0),
             "components": components
         }
