@@ -14,10 +14,10 @@
     <!-- {{ t('api_10') }}密钥按钮 -->
     <div class="mb-4">
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createApiKeyModal">
-            <i class="bi bi-plus-circle"></i> 创建新密钥
+            <i class="bi bi-plus-circle"></i> <span data-i18n="create_new_key">{{ t('create_new_key') }}</span>
         </button>
         <button class="btn btn-outline-secondary ms-2" onclick="refreshApiKeys()">
-            <i class="bi bi-arrow-clockwise"></i> 刷新
+            <i class="bi bi-arrow-clockwise"></i> <span data-i18n="refresh">{{ t('refresh') }}</span>
         </button>
     </div>
 
@@ -25,14 +25,14 @@
     <div class="card shadow-sm">
         <div class="card-header bg-dark text-white">
             <h5 class="mb-0">
-                <i class="bi bi-list-ul"></i> 密钥列表
+                <i class="bi bi-list-ul"></i> <span data-i18n="key_list">{{ t('key_list') }}</span>
             </h5>
         </div>
         <div class="card-body">
             <div class="form-check mb-3">
                 <input class="form-check-input" type="checkbox" id="showInactive" onchange="refreshApiKeys()">
-                <label class="form-check-label" for="showInactive">
-                    显示已撤销的密钥
+                <label class="form-check-label" for="showInactive" data-i18n="show_revoked_keys">
+                    {{ t('show_revoked_keys') }}
                 </label>
             </div>
 
@@ -54,7 +54,7 @@
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">
-                    <i class="bi bi-key-fill"></i> {{ t('api_12') }}密钥
+                    <i class="bi bi-key-fill"></i> <span data-i18n="create_api_key_modal_title">{{ t('create_api_key_modal_title') }}</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
@@ -76,16 +76,16 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">权限 * <small class="text-muted">{{ t('auto_text_297') }}</small></label>
+                        <label class="form-label"><span data-i18n="permissions">{{ t('permissions') }}</span> * <small class="text-muted">{{ t('auto_text_297') }}</small></label>
                         <div class="border rounded p-3">
                             <!-- 补充改进④：默认权限 - 上传 -->
                             <div class="bg-light p-2 mb-2 rounded">
-                                <strong>{{ t('auto_text_298') }}</strong>
+                                <strong data-i18n="default_permission">{{ t('default_permission') }}</strong>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="{{ t('uploadbank_statements') }}" id="perm0" checked disabled>
                                 <label class="form-check-label" for="perm0">
-                                    <i class="bi bi-upload"></i> 上传银行结单 <span class="badge bg-success">{{ t('auto_text_300') }}</span>
+                                    <i class="bi bi-upload"></i> <span data-i18n="upload_bank_statement">{{ t('upload_bank_statement') }}</span> <span class="badge bg-success">{{ t('auto_text_300') }}</span>
                                 </label>
                             </div>
                             
@@ -93,35 +93,35 @@
                             
                             <!-- 补充改进④：需要单独授权的权限 - 导出 -->
                             <div class="bg-light p-2 mb-2 rounded">
-                                <strong>{{ t('auto_text_301') }}</strong>
+                                <strong data-i18n="requires_authorization">{{ t('requires_authorization') }}</strong>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="{{ t('exportbank_statements') }}" id="perm1">
                                 <label class="form-check-label" for="perm1">
-                                    <i class="bi bi-download"></i> 导出银行结单 <span class="badge bg-warning">{{ t('auto_text_303') }}</span>
+                                    <i class="bi bi-download"></i> <span data-i18n="export_bank_statement">{{ t('export_bank_statement') }}</span> <span class="badge bg-warning">{{ t('auto_text_303') }}</span>
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="{{ t('exportinvoices') }}" id="perm2">
                                 <label class="form-check-label" for="perm2">
-                                    <i class="bi bi-download"></i> 导出发票
+                                    <i class="bi bi-download"></i> <span data-i18n="export_invoice">{{ t('export_invoice') }}</span>
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="{{ t('exportjournal_entries') }}" id="perm3">
                                 <label class="form-check-label" for="perm3">
-                                    <i class="bi bi-download"></i> 导出会计分录
+                                    <i class="bi bi-download"></i> <span data-i18n="export_journal_entry">{{ t('export_journal_entry') }}</span>
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="{{ t('readaudit_logs') }}" id="perm4">
                                 <label class="form-check-label" for="perm4">
-                                    <i class="bi bi-eye"></i> 读取审计日志
+                                    <i class="bi bi-eye"></i> <span data-i18n="read_audit_log">{{ t('read_audit_log') }}</span>
                                 </label>
                             </div>
                         </div>
                         <div class="form-text">
-                            <i class="bi bi-info-circle"></i> {{ t('api_13') }}密钥默认仅有上传权限，导出等高级功能需单独授权
+                            <i class="bi bi-info-circle"></i> <span data-i18n="key_default_upload_only">{{ t('key_default_upload_only') }}</span>
                         </div>
                     </div>
 
@@ -139,14 +139,14 @@
 
                     <div class="alert alert-warning">
                         <i class="bi bi-exclamation-triangle-fill"></i>
-                        <strong>{{ t('auto_text_312') }}</strong>密钥明文仅在创建时显示一次，请妥善保存！
+                        <strong>{{ t('auto_text_312') }}</strong><span data-i18n="key_shown_once">{{ t('key_shown_once') }}</span>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ t('auto_text_314') }}</button>
                 <button type="button" class="btn btn-primary" onclick="createApiKey()">
-                    <i class="bi bi-plus-circle"></i> 创建密钥
+                    <i class="bi bi-plus-circle"></i> <span data-i18n="create_key_button">{{ t('create_key_button') }}</span>
                 </button>
             </div>
         </div>
@@ -165,7 +165,7 @@
             <div class="modal-body">
                 <div class="alert alert-danger">
                     <i class="bi bi-exclamation-triangle-fill"></i>
-                    <strong>{{ t('auto_text_317') }}</strong>密钥明文将仅显示此一次，关闭后将无法再次查看。
+                    <strong>{{ t('auto_text_317') }}</strong><span data-i18n="key_shown_only_this_time">{{ t('key_shown_only_this_time') }}</span>
                 </div>
 
                 <div class="mb-3">
@@ -173,7 +173,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control font-monospace" id="newApiKey" readonly>
                         <button class="btn btn-outline-primary" onclick="copyApiKey()">
-                            <i class="bi bi-clipboard"></i> 复制
+                            <i class="bi bi-clipboard"></i> <span data-i18n="copy_button">{{ t('copy_button') }}</span>
                         </button>
                     </div>
                 </div>
@@ -195,7 +195,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="refreshApiKeys()">
-                    我已保存，关闭
+                    <span data-i18n="saved_and_close">{{ t('saved_and_close') }}</span>
                 </button>
             </div>
         </div>
@@ -213,7 +213,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p>确定要撤销密钥 <strong id="revokeKeyName"></strong> 吗？</p>
+                <p><span data-i18n="confirm_revoke_key">{{ t('confirm_revoke_key') }}</span> <strong id="revokeKeyName"></strong> 吗？</p>
                 <p class="text-danger">{{ t('api_3') }}</p>
 
                 <div class="mb-3">
@@ -226,7 +226,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ t('auto_text_314') }}</button>
                 <button type="button" class="btn btn-danger" onclick="confirmRevokeApiKey()">
-                    <i class="bi bi-x-circle"></i> 确认撤销
+                    <i class="bi bi-x-circle"></i> <span data-i18n="confirm_revoke_button">{{ t('confirm_revoke_button') }}</span>
                 </button>
             </div>
         </div>
