@@ -26,14 +26,16 @@ class AIPredictManager {
         const scoreBox = document.getElementById('ai-health-score');
         if (!scoreBox) return;
 
-        scoreBox.innerHTML = '<div style="text-align:center; color:#888;">⏳ 加载中...</div>';
+        const loadingText = window.i18n ? window.i18n.translate('loading_text') : '⏳ 加载中...';
+        scoreBox.innerHTML = `<div style="text-align:center; color:#888;">${loadingText}</div>`;
 
         try {
             const res = await fetch(`/api/ai-assistant/health-score/${this.customerId}`);
             const data = await res.json();
 
+            const noDataText = window.i18n ? window.i18n.translate('no_data') : '无数据';
             if (data.error || !data.score) {
-                scoreBox.innerHTML = `<div style="color:#ff4444;">❌ ${data.error || '无数据'}</div>`;
+                scoreBox.innerHTML = `<div style="color:#ff4444;">❌ ${data.error || noDataText}</div>`;
                 return;
             }
 
@@ -78,7 +80,8 @@ class AIPredictManager {
                 </div>
             `;
         } catch (error) {
-            scoreBox.innerHTML = `<div style="color:#ff4444;">❌ 加载失败: ${error.message}</div>`;
+            const loadingFailedText = window.i18n ? window.i18n.translate('loading_failed') : '加载失败';
+            scoreBox.innerHTML = `<div style="color:#ff4444;">❌ ${loadingFailedText}: ${error.message}</div>`;
         }
     }
 

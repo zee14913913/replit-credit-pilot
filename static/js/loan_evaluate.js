@@ -99,7 +99,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const income = parseFloat(incomeInput.value || 0);
 
             if (income <= 0) {
-                alert("Please enter a valid income amount.");
+                const alertMsg = window.i18n ? window.i18n.translate('please_enter_valid_income') : "Please enter a valid income amount.";
+                alert(alertMsg);
                 return;
             }
 
@@ -144,7 +145,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const commitments = parseFloat(commitInput.value || 0);
 
             if (income <= 0) {
-                alert("Please enter a valid income amount.");
+                const alertMsg = window.i18n ? window.i18n.translate('please_enter_valid_income') : "Please enter a valid income amount.";
+                alert(alertMsg);
                 return;
             }
 
