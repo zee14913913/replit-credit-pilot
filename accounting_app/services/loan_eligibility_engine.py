@@ -33,7 +33,7 @@ class LoanEligibilityEngine:
         db: Session,
         customer_id: int,
         company_id: int = 1,
-        monthly_debt: Optional[float] = None
+        monthly_commitment: Optional[float] = None
     ) -> Dict:
         """
         计算客户贷款资格（基于CTOS commitment）
@@ -42,7 +42,7 @@ class LoanEligibilityEngine:
             db: SQLAlchemy Session (用于 IncomeService)
             customer_id: 客户ID
             company_id: 公司ID
-            monthly_debt: 月度债务（从CTOS报告获取，必填）
+            monthly_commitment: 月度承诺还款（从CTOS报告获取，必填）
             
         Returns:
             {
@@ -51,7 +51,7 @@ class LoanEligibilityEngine:
                 "dsrc_income": DSRC计算用收入,
                 "best_source": 收入来源,
                 "income_confidence": 收入置信度,
-                "total_monthly_debt": 月度债务总额,
+                "monthly_commitment": 月度承诺还款,
                 "dsr_ratio": DSR比率,
                 "dsrc_ratio": DSRC比率,
                 "eligibility_status": 资格状态,
@@ -82,23 +82,39 @@ class LoanEligibilityEngine:
         income_confidence = income_data.get("confidence", 0.0)
         
         # ⚠️ 债务数据必须从CTOS报告获取
-        if monthly_debt is None:
+        if monthly_commitment is None:
             return {
                 "customer_id": customer_id,
                 "error": "missing_commitment_data",
-                "message": "月度债务数据缺失，请上传CTOS报告或手动输入commitment数据",
+                "message": "Debt commitment is required based on CTOS.",
                 "dsr_income": round(dsr_income, 2),
                 "dsrc_income": round(dsrc_income, 2),
                 "best_source": best_source,
                 "income_confidence": round(income_confidence, 4),
-                "total_monthly_debt": 0.0,
+                "monthly_commitment": 0.0,
                 "dsr_ratio": None,
                 "dsrc_ratio": None,
                 "eligibility_status": "Missing Commitment Data",
                 "recommended_loan_amount": 0.0
             }
         
-        total_monthly_debt = monthly_debt
+        # ⚠️ Zero-Debt 保护
+        if monthly_commitment == 0:
+            return {
+                "customer_id": customer_id,
+                "dsr_income": round(dsr_income, 2),
+                "dsrc_income": round(dsrc_income, 2),
+                "best_source": best_source,
+                "income_confidence": round(income_confidence, 4),
+                "monthly_commitment": 0.0,
+                "dsr_ratio": 0.0,
+                "dsrc_ratio": 0.0,
+                "eligibility_status": "Eligible (Zero Debt)",
+                "recommended_loan_amount": round(dsrc_income * 8, 2) if dsrc_income > 0 else 0.0,
+                "data_source": best_source,
+                "threshold": 0.6,
+                "threshold_type": "Standard"
+            }
         
         invalid_dsr_income = dsr_income <= 0
         invalid_dsrc_income = dsrc_income <= 0
@@ -110,31 +126,45 @@ class LoanEligibilityEngine:
                 "dsrc_income": round(dsrc_income, 2),
                 "best_source": best_source,
                 "income_confidence": round(income_confidence, 4),
-                "total_monthly_debt": round(total_monthly_debt, 2),
+                "monthly_commitment": round(monthly_commitment, 2),
                 "dsr_ratio": None,
                 "dsrc_ratio": None,
                 "eligibility_status": "Not Eligible - Invalid Income",
-                "recommended_loan_amount": 0.0
+                "recommended_loan_amount": 0.0,
+                "data_source": best_source,
+                "threshold": 0.6,
+                "threshold_type": "Standard"
             }
         
-        dsr_ratio = total_monthly_debt / dsr_income
-        dsrc_ratio = total_monthly_debt / dsrc_income if not invalid_dsrc_income else None
+        dsr_ratio = monthly_commitment / dsr_income
+        dsrc_ratio = monthly_commitment / dsrc_income if not invalid_dsrc_income else None
         
         eligibility_status = cls._determine_eligibility(dsr_ratio)
         
         recommended_loan_amount = dsrc_income * 8 if not invalid_dsrc_income else 0.0
         
+        # 计算可用借款能力
+        max_monthly_commitment_at_60 = dsr_income * 0.6
+        available_capacity = max(0, max_monthly_commitment_at_60 - monthly_commitment)
+        
         return {
             "customer_id": customer_id,
+            "income": round(dsr_income, 2),
             "dsr_income": round(dsr_income, 2),
             "dsrc_income": round(dsrc_income, 2),
             "best_source": best_source,
             "income_confidence": round(income_confidence, 4),
-            "total_monthly_debt": round(total_monthly_debt, 2),
+            "commitment": round(monthly_commitment, 2),
+            "monthly_commitment": round(monthly_commitment, 2),
             "dsr_ratio": round(dsr_ratio, 4) if dsr_ratio is not None else None,
             "dsrc_ratio": round(dsrc_ratio, 4) if dsrc_ratio is not None else None,
+            "eligibility": eligibility_status,
             "eligibility_status": eligibility_status,
-            "recommended_loan_amount": round(recommended_loan_amount, 2)
+            "recommended_loan_amount": round(recommended_loan_amount, 2),
+            "available_capacity": round(available_capacity, 2),
+            "data_source": best_source,
+            "threshold": 0.6,
+            "threshold_type": "Standard"
         }
     
     

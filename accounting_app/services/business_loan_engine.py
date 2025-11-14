@@ -37,12 +37,12 @@ class BusinessLoanEngine:
         db: Session,
         customer_id: int,
         company_id: int = 1,
-        annual_debt_service: Optional[float] = None
+        annual_commitment: Optional[float] = None
     ) -> Dict:
         """
         计算企业贷款资格（基于DSCR）
         
-        DSCR (Debt Service Coverage Ratio) = Operating Income / Annual Debt Service
+        DSCR (Debt Service Coverage Ratio) = Operating Income / Annual Commitment
         
         ⚠️ 收入：从 JournalEntry 会计账目获取
         ⚠️ 债务：从 CTOS 报告获取（API参数）
@@ -56,14 +56,13 @@ class BusinessLoanEngine:
             db: 数据库会话
             customer_id: 客户ID
             company_id: 公司ID
-            annual_debt_service: 年度债务服务（从CTOS报告获取，必填）
+            annual_commitment: 年度承诺还款（从CTOS报告获取，必填）
             
         Returns:
             {
                 "customer_id": int,
-                "operating_income": float,
-                "annual_debt_service": float,
-                "monthly_debt_service": float,
+                "income": float,
+                "commitment": float,
                 "dscr": float,
                 "eligibility_status": str,
                 "max_debt_service": float,
@@ -91,56 +90,60 @@ class BusinessLoanEngine:
             }
         
         # ⚠️ 债务数据必须从CTOS报告获取
-        if annual_debt_service is None:
+        if annual_commitment is None:
             return {
                 "customer_id": customer_id,
                 "error": "missing_commitment_data",
-                "message": "年度债务数据缺失，请上传CTOS报告或手动输入commitment数据",
-                "operating_income": round(operating_income, 2),
-                "annual_debt_service": 0.0,
-                "monthly_debt_service": 0.0,
+                "message": "Debt commitment is required based on CTOS.",
+                "income": round(operating_income, 2),
+                "commitment": 0.0,
                 "dscr": None,
-                "eligibility_status": "Missing Commitment Data",
-                "max_debt_service": 0.0,
-                "available_capacity": 0.0,
-                "max_annual_loan": 0.0,
-                "max_monthly_loan": 0.0
+                "eligibility": "Missing Commitment Data",
+                "data_source": "journal",
+                "threshold": 1.25,
+                "threshold_type": "Standard",
+                "available_capacity": 0.0
             }
         
-        if annual_debt_service <= 0:
+        # ⚠️ Zero-Debt 保护
+        if annual_commitment == 0:
             max_capacity = operating_income * 0.8
             return {
                 "customer_id": customer_id,
-                "operating_income": round(operating_income, 2),
-                "annual_debt_service": 0.0,
-                "monthly_debt_service": 0.0,
-                "dscr": None,
-                "eligibility_status": "No Debt - Full Capacity Available",
-                "max_debt_service": round(max_capacity, 2),
+                "income": round(operating_income, 2),
+                "commitment": 0.0,
+                "dscr": float("inf"),
+                "eligibility": "Eligible (Zero Debt)",
+                "eligibility_status": "Eligible (Zero Debt)",
+                "data_source": "journal",
+                "threshold": 1.25,
+                "threshold_type": "Standard",
                 "available_capacity": round(max_capacity, 2),
                 "max_annual_loan": round(max_capacity, 2),
                 "max_monthly_loan": round(max_capacity / 12, 2)
             }
         
-        dscr = operating_income / annual_debt_service
-        monthly_debt_service = annual_debt_service / 12
+        dscr = operating_income / annual_commitment
+        monthly_commitment = annual_commitment / 12
         eligibility_status = cls._determine_eligibility(dscr)
         
-        max_debt_service = operating_income * 0.8
+        max_commitment_capacity = operating_income * 0.8
         
-        available_capacity = max(0, max_debt_service - annual_debt_service)
+        available_capacity = max(0, max_commitment_capacity - annual_commitment)
         
         max_annual_loan = available_capacity
         max_monthly_loan = available_capacity / 12 if available_capacity > 0 else 0.0
         
         return {
             "customer_id": customer_id,
-            "operating_income": round(operating_income, 2),
-            "annual_debt_service": round(annual_debt_service, 2),
-            "monthly_debt_service": round(monthly_debt_service, 2),
+            "income": round(operating_income, 2),
+            "commitment": round(annual_commitment, 2),
             "dscr": round(dscr, 4) if dscr != float('inf') else 999.9999,
+            "eligibility": eligibility_status,
             "eligibility_status": eligibility_status,
-            "max_debt_service": round(max_debt_service, 2),
+            "data_source": "journal",
+            "threshold": 1.25,
+            "threshold_type": "Standard",
             "available_capacity": round(available_capacity, 2),
             "max_annual_loan": round(max_annual_loan, 2),
             "max_monthly_loan": round(max_monthly_loan, 2)

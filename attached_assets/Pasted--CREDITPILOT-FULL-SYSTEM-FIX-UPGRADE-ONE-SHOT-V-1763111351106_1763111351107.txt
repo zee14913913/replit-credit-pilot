@@ -1,0 +1,132 @@
+# ===========================================
+# CREDITPILOT – FULL SYSTEM FIX & UPGRADE
+# ONE-SHOT VERSION (NO v1/v2/v3/v4)
+# Copy & Paste to Replit Agent
+# ===========================================
+
+请严格按以下步骤一次性完成所有修复，不需要分阶段。
+请立即执行修改并保存，不要跳过任何一条。
+
+===================================================
+【任务 1】统一债务参数命名
+===================================================
+将整个项目所有贷款引擎及路由的字段统一重命名为：
+
+monthly_debt → monthly_commitment  
+current_monthly_debt → monthly_commitment  
+annual_debt_service → annual_commitment  
+
+修改位置包含：
+- accounting_app/services/*.py
+- accounting_app/routes/*.py
+- schemas
+- API文档 Swagger 描述
+- DSCR 相关代码
+
+===================================================
+【任务 2】为所有贷款引擎加入 Zero-Debt 保护
+===================================================
+在 loan_eligibility_engine、loan_affordability_engine、business_loan_engine 中加入：
+
+if commitment == 0:
+    return {
+        "dscr": float("inf"),
+        "eligibility": "Eligible (Zero Debt)",
+        "commitment": 0,
+        "income": income,
+        "data_source": source,
+        "threshold": threshold,
+        "threshold_type": threshold_type
+    }
+
+===================================================
+【任务 3】彻底清理 Monthly Statements 残留逻辑
+===================================================
+删除：
+
+- _get_operating_income_from_monthly()
+- _calculate_monthly_debt_service()
+- 所有 fallback monthly 逻辑
+- 所有 source="monthly" 模式
+- 任何 MonthlyStatement 相关字段的引用
+
+===================================================
+【任务 4】移除所有信用卡字段残留（Ghost Fields）
+===================================================
+删除所有文件中对以下字段的引用：
+
+owner_payments  
+gz_payments  
+closing_balance_total  
+
+包含 loan_eligibility_engine、loan_affordability_engine、business_loan_engine、路由、报告、schemas。
+
+===================================================
+【任务 5】强化 DSCR 统一输出格式
+===================================================
+所有贷款引擎必须输出：
+
+{
+    "income": float,
+    "commitment": float,
+    "dscr": float,
+    "eligibility": "...",
+    "threshold": float,
+    "threshold_type": "Standard" 或 "SME Enhanced",
+    "data_source": "journal",
+    "available_capacity": float
+}
+
+===================================================
+【任务 6】添加参数强制验证（统一逻辑）
+===================================================
+所有路由添加：
+
+if commitment 参数缺失:
+    返回 400:
+    {
+        "error": "missing_commitment_data",
+        "message": "Debt commitment is required based on CTOS."
+    }
+
+===================================================
+【任务 7】完全移除双数据源模式（source 参数）
+===================================================
+删除：
+
+?source=xxx  
+所有 source 的条件分支  
+API文档中的 source 描述  
+
+最终只有一个来源：journal（会计数据 + CTOS commitment）
+
+===================================================
+【任务 8】修复 business_loan_engine DSCR 计算一致性
+===================================================
+- 统一使用 annual_commitment（CTOS）  
+- income = JournalEntry 最近12个月总收入  
+- annual_income = income  
+
+===================================================
+【任务 9】更新报告模板（pdf_reports.py, reports.py）
+===================================================
+确保：
+
+- 删除信用卡相关字段
+- 使用 commitment、income、dscr、threshold
+- 增加 data_source 和 threshold_type
+
+===================================================
+【任务 10】新增 4 个基础单元测试
+===================================================
+编写 tests/unit/test_dscr.py：
+
+- test_dscr_zero_commitment  
+- test_dscr_negative_commitment  
+- test_dscr_standard  
+- test_dscr_sme_threshold  
+
+===================================================
+任务完成后请回复：
+“FULL SYSTEM FIX COMPLETE — READY FOR DEPLOYMENT”
+===================================================

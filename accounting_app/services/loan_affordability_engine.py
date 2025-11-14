@@ -39,14 +39,14 @@ class LoanAffordabilityEngine:
         db: Session,
         customer_id: int,
         company_id: int = 1,
-        current_monthly_debt: Optional[float] = None
+        monthly_commitment: Optional[float] = None
     ) -> Dict:
         """
         计算客户可承受的最大贷款额度（基于CTOS commitment）
         
         流程：
         1. 从 IncomeService 获取收入数据
-        2. 使用CTOS报告的当前债务（API参数）
+        2. 使用CTOS报告的当前承诺还款（API参数）
         3. 计算可承受月供（推荐和严格限制）
         4. 反推各期限的最大贷款金额
         
@@ -54,13 +54,13 @@ class LoanAffordabilityEngine:
             db: 数据库会话
             customer_id: 客户ID
             company_id: 公司ID
-            current_monthly_debt: 当前月度债务（从CTOS报告获取，必填）
+            monthly_commitment: 当前月度承诺还款（从CTOS报告获取，必填）
             
         Returns:
             {
                 "customer_id": int,
-                "dsr_income": float,
-                "current_monthly_debt": float,
+                "income": float,
+                "commitment": float,
                 "recommended_dsr_limit": float,
                 "max_dsr_limit": float,
                 "max_monthly_payment_recommended": float,
@@ -94,22 +94,53 @@ class LoanAffordabilityEngine:
         if dsr_income <= 0:
             return {"error": "客户收入无效"}
         
-        # 3. 验证当前月度债务（必须从CTOS获取）
-        if current_monthly_debt is None:
+        # 3. 验证当前月度承诺还款（必须从CTOS获取）
+        if monthly_commitment is None:
             return {
                 "error": "missing_commitment_data",
-                "message": "月度债务数据缺失，请上传CTOS报告或手动输入commitment数据",
+                "message": "Debt commitment is required based on CTOS.",
                 "customer_id": customer_id,
-                "dsr_income": round(dsr_income, 2),
-                "dsrc_income": round(dsrc_income, 2),
-                "current_monthly_debt": 0.0,
-                "income_source": best_source,
+                "income": round(dsr_income, 2),
+                "commitment": 0.0,
+                "data_source": best_source,
+                "confidence": round(confidence, 4)
+            }
+        
+        # ⚠️ Zero-Debt 保护
+        if monthly_commitment == 0:
+            max_capacity_recommended = dsr_income * cls.RECOMMENDED_DSR_LIMIT
+            max_capacity_strict = dsr_income * cls.MAX_DSR_LIMIT
+            
+            affordability = {}
+            tenures = [12, 24, 36, 60, 84]
+            for tenure in tenures:
+                max_loan = cls._reverse_calculate_max_loan(
+                    monthly_payment=max_capacity_recommended,
+                    annual_rate=cls.DEFAULT_ANNUAL_RATE,
+                    tenure_months=tenure
+                )
+                affordability[f"tenure_{tenure}"] = round(max_loan, 2)
+            
+            return {
+                "customer_id": customer_id,
+                "income": round(dsr_income, 2),
+                "commitment": 0.0,
+                "eligibility": "Eligible (Zero Debt)",
+                "recommended_dsr_limit": cls.RECOMMENDED_DSR_LIMIT,
+                "max_dsr_limit": cls.MAX_DSR_LIMIT,
+                "max_monthly_payment_recommended": round(max_capacity_recommended, 2),
+                "max_monthly_payment_strict": round(max_capacity_strict, 2),
+                "affordability": affordability,
+                "data_source": best_source,
+                "threshold": cls.RECOMMENDED_DSR_LIMIT,
+                "threshold_type": "Standard",
+                "available_capacity": round(max_capacity_recommended, 2),
                 "confidence": round(confidence, 4)
             }
         
         # 4. 计算可承受月供
-        max_monthly_payment_recommended = dsr_income * cls.RECOMMENDED_DSR_LIMIT - current_monthly_debt
-        max_monthly_payment_strict = dsr_income * cls.MAX_DSR_LIMIT - current_monthly_debt
+        max_monthly_payment_recommended = dsr_income * cls.RECOMMENDED_DSR_LIMIT - monthly_commitment
+        max_monthly_payment_strict = dsr_income * cls.MAX_DSR_LIMIT - monthly_commitment
         
         # 确保不为负数
         max_monthly_payment_recommended = max(0.0, max_monthly_payment_recommended)
@@ -129,15 +160,21 @@ class LoanAffordabilityEngine:
         
         return {
             "customer_id": customer_id,
+            "income": round(dsr_income, 2),
+            "commitment": round(monthly_commitment, 2),
             "dsr_income": round(dsr_income, 2),
             "dsrc_income": round(dsrc_income, 2),
-            "current_monthly_debt": round(current_monthly_debt, 2),
+            "current_monthly_debt": round(monthly_commitment, 2),
             "recommended_dsr_limit": cls.RECOMMENDED_DSR_LIMIT,
             "max_dsr_limit": cls.MAX_DSR_LIMIT,
             "max_monthly_payment_recommended": round(max_monthly_payment_recommended, 2),
             "max_monthly_payment_strict": round(max_monthly_payment_strict, 2),
             "affordability": affordability,
+            "data_source": best_source,
             "income_source": best_source,
+            "threshold": cls.RECOMMENDED_DSR_LIMIT,
+            "threshold_type": "Standard",
+            "available_capacity": round(max_monthly_payment_recommended, 2),
             "confidence": round(confidence, 4)
         }
     
