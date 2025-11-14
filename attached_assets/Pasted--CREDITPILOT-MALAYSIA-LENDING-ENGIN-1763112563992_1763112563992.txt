@@ -1,0 +1,90 @@
+# ===========================================================
+# CREDITPILOT — MALAYSIA LENDING ENGINE (DUAL ENGINE MODE)
+# PHASE 2 — IMPLEMENT PERSONAL & SME RISK RULES
+# ===========================================================
+
+请继续在 risk_engine 下实现第二阶段内容。
+
+-----------------------------------------------
+【任务 1】完善 personal_rules.py（现代个人贷款规则）
+-----------------------------------------------
+实现以下函数：
+
+- calculate_dti()
+- calculate_foir()
+- evaluate_ccris_bucket()
+- digital_bank_risk_band()
+- personal_risk_grade()
+- calculate_max_emi()
+- calculate_max_loan_amount()
+
+返回字段：
+{
+  "risk_grade": ...,
+  "final_dti": ...,
+  "max_emi": ...,
+  "max_loan_amount": ...,
+  "approval_odds": ...
+}
+
+-----------------------------------------------
+【任务 2】完善 sme_rules.py（现代 SME 企业贷款规则）
+-----------------------------------------------
+实现以下函数：
+
+- calculate_dscr()
+- calculate_dsr()
+- calculate_cashflow_variance()
+- evaluate_ctos_sme_score()
+- evaluate_industry_risk()
+- calculate_brr_grade()
+- calculate_sme_max_loan()
+- calculate_sme_probability()
+
+返回字段：
+{
+  "brr_grade": ...,
+  "dscr": ...,
+  "dsr": ...,
+  "industry_risk": ...,
+  "cashflow_variance": ...,
+  "max_loan_amount": ...,
+  "approval_probability": ...
+}
+
+-----------------------------------------------
+【任务 3】在 scoring_matrix.py 编写评分矩阵
+-----------------------------------------------
+加入：
+
+- personal risk band table
+- SME BRR scoring weights
+- CCRIS bucket mapping
+- digital bank scaling rule
+
+-----------------------------------------------
+【任务 4】在 risk_tables.py 编写固定阈值表
+-----------------------------------------------
+加入：
+
+- DTI limits per bank
+- FOIR limits per bank
+- DSCR threshold
+- Industry risk table
+- CTOS SME score bands
+
+-----------------------------------------------
+【任务 5】更新 /routes/loans.py
+-----------------------------------------------
+新增：
+
+mode=modern → 调用 risk_engine.personal 或 risk_engine.sme
+
+保持：
+mode=dsr → 调用旧引擎（不能删除）
+mode=dscr → 调用旧 SME 引擎（不能删除）
+
+-----------------------------------------------
+完成后回复：
+"PHASE 2 COMPLETE — READY FOR PHASE 3"
+-----------------------------------------------

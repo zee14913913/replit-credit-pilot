@@ -28,6 +28,13 @@ def get_business_loan_eligibility(
     customer_id: int,
     annual_commitment: Optional[float] = Query(None, description="年度承诺还款（从CTOS报告获取）"),
     company_id: int = Query(1, description="公司ID"),
+    mode: str = Query("dscr", description="引擎模式 (dscr=传统DSCR | modern=马来西亚SME标准)"),
+    ctos_sme_score: int = Query(650, description="CTOS SME分数 - 仅modern模式"),
+    cashflow_variance: float = Query(0.30, description="现金流波动率 - 仅modern模式"),
+    industry_sector: str = Query("trading", description="行业分类 - 仅modern模式"),
+    company_age_years: int = Query(5, description="公司年龄 - 仅modern模式"),
+    employee_count: int = Query(10, description="员工数量 - 仅modern模式"),
+    target_bank: str = Query("maybank_sme", description="目标银行 - 仅modern模式"),
     db: Session = Depends(get_db)
 ):
     """
@@ -78,25 +85,68 @@ def get_business_loan_eligibility(
         )
     
     try:
-        result = BusinessLoanEngine.calculate_dscr(
-            db=db,
-            customer_id=customer_id,
-            company_id=company_id,
-            annual_commitment=annual_commitment
-        )
-        
-        if "error" in result:
-            if result["error"] == "missing_commitment_data":
-                raise HTTPException(
-                    status_code=400,
-                    detail=result.get("message", "年度债务数据缺失，请上传CTOS报告")
-                )
-            raise HTTPException(
-                status_code=404,
-                detail=result["error"]
+        # Modern模式：使用新的马来西亚SME标准
+        if mode == "modern":
+            from accounting_app.services.risk_engine import SMELoanRules
+            from accounting_app.services.loan_products import LoanProductMatcher
+            
+            # 获取营业收入
+            operating_income = BusinessLoanEngine._get_operating_income(db, customer_id, company_id)
+            
+            if annual_commitment is None:
+                raise HTTPException(status_code=400, detail="Debt commitment is required based on CTOS.")
+            
+            # 调用新风控引擎
+            result = SMELoanRules.evaluate_sme_loan_eligibility(
+                operating_income=operating_income,
+                annual_commitment=annual_commitment,
+                ctos_sme_score=ctos_sme_score,
+                cashflow_variance=cashflow_variance,
+                industry_sector=industry_sector,
+                company_age_years=company_age_years,
+                employee_count=employee_count,
+                target_bank=target_bank
             )
+            
+            # 产品匹配
+            recommended_products = LoanProductMatcher.match_sme_loan_products(
+                brr_grade=result["brr_grade"],
+                dscr=result["dscr"],
+                industry_sector=industry_sector,
+                max_loan_amount=result["max_loan_amount"],
+                cgc_eligible=result["cgc_eligibility"]
+            )
+            
+            result["recommended_products"] = recommended_products
+            result["customer_id"] = customer_id
+            result["mode"] = "modern"
+            result["engine"] = "Malaysian SME Standard (BRR/DSCR/DSR/Industry)"
+            
+            return result
         
-        return result
+        # DSCR模式：使用现有引擎（向后兼容）
+        else:
+            result = BusinessLoanEngine.calculate_dscr(
+                db=db,
+                customer_id=customer_id,
+                company_id=company_id,
+                annual_commitment=annual_commitment
+            )
+            
+            if "error" in result:
+                if result["error"] == "missing_commitment_data":
+                    raise HTTPException(
+                        status_code=400,
+                        detail=result.get("message", "年度债务数据缺失，请上传CTOS报告")
+                    )
+                raise HTTPException(
+                    status_code=404,
+                    detail=result["error"]
+                )
+            
+            result["mode"] = "dscr"
+            result["engine"] = "Traditional DSCR"
+            return result
         
     except HTTPException:
         raise

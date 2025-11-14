@@ -119,40 +119,89 @@ async def get_loan_eligibility(
     customer_id: int,
     monthly_commitment: Optional[float] = None,
     company_id: int = 1,
+    mode: str = "dsr",
+    ccris_bucket: int = 0,
+    age: int = 30,
+    employment_years: float = 3.0,
+    credit_score: int = 700,
+    target_bank: str = "maybank",
     db: Session = Depends(get_db)
 ):
     """
-    获取客户贷款资格评估（基于CTOS commitment）
+    获取客户贷款资格评估（双引擎模式）
     
     Args:
         customer_id: 客户ID
         monthly_commitment: 月度承诺还款（从CTOS报告获取，必填）
         company_id: 公司ID（默认1）
+        mode: 引擎模式 (dsr=传统DSR模式 | modern=马来西亚银行DTI/FOIR模式)
+        ccris_bucket: CCRIS bucket (0~3+) - 仅modern模式
+        age: 年龄 - 仅modern模式
+        employment_years: 工作年限 - 仅modern模式
+        credit_score: 信用分数 - 仅modern模式
+        target_bank: 目标银行 - 仅modern模式
         
     Returns:
-        包含以下信息的JSON:
-        - customer_id: 客户ID
-        - dsr_income: DSR计算用收入
-        - total_debt: 月度债务
-        - dsr_ratio: DSR比率
-        - status: Eligible / Borderline / Not Eligible
-        - source: 收入来源类型
-        - confidence: 置信度
-        - suggested_loan_amount: 建议贷款额度（= dsr_income × 8）
-        - max_monthly_debt: 最大可承受月度债务
-        - available_borrowing_capacity: 可用借款能力
+        DSR模式: 传统输出格式
+        Modern模式: 马来西亚银行标准格式（DTI/FOIR/Risk Grade/Product Matching）
         
     Raises:
         HTTPException 400: monthly_commitment缺失
     """
     try:
-        result = calculate_loan_eligibility(
-            db=db,
-            customer_id=customer_id,
-            monthly_commitment=monthly_commitment,
-            company_id=company_id
-        )
-        return result
+        # Modern模式：使用新的马来西亚银行标准
+        if mode == "modern":
+            from ..services.risk_engine import PersonalLoanRules
+            from ..services.loan_products import LoanProductMatcher
+            
+            # 获取收入数据
+            income_data = IncomeService.get_customer_income(db, customer_id, company_id)
+            if not income_data:
+                raise HTTPException(status_code=404, detail="客户无收入数据")
+            
+            income = income_data.get("dsr_income", 0.0)
+            
+            if monthly_commitment is None:
+                raise HTTPException(status_code=400, detail="Debt commitment is required based on CTOS.")
+            
+            # 调用新风控引擎
+            result = PersonalLoanRules.evaluate_loan_eligibility(
+                income=income,
+                monthly_commitment=monthly_commitment,
+                ccris_bucket=ccris_bucket,
+                age=age,
+                employment_years=employment_years,
+                job_type="permanent",
+                credit_score=credit_score,
+                target_bank=target_bank
+            )
+            
+            # 产品匹配
+            recommended_products = LoanProductMatcher.match_personal_loan_products(
+                risk_grade=result["risk_grade"],
+                income=income,
+                max_emi=result["max_emi"],
+                digital_bank_band=result["digital_bank_band"]["risk_band"]
+            )
+            
+            result["recommended_products"] = recommended_products
+            result["customer_id"] = customer_id
+            result["mode"] = "modern"
+            result["engine"] = "Malaysian Banking Standard (DTI/FOIR/CCRIS)"
+            
+            return result
+        
+        # DSR模式：使用现有引擎（向后兼容）
+        else:
+            result = calculate_loan_eligibility(
+                db=db,
+                customer_id=customer_id,
+                monthly_commitment=monthly_commitment,
+                company_id=company_id
+            )
+            result["mode"] = "dsr"
+            result["engine"] = "Traditional DSR"
+            return result
         
     except HTTPException:
         raise
