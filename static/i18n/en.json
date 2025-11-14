@@ -2016,5 +2016,19 @@
   "processing_button": "Processing...",
   "full_auto_eval_failed": "Full Auto evaluation failed",
   "start_automatic_evaluation": "Start Automatic Evaluation",
-  "full_auto_eval_failed_prefix": "Full Auto evaluation failed: "
+  "full_auto_eval_failed_prefix": "Full Auto evaluation failed: ",
+  "accounting_files_title": "Accounting Files",
+  "upload_excel": "Upload Excel",
+  "upload_pdf": "Upload PDF",
+  "file_list": "File List",
+  "download": "Download",
+  "api_keys_title": "API Keys Management",
+  "add_new_key": "Add New API Key",
+  "provider_name": "Provider",
+  "api_key": "API Key",
+  "total_balance": "Total Balance",
+  "monthly_expenses": "Monthly Expenses",
+  "savings_rate": "Savings Rate",
+  "credit_utilization": "Credit Utilization",
+  "quick_stats": "Quick Stats"
 }

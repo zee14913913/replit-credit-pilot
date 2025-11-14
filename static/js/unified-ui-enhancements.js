@@ -81,23 +81,27 @@ class UnifiedNavigation {
 // ============================================
 class NextActionButton {
     static ACTION_CONFIGS = {
-        'review_manually': { icon: 'eye', label_zh: '人工审核', label_en: 'Review', color: 'warning' },
-        'upload_new_file': { icon: 'upload', label_zh: '重新上传', label_en: 'Upload', color: 'primary' },
-        'edit_record': { icon: 'pencil', label_zh: '编辑', label_en: 'Edit', color: 'info' },
-        'delete_record': { icon: 'trash', label_zh: '删除', label_en: 'Delete', color: 'danger' },
-        'retry': { icon: 'arrow-repeat', label_zh: '重试', label_en: 'Retry', color: 'success' },
-        'ignore': { icon: 'x-circle', label_zh: '忽略', label_en: 'Ignore', color: 'secondary' }
+        'review_manually': { icon: 'eye', key: 'manual_review', label_zh: '人工审核', label_en: 'Manual Review', color: 'warning' },
+        'upload_new_file': { icon: 'upload', key: 're_upload', label_zh: '重新上传', label_en: 'Re-upload', color: 'primary' },
+        'edit_record': { icon: 'pencil', key: 'edit_button', label_zh: '编辑', label_en: 'Edit', color: 'info' },
+        'delete_record': { icon: 'trash', key: 'delete_button', label_zh: '删除', label_en: 'Delete', color: 'danger' },
+        'retry': { icon: 'arrow-repeat', key: 'retry_button', label_zh: '重试', label_en: 'Retry', color: 'success' },
+        'ignore': { icon: 'x-circle', key: 'ignore_button', label_zh: '忽略', label_en: 'Ignore', color: 'secondary' }
     };
     
     static render(action, recordId, language = 'zh') {
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         const config = this.ACTION_CONFIGS[action] || {
             icon: 'question',
+            key: null,
             label_zh: action,
             label_en: action,
             color: 'secondary'
         };
         
-        const label = language === 'zh' ? config.label_zh : config.label_en;
+        const label = config.key 
+            ? t(config.key, language === 'zh' ? config.label_zh : config.label_en)
+            : (language === 'zh' ? config.label_zh : config.label_en);
         
         return `
             <button class="btn btn-sm btn-${config.color}" 
@@ -143,7 +147,7 @@ class I18nManager {
         if (!selector) return;
         
         selector.innerHTML = `
-            <select class="form-select form-select-sm" onchange="i18n.setLanguage(this.value)" aria-label="选择语言">
+            <select class="form-select form-select-sm" onchange="i18n.setLanguage(this.value)" aria-label="${this.translate('select_language', '选择语言')}">
                 <option value="zh" ${this.currentLanguage === 'zh' ? 'selected' : ''}>中文</option>
                 <option value="en" ${this.currentLanguage === 'en' ? 'selected' : ''}>English</option>
             </select>
@@ -164,9 +168,10 @@ class I18nManager {
 // ============================================
 class ErrorHandler {
     static show(message, options = {}) {
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         const {
-            title_zh = '错误',
-            title_en = 'Error',
+            title_zh = t('error_title', '错误'),
+            title_en = t('error_title', 'Error'),
             type = 'error',
             duration = 5000,
             showRetry = false,
@@ -187,7 +192,7 @@ class ErrorHandler {
                 ${showRetry ? `
                     <hr>
                     <button class="btn btn-sm btn-outline-${alertClass}" onclick="errorRetry()">
-                        <i class="bi bi-arrow-repeat"></i> ${language === 'zh' ? '重试' : 'Retry'}
+                        <i class="bi bi-arrow-repeat"></i> ${language === 'zh' ? t('retry_button', '重试') : t('retry_button', 'Retry')}
                     </button>
                 ` : ''}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -221,18 +226,20 @@ class ErrorHandler {
     }
     
     static success(message) {
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         const language = localStorage.getItem('language') || 'zh';
         this.show(message, {
-            title_zh: '成功',
-            title_en: 'Success',
+            title_zh: t('success_title', '成功'),
+            title_en: t('success_title', 'Success'),
             type: 'success'
         });
     }
     
     static warning(message) {
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         this.show(message, {
-            title_zh: '警告',
-            title_en: 'Warning',
+            title_zh: t('warning_title', '警告'),
+            title_en: t('warning_title', 'Warning'),
             type: 'warning'
         });
     }
@@ -273,8 +280,11 @@ class LoadingState {
         }
     }
     
-    static showSpinner(message_zh = '加载中...', message_en = 'Loading...') {
+    static showSpinner(message_zh = null, message_en = null) {
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         const language = localStorage.getItem('language') || 'zh';
+        message_zh = message_zh || t('loading_text', '加载中...');
+        message_en = message_en || t('loading_text', 'Loading...');
         const message = language === 'zh' ? message_zh : message_en;
         
         const spinnerHTML = `
@@ -299,8 +309,11 @@ class LoadingState {
         if (overlay) overlay.remove();
     }
     
-    static showProgress(percent, message_zh = '处理中...', message_en = 'Processing...') {
+    static showProgress(percent, message_zh = null, message_en = null) {
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         const language = localStorage.getItem('language') || 'zh';
+        message_zh = message_zh || t('processing_text', '处理中...');
+        message_en = message_en || t('processing_text', 'Processing...');
         const message = language === 'zh' ? message_zh : message_en;
         
         const progressHTML = `

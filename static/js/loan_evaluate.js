@@ -99,8 +99,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const income = parseFloat(incomeInput.value || 0);
 
             if (income <= 0) {
-                const alertMsg = window.i18n ? window.i18n.translate('please_enter_valid_income') : "Please enter a valid income amount.";
-                alert(alertMsg);
+                const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+                alert(t('please_enter_valid_income_amount', '请输入有效的收入金额'));
                 return;
             }
 
@@ -145,8 +145,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const commitments = parseFloat(commitInput.value || 0);
 
             if (income <= 0) {
-                const alertMsg = window.i18n ? window.i18n.translate('please_enter_valid_income') : "Please enter a valid income amount.";
-                alert(alertMsg);
+                const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+                alert(t('please_enter_valid_income_amount', '请输入有效的收入金额'));
                 return;
             }
 
@@ -201,7 +201,8 @@ async function handleFullAutoEvaluation() {
 
     // 验证至少上传一个文件
     if (!payslipFile && !epfFile && !bankStatementFile && !ctosFile && !ccrisFile) {
-        alert("Please upload at least one document to start Full Auto evaluation.");
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+        alert(t('please_upload_one_document', '请至少上传一份文档以开始全自动评估'));
         return;
     }
 
@@ -214,10 +215,11 @@ async function handleFullAutoEvaluation() {
     if (ccrisFile) formData.append("ccris_pdf", ccrisFile);
 
     // 显示加载状态
+    const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
     const btnFullAuto = document.getElementById("btn-full-auto");
     if (btnFullAuto) {
         btnFullAuto.disabled = true;
-        btnFullAuto.textContent = "Processing...";
+        btnFullAuto.textContent = t('processing_button', '处理中...');
     }
 
     try {
@@ -229,7 +231,7 @@ async function handleFullAutoEvaluation() {
 
         if (!res.ok) {
             const errorData = await res.json();
-            throw new Error(errorData.error || "Full Auto evaluation failed");
+            throw new Error(errorData.error || t('full_auto_eval_failed', '全自动评估失败'));
         }
 
         const data = await res.json();
@@ -250,12 +252,12 @@ async function handleFullAutoEvaluation() {
 
     } catch (err) {
         console.error("Full Auto evaluation error:", err);
-        alert("Full Auto evaluation failed: " + err.message);
+        alert(t('full_auto_eval_failed_prefix', '全自动评估失败：') + err.message);
     } finally {
         // 恢复按钮状态
         if (btnFullAuto) {
             btnFullAuto.disabled = false;
-            btnFullAuto.textContent = "Start Automatic Evaluation";
+            btnFullAuto.textContent = t('start_automatic_evaluation', '开始自动评估');
         }
     }
 }

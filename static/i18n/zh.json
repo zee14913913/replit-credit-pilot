@@ -2016,5 +2016,19 @@
   "processing_button": "处理中...",
   "full_auto_eval_failed": "全自动评估失败",
   "start_automatic_evaluation": "开始自动评估",
-  "full_auto_eval_failed_prefix": "全自动评估失败："
+  "full_auto_eval_failed_prefix": "全自动评估失败：",
+  "accounting_files_title": "会计文档管理",
+  "upload_excel": "上传Excel",
+  "upload_pdf": "上传PDF",
+  "file_list": "文档列表",
+  "download": "下载",
+  "api_keys_title": "API密钥管理",
+  "add_new_key": "添加新密钥",
+  "provider_name": "服务商",
+  "api_key": "API密钥",
+  "total_balance": "总余额",
+  "monthly_expenses": "月支出",
+  "savings_rate": "储蓄率",
+  "credit_utilization": "信用额度使用率",
+  "quick_stats": "快速统计"
 }
