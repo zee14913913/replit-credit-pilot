@@ -58,6 +58,9 @@ static/uploads/*
 attached_assets/*
 !attached_assets/.gitkeep
 
+# Archive
+archive_old/
+
 # Testing
 .pytest_cache/
 .coverage
