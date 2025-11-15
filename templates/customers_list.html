@@ -5,13 +5,8 @@
 {% block content %}
 <div class="fade-in">
     <!-- Page Header -->
-    <div class="section-header">
-        <h1 class="section-title">客户列表 / Customers List</h1>
-        <p class="section-subtitle">查看和管理所有客户信息</p>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="mb-4">
+    <div class="section-header mb-4">
+        <h1 class="section-title">客户列表</h1>
         <a href="{{ url_for('add_customer_page') }}" class="btn-professional">
             <i class="bi bi-person-plus"></i> 添加新客户
         </a>
@@ -23,13 +18,13 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>客户名称</th>
-                        <th>客户代码</th>
-                        <th>联系方式</th>
-                        <th>收款账户</th>
-                        <th>信用卡数</th>
-                        <th>储蓄账户数</th>
-                        <th>操作</th>
+                        <th style="width: 20%;">客户名称</th>
+                        <th style="width: 12%;">客户代码</th>
+                        <th style="width: 25%;">收款账户</th>
+                        <th style="width: 18%;">联系方式</th>
+                        <th style="width: 10%; text-align: center;">信用卡</th>
+                        <th style="width: 10%; text-align: center;">储蓄账户</th>
+                        <th style="width: 5%; text-align: center;">操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,66 +32,60 @@
                         {% for customer in customers %}
                         <tr>
                             <td>
-                                <strong>{{ customer.name }}</strong>
+                                <div class="customer-name">{{ customer.name }}</div>
                             </td>
                             <td>
                                 <span class="badge-purple">{{ customer.customer_code }}</span>
                             </td>
                             <td>
-                                {% if customer.email %}
-                                    <div><i class="bi bi-envelope" style="color: #FF007F;"></i> {{ customer.email }}</div>
-                                {% endif %}
-                                {% if customer.phone %}
-                                    <div><i class="bi bi-telephone" style="color: #FF007F;"></i> {{ customer.phone }}</div>
-                                {% endif %}
+                                <div class="single-line">
+                                    {% if customer.accounts %}
+                                        {% for account in customer.accounts %}
+                                            {% if account.account_type == 'personal' %}
+                                                <span class="account-tag tag-personal">{% if account.is_primary %}★{% endif %} {{ account.account_name }} ({{ account.account_number }})</span>
+                                            {% else %}
+                                                <span class="account-tag tag-company">{% if account.is_primary %}★{% endif %} {{ account.account_name }} ({{ account.account_number }})</span>
+                                            {% endif %}
+                                            {% if not loop.last %} · {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="text-muted-custom">-</span>
+                                    {% endif %}
+                                </div>
                             </td>
                             <td>
-                                {% if customer.personal_account_name %}
-                                    <div class="small">
-                                        <i class="bi bi-person" style="color: #FF007F;"></i> <strong style="color: #FF007F;">个人:</strong> {{ customer.personal_account_name }}<br>
-                                        <span style="color: #888;">{{ customer.personal_account_number }}</span>
-                                    </div>
-                                {% endif %}
-                                {% if customer.company_account_name %}
-                                    <div class="small mt-1">
-                                        <i class="bi bi-building" style="color: #322446;"></i> <strong style="color: #322446;">公司:</strong> {{ customer.company_account_name }}<br>
-                                        <span style="color: #888;">{{ customer.company_account_number }}</span>
-                                    </div>
-                                {% endif %}
-                                {% if not customer.personal_account_name and not customer.company_account_name %}
-                                    <span style="color: #666;">(未设置)</span>
-                                {% endif %}
+                                <div class="single-line">
+                                    {% if customer.email %}<span>{{ customer.email }}</span>{% endif %}
+                                    {% if customer.email and customer.phone %} · {% endif %}
+                                    {% if customer.phone %}<span>{{ customer.phone }}</span>{% endif %}
+                                    {% if not customer.email and not customer.phone %}<span class="text-muted-custom">-</span>{% endif %}
+                                </div>
                             </td>
-                            <td>
+                            <td style="text-align: center;">
                                 {% if customer.total_cards > 0 %}
                                     <span class="badge-pink">{{ customer.total_cards }}</span>
                                 {% else %}
-                                    <span style="color: #666;">0</span>
+                                    <span class="text-muted-custom">0</span>
                                 {% endif %}
                             </td>
-                            <td>
+                            <td style="text-align: center;">
                                 {% if customer.total_savings_accounts > 0 %}
                                     <span class="badge-purple">{{ customer.total_savings_accounts }}</span>
                                 {% else %}
-                                    <span style="color: #666;">0</span>
+                                    <span class="text-muted-custom">0</span>
                                 {% endif %}
                             </td>
-                            <td>
-                                <div class="btn-group btn-group-sm" role="group">
+                            <td style="text-align: center;">
+                                <div class="action-buttons">
                                     <a href="{{ url_for('customer_dashboard', customer_id=customer.id) }}" 
-                                       class="btn-action btn-action-pink" 
-                                       title="客户Dashboard">
+                                       class="btn-icon" 
+                                       title="Dashboard">
                                         <i class="bi bi-speedometer2"></i>
                                     </a>
                                     <a href="{{ url_for('edit_customer_page', customer_id=customer.id) }}" 
-                                       class="btn-action btn-action-purple" 
-                                       title="编辑客户">
+                                       class="btn-icon" 
+                                       title="编辑">
                                         <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="{{ url_for('savings_accounts', customer_id=customer.id) }}" 
-                                       class="btn-action btn-action-purple" 
-                                       title="储蓄账户">
-                                        <i class="bi bi-piggy-bank"></i>
                                     </a>
                                 </div>
                             </td>
@@ -104,8 +93,9 @@
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="7" class="text-center text-muted">
-                                <i class="bi bi-inbox"></i> 暂无客户数据
+                            <td colspan="7" class="text-center" style="padding: 2rem;">
+                                <i class="bi bi-inbox" style="font-size: 2rem; color: #666;"></i><br>
+                                <span class="text-muted-custom">暂无客户数据</span>
                             </td>
                         </tr>
                     {% endif %}
@@ -115,47 +105,102 @@
     </div>
 
     <!-- Summary -->
-    <div class="mt-3 text-muted">
+    <div class="mt-3 summary-text">
         <i class="bi bi-info-circle"></i> 总共 <strong>{{ customers|length }}</strong> 位客户
     </div>
 </div>
 
 <style>
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-title {
+    color: #FF007F;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+}
+
 .card-professional {
-    background: #000;
+    background: #0a0a0a;
     border: 1px solid #322446;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    padding: 0;
+    overflow: hidden;
 }
 
 .table {
     color: #fff;
     margin-bottom: 0;
+    font-size: 0.9rem;
 }
 
 .table thead th {
+    background: #000;
     border-bottom: 2px solid #322446;
     color: #FF007F;
     font-weight: 600;
-    padding: 1rem 0.75rem;
+    padding: 0.75rem;
+    white-space: nowrap;
 }
 
 .table tbody td {
-    border-bottom: 1px solid #322446;
-    padding: 1rem 0.75rem;
+    background: #0a0a0a;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 0.75rem;
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.table tbody tr:hover {
-    background-color: rgba(50, 36, 70, 0.3);
+.table tbody tr:hover td {
+    background: #111;
+}
+
+.customer-name {
+    color: #fff;
+    font-weight: 600;
+}
+
+.single-line {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    color: #ccc;
+    font-size: 0.85rem;
+}
+
+.account-tag {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.tag-personal {
+    background: rgba(255, 0, 127, 0.15);
+    color: #FF007F;
+    border: 1px solid #FF007F;
+}
+
+.tag-company {
+    background: rgba(50, 36, 70, 0.3);
+    color: #9370DB;
+    border: 1px solid #322446;
 }
 
 .badge-pink {
     background: #FF007F;
     color: #fff;
     font-size: 0.85rem;
-    padding: 0.35rem 0.65rem;
-    border-radius: 6px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
     font-weight: 600;
     display: inline-block;
 }
@@ -164,18 +209,22 @@
     background: #322446;
     color: #fff;
     font-size: 0.85rem;
-    padding: 0.35rem 0.65rem;
-    border-radius: 6px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
     font-weight: 600;
     display: inline-block;
+}
+
+.text-muted-custom {
+    color: #555;
 }
 
 .btn-professional {
     background: linear-gradient(135deg, #FF007F, #322446);
     color: white;
     border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
     font-weight: 500;
     text-decoration: none;
     display: inline-block;
@@ -188,36 +237,31 @@
     color: white;
 }
 
-.btn-action {
-    border: 1px solid;
-    background: transparent;
-    color: inherit;
-    padding: 0.35rem 0.65rem;
-    border-radius: 6px;
-    text-decoration: none;
-    display: inline-block;
-    transition: all 0.2s ease;
-    font-size: 0.875rem;
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
 }
 
-.btn-action-pink {
-    border-color: #FF007F;
+.btn-icon {
     color: #FF007F;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: all 0.2s;
 }
 
-.btn-action-pink:hover {
-    background: #FF007F;
+.btn-icon:hover {
     color: #fff;
+    transform: scale(1.2);
 }
 
-.btn-action-purple {
-    border-color: #322446;
-    color: #322446;
+.summary-text {
+    color: #888;
+    font-size: 0.9rem;
 }
 
-.btn-action-purple:hover {
-    background: #322446;
-    color: #fff;
+.summary-text strong {
+    color: #FF007F;
 }
 </style>
 {% endblock %}

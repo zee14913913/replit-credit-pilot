@@ -1719,7 +1719,7 @@ def savings_admin_dashboard():
 @app.route('/customers')
 @require_admin_or_accountant
 def customers_list():
-    """客户列表页面 - 简洁版本，仅显示客户基本信息"""
+    """客户列表页面 - 支持多账户显示"""
     
     with get_db() as conn:
         cursor = conn.cursor()
@@ -1731,10 +1731,6 @@ def customers_list():
                 c.email,
                 c.phone,
                 c.customer_code,
-                c.personal_account_name,
-                c.personal_account_number,
-                c.company_account_name,
-                c.company_account_number,
                 COUNT(DISTINCT cc.id) as total_cards,
                 COUNT(DISTINCT sa.id) as total_savings_accounts
             FROM customers c
@@ -1745,6 +1741,15 @@ def customers_list():
         """)
         
         customers = [dict(row) for row in cursor.fetchall()]
+        
+        for customer in customers:
+            cursor.execute("""
+                SELECT id, account_type, account_name, account_number, bank_name, is_primary
+                FROM customer_accounts
+                WHERE customer_id = ?
+                ORDER BY account_type, is_primary DESC, id
+            """, (customer['id'],))
+            customer['accounts'] = [dict(row) for row in cursor.fetchall()]
     
     return render_template('customers_list.html', customers=customers)
 
