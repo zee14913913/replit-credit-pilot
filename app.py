@@ -1716,6 +1716,38 @@ def savings_admin_dashboard():
 
 # ==================== END SAVINGS ADMIN AUTHENTICATION ====================
 
+@app.route('/customers')
+@require_admin_or_accountant
+def customers_list():
+    """客户列表页面 - 简洁版本，仅显示客户基本信息"""
+    
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            SELECT 
+                c.id,
+                c.name,
+                c.email,
+                c.phone,
+                c.customer_code,
+                c.personal_account_name,
+                c.personal_account_number,
+                c.company_account_name,
+                c.company_account_number,
+                COUNT(DISTINCT cc.id) as total_cards,
+                COUNT(DISTINCT sa.id) as total_savings_accounts
+            FROM customers c
+            LEFT JOIN credit_cards cc ON c.id = cc.customer_id
+            LEFT JOIN savings_accounts sa ON c.id = sa.customer_id
+            GROUP BY c.id
+            ORDER BY c.name
+        """)
+        
+        customers = [dict(row) for row in cursor.fetchall()]
+    
+    return render_template('customers_list.html', customers=customers)
+
 @app.route('/admin/customers-cards')
 @require_admin_or_accountant
 def admin_customers_cards():
