@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}{{ t('upload_income_document') }}{% endblock %}
+{% block title %}Upload Income Document{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-8 offset-md-2">
             <h1 class="mb-4" style="color: #FF007F;">
-                <i class="bi bi-file-earmark-text"></i> {{ t('upload_income_document') }}
+                <i class="bi bi-file-earmark-text"></i> Upload Income Document
             </h1>
             
             <div class="card" style="background: rgba(0,0,0,0.7); border: 2px solid #322446;">
@@ -16,7 +16,7 @@
                         <!-- 客户选择 -->
                         <div class="mb-4">
                             <label class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
-                                <i class="bi bi-person"></i> {{ t('customer') }}
+                                <i class="bi bi-person"></i> Customer
                             </label>
                             <select name="customer_id" id="customer_id" class="form-select bg-dark text-white" required
                                     style="border: 2px solid rgba(255,0,127,0.3);">
@@ -27,7 +27,7 @@
                         <!-- 文件类型 -->
                         <div class="mb-4">
                             <label class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
-                                <i class="bi bi-file-earmark-medical"></i> {{ t('document_type') }}
+                                <i class="bi bi-file-earmark-medical"></i> Document Type
                             </label>
                             <select name="document_type" id="document_type" class="form-select bg-dark text-white" required
                                     style="border: 2px solid rgba(255,0,127,0.3);">
@@ -37,33 +37,33 @@
                                 <option value="{{ t('bank_inflow') }}">{{ t('bank_statement_income_focus') }}</option>
                             </select>
                             <small class="text-muted">
-                                {{ t('select_income_proof_type') }}
+                                Select the type of income proof document
                             </small>
                         </div>
                         
                         <!-- 收入月份 -->
                         <div class="mb-4">
                             <label class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
-                                <i class="bi bi-calendar3"></i> {{ t('income_month') }}
+                                <i class="bi bi-calendar3"></i> Income Month
                             </label>
                             <input type="month" name="document_month" id="document_month" 
                                    class="form-control bg-dark text-white" required
                                    style="border: 2px solid rgba(255,0,127,0.3);">
                             <small class="text-muted">
-                                {{ t('month_this_document_represents') }}
+                                The month this document represents (e.g., 2025-01 for January 2025)
                             </small>
                         </div>
                         
                         <!-- 文件上传 -->
                         <div class="mb-4">
                             <label class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
-                                <i class="bi bi-cloud-upload"></i> {{ t('select_file') }}
+                                <i class="bi bi-cloud-upload"></i> Select File
                             </label>
                             <input type="file" name="file" id="file" class="form-control bg-dark text-white" 
                                    accept=".pdf,.jpg,.jpeg,.png" required
                                    style="border: 2px solid rgba(255,0,127,0.3);">
                             <small class="text-muted">
-                                {{ t('supported_formats_pdf_jpg_png') }}
+                                Supported formats: PDF, JPG, PNG (Max 10MB)
                             </small>
                         </div>
                         
@@ -82,10 +82,10 @@
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-lg" 
                                     style="background: linear-gradient(135deg, #FF007F, #FF4DA6); color: white; font-weight: 700;">
-                                <i class="bi bi-upload"></i> {{ t('upload_document') }}
+                                <i class="bi bi-upload"></i> Upload Document
                             </button>
                             <a href="{{ url_for('income_home') }}" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left"></i> {{ t('back') }}
+                                <i class="bi bi-arrow-left"></i> Back
                             </a>
                         </div>
                     </form>
@@ -96,7 +96,7 @@
                             <div class="progress-bar progress-bar-striped progress-bar-animated" 
                                  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" 
                                  style="width: 100%; background: #FF007F;">
-                                {{ t('processing_ocr') }}
+                                Processing OCR...
                             </div>
                         </div>
                     </div>
@@ -111,8 +111,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Load customer list
-    fetch('/api/customers/list')
+    // {{ t('____fetch') }}('/api/customers/list')
         .then(response => response.json())
         .then(data => {
             const select = document.getElementById('customer_id');
@@ -127,22 +126,16 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error loading customers:', error);
         });
     
-    // Set default month to current month
-    const now = new Date();
-    const currentMonth = now.toISOString().slice(0, 7);
-    document.getElementById('document_month').value = currentMonth;
-    
-    // Handle form submission
+    // {{ t('____const_now__new_date____const_currentmont') }}h = now.toISOString().slice(0, 7);
+    document.getElementById('document_month').{{ t('value__currentmonth_________') }}
     document.getElementById('incomeUploadForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         const formData = new FormData(this);
         const progressDiv = document.getElementById('uploadProgress');
         const resultDiv = document.getElementById('uploadResult');
         
-        // Show progress
-        progressDiv.style.display = 'block';
+        // {{ t('________progressdivstyledisplay') }} = 'block';
         resultDiv.style.display = 'none';
         
         try {
@@ -151,53 +144,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: formData
             });
             
-            const result = await response.json();
-            
-            // Hide progress bar
+            {{ t('const_result__await_responsejson___________________1') }}   // 隐藏进度条
             progressDiv.style.display = 'none';
             
             if (response.ok && result.status === 'success') {
-                // Success message
-                resultDiv.innerHTML = `
+                // {{ t('________________resultdivinnerhtml') }} = `
                     <div class="alert alert-success">
-                        <h5><i class="bi bi-check-circle"></i> ${t('upload_successful', 'Upload Successful!')}</h5>
+                        <h5><i class="bi bi-check-circle"></i>{{ t('upload_successful') }}</h5>
                         <hr>
-                        <p><strong>${t('customer', 'Customer')}:</strong> ${result.customer_name}</p>
-                        <p><strong>${t('document_type', 'Document Type')}:</strong> ${result.document_type}</p>
-                        <p><strong>${t('month', 'Month')}:</strong> ${result.document_month}</p>
+                        <p><strong>{{ t('customer_1') }}</strong>{{ t('resultcustomer_name') }}</p>
+                        <p><strong>{{ t('document_type_1') }}</strong>{{ t('resultdocument_type') }}</p>
+                        <p><strong>{{ t('month_1') }}</strong>{{ t('resultdocument_month') }}</p>
                         <hr>
-                        <h6 style="color: #FF007F;"><i class="bi bi-magic"></i> ${t('ocr_results', 'OCR Results')}</h6>
-                        <p><strong>${t('income_detected', 'Income Detected')}:</strong> RM ${result.ocr_result.income_detected.toFixed(2)}</p>
-                        <p><strong>${t('confidence', 'Confidence')}:</strong> ${(result.ocr_result.confidence * 100).toFixed(1)}%</p>
-                        <p><strong>${t('method', 'Method')}:</strong> ${result.ocr_result.method}</p>
-                        <p><strong>${t('text_length', 'Text Length')}:</strong> ${result.ocr_result.text_length} ${t('characters', 'characters')}</p>
+                        <h6 style="color: #FF007F;"><i class="bi bi-magic"></i>{{ t('ocr_results') }}</h6>
+                        <p><strong>{{ t('income_detected_1') }}</strong>{{ t('rm_resultocr_resultincome_detectedtofixed2') }}</p>
+                        <p><strong>{{ t('confidence_1') }}</strong>{{ t('resultocr_resultconfidence__100tofixed1') }}</p>
+                        <p><strong>{{ t('method') }}</strong>{{ t('resultocr_resultmethod') }}</p>
+                        <p><strong>{{ t('text_length') }}</strong>{{ t('resultocr_resulttext_length_characters') }}</p>
                         <hr>
-                        <a href="/income" class="btn btn-primary">${t('view_all_documents', 'View All Documents')}</a>
+                        <a href="/income" class="btn btn-primary">{{ t('view_all_documents') }}</a>
                     </div>
                 `;
                 resultDiv.style.display = 'block';
                 
-                // Reset form and set month back to current
-                this.reset();
-                document.getElementById('document_month').value = currentMonth;
+                // {{ t('________________thisreset________________document') }}getElementById('document_month').value = currentMonth;
             } else {
-                // Error message
-                console.error('Upload failed:', result.detail || result.message);
-                resultDiv.innerHTML = `
+                // {{ t('________________resultdivinnerhtml_1') }} = `
                     <div class="alert alert-danger">
-                        <h5><i class="bi bi-exclamation-triangle"></i> ${t('upload_failed', 'Upload Failed')}</h5>
-                        <p>${t('upload_error_message', 'An error occurred during upload. Please check the file and try again.')}</p>
+                        <h5><i class="bi bi-exclamation-triangle"></i>{{ t('upload_failed') }}</h5>
+                        <p>{{ t('resultdetail__resultmessage__unknown_error') }}</p>
                     </div>
                 `;
                 resultDiv.style.display = 'block';
             }
         } catch (error) {
-            console.error('Upload exception:', error);
             progressDiv.style.display = 'none';
             resultDiv.innerHTML = `
                 <div class="alert alert-danger">
-                    <h5><i class="bi bi-exclamation-triangle"></i> ${t('error', 'Error')}</h5>
-                    <p>${t('network_error_message', 'Network error occurred. Please check your connection and try again.')}</p>
+                    <h5><i class="bi bi-exclamation-triangle"></i>{{ t('error') }}</h5>
+                    <p>{{ t('errormessage') }}</p>
                 </div>
             `;
             resultDiv.style.display = 'block';

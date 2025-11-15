@@ -12,14 +12,12 @@
     </div>
 
     <!-- 上传信用卡账单区域 -->
-    <div class="professional-card mb-4" style="padding: 2.5rem 3rem;">
+    <div class="professional-card mb-5" style="padding: 2.5rem 3rem; margin-top: 2rem;">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 style="color: #E8E8E8; margin: 0; font-size: 1.8rem; font-weight: 700;">
-                <i class="bi bi-cloud-upload-fill" style="color: #FF007F; margin-right: 0.8rem;"></i>
-                {{ t('upload_credit_card_statement') }}
+            <h3 style="color: #FFFEF0; margin: 0; font-size: 1.8rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;">
+                UPLOAD CREDIT CARD STATEMENT
             </h3>
-            <button class="btn-professional" onclick="toggleUploadForm()" style="background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%); padding: 0.7rem 1.8rem; font-size: 1rem; font-weight: 600;">
-                <i class="bi bi-plus-circle-fill" style="margin-right: 0.5rem;"></i>
+            <button class="btn-professional" onclick="toggleUploadForm()" style="background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%); padding: 0.7rem 1.8rem; font-size: 1rem; font-weight: 700; border: 2px solid #FFFEF0; color: #FFFEF0;">
                 <span id="upload-toggle-text">{{ t('show_upload_form') }}</span>
             </button>
         </div>
@@ -71,38 +69,38 @@
 
     <!-- 客户列表 - 表格布局 -->
     {% if customers %}
-    <div class="table-container">
+    <div class="table-container" style="margin-top: 3rem; margin-bottom: 3rem;">
         <div class="table-header">
-            <h3 style="color: #E8E8E8; font-weight: 700; margin: 0;">
-                <i class="bi bi-people-fill"></i> {{ t('customer_list') }}
+            <h3 style="color: #FFFEF0; font-weight: 700; margin: 0; text-transform: uppercase; letter-spacing: 1px;">
+                CUSTOMER LIST
             </h3>
-            <span style="background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%); color: #000; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700;">
-                {{ customers|length }} 位客户
+            <span style="background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%); color: #FFFEF0; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; text-transform: uppercase; border: 2px solid #FFFEF0;">
+                {{ t('customers_count').replace('{count}', customers|length|string) }}
             </span>
         </div>
         <div class="table-responsive">
             <table class="table table-dark table-hover">
                 <thead>
-                    <tr>
-                        <th style="width: 15%;">客户代码</th>
-                        <th style="width: 25%;">客户姓名</th>
-                        <th style="width: 15%; text-align: center;">账单数量</th>
-                        <th style="width: 15%; text-align: center;">操作</th>
+                    <tr style="background: rgba(50, 36, 70, 0.5);">
+                        <th style="width: 15%; color: #FFFEF0; font-size: 1.2rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.5px;">{{ t('customer_code') }}</th>
+                        <th style="width: 25%; color: #FFFEF0; font-size: 1.2rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.5px;">{{ t('customer_name_1') }}</th>
+                        <th style="width: 15%; text-align: center; color: #FFFEF0; font-size: 1.2rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.5px;">{{ t('statement_count') }}</th>
+                        <th style="width: 15%; text-align: center; color: #FFFEF0; font-size: 1.2rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.5px;">{{ t('actions_1') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for customer in customers %}
                     <tr>
-                        <td style="font-weight: 700; color: #FF007F;">{{ customer.code }}</td>
-                        <td style="font-weight: 600; color: #E8E8E8;">{{ customer.name }}</td>
-                        <td style="text-align: center;">
-                            <span style="background: rgba(255, 0, 127, 0.2); color: #FF007F; padding: 0.3rem 0.8rem; border-radius: 6px; font-weight: 600; border: 1px solid rgba(255, 0, 127, 0.4);">
+                        <td style="font-weight: 700; color: #FFFEF0; font-size: 1.1rem; text-transform: uppercase; padding: 1.2rem 1.5rem;">{{ customer.code }}</td>
+                        <td style="font-weight: 700; color: #FFFEF0; font-size: 1.1rem; text-transform: uppercase; padding: 1.2rem 1.5rem;">{{ customer.name }}</td>
+                        <td style="text-align: center; padding: 1.2rem 1.5rem;">
+                            <span style="background: #000000; color: #FFFEF0; padding: 0.4rem 1rem; border-radius: 6px; font-weight: 900; border: 2px solid #FF007F; font-size: 1.1rem;">
                                 {{ customer.statement_count }}
                             </span>
                         </td>
-                        <td style="text-align: center;">
-                            <a href="{{ url_for('credit_card_ledger_timeline', customer_id=customer.id) }}" class="btn-view">
-                                <i class="bi bi-calendar3"></i> 查看时间线
+                        <td style="text-align: center; padding: 1.2rem 1.5rem;">
+                            <a href="{{ url_for('credit_card_ledger_timeline', customer_id=customer.id) }}" class="btn-view" style="text-transform: uppercase; font-size: 1rem; font-weight: 700; color: #FFFEF0;">
+                                {{ t('view_timeline') }}
                             </a>
                         </td>
                     </tr>
@@ -116,11 +114,344 @@
         <p style="color: var(--text-secondary); margin-top: 1rem;">{{ t('no_customers_with_data') }}</p>
     </div>
     {% endif %}
+
+    <!-- =============== SUPPLIER INVOICES SECTION =============== -->
+    <div class="section-divider" style="margin: 5rem 0;"></div>
+    
+    <div class="section-header" style="margin-top: 3rem; margin-bottom: 3rem;">
+        <h2 class="section-title" style="font-size: 2rem;">
+            <i class="bi bi-file-earmark-text" style="color: #FF007F;"></i> {{ t('supplier_invoices') }}
+        </h2>
+        <p class="section-subtitle">{{ t('supplier_invoices_subtitle') }}</p>
+    </div>
+
+    <!-- Statistics Summary -->
+    {% if invoices_data %}
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="professional-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F; padding: 1.5rem;">
+                <div style="font-size: 2rem; color: #FF007F; font-weight: 700;">{{ invoices_data.total_invoices }}</div>
+                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">📄 {{ t('total_invoices') }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="professional-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446; padding: 1.5rem;">
+                <div style="font-size: 2rem; color: #FFFEF0; font-weight: 700;">{{ invoices_data.total_suppliers }}</div>
+                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">🏢 {{ t('suppliers') }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="professional-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F; padding: 1.5rem;">
+                <div style="font-size: 1.5rem; color: #FF007F; font-weight: 700;">RM {{ "{:,.2f}".format(invoices_data.total_amount) }}</div>
+                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">💰 {{ t('total_amount') }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="professional-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446; padding: 1.5rem;">
+                <div style="font-size: 1.5rem; color: #FFFEF0; font-weight: 700;">RM {{ "{:,.2f}".format(invoices_data.total_fees) }}</div>
+                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">📊 {{ t('processing_fees') }} (1%)</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Generated Invoices Table -->
+    <div class="table-container" style="margin-top: 3rem;">
+        <div class="table-header">
+            <h3 style="color: #FFFEF0; font-weight: 900; margin: 0; font-size: 1.3rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                SUPPLIER INVOICES
+            </h3>
+            {% if invoices_data and invoices_data.invoices %}
+            <button id="exportInvoiceTable" class="btn-professional-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem; color: #FFFEF0; font-weight: 700;">
+                <i class="bi bi-download"></i> {{ t('export_excel') }}
+            </button>
+            {% endif %}
+        </div>
+        {% if invoices_data and invoices_data.invoices %}
+        <div class="table-responsive">
+            <table class="table table-dark table-hover" id="invoicesTable">
+                <thead>
+                    <tr style="background: rgba(50, 36, 70, 0.5);">
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('invoice_no') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('date') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('customer') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('supplier') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('amount') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('fee') }} (1%)</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('total') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('action') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invoice in invoices_data.invoices %}
+                    <tr>
+                        <td style="font-weight: 600;">{{ invoice.invoice_number }}</td>
+                        <td>{{ invoice.invoice_date }}</td>
+                        <td>{{ invoice.customer_name }}</td>
+                        <td>{{ invoice.supplier_name }}</td>
+                        <td>RM {{ "{:,.2f}".format(invoice.total_amount) }}</td>
+                        <td>RM {{ "{:,.2f}".format(invoice.supplier_fee) }}</td>
+                        <td style="color: #FF007F; font-weight: 700;">RM {{ "{:,.2f}".format(invoice.total_amount + invoice.supplier_fee) }}</td>
+                        <td>
+                            <a href="/static/uploads/{{ invoice.pdf_path }}" target="_blank" class="btn-view" style="font-size: 0.75rem; padding: 0.35rem 0.7rem; color: #FFFEF0; font-weight: 700;">
+                                <i class="bi bi-eye"></i> {{ t('view') }}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="padding: 3rem; text-align: center;">
+            <i class="bi bi-inbox" style="font-size: 4rem; color: #FFFEF0;"></i>
+            <p style="color: rgba(255, 255, 255, 0.7); margin-top: 1rem;">
+                {{ t('no_invoices_generated') }}<br>
+                {{ t('upload_statements_to_generate') }}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- =============== PAYMENT RECEIPTS SECTION =============== -->
+    <div class="section-divider" style="margin: 5rem 0;"></div>
+
+    <div class="section-header" style="margin-top: 3rem; margin-bottom: 3rem;">
+        <h2 class="section-title" style="font-size: 2rem; font-weight: 700; color: #E8E8E8; margin: 0; text-transform: uppercase;">
+            <i class="bi bi-receipt-cutoff" style="color: #FF007F;"></i> {{ t('payment_receipts') }}
+        </h2>
+        <p class="section-subtitle" style="color: #FF007F; margin-top: 0.5rem;">{{ t('payment_receipts_subtitle') }}</p>
+    </div>
+
+    <!-- Payment Receipts Table -->
+    <div class="table-container" style="border-color: rgba(255, 0, 127, 0.5); margin-top: 3rem;">
+        <div class="table-header">
+            <h3 style="color: #FFFEF0; font-weight: 900; margin: 0; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                CUSTOMER PAYMENTS
+            </h3>
+            {% if payment_receipts %}
+            <button id="exportPaymentTable" class="btn-professional-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem; color: #FFFEF0; font-weight: 700;">
+                <i class="bi bi-download"></i> {{ t('export_excel') }}
+            </button>
+            {% endif %}
+        </div>
+        {% if payment_receipts %}
+        <div class="table-responsive">
+            <table class="table table-dark table-hover" id="paymentReceiptsTable">
+                <thead>
+                    <tr style="background: rgba(50, 36, 70, 0.5);">
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('date') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('description') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('amount') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('customer') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('remarks') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('action') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for receipt in payment_receipts %}
+                    <tr>
+                        <td style="font-weight: 600; color: #E8E8E8;">{{ receipt['date'] }}</td>
+                        <td>{{ receipt['description'] }}</td>
+                        <td style="color: #FF007F; font-weight: 700;">RM {{ "{:,.2f}".format(receipt['amount']) }}</td>
+                        <td>{{ receipt['from_customer'] }}</td>
+                        <td style="color: #C0C0C0;">{{ receipt['remarks'] }}</td>
+                        <td>
+                            {% if receipt['receipt_file_path'] %}
+                            <a href="/static/uploads/{{ receipt['receipt_file_path'] }}" target="_blank" class="btn-view" style="font-size: 0.75rem; padding: 0.35rem 0.7rem; color: #FFFEF0; font-weight: 700;">
+                                <i class="bi bi-file-image"></i> {{ t('view') }}
+                            </a>
+                            {% else %}
+                            <span style="color: #666;">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="padding: 3rem; text-align: center;">
+            <i class="bi bi-inbox" style="font-size: 4rem; color: #FFFEF0;"></i>
+            <p style="color: rgba(255, 255, 255, 0.7); margin-top: 1rem;">
+                {{ t('no_payment_receipts') }}<br>
+                {{ t('payment_receipts_will_appear_here') }}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- =============== OCR RECEIPTS SECTION =============== -->
+    <div class="section-divider" style="margin: 5rem 0;"></div>
+
+    <div class="section-header" style="margin-top: 3rem; margin-bottom: 3rem;">
+        <h2 class="section-title" style="font-size: 2rem; font-weight: 700; color: #E8E8E8; margin: 0; text-transform: uppercase;">
+            <i class="bi bi-receipt" style="color: #FF007F;"></i> {{ t('ocr_receipts') }}
+        </h2>
+        <p class="section-subtitle" style="color: #FF007F; margin-top: 0.5rem;">{{ t('smart_ocr_recognition_for_merchant_receipts') }}</p>
+    </div>
+
+    <!-- OCR Statistics Cards -->
+    {% if ocr_stats %}
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="professional-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F; padding: 1.5rem;">
+                <div style="font-size: 2rem; color: #FF007F; font-weight: 700;">{{ ocr_stats.total or 0 }}</div>
+                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">{{ t('_total_receipts') }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="professional-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446; padding: 1.5rem;">
+                <div style="font-size: 2rem; color: #FFFEF0; font-weight: 700;">{{ ocr_stats.auto_matched or 0 }}</div>
+                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">{{ t('_auto_matched') }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="professional-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F; padding: 1.5rem;">
+                <div style="font-size: 2rem; color: #FFFEF0; font-weight: 700;">{{ ocr_stats.manual_matched or 0 }}</div>
+                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">{{ t('_manual_matched') }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="professional-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446; padding: 1.5rem;">
+                <div style="font-size: 2rem; color: #FFFEF0; font-weight: 700;">{{ ocr_stats.pending or 0 }}</div>
+                <div style="color: #C0C0C0; font-size: 0.9rem; margin-top: 0.5rem;">{{ t('_pending_match') }}</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- OCR Upload Section (Collapsible) -->
+    <div class="professional-card mb-4" style="border: 2px solid #FF007F; padding: 2rem;">
+        <button onclick="toggleOCRUploadForm()" class="btn-professional-outline" style="width: 100%; color: #FFFEF0; font-weight: 700; border: 2px solid #FFFEF0;">
+            <span id="ocr-upload-toggle-text">{{ t('show_ocr_upload_form') }}</span>
+        </button>
+        
+        <div id="ocr-upload-form-section" style="display: none; margin-top: 2rem;">
+            <form action="{{ url_for('receipts_upload') }}" method="POST" enctype="multipart/form-data">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label" style="color: #FFFEF0; font-weight: 600;">{{ t('receipt_type') }}</label>
+                        <select name="receipt_type" class="form-select" required style="background: rgba(0,0,0,0.5); color: #FFFEF0; border: 1px solid #FF007F;">
+                            <option value="{{ t('merchant_swipe') }}">{{ t('merchant_swipe_receipt') }}</option>
+                            <option value="{{ t('payment_1') }}">{{ t('credit_card_payment') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label" style="color: #FFFEF0; font-weight: 600;">{{ t('select_receipt_images_jpgpng') }}</label>
+                        <input type="file" name="receipt_files" class="form-control" accept="image/*" multiple required style="background: rgba(0,0,0,0.5); color: #FFFEF0; border: 1px solid #FF007F;">
+                        <small style="color: #C0C0C0; margin-top: 0.5rem; display: block;">
+                            ✨ OCR will auto-extract amount, date, merchant | 🎯 Auto-match to customer & card
+                        </small>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn-professional" style="margin-right: 1rem;">
+                            <i class="bi bi-upload"></i> Upload & Process
+                        </button>
+                        <button type="button" onclick="toggleOCRUploadForm()" class="btn-professional-outline">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Matched Receipts Table -->
+    <div class="table-container" style="margin-top: 3rem;">
+        <div class="table-header">
+            <h3 style="color: #FFFEF0; font-weight: 900; margin: 0; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                MATCHED RECEIPTS
+            </h3>
+        </div>
+        {% if ocr_matched_receipts %}
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr style="background: rgba(50, 36, 70, 0.5);">
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('date') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('customer') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('ledgerindex_card') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('type') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('match') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('action') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for receipt in ocr_matched_receipts %}
+                    <tr>
+                        <td style="font-weight: 600; color: #E8E8E8;">{{ receipt.uploaded_at[:10] }}</td>
+                        <td>{{ receipt.customer_name }}</td>
+                        <td>{{ receipt.bank_name }} (****{{ receipt.card_number_last4 }})</td>
+                        <td><span style="background: rgba(255,0,127,0.2); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">{{ receipt.receipt_type }}</span></td>
+                        <td><span style="color: {{ '#00FF00' if receipt.match_type == 'auto' else '#FFAA00' }};">{{ receipt.match_type }}</span></td>
+                        <td>
+                            <a href="/static/uploads/{{ receipt.file_path }}" target="_blank" class="btn-view" style="font-size: 0.75rem; padding: 0.35rem 0.7rem; color: #FFFEF0; font-weight: 700;">
+                                <i class="bi bi-file-image"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="padding: 3rem; text-align: center;">
+            <i class="bi bi-inbox" style="font-size: 4rem; color: #FFFEF0;"></i>
+            <p style="color: rgba(255, 255, 255, 0.7); margin-top: 1rem;">
+                No matched receipts yet<br>
+                Upload merchant receipts to get started
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Pending Receipts Table -->
+    {% if ocr_pending_receipts %}
+    <div class="table-container" style="margin-top: 3rem;">
+        <div class="table-header">
+            <h3 style="color: #FFFEF0; font-weight: 900; margin: 0; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                PENDING MATCH ({{ ocr_pending_receipts|length }})
+            </h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr style="background: rgba(50, 36, 70, 0.5);">
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('status_uploaded') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('ocr_amount') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('ocr_date') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('merchant') }}</th>
+                        <th style="color: #FFFEF0; font-size: 1rem; text-transform: uppercase; font-weight: 900; padding: 1rem 1.5rem; border: 2px solid #FF007F; letter-spacing: 0.3px;">{{ t('action') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for receipt in ocr_pending_receipts %}
+                    <tr>
+                        <td style="font-weight: 600; color: #E8E8E8;">{{ receipt.uploaded_at[:10] }}</td>
+                        <td style="color: #FF007F; font-weight: 700;">{{ 'RM %.2f'|format(receipt.ocr_amount) if receipt.ocr_amount else '-' }}</td>
+                        <td>{{ receipt.ocr_date or '-' }}</td>
+                        <td style="color: #C0C0C0;">{{ receipt.ocr_merchant or '-' }}</td>
+                        <td>
+                            <a href="/static/uploads/{{ receipt.file_path }}" target="_blank" class="btn-view" style="font-size: 0.75rem; padding: 0.35rem 0.7rem; color: #FFFEF0; font-weight: 700; margin-right: 0.5rem;">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <a href="{{ url_for('receipts_pending') }}" class="btn-professional-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;">
+                                <i class="bi bi-link"></i> Match
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
 </div>
 
 <style>
-/* 表格容器样式 */
-.table-container {
+/* {{ t('_tablecontainer') }} {
     background: linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
     border: 2px solid rgba(50, 36, 70, 0.5);
     border-radius: 15px;
@@ -194,8 +525,7 @@
     color: #FFF;
 }
 
-/* 上传表单样式 */
-.file-input-hidden {
+/* {{ t('_fileinputhidden') }} {
     display: none;
 }
 
@@ -213,10 +543,24 @@ function toggleUploadForm() {
     
     if (formSection.style.display === 'none') {
         formSection.style.display = 'block';
-        toggleText.textContent = '{{ t("hide_upload_form") }}';
+        toggleText.textContent = 'Hide Upload Form';
     } else {
         formSection.style.display = 'none';
-        toggleText.textContent = '{{ t("show_upload_form") }}';
+        toggleText.textContent = 'Show Upload Form';
+    }
+}
+
+// Toggle OCR upload form visibility
+function toggleOCRUploadForm() {
+    const formSection = document.getElementById('ocr-upload-form-section');
+    const toggleText = document.getElementById('ocr-upload-toggle-text');
+    
+    if (formSection.style.display === 'none') {
+        formSection.style.display = 'block';
+        toggleText.textContent = 'Hide OCR Upload Form';
+    } else {
+        formSection.style.display = 'none';
+        toggleText.textContent = 'Show OCR Upload Form';
     }
 }
 
@@ -229,6 +573,60 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('file-name').textContent = fileName;
         });
     }
+});
+
+// Excel Export for Invoices
+document.getElementById('exportInvoiceTable')?.addEventListener('click', function() {
+    const table = document.getElementById('invoicesTable');
+    if (!table) return;
+    
+    let csv = [];
+    const rows = table.querySelectorAll('tr');
+    
+    rows.forEach(row => {
+        const cols = row.querySelectorAll('td, th');
+        const csvRow = [];
+        cols.forEach((col, index) => {
+            if (index < cols.length - 1) {
+                csvRow.push('"' + col.innerText.replace(/"/g, '""') + '"');
+            }
+        });
+        csv.push(csvRow.join(','));
+    });
+    
+    const csvContent = csv.join('\n');
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'supplier_invoices_' + new Date().toISOString().slice(0,10) + '.csv';
+    link.click();
+});
+
+// Excel Export for Payment Receipts
+document.getElementById('exportPaymentTable')?.addEventListener('click', function() {
+    const table = document.getElementById('paymentReceiptsTable');
+    if (!table) return;
+    
+    let csv = [];
+    const rows = table.querySelectorAll('tr');
+    
+    rows.forEach(row => {
+        const cols = row.querySelectorAll('td, th');
+        const csvRow = [];
+        cols.forEach((col, index) => {
+            if (index < cols.length - 1) {
+                csvRow.push('"' + col.innerText.replace(/"/g, '""') + '"');
+            }
+        });
+        csv.push(csvRow.join(','));
+    });
+    
+    const csvContent = csv.join('\n');
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'payment_receipts_' + new Date().toISOString().slice(0,10) + '.csv';
+    link.click();
 });
 </script>
 {% endblock %}

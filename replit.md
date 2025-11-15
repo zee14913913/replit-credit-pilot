@@ -15,18 +15,7 @@ The platform enforces a professional design using a **MINIMAL 3-COLOR PALETTE ON
 - **Black (#000000)**: Primary background
 - **Hot Pink (#FF007F)**: Primary accent, highlights, revenue, income, credits
 - **Dark Purple (#322446)**: Secondary accent, expenses, debits, borders
-
-**Bilingual System (100% Production-Ready)**:
-The platform implements comprehensive bilingual support (English/Chinese) with **100% translation coverage** verified for production deployment:
-- **2395 synchronized translation keys** across EN/ZH language files
-- **All templates** use `{{ t() }}` (Jinja2) and `window.i18n.translate()` (JavaScript) for dynamic content
-- **Language toggle** enables instant switching between English and Chinese
-- **Brand preservation**: Company names (e.g., "Infinite Gz私人有限公司") maintain bilingual identity
-- **Zero English fallbacks**: Every user-facing element supports Chinese translation
-- **Comprehensive coverage**: Core workflows (Dashboard, Loans, Income, Admin, Receipts, Credit Cards, API Management, Notifications) fully localized
-- **Acceptance criterion met**: "Every single word on every card on every page supports language switching"
-
-The design system emphasizes clean layouts with complete bilingual support enabling seamless user experience in both languages.
+The design system emphasizes clean layouts with bilingual support (English/Chinese).
 
 **Navigation Structure**:
 The main navigation features 7 core modules aligned with business workflow: DASHBOARD, CREDIT CARDS, SAVINGS, RECEIPTS, LOANS, REPORTS, and ADMIN. The **CREDIT CARDS** page is a central hub for uploading statements, managing suppliers, processing payments, and OCR receipts.
@@ -51,14 +40,13 @@ The backend uses Flask with SQLite and a context manager for database interactio
 - **CTOS Consent System**: Integrates personal (e-signature + IC upload) and company (SSM upload + company stamp) CTOS consent, generating professional PDF reports.
 
 ### System Design Choices
-- **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, and advisory. **Customer Receiving Accounts**: Each customer profile includes 2 optional receiving account fields (`receiving_account_1`, `receiving_account_2`) for recording GZ transfer target accounts, enabling precise matching of GZ's Payment (Indirect) transactions during settlement reconciliation.
+- **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, and advisory.
 - **Design Patterns:** Repository Pattern, Template Inheritance, Context Manager, Service Layer, Strategy Pattern (multi-provider AI).
 - **Security:** Session secret key, file upload limits, SQL injection prevention, audit logging, API key management.
 - **Data Accuracy:** Robust monthly ledger engine ensuring 100% accuracy via previous balance extraction and DR/CR classification.
 - **Monthly Statement Architecture:** One monthly statement record per bank + month, aggregating 6 mandatory classification fields.
 - **AI Architecture:** Unified client interface with automatic provider switching, graceful degradation, and environment-based configuration.
 - **Dual-Engine Loan Architecture:** Legacy DSR/DSCR engines preserved alongside modern risk_engine. API layer supports mode-based routing with backward compatibility. Product matcher recommends 3-10 suitable banks based on risk grade. System uses CTOS commitment data exclusively.
-- **GZ Payment Matching System:** Customers' receiving accounts are cross-referenced against INFINITE GZ Bank List (9 accounts) to identify GZ→Customer transfers for accurate payment classification (Direct/Indirect) and verification via Receipts/Invoices.
 
 ### Security & Access Control
 A production-ready Unified RBAC Implementation protects 32 functions. The `@require_admin_or_accountant` decorator supports Flask session-based RBAC and FastAPI token verification. Access levels include Admin (full access) and Accountant (full operational access), with Customer and Unauthenticated roles restricted.

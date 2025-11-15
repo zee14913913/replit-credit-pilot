@@ -171,9 +171,7 @@
             background: #2d2d2d;
         }
         
-        /* 列宽优化 */
-        table th:nth-child(1),
-        table td:nth-child(1) {
+        /* {{ t('_________table_thnthchild1________table_tdnth') }}child(1) {
             width: 10%;
             min-width: 100px;
         }
@@ -220,13 +218,12 @@
             min-width: 250px;
         }
         
-        /* 新文件高亮 */
-        .new-file-row {
+        /* {{ t('_________newfilerow') }} {
             background: linear-gradient(90deg, rgba(255,0,127,0.2) 0%, rgba(50,36,70,0.1) 100%);
             animation: pulse 2s infinite;
         }
         
-        /* highlight参数指定的文件高亮（优先级更高） */
+        /* {{ t('highlight') }}） */
         .highlighted-file-row {
             background: linear-gradient(90deg, rgba(255, 0, 127, 0.3) 0%, rgba(50, 36, 70, 0.15) 100%) !important;
             border-left: 4px solid #FF007F !important;
@@ -263,8 +260,7 @@
             font-weight: 700;
         }
         
-        /* 状态标签样式 - 只使用批准的颜色 */
-        .status-badge {
+        /* {{ t('___________statusbadge') }} {
             display: inline-block;
             padding: 4px 10px;
             border-radius: 12px;
@@ -340,8 +336,7 @@
             font-size: 1.2rem;
         }
         
-        /* 模态框样式 */
-        .modal {
+        /* {{ t('_________modal') }} {
             display: none;
             position: fixed;
             z-index: 1000;
@@ -436,7 +431,7 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     </script>
     
-    <!-- Toast通知组件 -->
+    <!-- {{ t('toast') }} -->
     <script src="/static/js/toast.js"></script>
     
     <!-- 全局翻译对象 -->
@@ -542,7 +537,7 @@
             </div>
             <div class="stat-card">
                 <div class="stat-label">{{ t('stat_total_storage') }}</div>
-                <div class="stat-value" id="total-size">-- MB</div>
+                <div class="stat-value" id="total-size">{{ t('_mb') }}</div>
             </div>
         </div>
         
@@ -552,7 +547,7 @@
         <div class="files-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid #322446; padding-bottom: 0.5rem;">
                 <h2 style="color: #FF007F; font-size: 1.5rem; margin: 0;">{{ t('stat_all_files') }}</h2>
-                <span style="color: #FF007F; font-size: 0.85rem;">→ 横向滚动查看所有列 →</span>
+                <span style="color: #FF007F; font-size: 0.85rem;">{{ t('__') }}</span>
             </div>
             <div id="files-list" class="loading">{{ t('loading') }}</div>
         </div>
@@ -562,31 +557,26 @@
     <div id="fileModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title" id="modalTitle">文件查看</div>
-                <span class="close" onclick="closeModal()">&times;</span>
+                <div class="modal-title" id="modalTitle">{{ t('auto_text_65') }}</div>
+                <span class="close" onclick="closeModal()">{{ t('andtimes') }}</span>
             </div>
             <div id="modalBody" class="file-viewer">
-                加载中...
+                <span data-i18n="loading_ellipsis">{{ t('loading_ellipsis') }}</span>
             </div>
         </div>
     </div>
     
     
     <script>
-        // PDF转CSV核心函数
+        // {{ t('pdfcsv') }}
         async function convertPDFToCSV(file) {
             try {
-                // 读取PDF文件
-                const arrayBuffer = await file.arrayBuffer();
-                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                
-                let allRows = [];
-                let headers = null;
+                // {{ t('pdf________________const_arraybuffer__await_filear') }}Buffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).{{ t('promise________________________________let_allrows') }}                let headers = null;
                 
                 // 遍历所有页面
                 for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-                    const page = await pdf.getPage(pageNum);
-                    const textContent = await page.getTextContent();
+                    {{ t('const_page__await_pdfgetpagepagenum_______________') }} const textContent = await page.getTextContent();
                     
                     // 按Y坐标分组文本项（识别行）
                     const lines = {};
@@ -599,37 +589,29 @@
                         });
                     });
                     
-                    // 排序并合并每行
-                    Object.keys(lines).sort((a, b) => b - a).forEach(y => {
+                    // {{ t('____________________objectkeyslinessorta_b') }}) => b - a).forEach(y => {
                         const lineItems = lines[y].sort((a, b) => a.x - b.x);
                         const lineText = lineItems.map(item => item.text).join(' ');
                         
-                        // 尝试识别表格行（包含日期、金额等）
-                        if (lineText.match(/\d{2}[/-]\d{2}[/-]\d{4}|\d{4}[/-]\d{2}[/-]\d{2}/)) {
-                            // 可能是交易行
-                            const parts = lineText.split(/\s{2,}/);
+                        // {{ t('________________________if_linetextmatch') }}(/\d{2}[/-]\d{2}[/-]\d{4}|\d{4}[/-]\d{2}[/-]\d{2}/)) {
+                            // {{ t('____________________________const_parts__linetexts') }}lit(/\s{2,}/);
                             if (parts.length >= 3) {
                                 allRows.push(parts);
                             }
                         } else if (lineText.match(/Date|Transaction|Debit|Credit|Balance/i) && !headers) {
-                            // 可能是表头
-                            headers = lineText.split(/\s{2,}/);
+                            // {{ t('____________________________headers__linetextsplit') }}\s{2,}/);
                         }
                     });
                 }
                 
-                // 如果没找到表头，使用默认表头
-                if (!headers || headers.length === 0) {
+                // {{ t('________________if_headers__headerslengt') }}h === 0) {
                     headers = ['Date', 'Description', 'Debit', 'Credit', 'Balance'];
                 }
                 
-                // 生成CSV（100%保留原始数据，不做任何修改）
-                let csvContent = headers.join(',') + '\n';
+                // {{ t('csv100________________let_csvcontent__he') }}aders.join(',') + '\n';
                 allRows.forEach(row => {
-                    // 仅进行CSV格式转义，完全保留原始内容（包括空格）
-                    const cleanedRow = row.map(cell => {
-                        let value = (cell || '').toString();
-                        // 如果包含逗号或引号，需要用引号包围（CSV标准格式要求）
+                    // {{ t('csv____________________const_cleanedr') }}ow = row.map(cell => {
+                        let value = (cell || '').{{ t('tostring_________________________csv') }}标准格式要求）
                         if (value.includes(',') || value.includes('"')) {
                             value = '"' + value.replace(/"/g, '""') + '"';
                         }
@@ -646,7 +628,7 @@
                 };
                 
             } catch (error) {
-                console.error('PDF转换失败:', error);
+                console.error('{{ t('pdf_2') }}:', error);
                 return {
                     success: false,
                     error: error.message
@@ -656,35 +638,28 @@
         
         async function loadFiles() {
             try {
-                // 使用统一文件API（已按created_at DESC排序）
-                const response = await fetch('/api/proxy/unified-files/recent?limit=50');
+                // {{ t('apicreated_at_desc________________const_respons') }}e = await fetch('/api/proxy/unified-files/recent?limit=50');
                 const data = await response.json();
                 
                 if (!data.success) {
-                    throw new Error(data.message || '加载失败');
+                    const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+                    throw new Error(data.message || t('load_failed', '加载失败'));
                 }
                 
-                const files = data.files || [];
-                
-                // 更新统计
+                {{ t('const_files__datafiles____________________________') }}     // 更新统计
                 document.getElementById('statements-count').textContent = files.filter(f => f.module === 'bank').length;
-                document.getElementById('reports-count').textContent = files.filter(f => f.module !== 'bank').length;
-                
-                // 计算总大小
+                document.getElementById('reports-count').textContent = files.filter(f => f.module !== 'bank').{{ t('length_________________________________') }}
                 const totalSizeMB = files.reduce((sum, f) => sum + (f.file_size_kb || 0), 0) / 1024;
                 document.getElementById('total-size').textContent = totalSizeMB.toFixed(2) + ' MB';
                 
-                // 显示文件列表
-                const filesList = document.getElementById('files-list');
+                // {{ t('________________const_fileslist__documentgetelemen') }}ById('files-list');
                 
                 if (files.length === 0) {
-                    filesList.innerHTML = `<div class="empty">${window.i18n.no_files_yet}<br/><small>${window.i18n.upload_first_file}</small></div>`;
+                    filesList.innerHTML = `<div class="empty">{{ t('windowi18nno_files_yet') }}<br/><small>{{ t('windowi18nupload_first_file') }}</small></div>`;
                     return;
                 }
                 
-                // 计算"新文件"阈值（5分钟内上传的文件）
-                const now = new Date();
-                const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+                // 计算"新文件"{{ t('5________________const_now__new_date______') }}          const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
                 
                 // 读取URL参数highlight，用于高亮本次上传的文件
                 const urlParams = new URLSearchParams(window.location.search);
@@ -695,29 +670,25 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>${window.i18n.module}</th>
-                                    <th>${window.i18n.file_name}</th>
-                                    <th>${window.i18n.status_validation}</th>
-                                    <th>${window.i18n.next_action}</th>
-                                    <th>${window.i18n.file_size_kb}</th>
-                                    <th>${window.i18n.upload_time}</th>
-                                    <th>${window.i18n.operations}</th>
+                                    <th>{{ t('windowi18nmodule') }}</th>
+                                    <th>{{ t('windowi18nfile_name') }}</th>
+                                    <th>{{ t('windowi18nstatus_validation') }}</th>
+                                    <th>{{ t('windowi18nnext_action') }}</th>
+                                    <th>{{ t('windowi18nfile_size_kb') }}</th>
+                                    <th>{{ t('windowi18nupload_time') }}</th>
+                                    <th>{{ t('windowi18noperations') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                 `;
                 
                 files.forEach(file => {
-                    // 判断是否为新文件
-                    const uploadedAt = new Date(file.uploaded_at);
-                    const isNew = uploadedAt > fiveMinutesAgo;
-                    
-                    // 判断是否需要高亮（优先高亮highlight参数指定的文件）
+                    // {{ t('____________________const_uploadedat__new_datefil') }}e.uploaded_at);
+                    const isNew = uploadedAt > {{ t('fiveminutesago_____________________________________1') }}判断是否需要高亮（优先高亮highlight参数指定的文件）
                     const isHighlighted = highlightFileId && String(file.file_id) === String(highlightFileId);
                     const rowClass = isHighlighted ? 'highlighted-file-row' : (isNew ? 'new-file-row' : '');
                     
-                    // 状态标签
-                    const status = file.status || 'active';
+                    // {{ t('____________________const_status__filestatus') }} || 'active';
                     const statusClass = `status-${status}`;
                     const statusText = {
                         'uploaded': window.i18n.status_uploaded,
@@ -728,17 +699,13 @@
                         'processing': window.i18n.status_processing,
                         'failed': window.i18n.status_failed,
                         'archived': window.i18n.status_archived
-                    }[status] || status;
-                    
-                    // 验证状态
+                    }[{{ t('status__status____________________________________') }}// 验证状态
                     const validationStatus = file.validation_status || 'pending';
                     const validationBadge = {
                         'passed': window.i18n.validation_passed,
                         'failed': window.i18n.validation_failed,
                         'pending': window.i18n.validation_pending
-                    }[validationStatus] || validationStatus;
-                    
-                    // 模块名称（无图标）
+                    }[{{ t('validationstatus__validationstatus________________') }}                    // 模块名称（无图标）
                     const moduleName = {
                         'bank': window.i18n.module_bank,
                         'credit-card': window.i18n.module_credit_card,
@@ -746,26 +713,18 @@
                         'supplier': window.i18n.module_supplier,
                         'reports': window.i18n.module_reports,
                         'management': window.i18n.module_management
-                    }[file.module] || file.module;
+                    }[{{ t('filemodule__filemodule____________________________') }}          // 新文件标记
+                    const newBadge = isNew ? '<span style="color: #FF007F; font-weight: bold; margin-left: 8px;">{{ t('new') }}</span>{{ t('__________________________________________________') }}<span style="color: #ff6600; font-weight: bold; margin-left: 8px;">{{ t('__windowi18ncurrent_lang__zh____duplicate__') }}</span>' : '';
                     
-                    // 新文件标记
-                    const newBadge = isNew ? '<span style="color: #FF007F; font-weight: bold; margin-left: 8px;">NEW</span>' : '';
+                    // {{ t('____________________const_statusreason__filestatus') }}ason || '无说明';
                     
-                    // 重复警告标记
-                    const duplicateWarning = file.duplicate_warning ? 
-                        '<span style="color: #ff6600; font-weight: bold; margin-left: 8px;">' + (window.i18n.current_lang === 'zh' ? '本月有多份' : 'Duplicate') + '</span>' : '';
-                    
-                    // 状态说明
-                    const statusReason = file.status_reason || '无说明';
-                    
-                    // Phase 1-10: 下一步动作按钮（基于7状态机映射）
+                    // {{ t('phase_110_7') }}）
                     let nextActionsHtml = '';
                     const fileStatus = file.status || 'active';
                     const nextActions = window.STATUS_NEXT_ACTIONS[fileStatus] || ["download_original"];
                     
                     if (nextActions.length > 0) {
-                        // 只显示前2个最重要的动作
-                        const topActions = nextActions.slice(0, 2);
+                        // {{ t('2________________________const_topactions__next') }}Actions.slice(0, 2);
                         topActions.forEach((actionKey, index) => {
                             const buttonColor = index === 0 ? '#FF007F' : '#322446';
                             const label = window.ACTION_LABELS[actionKey] || actionKey;
@@ -774,7 +733,7 @@
                                     onclick="viewFileDetail(${file.file_id})"
                                     class="btn btn-small"
                                     style="background: ${buttonColor}; color: #FFFFFF; margin: 2px; font-size: 0.8rem; font-weight: bold;"
-                                    title="${label}"
+                                    title="{{ t('label') }}"
                                 >
                                     ${label}
                                 </button>
@@ -786,94 +745,31 @@
                     
                     html += `
                         <tr class="${rowClass}" data-file-id="${file.file_id}" style="${file.duplicate_warning ? 'background: rgba(255, 102, 0, 0.1);' : ''}">
-                            <td style="color: #FFFFFF;">${moduleName}</td>
-                            <td style="color: #FFFFFF;">${file.file_name}${newBadge}${duplicateWarning}</td>
+                            <td style="color: #FFFFFF;">{{ t('modulename') }}</td>
+                            <td style="color: #FFFFFF;">{{ t('filefile_namenewbadgeduplicatewarning') }}</td>
                             <td style="color: #FFFFFF;">
-                                <span class="status-badge ${statusClass}">${statusText}</span>
-                                <span class="status-badge" style="background: #322446; color: #FFFFFF;">${validationBadge}</span>
+                                <span class="status-badge ${statusClass}">{{ t('statustext') }}</span>
+                                <span class="status-badge" style="background: #322446; color: #FFFFFF;">{{ t('validationbadge') }}</span>
                             </td>
-                            <td>${nextActionsHtml}</td>
-                            <td style="color: #FFFFFF;">${(file.file_size_kb || 0).toFixed(2)}</td>
-                            <td style="color: #FFFFFF;">${new Date(file.uploaded_at).toLocaleString('zh-CN')}</td>
+                            <td>{{ t('nextactionshtml') }}</td>
+                            <td style="color: #FFFFFF;">{{ t('filefile_size_kb__0tofixed2') }}</td>
+                            <td style="color: #FFFFFF;">{{ t('new_datefileuploaded_attolocalestringzhcn') }}</td>
                             <td>
-                                <button onclick="viewFileDetail(${file.file_id})" class="btn btn-primary btn-small">详情</button>
+                                <button onclick="viewFileDetail(${file.file_id})" class="btn btn-primary btn-small">{{ t('auto_text_76') }}</button>
                             </td>
                         </tr>
                     `;
                 });
                 
-                html += '</tbody></table></div>';
-                filesList.innerHTML = html;
-                
-            } catch (error) {
-                console.error(window.i18n.load_failed + ':', error);
-                document.getElementById('files-list').innerHTML = 
-                    `<div class="empty">${window.i18n.load_failed}: ${error.message}</div>`;
-            }
-        }
-        
-        function downloadFile(filePath, companyId) {
-            // 使用query参数传递file_path和正确的company_id
-            const url = `/api/proxy/files/download?company_id=${companyId}&file_path=${encodeURIComponent(filePath)}`;
-            window.location.href = url;
-        }
-        
-        async function deleteFile(filePath, filename, companyId) {
-            if (!confirm(window.i18n.confirm_delete)) {
-                return;
-            }
-            
-            try {
-                const url = `/api/proxy/files/delete?company_id=${companyId}&file_path=${encodeURIComponent(filePath)}`;
-                const response = await fetch(url, {
-                    method: 'DELETE'
-                });
-                const data = await response.json();
-                
-                if (data.success) {
-                    if (window.Toast) {
-                        Toast.success('文件已删除');
-                    } else {
-                        alert('文件已删除');
-                    }
-                    refreshFiles();
-                } else {
-                    if (window.Toast) {
-                        Toast.error('删除失败');
-                    } else {
-                        alert('删除失败');
-                    }
-                }
-            } catch (error) {
-                if (window.Toast) {
-                    Toast.error('删除失败: ' + error.message);
-                } else {
-                    alert('删除失败: ' + error.message);
-                }
-            }
-        }
-        
-        function refreshFiles() {
-            document.getElementById('files-list').innerHTML = '<div class="loading">正在刷新...</div>';
-            loadFiles();
-        }
-        
-        // 查看文件详情
-        async function viewFileDetail(fileId) {
-            const modal = document.getElementById('fileModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalBody = document.getElementById('modalBody');
-            
-            modal.style.display = 'block';
-            modalTitle.textContent = `文件详情 #${fileId}`;
-            modalBody.innerHTML = '<div class="loading">正在加载文件详情...</div>';
+                html += '</tbody></table></div>{{ t('________________fileslistinnerhtml__html__________') }}<div class="empty">{{ t('windowi18nload_failed_errormessage') }}</div>{{ t('____________________________________function_downl') }}<div class="loading">{{ t('auto_text_80') }}</div>{{ t('____________loadfiles_____________________________') }}<div class="loading">{{ t('auto_text_82') }}</div>';
             
             try {
                 const response = await fetch(`/api/proxy/unified-files/detail/${fileId}`);
                 const data = await response.json();
                 
                 if (data.status !== 'found') {
-                    throw new Error(data.message || '文件不存在');
+                    const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+                    throw new Error(data.message || t('file_not_exist', '文件不存在'));
                 }
                 
                 const file = data.file;
@@ -883,252 +779,50 @@
                             ${file.file_name}
                         </h3>
                         <div style="display: grid; grid-template-columns: 150px 1fr; gap: 10px;">
-                            <div style="color: #999;">文件ID:</div>
-                            <div>${file.file_id}</div>
+                            <div style="color: #999;">{{ t('id_1') }}</div>
+                            <div>{{ t('filefile_id') }}</div>
                             
-                            <div style="color: #999;">模块:</div>
-                            <div>${file.module}</div>
+                            <div style="color: #999;">{{ t('auto_text_85') }}</div>
+                            <div>{{ t('filemodule') }}</div>
                             
-                            <div style="color: #999;">状态:</div>
+                            <div style="color: #999;">{{ t('auto_text_86') }}</div>
                             <div>
-                                <span class="status-badge status-${file.file_status}">${file.file_status}</span>
-                                <span class="status-badge" style="background: #322446;">${file.validation_status || 'pending'}</span>
+                                <span class="status-badge status-${file.file_status}">{{ t('filefile_status') }}</span>
+                                <span class="status-badge" style="background: #322446;">{{ t('filevalidation_status__pending') }}</span>
                             </div>
                             
-                            <div style="color: #999;">文件路径:</div>
-                            <div style="word-break: break-all;">${file.storage_path}</div>
+                            <div style="color: #999;">{{ t('auto_text_87') }}</div>
+                            <div style="word-break: break-all;">{{ t('filestorage_path') }}</div>
                             
-                            <div style="color: #999;">文件大小:</div>
-                            <div>${(file.file_size_kb || 0).toFixed(2)} KB</div>
+                            <div style="color: #999;">{{ t('auto_text_88') }}</div>
+                            <div>{{ t('filefile_size_kb__0tofixed2_kb') }}</div>
                             
-                            <div style="color: #999;">上传者:</div>
-                            <div>${file.uploaded_by}</div>
+                            <div style="color: #999;">{{ t('auto_text_89') }}</div>
+                            <div>{{ t('fileuploaded_by') }}</div>
                             
-                            <div style="color: #999;">上传时间:</div>
-                            <div>${new Date(file.uploaded_at).toLocaleString('zh-CN')}</div>
+                            <div style="color: #999;">{{ t('auto_text_90') }}</div>
+                            <div>{{ t('new_datefileuploaded_attolocalestringzhcn') }}</div>
                             
-                            <div style="color: #999;">来源引擎:</div>
-                            <div>${file.from_engine === 'flask' ? 'Flask' : 'FastAPI'}</div>
+                            <div style="color: #999;">{{ t('auto_text_91') }}</div>
+                            <div>{{ t('filefrom_engine__flask__flask__fastapi') }}</div>
                         </div>
                         
                         <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #322446;">
-                            <button onclick="closeModal()" class="btn btn-primary">关闭</button>
+                            <button onclick="closeModal()" class="btn btn-primary">{{ t('auto_text_92') }}</button>
                         </div>
                     </div>
                 `;
                 modalBody.innerHTML = html;
                 
             } catch (error) {
-                modalBody.innerHTML = `<div class="empty">加载失败: ${error.message}</div>`;
+                modalBody.innerHTML = `<div class="empty">Error loading file</div>`;
             }
         }
         
-        // 更新文件状态
-        async function updateFileStatus(fileId, currentStatus) {
-            const newStatus = prompt(`当前状态: ${currentStatus}\n\n请输入新状态 (active/processing/failed/archived):`, currentStatus);
-            
-            if (!newStatus || newStatus === currentStatus) {
-                return;
-            }
-            
-            const validStatuses = ['active', 'processing', 'failed', 'archived'];
-            if (!validStatuses.includes(newStatus)) {
-                if (window.Toast) {
-                    Toast.error('无效的状态值！');
-                } else {
-                    alert('无效的状态值！');
-                }
-                return;
-            }
-            
-            const validationStatus = prompt('请输入验证状态 (passed/failed/pending):', 'pending');
-            
-            try {
-                const response = await fetch(`/api/proxy/unified-files/status/${fileId}?status=${newStatus}&validation_status=${validationStatus}`, {
-                    method: 'PATCH'
-                });
-                const data = await response.json();
-                
-                if (data.success) {
-                    if (window.Toast) {
-                        Toast.success('状态更新成功！');
-                    } else {
-                        alert('状态更新成功！');
-                    }
-                    refreshFiles();
-                } else {
-                    throw new Error(data.message || '更新失败');
-                }
-            } catch (error) {
-                if (window.Toast) {
-                    Toast.error('更新失败: ' + error.message);
-                } else {
-                    alert('更新失败: ' + error.message);
-                }
-            }
-        }
-        
-        // 执行下一步动作
-        async function executeAction(endpoint, method) {
-            // 显示确认对话框
-            const confirmMessage = `确定要执行此操作吗？\n端点: ${endpoint}\n方法: ${method}`;
-            if (!confirm(confirmMessage)) {
-                return;
-            }
-            
-            try {
-                // 构建完整URL（通过proxy转发）
-                const url = `/api/proxy${endpoint}`;
-                
-                const options = {
-                    method: method,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                };
-                
-                const response = await fetch(url, options);
-                const data = await response.json();
-                
-                if (data.success || response.ok) {
-                    if (window.Toast) {
-                        Toast.success('操作执行成功！');
-                    } else {
-                        alert('操作执行成功！');
-                    }
-                    // 刷新文件列表
-                    refreshFiles();
-                } else {
-                    throw new Error(data.message || '操作失败');
-                }
-            } catch (error) {
-                if (window.Toast) {
-                    Toast.error('操作失败: ' + error.message);
-                } else {
-                    alert('操作失败: ' + error.message);
-                }
-            }
-        }
-        
-        async function viewFile(filePath, filename, companyId) {
-            const modal = document.getElementById('fileModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalBody = document.getElementById('modalBody');
-            
-            modal.style.display = 'block';
-            modalTitle.textContent = `📄 ${filename}`;
-            modalBody.innerHTML = '<div class="loading">正在加载文件内容...</div>';
-            
-            try {
-                const url = `/api/proxy/files/view?company_id=${companyId}&file_path=${encodeURIComponent(filePath)}`;
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                if (data.format === 'csv') {
-                    // CSV文件：显示表格
-                    let html = `
-                        <div style="color: #0f0; margin-bottom: 1rem;">
-                            📊 CSV数据 | 总行数: ${data.row_count} | 列数: ${data.headers.length}
-                        </div>
-                        <table class="csv-table">
-                            <thead>
-                                <tr>
-                    `;
-                    
-                    // 表头
-                    data.headers.forEach(header => {
-                        html += `<th>${header}</th>`;
-                    });
-                    html += '</tr></thead><tbody>';
-                    
-                    // 数据行
-                    data.rows.forEach((row, idx) => {
-                        html += '<tr>';
-                        data.headers.forEach(header => {
-                            html += `<td>${row[header] || ''}</td>`;
-                        });
-                        html += '</tr>';
-                    });
-                    
-                    html += '</tbody></table>';
-                    modalBody.innerHTML = html;
-                    
-                } else {
-                    // 文本文件：显示原始内容
-                    modalBody.innerHTML = `
-                        <div style="color: #0f0; margin-bottom: 1rem;">
-                            📝 文本内容 | 总行数: ${data.line_count}
-                        </div>
-                        <div class="file-viewer" style="color: #0f0;">
-                            ${data.content.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
-                        </div>
-                    `;
-                }
-                
-            } catch (error) {
-                modalBody.innerHTML = `<div class="empty">加载失败: ${error.message}</div>`;
-            }
-        }
-        
-        function closeModal() {
-            document.getElementById('fileModal').style.display = 'none';
-        }
-        
-        // 点击模态框外部关闭
-        window.onclick = function(event) {
-            const modal = document.getElementById('fileModal');
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        }
-        
-        // 文件上传处理
         async function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+            const uploadFile = event.target.files[0];
+            if (!uploadFile) return;
             
-            // 检查文件类型：支持CSV和PDF
-            const fileName = file.name.toLowerCase();
-            if (!fileName.endsWith('.csv') && !fileName.endsWith('.pdf')) {
-                if (window.Toast) {
-                    Toast.error(window.i18n.upload_csv_pdf_only);
-                } else {
-                    alert(window.i18n.upload_csv_pdf_only);
-                }
-                return;
-            }
-            
-            const filesList = document.getElementById('files-list');
-            let uploadFile = file;
-            
-            // 如果是PDF文件，先转换为CSV（完全保留原始数据）
-            if (fileName.endsWith('.pdf')) {
-                filesList.innerHTML = `<div class="loading">🔄 正在将PDF转换为CSV格式...</div>`;
-                
-                const conversionResult = await convertPDFToCSV(file);
-                
-                if (!conversionResult.success) {
-                    const errorMsg = `PDF转换失败: ${conversionResult.error}。建议：1. 确保PDF是文本格式（非扫描件） 2. 或直接从网银下载CSV格式月结单`;
-                    if (window.Toast) {
-                        Toast.error(errorMsg);
-                    } else {
-                        alert('❌ ' + errorMsg);
-                    }
-                    loadFiles();
-                    event.target.value = '';
-                    return;
-                }
-                
-                // 创建CSV File对象（100%保留原始数据）
-                const csvBlob = new Blob([conversionResult.csvContent], { type: 'text/csv' });
-                uploadFile = new File([csvBlob], fileName.replace('.pdf', '.csv'), { type: 'text/csv' });
-                
-                filesList.innerHTML = `<div class="loading">✅ PDF已转换为CSV (${conversionResult.rowCount}行)\n📤 正在智能分析并上传...</div>`;
-            } else {
-                filesList.innerHTML = `<div class="loading">📤 正在智能分析CSV文件并上传...</div>`;
-            }
-            
-            // 统一上传流程（CSV和PDF转换后的CSV使用相同验证机制）
             const formData = new FormData();
             formData.append('file', uploadFile);
             
@@ -1139,18 +833,14 @@
                 });
                 
                 const result = await response.json();
-                
-                // Phase 1-10: 统一跳转策略 - 无论成功/失败都跳转到detail页
-                // 只要有raw_document_id就跳转（文件已封存到vault）
                 const fileId = result.raw_document_id || result.file_id;
                 if (fileId) {
-                    // 成功/失败/duplicate都跳转到详情页，由详情页根据status显示对应按钮
                     window.location.href = `/files/detail/${fileId}?highlight=${fileId}`;
                     return;
                 }
                 
-                // 仅当完全没有raw_document_id时（极早期验证失败），才显示Toast并留在列表页
-                const errorMessage = result.status_reason || result.message || result.error || '上传失败';
+                const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+                const errorMessage = result.status_reason || result.message || result.error || t('upload_failed', '上传失败');
                 if (window.Toast) {
                     Toast.error(errorMessage);
                 } else {
@@ -1159,22 +849,19 @@
                 loadFiles();
                 
             } catch (error) {
+                const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
                 if (window.Toast) {
-                    Toast.error(`上传失败: ${error.message}`);
+                    Toast.error(`${t('upload_failed', '上传失败')}: ${error.message}`);
                 } else {
-                    alert(`❌ 上传失败: ${error.message}`);
+                    alert(`❌ ${t('upload_failed', '上传失败')}: ${error.message}`);
                 }
                 loadFiles();
             }
             
-            // 清空文件输入
             event.target.value = '';
         }
         
-        // 页面加载时获取文件列表
-        loadFiles();
-        
-        // 解析URL参数并高亮指定文件
+        // {{ t('________loadfiles_________________url') }}并高亮指定文件
         setTimeout(() => {
             const params = new URLSearchParams(window.location.search);
             const highlightId = params.get('highlight');
@@ -1184,8 +871,7 @@
                     const id = row.getAttribute('data-file-id');
                     if (String(id) === String(highlightId)) {
                         row.classList.add('highlighted-file-row');
-                        // 滚动到该行
-                        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // {{ t('________________________rowscrollintoview') }}({ behavior: 'smooth', block: 'center' });
                     }
                 });
             }

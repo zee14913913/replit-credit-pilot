@@ -54,34 +54,6 @@
                                placeholder="{{ t('eg_income') }}">
                     </div>
 
-                    <!-- GZ Transfer Matching Accounts Section -->
-                    <div class="mb-4 p-3" style="background: rgba(50,36,70,0.3); border-left: 4px solid #FF007F; border-radius: 8px;">
-                        <h6 style="color: #FF007F; font-weight: 700; margin-bottom: 1rem;">
-                            <i class="bi bi-bank"></i> {{ t('gz_transfer_matching') }}
-                        </h6>
-                        <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 1.5rem;">
-                            <i class="bi bi-info-circle"></i> {{ t('receiving_account_purpose') }}
-                        </p>
-
-                        <div class="mb-3">
-                            <label for="receivingAccount1" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
-                                <i class="bi bi-bank2"></i> {{ t('receiving_account_1') }}
-                            </label>
-                            <input type="text" class="form-control" id="receivingAccount1" name="receiving_account_1"
-                                   style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,0,127,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;"
-                                   placeholder="{{ t('receiving_account_hint') }}">
-                        </div>
-
-                        <div class="mb-0">
-                            <label for="receivingAccount2" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
-                                <i class="bi bi-bank2"></i> {{ t('receiving_account_2') }}
-                            </label>
-                            <input type="text" class="form-control" id="receivingAccount2" name="receiving_account_2"
-                                   style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,0,127,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;"
-                                   placeholder="{{ t('receiving_account_hint') }}">
-                        </div>
-                    </div>
-
                     <div class="alert-professional alert-info-pro mb-4">
                         <i class="bi bi-lightbulb"></i> <strong>{{ t('next_steps') }}:</strong><br>
                         {{ t('after_adding_customer') }}<br>

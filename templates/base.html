@@ -29,12 +29,16 @@
     <!-- Professional Navigation -->
     <nav class="professional-nav">
         <div class="nav-container">
-            <a href="{{ url_for('index') }}" class="nav-brand">
+            <a href="{{ url_for('index') }}" class="nav-brand" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
                 <img src="{{ url_for('static', filename='logo.png') }}" alt="{{ t('company_name') }}" class="nav-logo">
+                <div style="display: flex; flex-direction: column; line-height: 1.2;">
+                    <span style="color: #FFFFFF; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.5px; text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);">{{ t('infinite_gz') }}</span>
+                    <span style="color: #FF007F; font-weight: 700; font-size: 0.75rem; letter-spacing: 1px;">{{ t('sdn_bhd') }}</span>
+                </div>
             </a>
             
             <ul class="nav-menu">
-                <!-- Public Navigation - No Authentication Required -->
+                <!-- Public Navigation - Optimized Order by Business Workflow -->
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if request.endpoint == 'index' }}" href="{{ url_for('index') }}">
                         {{ t('nav_dashboard') }}
@@ -51,20 +55,25 @@
                         {{ t('nav_savings') }}
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ 'active' if 'loan_matcher' in request.endpoint }}" href="{{ url_for('loan_matcher') }}">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ 'active' if 'loan' in request.endpoint }}" href="#" id="loansDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         {{ t('nav_loan_matcher') }}
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ 'active' if 'receipts' in request.endpoint }}" href="{{ url_for('receipts_home') }}">
-                        {{ t('nav_receipts') }}
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ 'active' if 'invoices' in request.endpoint }}" href="{{ url_for('invoices_home') }}">
-                        {{ t('nav_invoices') }}
-                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="loansDropdown" style="background: #1a1a1a; border: 2px solid #FF007F;">
+                        <li><a class="dropdown-item" href="{{ url_for('loan_modern_evaluate') }}" style="color: #FFFFFF;">
+                            <i class="bi bi-graph-up-arrow me-2" style="color: #FF007F;"></i>{{ t('nav_modern_loan_evaluate') }}
+                        </a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('sme_loan_evaluate') }}" style="color: #FFFFFF;">
+                            <i class="bi bi-building-gear me-2" style="color: #D4AF37;"></i>{{ t('nav_sme_loan_evaluate') }}
+                        </a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('loan_reports') }}" style="color: #FFFFFF;">
+                            <i class="bi bi-file-earmark-pdf me-2" style="color: #FF007F;"></i>{{ t('nav_loan_reports') }}
+                        </a></li>
+                        <li><hr class="dropdown-divider" style="border-color: rgba(255, 0, 127, 0.3);"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('loan_products') }}" style="color: #FFFFFF;">
+                            <i class="bi bi-bank me-2"></i>{{ t('nav_loan_products') }}
+                        </a></li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if 'monthly_summary' in request.endpoint }}" href="{{ url_for('monthly_summary_index') }}">
@@ -72,56 +81,47 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ 'active' if request.endpoint == 'reminders' }}" href="{{ url_for('reminders') }}">
-                        {{ t('nav_reminders') }}
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link {{ 'active' if request.endpoint == 'admin_dashboard' }}" href="{{ url_for('admin_dashboard') }}">
                         {{ t('nav_admin') }}
                     </a>
                 </li>
-                
-                <!-- Universal Items -->
-                <li class="nav-item">
-                    <div class="notification-bell-container" style="position: relative; display: inline-block;">
-                        <button class="theme-toggle-btn" id="notificationBell" onclick="toggleNotifications()" title="通知中心">
-                            <i class="bi bi-bell-fill"></i>
-                            <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
-                        </button>
-                        <div class="notification-dropdown" id="notificationDropdown" style="display: none;">
-                            <div class="notification-header">
-                                <h6>通知中心</h6>
-                                <button class="btn btn-sm btn-link" onclick="markAllAsRead()">全部已读</button>
-                            </div>
-                            <div class="notification-list" id="notificationList">
-                                <div class="text-center text-muted p-3">
-                                    <i class="bi bi-inbox"></i><br>
-                                    暂无通知
-                                </div>
+            </ul>
+            
+            <!-- Right side utilities -->
+            <div class="nav-utilities">
+                <div class="notification-bell-container" style="position: relative; display: inline-block;">
+                    <button class="theme-toggle-btn" id="notificationBell" onclick="toggleNotifications()" title="{{ t('notification_center') }}">
+                        <i class="bi bi-bell-fill"></i>
+                        <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+                    </button>
+                    <div class="notification-dropdown" id="notificationDropdown" style="display: none;">
+                        <div class="notification-header">
+                            <h6 data-i18n="{{ t('notification_center_1') }}">{{ t('notification_center') }}</h6>
+                            <button class="btn btn-sm btn-link" onclick="markAllAsRead()" data-i18n="{{ t('mark_all_read_1') }}">{{ t('mark_all_read') }}</button>
+                        </div>
+                        <div class="notification-list" id="notificationList">
+                            <div class="text-center text-muted p-3">
+                                <i class="bi bi-inbox"></i><br>
+                                <span data-i18n="{{ t('no_notifications_1') }}">{{ t('no_notifications') }}</span>
                             </div>
                         </div>
                     </div>
-                </li>
-                <li class="nav-item">
-                    <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Theme">
-                        <i id="theme-icon-sun" class="bi bi-sun-fill" style="display: inline-block;"></i>
-                        <i id="theme-icon-moon" class="bi bi-moon-fill" style="display: none;"></i>
+                </div>
+                <button class="theme-toggle-btn" onclick="toggleTheme()" title="{{ t('toggle_theme') }}">
+                    <i id="theme-icon-sun" class="bi bi-sun-fill" style="display: inline-block;"></i>
+                    <i id="theme-icon-moon" class="bi bi-moon-fill" style="display: none;"></i>
+                </button>
+                <div class="language-switcher">
+                    <button class="lang-btn {{ 'active' if current_lang == 'en' }}" 
+                            onclick="window.location.href='{{ url_for('set_language', lang='en') }}'">
+                        EN
                     </button>
-                </li>
-                <li class="nav-item">
-                    <div class="language-switcher">
-                        <button class="lang-btn {{ 'active' if current_lang == 'en' }}" 
-                                onclick="window.location.href='{{ url_for('set_language', lang='en') }}'">
-                            EN
-                        </button>
-                        <button class="lang-btn {{ 'active' if current_lang == 'zh' }}" 
-                                onclick="window.location.href='{{ url_for('set_language', lang='zh') }}'">
-                            中文
-                        </button>
-                    </div>
-                </li>
-            </ul>
+                    <button class="lang-btn {{ 'active' if current_lang == 'zh' }}" 
+                            onclick="window.location.href='{{ url_for('set_language', lang='zh') }}'">
+                        中文
+                    </button>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -190,173 +190,145 @@
         </div>
     </footer>
 
-    <!-- User Guide Modal / 用户使用指南弹窗 -->
+    <!-- {{ t('user_guide_modal__') }} -->
     <div class="modal fade" id="userGuideModal" tabindex="-1" aria-labelledby="userGuideModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(30, 30, 30, 0.95)); border: 2px solid rgba(229, 228, 226, 0.3);">
                 <div class="modal-header" style="border-bottom: 1px solid rgba(229, 228, 226, 0.2);">
                     <h5 class="modal-title galaxy-gradient-text" id="userGuideModalLabel">
-                        <i class="bi bi-info-circle-fill me-2"></i>Welcome to Smart Credit & Loan Manager / 欢迎使用智能信贷与贷款管理系统
+                        <i class="bi bi-info-circle-fill me-2"></i><span data-i18n="{{ t('guide_modal_title_1') }}">{{ t('guide_modal_title') }}</span>
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" style="color: #e8e6e3;">
                     <div class="mb-4">
                         <h6 class="text-silver-pearl mb-3">
-                            <i class="bi bi-rocket-takeoff me-2"></i>Quick Start Guide / 快速开始指南
+                            <i class="bi bi-rocket-takeoff me-2"></i><span data-i18n="{{ t('guide_quick_start_1') }}">{{ t('guide_quick_start') }}</span>
                         </h6>
                         
-                        <!-- Admin Features / 管理员功能 -->
+                        <!-- Admin Features -->
                         <div class="guide-section mb-4">
                             <h6 class="text-golden">
-                                <i class="bi bi-shield-check me-2"></i>Admin Features / 管理员功能
+                                <i class="bi bi-shield-check me-2"></i><span data-i18n="{{ t('guide_admin_features_1') }}">{{ t('guide_admin_features') }}</span>
                             </h6>
-                            <ol class="guide-list bilingual-list">
+                            <ol class="guide-list">
                                 <li>
-                                    <strong>Login System / 登录系统:</strong>
-                                    <div class="en">Click "Admin" in top right → Use admin email and password</div>
-                                    <div class="cn">点击右上角"Admin" → 使用管理员邮箱和密码登录</div>
+                                    <strong data-i18n="{{ t('guide_login_system_1') }}">{{ t('guide_login_system') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_login_desc_1') }}">{{ t('guide_login_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong>Upload Credit Card Statements / 上传信用卡账单:</strong>
-                                    <div class="en">Navigation bar → "CC Ledger" → Click "Show Upload Form" → Select card → Upload PDF (15 Malaysian banks supported)</div>
-                                    <div class="cn">导航栏点击"CC Ledger" → 点击"显示上传表单" → 选择信用卡 → 上传PDF账单（支持15家马来西亚银行）</div>
+                                    <strong data-i18n="{{ t('guide_upload_cc_1') }}">{{ t('guide_upload_cc') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_upload_cc_desc_1') }}">{{ t('guide_upload_cc_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong>Upload Savings Statements / 上传储蓄账单:</strong>
-                                    <div class="en">Click "Savings" → Upload savings account statements (7 banks supported)</div>
-                                    <div class="cn">点击"Savings" → 上传储蓄账户账单（支持7家银行）</div>
+                                    <strong data-i18n="{{ t('guide_upload_savings_1') }}">{{ t('guide_upload_savings') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_upload_savings_desc_1') }}">{{ t('guide_upload_savings_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong>Customer Management / 客户管理:</strong>
-                                    <div class="en">Admin Dashboard → View all customers, credit cards, and transaction data</div>
-                                    <div class="cn">Admin Dashboard → 查看所有客户、信用卡和交易数据</div>
+                                    <strong data-i18n="{{ t('guide_customer_mgmt_1') }}">{{ t('guide_customer_mgmt') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_customer_mgmt_desc_1') }}">{{ t('guide_customer_mgmt_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong>Generate Monthly Reports / 生成月度报表:</strong>
-                                    <div class="en">Customer details page → Click "Generate Monthly Report"</div>
-                                    <div class="cn">客户详情页 → 点击"生成月度报表"</div>
+                                    <strong data-i18n="{{ t('guide_generate_reports_1') }}">{{ t('guide_generate_reports') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_generate_reports_desc_1') }}">{{ t('guide_generate_reports_desc') }}</div>
                                 </li>
                             </ol>
                         </div>
                         
-                        <!-- Core Features / 核心功能 -->
+                        <!-- Core Features -->
                         <div class="guide-section mb-4">
                             <h6 class="text-golden">
-                                <i class="bi bi-stars me-2"></i>7 Core Features / 7大核心功能
+                                <i class="bi bi-stars me-2"></i><span data-i18n="{{ t('guide_core_features_1') }}">{{ t('guide_core_features') }}</span>
                             </h6>
                             <div class="feature-grid">
                                 <div class="feature-item">
                                     <i class="bi bi-credit-card text-silver-pearl"></i>
-                                    <strong>Credit Card Tracking</strong>
-                                    <strong class="cn-text">信用卡追踪</strong>
-                                    <small>Auto-parse statements & categorize</small>
-                                    <small class="cn-text">自动解析账单、分类交易</small>
+                                    <strong data-i18n="{{ t('guide_cc_tracking_1') }}">{{ t('guide_cc_tracking') }}</strong>
+                                    <small data-i18n="{{ t('guide_cc_tracking_desc_1') }}">{{ t('guide_cc_tracking_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-piggy-bank text-silver-pearl"></i>
-                                    <strong>Savings Account</strong>
-                                    <strong class="cn-text">储蓄账户管理</strong>
-                                    <small>Track deposits & prepayments</small>
-                                    <small class="cn-text">追踪存款、提前还款查询</small>
+                                    <strong data-i18n="{{ t('guide_savings_account_1') }}">{{ t('guide_savings_account') }}</strong>
+                                    <small data-i18n="{{ t('guide_savings_account_desc_1') }}">{{ t('guide_savings_account_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-receipt text-silver-pearl"></i>
-                                    <strong>Receipt Management</strong>
-                                    <strong class="cn-text">收据管理</strong>
-                                    <small>OCR & auto-matching</small>
-                                    <small class="cn-text">OCR识别、自动匹配交易</small>
+                                    <strong data-i18n="{{ t('guide_receipt_mgmt_1') }}">{{ t('guide_receipt_mgmt') }}</strong>
+                                    <small data-i18n="{{ t('guide_receipt_mgmt_desc_1') }}">{{ t('guide_receipt_mgmt_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-calculator text-silver-pearl"></i>
-                                    <strong>Smart Loan Matcher</strong>
-                                    <strong class="cn-text">智能贷款匹配</strong>
-                                    <small>CTOS analysis & DSR calculation</small>
-                                    <small class="cn-text">CTOS分析、DSR计算</small>
+                                    <strong data-i18n="{{ t('guide_loan_matcher_1') }}">{{ t('guide_loan_matcher') }}</strong>
+                                    <small data-i18n="{{ t('guide_loan_matcher_desc_1') }}">{{ t('guide_loan_matcher_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-graph-up text-silver-pearl"></i>
-                                    <strong>AI Advanced Analytics</strong>
-                                    <strong class="cn-text">AI高级分析</strong>
-                                    <small>Health scoring & recommendations</small>
-                                    <small class="cn-text">财务健康评分、智能建议</small>
+                                    <strong data-i18n="{{ t('guide_ai_analytics_1') }}">{{ t('guide_ai_analytics') }}</strong>
+                                    <small data-i18n="{{ t('guide_ai_analytics_desc_1') }}">{{ t('guide_ai_analytics_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-file-earmark-text text-silver-pearl"></i>
-                                    <strong>Automated Reports</strong>
-                                    <strong class="cn-text">自动月报</strong>
-                                    <small>Auto-generate monthly PDFs</small>
-                                    <small class="cn-text">每月自动生成PDF报告</small>
+                                    <strong data-i18n="{{ t('guide_auto_reports_1') }}">{{ t('guide_auto_reports') }}</strong>
+                                    <small data-i18n="{{ t('guide_auto_reports_desc_1') }}">{{ t('guide_auto_reports_desc') }}</small>
                                 </div>
                                 <div class="feature-item">
                                     <i class="bi bi-bell text-silver-pearl"></i>
-                                    <strong>Payment Reminders</strong>
-                                    <strong class="cn-text">付款提醒</strong>
-                                    <small>Email & SMS notifications</small>
-                                    <small class="cn-text">邮件/短信提醒</small>
+                                    <strong data-i18n="{{ t('guide_payment_reminders_1') }}">{{ t('guide_payment_reminders') }}</strong>
+                                    <small data-i18n="{{ t('guide_payment_reminders_desc_1') }}">{{ t('guide_payment_reminders_desc') }}</small>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Customer Features / 客户端功能 -->
+                        <!-- Customer Features -->
                         <div class="guide-section mb-4">
                             <h6 class="text-golden">
-                                <i class="bi bi-person-circle me-2"></i>Customer Features / 客户端功能
+                                <i class="bi bi-person-circle me-2"></i><span data-i18n="{{ t('guide_customer_features_1') }}">{{ t('guide_customer_features') }}</span>
                             </h6>
-                            <ol class="guide-list bilingual-list">
+                            <ol class="guide-list">
                                 <li>
-                                    <strong>Customer Login / 客户登录:</strong>
-                                    <div class="en">Click "Login" → Use customer email provided by admin</div>
-                                    <div class="cn">点击"Login" → 使用管理员提供的客户邮箱登录</div>
+                                    <strong data-i18n="{{ t('guide_customer_login_1') }}">{{ t('guide_customer_login') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_customer_login_desc_1') }}">{{ t('guide_customer_login_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong>View Statements / 查看账单:</strong>
-                                    <div class="en">Customer Portal → View all credit cards and transaction records</div>
-                                    <div class="cn">客户Portal → 查看所有信用卡和交易记录</div>
+                                    <strong data-i18n="{{ t('guide_view_statements_1') }}">{{ t('guide_view_statements') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_view_statements_desc_1') }}">{{ t('guide_view_statements_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong>View Reports / 查看月报:</strong>
-                                    <div class="en">Customer Dashboard → Download PDF monthly reports</div>
-                                    <div class="cn">客户Dashboard → 下载PDF月度报告</div>
+                                    <strong data-i18n="{{ t('guide_view_reports_1') }}">{{ t('guide_view_reports') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_view_reports_desc_1') }}">{{ t('guide_view_reports_desc') }}</div>
                                 </li>
                                 <li>
-                                    <strong>Apply for Loans / 申请贷款:</strong>
-                                    <div class="en">Click "Loan Matcher" → Upload CTOS report to view matched products</div>
-                                    <div class="cn">点击"Loan Matcher" → 上传CTOS报告查看匹配产品</div>
+                                    <strong data-i18n="{{ t('guide_apply_loans_1') }}">{{ t('guide_apply_loans') }}:</strong>
+                                    <div style="padding-left: 1rem; margin-top: 0.3rem;" data-i18n="{{ t('guide_apply_loans_desc_1') }}">{{ t('guide_apply_loans_desc') }}</div>
                                 </li>
                             </ol>
                         </div>
                         
-                        <!-- Tips & Tricks / 技巧与提示 -->
+                        <!-- Tips & Tricks -->
                         <div class="guide-section">
                             <h6 class="text-golden">
-                                <i class="bi bi-lightbulb me-2"></i>Tips & Tricks / 使用技巧
+                                <i class="bi bi-lightbulb me-2"></i><span data-i18n="{{ t('guide_tips_1') }}">{{ t('guide_tips') }}</span>
                             </h6>
-                            <ul class="guide-list bilingual-list">
+                            <ul class="guide-list">
                                 <li>
                                     <i class="bi bi-check-circle text-success me-2"></i>
-                                    <span class="en">Batch upload multiple statement files</span>
-                                    <span class="cn">支持批量上传多个账单文件</span>
+                                    <span data-i18n="{{ t('guide_tip_batch_1') }}">{{ t('guide_tip_batch') }}</span>
                                 </li>
                                 <li>
                                     <i class="bi bi-check-circle text-success me-2"></i>
-                                    <span class="en">Auto-organize files by month</span>
-                                    <span class="cn">系统会自动按月份组织文件</span>
+                                    <span data-i18n="{{ t('guide_tip_organize_1') }}">{{ t('guide_tip_organize') }}</span>
                                 </li>
                                 <li>
                                     <i class="bi bi-check-circle text-success me-2"></i>
-                                    <span class="en">12-month timeline visualization</span>
-                                    <span class="cn">12个月时间轴可视化账单覆盖情况</span>
+                                    <span data-i18n="{{ t('guide_tip_timeline_1') }}">{{ t('guide_tip_timeline') }}</span>
                                 </li>
                                 <li>
                                     <i class="bi bi-check-circle text-success me-2"></i>
-                                    <span class="en">Auto-match receipts to transactions</span>
-                                    <span class="cn">收据自动匹配到对应的信用卡交易</span>
+                                    <span data-i18n="{{ t('guide_tip_match_1') }}">{{ t('guide_tip_match') }}</span>
                                 </li>
                                 <li>
                                     <i class="bi bi-check-circle text-success me-2"></i>
-                                    <span class="en">100% data accuracy guaranteed</span>
-                                    <span class="cn">所有数据保证100%准确性验证</span>
+                                    <span data-i18n="{{ t('guide_tip_accuracy_1') }}">{{ t('guide_tip_accuracy') }}</span>
                                 </li>
                             </ul>
                         </div>
@@ -364,19 +336,17 @@
                     
                     <div class="alert" style="background: rgba(229, 228, 226, 0.1); border: 1px solid rgba(229, 228, 226, 0.3); color: #e8e6e3;">
                         <i class="bi bi-info-circle me-2"></i>
-                        <strong>Need Help? / 需要帮助？</strong> 
-                        <span class="en">Contact system administrator or consult documentation.</span>
-                        <span class="cn">如有任何问题，请联系系统管理员或查看详细文档。</span>
+                        <strong data-i18n="{{ t('guide_need_help_1') }}">{{ t('guide_need_help') }}</strong> 
+                        <span data-i18n="{{ t('guide_help_desc_1') }}">{{ t('guide_help_desc') }}</span>
                     </div>
                 </div>
                 <div class="modal-footer" style="border-top: 1px solid rgba(229, 228, 226, 0.2);">
                     <label class="text-silver-pearl me-auto" style="font-size: 0.9rem;">
                         <input type="checkbox" id="dontShowAgain" class="me-2">
-                        <span class="en">Don't show this again</span>
-                        <span class="cn">不再显示此指南</span>
+                        <span data-i18n="{{ t('guide_dont_show_1') }}">{{ t('guide_dont_show') }}</span>
                     </label>
                     <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
-                        <span class="en">Got it</span> / <span class="cn">知道了</span>
+                        <span data-i18n="{{ t('guide_got_it_1') }}">{{ t('guide_got_it') }}</span>
                     </button>
                 </div>
             </div>
@@ -505,19 +475,16 @@
     <!-- 用户指南自动弹出脚本 -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // 检查是否已经看过指南
-        const dontShowAgain = localStorage.getItem('userGuideDontShow');
+        // {{ t('________const_dontshowagain__localstoragegetite') }}m('userGuideDontShow');
         
         if (!dontShowAgain) {
-            // 延迟1秒后显示，给页面加载时间
-            setTimeout(function() {
+            // {{ t('1____________settimeoutfunction') }}() {
                 const guideModal = new bootstrap.Modal(document.getElementById('userGuideModal'));
                 guideModal.show();
             }, 1000);
         }
         
-        // 处理"不再显示"复选框
-        document.getElementById('userGuideModal').addEventListener('hidden.bs.modal', function() {
+        // 处理"不再显示"{{ t('________documentgetelementbyid') }}('userGuideModal').addEventListener('hidden.bs.modal', function() {
             const checkbox = document.getElementById('dontShowAgain');
             if (checkbox.checked) {
                 localStorage.setItem('userGuideDontShow', 'true');
@@ -668,12 +635,11 @@
     <script>
         // Notification System
         let notificationCheckInterval;
+        let isAuthenticated = null;
         const API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:8000`;
         
-        // 页面加载时初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            checkNotifications();
-            startNotificationPolling();
+        // {{ t('________documentaddeventlistener') }}('DOMContentLoaded', function() {
+            {{ t('checknotifications____________startnotificationpol') }};
             
             // 点击外部关闭下拉菜单
             document.addEventListener('click', function(event) {
@@ -685,29 +651,46 @@
             });
         });
         
-        // 开始轮询通知
-        function startNotificationPolling() {
-            notificationCheckInterval = setInterval(checkNotifications, 30000); // 每30秒检查一次
+        // {{ t('________function_startnotificationpolling') }}() {
+            notificationCheckInterval = setInterval(checkNotifications, 30000);
         }
         
-        // 检查未读通知
-        async function checkNotifications() {
+        // {{ t('________function_stopnotificationpolling') }}() {
+            if (notificationCheckInterval) {
+                clearInterval(notificationCheckInterval);
+                notificationCheckInterval = null;
+            }
+        }
+        
+        // {{ t('________async_function_checknotifications') }}() {
+            if (isAuthenticated === false) {
+                return;
+            }
+            
             try {
                 const response = await fetch(`${API_BASE_URL}/api/notifications/unread-count`, {
                     credentials: 'include'
                 });
                 
-                if (!response.ok) return;
+                if (response.status === 401) {
+                    isAuthenticated = false;
+                    stopNotificationPolling();
+                    return;
+                }
                 
+                if (!response.ok) {
+                    return;
+                }
+                
+                isAuthenticated = true;
                 const data = await response.json();
                 updateNotificationBadge(data.unread_count);
             } catch (error) {
-                console.error('Failed to check notifications:', error);
+                // 静默处理网络错误，避免控制台噪音
             }
         }
         
-        // 更新通知角标
-        function updateNotificationBadge(count) {
+        // {{ t('________function_updatenotificationbadgecount') }}) {
             const badge = document.getElementById('notificationBadge');
             if (count > 0) {
                 badge.textContent = count > 99 ? '99+' : count;
@@ -717,8 +700,7 @@
             }
         }
         
-        // 切换通知下拉菜单
-        async function toggleNotifications() {
+        // {{ t('________async_function_togglenotifications') }}() {
             const dropdown = document.getElementById('notificationDropdown');
             const isVisible = dropdown.style.display === 'block';
             
@@ -730,8 +712,7 @@
             }
         }
         
-        // 加载通知列表
-        async function loadNotifications() {
+        // {{ t('________async_function_loadnotifications') }}() {
             try {
                 const response = await fetch(`${API_BASE_URL}/api/notifications/list`, {
                     credentials: 'include'
@@ -739,25 +720,7 @@
                 
                 if (!response.ok) {
                     document.getElementById('notificationList').innerHTML = 
-                        '<div class="text-center text-muted p-3">加载失败</div>';
-                    return;
-                }
-                
-                const notifications = await response.json();
-                displayNotifications(notifications);
-            } catch (error) {
-                console.error('Failed to load notifications:', error);
-                document.getElementById('notificationList').innerHTML = 
-                    '<div class="text-center text-muted p-3">加载失败</div>';
-            }
-        }
-        
-        // 显示通知列表
-        function displayNotifications(notifications) {
-            const listContainer = document.getElementById('notificationList');
-            
-            if (notifications.length === 0) {
-                listContainer.innerHTML = '<div class="text-center text-muted p-3"><i class="bi bi-inbox"></i><br>暂无通知</div>';
+                        '<div class="text-center text-muted p-3">{{ t('auto_text_404') }}</div>{{ t('____________________return_________________________1') }}<div class="text-center text-muted p-3">{{ t('auto_text_404') }}</div>{{ t('_____________________________________________funct') }}<div class="text-center text-muted p-3"><i class="bi bi-inbox"></i><br>{{ t('auto_text_407') }}</div>';
                 return;
             }
             
@@ -771,20 +734,16 @@
             `).join('');
         }
         
-        // 处理通知点击
-        async function handleNotificationClick(notificationId, actionUrl) {
+        // {{ t('________async_function_handlenotificationclicknoti') }}cationId, actionUrl) {
             try {
-                // 标记为已读
-                await fetch(`${API_BASE_URL}/api/notifications/mark-as-read`, {
+                // {{ t('________________await_fetch') }}(`${API_BASE_URL}/api/notifications/mark-as-read`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
                     body: JSON.stringify({ notification_id: notificationId })
                 });
                 
-                // 刷新通知
-                await checkNotifications();
-                
+                // {{ t('________________await_checknotifications__________') }}     
                 // 跳转到相关页面
                 if (actionUrl) {
                     window.location.href = actionUrl;
@@ -794,8 +753,7 @@
             }
         }
         
-        // 全部标记为已读
-        async function markAllAsRead() {
+        // {{ t('________async_function_markallasread') }}() {
             try {
                 await fetch(`${API_BASE_URL}/api/notifications/mark-all-as-read`, {
                     method: 'POST',
@@ -809,8 +767,7 @@
             }
         }
         
-        // 格式化时间
-        function formatTime(isoString) {
+        // {{ t('________function_formattimeisostring') }}) {
             const date = new Date(isoString);
             const now = new Date();
             const diff = now - date;
@@ -831,12 +788,15 @@
     
     {% block scripts %}{% endblock %}
     
-    <!-- 全局组件：Toast通知、NextActions面板、StatusBadge状态徽章 -->
+    <!-- {{ t('toastnextactionsstatusbadge') }}状态徽章 -->
     <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
     <script src="{{ url_for('static', filename='js/next-actions.js') }}"></script>
     <script src="{{ url_for('static', filename='js/status-badge.js') }}"></script>
     
-    <!-- i18n客户端语言切换支持 -->
+    <!-- {{ t('i18n') }} -->
     <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+    
+    <!-- {{ t('aisavings') }}） -->
+    {% include 'partials/chatbot.html' %}
 </body>
 </html>

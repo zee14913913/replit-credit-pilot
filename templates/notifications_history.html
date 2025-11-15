@@ -1,26 +1,26 @@
 {% extends "base.html" %}
 
-{% block title %}{{ t('notification_history') }} - {{ t('system_name') }}{% endblock %}
+{% block title %}通知历史 - {{ t('system_name') }}{% endblock %}
 
 {% block content %}
 <div class="container-professional" style="max-width: 1000px; margin: 40px auto;">
     <div class="card-professional">
         <div class="card-header-pro">
-            <h2><i class="bi bi-clock-history"></i> {{ t('notification_history') }}</h2>
-            <p style="margin: 8px 0 0 0; opacity: 0.8;">{{ t('view_all_notification_records') }}</p>
+            <h2><i class="bi bi-clock-history"></i> <span data-i18n="notification_history">{{ t('notification_history') }}</span></h2>
+            <p style="margin: 8px 0 0 0; opacity: 0.8;">{{ t('auto_text_992') }}</p>
         </div>
         
         <div class="card-body-pro">
             <!-- 过滤器 -->
             <div style="margin-bottom: 20px; display: flex; gap: 12px; align-items: center;">
                 <button class="btn-action" onclick="loadNotifications('all')" id="btn-all">
-                    <i class="bi bi-list"></i> {{ t('all') }}
+                    <i class="bi bi-list"></i> <span data-i18n="all">{{ t('all') }}</span>
                 </button>
                 <button class="btn-secondary" onclick="loadNotifications('unread')" id="btn-unread">
-                    <i class="bi bi-envelope"></i> {{ t('unread') }}
+                    <i class="bi bi-envelope"></i> <span data-i18n="unread">{{ t('unread') }}</span>
                 </button>
                 <button class="btn-secondary" onclick="loadNotifications('read')" id="btn-read">
-                    <i class="bi bi-envelope-open"></i> {{ t('read') }}
+                    <i class="bi bi-envelope-open"></i> <span data-i18n="read">{{ t('read') }}</span>
                 </button>
             </div>
             
@@ -28,7 +28,7 @@
             <div id="notificationsList" style="min-height: 300px;">
                 <div class="text-center" style="padding: 60px 20px; color: var(--text-muted);">
                     <i class="bi bi-hourglass-split" style="font-size: 48px;"></i>
-                    <p style="margin-top: 16px;">{{ t('loading_notifications') }}</p>
+                    <p style="margin-top: 16px;">{{ t('auto_text_996') }}</p>
                 </div>
             </div>
         </div>
@@ -104,16 +104,12 @@
 <script>
     let currentFilter = 'all';
     
-    // 页面加载时获取所有通知
-    document.addEventListener('DOMContentLoaded', function() {
+    // {{ t('____documentaddeventlistener_1') }}('DOMContentLoaded', function() {
         loadNotifications('all');
     });
     
-    // 加载通知列表
-    async function loadNotifications(filter) {
-        currentFilter = filter;
-        
-        // 更新按钮状态
+    // {{ t('____async_function_loadnotificationsfilter') }}) {
+        {{ t('currentfilter__filter_________________') }}
         document.querySelectorAll('.btn-action, .btn-secondary').forEach(btn => {
             btn.classList.remove('btn-action');
             btn.classList.add('btn-secondary');
@@ -123,7 +119,7 @@
         
         const container = document.getElementById('notificationsList');
         const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
-        container.innerHTML = `<div class="text-center" style="padding: 40px;"><i class="bi bi-hourglass-split"></i> ${t('loading', 'Loading...')}</div>`;
+        container.innerHTML = `<div class="text-center" style="padding: 40px;"><i class="bi bi-hourglass-split"></i> ${t('loading', '加载中...')}</div>`;
         
         try {
             const apiBaseUrl = `${window.location.protocol}//${window.location.hostname}:8000`;
@@ -140,18 +136,16 @@
             
         } catch (error) {
             console.error('Failed to load notifications:', error);
-            const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
             container.innerHTML = `
                 <div class="text-center" style="padding: 40px; color: var(--text-muted);">
                     <i class="bi bi-exclamation-triangle" style="font-size: 48px; color: #DC3545;"></i>
-                    <p style="margin-top: 16px;">${t('load_failed_retry', 'Load failed, please retry later')}</p>
+                    <p style="margin-top: 16px;">{{ t('auto_text_1000') }}</p>
                 </div>
             `;
         }
     }
     
-    // 显示通知列表
-    function displayNotifications(notifications) {
+    // {{ t('____function_displaynotificationsnotifications') }}) {
         const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         const container = document.getElementById('notificationsList');
         
@@ -159,7 +153,7 @@
             container.innerHTML = `
                 <div class="text-center" style="padding: 60px 20px; color: var(--text-muted);">
                     <i class="bi bi-inbox" style="font-size: 48px;"></i>
-                    <p style="margin-top: 16px;">${t('no_notifications', 'No notifications yet')}</p>
+                    <p style="margin-top: 16px;">{{ t('auto_text_407') }}</p>
                 </div>
             `;
             return;
@@ -167,39 +161,38 @@
         
         container.innerHTML = notifications.map(n => `
             <div class="notification-card ${n.status === 'read' ? 'read' : ''}">
-                <div class="notification-title">${n.title}</div>
-                <div class="notification-message">${n.message}</div>
+                <div class="notification-title">{{ t('ntitle') }}</div>
+                <div class="notification-message">{{ t('nmessage') }}</div>
                 <div class="notification-footer">
                     <div>
                         <span class="priority-badge priority-${n.priority || 'normal'}">
-                            ${n.priority === 'high' ? t('high_priority', 'High') : n.priority === 'low' ? t('low_priority', 'Low') : t('normal_priority', 'Normal')}
+                            ${n.priority === 'high' ? t('high_priority', '高优先级') : n.priority === 'low' ? t('low_priority', '低优先级') : t('normal_priority', '普通')}
                         </span>
-                        <span style="margin-left: 12px;">${formatTime(n.created_at)}</span>
+                        <span style="margin-left: 12px;">{{ t('formattimencreated_at') }}</span>
                     </div>
-                    ${n.action_url ? `<a href="${n.action_url}" class="btn-sm btn-action">${n.action_label || t('view_details', 'View')}</a>` : ''}
+                    ${n.action_url ? `<a href="${n.action_url}" class="btn-sm btn-action">{{ t('naction_label__') }}</a>` : ''}
                 </div>
             </div>
         `).join('');
     }
     
-    // 格式化时间
-    function formatTime(isoString) {
+    // {{ t('____function_formattimeisostring') }}) {
         const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         const date = new Date(isoString);
         const now = new Date();
         const diff = now - date;
         
         const minutes = Math.floor(diff / 60000);
-        if (minutes < 1) return t('just_now', 'Just now');
-        if (minutes < 60) return `${minutes} ${t('minutes_ago', 'min ago')}`;
+        if (minutes < 1) return t('just_now', '刚刚');
+        if (minutes < 60) return t('minutes_ago', '{n}分钟前').replace('{n}', minutes);
         
         const hours = Math.floor(minutes / 60);
-        if (hours < 24) return `${hours} ${t('hours_ago', 'hr ago')}`;
+        if (hours < 24) return t('hours_ago', '{n}小时前').replace('{n}', hours);
         
         const days = Math.floor(hours / 24);
-        if (days < 7) return `${days} ${t('days_ago', 'days ago')}`;
+        if (days < 7) return t('days_ago', '{n}天前').replace('{n}', days);
         
-        return date.toLocaleString();
+        return date.toLocaleString('zh-CN');
     }
 </script>
 {% endblock %}

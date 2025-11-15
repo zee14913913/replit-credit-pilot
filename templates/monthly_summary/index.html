@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}月度汇总报告 - Monthly Summary Report{% endblock %}
+{% block title %}{{ t('__monthly_summary_report') }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid mt-4">
@@ -8,7 +8,7 @@
     <div class="row mb-3">
         <div class="col-12 text-end">
             <button id="langToggle" class="btn" style="background: linear-gradient(135deg, #FF007F 0%, #C1006C 100%); color: white; border: none; padding: 0.6rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 25px; box-shadow: 0 4px 15px rgba(255, 0, 127, 0.3);">
-                <i class="bi bi-translate"></i> <span id="langBtnText">English</span>
+                <i class="bi bi-translate"></i> <span id="langBtnText">{{ t('english') }}</span>
             </button>
         </div>
     </div>
@@ -16,10 +16,10 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="text-center" style="color: #FF007F;">
-                <i class="bi bi-calendar3"></i> <span class="lang-text" data-zh="月度汇总报告" data-en="Monthly Summary Report">月度汇总报告</span>
+                <i class="bi bi-calendar3"></i> <span class="lang-text" data-zh="月度汇总报告" data-en="Monthly Summary Report">{{ t('auto_text_901') }}</span>
             </h1>
-            <p class="text-center lang-text" style="color: #FFFFFF;" data-zh="按月查看Supplier消费与付款对账情况，清晰透明，避免误会" data-en="View monthly supplier expenses and payment reconciliation - clear, transparent, and accurate">
-                按月查看Supplier消费与付款对账情况，清晰透明，避免误会
+            <p class="text-center lang-text" style="color: #FFFFFF;" data-zh="{{ t('supplier_4') }}消费与付款对账情况，清晰透明，避免误会" data-en="View monthly supplier expenses and payment reconciliation - clear, transparent, and accurate">
+                {{ t('supplier_4') }}消费与付款对账情况，清晰透明，避免误会
             </p>
         </div>
     </div>
@@ -30,11 +30,11 @@
                 
                 <!-- 客户选择 -->
                 <div class="mb-5">
-                    <label class="form-label" style="color: #FF007F; font-weight: bold; font-size: 1.3rem; margin-bottom: 1rem;">
-                        <i class="bi bi-person-circle"></i> <span class="lang-text" data-zh="选择客户" data-en="Select Customer">选择客户</span>
+                    <label class="form-label" style="color: #F0F0F0; font-weight: bold; font-size: 1.3rem; margin-bottom: 1rem; text-shadow: 0 0 10px rgba(240, 240, 240, 0.5);">
+                        <i class="bi bi-person-circle"></i> <span class="lang-text" data-zh="选择客户" data-en="Select Customer">{{ t('auto_text_903') }}</span>
                     </label>
-                    <select id="customerSelect" class="form-select form-select-lg" style="background: rgba(30, 20, 45, 0.8); color: #FFFFFF; border: 2px solid rgba(255, 0, 127, 0.3); padding: 1rem; font-size: 1.15rem; border-radius: 12px;">
-                        <option value="" class="lang-text" data-zh="-- 请选择客户 --" data-en="-- Select Customer --">-- 请选择客户 --</option>
+                    <select id="customerSelect" class="form-select form-select-lg" style="background: #000000; color: #F0F0F0; font-weight: 700; border: 2px solid #FF007F; padding: 1rem; font-size: 1.15rem; border-radius: 12px; box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);">
+                        <option value="" class="lang-text" data-zh="-- 请选择客户 --" data-en="-- Select Customer --">{{ t('___1') }}</option>
                         {% for customer in customers %}
                         <option value="{{ customer.id }}">
                             {{ customer.name }} ({{ customer.customer_code }})
@@ -46,10 +46,10 @@
                 <!-- 年份和月份选择 -->
                 <div class="row mb-5 g-4">
                     <div class="col-md-6">
-                        <label class="form-label" style="color: #FF007F; font-weight: bold; font-size: 1.3rem; margin-bottom: 1rem;">
-                            <i class="bi bi-calendar-event"></i> <span class="lang-text" data-zh="年份" data-en="Year">年份</span>
+                        <label class="form-label" style="color: #F0F0F0; font-weight: bold; font-size: 1.3rem; margin-bottom: 1rem; text-shadow: 0 0 10px rgba(240, 240, 240, 0.5);">
+                            <i class="bi bi-calendar-event"></i> <span class="lang-text" data-zh="年份" data-en="Year">{{ t('auto_text_905') }}</span>
                         </label>
-                        <select id="yearSelect" class="form-select form-select-lg" style="background: rgba(30, 20, 45, 0.8); color: #FFFFFF; border: 2px solid rgba(255, 0, 127, 0.3); padding: 1rem; font-size: 1.15rem; border-radius: 12px;">
+                        <select id="yearSelect" class="form-select form-select-lg" style="background: #000000; color: #F0F0F0; font-weight: 700; border: 2px solid #FF007F; padding: 1rem; font-size: 1.15rem; border-radius: 12px; box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);">
                             {% for year in years %}
                             <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>
                                 {{ year }}
@@ -58,10 +58,10 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label" style="color: #FF007F; font-weight: bold; font-size: 1.3rem; margin-bottom: 1rem;">
-                            <i class="bi bi-calendar-month"></i> <span class="lang-text" data-zh="月份" data-en="Month">月份</span>
+                        <label class="form-label" style="color: #F0F0F0; font-weight: bold; font-size: 1.3rem; margin-bottom: 1rem; text-shadow: 0 0 10px rgba(240, 240, 240, 0.5);">
+                            <i class="bi bi-calendar-month"></i> <span class="lang-text" data-zh="月份" data-en="Month">{{ t('auto_text_906') }}</span>
                         </label>
-                        <select id="monthSelect" class="form-select form-select-lg" style="background: rgba(30, 20, 45, 0.8); color: #FFFFFF; border: 2px solid rgba(255, 0, 127, 0.3); padding: 1rem; font-size: 1.15rem; border-radius: 12px;">
+                        <select id="monthSelect" class="form-select form-select-lg" style="background: #000000; color: #F0F0F0; font-weight: 700; border: 2px solid #FF007F; padding: 1rem; font-size: 1.15rem; border-radius: 12px; box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);">
                             {% for month in months %}
                             <option value="{{ month }}" {% if month == current_month %}selected{% endif %}>
                                 {{ month }}
@@ -74,13 +74,13 @@
                 <!-- 按钮组 -->
                 <div class="row g-4">
                     <div class="col-md-6 mb-2">
-                        <button id="viewMonthlyBtn" class="btn w-100" style="background: linear-gradient(135deg, #FF007F 0%, #C1006C 100%); color: white; border: none; padding: 1.2rem 2rem; font-size: 1.2rem; font-weight: 600; border-radius: 12px; box-shadow: 0 4px 15px rgba(255, 0, 127, 0.3);">
-                            <i class="bi bi-file-text"></i> <span class="lang-text" data-zh="查看月度报告" data-en="View Monthly Report">查看月度报告</span>
+                        <button id="viewMonthlyBtn" class="btn w-100" style="background: linear-gradient(135deg, #FF007F 0%, #C1006C 100%); color: white; border: 2px solid #F0F0F0; padding: 1.2rem 2rem; font-size: 1.2rem; font-weight: 600; border-radius: 12px; box-shadow: 0 4px 15px rgba(255, 0, 127, 0.3), 0 0 20px rgba(240, 240, 240, 0.3);">
+                            <i class="bi bi-file-text"></i> <span class="lang-text" data-zh="查看月度报告" data-en="View Monthly Report">{{ t('auto_text_907') }}</span>
                         </button>
                     </div>
                     <div class="col-md-6 mb-2">
-                        <button id="viewYearlyBtn" class="btn w-100" style="background: linear-gradient(135deg, #322446 0%, #4A3564 100%); color: white; border: none; padding: 1.2rem 2rem; font-size: 1.2rem; font-weight: 600; border-radius: 12px; box-shadow: 0 4px 15px rgba(75, 53, 100, 0.3);">
-                            <i class="bi bi-calendar3-range"></i> <span class="lang-text" data-zh="查看年度汇总" data-en="View Annual Summary">查看年度汇总</span>
+                        <button id="viewYearlyBtn" class="btn w-100" style="background: linear-gradient(135deg, #322446 0%, #4A3564 100%); color: white; border: 2px solid #F0F0F0; padding: 1.2rem 2rem; font-size: 1.2rem; font-weight: 600; border-radius: 12px; box-shadow: 0 4px 15px rgba(75, 53, 100, 0.3), 0 0 20px rgba(240, 240, 240, 0.3);">
+                            <i class="bi bi-calendar3-range"></i> <span class="lang-text" data-zh="查看年度汇总" data-en="View Annual Summary">{{ t('auto_text_908') }}</span>
                         </button>
                     </div>
                 </div>
@@ -92,20 +92,35 @@
     <!-- 快速说明 -->
     <div class="row justify-content-center mt-5">
         <div class="col-lg-10 col-xl-9">
-            <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.4) 0%, rgba(36, 25, 52, 0.6) 100%); border: 2px solid rgba(255, 0, 127, 0.25); border-radius: 20px; padding: 2.5rem 3rem; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);">
-                <h6 style="color: #FF007F; margin-bottom: 1.5rem; font-size: 1.4rem; font-weight: 700;">
-                    <i class="bi bi-info-circle"></i> <span class="lang-text" data-zh="报告说明" data-en="Report Description">报告说明</span>
+            <div style="background: #000000; border: 2px solid #FF007F; border-radius: 20px; padding: 3rem 3.5rem; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 0, 127, 0.4);">
+                <h6 style="color: #F0F0F0; margin-bottom: 2rem; font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 15px rgba(240, 240, 240, 0.6); padding-bottom: 1rem; border-bottom: 2px solid #FF007F;">
+                    <i class="bi bi-info-circle"></i> <span class="lang-text" data-zh="报告说明" data-en="Report Description">{{ t('auto_text_909') }}</span>
                 </h6>
-                <div style="color: #FFFFFF; font-size: 1.05rem; line-height: 1.8;">
-                    <p style="font-size: 1.1rem;"><strong style="color: #FF007F;">📊 <span class="lang-text" data-zh="月度汇总报告" data-en="Monthly Summary Report">月度汇总报告</span></strong> <span class="lang-text" data-zh="整合该客户所有信用卡的Supplier消费与付款情况：" data-en="Consolidates supplier expenses and payment records across all credit cards for this customer:">整合该客户所有信用卡的Supplier消费与付款情况：</span></p>
-                    <ul style="list-style: none; padding-left: 0; margin-left: 1.5rem;">
-                        <li style="margin-bottom: 0.8rem;"><strong style="color: #FF007F;">✦ <span class="lang-text" data-zh="Supplier消费" data-en="Supplier Expenses">Supplier消费</span></strong><span class="lang-text" data-zh="：该月在所有信用卡上的供应商消费总额" data-en=": Total supplier expenses across all cards for the month">：该月在所有信用卡上的供应商消费总额</span></li>
-                        <li style="margin-bottom: 0.8rem;"><strong style="color: #FF007F;">✦ <span class="lang-text" data-zh="手续费(1%)" data-en="Service Fee (1%)">手续费(1%)</span></strong><span class="lang-text" data-zh="：系统自动计算的1%服务费" data-en=": Automatically calculated 1% service fee">：系统自动计算的1%服务费</span></li>
-                        <li style="margin-bottom: 0.8rem;"><strong style="color: #FF007F;">✦ <span class="lang-text" data-zh="付款记录" data-en="Payment Records">付款记录</span></strong><span class="lang-text" data-zh="：通过转账/还款为客户支付的金额" data-en=": Amount paid through bank transfers/repayments">：通过转账/还款为客户支付的金额</span></li>
-                        <li style="margin-bottom: 0.8rem;"><strong style="color: #FF007F;">✦ <span class="lang-text" data-zh="净余额" data-en="Net Balance">净余额</span></strong><span class="lang-text" data-zh="：消费+费用-付款的对账结果" data-en=": Reconciliation result (Expenses + Fee - Payments)">：消费+费用-付款的对账结果</span></li>
+                <div style="color: #F0F0F0; font-size: 1.05rem; line-height: 2;">
+                    <p style="font-size: 1.15rem; margin-bottom: 1.5rem;">
+                        <strong style="color: #FF007F;">📊 <span class="lang-text" data-zh="月度汇总报告" data-en="Monthly Summary Report">{{ t('auto_text_901') }}</span></strong> 
+                        <span style="color: #F0F0F0;" class="lang-text" data-zh="{{ t('supplier_5') }}消费与付款情况：" data-en="Consolidates supplier expenses and payment records across all credit cards for this customer:">{{ t('supplier_2') }}</span>
+                    </p>
+                    <ul style="list-style: none; padding-left: 0; margin-left: 2rem;">
+                        <li style="margin-bottom: 1.2rem; padding: 0.8rem 0; border-bottom: 1px solid rgba(255, 0, 127, 0.2);">
+                            <strong style="color: #FF007F;">✦ <span class="lang-text" data-zh="Supplier消费" data-en="Supplier Expenses">{{ t('supplier_1') }}</span></strong>
+                            <span style="color: #F0F0F0;" class="lang-text" data-zh="：该月在所有信用卡上的供应商消费总额" data-en=": Total supplier expenses across all cards for the month">{{ t('auto_text_910') }}</span>
+                        </li>
+                        <li style="margin-bottom: 1.2rem; padding: 0.8rem 0; border-bottom: 1px solid rgba(255, 0, 127, 0.2);">
+                            <strong style="color: #FF007F;">✦ <span class="lang-text" data-zh="手续费(1%)" data-en="Service Fee (1%)">{{ t('1') }}</span></strong>
+                            <span style="color: #F0F0F0;" class="lang-text" data-zh="：系统自动计算的1%服务费" data-en=": Automatically calculated 1% service fee">{{ t('1_1') }}</span>
+                        </li>
+                        <li style="margin-bottom: 1.2rem; padding: 0.8rem 0; border-bottom: 1px solid rgba(255, 0, 127, 0.2);">
+                            <strong style="color: #FF007F;">✦ <span class="lang-text" data-zh="付款记录" data-en="Payment Records">{{ t('auto_text_913') }}</span></strong>
+                            <span style="color: #F0F0F0;" class="lang-text" data-zh="：通过转账/还款为客户支付的金额" data-en=": Amount paid through bank transfers/repayments">{{ t('auto_text_914') }}</span>
+                        </li>
+                        <li style="margin-bottom: 1.2rem; padding: 0.8rem 0; border-bottom: 1px solid rgba(255, 0, 127, 0.2);">
+                            <strong style="color: #FF007F;">✦ <span class="lang-text" data-zh="净余额" data-en="Net Balance">{{ t('auto_text_915') }}</span></strong>
+                            <span style="color: #F0F0F0;" class="lang-text" data-zh="：消费+费用-付款的对账结果" data-en=": Reconciliation result (Expenses + Fee - Payments)">{{ t('auto_text_916') }}</span>
+                        </li>
                     </ul>
-                    <p class="mb-0" style="color: #FF007F; font-size: 1.1rem; margin-top: 1rem;">
-                        <i class="bi bi-check-circle"></i> <span class="lang-text" data-zh="每月及时查看，清楚明了，避免误会！" data-en="Review monthly to stay clear and avoid misunderstandings!">每月及时查看，清楚明了，避免误会！</span>
+                    <p class="mb-0" style="color: #F0F0F0; font-size: 1.15rem; margin-top: 1.5rem; padding: 1rem; background: rgba(255, 0, 127, 0.1); border-left: 4px solid #FF007F; border-radius: 8px; text-shadow: 0 0 10px rgba(240, 240, 240, 0.5);">
+                        <i class="bi bi-check-circle"></i> <span class="lang-text" data-zh="每月及时查看，清楚明了，避免误会！" data-en="Review monthly to stay clear and avoid misunderstandings!">{{ t('auto_text_917') }}</span>
                     </p>
                 </div>
             </div>
@@ -123,14 +138,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const langToggle = document.getElementById('langToggle');
     const langBtnText = document.getElementById('langBtnText');
 
-    // 语言切换功能
-    let currentLang = localStorage.getItem('preferredLanguage') || 'zh';
+    // {{ t('____let_currentlang__localstoragegetitem') }}('preferredLanguage') || 'zh';
     
     function switchLanguage(lang) {
         currentLang = lang;
-        localStorage.setItem('preferredLanguage', lang);
-        
-        // 更新所有带有 lang-text 类的元素
+        localStorage.setItem('preferredLanguage', {{ t('lang__________________langtext_') }}
         document.querySelectorAll('.lang-text').forEach(element => {
             const text = element.getAttribute(`data-${lang}`);
             if (text) {
@@ -138,21 +150,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // 更新按钮文字
-        langBtnText.textContent = lang === 'zh' ? 'English' : '中文';
+        // {{ t('________langbtntexttextcontent__lang') }} === 'zh' ? 'English' : '中文';
     }
     
-    // 初始化语言
-    switchLanguage(currentLang);
-    
-    // 语言切换按钮事件
-    langToggle.addEventListener('click', function() {
+    // {{ t('____switchlanguagecurrentlang_________') }}    langToggle.addEventListener('click', function() {
         const newLang = currentLang === 'zh' ? 'en' : 'zh';
         switchLanguage(newLang);
     });
 
-    // 查看月度报告
-    viewMonthlyBtn.addEventListener('click', function() {
+    // {{ t('____viewmonthlybtnaddeventlistener') }}('click', function() {
         const customerId = customerSelect.value;
         const year = yearSelect.value;
         const month = monthSelect.value;
@@ -166,8 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = `/monthly-summary/report/${customerId}/${year}/${month}`;
     });
 
-    // 查看年度汇总
-    viewYearlyBtn.addEventListener('click', function() {
+    // {{ t('____viewyearlybtnaddeventlistener') }}('click', function() {
         const customerId = customerSelect.value;
         const year = yearSelect.value;
 

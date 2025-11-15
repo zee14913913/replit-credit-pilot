@@ -170,7 +170,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script>
-// Initialize signature pad
+// {{ t('signature_pad') }}
 const canvas = document.getElementById('signaturePad');
 const signaturePad = new SignaturePad(canvas, {
     backgroundColor: 'rgb(255, 255, 255)',
@@ -181,21 +181,18 @@ function clearSignature() {
     signaturePad.clear();
 }
 
-// Form submission handler
-document.getElementById('ctosPersonalForm').addEventListener('submit', function(e) {
+// {{ t('documentgetelementbyid') }}('ctosPersonalForm').addEventListener('submit', function(e) {
     if (signaturePad.isEmpty()) {
         e.preventDefault();
         alert('Please provide your signature before submitting.');
         return false;
     }
     
-    // Save signature as base64
-    const signatureData = signaturePad.toDataURL('image/png');
+    // {{ t('base64____const_signaturedata__signaturepadtodatau') }}('image/png');
     document.getElementById('signatureData').value = signatureData;
 });
 
-// Responsive canvas
-window.addEventListener('resize', function() {
+// {{ t('canvaswindowaddeventlistener') }}('resize', function() {
     const ratio = Math.max(window.devicePixelRatio || 1, 1);
     canvas.width = canvas.offsetWidth * ratio;
     canvas.height = canvas.offsetHeight * ratio;

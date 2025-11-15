@@ -8,17 +8,17 @@
     position: relative;
     display: inline-block;
     font-weight: 900 !important;
-    font-size: 3rem !important;
-    margin-bottom: 1rem !important;
-    text-transform: capitalize !important;
-    letter-spacing: 1px !important;
+    font-size: 5rem !important;
+    margin-bottom: 2rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 4px !important;
     color: #FFFFFF !important;
     text-shadow: 
-        2px 2px 0 rgba(0, 0, 0, 0.3),
-        -1px -1px 0 rgba(0, 0, 0, 0.2),
-        3px 3px 8px rgba(0, 0, 0, 0.6),
-        0 0 20px rgba(255, 255, 255, 0.3);
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+        0 0 20px rgba(255, 0, 127, 0.5),
+        0 0 35px rgba(255, 0, 127, 0.3),
+        3px 3px 6px rgba(0, 0, 0, 0.7),
+        -1px -1px 0 rgba(0, 0, 0, 0.3);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
 }
 
 .capitalize-words {
@@ -28,59 +28,104 @@
 
 <div class="fade-in">
     <!-- 会计系统快捷入口 -->
-    <div class="row mb-4">
+    <div class="row mb-5">
         <div class="col-12">
-            <div class="alert" role="alert" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 15px; padding: 2.5rem;">
-                <h2 class="galaxy-title">
-                    {{ t('accounting_system_title') }}
-                </h2>
-                <p class="mb-4" style="color: #FFFFFF; font-weight: 700; font-size: 1.1rem;">{{ t('accounting_system_subtitle') }}</p>
-                <div class="d-flex gap-3 flex-wrap">
-                    <a href="{{ url_for('accounting_api_proxy', path='docs') }}" 
-                       class="btn btn-lg capitalize-words" 
-                       target="_blank"
-                       style="font-weight: 700; background: #FFFFFF; color: #000000; border: 2px solid #000000;">
-                        {{ t('api_documentation') }}
-                    </a>
-                    <a href="{{ url_for('accounting_api_proxy', path='accounting') }}" 
-                       class="btn btn-lg capitalize-words" 
-                       target="_blank"
-                       style="font-weight: 700; background: #FF007F; border: 2px solid #FFFFFF; color: #FFFFFF;">
-                        {{ t('management_console') }}
-                    </a>
-                    <a href="{{ url_for('accounting_files') }}" 
-                       class="btn btn-lg capitalize-words" 
-                       style="font-weight: 700; background: #322446; border: 2px solid #FFFFFF; color: #FFFFFF;">
-                        {{ t('file_management') }}
-                    </a>
-                    <a href="{{ url_for('accounting_test_results') }}" 
-                       class="btn btn-lg capitalize-words" 
-                       style="font-weight: 700; background: #000000; border: 2px solid #FF007F; color: #FFFFFF;">
-                        {{ t('system_test_report') }}
-                    </a>
+            <div class="professional-card" style="border: 3px solid #FF007F; padding: 2.5rem 3rem; border-radius: 12px;">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-4">
+                    <div style="flex: 1; min-width: 300px;">
+                        <h3 style="color: #FF007F; margin-bottom: 0.75rem; font-weight: 800; font-size: 1.75rem; letter-spacing: 0.5px;">
+                            {{ t('accounting_system_title') }}
+                        </h3>
+                        <p style="color: #FFFFFF; margin: 0; font-size: 1.05rem; line-height: 1.6;">
+                            {{ t('accounting_system_subtitle') }}
+                        </p>
+                    </div>
+                    <div class="d-flex gap-3 flex-wrap" style="justify-content: flex-end;">
+                        <a href="{{ url_for('accounting_api_proxy', path='docs') }}" 
+                           class="btn" 
+                           target="_blank"
+                           style="background: #FF007F; 
+                                  color: #FFFFFF; 
+                                  font-weight: 800; 
+                                  font-size: 1rem;
+                                  padding: 0.85rem 1.75rem;
+                                  border: 2px solid #FFFFFF;
+                                  border-radius: 8px;
+                                  box-shadow: 0 4px 12px rgba(255, 0, 127, 0.3);
+                                  transition: all 0.3s ease;
+                                  min-width: 180px;
+                                  text-align: center;">
+                            {{ t('api_documentation') }}
+                        </a>
+                        <a href="{{ url_for('accounting_api_proxy', path='accounting') }}" 
+                           class="btn" 
+                           target="_blank"
+                           style="background: #FF007F; 
+                                  color: #FFFFFF; 
+                                  font-weight: 800; 
+                                  font-size: 1rem;
+                                  padding: 0.85rem 1.75rem;
+                                  border: 2px solid #FFFFFF;
+                                  border-radius: 8px;
+                                  box-shadow: 0 4px 12px rgba(255, 0, 127, 0.3);
+                                  transition: all 0.3s ease;
+                                  min-width: 180px;
+                                  text-align: center;">
+                            {{ t('management_console') }}
+                        </a>
+                        <a href="{{ url_for('accounting_files') }}" 
+                           class="btn" 
+                           style="background: #322446; 
+                                  color: #FFFFFF; 
+                                  font-weight: 800; 
+                                  font-size: 1rem;
+                                  padding: 0.85rem 1.75rem;
+                                  border: 2px solid #FFFFFF;
+                                  border-radius: 8px;
+                                  box-shadow: 0 4px 12px rgba(50, 36, 70, 0.3);
+                                  transition: all 0.3s ease;
+                                  min-width: 180px;
+                                  text-align: center;">
+                            {{ t('file_management') }}
+                        </a>
+                        <a href="{{ url_for('accounting_test_results') }}" 
+                           class="btn" 
+                           style="background: #322446; 
+                                  color: #FFFFFF; 
+                                  font-weight: 800; 
+                                  font-size: 1rem;
+                                  padding: 0.85rem 1.75rem;
+                                  border: 2px solid #FFFFFF;
+                                  border-radius: 8px;
+                                  box-shadow: 0 4px 12px rgba(50, 36, 70, 0.3);
+                                  transition: all 0.3s ease;
+                                  min-width: 180px;
+                                  text-align: center;">
+                            {{ t('system_test_report') }}
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Page Header -->
-    <div class="section-header">
+    <div class="section-header" style="margin-top: 4rem; margin-bottom: 2.5rem;">
         <div class="d-flex justify-content-between align-items-center flex-wrap">
             <div>
-                <h1 class="section-title capitalize-words">{{ t('dashboard_title') }}</h1>
-                <p class="section-subtitle capitalize-words" style="color: #FF007F; font-weight: 700;">{{ t('dashboard_subtitle') }}</p>
+                <h1 class="section-title" style="color: #F0F0F0; text-shadow: 0 0 10px rgba(240, 240, 240, 0.5);">{{ t('dashboard_title') }}</h1>
+                <p class="section-subtitle" style="color: #FF007F; font-weight: 700;">{{ t('dashboard_subtitle') }}</p>
             </div>
             <a href="{{ url_for('add_customer_page') }}" 
-               class="capitalize-words" 
                style="background: #FF007F; 
                       color: #FFFFFF; 
                       font-weight: 900;
-                      font-size: 1.1rem;
-                      padding: 0.75rem 2rem;
+                      font-size: 1.21rem;
+                      padding: 0.825rem 2.2rem;
                       border-radius: 8px;
                       text-decoration: none;
                       border: 2px solid #FFFFFF;
-                      box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
+                      box-shadow: 0 0 12px rgba(255, 0, 127, 0.6), 0 4px 20px rgba(255, 0, 127, 0.5);
                       transition: all 0.3s ease;
                       -webkit-text-stroke: 0.5px #FFFFFF;
                       letter-spacing: 0.5px;">
@@ -90,7 +135,7 @@
     </div>
 
     <!-- Customer Cards -->
-    <div class="row g-4 equal-height-cards">
+    <div class="row g-4 equal-height-cards" style="margin-top: 2rem;">
         {% if customers %}
             {% for customer in customers %}
             <div class="col-md-6 col-lg-4">
@@ -155,14 +200,84 @@
             {% endfor %}
         {% else %}
             <div class="col-12">
-                <div class="alert-professional alert-info-pro">
-                    <h5 class="capitalize-words">{{ t('no_customers_found') }}</h5>
-                    <p class="mb-0 capitalize-words" style="color: #FF007F; font-weight: 700;">{{ t('add_customers_to_start') }}</p>
+                <div class="alert-professional alert-info-pro" 
+                     style="box-shadow: 0 0 16px rgba(255, 255, 255, 0.06); 
+                            border-radius: 20px;">
+                    <h5 style="color: #F0F0F0; text-shadow: 0 0 10px rgba(240, 240, 240, 0.5);">{{ t('no_customers_found') }}</h5>
+                    <p class="mb-0" style="color: #FF007F; font-weight: 700;">{{ t('add_customers_to_start') }}</p>
                 </div>
             </div>
         {% endif %}
     </div>
+
+    <!-- {{ t('aiai_v3___ai') }}） -->
+    <section style="margin-top:40px; background:#1a1228; padding:20px; border-radius:16px; box-shadow:0 0 20px rgba(50,36,70,0.3); color:#fff; border:2px solid #322446;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h3 style="color:#322446; font-weight:800; margin:0;">🔮 {{ t('ai_intelligent_prediction') }}</h3>
+            <button onclick="loadAllPredictions()" style="background:#FF007F; color:#fff; border:none; border-radius:8px; padding:8px 16px; font-weight:700; cursor:pointer; transition:all 0.3s;">
+                🔄 {{ t('refresh_predictions') }}
+            </button>
+        </div>
+        <p style="color:#ccc; margin-bottom:20px;">{{ t('ai_prediction_desc') }}</p>
+        
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
+            <!-- 财务健康评分卡片 -->
+            <div style="background:#0a0a0a; padding:20px; border-radius:12px; border:2px solid #322446;">
+                <h4 style="color:#FF007F; font-weight:700; margin-bottom:16px;">💯 {{ t('financial_health_score') }}</h4>
+                <div id="ai-health-score" style="min-height:200px;">
+                    <div style="text-align:center; color:#888; padding:40px;">
+                        {{ t('click_refresh_to_load') }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 未来预测卡片 -->
+            <div style="background:#0a0a0a; padding:20px; border-radius:12px; border:2px solid #322446;">
+                <h4 style="color:#FF007F; font-weight:700; margin-bottom:16px;">📈 {{ t('future_prediction') }}</h4>
+                <div id="ai-prediction" style="min-height:200px;">
+                    <div style="text-align:center; color:#888; padding:40px;">
+                        {{ t('click_refresh_load_prediction') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 趋势图表 -->
+        <div style="background:#0a0a0a; padding:20px; border-radius:12px; margin-top:20px; border:2px solid #322446;">
+            <h4 style="color:#FF007F; font-weight:700; margin-bottom:16px;">📊 {{ t('cashflow_trend') }}</h4>
+            <div id="ai-trend-chart" style="height:300px;">
+                <div style="text-align:center; color:#888; padding:80px;">
+                    {{ t('click_refresh_load_trend') }}
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/ai_predict.js') }}"></script>
+
+<script>
+// {{ t('ai_8') }}
+function loadAllPredictions() {
+    // {{ t('id____const_customerid__getfirstcustomerid') }}    if (!customerId) {
+        alert(window.i18n.translate('please_add_customer_first'));
+        return;
+    }
+    
+    // {{ t('ai____windowaipredictmanagerinitcustomerid___') }} window.aiPredictManager.loadHealthScore();
+    window.aiPredictManager.loadPrediction();
+    window.aiPredictManager.loadTrends();
+}
+
+// {{ t('idfunction_getfirstcustomerid') }}() {
+    // {{ t('urlcustomer_id____const_customerlink__documentqu') }}erySelector('a[href*="customer_dashboard"]');
+    if (!customerLink) return null;
+    
+    const match = customerLink.href.match(/customer_id=(\d+)/);
+    return match ? parseInt(match[1]) : null;
+}
+</script>
 
 <script>
 // Translations for JavaScript
@@ -225,5 +340,39 @@ function deleteCustomer(customerId, customerName) {
         }
     }
 }
+</script>
+
+<!-- {{ t('aiv2') }}） -->
+<section style="margin-top:40px; background:#1a1228; padding:20px; border-radius:16px; box-shadow:0 0 20px rgba(255,0,127,0.2); color:#fff; border:2px solid #ff007f;">
+  <h3 style="color:#ff007f; font-weight:800; margin-bottom:16px;">📅 {{ t('ai_daily_report_preview') }}</h3>
+  <p style="color:#ccc; margin-bottom:16px;">{{ t('report_summary_last_7_days') }}</p>
+  <div id="ai-daily-reports" style="max-height:280px; overflow-y:auto; font-size:14px; line-height:1.6; background:#0a0a0a; padding:12px; border-radius:8px;"></div>
+  <button id="refresh-ai-reports" style="margin-top:12px; background:#ff007f; color:#fff; border:none; border-radius:8px; padding:10px 16px; font-weight:700; cursor:pointer; transition:all 0.3s;">
+    🔄 {{ t('refresh_daily_report') }}
+  </button>
+</section>
+
+<script>
+  async function loadAIDailyReports() {
+    const box = document.getElementById('ai-daily-reports');
+    box.innerHTML = `<div style="text-align:center; color:#888;">{{ t('_windowi18ntranslateloading') }}</div>{{ t('________try_______const_res__await_fetchapiaiassis') }}<div style="color:#ff4444;">{{ t('_dataerror') }}</div>{{ t('________return__________________if_datareports__da') }}<div style="color:#888;">{{ t('windowi18ntranslateno_ai_reports') }}</div>`;
+        return;
+      }
+      
+      box.innerHTML = data.reports.map(r => `
+        <div style="margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
+          <div style="color:#ff007f; font-weight:700; margin-bottom:4px;">{{ t('_rdate') }}</div>
+          <div style="color:#ddd;">{{ t('rsummary') }}</div>
+        </div>
+      `).join('');
+    } catch (error) {
+      box.innerHTML = `<div style="color:#ff4444;">{{ t('_windowi18ntranslateloading_failed_errormessage') }}</div>`;
+    }
+  }
+  
+  document.getElementById('refresh-ai-reports').onclick = loadAIDailyReports;
+  
+  // 等待i18n初始化完成后再加载日报
+  window.addEventListener('i18nReady', loadAIDailyReports);
 </script>
 {% endblock %}
