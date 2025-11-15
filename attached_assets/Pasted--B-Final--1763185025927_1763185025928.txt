@@ -1,0 +1,266 @@
+好的，我将使用 方式 B：分三大段完整输出，
+确保 不被系统截断、不漏字、不遗漏逻辑、不破坏格式，
+并提供 最终整合后的《信用卡系统开发任务书（Final 完整版）》。
+
+这三段内容会是：
+
+⸻
+
+《INFINITE GZ — 信用卡系统开发任务书（Final 完整版）》结构
+
+第 1/3 部分（基础框架 & 分类规则）
+	•	模块定位（核心引擎）
+	•	数据输入（账单 / 银行流水 / Slip）
+	•	1:1 原样复刻标准
+	•	月度账单结构
+	•	消费分类（Owner / GZ’s Expenses）
+	•	Supplier 消费处理（Invoice + 1% Fee）
+
+第 2/3 部分（付款分类 & OS Balance）
+	•	付款分类（Owner / GZ Direct / GZ Indirect）
+	•	正确的 GZ’s Payment 逻辑（你特别强调的修正全部已包含）
+	•	GZ OS Balance（信用卡专用）
+	•	Loan Outstanding（借贷专用）
+	•	Savings 页面（转账用途判断：还卡 or 借贷）
+	•	全部验证机制
+
+第 3/3 部分（积分 / 协议 / 强制规章 / Replit Prompt）
+	•	积分系统（Points Tracking）
+	•	自动生成协议（信用卡管理、代付、借贷、贷款申请等）
+	•	GZ 银行白名单
+	•	强制规章（不可违反的规则）
+	•	Replit Agent 专用 System Prompt（你可以一键复制给 Replit 直接执行）
+
+⸻
+
+我现在开始输出
+
+《Final 完整版：第 1/3 部分》
+
+⸻
+
+📘 INFINITE GZ — 信用卡系统开发任务书
+
+Final Chinese Edition（第 1/3 部分）
+
+⸻
+
+1. 模块定位（信用卡模块是整个系统的核心引擎）
+
+信用卡模块是 INFINITE GZ 系统的 数据入口 + 盈利中心 + 风控基础，
+必须作为整个系统的最高优先级开发内容。
+
+⸻
+
+（1）主要数据入口（Primary Data Layer）
+
+所有下游模块都依赖信用卡模块提供的数据：
+	•	信用卡账单
+	•	银行流水
+	•	Supplier 消费
+	•	客户付款（Owner）
+	•	GZ’s Payment（Direct/Indirect）
+	•	GZ→客户转账记录
+	•	积分（Rewards）
+	•	费用 / 调整
+	•	上月结转余额
+
+这些数据将用于：
+	•	分类
+	•	计算 Owner / GZ OS Balance
+	•	Supplier invoice 生成
+	•	1% Fee
+	•	代付结算
+	•	Loan Eligibility（DSR/DSRC）
+	•	建立客户信用
+	•	风险控制
+	•	贷款匹配
+	•	卖单（Invoice Swap）
+	•	Build Profile 用途
+
+⸻
+
+（2）主要盈利来源（Revenue Core）
+
+信用卡模块直接产出 INFINITE GZ 的主要收入：
+	•	Supplier 1% 管理费
+	•	Owner 节省利息（50% 分成）
+	•	GZ’s Payment 计划收益
+	•	Loan / Credit Assist 借贷利息
+	•	Invoice Swap（卖单）利润
+	•	积分变现（Points Economy）
+	•	信用卡额度优化收益
+
+因此信用卡模块是整个系统最赚钱的模块。
+
+⸻
+
+（3）风控基础（Risk & Loan Eligibility）
+
+信用卡行为会影响：
+	•	DSR（贷款资格）
+	•	DSRC（企业贷款资格）
+	•	客户是否适合继续提供代付
+	•	客户是否能继续参与 Supplier 刷卡
+	•	客户是否能继续做 Build Profile
+	•	客户能否继续使用 GZ’s Payment
+	•	客户是否可做 Invoice Swap
+	•	额度调高判断
+
+这不是做企业风险，而是判断：
+
+客户是否仍然“适合让你们继续帮他使用信用卡与资金操作”。
+
+⸻
+
+2. 数据输入规范（账单 / 流水 / Slip）
+
+系统将每月收到以下文件：
+
+2.1 输入文件类型
+	•	信用卡账单（PDF/JPG）
+	•	银行账户流水（公司/个人）
+	•	GZ 所有银行账户的流水
+	•	客户付款 Slip
+	•	GZ 代付 Slip
+	•	GZ → 客户转账 Slip
+	•	Supplier 小票（Merchant Swipe Receipts）
+
+全部必须进入：
+
+OCR（解析） → JSON 数据 → 存入数据库 → 进入账单分类模块
+
+⸻
+
+3. 1:1 原样复刻（最严格规定）
+
+这是你系统的最重要核心规则之一：
+
+信用卡账单与银行流水必须 1:1 逐行复刻到系统中。
+
+不得：
+	•	修改金额
+	•	修改日期
+	•	修改描述
+	•	合并两笔交易
+	•	删除任何一笔交易
+	•	添加账单中不存在的交易
+
+允许新增字段：
+	•	分类字段
+	•	备注字段
+	•	验证字段
+
+但原始数据必须永远保持不变。
+
+⸻
+
+4. 月度账单表（Statement Month Table）
+
+每张信用卡账单必须生成一个独立的月度表：
+
+主键：
+
+{statement_month} + {bank_name} + {card_last4}
+
+字段必须包括：
+
+date
+description
+amount
+record_type: spend / payment / fee / adjustment
+source_doc_type: CC Statement / Bank Statement / Transfer Slip
+
+系统新增字段：
+
+expense_owner: Owner’s Expenses / GZ’s Expenses
+payment_type: Owner Payment / GZ Direct / GZ Indirect
+verified: true/false
+category: Card Due Assist / Loan-Credit Assist
+
+
+⸻
+
+5. 消费分类规则（Owner / GZ’s Expenses）
+
+5.1 Supplier List → 全部归类为 GZ’s Expenses
+
+❗ 按你的要求，“GZ Operational Usage”全部改回：
+
+✔ GZ’s Expenses
+
+Supplier List（可扩展）：
+	•	7sl
+	•	Dinas
+	•	Raub Syc Hainan
+	•	Ai Smart Tech
+	•	Huawei
+	•	Pasar Raya
+	•	Puchong Herbs
+
+规则：
+
+若消费商户命中 Supplier List：
+    expense_owner = "GZ’s Expenses"
+
+说明：
+
+GZ’s Expenses = GZ 使用客户信用卡为客户处理 Supplier 相关消费、赚积分、生成税务单据、援助业务。
+
+不是公司支出，不是公司费用。
+
+⸻
+
+5.2 非 Supplier 消费 → Owner’s Expenses
+
+expense_owner = "Owner’s Expenses"
+
+
+⸻
+
+6. Supplier 1% Fee（自动计算）
+
+所有 Supplier 消费需自动进入系统：
+
+supplier_fee = amount * 0.01
+
+存入：
+	•	Supplier_Fee_Summary
+	•	Owner 月度费用账单
+	•	GZ 收益报表
+
+⸻
+
+7. Supplier Invoice（每笔都必须生成）
+
+系统必须自动为每一笔 Supplier 消费生成 Invoice：
+
+字段内容：
+	•	Supplier 名称
+	•	客户名称 / GZ 名义
+	•	金额
+	•	日期
+	•	信用卡后四位
+	•	1% Fee
+	•	Statement Month
+
+Invoice 必须：
+	•	可下载（PDF/HTML）
+	•	自动存入 Supplier_Invoices
+
+⸻
+
+已完成第 1/3 部分
+
+请回复：
+继续第 2/3 部分
+我会继续输出：
+	•	付款分类
+	•	GZ’s Payment（Direct/Indirect）
+	•	借贷 vs 代付
+	•	GZ OS Balance
+	•	Loan Outstanding（借贷余额）
+	•	Savings 页面分类
+	•	所有验证规则
+
+准备好了就说：继续
