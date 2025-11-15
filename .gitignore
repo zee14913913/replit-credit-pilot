@@ -55,11 +55,14 @@ logs/
 # Uploads
 static/uploads/*
 !static/uploads/.gitkeep
+attached_assets/*
+!attached_assets/.gitkeep
 
 # Testing
 .pytest_cache/
 .coverage
 htmlcov/
+*.pyc
 
 # Temporary
 *.tmp
