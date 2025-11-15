@@ -7040,18 +7040,32 @@ def upload_vba_json():
                 'message': f'不支持的document_type: {doc_type}'
             }), 400
         
-        # TODO: 实际入库逻辑（需要根据您的数据库结构实现）
-        # 这里仅返回验证成功的响应
+        # VBA JSON数据入库处理
+        from services.vba_json_processor import VBAJSONProcessor
         
-        logger.info(f"VBA-JSON上传成功: {file.filename}, 类型: {doc_type}")
+        processor = VBAJSONProcessor()
+        user_id = session.get('user_id') if 'user_id' in session else None
+        
+        result = processor.process_json(json_data, user_id, file.filename)
+        
+        if not result.get('success'):
+            return jsonify({
+                'status': 'error',
+                'message': result.get('message', '入库失败')
+            }), 500
+        
+        logger.info(f"VBA-JSON上传并入库成功: {file.filename}, 类型: {doc_type}")
         
         return jsonify({
             'status': 'success',
-            'message': 'JSON数据接收成功',
+            'message': result.get('message', 'JSON数据接收并入库成功'),
             'document_type': doc_type,
             'parsed_by': json_data.get('parsed_by', 'Unknown'),
             'parsed_at': json_data.get('parsed_at', ''),
-            'total_transactions': json_data.get('summary', {}).get('total_transactions', 0)
+            'total_transactions': result.get('transaction_count', 0),
+            'statement_id': result.get('statement_id'),
+            'bank': result.get('bank'),
+            'month': result.get('month')
         }), 200
     
     except json.JSONDecodeError as e:
@@ -7113,15 +7127,27 @@ def upload_vba_batch():
                 
                 doc_type = json_data['document_type']
                 
-                # TODO: 实际入库逻辑
+                # VBA JSON数据入库处理
+                from services.vba_json_processor import VBAJSONProcessor
                 
-                results.append({
-                    'filename': file.filename,
-                    'status': 'success',
-                    'document_type': doc_type,
-                    'transactions': json_data.get('summary', {}).get('total_transactions', 0)
-                })
-                success_count += 1
+                processor = VBAJSONProcessor()
+                user_id = session.get('user_id') if 'user_id' in session else None
+                
+                result = processor.process_json(json_data, user_id, file.filename)
+                
+                if result.get('success'):
+                    results.append({
+                        'filename': file.filename,
+                        'status': 'success',
+                        'document_type': doc_type,
+                        'transactions': result.get('transaction_count', 0),
+                        'statement_id': result.get('statement_id'),
+                        'bank': result.get('bank'),
+                        'month': result.get('month')
+                    })
+                    success_count += 1
+                else:
+                    raise ValueError(result.get('message', '入库失败'))
             
             except Exception as e:
                 results.append({
