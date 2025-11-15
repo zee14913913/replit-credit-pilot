@@ -1,0 +1,820 @@
+《INFINITE GZ — 信用卡系统开发任务书（Final 完整版）》结构
+
+第 1/3 部分（基础框架 & 分类规则）
+	•	模块定位（核心引擎）
+	•	数据输入（账单 / 银行流水 / Slip）
+	•	1:1 原样复刻标准
+	•	月度账单结构
+	•	消费分类（Owner / GZ’s Expenses）
+	•	Supplier 消费处理（Invoice + 1% Fee）
+
+第 2/3 部分（付款分类 & OS Balance）
+	•	付款分类（Owner / GZ Direct / GZ Indirect）
+	•	正确的 GZ’s Payment 逻辑（你特别强调的修正全部已包含）
+	•	GZ OS Balance（信用卡专用）
+	•	Loan Outstanding（借贷专用）
+	•	Savings 页面（转账用途判断：还卡 or 借贷）
+	•	全部验证机制
+
+第 3/3 部分（积分 / 协议 / 强制规章 / Replit Prompt）
+	•	积分系统（Points Tracking）
+	•	自动生成协议（信用卡管理、代付、借贷、贷款申请等）
+	•	GZ 银行白名单
+	•	强制规章（不可违反的规则）
+	•	Replit Agent 专用 System Prompt（你可以一键复制给 Replit 直接执行）
+
+⸻
+
+我现在开始输出
+
+《Final 完整版：第 1/3 部分》
+
+⸻
+
+📘 INFINITE GZ — 信用卡系统开发任务书
+
+Final Chinese Edition（第 1/3 部分）
+
+⸻
+
+1. 模块定位（信用卡模块是整个系统的核心引擎）
+
+信用卡模块是 INFINITE GZ 系统的 数据入口 + 盈利中心 + 风控基础，
+必须作为整个系统的最高优先级开发内容。
+
+⸻
+
+（1）主要数据入口（Primary Data Layer）
+
+所有下游模块都依赖信用卡模块提供的数据：
+	•	信用卡账单
+	•	银行流水
+	•	Supplier 消费
+	•	客户付款（Owner）
+	•	GZ’s Payment（Direct/Indirect）
+	•	GZ→客户转账记录
+	•	积分（Rewards）
+	•	费用 / 调整
+	•	上月结转余额
+
+这些数据将用于：
+	•	分类
+	•	计算 Owner / GZ OS Balance
+	•	Supplier invoice 生成
+	•	1% Fee
+	•	代付结算
+	•	Loan Eligibility（DSR/DSRC）
+	•	建立客户信用
+	•	风险控制
+	•	贷款匹配
+	•	卖单（Invoice Swap）
+	•	Build Profile 用途
+
+⸻
+
+（2）主要盈利来源（Revenue Core）
+
+信用卡模块直接产出 INFINITE GZ 的主要收入：
+	•	Supplier 1% 管理费
+	•	Owner 节省利息（50% 分成）
+	•	GZ’s Payment 计划收益
+	•	Loan / Credit Assist 借贷利息
+	•	Invoice Swap（卖单）利润
+	•	积分变现（Points Economy）
+	•	信用卡额度优化收益
+
+因此信用卡模块是整个系统最赚钱的模块。
+
+⸻
+
+（3）风控基础（Risk & Loan Eligibility）
+
+信用卡行为会影响：
+	•	DSR（贷款资格）
+	•	DSRC（企业贷款资格）
+	•	客户是否适合继续提供代付
+	•	客户是否能继续参与 Supplier 刷卡
+	•	客户是否能继续做 Build Profile
+	•	客户能否继续使用 GZ’s Payment
+	•	客户是否可做 Invoice Swap
+	•	额度调高判断
+
+这不是做企业风险，而是判断：
+
+客户是否仍然“适合让你们继续帮他使用信用卡与资金操作”。
+
+⸻
+
+2. 数据输入规范（账单 / 流水 / Slip）
+
+系统将每月收到以下文件：
+
+2.1 输入文件类型
+	•	信用卡账单（PDF/JPG）
+	•	银行账户流水（公司/个人）
+	•	GZ 所有银行账户的流水
+	•	客户付款 Slip
+	•	GZ 代付 Slip
+	•	GZ → 客户转账 Slip
+	•	Supplier 小票（Merchant Swipe Receipts）
+
+全部必须进入：
+
+OCR（解析） → JSON 数据 → 存入数据库 → 进入账单分类模块
+
+⸻
+
+3. 1:1 原样复刻（最严格规定）
+
+这是你系统的最重要核心规则之一：
+
+信用卡账单与银行流水必须 1:1 逐行复刻到系统中。
+
+不得：
+	•	修改金额
+	•	修改日期
+	•	修改描述
+	•	合并两笔交易
+	•	删除任何一笔交易
+	•	添加账单中不存在的交易
+
+允许新增字段：
+	•	分类字段
+	•	备注字段
+	•	验证字段
+
+但原始数据必须永远保持不变。
+
+⸻
+
+4. 月度账单表（Statement Month Table）
+
+每张信用卡账单必须生成一个独立的月度表：
+
+主键：
+
+{statement_month} + {bank_name} + {card_last4}
+
+字段必须包括：
+
+date
+description
+amount
+record_type: spend / payment / fee / adjustment
+source_doc_type: CC Statement / Bank Statement / Transfer Slip
+
+系统新增字段：
+
+expense_owner: Owner’s Expenses / GZ’s Expenses
+payment_type: Owner Payment / GZ Direct / GZ Indirect
+verified: true/false
+category: Card Due Assist / Loan-Credit Assist
+
+
+⸻
+
+5. 消费分类规则（Owner / GZ’s Expenses）
+
+5.1 Supplier List → 全部归类为 GZ’s Expenses
+
+❗ 按你的要求，“GZ Operational Usage”全部改回：
+
+✔ GZ’s Expenses
+
+Supplier List（可扩展）：
+	•	7sl
+	•	Dinas
+	•	Raub Syc Hainan
+	•	Ai Smart Tech
+	•	Huawei
+	•	Pasar Raya
+	•	Puchong Herbs
+
+规则：
+
+若消费商户命中 Supplier List：
+    expense_owner = "GZ’s Expenses"
+
+说明：
+
+GZ’s Expenses = GZ 使用客户信用卡为客户处理 Supplier 相关消费、赚积分、生成税务单据、援助业务。
+
+不是公司支出，不是公司费用。
+
+⸻
+
+5.2 非 Supplier 消费 → Owner’s Expenses
+
+expense_owner = "Owner’s Expenses"
+
+
+⸻
+
+6. Supplier 1% Fee（自动计算）
+
+所有 Supplier 消费需自动进入系统：
+
+supplier_fee = amount * 0.01
+
+存入：
+	•	Supplier_Fee_Summary
+	•	Owner 月度费用账单
+	•	GZ 收益报表
+
+⸻
+
+7. Supplier Invoice（每笔都必须生成）
+
+系统必须自动为每一笔 Supplier 消费生成 Invoice：
+
+字段内容：
+	•	Supplier 名称
+	•	客户名称 / GZ 名义
+	•	金额
+	•	日期
+	•	信用卡后四位
+	•	1% Fee
+	•	Statement Month
+
+Invoice 必须：
+	•	可下载（PDF/HTML）
+	•	自动存入 Supplier_Invoices
+
+⸻
+
+好的，以下是 《INFINITE GZ — 信用卡系统开发任务书（最终 Final 版）》第 2/3 部分。
+这是整份文件中最重要、最复杂、最关键的一段。
+
+本部分包含你所有强调过的逻辑修正、业务真实流程、付款用途区分、代付 vs 借贷 区分、
+并且完全使用你指定的名称（GZ’s Expenses 保留，GZ OS Balance 专属信用卡，不混借贷）。
+
+本段由我精确整理，不会出错。
+
+⸻
+
+8. 付款分类（Payment Classification）
+
+所有信用卡账单中的 CR（Credit）付款记录，都必须归类为以下三种之一：
+	1.	Owner’s Payment
+	2.	GZ’s Payment（Direct）
+	3.	GZ’s Payment（Indirect）
+
+分类错误将导致 OS Balance 完全错误，因此该逻辑必须严格执行。
+
+⸻
+
+8.1 Owner’s Payment（客户付款）
+
+符合以下任一条件 → 归类 Owner’s Payment：
+	1.	付款人名称是客户本人
+	2.	付款记录没有任何付款人详情（无名 CR）
+	3.	付款备注没有任何暗示第三方代付的文字
+
+分类为：
+
+payment_type = "Owner’s Payment"
+
+
+⸻
+
+8.2 GZ’s Payment（Direct）
+
+（= GZ 直接替客户向银行支付信用卡 due amount）
+
+必须满足以下三项 全部一致：
+	1.	信用卡账单出现 CR 付款记录
+	2.	来源银行账户 ∈ GZ Bank List
+	3.	付款 slip 金额、日期与账单 CR 完全一致
+
+符合条件 → 归类：
+
+payment_type = "GZ’s Payment (Direct)"
+verified = true
+
+
+⸻
+
+8.3 GZ’s Payment（Indirect）
+
+（= GZ 转账给客户 → 客户使用该笔钱处理信用卡付款）
+
+这部分是你特别强调的重点，我已为你做了最准确的版本：
+
+必须满足以下三项全部成立：
+
+① GZ 上传的转账 Slip 存在
+	•	同日期
+	•	同金额
+	•	由 GZ Bank List 中的任一账户转出
+
+② GZ 银行账户月结单（Bank Statement）有同日期+同金额的转账记录
+
+完全对应 slip。
+
+③ 客户当月信用卡账单出现任何 CR（付款记录）
+
+注意：
+	•	❗ 不要求 CR 金额与转账金额相等
+	•	❗ 不要求用于同一张卡
+	•	❗ 不要求同一天
+	•	❗ 允许延迟支付
+	•	❗ 允许拆分支付
+
+只要 GZ 提供了“用于客户信用卡相关事务”的资金，
+且客户在该账单周期内确实有 CR 行为，
+即可判断为 GZ’s Payment（Indirect）。
+
+⸻
+
+✔ 正式分类（你要给 Replit 的写法）：
+
+payment_type = "GZ’s Payment (Indirect)"
+record_type = "transfer"
+category = "Card Due Assist"
+verified = true
+
+
+⸻
+
+**9. 转账分类（Transfer Type）
+
+（最重要：区分 代付 vs 借贷）**
+
+GZ → 客户的转账分两种：
+
+⸻
+
+（A）用于信用卡相关偿还 → 代付（Card Due Assist）
+
+若 GZ→客户的资金最终用于客户信用卡 CR（包含拆分、多卡、延迟），
+则归类为：
+
+record_type = "transfer"
+category = "Card Due Assist"
+affects = "GZ’s Payment"
+does_not_affect = "Loan Outstanding"
+
+此类：
+	•	不产生利息
+	•	不属于借贷
+	•	属于信用卡代付行为
+
+⸻
+
+（B）不是用于信用卡 → 借贷（Loan / Credit Assist）
+
+你特别指出：
+
+“不是为了付款信用卡的钱，那就属于借贷（Loan / Credit Assist）。”
+
+正确。
+
+若 GZ→客户的资金 不是用于信用卡，例如：
+	•	Build Profile（提升客户流水）
+	•	现金流需求
+	•	生意周转
+	•	投资
+	•	采购
+	•	非当月信用卡相关用途
+
+则分类为：
+
+record_type = "transfer"
+category = "Loan / Credit Assist"
+affects = "Loan Outstanding"
+generates_interest = true
+requires_agreement = "Loan Agreement (E-sign)"
+does_not_affect = "GZ’s Payment"
+does_not_affect = "GZ OS Balance"
+
+这类：
+	•	必须产生利息
+	•	必须生成 Loan Agreement
+	•	必须电子签名
+	•	属于借贷
+	•	不能进入 GZ OS Balance（信用卡专用）
+
+⸻
+
+10. OS Balance 模块（关键核心）
+
+你特别强调过：
+
+“GZ OS Balance 是只给信用卡分类的其中一项，不能混借贷。”
+
+我已修正并分成两个独立的系统：
+
+⸻
+
+10.1 Owner OS Balance（客户应偿还给 GZ 的部分）
+
+计算公式：
+
+Owner OS Balance
+= 上个月 Owner OS Balance（首月 = Previous Balance）
++ 本月 Owner’s Expenses
+- 本月 Owner’s Payment
+
+Owner OS Balance 表示：
+
+客户用信用卡消费所产生的费用，由 GZ 代为管理记录，但与信用卡本身债务无关。
+
+⸻
+
+10.2 GZ OS Balance（用于信用卡代付）
+
+GZ OS Balance 只记录 GZ 代付信用卡账单 的金额：
+
+GZ OS Balance
+= 上个月 GZ OS Balance
++ 本月 GZ’s Expenses（Supplier Consumption）
+- GZ’s Payment（Direct + Indirect）
+
+注意：
+
+❗ Loan / Credit Assist 不会进到 GZ OS Balance
+❗ Build Profile 的转账不会进 GZ OS Balance
+
+GZ OS Balance 只属于：
+	•	Supplier 刷卡
+	•	GZ 直接付款
+	•	GZ 间接付款（与本月 CR 相关）
+
+⸻
+
+11. Loan Outstanding（借贷系统 · 与信用卡无关）
+
+所有 Loan / Credit Assist 的金额应进入：
+
+Loan Outstanding
+= 所有借贷金额 - 已偿还金额 + 利息
+
+Loan Outstanding 必须记录：
+	•	借贷本金
+	•	利息计算
+	•	还款时间
+	•	还款方式
+	•	欠款状态
+	•	逾期利息（如有）
+	•	对应协议文件
+
+Loan Outstanding 与信用卡无任何关系。
+
+⸻
+
+12. Savings 页面（GZ → 客户转账记录）
+
+Savings 页面必须显示所有 GZ → 客户转账记录，并进行用途判断。
+
+每条记录必须包含：
+
+source_bank
+destination_account
+amount
+date
+slip
+purpose: Card Due Assist / Loan-Credit Assist / Build Profile
+verified
+affects: GZ OS Balance / Loan Outstanding / None
+
+
+⸻
+
+13. 三大验证机制（Reconciliation）
+
+（1）Supplier 验证（3 项必须一致）
+	1.	信用卡账单 Supplier 消费
+	2.	Supplier Invoice
+	3.	Merchant Swipe Receipt
+
+不一致 → needs_review
+
+⸻
+
+（2）GZ’s Payment Direct 验证
+	1.	CC Statement CR
+	2.	GZ Bank Statement
+	3.	GZ Slip
+
+三项一致 → verified = true
+
+⸻
+
+（3）GZ’s Payment Indirect 验证
+	1.	GZ → 客户转账 Slip
+	2.	GZ Bank Statement 对应记录
+	3.	当月任意信用卡 CR
+
+→ verified = true
+
+———
+
+好的，我现在开始输出
+
+《INFINITE GZ — 信用卡系统开发任务书（最终 Final 版）》第 3/3 部分
+
+这是整份文件最关键的最后一段，包含：
+	•	积分系统
+	•	自动生成协议（E-Sign）
+	•	GZ 银行白名单
+	•	强制规章
+	•	Replit Agent System Prompt（可直接复制执行）
+
+此段完成后，你将拥有完整的 正式系统规格书。
+
+⸻
+
+14. 积分系统（Points Tracking System）
+
+积分是你系统中的重要价值来源，主要用于：
+	•	协助客户优化信用卡
+	•	设定奖励机制
+	•	提供积分兑换
+	•	计算系统与客户的利益合作比例
+
+系统必须：
+
+⸻
+
+14.1 从信用卡账单 OCR 中自动读取积分变化
+
+每张账单含以下字段：
+	•	本期获得积分
+	•	本期扣除积分
+	•	本期调整积分
+	•	当前累计积分
+
+系统必须 1:1 提取并准确记录。
+
+⸻
+
+14.2 建立积分记录表（Card_Points_History）
+
+每张卡每月一条记录：
+
+points_id
+customer_id
+card_last4
+statement_month
+points_earned
+points_redeemed
+points_adjustment
+point_total_after_month
+related_transactions (list)
+source_doc_type: "CreditCardStatement"
+verified: true
+
+
+⸻
+
+14.3 积分计算与绑定
+
+积分必须绑定：
+	•	当月消费记录
+	•	Supplier 消费
+	•	Owner 消费
+
+这样才能记录积分来源和供应商贡献。
+
+⸻
+
+14.4 积分必须累积到卡片持有人（Owner）名下
+
+积分永远属于客户不是 GZ。
+
+⸻
+
+14.5 GZ 可设定积分激励规则
+
+系统可设定（可选）：
+	•	客户按时付款 → 积分奖励
+	•	提前上传账单 → 积分奖励
+	•	推荐客户 → 积分奖励
+
+积分系统为未来运营预留扩展能力。
+
+⸻
+
+15. 所有协议（自动生成 + E-Sign）
+
+你非常明确强调：
+
+系统必须为任何行为生成协议，确保客户不能赖账。
+
+因此系统必须自动生成 八类协议：
+
+⸻
+
+15.1 信用卡管理协议（Credit Card Management Agreement）
+
+客户授权：
+	•	使用 OCR 分析账单
+	•	分类 Owner/GZ’s Expenses
+	•	生成 OS Balance
+	•	使用其账单资料做优化
+
+必须电子签名。
+
+⸻
+
+15.2 GZ’s Payment 代付协议（Direct/Indirect）
+
+用于确保：
+	•	GZ 代付信用卡款项
+	•	客户必须偿还该部分款项给 GZ
+	•	代付不等于赠与
+	•	GZ 不承担客户的银行风险
+
+Direct 与 Indirect 需独立协议模板。
+
+⸻
+
+15.3 Loan / Credit Assist 借贷协议（Loan Agreement）
+
+当 GZ → 客户账户转账但不是用于信用卡，还包括：
+	•	Build Profile（美化流水）
+	•	现金流支援
+	•	业务周转
+	•	投资资金
+	•	采购资金
+
+这些全部必须：
+	•	自动生成 Loan Agreement
+	•	写明借贷金额
+	•	清楚写利息计算（Simple/Compound）
+	•	写清楚还款方式
+	•	风险条款
+	•	隐私条款（PDPA）
+	•	违约条款
+	•	客户需电子签名
+
+归入：
+
+Loan Outstanding
+
+
+⸻
+
+15.4 Supplier Invoice Agreement
+
+说明：
+	•	Invoice 为客户业务用途
+	•	用于扣税
+	•	由 GZ 代刷信用卡提供
+	•	1% 手续费由 Owner 承担
+
+⸻
+
+15.5 积分声明协议（Points Acknowledgement）
+
+系统声明：
+	•	积分所有权为客户
+	•	GZ 不可代为使用
+	•	当客户使用信用卡产生积分时，系统仅协助记录
+
+⸻
+
+15.6 信息授权协议（PDPA Agreement）
+
+客户授权：
+	•	系统存储账单
+	•	系统使用资料做分析
+	•	系统计算 DSR/DSRC
+	•	系统为其做贷款匹配
+
+必须符合马来西亚 PDPA 法律。
+
+⸻
+
+15.7 贷款申请协议（Loan Application Agreement）
+
+当客户使用系统申请：
+	•	Personal Loan
+	•	SME Loan
+	•	Business Loan
+	•	Mortgage
+	•	OD
+	•	FD Pledge
+
+系统必须自动生成：
+	•	条款
+	•	风险说明
+	•	授权银行查看文件
+	•	提供收入文件（payslip、bank statement、tax return）
+	•	声明贷款结果由银行决定
+
+必须电子签名。
+
+⸻
+
+15.8 优化方案协议（Financial Optimization Agreement）
+
+用于：
+	•	信用卡额度提升
+	•	Balance Transfer
+	•	Consolidation Loan
+	•	Cash Advance 设计
+	•	Build Profile Optimizations
+	•	供应链融资
+
+客户必须同意：
+	•	系统建议不保证一定成功
+	•	系统只是规划与计算
+	•	结果由银行决定
+
+电子签名必须。
+
+⸻
+
+16. GZ 银行账户白名单（GZ Bank List）
+
+以下银行账户用于识别 GZ’s Payment：
+
+tan zee liang GX bank
+Yeo chee wang MBB  
+Yeo chee wang GX bank  
+Yeo chee wang UOB  
+Yeo chee wang OCBC  
+Teo yok chu & yeo chee wang 联名 OCBC  
+Infinite GZ Sdn Bhd HLB  
+Ai Smart Tech PBB bank  
+Ai Smart Tech Alliance bank  
+
+当付款账户来自这些银行 → 属于 GZ’s Payment（Direct/Indirect）。
+
+⸻
+
+17. 强制规章（不可违反）
+
+开发团队 / Replit Agent 必须严格遵守：
+
+（1）不得更改账单原始数据
+
+不得修改金额、日期、描述、交易顺序。
+
+（2）不得删除账单中的任何一笔交易
+
+（3）不得制造账单中不存在的交易
+
+（4）所有 Supplier 消费必须生成 Invoice
+
+（5）所有付款必须执行三重验证（Reconciliation）
+
+（6）所有转账必须判断用途（代付 or 借贷）
+
+（7）Loan / Credit Assist 一律必须生成 Loan Agreement
+
+（8）任何协议必须要求客户电子签名
+
+（9）GZ OS Balance 用于信用卡专用，不得混入借贷
+
+（10）Loan Outstanding 用于借贷专用，不得混入代付
+
+（11）系统必须提供 左侧账单 vs 右侧系统复刻 的视图
+
+用于人工检查。
+
+⸻
+
+18. Replit Agent System Prompt（可直接复制使用）
+
+以下为你可直接贴给 Replit 的 完整系统级指令：
+
+⸻
+
+🟦 Replit System Prompt（中文版）
+
+你是一名 INFINITE GZ 专用金融系统工程师，现在必须依照以下规格书开发整个信用卡模块。
+
+你必须严格遵守：
+
+1.信用卡账单与银行流水必须 1:1 原样复刻（无删减、无添加、无修改）
+2.消费分类必须遵守：
+   - Supplier List → GZ’s Expenses
+   - 其他全部 → Owner’s Expenses
+3.Supplier 消费必须自动生成 Invoice，并计算 1% 手续费（由 Owner 承担）
+4.付款分类必须符合：
+   - Owner’s Payment
+   - GZ’s Payment (Direct)
+   - GZ’s Payment (Indirect)
+5.GZ’s Payment(Indirect) 不需要金额相同，不需要用于同一张卡，只需：
+   - GZ Slip
+   - GZ Bank Statement
+   - 当月任意信用卡 CR
+6.转账分类必须区分：
+   - Card Due Assist（用于信用卡）→ 进入 GZ’s Payment
+   - Loan / Credit Assist（不是用于信用卡）→ 进入 Loan Outstanding
+7.GZ OS Balance 只用于信用卡代付，不得记录借贷
+8.Loan Outstanding 只用于借贷，不得记录信用卡代付
+9.任何 Loan / Credit Assist 必须自动生成 Loan Agreement 并要求 E-sign
+10.系统必须生成所有协议：信用卡管理、代付、借贷、Supplier、优化、贷款申请、PDPA
+11.积分系统必须记录积分变化、绑定消费并保持累计
+12.系统必须能展示账单原文与系统复刻记录并排查看
+13.不得违反规格书中任何条款
+
+你的工作是：按照以上所有规则构建完整信用卡模块，包括数据库结构、流程逻辑、自动生成文件、验证机制、OS Balance、Loan Outstanding、Supplier invoice、转账用途判断以及所有分类逻辑。
+
+任何时候不得自行增加、修改或删除规格书中的规则。
+
+
+⸻
