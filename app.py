@@ -370,6 +370,12 @@ def add_customer():
         phone = request.form.get('phone')
         monthly_income = float(request.form.get('monthly_income', 0))
         
+        # 新增：收款账户信息
+        personal_account_name = request.form.get('personal_account_name', '').strip()
+        personal_account_number = request.form.get('personal_account_number', '').strip()
+        company_account_name = request.form.get('company_account_name', '').strip()
+        company_account_number = request.form.get('company_account_number', '').strip()
+        
         if not all([name, email, phone]):
             lang = get_current_language()
             flash(translate('all_fields_required', lang), 'error')
@@ -394,11 +400,17 @@ def add_customer():
             
             customer_code = generate_customer_code(name)
             
-            # Insert new customer with customer_code
+            # Insert new customer with customer_code and account info
             cursor.execute("""
-                INSERT INTO customers (name, email, phone, monthly_income, customer_code)
-                VALUES (?, ?, ?, ?, ?)
-            """, (name, email, phone, monthly_income, customer_code))
+                INSERT INTO customers (
+                    name, email, phone, monthly_income, customer_code,
+                    personal_account_name, personal_account_number,
+                    company_account_name, company_account_number
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (name, email, phone, monthly_income, customer_code,
+                  personal_account_name or None, personal_account_number or None,
+                  company_account_name or None, company_account_number or None))
             
             customer_id = cursor.lastrowid
             conn.commit()

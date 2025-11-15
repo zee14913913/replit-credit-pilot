@@ -54,6 +54,57 @@
                                placeholder="{{ t('eg_income') }}">
                     </div>
 
+                    <!-- 收款账户信息区域 -->
+                    <div class="mb-4" style="border-top: 2px solid rgba(255,0,127,0.3); padding-top: 1.5rem;">
+                        <h5 style="color: #FF007F; font-weight: 700; margin-bottom: 1rem;">
+                            <i class="bi bi-bank"></i> 收款账户信息 <small style="color: rgba(255,255,255,0.6); font-size: 0.85rem;">(用于GZ转账)</small>
+                        </h5>
+                        
+                        <!-- 私人账户 -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="personalAccountName" class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
+                                    <i class="bi bi-person-badge"></i> 私人账户名
+                                </label>
+                                <input type="text" class="form-control" id="personalAccountName" name="personal_account_name"
+                                       style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,0,127,0.2); color: #FFFFFF; font-weight: 500; padding: 0.75rem;"
+                                       placeholder="例：CHEOK JUN YOON">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="personalAccountNumber" class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
+                                    <i class="bi bi-credit-card-2-front"></i> 私人账户号码
+                                </label>
+                                <input type="text" class="form-control" id="personalAccountNumber" name="personal_account_number"
+                                       style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,0,127,0.2); color: #FFFFFF; font-weight: 500; padding: 0.75rem;"
+                                       placeholder="例：1234567890123">
+                            </div>
+                        </div>
+
+                        <!-- 公司账户 -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="companyAccountName" class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
+                                    <i class="bi bi-building"></i> 公司账户名
+                                </label>
+                                <input type="text" class="form-control" id="companyAccountName" name="company_account_name"
+                                       style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,0,127,0.2); color: #FFFFFF; font-weight: 500; padding: 0.75rem;"
+                                       placeholder="例：CJY TRADING SDN BHD">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="companyAccountNumber" class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
+                                    <i class="bi bi-credit-card-2-back"></i> 公司账户号码
+                                </label>
+                                <input type="text" class="form-control" id="companyAccountNumber" name="company_account_number"
+                                       style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,0,127,0.2); color: #FFFFFF; font-weight: 500; padding: 0.75rem;"
+                                       placeholder="例：9876543210987">
+                            </div>
+                        </div>
+                        
+                        <small style="color: rgba(255,255,255,0.6); display: block; margin-top: 0.75rem;">
+                            <i class="bi bi-info-circle"></i> 这些账户将用于GZ转账付款信用卡或Build流水
+                        </small>
+                    </div>
+
                     <div class="alert-professional alert-info-pro mb-4">
                         <i class="bi bi-lightbulb"></i> <strong>{{ t('next_steps') }}:</strong><br>
                         {{ t('after_adding_customer') }}<br>
