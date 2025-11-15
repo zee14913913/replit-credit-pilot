@@ -108,75 +108,220 @@ class InfiniteGZClassificationEngine:
         self.gz_bank_list_cache = gz_banks
         return gz_banks
     
-    def check_gz_indirect_payment(
+    def find_available_gz_transfers(
         self,
         customer_id: int,
-        statement_month: str
-    ) -> Tuple[bool, List[Dict]]:
+        statement_month: str,
+        payment_amount: float,
+        payment_date: str
+    ) -> List[Dict]:
         """
-        检测GZ's Payment (Indirect)
+        查找可用的GZ转账（有剩余余额）
         
-        任务书第8.3节（关键逻辑）：
-        必须满足以下三项全部成立：
-        ① GZ上传的转账Slip存在（同日期+同金额）
-        ② GZ银行账户月结单有对应记录
-        ③ 客户当月信用卡账单出现任意CR
-        
-        ⚠️ 关键特性：
-        - 不要求CR金额与转账金额相等
-        - 不要求用于同一张卡
-        - 不要求同一天
-        - 允许延迟支付
-        - 允许拆分支付
+        完整余额追踪系统：
+        - 仅返回Card Due Assist类型的转账
+        - 仅返回有剩余余额的转账
+        - 按转账日期排序（先使用旧的转账）
         
         Returns:
-            (is_gz_indirect, matching_transfers)
+            List of available transfers with remaining_balance
         """
         conn = self.get_db_connection()
         cursor = conn.cursor()
         
-        # 查询当月该客户的GZ转账记录
+        # 查询可用的GZ转账（Card Due Assist + 有余额）
+        # 允许±1个月的settlement window
         cursor.execute('''
-            SELECT id, source_bank, destination_account, amount, transfer_date, slip_file_path, purpose
+            SELECT id, source_bank, destination_account, amount, 
+                   transfer_date, slip_file_path, purpose, remaining_balance
             FROM gz_transfer_records
             WHERE customer_id = ? 
-            AND strftime('%Y-%m', transfer_date) = ?
+            AND purpose = 'Card Due Assist'
             AND verified = 1
-        ''', (customer_id, statement_month[:7]))
+            AND remaining_balance > 0
+            AND (
+                strftime('%Y-%m', transfer_date) = ?
+                OR strftime('%Y-%m', transfer_date) = date(? || '-01', '-1 month', 'start of month')
+                OR strftime('%Y-%m', transfer_date) = date(? || '-01', '+1 month', 'start of month')
+            )
+            ORDER BY transfer_date ASC
+        ''', (customer_id, statement_month[:7], statement_month[:7], statement_month[:7]))
         
         transfers = cursor.fetchall()
-        
-        if transfers:
-            # ⚠️ 修复：添加SQL参数绑定，避免ProgrammingError
-            cursor.execute('''
-                SELECT COUNT(*) 
-                FROM monthly_statement_transactions
-                WHERE customer_id = ?
-                AND statement_month = ?
-                AND record_type = 'payment'
-            ''', (customer_id, statement_month))
-            
-            has_cr = cursor.fetchone()[0] > 0
-            
-            if has_cr:
-                # 有转账 + 有CR = GZ's Payment (Indirect)
-                transfer_list = []
-                for trans in transfers:
-                    transfer_list.append({
-                        'id': trans[0],
-                        'source_bank': trans[1],
-                        'destination_account': trans[2],
-                        'amount': trans[3],
-                        'transfer_date': trans[4],
-                        'slip_file_path': trans[5],
-                        'purpose': trans[6]
-                    })
-                
-                conn.close()
-                return (True, transfer_list)
-        
         conn.close()
-        return (False, [])
+        
+        transfer_list = []
+        for trans in transfers:
+            transfer_list.append({
+                'id': trans[0],
+                'source_bank': trans[1],
+                'destination_account': trans[2],
+                'amount': trans[3],
+                'transfer_date': trans[4],
+                'slip_file_path': trans[5],
+                'purpose': trans[6],
+                'remaining_balance': trans[7]
+            })
+        
+        return transfer_list
+    
+    def match_payment_to_transfer(
+        self,
+        payment_amount: float,
+        payment_description: str,
+        card_last4: Optional[str],
+        available_transfers: List[Dict]
+    ) -> Optional[Dict]:
+        """
+        匹配付款到GZ转账
+        
+        匹配启发式（满足任意一项即可）：
+        1. 金额相近（±20%容差）
+        2. 描述包含GZ银行关键词
+        
+        ⭐ 关键约束：仅匹配 remaining_balance >= payment_amount 的转账
+        防止余额变负数
+        
+        优先使用最早的转账（FIFO原则）
+        
+        Returns:
+            Matched transfer dict or None
+        """
+        description_lower = payment_description.lower()
+        gz_keywords = ['fpx', 'gz', 'yeo', 'tan', 'infinite']
+        
+        for transfer in available_transfers:
+            # ⭐ 硬性约束：余额必须足够
+            if transfer['remaining_balance'] < payment_amount:
+                continue  # 跳过余额不足的转账
+            
+            # 启发式1：金额相近（±20%）
+            amount_match = (
+                payment_amount <= transfer['remaining_balance'] * 1.2 and
+                payment_amount >= transfer['remaining_balance'] * 0.5
+            )
+            
+            # 启发式2：描述包含GZ关键词
+            description_match = any(kw in description_lower for kw in gz_keywords)
+            
+            # 如果任意启发式匹配，返回该转账
+            if amount_match or description_match:
+                return transfer
+        
+        # ⭐ 兜底：仅使用余额充足的最早转账
+        for transfer in available_transfers:
+            if transfer['remaining_balance'] >= payment_amount:
+                return transfer
+        
+        # 无匹配
+        return None
+    
+    def allocate_payment_to_transfer(
+        self,
+        transfer_id: int,
+        transaction_id: int,
+        allocated_amount: float,
+        notes: Optional[str] = None
+    ) -> bool:
+        """
+        分配付款到GZ转账，更新余额
+        
+        ⭐ 安全guard：防止余额变负数
+        
+        Returns:
+            True if allocation successful, False if insufficient balance
+        """
+        conn = self.get_db_connection()
+        cursor = conn.cursor()
+        
+        try:
+            # ⭐ Guard 1：检查当前余额
+            cursor.execute('''
+                SELECT remaining_balance 
+                FROM gz_transfer_records 
+                WHERE id = ?
+            ''', (transfer_id,))
+            
+            row = cursor.fetchone()
+            if not row:
+                conn.close()
+                print(f"❌ 转账记录不存在: ID {transfer_id}")
+                return False
+            
+            current_balance = row[0]
+            
+            # ⭐ Guard 2：防止余额变负数
+            if current_balance < allocated_amount:
+                conn.close()
+                print(f"❌ 余额不足: 剩余RM {current_balance:.2f}，需要RM {allocated_amount:.2f}")
+                return False
+            
+            # 记录分配关联
+            cursor.execute('''
+                INSERT INTO gz_transfer_payment_links (
+                    transfer_id, transaction_id, allocated_amount, notes
+                ) VALUES (?, ?, ?, ?)
+            ''', (transfer_id, transaction_id, allocated_amount, notes))
+            
+            # 更新转账剩余余额
+            cursor.execute('''
+                UPDATE gz_transfer_records
+                SET remaining_balance = remaining_balance - ?
+                WHERE id = ?
+            ''', (allocated_amount, transfer_id))
+            
+            conn.commit()
+            conn.close()
+            return True
+        except Exception as e:
+            conn.rollback()
+            conn.close()
+            print(f"❌ 分配失败: {e}")
+            return False
+    
+    def check_gz_indirect_payment(
+        self,
+        customer_id: int,
+        statement_month: str,
+        payment_amount: float,
+        payment_date: str,
+        payment_description: str,
+        card_last4: Optional[str] = None
+    ) -> Tuple[bool, Optional[Dict]]:
+        """
+        检测GZ's Payment (Indirect) - 完整余额追踪版本
+        
+        任务书第8.3节：
+        - 查找可用的Card Due Assist转账
+        - 应用匹配启发式
+        - 仅标记可匹配的付款为Indirect
+        
+        Returns:
+            (is_gz_indirect, matched_transfer)
+        """
+        # 查找可用的GZ转账
+        available_transfers = self.find_available_gz_transfers(
+            customer_id,
+            statement_month,
+            payment_amount,
+            payment_date
+        )
+        
+        if not available_transfers:
+            return (False, None)
+        
+        # 匹配付款到转账
+        matched_transfer = self.match_payment_to_transfer(
+            payment_amount,
+            payment_description,
+            card_last4,
+            available_transfers
+        )
+        
+        if matched_transfer:
+            return (True, matched_transfer)
+        
+        return (False, None)
     
     def classify_payment_type(
         self, 
@@ -184,10 +329,12 @@ class InfiniteGZClassificationEngine:
         amount: float,
         customer_id: int,
         statement_month: str,
+        payment_date: str,
+        card_last4: Optional[str] = None,
         check_indirect: bool = True
     ) -> Dict:
         """
-        完整的付款分类逻辑
+        完整的付款分类逻辑 - 支持余额追踪
         
         任务书第8节：付款分类（Payment Classification）
         
@@ -196,7 +343,7 @@ class InfiniteGZClassificationEngine:
                 'payment_type': str,  # Owner Payment / GZ Direct / GZ Indirect
                 'verified': bool,
                 'matched_gz_bank': str,  # 如果是Direct
-                'matched_transfers': list  # 如果是Indirect
+                'matched_transfer': dict  # 如果是Indirect（单个匹配的转账）
             }
         """
         gz_banks = self.load_gz_bank_list()
@@ -209,21 +356,25 @@ class InfiniteGZClassificationEngine:
                     'payment_type': 'GZ Direct',
                     'verified': True,
                     'matched_gz_bank': gz_bank,
-                    'matched_transfers': []
+                    'matched_transfer': None
                 }
         
-        # 检查GZ Indirect
+        # 检查GZ Indirect（完整余额追踪）
         if check_indirect:
-            is_indirect, transfers = self.check_gz_indirect_payment(
+            is_indirect, matched_transfer = self.check_gz_indirect_payment(
                 customer_id,
-                statement_month
+                statement_month,
+                amount,
+                payment_date,
+                description,
+                card_last4
             )
-            if is_indirect:
+            if is_indirect and matched_transfer:
                 return {
                     'payment_type': 'GZ Indirect',
                     'verified': True,
                     'matched_gz_bank': None,
-                    'matched_transfers': transfers
+                    'matched_transfer': matched_transfer
                 }
         
         # 默认：Owner Payment
@@ -231,7 +382,7 @@ class InfiniteGZClassificationEngine:
             'payment_type': 'Owner Payment',
             'verified': False,
             'matched_gz_bank': None,
-            'matched_transfers': []
+            'matched_transfer': None
         }
     
     # ========== 任务书第9节：转账分类 ==========
@@ -251,7 +402,7 @@ class InfiniteGZClassificationEngine:
         (A) Card Due Assist（代付）：
             - GZ→客户的资金用于客户信用卡CR
             - 不产生利息
-            - 进入GZ's Payment
+            - 进入GZ OS Balance
         
         (B) Loan / Credit Assist（借贷）：
             - GZ→客户的资金不是用于信用卡
@@ -264,7 +415,7 @@ class InfiniteGZClassificationEngine:
             {
                 'purpose': str,  # Card Due Assist / Loan-Credit Assist
                 'category': str,
-                'affects': str,  # GZ's Payment / Loan Outstanding
+                'affects': str,  # GZ OS Balance / Loan Outstanding
                 'generates_interest': bool
             }
         """
@@ -292,7 +443,7 @@ class InfiniteGZClassificationEngine:
             return {
                 'purpose': 'Card Due Assist',
                 'category': 'Card Due Assist',
-                'affects': 'GZ\'s Payment',
+                'affects': 'GZ OS Balance',  # ⭐ 修复CHECK约束
                 'generates_interest': False
             }
         else:
@@ -316,6 +467,7 @@ class InfiniteGZClassificationEngine:
         """
         记录GZ→客户转账
         自动分类用途（Card Due Assist / Loan-Credit Assist）
+        初始化remaining_balance = amount
         """
         # 分类转账用途
         classification = self.classify_transfer_purpose(
@@ -327,14 +479,14 @@ class InfiniteGZClassificationEngine:
         conn = self.get_db_connection()
         cursor = conn.cursor()
         
-        # 插入转账记录
+        # 插入转账记录（包含remaining_balance）
         cursor.execute('''
             INSERT INTO gz_transfer_records (
                 customer_id, source_bank, destination_account,
                 amount, transfer_date, slip_file_path,
                 purpose, verified, affects,
-                linked_statement_month, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)
+                linked_statement_month, remaining_balance, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)
         ''', (
             customer_id,
             source_bank,
@@ -345,6 +497,7 @@ class InfiniteGZClassificationEngine:
             classification['purpose'],
             classification['affects'],
             transfer_date[:7],  # statement_month
+            amount,  # ⭐ 初始化remaining_balance = amount
             datetime.now()
         ))
         
@@ -435,20 +588,22 @@ class InfiniteGZClassificationEngine:
                     classified['supplier_fee'] = 0
                 
             elif trans['record_type'] == 'payment':
-                # 付款分类（自动检查GZ转账）
+                # 付款分类（完整余额追踪）
                 payment_result = self.classify_payment_type(
                     trans['description'],
                     trans['amount'],
                     trans['customer_id'],
                     trans['statement_month'],
+                    trans.get('date', trans.get('payment_date', '')),  # payment_date
+                    trans.get('card_last4'),  # card_last4 (optional)
                     check_indirect=True
                 )
                 classified['payment_type'] = payment_result.get('payment_type', 'Owner Payment')
                 classified['verified'] = 1 if payment_result.get('verified', False) else 0
                 
                 # 安全提取可选字段
-                if payment_result.get('matched_transfers'):
-                    classified['matched_transfers'] = payment_result['matched_transfers']
+                if payment_result.get('matched_transfer'):
+                    classified['matched_transfer'] = payment_result['matched_transfer']
                 if payment_result.get('matched_gz_bank'):
                     classified['matched_gz_bank'] = payment_result['matched_gz_bank']
             
@@ -463,6 +618,8 @@ class InfiniteGZClassificationEngine:
         保存分类后的交易到数据库
         
         任务书第4节：月度账单表必须包含所有字段
+        
+        ⭐ 如果payment_type='GZ Indirect'，自动分配到GZ转账并更新余额
         """
         conn = self.get_db_connection()
         cursor = conn.cursor()
@@ -499,6 +656,37 @@ class InfiniteGZClassificationEngine:
         transaction_id = cursor.lastrowid
         conn.commit()
         conn.close()
+        
+        # ⭐ 如果是GZ Indirect付款，自动分配到转账并更新余额
+        if (transaction.get('payment_type') == 'GZ Indirect' and 
+            transaction.get('matched_transfer')):
+            
+            matched_transfer = transaction['matched_transfer']
+            allocated_amount = min(transaction['amount'], matched_transfer['remaining_balance'])
+            
+            allocation_success = self.allocate_payment_to_transfer(
+                transfer_id=matched_transfer['id'],
+                transaction_id=transaction_id,
+                allocated_amount=allocated_amount,
+                notes=f"Auto-allocated from payment on {transaction.get('date')}"
+            )
+            
+            # ⭐ 处理分配失败（并发耗尽余额）
+            if not allocation_success:
+                print(f"⚠️ 分配失败！重新分类为Owner Payment（ID: {transaction_id}）")
+                
+                # 更新交易分类为Owner Payment
+                conn = self.get_db_connection()
+                cursor = conn.cursor()
+                cursor.execute('''
+                    UPDATE monthly_statement_transactions
+                    SET payment_type = 'Owner Payment', verified = 0
+                    WHERE id = ?
+                ''', (transaction_id,))
+                conn.commit()
+                conn.close()
+                
+                print(f"✓ 交易已重新分类为Owner Payment")
         
         return transaction_id
     
