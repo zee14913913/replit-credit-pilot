@@ -122,7 +122,8 @@
         document.getElementById(`btn-${filter}`).classList.add('btn-action');
         
         const container = document.getElementById('notificationsList');
-        container.innerHTML = '<div class="text-center" style="padding: 40px;"><i class="bi bi-hourglass-split"></i> 加载中...</div>';
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+        container.innerHTML = `<div class="text-center" style="padding: 40px;"><i class="bi bi-hourglass-split"></i> ${t('loading', 'Loading...')}</div>`;
         
         try {
             const apiBaseUrl = `${window.location.protocol}//${window.location.hostname}:8000`;

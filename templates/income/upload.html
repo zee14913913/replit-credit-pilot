@@ -82,10 +82,10 @@
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-lg" 
                                     style="background: linear-gradient(135deg, #FF007F, #FF4DA6); color: white; font-weight: 700;">
-                                <i class="bi bi-upload"></i> Upload Document
+                                <i class="bi bi-upload"></i> {{ t('upload_document') }}
                             </button>
                             <a href="{{ url_for('income_home') }}" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left"></i> Back
+                                <i class="bi bi-arrow-left"></i> {{ t('back') }}
                             </a>
                         </div>
                     </form>
@@ -96,7 +96,7 @@
                             <div class="progress-bar progress-bar-striped progress-bar-animated" 
                                  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" 
                                  style="width: 100%; background: #FF007F;">
-                                Processing OCR...
+                                {{ t('processing_ocr') }}
                             </div>
                         </div>
                     </div>
@@ -136,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('incomeUploadForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
+        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         const formData = new FormData(this);
         const progressDiv = document.getElementById('uploadProgress');
         const resultDiv = document.getElementById('uploadResult');
@@ -159,19 +160,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Success message
                 resultDiv.innerHTML = `
                     <div class="alert alert-success">
-                        <h5><i class="bi bi-check-circle"></i> Upload Successful!</h5>
+                        <h5><i class="bi bi-check-circle"></i> ${t('upload_successful', 'Upload Successful!')}</h5>
                         <hr>
-                        <p><strong>Customer:</strong> ${result.customer_name}</p>
-                        <p><strong>Document Type:</strong> ${result.document_type}</p>
-                        <p><strong>Month:</strong> ${result.document_month}</p>
+                        <p><strong>${t('customer', 'Customer')}:</strong> ${result.customer_name}</p>
+                        <p><strong>${t('document_type', 'Document Type')}:</strong> ${result.document_type}</p>
+                        <p><strong>${t('month', 'Month')}:</strong> ${result.document_month}</p>
                         <hr>
-                        <h6 style="color: #FF007F;"><i class="bi bi-magic"></i> OCR Results</h6>
-                        <p><strong>Income Detected:</strong> RM ${result.ocr_result.income_detected.toFixed(2)}</p>
-                        <p><strong>Confidence:</strong> ${(result.ocr_result.confidence * 100).toFixed(1)}%</p>
-                        <p><strong>Method:</strong> ${result.ocr_result.method}</p>
-                        <p><strong>Text Length:</strong> ${result.ocr_result.text_length} characters</p>
+                        <h6 style="color: #FF007F;"><i class="bi bi-magic"></i> ${t('ocr_results', 'OCR Results')}</h6>
+                        <p><strong>${t('income_detected', 'Income Detected')}:</strong> RM ${result.ocr_result.income_detected.toFixed(2)}</p>
+                        <p><strong>${t('confidence', 'Confidence')}:</strong> ${(result.ocr_result.confidence * 100).toFixed(1)}%</p>
+                        <p><strong>${t('method', 'Method')}:</strong> ${result.ocr_result.method}</p>
+                        <p><strong>${t('text_length', 'Text Length')}:</strong> ${result.ocr_result.text_length} ${t('characters', 'characters')}</p>
                         <hr>
-                        <a href="/income" class="btn btn-primary">View All Documents</a>
+                        <a href="/income" class="btn btn-primary">${t('view_all_documents', 'View All Documents')}</a>
                     </div>
                 `;
                 resultDiv.style.display = 'block';
@@ -181,20 +182,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('document_month').value = currentMonth;
             } else {
                 // Error message
+                console.error('Upload failed:', result.detail || result.message);
                 resultDiv.innerHTML = `
                     <div class="alert alert-danger">
-                        <h5><i class="bi bi-exclamation-triangle"></i> Upload Failed</h5>
-                        <p>${result.detail || result.message || 'Unknown error'}</p>
+                        <h5><i class="bi bi-exclamation-triangle"></i> ${t('upload_failed', 'Upload Failed')}</h5>
+                        <p>${t('upload_error_message', 'An error occurred during upload. Please check the file and try again.')}</p>
                     </div>
                 `;
                 resultDiv.style.display = 'block';
             }
         } catch (error) {
+            console.error('Upload exception:', error);
             progressDiv.style.display = 'none';
             resultDiv.innerHTML = `
                 <div class="alert alert-danger">
-                    <h5><i class="bi bi-exclamation-triangle"></i> Error</h5>
-                    <p>${error.message}</p>
+                    <h5><i class="bi bi-exclamation-triangle"></i> ${t('error', 'Error')}</h5>
+                    <p>${t('network_error_message', 'Network error occurred. Please check your connection and try again.')}</p>
                 </div>
             `;
             resultDiv.style.display = 'block';

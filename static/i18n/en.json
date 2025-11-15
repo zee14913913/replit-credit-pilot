@@ -1155,11 +1155,11 @@
   "customer_1": "Customer:",
   "document_type_1": "Document Type:",
   "month_1": "Month:",
-  "ocr_results": "OCR Results:",
+  "ocr_results": "OCR Results",
   "income_detected_1": "Income Detected:",
   "confidence_1": "Confidence:",
-  "method": "Method:",
-  "text_length": "Text Length:",
+  "method": "Method",
+  "text_length": "Text Length",
   "view_all_documents": "View All Documents",
   "ctos_company_consent_title": "CTOS Company Consent - Company Credit Report Authorization",
   "company_info_section": "Company Information",
@@ -2146,5 +2146,9 @@
   "key_plaintext_one_time_warning": "The key plaintext will only be shown once during creation. Please save it securely!",
   "api_key_created_successfully": "API Key Created Successfully",
   "copy_save_key_immediately": "Please copy and save this key immediately",
-  "key_shown_once_warning": "The key plaintext will only be shown once. It cannot be viewed again after closing."
+  "key_shown_once_warning": "The key plaintext will only be shown once. It cannot be viewed again after closing.",
+  "characters": "characters",
+  "unknown_error": "Unknown error",
+  "upload_error_message": "An error occurred during upload. Please check the file and try again.",
+  "network_error_message": "Network error occurred. Please check your connection and try again."
 }
