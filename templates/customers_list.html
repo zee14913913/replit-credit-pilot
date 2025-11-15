@@ -18,13 +18,14 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th style="width: 20%;">客户名称</th>
-                        <th style="width: 12%;">客户代码</th>
-                        <th style="width: 25%;">收款账户</th>
-                        <th style="width: 18%;">联系方式</th>
-                        <th style="width: 10%; text-align: center;">信用卡</th>
-                        <th style="width: 10%; text-align: center;">储蓄账户</th>
-                        <th style="width: 5%; text-align: center;">操作</th>
+                        <th style="width: 18%;">客户名称</th>
+                        <th style="width: 10%;">客户代码</th>
+                        <th style="width: 24%;">收款账户</th>
+                        <th style="width: 15%;">电子邮件</th>
+                        <th style="width: 10%;">联系号码</th>
+                        <th style="width: 8%; text-align: center;">信用卡</th>
+                        <th style="width: 8%; text-align: center;">储蓄账户</th>
+                        <th style="width: 7%; text-align: center;">操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,7 +33,7 @@
                         {% for customer in customers %}
                         <tr>
                             <td>
-                                <div class="customer-name">{{ customer.name }}</div>
+                                <div class="customer-name">{{ customer.name | upper }}</div>
                             </td>
                             <td>
                                 <span class="badge-purple">{{ customer.customer_code }}</span>
@@ -55,10 +56,20 @@
                             </td>
                             <td>
                                 <div class="single-line">
-                                    {% if customer.email %}<span>{{ customer.email }}</span>{% endif %}
-                                    {% if customer.email and customer.phone %} · {% endif %}
-                                    {% if customer.phone %}<span>{{ customer.phone }}</span>{% endif %}
-                                    {% if not customer.email and not customer.phone %}<span class="text-muted-custom">-</span>{% endif %}
+                                    {% if customer.email %}
+                                        <span style="color: rgba(255,255,255,0.9);">{{ customer.email }}</span>
+                                    {% else %}
+                                        <span class="text-muted-custom">-</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="single-line">
+                                    {% if customer.phone %}
+                                        <span style="color: rgba(255,255,255,0.9);">{{ customer.phone }}</span>
+                                    {% else %}
+                                        <span class="text-muted-custom">-</span>
+                                    {% endif %}
                                 </div>
                             </td>
                             <td style="text-align: center;">
@@ -93,7 +104,7 @@
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="7" class="text-center" style="padding: 2rem;">
+                            <td colspan="8" class="text-center" style="padding: 2rem;">
                                 <i class="bi bi-inbox" style="font-size: 2rem; color: #666;"></i><br>
                                 <span class="text-muted-custom">暂无客户数据</span>
                             </td>
