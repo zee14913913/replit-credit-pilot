@@ -6984,6 +6984,171 @@ def detect_bank_format():
         }), 500
 
 
+# ==================== VBA-JSON Upload API (Hybrid Architecture) ====================
+# 混合架构：VBA客户端处理 + Replit接收标准JSON
+
+@app.route('/api/upload/vba-json', methods=['POST'])
+@require_admin_or_accountant
+def upload_vba_json():
+    """
+    接收VBA处理后的标准JSON数据
+    混合架构：VBA在Windows客户端解析，Replit接收入库
+    """
+    try:
+        if 'file' not in request.files:
+            return jsonify({
+                'status': 'error',
+                'message': '未选择JSON文件'
+            }), 400
+        
+        file = request.files['file']
+        
+        if file.filename == '':
+            return jsonify({
+                'status': 'error',
+                'message': '文件名为空'
+            }), 400
+        
+        if not file.filename.endswith('.json'):
+            return jsonify({
+                'status': 'error',
+                'message': '文件格式错误，请上传JSON文件'
+            }), 400
+        
+        # 读取JSON内容
+        import json
+        json_data = json.load(file)
+        
+        # 验证JSON格式
+        if 'status' not in json_data or json_data['status'] != 'success':
+            return jsonify({
+                'status': 'error',
+                'message': 'JSON格式错误：缺少status字段或status不为success'
+            }), 400
+        
+        if 'document_type' not in json_data:
+            return jsonify({
+                'status': 'error',
+                'message': 'JSON格式错误：缺少document_type字段'
+            }), 400
+        
+        doc_type = json_data['document_type']
+        
+        if doc_type not in ['credit_card', 'bank_statement']:
+            return jsonify({
+                'status': 'error',
+                'message': f'不支持的document_type: {doc_type}'
+            }), 400
+        
+        # TODO: 实际入库逻辑（需要根据您的数据库结构实现）
+        # 这里仅返回验证成功的响应
+        
+        logger.info(f"VBA-JSON上传成功: {file.filename}, 类型: {doc_type}")
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'JSON数据接收成功',
+            'document_type': doc_type,
+            'parsed_by': json_data.get('parsed_by', 'Unknown'),
+            'parsed_at': json_data.get('parsed_at', ''),
+            'total_transactions': json_data.get('summary', {}).get('total_transactions', 0)
+        }), 200
+    
+    except json.JSONDecodeError as e:
+        return jsonify({
+            'status': 'error',
+            'message': f'JSON解析失败: {str(e)}'
+        }), 400
+    except Exception as e:
+        logger.error(f"VBA-JSON upload error: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'文件处理失败: {str(e)}'
+        }), 500
+
+
+@app.route('/api/upload/vba-batch', methods=['POST'])
+@require_admin_or_accountant
+def upload_vba_batch():
+    """
+    批量接收VBA处理后的JSON文件
+    支持一次上传多个JSON文件
+    """
+    try:
+        files = request.files.getlist('files')
+        
+        if not files or len(files) == 0:
+            return jsonify({
+                'status': 'error',
+                'message': '未选择文件'
+            }), 400
+        
+        results = []
+        success_count = 0
+        failed_count = 0
+        
+        for file in files:
+            if file.filename == '':
+                continue
+            
+            if not file.filename.endswith('.json'):
+                results.append({
+                    'filename': file.filename,
+                    'status': 'error',
+                    'message': '不是JSON文件'
+                })
+                failed_count += 1
+                continue
+            
+            try:
+                import json
+                json_data = json.load(file)
+                
+                # 验证JSON格式
+                if 'status' not in json_data or json_data['status'] != 'success':
+                    raise ValueError('JSON格式错误：status字段无效')
+                
+                if 'document_type' not in json_data:
+                    raise ValueError('JSON格式错误：缺少document_type字段')
+                
+                doc_type = json_data['document_type']
+                
+                # TODO: 实际入库逻辑
+                
+                results.append({
+                    'filename': file.filename,
+                    'status': 'success',
+                    'document_type': doc_type,
+                    'transactions': json_data.get('summary', {}).get('total_transactions', 0)
+                })
+                success_count += 1
+            
+            except Exception as e:
+                results.append({
+                    'filename': file.filename,
+                    'status': 'error',
+                    'message': str(e)
+                })
+                failed_count += 1
+        
+        logger.info(f"VBA批量上传: 成功 {success_count}, 失败 {failed_count}")
+        
+        return jsonify({
+            'status': 'success',
+            'total_files': len(files),
+            'success_count': success_count,
+            'failed_count': failed_count,
+            'results': results
+        }), 200
+    
+    except Exception as e:
+        logger.error(f"VBA batch upload error: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'批量上传失败: {str(e)}'
+        }), 500
+
+
 # ==================== CTOS Consent Routes (Phase 7) ====================
 @app.route('/ctos/personal', endpoint='ctos_personal')
 def ctos_personal_route():
