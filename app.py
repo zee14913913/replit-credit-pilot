@@ -1457,7 +1457,7 @@ def admin_dashboard():
         cursor.execute("SELECT COUNT(*) FROM supplier_invoices")
         invoices_count = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COALESCE(SUM(total_amount + supplier_fee), 0) FROM supplier_invoices")
+        cursor.execute("SELECT COALESCE(SUM(total_amount + fee_amount), 0) FROM supplier_invoices")
         invoices_total = cursor.fetchone()[0]
         
         # Get Credit Card Customers (customers with at least one credit card)
@@ -4579,7 +4579,7 @@ def credit_card_ledger():
                 si.invoice_date,
                 si.supplier_name,
                 si.total_amount,
-                si.supplier_fee,
+                si.fee_amount,
                 si.pdf_path,
                 c.name as customer_name,
                 c.customer_code
@@ -4596,7 +4596,7 @@ def credit_card_ledger():
             total_invoices = len(invoices)
             total_suppliers = len(set(inv['supplier_name'] for inv in invoices))
             total_amount = sum(inv['total_amount'] for inv in invoices)
-            total_fees = sum(inv['supplier_fee'] for inv in invoices)
+            total_fees = sum(inv['fee_amount'] for inv in invoices)
             
             invoices_data = {
                 'invoices': invoices,
@@ -5259,7 +5259,7 @@ def receipts_home():
                 c.name as from_customer,
                 si.invoice_number as remarks,
                 si.pdf_path,
-                si.supplier_fee,
+                si.fee_amount,
                 si.created_at
             FROM supplier_invoices si
             JOIN customers c ON si.customer_id = c.id
@@ -5568,7 +5568,7 @@ def invoices_home():
                 si.invoice_date,
                 si.supplier_name,
                 si.total_amount,
-                si.supplier_fee,
+                si.fee_amount,
                 si.pdf_path,
                 c.name as customer_name,
                 c.customer_code
@@ -5583,7 +5583,7 @@ def invoices_home():
         total_invoices = len(invoices)
         total_suppliers = len(set(inv['supplier_name'] for inv in invoices)) if invoices else 0
         total_amount = sum(inv['total_amount'] for inv in invoices)
-        total_fees = sum(inv['supplier_fee'] for inv in invoices)
+        total_fees = sum(inv['fee_amount'] for inv in invoices)
     
     return render_template('invoices/home.html',
                          invoices=invoices,
