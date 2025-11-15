@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Upload Income Document{% endblock %}
+{% block title %}{{ t('upload_income_document') }}{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-8 offset-md-2">
             <h1 class="mb-4" style="color: #FF007F;">
-                <i class="bi bi-file-earmark-text"></i> Upload Income Document
+                <i class="bi bi-file-earmark-text"></i> {{ t('upload_income_document') }}
             </h1>
             
             <div class="card" style="background: rgba(0,0,0,0.7); border: 2px solid #322446;">
@@ -16,7 +16,7 @@
                         <!-- 客户选择 -->
                         <div class="mb-4">
                             <label class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
-                                <i class="bi bi-person"></i> Customer
+                                <i class="bi bi-person"></i> {{ t('customer') }}
                             </label>
                             <select name="customer_id" id="customer_id" class="form-select bg-dark text-white" required
                                     style="border: 2px solid rgba(255,0,127,0.3);">
@@ -27,7 +27,7 @@
                         <!-- 文件类型 -->
                         <div class="mb-4">
                             <label class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
-                                <i class="bi bi-file-earmark-medical"></i> Document Type
+                                <i class="bi bi-file-earmark-medical"></i> {{ t('document_type') }}
                             </label>
                             <select name="document_type" id="document_type" class="form-select bg-dark text-white" required
                                     style="border: 2px solid rgba(255,0,127,0.3);">
@@ -37,33 +37,33 @@
                                 <option value="{{ t('bank_inflow') }}">{{ t('bank_statement_income_focus') }}</option>
                             </select>
                             <small class="text-muted">
-                                Select the type of income proof document
+                                {{ t('select_income_proof_type') }}
                             </small>
                         </div>
                         
                         <!-- 收入月份 -->
                         <div class="mb-4">
                             <label class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
-                                <i class="bi bi-calendar3"></i> Income Month
+                                <i class="bi bi-calendar3"></i> {{ t('income_month') }}
                             </label>
                             <input type="month" name="document_month" id="document_month" 
                                    class="form-control bg-dark text-white" required
                                    style="border: 2px solid rgba(255,0,127,0.3);">
                             <small class="text-muted">
-                                The month this document represents (e.g., 2025-01 for January 2025)
+                                {{ t('month_this_document_represents') }}
                             </small>
                         </div>
                         
                         <!-- 文件上传 -->
                         <div class="mb-4">
                             <label class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
-                                <i class="bi bi-cloud-upload"></i> Select File
+                                <i class="bi bi-cloud-upload"></i> {{ t('select_file') }}
                             </label>
                             <input type="file" name="file" id="file" class="form-control bg-dark text-white" 
                                    accept=".pdf,.jpg,.jpeg,.png" required
                                    style="border: 2px solid rgba(255,0,127,0.3);">
                             <small class="text-muted">
-                                Supported formats: PDF, JPG, PNG (Max 10MB)
+                                {{ t('supported_formats_pdf_jpg_png') }}
                             </small>
                         </div>
                         
