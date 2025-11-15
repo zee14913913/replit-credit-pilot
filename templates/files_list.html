@@ -1,10 +1,11 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ t('__file_manager_1') }}{% endblock %}
+{% block title %}文件列表 - File Manager{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* {{ t('_____btnpattern') }}-1 {
+    /* 按钮颜色组合模式 */
+    .btn-pattern-1 {
         background-color: #FF007F;
         color: white;
         font-weight: bold;
@@ -37,7 +38,7 @@
         color: #FF007F;
     }
     
-    /* {{ t('badge__') }} */
+    /* Badge颜色 - 只使用允许的颜色 */
     .badge {
         padding: 0.4rem 0.8rem;
         border-radius: 4px;
@@ -74,7 +75,7 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>{{ t('__file_manager') }}</h2>
+    <h2>文件管理 / File Manager</h2>
     <a href="http://localhost:8000/accounting" class="btn btn-pattern-1">
         上传新文件
     </a>
@@ -84,14 +85,14 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>{{ t('id') }}</th>
-                <th>{{ t('__file_name') }}</th>
-                <th>{{ t('__company') }}</th>
-                <th>{{ t('__month_1') }}</th>
-                <th>{{ t('__status') }}</th>
-                <th>{{ t('__validation') }}</th>
-                <th>{{ t('__upload_time') }}</th>
-                <th>{{ t('__next_action') }}</th>
+                <th>ID</th>
+                <th>文件名 / File Name</th>
+                <th>公司 / Company</th>
+                <th>月份 / Month</th>
+                <th>状态 / Status</th>
+                <th>验证状态 / Validation</th>
+                <th>上传时间 / Upload Time</th>
+                <th>下一步 / Next Action</th>
             </tr>
         </thead>
         <tbody id="files-table-body">
@@ -117,7 +118,7 @@
                 </td>
                 <td>{{ file.created_at }}</td>
                 <td class="next-action-cell" data-status="{{ file.status }}" data-validation="{{ file.validation_status }}" data-file-id="{{ file.id }}">
-                    <!-- {{ t('nextactionbutton_') }} -->
+                    <!-- NextActionButton 将在这里渲染 -->
                 </td>
             </tr>
             {% endfor %}
@@ -127,7 +128,7 @@
 
 {% if not files %}
 <div class="alert alert-info text-center" style="background-color: #D3D3D3; color: #322446; border: 2px solid #FF007F;">
-    {{ t('__no_files_uploaded_yet') }}
+    暂无文件 / No files uploaded yet
 </div>
 {% endif %}
 
@@ -135,11 +136,13 @@
 
 {% block extra_js %}
 <script>
-// {{ t('nextactiondocumentaddeventlistener') }}('DOMContentLoaded', function() {
+// 初始化Next-Action按钮
+document.addEventListener('DOMContentLoaded', function() {
     const cells = document.querySelectorAll('.next-action-cell');
     
     cells.forEach(cell => {
-        {{ t('const_status__celldatasetstatus________const_valid') }} = cell.dataset.validation;
+        const status = cell.dataset.status;
+        const validation = cell.dataset.validation;
         const fileId = cell.dataset.fileId;
         
         // 根据状态决定按钮文字和操作
@@ -161,7 +164,8 @@
             buttonClass = 'btn-pattern-1';
         }
         
-        // {{ t('________const_button__documentcreateelement') }}('a');
+        // 创建按钮（无图标）
+        const button = document.createElement('a');
         button.href = buttonUrl;
         button.className = `btn btn-sm ${buttonClass}`;
         button.textContent = buttonText;

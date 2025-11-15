@@ -142,7 +142,8 @@ let allDocuments = [];
 let allCustomers = new Map();
 
 document.addEventListener('DOMContentLoaded', function() {
-    {{ t('loadcustomers____loaddocuments_________') }}
+    loadCustomers();
+    loadDocuments();
     document.getElementById('customerFilter').addEventListener('change', filterDocuments);
     document.getElementById('typeFilter').addEventListener('change', filterDocuments);
 });
@@ -168,7 +169,8 @@ async function loadCustomers() {
 async function loadDocuments() {
     try {
         const response = await fetch('/api/file-index/files?module=income');
-        {{ t('const_data__await_responsejson________________alld') }}ments = data.files || [];
+        const data = await response.json();
+        allDocuments = data.files || [];
         
         // 更新统计
         updateStats();

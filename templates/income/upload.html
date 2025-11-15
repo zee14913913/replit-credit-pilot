@@ -111,7 +111,8 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // {{ t('____fetch') }}('/api/customers/list')
+    // Load customer list
+    fetch('/api/customers/list')
         .then(response => response.json())
         .then(data => {
             const select = document.getElementById('customer_id');
@@ -126,8 +127,12 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error loading customers:', error);
         });
     
-    // {{ t('____const_now__new_date____const_currentmont') }}h = now.toISOString().slice(0, 7);
-    document.getElementById('document_month').{{ t('value__currentmonth_________') }}
+    // Set default month to current month
+    const now = new Date();
+    const currentMonth = now.toISOString().slice(0, 7);
+    document.getElementById('document_month').value = currentMonth;
+    
+    // Handle form submission
     document.getElementById('incomeUploadForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -135,7 +140,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const progressDiv = document.getElementById('uploadProgress');
         const resultDiv = document.getElementById('uploadResult');
         
-        // {{ t('________progressdivstyledisplay') }} = 'block';
+        // Show progress
+        progressDiv.style.display = 'block';
         resultDiv.style.display = 'none';
         
         try {
@@ -144,35 +150,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: formData
             });
             
-            {{ t('const_result__await_responsejson___________________1') }}   // 隐藏进度条
+            const result = await response.json();
+            
+            // Hide progress bar
             progressDiv.style.display = 'none';
             
             if (response.ok && result.status === 'success') {
-                // {{ t('________________resultdivinnerhtml') }} = `
+                // Success message
+                resultDiv.innerHTML = `
                     <div class="alert alert-success">
-                        <h5><i class="bi bi-check-circle"></i>{{ t('upload_successful') }}</h5>
+                        <h5><i class="bi bi-check-circle"></i> Upload Successful!</h5>
                         <hr>
-                        <p><strong>{{ t('customer_1') }}</strong>{{ t('resultcustomer_name') }}</p>
-                        <p><strong>{{ t('document_type_1') }}</strong>{{ t('resultdocument_type') }}</p>
-                        <p><strong>{{ t('month_1') }}</strong>{{ t('resultdocument_month') }}</p>
+                        <p><strong>Customer:</strong> ${result.customer_name}</p>
+                        <p><strong>Document Type:</strong> ${result.document_type}</p>
+                        <p><strong>Month:</strong> ${result.document_month}</p>
                         <hr>
-                        <h6 style="color: #FF007F;"><i class="bi bi-magic"></i>{{ t('ocr_results') }}</h6>
-                        <p><strong>{{ t('income_detected_1') }}</strong>{{ t('rm_resultocr_resultincome_detectedtofixed2') }}</p>
-                        <p><strong>{{ t('confidence_1') }}</strong>{{ t('resultocr_resultconfidence__100tofixed1') }}</p>
-                        <p><strong>{{ t('method') }}</strong>{{ t('resultocr_resultmethod') }}</p>
-                        <p><strong>{{ t('text_length') }}</strong>{{ t('resultocr_resulttext_length_characters') }}</p>
+                        <h6 style="color: #FF007F;"><i class="bi bi-magic"></i> OCR Results</h6>
+                        <p><strong>Income Detected:</strong> RM ${result.ocr_result.income_detected.toFixed(2)}</p>
+                        <p><strong>Confidence:</strong> ${(result.ocr_result.confidence * 100).toFixed(1)}%</p>
+                        <p><strong>Method:</strong> ${result.ocr_result.method}</p>
+                        <p><strong>Text Length:</strong> ${result.ocr_result.text_length} characters</p>
                         <hr>
-                        <a href="/income" class="btn btn-primary">{{ t('view_all_documents') }}</a>
+                        <a href="/income" class="btn btn-primary">View All Documents</a>
                     </div>
                 `;
                 resultDiv.style.display = 'block';
                 
-                // {{ t('________________thisreset________________document') }}getElementById('document_month').value = currentMonth;
+                // Reset form and set month back to current
+                this.reset();
+                document.getElementById('document_month').value = currentMonth;
             } else {
-                // {{ t('________________resultdivinnerhtml_1') }} = `
+                // Error message
+                resultDiv.innerHTML = `
                     <div class="alert alert-danger">
-                        <h5><i class="bi bi-exclamation-triangle"></i>{{ t('upload_failed') }}</h5>
-                        <p>{{ t('resultdetail__resultmessage__unknown_error') }}</p>
+                        <h5><i class="bi bi-exclamation-triangle"></i> Upload Failed</h5>
+                        <p>${result.detail || result.message || 'Unknown error'}</p>
                     </div>
                 `;
                 resultDiv.style.display = 'block';
@@ -181,8 +193,8 @@ document.addEventListener('DOMContentLoaded', function() {
             progressDiv.style.display = 'none';
             resultDiv.innerHTML = `
                 <div class="alert alert-danger">
-                    <h5><i class="bi bi-exclamation-triangle"></i>{{ t('error') }}</h5>
-                    <p>{{ t('errormessage') }}</p>
+                    <h5><i class="bi bi-exclamation-triangle"></i> Error</h5>
+                    <p>${error.message}</p>
                 </div>
             `;
             resultDiv.style.display = 'block';

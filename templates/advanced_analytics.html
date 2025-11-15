@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ t('__advanced_analytics') }}{% endblock %}
+{% block title %}高级财务分析 - Advanced Analytics{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
@@ -13,7 +13,7 @@
             </h1>
             <p class="text-secondary">
                 {% if current_lang == 'zh' %}
-                {{ t('ai_4') }}
+                AI驱动的智能财务健康分析与预测
                 {% else %}
                 AI-Powered Financial Health Analysis & Predictions
                 {% endif %}
@@ -140,7 +140,7 @@
                                 {% if dimension == 'payment_timeliness' %}
                                     {% if current_lang == 'zh' %}还款及时率{% else %}Payment Timeliness{% endif %}
                                 {% elif dimension == 'dsr' %}
-                                    {% if current_lang == 'zh' %}{{ t('dsr_1') }}{% else %}DSR Ratio{% endif %}
+                                    {% if current_lang == 'zh' %}DSR债务比{% else %}DSR Ratio{% endif %}
                                 {% elif dimension == 'utilization' %}
                                     {% if current_lang == 'zh' %}信用卡使用率{% else %}Utilization Rate{% endif %}
                                 {% elif dimension == 'category_health' %}
@@ -323,7 +323,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 {% if cashflow_data %}
-// {{ t('const_ctx__documentgetelementbyid') }}('cashflowChart');
+// 现金流预测图表
+const ctx = document.getElementById('cashflowChart');
 new Chart(ctx, {
     type: 'line',
     data: {

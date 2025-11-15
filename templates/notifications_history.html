@@ -6,21 +6,21 @@
 <div class="container-professional" style="max-width: 1000px; margin: 40px auto;">
     <div class="card-professional">
         <div class="card-header-pro">
-            <h2><i class="bi bi-clock-history"></i> <span data-i18n="notification_history">{{ t('notification_history') }}</span></h2>
-            <p style="margin: 8px 0 0 0; opacity: 0.8;">{{ t('auto_text_992') }}</p>
+            <h2><i class="bi bi-clock-history"></i> 通知历史</h2>
+            <p style="margin: 8px 0 0 0; opacity: 0.8;">查看所有历史通知记录</p>
         </div>
         
         <div class="card-body-pro">
             <!-- 过滤器 -->
             <div style="margin-bottom: 20px; display: flex; gap: 12px; align-items: center;">
                 <button class="btn-action" onclick="loadNotifications('all')" id="btn-all">
-                    <i class="bi bi-list"></i> <span data-i18n="all">{{ t('all') }}</span>
+                    <i class="bi bi-list"></i> 全部
                 </button>
                 <button class="btn-secondary" onclick="loadNotifications('unread')" id="btn-unread">
-                    <i class="bi bi-envelope"></i> <span data-i18n="unread">{{ t('unread') }}</span>
+                    <i class="bi bi-envelope"></i> 未读
                 </button>
                 <button class="btn-secondary" onclick="loadNotifications('read')" id="btn-read">
-                    <i class="bi bi-envelope-open"></i> <span data-i18n="read">{{ t('read') }}</span>
+                    <i class="bi bi-envelope-open"></i> 已读
                 </button>
             </div>
             
@@ -28,7 +28,7 @@
             <div id="notificationsList" style="min-height: 300px;">
                 <div class="text-center" style="padding: 60px 20px; color: var(--text-muted);">
                     <i class="bi bi-hourglass-split" style="font-size: 48px;"></i>
-                    <p style="margin-top: 16px;">{{ t('auto_text_996') }}</p>
+                    <p style="margin-top: 16px;">正在加载通知...</p>
                 </div>
             </div>
         </div>
@@ -198,5 +198,4 @@
         return date.toLocaleString('zh-CN');
     }
 </script>
-
 {% endblock %}
