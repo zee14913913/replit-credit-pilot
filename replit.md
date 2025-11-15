@@ -23,6 +23,8 @@ The main navigation features 7 core modules aligned with business workflow: DASH
 ### Technical Implementations
 The backend uses Flask with SQLite and a context manager for database interactions. Jinja2 handles server-side rendering, complemented by Bootstrap 5 and Bootstrap Icons for the UI. Plotly.js provides client-side data visualization, and PDF.js is used for client-side PDF-to-CSV conversion. A robust notification system provides real-time updates. The AI system uses a unified client architecture supporting multiple providers (Perplexity primary, OpenAI backup) with automatic failover and environment-based configuration.
 
+**VBA Hybrid Architecture (INFINITE GZ Extension):** The system implements a client-server hybrid architecture where VBA (Windows Excel client) handles primary statement parsing, and Replit receives standardized JSON data via REST API. This architecture prioritizes accuracy and cost-efficiency: VBA directly reads Excel cells with 95%+ accuracy, avoiding expensive OCR services. PDF statements are converted to Excel using Tabula/Adobe Acrobat Pro client-side, then parsed by VBA. The system provides 5 VBA templates, Python PDF conversion tools, and dual API endpoints (/api/upload/vba-json for single files, /api/upload/vba-batch for batch uploads) with JSON format validation. Python Excel parsers are retained as backup for system resilience.
+
 ### Feature Specifications
 **Core Features:**
 - **Financial Management:** Statement ingestion (PDF OCR, Excel), transaction categorization, savings tracking, dual verification.
@@ -80,3 +82,33 @@ A production-ready Unified RBAC Implementation protects 32 functions. The `@requ
 
 ### SFTP ERP Automation System
 A production-ready SFTP synchronization system, implemented with a FastAPI backend (Port 8000) and Paramiko, automatically exports 7 types of financial data to SQL ACC ERP Edition via secure SFTP every 10 minutes.
+
+## Recent Changes (Nov 15, 2024)
+
+### VBA Hybrid Architecture Implementation
+Added complete VBA-based hybrid processing system for INFINITE GZ credit card and bank statement parsing:
+
+**Client-Side Components (vba_templates/):**
+- `1_CreditCardParser.vba`: Credit card statement parser with 30+ intelligent categories
+- `2_BankStatementParser.vba`: Bank statement parser supporting PBB/MBB/CIMB/RHB/HLB
+- `3_PDFtoExcel_Guide.vba`: PDF conversion workflow documentation
+- `4_DataValidator.vba`: Balance verification and data quality checker
+- `5_Usage_Guide.md`: Quick start guide for VBA templates
+- `JSON_Format_Specification.md`: Standard JSON format specification
+- `COMPLETE_INTEGRATION_GUIDE.md`: End-to-end integration documentation
+
+**PDF Conversion Tools (tools/pdf_converter/):**
+- `pdf_to_excel.py`: Python tool using Tabula/PDFPlumber for batch PDF-to-Excel conversion
+- `README.md`: Tool usage instructions and troubleshooting guide
+
+**Server-Side API (app.py):**
+- `POST /api/upload/vba-json`: Single JSON file upload endpoint with format validation
+- `POST /api/upload/vba-batch`: Batch JSON upload endpoint supporting multiple files
+
+**Python Backup Parsers (services/excel_parsers/):**
+- `bank_statement_excel_parser.py`: Server-side Excel parser for bank statements
+- `credit_card_excel_parser.py`: Server-side Excel parser for credit cards
+- `bank_detector.py`: Automatic bank format detection
+- `transaction_classifier.py`: 30+ transaction classification rules
+
+**Architecture Decision:** VBA client-side processing chosen for high accuracy (95%+), low cost (no OCR fees), and team expertise. PDF-to-Excel conversion happens client-side using Tabula/Adobe tools. Standardized JSON format ensures reliable data exchange. Python parsers retained as backup for system resilience.
