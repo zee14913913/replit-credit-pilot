@@ -409,6 +409,16 @@ class InfiniteGZClassificationEngine:
         for trans in transactions:
             classified = trans.copy()
             
+            # 防御性编程：初始化所有可能的字段为默认值
+            classified['expense_owner'] = None
+            classified['payment_type'] = None
+            classified['is_supplier_transaction'] = 0
+            classified['supplier_name'] = None
+            classified['supplier_fee'] = 0
+            classified['verified'] = 0
+            classified['matched_transfers'] = []
+            classified['matched_gz_bank'] = None
+            
             if trans['record_type'] == 'spend':
                 # 消费分类
                 expense_owner, is_supplier, supplier_name = self.classify_expense_owner(
@@ -433,13 +443,13 @@ class InfiniteGZClassificationEngine:
                     trans['statement_month'],
                     check_indirect=True
                 )
-                classified['payment_type'] = payment_result['payment_type']
-                classified['verified'] = 1 if payment_result['verified'] else 0
+                classified['payment_type'] = payment_result.get('payment_type', 'Owner Payment')
+                classified['verified'] = 1 if payment_result.get('verified', False) else 0
                 
-                # 记录匹配的GZ转账（如果是Indirect）
-                if payment_result['matched_transfers']:
+                # 安全提取可选字段
+                if payment_result.get('matched_transfers'):
                     classified['matched_transfers'] = payment_result['matched_transfers']
-                if payment_result['matched_gz_bank']:
+                if payment_result.get('matched_gz_bank'):
                     classified['matched_gz_bank'] = payment_result['matched_gz_bank']
             
             classified_transactions.append(classified)
