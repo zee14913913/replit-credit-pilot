@@ -6987,6 +6987,12 @@ def detect_bank_format():
 # ==================== VBA-JSON Upload API (Hybrid Architecture) ====================
 # 混合架构：VBA客户端处理 + Replit接收标准JSON
 
+@app.route('/vba/upload', endpoint='vba_upload_page')
+def vba_upload_page():
+    """VBA JSON上传界面"""
+    return render_template('vba_upload.html')
+
+
 @app.route('/api/upload/vba-json', methods=['POST'])
 @require_admin_or_accountant
 def upload_vba_json():
