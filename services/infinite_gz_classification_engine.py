@@ -108,43 +108,131 @@ class InfiniteGZClassificationEngine:
         self.gz_bank_list_cache = gz_banks
         return gz_banks
     
+    def check_gz_indirect_payment(
+        self,
+        customer_id: int,
+        statement_month: str
+    ) -> Tuple[bool, List[Dict]]:
+        """
+        检测GZ's Payment (Indirect)
+        
+        任务书第8.3节（关键逻辑）：
+        必须满足以下三项全部成立：
+        ① GZ上传的转账Slip存在（同日期+同金额）
+        ② GZ银行账户月结单有对应记录
+        ③ 客户当月信用卡账单出现任意CR
+        
+        ⚠️ 关键特性：
+        - 不要求CR金额与转账金额相等
+        - 不要求用于同一张卡
+        - 不要求同一天
+        - 允许延迟支付
+        - 允许拆分支付
+        
+        Returns:
+            (is_gz_indirect, matching_transfers)
+        """
+        conn = self.get_db_connection()
+        cursor = conn.cursor()
+        
+        # 查询当月该客户的GZ转账记录
+        cursor.execute('''
+            SELECT id, source_bank, destination_account, amount, transfer_date, slip_file_path, purpose
+            FROM gz_transfer_records
+            WHERE customer_id = ? 
+            AND strftime('%Y-%m', transfer_date) = ?
+            AND verified = 1
+        ''', (customer_id, statement_month[:7]))
+        
+        transfers = cursor.fetchall()
+        
+        if transfers:
+            # ⚠️ 修复：添加SQL参数绑定，避免ProgrammingError
+            cursor.execute('''
+                SELECT COUNT(*) 
+                FROM monthly_statement_transactions
+                WHERE customer_id = ?
+                AND statement_month = ?
+                AND record_type = 'payment'
+            ''', (customer_id, statement_month))
+            
+            has_cr = cursor.fetchone()[0] > 0
+            
+            if has_cr:
+                # 有转账 + 有CR = GZ's Payment (Indirect)
+                transfer_list = []
+                for trans in transfers:
+                    transfer_list.append({
+                        'id': trans[0],
+                        'source_bank': trans[1],
+                        'destination_account': trans[2],
+                        'amount': trans[3],
+                        'transfer_date': trans[4],
+                        'slip_file_path': trans[5],
+                        'purpose': trans[6]
+                    })
+                
+                conn.close()
+                return (True, transfer_list)
+        
+        conn.close()
+        return (False, [])
+    
     def classify_payment_type(
         self, 
         description: str, 
         amount: float,
         customer_id: int,
         statement_month: str,
-        has_gz_transfer: bool = False
-    ) -> Tuple[str, bool]:
+        check_indirect: bool = True
+    ) -> Dict:
         """
-        分类付款类型
+        完整的付款分类逻辑
         
         任务书第8节：付款分类（Payment Classification）
         
-        三种类型：
-        1. Owner's Payment - 客户自己付款
-        2. GZ's Payment (Direct) - GZ直接向银行付款
-        3. GZ's Payment (Indirect) - GZ转账给客户→客户付款
-        
         Returns:
-            (payment_type, verified)
+            {
+                'payment_type': str,  # Owner Payment / GZ Direct / GZ Indirect
+                'verified': bool,
+                'matched_gz_bank': str,  # 如果是Direct
+                'matched_transfers': list  # 如果是Indirect
+            }
         """
         gz_banks = self.load_gz_bank_list()
         description_lower = description.lower()
         
-        # 8.2 GZ's Payment (Direct)
-        # 来源银行账户 ∈ GZ Bank List
+        # 检查GZ Direct
         for gz_bank in gz_banks:
             if gz_bank in description_lower:
-                return ("GZ Direct", True)
+                return {
+                    'payment_type': 'GZ Direct',
+                    'verified': True,
+                    'matched_gz_bank': gz_bank,
+                    'matched_transfers': []
+                }
         
-        # 8.3 GZ's Payment (Indirect)
-        # 当月存在GZ→客户转账 + 任意CR
-        if has_gz_transfer:
-            return ("GZ Indirect", True)
+        # 检查GZ Indirect
+        if check_indirect:
+            is_indirect, transfers = self.check_gz_indirect_payment(
+                customer_id,
+                statement_month
+            )
+            if is_indirect:
+                return {
+                    'payment_type': 'GZ Indirect',
+                    'verified': True,
+                    'matched_gz_bank': None,
+                    'matched_transfers': transfers
+                }
         
-        # 8.1 Owner's Payment（默认）
-        return ("Owner Payment", False)
+        # 默认：Owner Payment
+        return {
+            'payment_type': 'Owner Payment',
+            'verified': False,
+            'matched_gz_bank': None,
+            'matched_transfers': []
+        }
     
     # ========== 任务书第9节：转账分类 ==========
     
@@ -153,40 +241,139 @@ class InfiniteGZClassificationEngine:
         customer_id: int,
         amount: float,
         transfer_date: str,
-        has_credit_card_cr_this_month: bool
-    ) -> Tuple[str, str, bool]:
+        statement_month: Optional[str] = None
+    ) -> Dict:
         """
         分类转账用途
         
         任务书第9节：区分 代付 vs 借贷
         
         (A) Card Due Assist（代付）：
-            - GZ→客户的资金用于客户信用卡 CR
+            - GZ→客户的资金用于客户信用卡CR
             - 不产生利息
-            - 进入 GZ's Payment
+            - 进入GZ's Payment
         
         (B) Loan / Credit Assist（借贷）：
             - GZ→客户的资金不是用于信用卡
             - 产生利息
-            - 进入 Loan Outstanding
+            - 进入Loan Outstanding
+        
+        判断逻辑：若当月有信用卡CR，则视为Card Due Assist
         
         Returns:
-            (purpose, affects, generates_interest)
+            {
+                'purpose': str,  # Card Due Assist / Loan-Credit Assist
+                'category': str,
+                'affects': str,  # GZ's Payment / Loan Outstanding
+                'generates_interest': bool
+            }
         """
-        # 判断：若当月有信用卡CR，则视为Card Due Assist
-        if has_credit_card_cr_this_month:
-            return (
-                "Card Due Assist",
-                "GZ's Payment",
-                False  # 不产生利息
-            )
+        conn = self.get_db_connection()
+        cursor = conn.cursor()
+        
+        # 自动提取statement_month
+        if not statement_month:
+            statement_month = transfer_date[:7]  # 2025-01
+        
+        # 查询该月客户是否有信用卡CR
+        cursor.execute('''
+            SELECT COUNT(*) 
+            FROM monthly_statement_transactions
+            WHERE customer_id = ?
+            AND statement_month = ?
+            AND record_type = 'payment'
+        ''', (customer_id, statement_month))
+        
+        has_cr = cursor.fetchone()[0] > 0
+        conn.close()
+        
+        if has_cr:
+            # Card Due Assist（代付）
+            return {
+                'purpose': 'Card Due Assist',
+                'category': 'Card Due Assist',
+                'affects': 'GZ\'s Payment',
+                'generates_interest': False
+            }
         else:
-            # 不是用于信用卡，归类为借贷
-            return (
-                "Loan-Credit Assist",
-                "Loan Outstanding",
-                True  # 产生利息
-            )
+            # Loan / Credit Assist（借贷）
+            return {
+                'purpose': 'Loan-Credit Assist',
+                'category': 'Loan-Credit Assist',
+                'affects': 'Loan Outstanding',
+                'generates_interest': True
+            }
+    
+    def record_gz_transfer(
+        self,
+        customer_id: int,
+        source_bank: str,
+        destination_account: str,
+        amount: float,
+        transfer_date: str,
+        slip_file_path: Optional[str] = None
+    ) -> int:
+        """
+        记录GZ→客户转账
+        自动分类用途（Card Due Assist / Loan-Credit Assist）
+        """
+        # 分类转账用途
+        classification = self.classify_transfer_purpose(
+            customer_id,
+            amount,
+            transfer_date
+        )
+        
+        conn = self.get_db_connection()
+        cursor = conn.cursor()
+        
+        # 插入转账记录
+        cursor.execute('''
+            INSERT INTO gz_transfer_records (
+                customer_id, source_bank, destination_account,
+                amount, transfer_date, slip_file_path,
+                purpose, verified, affects,
+                linked_statement_month, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)
+        ''', (
+            customer_id,
+            source_bank,
+            destination_account,
+            amount,
+            transfer_date,
+            slip_file_path,
+            classification['purpose'],
+            classification['affects'],
+            transfer_date[:7],  # statement_month
+            datetime.now()
+        ))
+        
+        transfer_id = cursor.lastrowid
+        
+        # 如果是Loan-Credit Assist，创建Loan Outstanding记录
+        if classification['generates_interest']:
+            cursor.execute('''
+                INSERT INTO loan_outstanding (
+                    customer_id, loan_type, principal_amount,
+                    interest_rate, interest_type, amount_repaid,
+                    interest_accrued, outstanding_balance,
+                    disbursement_date, status, transfer_slip_path,
+                    created_at, updated_at
+                ) VALUES (?, 'Cash Flow Support', ?, 0.06, 'Simple', 0, 0, ?, ?, 'active', ?, ?, ?)
+            ''', (
+                customer_id,
+                amount,
+                amount,  # outstanding_balance初始等于principal_amount
+                transfer_date,
+                slip_file_path,
+                datetime.now(),
+                datetime.now()
+            ))
+        
+        conn.commit()
+        conn.close()
+        
+        return transfer_id
     
     # ========== 批量分类处理 ==========
     
@@ -238,17 +425,22 @@ class InfiniteGZClassificationEngine:
                     classified['supplier_fee'] = 0
                 
             elif trans['record_type'] == 'payment':
-                # 付款分类（需要额外检查是否有GZ转账）
-                # 这里简化处理，实际需要查询gz_transfer_records表
-                payment_type, verified = self.classify_payment_type(
+                # 付款分类（自动检查GZ转账）
+                payment_result = self.classify_payment_type(
                     trans['description'],
                     trans['amount'],
                     trans['customer_id'],
                     trans['statement_month'],
-                    has_gz_transfer=False  # TODO: 实际需要查询
+                    check_indirect=True
                 )
-                classified['payment_type'] = payment_type
-                classified['verified'] = 1 if verified else 0
+                classified['payment_type'] = payment_result['payment_type']
+                classified['verified'] = 1 if payment_result['verified'] else 0
+                
+                # 记录匹配的GZ转账（如果是Indirect）
+                if payment_result['matched_transfers']:
+                    classified['matched_transfers'] = payment_result['matched_transfers']
+                if payment_result['matched_gz_bank']:
+                    classified['matched_gz_bank'] = payment_result['matched_gz_bank']
             
             classified_transactions.append(classified)
         
