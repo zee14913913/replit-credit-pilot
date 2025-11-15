@@ -6727,6 +6727,263 @@ def loan_advisor_route():
         return jsonify({"error": str(e)}), 500
 
 
+# ==================== Excel/CSV Upload API (Dual-Track System) ====================
+# 双轨并行方案：Excel/CSV优先 + PDF OCR备用
+
+from services.excel_parsers import (
+    BankStatementExcelParser,
+    CreditCardExcelParser,
+    BankDetector
+)
+
+@app.route('/api/upload/excel/credit-card', methods=['POST'])
+@require_admin_or_accountant
+def upload_excel_credit_card():
+    """
+    信用卡Excel/CSV上传API
+    双轨方案：优先处理Excel/CSV，保留PDF OCR备用
+    """
+    try:
+        if 'file' not in request.files:
+            return jsonify({
+                'status': 'error',
+                'message': '未选择文件'
+            }), 400
+        
+        file = request.files['file']
+        
+        if file.filename == '':
+            return jsonify({
+                'status': 'error',
+                'message': '文件名为空'
+            }), 400
+        
+        allowed_extensions = {'.xlsx', '.xls', '.csv'}
+        file_ext = os.path.splitext(file.filename)[1].lower()
+        
+        if file_ext not in allowed_extensions:
+            return jsonify({
+                'status': 'error',
+                'message': f'不支持的文件格式：{file_ext}，请上传 Excel (.xlsx, .xls) 或 CSV (.csv) 文件'
+            }), 400
+        
+        temp_path = os.path.join(app.config['UPLOAD_FOLDER'], 'temp', file.filename)
+        os.makedirs(os.path.dirname(temp_path), exist_ok=True)
+        file.save(temp_path)
+        
+        parser = CreditCardExcelParser()
+        result = parser.parse(temp_path)
+        
+        os.remove(temp_path)
+        
+        if result['status'] == 'success':
+            return jsonify(result), 200
+        else:
+            return jsonify(result), 400
+    
+    except Exception as e:
+        logger.error(f"Excel credit card upload error: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'文件处理失败: {str(e)}'
+        }), 500
+
+
+@app.route('/api/upload/excel/bank-statement', methods=['POST'])
+@require_admin_or_accountant
+def upload_excel_bank_statement():
+    """
+    银行流水Excel/CSV上传API
+    支持：PBB, MBB, CIMB, RHB, HLB, AmBank, Alliance
+    """
+    try:
+        if 'file' not in request.files:
+            return jsonify({
+                'status': 'error',
+                'message': '未选择文件'
+            }), 400
+        
+        file = request.files['file']
+        
+        if file.filename == '':
+            return jsonify({
+                'status': 'error',
+                'message': '文件名为空'
+            }), 400
+        
+        allowed_extensions = {'.xlsx', '.xls', '.csv'}
+        file_ext = os.path.splitext(file.filename)[1].lower()
+        
+        if file_ext not in allowed_extensions:
+            return jsonify({
+                'status': 'error',
+                'message': f'不支持的文件格式：{file_ext}，请上传 Excel (.xlsx, .xls) 或 CSV (.csv) 文件'
+            }), 400
+        
+        temp_path = os.path.join(app.config['UPLOAD_FOLDER'], 'temp', file.filename)
+        os.makedirs(os.path.dirname(temp_path), exist_ok=True)
+        file.save(temp_path)
+        
+        parser = BankStatementExcelParser()
+        result = parser.parse(temp_path)
+        
+        os.remove(temp_path)
+        
+        if result['status'] == 'success':
+            return jsonify(result), 200
+        else:
+            return jsonify(result), 400
+    
+    except Exception as e:
+        logger.error(f"Excel bank statement upload error: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'文件处理失败: {str(e)}'
+        }), 500
+
+
+@app.route('/api/upload/excel/batch', methods=['POST'])
+@require_admin_or_accountant
+def upload_excel_batch():
+    """
+    批量Excel/CSV上传API
+    支持同时上传多个信用卡账单或银行流水
+    """
+    try:
+        files = request.files.getlist('files')
+        
+        if not files or len(files) == 0:
+            return jsonify({
+                'status': 'error',
+                'message': '未选择文件'
+            }), 400
+        
+        results = []
+        detector = BankDetector()
+        
+        for file in files:
+            if file.filename == '':
+                continue
+            
+            file_ext = os.path.splitext(file.filename)[1].lower()
+            
+            if file_ext not in {'.xlsx', '.xls', '.csv'}:
+                results.append({
+                    'filename': file.filename,
+                    'status': 'error',
+                    'message': '不支持的文件格式'
+                })
+                continue
+            
+            temp_path = os.path.join(app.config['UPLOAD_FOLDER'], 'temp', file.filename)
+            os.makedirs(os.path.dirname(temp_path), exist_ok=True)
+            file.save(temp_path)
+            
+            try:
+                if file_ext == '.csv':
+                    df = __import__('pandas').read_csv(temp_path, nrows=20)
+                else:
+                    df = __import__('pandas').read_excel(temp_path, nrows=20)
+                
+                doc_type = detector.detect_document_type(df)
+                
+                if doc_type == 'credit_card':
+                    parser = CreditCardExcelParser()
+                else:
+                    parser = BankStatementExcelParser()
+                
+                result = parser.parse(temp_path)
+                result['filename'] = file.filename
+                results.append(result)
+                
+                os.remove(temp_path)
+            
+            except Exception as e:
+                results.append({
+                    'filename': file.filename,
+                    'status': 'error',
+                    'message': str(e)
+                })
+                if os.path.exists(temp_path):
+                    os.remove(temp_path)
+        
+        success_count = sum(1 for r in results if r.get('status') == 'success')
+        
+        return jsonify({
+            'status': 'success',
+            'total_files': len(files),
+            'success_count': success_count,
+            'failed_count': len(results) - success_count,
+            'results': results
+        }), 200
+    
+    except Exception as e:
+        logger.error(f"Excel batch upload error: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'批量上传失败: {str(e)}'
+        }), 500
+
+
+@app.route('/api/upload/detect-bank', methods=['POST'])
+@require_admin_or_accountant
+def detect_bank_format():
+    """
+    银行格式检测API
+    自动识别Excel/CSV文件属于哪家银行
+    """
+    try:
+        if 'file' not in request.files:
+            return jsonify({
+                'status': 'error',
+                'message': '未选择文件'
+            }), 400
+        
+        file = request.files['file']
+        
+        temp_path = os.path.join(app.config['UPLOAD_FOLDER'], 'temp', file.filename)
+        os.makedirs(os.path.dirname(temp_path), exist_ok=True)
+        file.save(temp_path)
+        
+        detector = BankDetector()
+        
+        file_ext = os.path.splitext(file.filename)[1].lower()
+        
+        if file_ext == '.csv':
+            bank_code, confidence = detector.detect_from_csv(temp_path)
+            df = __import__('pandas').read_csv(temp_path, nrows=20)
+        else:
+            bank_code, confidence = detector.detect_from_excel(temp_path)
+            df = __import__('pandas').read_excel(temp_path, nrows=20)
+        
+        doc_type = detector.detect_document_type(df)
+        
+        os.remove(temp_path)
+        
+        if bank_code:
+            template = detector.get_bank_template(bank_code)
+            return jsonify({
+                'status': 'success',
+                'bank_code': bank_code,
+                'bank_name': template['name'],
+                'document_type': doc_type,
+                'confidence_score': confidence
+            }), 200
+        else:
+            return jsonify({
+                'status': 'warning',
+                'message': '无法识别银行格式',
+                'document_type': doc_type
+            }), 200
+    
+    except Exception as e:
+        logger.error(f"Bank detection error: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'格式检测失败: {str(e)}'
+        }), 500
+
+
 # ==================== CTOS Consent Routes (Phase 7) ====================
 @app.route('/ctos/personal', endpoint='ctos_personal')
 def ctos_personal_route():
