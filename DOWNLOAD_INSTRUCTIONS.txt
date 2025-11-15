@@ -1,0 +1,36 @@
+====================================
+INFINITE GZ - Mac处理包下载说明
+====================================
+
+请从Replit下载以下3个文件到您的Mac：
+
+1. CCC_89_PDF_Files.tar.gz (32 MB)
+   - 包含89个PDF原件
+   
+2. MAC_Processing_Package.tar.gz (16 KB)
+   - 包含处理脚本和指南
+   
+3. services.tar.gz (需要打包)
+   - 包含Excel解析器模块
+
+====================================
+快速开始步骤：
+====================================
+
+步骤1: 解压文件
+cd ~/Downloads
+tar -xzf CCC_89_PDF_Files.tar.gz
+tar -xzf MAC_Processing_Package.tar.gz
+
+步骤2: 安装依赖
+pip3 install pandas openpyxl
+
+步骤3: 查看指南
+cat QUICK_START_CHINESE.md
+
+步骤4: 开始处理
+python3 mac_excel_processor.py
+
+====================================
+详细指南请阅读：MAC_COMPLETE_GUIDE.md
+====================================
