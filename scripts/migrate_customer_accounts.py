@@ -52,19 +52,35 @@ def migrate_customer_accounts():
             
             if personal_name and personal_number:
                 cursor.execute('''
-                    INSERT INTO customer_accounts (customer_id, account_type, account_name, account_number, is_primary)
-                    VALUES (?, 'personal', ?, ?, 1)
-                ''', (customer_id, personal_name, personal_number))
-                migrated_count += 1
-                print(f"  ✓ 客户 #{customer_id}: 私人账户 {personal_name}")
+                    SELECT COUNT(*) FROM customer_accounts 
+                    WHERE customer_id = ? AND account_type = 'personal' AND account_number = ?
+                ''', (customer_id, personal_number))
+                
+                if cursor.fetchone()[0] == 0:
+                    cursor.execute('''
+                        INSERT INTO customer_accounts (customer_id, account_type, account_name, account_number, is_primary)
+                        VALUES (?, 'personal', ?, ?, 1)
+                    ''', (customer_id, personal_name, personal_number))
+                    migrated_count += 1
+                    print(f"  ✓ 客户 #{customer_id}: 私人账户 {personal_name}")
+                else:
+                    print(f"  ⊘ 客户 #{customer_id}: 私人账户已存在，跳过")
             
             if company_name and company_number:
                 cursor.execute('''
-                    INSERT INTO customer_accounts (customer_id, account_type, account_name, account_number, is_primary)
-                    VALUES (?, 'company', ?, ?, 1)
-                ''', (customer_id, company_name, company_number))
-                migrated_count += 1
-                print(f"  ✓ 客户 #{customer_id}: 公司账户 {company_name}")
+                    SELECT COUNT(*) FROM customer_accounts 
+                    WHERE customer_id = ? AND account_type = 'company' AND account_number = ?
+                ''', (customer_id, company_number))
+                
+                if cursor.fetchone()[0] == 0:
+                    cursor.execute('''
+                        INSERT INTO customer_accounts (customer_id, account_type, account_name, account_number, is_primary)
+                        VALUES (?, 'company', ?, ?, 1)
+                    ''', (customer_id, company_name, company_number))
+                    migrated_count += 1
+                    print(f"  ✓ 客户 #{customer_id}: 公司账户 {company_name}")
+                else:
+                    print(f"  ⊘ 客户 #{customer_id}: 公司账户已存在，跳过")
         
         conn.commit()
         print(f"\n✅ 成功迁移 {migrated_count} 个账户记录")

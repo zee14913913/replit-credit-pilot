@@ -433,6 +433,26 @@ def edit_customer_page(customer_id):
         cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
         customer_row = cursor.fetchone()
         customer = dict(customer_row) if customer_row else None
+        
+        if customer:
+            # 加载customer_accounts账户，向后兼容旧表单
+            cursor.execute('''
+                SELECT account_name, account_number FROM customer_accounts 
+                WHERE customer_id = ? AND account_type = 'personal' AND is_primary = 1
+            ''', (customer_id,))
+            personal_account = cursor.fetchone()
+            if personal_account:
+                customer['personal_account_name'] = personal_account[0]
+                customer['personal_account_number'] = personal_account[1]
+            
+            cursor.execute('''
+                SELECT account_name, account_number FROM customer_accounts 
+                WHERE customer_id = ? AND account_type = 'company' AND is_primary = 1
+            ''', (customer_id,))
+            company_account = cursor.fetchone()
+            if company_account:
+                customer['company_account_name'] = company_account[0]
+                customer['company_account_number'] = company_account[1]
     
     if not customer:
         lang = get_current_language()
@@ -444,14 +464,14 @@ def edit_customer_page(customer_id):
 @app.route('/edit_customer/<int:customer_id>', methods=['POST'])
 @require_admin_or_accountant
 def edit_customer(customer_id):
-    """Update customer information"""
+    """Update customer information - now supports multiple accounts"""
     try:
         name = request.form.get('name')
         email = request.form.get('email')
         phone = request.form.get('phone')
         monthly_income = float(request.form.get('monthly_income', 0))
         
-        # 收款账户信息
+        # 收款账户信息（向后兼容）
         personal_account_name = request.form.get('personal_account_name', '').strip()
         personal_account_number = request.form.get('personal_account_number', '').strip()
         company_account_name = request.form.get('company_account_name', '').strip()
@@ -470,22 +490,55 @@ def edit_customer(customer_id):
                 flash(f'邮箱 {email} 已被其他客户使用', 'error')
                 return redirect(url_for('edit_customer_page', customer_id=customer_id))
             
-            # Update customer
+            # Update customer基本信息
             cursor.execute("""
                 UPDATE customers SET
                     name = ?,
                     email = ?,
                     phone = ?,
-                    monthly_income = ?,
-                    personal_account_name = ?,
-                    personal_account_number = ?,
-                    company_account_name = ?,
-                    company_account_number = ?
+                    monthly_income = ?
                 WHERE id = ?
-            """, (name, email, phone, monthly_income,
-                  personal_account_name or None, personal_account_number or None,
-                  company_account_name or None, company_account_number or None,
-                  customer_id))
+            """, (name, email, phone, monthly_income, customer_id))
+            
+            # Update customer_accounts表（私人账户）
+            if personal_account_name and personal_account_number:
+                cursor.execute('''
+                    SELECT id FROM customer_accounts 
+                    WHERE customer_id = ? AND account_type = 'personal' AND is_primary = 1
+                ''', (customer_id,))
+                existing = cursor.fetchone()
+                
+                if existing:
+                    cursor.execute('''
+                        UPDATE customer_accounts 
+                        SET account_name = ?, account_number = ?
+                        WHERE id = ?
+                    ''', (personal_account_name, personal_account_number, existing[0]))
+                else:
+                    cursor.execute('''
+                        INSERT INTO customer_accounts (customer_id, account_type, account_name, account_number, is_primary)
+                        VALUES (?, 'personal', ?, ?, 1)
+                    ''', (customer_id, personal_account_name, personal_account_number))
+            
+            # Update customer_accounts表（公司账户）
+            if company_account_name and company_account_number:
+                cursor.execute('''
+                    SELECT id FROM customer_accounts 
+                    WHERE customer_id = ? AND account_type = 'company' AND is_primary = 1
+                ''', (customer_id,))
+                existing = cursor.fetchone()
+                
+                if existing:
+                    cursor.execute('''
+                        UPDATE customer_accounts 
+                        SET account_name = ?, account_number = ?
+                        WHERE id = ?
+                    ''', (company_account_name, company_account_number, existing[0]))
+                else:
+                    cursor.execute('''
+                        INSERT INTO customer_accounts (customer_id, account_type, account_name, account_number, is_primary)
+                        VALUES (?, 'company', ?, ?, 1)
+                    ''', (customer_id, company_account_name, company_account_number))
             
             conn.commit()
             
