@@ -2393,5 +2393,10 @@
   "withdrawal_limit": "提款限额",
   "deposit_limit": "存款限额",
   "daily_limit": "每日限额",
-  "monthly_limit": "每月限额"
+  "monthly_limit": "每月限额",
+  "receiving_account_1": "收款账户1（可选）",
+  "receiving_account_2": "收款账户2（可选）",
+  "receiving_account_hint": "账户持有人名称 + 银行（例如：CHEOK JUN YOON - Maybank）",
+  "receiving_account_purpose": "用于在付款结算时匹配GZ转账记录",
+  "gz_transfer_matching": "GZ转账匹配账户"
 }

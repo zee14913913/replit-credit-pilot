@@ -2150,5 +2150,10 @@
   "characters": "characters",
   "unknown_error": "Unknown error",
   "upload_error_message": "An error occurred during upload. Please check the file and try again.",
-  "network_error_message": "Network error occurred. Please check your connection and try again."
+  "network_error_message": "Network error occurred. Please check your connection and try again.",
+  "receiving_account_1": "Receiving Account 1 (Optional)",
+  "receiving_account_2": "Receiving Account 2 (Optional)",
+  "receiving_account_hint": "Account holder name + Bank (e.g., CHEOK JUN YOON - Maybank)",
+  "receiving_account_purpose": "Used for matching GZ transfer records in payment settlement",
+  "gz_transfer_matching": "GZ Transfer Matching Accounts"
 }

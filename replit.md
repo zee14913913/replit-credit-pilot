@@ -51,13 +51,14 @@ The backend uses Flask with SQLite and a context manager for database interactio
 - **CTOS Consent System**: Integrates personal (e-signature + IC upload) and company (SSM upload + company stamp) CTOS consent, generating professional PDF reports.
 
 ### System Design Choices
-- **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, and advisory.
+- **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, and advisory. **Customer Receiving Accounts**: Each customer profile includes 2 optional receiving account fields (`receiving_account_1`, `receiving_account_2`) for recording GZ transfer target accounts, enabling precise matching of GZ's Payment (Indirect) transactions during settlement reconciliation.
 - **Design Patterns:** Repository Pattern, Template Inheritance, Context Manager, Service Layer, Strategy Pattern (multi-provider AI).
 - **Security:** Session secret key, file upload limits, SQL injection prevention, audit logging, API key management.
 - **Data Accuracy:** Robust monthly ledger engine ensuring 100% accuracy via previous balance extraction and DR/CR classification.
 - **Monthly Statement Architecture:** One monthly statement record per bank + month, aggregating 6 mandatory classification fields.
 - **AI Architecture:** Unified client interface with automatic provider switching, graceful degradation, and environment-based configuration.
 - **Dual-Engine Loan Architecture:** Legacy DSR/DSCR engines preserved alongside modern risk_engine. API layer supports mode-based routing with backward compatibility. Product matcher recommends 3-10 suitable banks based on risk grade. System uses CTOS commitment data exclusively.
+- **GZ Payment Matching System:** Customers' receiving accounts are cross-referenced against INFINITE GZ Bank List (9 accounts) to identify GZ→Customer transfers for accurate payment classification (Direct/Indirect) and verification via Receipts/Invoices.
 
 ### Security & Access Control
 A production-ready Unified RBAC Implementation protects 32 functions. The `@require_admin_or_accountant` decorator supports Flask session-based RBAC and FastAPI token verification. Access levels include Admin (full access) and Accountant (full operational access), with Customer and Unauthenticated roles restricted.
