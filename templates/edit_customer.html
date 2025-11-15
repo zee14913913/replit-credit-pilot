@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}编辑客户信息 - {{ t('company_name') }}{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- Page Header -->
+    <div class="section-header">
+        <h1 class="section-title"><i class="bi bi-pencil-square"></i> 编辑客户信息</h1>
+        <p class="section-subtitle">更新客户基本资料和收款账户</p>
+    </div>
+
+    <!-- Edit Customer Form Card -->
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="professional-card">
+                <form method="POST" action="{{ url_for('edit_customer', customer_id=customer.id) }}">
+                    <div class="mb-3">
+                        <label for="customerName" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
+                            <i class="bi bi-person"></i> 客户姓名
+                        </label>
+                        <input type="text" class="form-control" id="customerName" name="name" required
+                               value="{{ customer.name }}"
+                               style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;"
+                               placeholder="例：CHEOK JUN YOON">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="customerEmail" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
+                            <i class="bi bi-envelope"></i> 电子邮件
+                        </label>
+                        <input type="email" class="form-control" id="customerEmail" name="email" required
+                               value="{{ customer.email }}"
+                               style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;"
+                               placeholder="例：customer@example.com">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="customerPhone" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
+                            <i class="bi bi-phone"></i> 电话号码
+                        </label>
+                        <input type="tel" class="form-control" id="customerPhone" name="phone" required
+                               value="{{ customer.phone or '' }}"
+                               style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;"
+                               placeholder="例：+60123456789">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="customerIncome" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
+                            <i class="bi bi-cash-coin"></i> 月收入 (RM)
+                        </label>
+                        <input type="number" class="form-control" id="customerIncome" name="monthly_income" step="0.01" required
+                               value="{{ customer.monthly_income or 0 }}"
+                               style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;"
+                               placeholder="例：5000.00">
+                    </div>
+
+                    <!-- 收款账户信息区域 -->
+                    <div class="mb-4" style="border-top: 2px solid rgba(255,0,127,0.3); padding-top: 1.5rem;">
+                        <h5 style="color: #FF007F; font-weight: 700; margin-bottom: 1rem;">
+                            <i class="bi bi-bank"></i> 收款账户信息 <small style="color: rgba(255,255,255,0.6); font-size: 0.85rem;">(用于GZ转账)</small>
+                        </h5>
+                        
+                        <!-- 私人账户 -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="personalAccountName" class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
+                                    <i class="bi bi-person-badge"></i> 私人账户名
+                                </label>
+                                <input type="text" class="form-control" id="personalAccountName" name="personal_account_name"
+                                       value="{{ customer.personal_account_name or '' }}"
+                                       style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,0,127,0.2); color: #FFFFFF; font-weight: 500; padding: 0.75rem;"
+                                       placeholder="例：CHEOK JUN YOON">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="personalAccountNumber" class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
+                                    <i class="bi bi-credit-card-2-front"></i> 私人账户号码
+                                </label>
+                                <input type="text" class="form-control" id="personalAccountNumber" name="personal_account_number"
+                                       value="{{ customer.personal_account_number or '' }}"
+                                       style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,0,127,0.2); color: #FFFFFF; font-weight: 500; padding: 0.75rem;"
+                                       placeholder="例：1234567890123">
+                            </div>
+                        </div>
+
+                        <!-- 公司账户 -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="companyAccountName" class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
+                                    <i class="bi bi-building"></i> 公司账户名
+                                </label>
+                                <input type="text" class="form-control" id="companyAccountName" name="company_account_name"
+                                       value="{{ customer.company_account_name or '' }}"
+                                       style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,0,127,0.2); color: #FFFFFF; font-weight: 500; padding: 0.75rem;"
+                                       placeholder="例：CJY TRADING SDN BHD">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="companyAccountNumber" class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
+                                    <i class="bi bi-credit-card-2-back"></i> 公司账户号码
+                                </label>
+                                <input type="text" class="form-control" id="companyAccountNumber" name="company_account_number"
+                                       value="{{ customer.company_account_number or '' }}"
+                                       style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,0,127,0.2); color: #FFFFFF; font-weight: 500; padding: 0.75rem;"
+                                       placeholder="例：9876543210987">
+                            </div>
+                        </div>
+                        
+                        <small style="color: rgba(255,255,255,0.6); display: block; margin-top: 0.75rem;">
+                            <i class="bi bi-info-circle"></i> 这些账户将用于GZ转账付款信用卡或Build流水
+                        </small>
+                    </div>
+
+                    <div class="alert-professional alert-warning-pro mb-4">
+                        <i class="bi bi-exclamation-triangle"></i> <strong>注意：</strong><br>
+                        修改客户资料后，请确认信用卡和账单数据是否需要更新。
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('customer_dashboard', customer_id=customer.id) }}" class="btn-professional-outline flex-fill">
+                            <i class="bi bi-arrow-left"></i> 取消
+                        </a>
+                        <button type="submit" class="btn-white-glow flex-fill">
+                            <i class="bi bi-check-circle"></i> 保存修改
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

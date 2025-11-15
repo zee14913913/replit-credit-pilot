@@ -424,6 +424,78 @@ def add_customer():
         flash(translate('error_adding_customer', lang).format(error=str(e)), 'error')
         return redirect(url_for('index'))
 
+@app.route('/edit_customer/<int:customer_id>', methods=['GET'])
+@require_admin_or_accountant
+def edit_customer_page(customer_id):
+    """Show edit customer form page - Admin only"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+        customer_row = cursor.fetchone()
+        customer = dict(customer_row) if customer_row else None
+    
+    if not customer:
+        lang = get_current_language()
+        flash('客户不存在', 'error')
+        return redirect(url_for('index'))
+    
+    return render_template('edit_customer.html', customer=customer)
+
+@app.route('/edit_customer/<int:customer_id>', methods=['POST'])
+@require_admin_or_accountant
+def edit_customer(customer_id):
+    """Update customer information"""
+    try:
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        monthly_income = float(request.form.get('monthly_income', 0))
+        
+        # 收款账户信息
+        personal_account_name = request.form.get('personal_account_name', '').strip()
+        personal_account_number = request.form.get('personal_account_number', '').strip()
+        company_account_name = request.form.get('company_account_name', '').strip()
+        company_account_number = request.form.get('company_account_number', '').strip()
+        
+        if not all([name, email, phone]):
+            flash('所有必填字段都需要填写', 'error')
+            return redirect(url_for('edit_customer_page', customer_id=customer_id))
+        
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # Check if email already exists (excluding current customer)
+            cursor.execute("SELECT id FROM customers WHERE email = ? AND id != ?", (email, customer_id))
+            if cursor.fetchone():
+                flash(f'邮箱 {email} 已被其他客户使用', 'error')
+                return redirect(url_for('edit_customer_page', customer_id=customer_id))
+            
+            # Update customer
+            cursor.execute("""
+                UPDATE customers SET
+                    name = ?,
+                    email = ?,
+                    phone = ?,
+                    monthly_income = ?,
+                    personal_account_name = ?,
+                    personal_account_number = ?,
+                    company_account_name = ?,
+                    company_account_number = ?
+                WHERE id = ?
+            """, (name, email, phone, monthly_income,
+                  personal_account_name or None, personal_account_number or None,
+                  company_account_name or None, company_account_number or None,
+                  customer_id))
+            
+            conn.commit()
+            
+            flash(f'✅ 客户 {name} 的信息已成功更新', 'success')
+            return redirect(url_for('customer_dashboard', customer_id=customer_id))
+            
+    except Exception as e:
+        flash(f'更新客户信息时出错：{str(e)}', 'error')
+        return redirect(url_for('edit_customer_page', customer_id=customer_id))
+
 @app.route('/customer/<int:customer_id>')
 @require_admin_or_accountant
 def customer_dashboard(customer_id):
