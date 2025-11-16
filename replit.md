@@ -32,12 +32,6 @@ User language: Chinese (使用中文与我沟通).
 - 发现任何视觉差异（颜色、描边、字体等）→ **立即回退** → 不得作为正式交付
 - 主干CSS文件保持零变更
 
-**分批次开发承诺**：
-- 🟩 第一批：主结构和核心导航优化 - 纯入口增补，旧UI色不动
-- 🟦 第二批：账单上传、流水明细、异常批量处理 - 复用现有卡片/表格/按钮样式class
-- 🟨 第三批：客户体验升级、管理端批量处理 - 全部复用当前样式文件，无全局UI变量变更
-- 🟫 终极批次：全站统一双语切换 - 仅限内容级变化，UI风格/色彩/主题/边框/卡片背景/字体保持一致
-
 **未来定制化主题**：如需新主题或个性化色板选择，必须在**未来专门批次**开发，不与当前迭代合流。
 
 ## System Architecture
@@ -50,27 +44,25 @@ The platform enforces a professional design using a **MINIMAL 3-COLOR PALETTE ON
 The design system emphasizes clean layouts with bilingual support (English/Chinese).
 
 **Navigation Structure**:
-The main navigation features 8 core modules aligned with business workflow: DASHBOARD, CUSTOMERS, CREDIT CARDS, SAVINGS, RECEIPTS, LOANS, REPORT CENTER, MONTHLY SUMMARY, and ADMIN. The Report Center module provides batch export and self-service reporting capabilities.
+The main navigation features 8 core modules: DASHBOARD, CUSTOMERS, CREDIT CARDS, SAVINGS, RECEIPTS, LOANS, REPORT CENTER, MONTHLY SUMMARY, and ADMIN.
 
 **Department Separation (CRITICAL)**:
-- **CREDIT CARDS Department**: Manages credit card customers. Files stored in `credit_card_files/{customer_name}/` with Excel exports, monthly statements, and transaction details.
-- **ACCOUNTING Department** (Future): Reserved for Acc & Audit professional clients. Completely separate from credit card management. Files will be stored in `accounting_files/` when implemented.
-
-The **CREDIT CARDS** page is a central hub for uploading statements, managing suppliers, processing payments, OCR receipts, and viewing Excel files.
+- **CREDIT CARDS Department**: Manages credit card customers. Files stored in `credit_card_files/{customer_name}/`.
+- **ACCOUNTING Department** (Future): Reserved for Acc & Audit professional clients.
 
 ### Technical Implementations
 The backend uses Flask with SQLite and a context manager for database interactions. Jinja2 handles server-side rendering, complemented by Bootstrap 5 and Bootstrap Icons for the UI. Plotly.js provides client-side data visualization, and PDF.js is used for client-side PDF-to-CSV conversion. A robust notification system provides real-time updates. The AI system uses a unified client architecture supporting multiple providers (Perplexity primary, OpenAI backup) with automatic failover and environment-based configuration.
 
-**VBA Hybrid Architecture (INFINITE GZ Extension):** The system implements a client-server hybrid architecture where VBA (Windows Excel client) handles primary statement parsing, and Replit receives standardized JSON data via REST API. This architecture prioritizes accuracy and cost-efficiency: VBA directly reads Excel cells with 95%+ accuracy, avoiding expensive OCR services. PDF statements are converted to Excel using Tabula/Adobe Acrobat Pro client-side, then parsed by VBA. The system provides 5 VBA templates, Python PDF conversion tools, and dual API endpoints (`/api/upload/vba-json` for single files, `/api/upload/vba-batch` for batch uploads) with JSON format validation. Python Excel parsers are retained as backup for system resilience.
+**VBA Hybrid Architecture (INFINITE GZ Extension):** The system implements a client-server hybrid architecture where VBA (Windows Excel client) handles primary statement parsing, and Replit receives standardized JSON data via REST API. This prioritizes accuracy and cost-efficiency. PDF statements are converted to Excel client-side, then parsed by VBA. Dual API endpoints (`/api/upload/vba-json` for single files, `/api/upload/vba-batch` for batch uploads) are provided. Python Excel parsers are retained as backup.
 
 ### Feature Specifications
 **Core Features:**
 - **Financial Management:** Statement ingestion (PDF OCR, Excel), transaction categorization, savings tracking, dual verification.
 - **AI-Powered Advisory:** Credit card recommendations, financial optimization, cash flow prediction, anomaly detection, financial health scoring, and loan eligibility assessment.
 - **AI Smart Assistant V3 (Enterprise Intelligence):** Advanced multi-provider AI system with real-time web search, floating chatbot UI, cross-module analysis, automated daily financial reports, system analytics, and comprehensive conversation history logging.
-- **Income Document System:** Upload, OCR processing, and standardization of income proof documents with intelligent aggregation and confidence scoring.
+- **Income Document System:** Upload, OCR processing, and standardization of income proof documents.
 - **Dual-Engine Loan Evaluation System (CREDITPILOT):** Production-ready dual-mode architecture supporting both legacy DSR/DSCR engines and modern Malaysian banking standards (DTI/FOIR/CCRIS/BRR). Implements comprehensive risk scoring with intelligent product matching across 12+ banks/Fintech providers. CTOS data serves as the exclusive debt commitment source.
-- **Reporting & Export:** Professional Excel/CSV/PDF reports, automated monthly reports, self-service Report Center with batch export (Phase 4 Priority 1 - November 2025).
+- **Reporting & Export:** Professional Excel/CSV/PDF reports, automated monthly reports, self-service Report Center with batch export.
 - **Workflow Automation:** Batch operations, rule engine for transaction matching.
 - **Security & Compliance:** Multi-role authentication & authorization (RBAC), audit logging, data integrity validation.
 - **User Experience:** Unified navigation, context-aware buttons, bilingual i18n, responsive design.
@@ -120,35 +112,3 @@ A production-ready Unified RBAC Implementation protects 32 functions. The `@requ
 
 ### SFTP ERP Automation System
 A production-ready SFTP synchronization system, implemented with a FastAPI backend (Port 8000) and Paramiko, automatically exports 7 types of financial data to SQL ACC ERP Edition via secure SFTP every 10 minutes.
-## Recent Changes (November 2025)
-
-### Phase 4.2.9-4.2.10: Full-Site Bilingual Internationalization - Batch 4+5 Completion (2025-11-16)
-- **Batch 4 (2 medium-priority templates)**: advanced_analytics.html, request_consultation.html
-  - Upgraded advanced_analytics.html from legacy `{% if current_lang %}` pattern to modern `{{ t('key') }}` pattern, enabling runtime language switching
-  - Fixed request_consultation.html title block to use plain text (no HTML tags in `<title>`)
-  - Added 32 new translation keys (2452→2484 total)
-  - Implementation: 60 t() calls, 35 data-i18n attributes
-  - Architect-approved after regression fixes
-- **Batch 5 (32 low-priority templates, 6 processed + 26 already complete)**: 
-  - Group 1 (3 templates): business_plan, savings_admin_dashboard, notification_settings (+18 keys, 70 t() calls)
-  - Group 2 (3 templates): loan_matcher_result, customers_list, monthly_reports (+5 keys, multi-language CTOS status support)
-  - Group 3 (26 templates): Already 100% internationalized (admin_*, savings_*, loan_*, customer_*, etc.)
-  - Discovered i18n.js limitation: No parameterized translation support (26 placeholder keys identified)
-  - Workaround: Created non-parameterized fallback keys (e.g., customers_unit instead of customers_count with {count})
-  - Architect-approved with recommendation to implement interpolation in future phase
-- **Translation Resources**: 2484→2508 total keys (+24 net), EN/ZH parity maintained
-- **UI Compliance**: 100% adherence to UI Style Protection Clause (zero CSS modifications)
-- **Cumulative Progress**: 29/87 templates completed (33%), Batch 4 (2 templates) + Batch 5 (6 templates processed, 26 already complete)
-- **Status**: Production-ready, runtime language switching validated across all processed templates
-
-### Phase 4 Priority 1: Report Center Implementation (2025-11-16)
-- **Module**: Self-Service Report Center with Batch Export
-- **Database**: Added `export_tasks` table with 3 indexes for efficient task tracking
-- **Templates**: 3 new templates (report_center.html, export_filter.html, export_progress_card.html)
-- **API Routes**: 4 Flask JSON endpoints (/reports/center, /api/reports/export, /api/reports/history, /api/reports/retry)
-- **Navigation**: Integrated Report Center into main navigation (base.html and layout.html)
-- **Translations**: Added 34 bilingual entries (EN/ZH)
-- **UI Compliance**: 100% adherence to UI Style Protection Clause (CSS zero-change, class reuse only)
-- **Export Engine**: Real file generation (Excel/CSV/PDF) using openpyxl, pandas, reportlab with brand styling
-- **File Naming**: Automatic timestamped filenames (报告中心-yyyyMMdd-HHmmss.xlsx)
-- **Status**: Production-ready, fully functional, accessible from main navigation
