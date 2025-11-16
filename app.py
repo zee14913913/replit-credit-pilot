@@ -7207,13 +7207,13 @@ def ctos_company_submit_route():
 
 
 # ============================================================================
-# ACCOUNTING FILES BROWSER - 会计文件浏览系统
+# CREDIT CARD EXCEL FILES BROWSER - 信用卡Excel文件浏览系统
 # ============================================================================
 
-@app.route('/credit-card/accounting-files/<int:customer_id>')
+@app.route('/credit-card/excel-files/<int:customer_id>')
 @require_admin_or_accountant
-def browse_accounting_files(customer_id):
-    """浏览客户的会计文件（月结单、交易明细等）"""
+def browse_credit_card_excel_files(customer_id):
+    """浏览信用卡客户的Excel文件（月结单、交易明细等）"""
     from pathlib import Path
     import os
     
@@ -7231,11 +7231,11 @@ def browse_accounting_files(customer_id):
     customer_name = customer[1]
     customer_code = customer[2]
     
-    # 查找客户的accounting_files文件夹
-    accounting_dir = Path('accounting_files') / customer_name
+    # 查找客户的credit_card_files文件夹
+    credit_card_dir = Path('credit_card_files') / customer_name
     
-    if not accounting_dir.exists():
-        flash(f'客户 {customer_name} 的会计文件尚未生成，请先运行文件生成脚本', 'warning')
+    if not credit_card_dir.exists():
+        flash(f'客户 {customer_name} 的Excel文件尚未生成，请先运行文件生成脚本', 'warning')
         return redirect(url_for('credit_card_ledger'))
     
     # 扫描所有Excel文件
@@ -7246,51 +7246,51 @@ def browse_accounting_files(customer_id):
     }
     
     # 月结单文件
-    statements_dir = accounting_dir / 'monthly_statements'
+    statements_dir = credit_card_dir / 'monthly_statements'
     if statements_dir.exists():
         for file in sorted(statements_dir.glob('*.xlsx')):
             files['monthly_statements'].append({
                 'name': file.name,
-                'path': str(file.relative_to('accounting_files')),
+                'path': str(file.relative_to('credit_card_files')),
                 'size': file.stat().st_size,
                 'modified': datetime.fromtimestamp(file.stat().st_mtime).strftime('%Y-%m-%d %H:%M'),
                 'type': 'Summary' if 'Summary' in file.name else 'Statement'
             })
     
     # 交易明细文件
-    details_dir = accounting_dir / 'transaction_details'
+    details_dir = credit_card_dir / 'transaction_details'
     if details_dir.exists():
         for file in sorted(details_dir.glob('*.xlsx')):
             files['transaction_details'].append({
                 'name': file.name,
-                'path': str(file.relative_to('accounting_files')),
+                'path': str(file.relative_to('credit_card_files')),
                 'size': file.stat().st_size,
                 'modified': datetime.fromtimestamp(file.stat().st_mtime).strftime('%Y-%m-%d %H:%M')
             })
     
     # 报告文件
-    reports_dir = accounting_dir / 'reports'
+    reports_dir = credit_card_dir / 'reports'
     if reports_dir.exists():
         for file in sorted(reports_dir.glob('*.xlsx')):
             files['reports'].append({
                 'name': file.name,
-                'path': str(file.relative_to('accounting_files')),
+                'path': str(file.relative_to('credit_card_files')),
                 'size': file.stat().st_size,
                 'modified': datetime.fromtimestamp(file.stat().st_mtime).strftime('%Y-%m-%d %H:%M')
             })
     
     return render_template(
-        'accounting_files_browser.html',
+        'credit_card_excel_browser.html',
         customer=customer,
         customer_name=customer_name,
         files=files
     )
 
 
-@app.route('/credit-card/download-accounting-file')
+@app.route('/credit-card/download-excel-file')
 @require_admin_or_accountant
-def download_accounting_file():
-    """下载会计文件"""
+def download_credit_card_excel_file():
+    """下载信用卡Excel文件"""
     from flask import send_file
     from pathlib import Path
     
@@ -7299,15 +7299,15 @@ def download_accounting_file():
         flash('文件路径缺失', 'error')
         return redirect(url_for('credit_card_ledger'))
     
-    # 安全检查：确保路径在accounting_files目录内
-    full_path = Path('accounting_files') / file_path
+    # 安全检查：确保路径在credit_card_files目录内
+    full_path = Path('credit_card_files') / file_path
     
     # 规范化路径，防止目录遍历攻击
     try:
         full_path = full_path.resolve()
-        accounting_base = Path('accounting_files').resolve()
+        credit_card_base = Path('credit_card_files').resolve()
         
-        if not str(full_path).startswith(str(accounting_base)):
+        if not str(full_path).startswith(str(credit_card_base)):
             flash('非法文件路径', 'error')
             return redirect(url_for('credit_card_ledger'))
         

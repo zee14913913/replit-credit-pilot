@@ -16,10 +16,10 @@
             <i class="bi bi-arrow-left"></i> {{ t('back_to_all_customers') }}
         </a>
         
-        <a href="{{ url_for('browse_accounting_files', customer_id=customer.id) }}" 
+        <a href="{{ url_for('browse_credit_card_excel_files', customer_id=customer.id) }}" 
            class="btn-professional" 
            style="background: linear-gradient(135deg, #FF007F 0%, #322446 100%); color: white; padding: 0.75rem 1.5rem; font-size: 1.1rem; border: none;">
-            <i class="bi bi-file-earmark-spreadsheet"></i> 查看会计文件 (Excel)
+            <i class="bi bi-file-earmark-spreadsheet"></i> 查看Excel文件
         </a>
     </div>
 

@@ -18,7 +18,13 @@ The platform enforces a professional design using a **MINIMAL 3-COLOR PALETTE ON
 The design system emphasizes clean layouts with bilingual support (English/Chinese).
 
 **Navigation Structure**:
-The main navigation features 7 core modules aligned with business workflow: DASHBOARD, CREDIT CARDS, SAVINGS, RECEIPTS, LOANS, REPORTS, and ADMIN. The **CREDIT CARDS** page is a central hub for uploading statements, managing suppliers, processing payments, and OCR receipts.
+The main navigation features 7 core modules aligned with business workflow: DASHBOARD, CREDIT CARDS, SAVINGS, RECEIPTS, LOANS, REPORTS, and ADMIN.
+
+**Department Separation (CRITICAL)**:
+- **CREDIT CARDS Department**: Manages credit card customers (CHANG CHOON CHOW, CHEOK JUN YOON, etc.). All files stored in `credit_card_files/{customer_name}/` with Excel exports, monthly statements, and transaction details.
+- **ACCOUNTING Department** (Future): Reserved exclusively for Acc & Audit professional clients. Completely separate from credit card management. Files will be stored in `accounting_files/` when implemented.
+
+The **CREDIT CARDS** page is a central hub for uploading statements, managing suppliers, processing payments, OCR receipts, and viewing Excel files.
 
 ### Technical Implementations
 The backend uses Flask with SQLite and a context manager for database interactions. Jinja2 handles server-side rendering, complemented by Bootstrap 5 and Bootstrap Icons for the UI. Plotly.js provides client-side data visualization, and PDF.js is used for client-side PDF-to-CSV conversion. A robust notification system provides real-time updates. The AI system uses a unified client architecture supporting multiple providers (Perplexity primary, OpenAI backup) with automatic failover and environment-based configuration.
