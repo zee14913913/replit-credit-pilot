@@ -1,0 +1,57 @@
+<!-- 导出进度卡片组件（无图标版） -->
+<div class="mb-3 p-3" style="background: rgba(255,255,255,0.05); border-left: 4px solid {% if task.status == 'completed' %}#28a745{% elif task.status == 'processing' %}var(--primary-pink){% elif task.status == 'failed' %}#dc3545{% else %}#6c757d{% endif %}; border-radius: 4px;">
+    <div class="d-flex justify-content-between align-items-start">
+        <div class="flex-grow-1">
+            <div class="mb-2">
+                {% if task.status == 'completed' %}
+                    <span class="badge-success-pro me-2">{{ t('completed') }}</span>
+                {% elif task.status == 'processing' %}
+                    <span class="badge-pink-custom me-2">{{ t('processing') }}</span>
+                {% elif task.status == 'failed' %}
+                    <span class="badge badge-danger me-2">{{ t('failed') }}</span>
+                {% else %}
+                    <span class="badge-professional me-2">{{ t('waiting') }}</span>
+                {% endif %}
+                
+                <strong style="color: white;">{{ task.export_format }}</strong>
+                <span class="text-muted ms-2">{{ task.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+            </div>
+            
+            <div class="small text-muted">
+                {{ t('records') }}: {{ task.record_count }} | {{ t('file_size') }}: {{ task.file_size or 'N/A' }}
+            </div>
+            
+            {% if task.error_msg %}
+            <div class="mt-2" style="color: #dc3545; font-weight: 600;">
+                {{ t('error') }}: {{ task.error_msg }}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="text-end" style="min-width: 150px;">
+            {% if task.status == 'completed' and task.download_url %}
+                <a href="{{ task.download_url }}" class="btn btn-sm btn-success-pro" download>{{ t('download') }}</a>
+            {% elif task.status == 'processing' %}
+                <button class="btn btn-sm btn-professional-outline" disabled>{{ t('processing') }}...</button>
+            {% elif task.status == 'failed' %}
+                <button class="btn btn-sm btn-professional-outline" onclick="retryExport({{ task.id }})">{{ t('retry') }}</button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function retryExport(taskId) {
+    if (confirm('{{ t("confirm_retry") }}?')) {
+        fetch(`/api/reports/retry/${taskId}`, {method: 'POST'})
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('{{ t("retry_failed") }}: ' + data.message);
+                }
+            });
+    }
+}
+</script>

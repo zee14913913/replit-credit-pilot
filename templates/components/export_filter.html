@@ -1,0 +1,45 @@
+<!-- 筛选器组件（无图标版） -->
+<form id="filterForm" class="row g-3">
+    <div class="col-md-3">
+        <label class="form-label" style="font-weight: 600; color: rgba(255,255,255,0.9);">{{ t('customer') }}</label>
+        <select class="form-select" id="filterCustomer" name="customer_id" style="background: rgba(255,255,255,0.1); border-color: var(--primary-pink); color: white;">
+            <option value="">{{ t('all_customers') }}</option>
+            {% for customer in customers %}
+            <option value="{{ customer.id }}">{{ customer.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="col-md-3">
+        <label class="form-label" style="font-weight: 600; color: rgba(255,255,255,0.9);">{{ t('account_type') }}</label>
+        <select class="form-select" id="filterAccount" name="account_type" style="background: rgba(255,255,255,0.1); border-color: var(--primary-pink); color: white;">
+            <option value="">{{ t('all_accounts') }}</option>
+            <option value="credit_card">{{ t('credit_card') }}</option>
+            <option value="savings">{{ t('savings_account') }}</option>
+            <option value="loan">{{ t('loan_account') }}</option>
+        </select>
+    </div>
+    
+    <div class="col-md-2">
+        <label class="form-label" style="font-weight: 600; color: rgba(255,255,255,0.9);">{{ t('start_date') }}</label>
+        <input type="date" class="form-control" id="filterDateFrom" name="date_from" style="background: rgba(255,255,255,0.1); border-color: var(--primary-pink); color: white;">
+    </div>
+    
+    <div class="col-md-2">
+        <label class="form-label" style="font-weight: 600; color: rgba(255,255,255,0.9);">{{ t('end_date') }}</label>
+        <input type="date" class="form-control" id="filterDateTo" name="date_to" style="background: rgba(255,255,255,0.1); border-color: var(--primary-pink); color: white;">
+    </div>
+    
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn-professional w-100">{{ t('apply_filter') }}</button>
+    </div>
+</form>
+
+<script>
+document.getElementById('filterForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const params = new URLSearchParams(formData);
+    window.location.href = '/reports/center?' + params.toString();
+});
+</script>

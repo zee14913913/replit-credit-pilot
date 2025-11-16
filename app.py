@@ -7623,6 +7623,227 @@ def reject_all_batch_uploads():
         return jsonify({'success': False, 'message': str(e)}), 500
 
 
+
+# Phase 4 Priority 1: Report Center Routes (No Icons Design)
+# Created: 2025-11-16
+# Description: 批量导出与报表自助中心路由（无图标设计）
+# ============================================================
+
+@app.route('/reports/center')
+@require_admin_or_accountant
+def report_center():
+    """报表中心主页 - 支持筛选和批量导出"""
+    # 获取筛选参数
+    customer_id = request.args.get('customer_id', '')
+    account_type = request.args.get('account_type', '')
+    date_from = request.args.get('date_from', '')
+    date_to = request.args.get('date_to', '')
+    
+    with DatabaseManager() as db:
+        # 获取所有客户（用于筛选器）
+        customers = db.fetch_all("SELECT id, name FROM customers ORDER BY name")
+        
+        # 构建查询条件
+        where_clauses = ["1=1"]
+        params = []
+        
+        if customer_id:
+            where_clauses.append("c.id = ?")
+            params.append(customer_id)
+        
+        if date_from:
+            where_clauses.append("s.statement_date >= ?")
+            params.append(date_from)
+        
+        if date_to:
+            where_clauses.append("s.statement_date <= ?")
+            params.append(date_to)
+        
+        # 获取记录数据（示例：从statements表）
+        query = f"""
+        SELECT 
+            s.id,
+            c.name as customer_name,
+            'Credit Card' as account_name,
+            s.statement_date as date_from,
+            s.statement_date as date_to,
+            s.statement_total as amount,
+            s.is_confirmed as status
+        FROM statements s
+        LEFT JOIN credit_cards cc ON s.card_id = cc.id
+        LEFT JOIN customers c ON cc.customer_id = c.id
+        WHERE {' AND '.join(where_clauses)}
+        ORDER BY s.statement_date DESC
+        LIMIT 100
+        """
+        
+        records_raw = db.fetch_all(query, params)
+        
+        # 转换为字典列表
+        records = []
+        for rec in records_raw:
+            records.append({
+                'id': rec[0],
+                'customer_name': rec[1] or 'Unknown',
+                'account_name': rec[2],
+                'date_from': rec[3],
+                'date_to': rec[4],
+                'amount': rec[5] or 0.0,
+                'status': 'confirmed' if rec[6] else 'pending'
+            })
+        
+        # 获取导出历史
+        export_tasks_raw = db.fetch_all(
+            """SELECT id, export_format, record_count, file_size, download_url, 
+                      status, error_msg, created_at, completed_at
+               FROM export_tasks 
+               ORDER BY created_at DESC 
+               LIMIT 20"""
+        )
+        
+        export_tasks = []
+        for task in export_tasks_raw:
+            export_tasks.append({
+                'id': task[0],
+                'export_format': task[1],
+                'record_count': task[2] or 0,
+                'file_size': task[3],
+                'download_url': task[4],
+                'status': task[5] or 'waiting',
+                'error_msg': task[6],
+                'created_at': datetime.fromisoformat(task[7]) if task[7] else datetime.now(),
+                'completed_at': datetime.fromisoformat(task[8]) if task[8] else None
+            })
+    
+    return render_template('reports/report_center.html',
+                         customers=customers,
+                         records=records,
+                         export_tasks=export_tasks)
+
+
+@app.route('/api/reports/export', methods=['POST'])
+@require_admin_or_accountant
+def api_export_reports():
+    """批量导出API"""
+    try:
+        data = request.json
+        record_ids = data.get('record_ids', [])
+        export_format = data.get('export_format', 'Excel')
+        
+        if not record_ids:
+            return jsonify({'success': False, 'message': 'No records selected'}), 400
+        
+        with DatabaseManager() as db:
+            # 创建导出任务
+            task_id = db.execute(
+                """INSERT INTO export_tasks (export_format, record_count, status, created_at)
+                   VALUES (?, ?, 'processing', ?)""",
+                (export_format, len(record_ids), datetime.now().isoformat())
+            )
+            
+            # 这里应该启动后台任务生成文件，暂时模拟
+            # TODO: 实现实际的导出逻辑（使用reportlab/openpyxl等）
+            
+            # 模拟成功
+            db.execute(
+                """UPDATE export_tasks 
+                   SET status = 'completed', 
+                       download_url = ?,
+                       file_size = '1.2 MB',
+                       completed_at = ?,
+                       updated_at = ?
+                   WHERE id = ?""",
+                (f'/downloads/export_{task_id}.{export_format.lower()}',
+                 datetime.now().isoformat(),
+                 datetime.now().isoformat(),
+                 task_id)
+            )
+            
+            # 记录审计日志
+            db.execute(
+                """INSERT INTO audit_logs (log_action, operator_email, operation_content, status, created_at)
+                   VALUES (?, ?, ?, ?, ?)""",
+                ('report_export', session.get('email', 'system'),
+                 f'Exported {len(record_ids)} records as {export_format}',
+                 'success', datetime.now().isoformat())
+            )
+        
+        return jsonify({'success': True, 'task_id': task_id})
+    
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/api/reports/history', methods=['GET'])
+@require_admin_or_accountant
+def api_export_history():
+    """获取导出历史"""
+    try:
+        with DatabaseManager() as db:
+            tasks = db.fetch_all(
+                """SELECT id, export_format, record_count, file_size, download_url,
+                          status, error_msg, created_at, completed_at
+                   FROM export_tasks
+                   ORDER BY created_at DESC
+                   LIMIT 50"""
+            )
+            
+            result = []
+            for task in tasks:
+                result.append({
+                    'id': task[0],
+                    'export_format': task[1],
+                    'record_count': task[2],
+                    'file_size': task[3],
+                    'download_url': task[4],
+                    'status': task[5],
+                    'error_msg': task[6],
+                    'created_at': task[7],
+                    'completed_at': task[8]
+                })
+        
+        return jsonify({'success': True, 'tasks': result})
+    
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/api/reports/retry/<int:task_id>', methods=['POST'])
+@require_admin_or_accountant
+def api_retry_export(task_id):
+    """重试失败的导出任务"""
+    try:
+        with DatabaseManager() as db:
+            # 重置任务状态
+            db.execute(
+                """UPDATE export_tasks 
+                   SET status = 'processing', 
+                       error_msg = NULL,
+                       updated_at = ?
+                   WHERE id = ?""",
+                (datetime.now().isoformat(), task_id)
+            )
+            
+            # TODO: 启动后台任务重新生成文件
+            
+            # 模拟成功
+            db.execute(
+                """UPDATE export_tasks 
+                   SET status = 'completed',
+                       completed_at = ?,
+                       updated_at = ?
+                   WHERE id = ?""",
+                (datetime.now().isoformat(),
+                 datetime.now().isoformat(),
+                 task_id)
+            )
+        
+        return jsonify({'success': True})
+    
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
 if __name__ == '__main__':
     # Get environment settings
     flask_env = os.getenv('FLASK_ENV', 'development')
@@ -7634,4 +7855,3 @@ if __name__ == '__main__':
         start_scheduler()
     
     app.run(host='0.0.0.0', port=port, debug=debug_mode)
-

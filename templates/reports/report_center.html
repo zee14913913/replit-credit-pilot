@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('report_center') }} - CreditPilot{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- 页面标题 -->
+    <div class="section-header">
+        <h1 class="section-title" style="color: var(--primary-pink); font-weight: 700;">
+            {{ t('report_center') }}
+        </h1>
+        <p class="section-subtitle">{{ t('batch_export_and_download') }}</p>
+    </div>
+
+    <!-- 筛选器卡片 -->
+    <div class="professional-card mb-4">
+        <h4 style="color: var(--primary-pink); font-weight: 700; margin-bottom: 20px;">{{ t('filter_conditions') }}</h4>
+        {% include "components/export_filter.html" %}
+    </div>
+
+    <!-- 批量操作区 -->
+    <div class="professional-card mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 style="color: var(--primary-pink); font-weight: 700;">{{ t('export_tasks') }}</h4>
+            <div class="d-flex gap-2">
+                <button class="btn-professional-outline btn-sm" onclick="exportSelected('PDF')">{{ t('export_pdf') }}</button>
+                <button class="btn-professional-outline btn-sm" onclick="exportSelected('Excel')">{{ t('export_excel') }}</button>
+                <button class="btn-professional btn-sm" onclick="exportSelected('CSV')">{{ t('export_csv') }}</button>
+            </div>
+        </div>
+
+        <!-- 数据列表 -->
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                        <th>{{ t('customer') }}</th>
+                        <th>{{ t('account') }}</th>
+                        <th>{{ t('date_range') }}</th>
+                        <th>{{ t('amount') }}</th>
+                        <th>{{ t('status') }}</th>
+                    </tr>
+                </thead>
+                <tbody id="reportData">
+                    {% for record in records %}
+                    <tr>
+                        <td><input type="checkbox" class="record-checkbox" value="{{ record.id }}"></td>
+                        <td>{{ record.customer_name }}</td>
+                        <td>{{ record.account_name }}</td>
+                        <td>{{ record.date_from }} ~ {{ record.date_to }}</td>
+                        <td style="color: var(--primary-pink); font-weight: 600;">RM {{ "{:,.2f}".format(record.amount) }}</td>
+                        <td>
+                            {% if record.status == 'confirmed' %}
+                                <span class="badge-success-pro">{{ t('confirmed') }}</span>
+                            {% else %}
+                                <span class="badge-pink-custom">{{ t('pending') }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">{{ t('no_data_available') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 导出进度卡片 -->
+    <div class="professional-card">
+        <h4 style="color: var(--primary-pink); font-weight: 700; margin-bottom: 20px;">{{ t('export_history') }}</h4>
+        <div id="exportHistory">
+            {% for task in export_tasks %}
+                {% include "components/export_progress_card.html" %}
+            {% else %}
+            <div class="text-center text-muted py-4">{{ t('no_export_history') }}</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+// 全选/反选
+function toggleSelectAll() {
+    const checkboxes = document.querySelectorAll('.record-checkbox');
+    const selectAll = document.getElementById('selectAll');
+    checkboxes.forEach(cb => cb.checked = selectAll.checked);
+}
+
+// 批量导出
+function exportSelected(format) {
+    const checkboxes = document.querySelectorAll('.record-checkbox:checked');
+    if (checkboxes.length === 0) {
+        alert('{{ t("please_select_records") }}');
+        return;
+    }
+    
+    const ids = Array.from(checkboxes).map(cb => cb.value);
+    
+    fetch('/api/reports/export', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            record_ids: ids,
+            export_format: format
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('{{ t("export_started") }}: ' + format);
+            location.reload();
+        } else {
+            alert('{{ t("export_failed") }}: ' + data.message);
+        }
+    });
+}
+
+// 刷新历史记录
+function refreshHistory() {
+    location.reload();
+}
+</script>
+{% endblock %}
