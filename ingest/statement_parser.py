@@ -373,20 +373,21 @@ def parse_hong_leong_statement(file_path):
                     trans_amount = abs(float(match.group(3).replace(",", "")))
                     trans_cr_marker = match.group(4)
                     
-                    # Skip summary/header lines
-                    skip_keywords = ['PREVIOUS BALANCE', 'SUB TOTAL', 'TOTAL BALANCE', 'NEW TRANSACTION',
-                                   'PAYMENT RECEIVED', 'Total Current Balance', 'Credit Limit', 
-                                   'Minimum Payment', 'Payment Due Date']
-                    if any(kw in trans_desc for kw in skip_keywords):
-                        continue
+                    # 🆕 100% PARSE: No skip logic - classify by line type instead
+                    # Identify line type: detail/summary/remark/error
+                    summary_keywords = ['PREVIOUS BALANCE', 'SUB TOTAL', 'TOTAL BALANCE', 'NEW TRANSACTION',
+                                      'PAYMENT RECEIVED', 'Total Current Balance', 'Credit Limit', 
+                                      'Minimum Payment', 'Payment Due Date']
                     
-                    # Skip if description is too short or just numbers/codes
-                    if len(trans_desc) < 3 or re.match(r'^[\d\s,\.\-]+$', trans_desc):
-                        continue
-                    
-                    # Skip reference numbers (like "03821285163223016950011")
-                    if re.match(r'^\d{20,}$', trans_desc):
-                        continue
+                    # Determine line type
+                    if any(kw in trans_desc for kw in summary_keywords):
+                        line_type = 'summary'
+                    elif len(trans_desc) < 3 or re.match(r'^[\d\s,\.\-]+$', trans_desc):
+                        line_type = 'remark'  # Too short or just numbers
+                    elif re.match(r'^\d{20,}$', trans_desc):
+                        line_type = 'remark'  # Reference numbers
+                    else:
+                        line_type = 'detail'  # Normal transaction
                     
                     # CRITICAL FIX: Complete the date with the correct year from statement
                     # Convert "08 AUG" to "08 AUG 2024" using statement year
@@ -403,11 +404,13 @@ def parse_hong_leong_statement(file_path):
                     # CR means credit/repayment/rebate
                     trans_type = "credit" if trans_cr_marker else "debit"
                     
+                    # 🆕 All lines are preserved with line_type classification
                     transactions.append({
                         "date": trans_date,
                         "description": trans_desc,
                         "amount": trans_amount,
-                        "type": trans_type
+                        "type": trans_type,
+                        "line_type": line_type  # 🆕 detail/summary/remark
                     })
         else:
             df = pd.read_excel(file_path)
@@ -474,28 +477,30 @@ def parse_ambank_statement(file_path):
                     trans_amount = abs(float(match.group(3).replace(",", "")))
                     trans_cr_marker = match.group(4)
                     
-                    # Skip summary/header lines (but NOT fees like MANAGEMENT FEE or EXCESS LIMIT CHARGE)
-                    skip_keywords = ['PREVIOUS BALANCE', 'SUB TOTAL', 'Total Current Balance', 'End of Transaction',
-                                   'YOUR CARD ACCOUNT', 'Please see overleaf']
-                    if any(kw in trans_desc for kw in skip_keywords):
-                        continue
+                    # 🆕 100% PARSE: No skip logic - classify by line type instead
+                    summary_keywords = ['PREVIOUS BALANCE', 'SUB TOTAL', 'Total Current Balance', 'End of Transaction',
+                                      'YOUR CARD ACCOUNT', 'Please see overleaf']
                     
-                    # Skip if description is too short or just numbers/codes
-                    if len(trans_desc) < 3 or re.match(r'^[\d\s,\.\-]+$', trans_desc):
-                        continue
-                    
-                    # Skip card account numbers
-                    if re.match(r'^\d{16}$', trans_desc.replace(' ', '')):
-                        continue
+                    # Determine line type
+                    if any(kw in trans_desc for kw in summary_keywords):
+                        line_type = 'summary'
+                    elif len(trans_desc) < 3 or re.match(r'^[\d\s,\.\-]+$', trans_desc):
+                        line_type = 'remark'
+                    elif re.match(r'^\d{16}$', trans_desc.replace(' ', '')):
+                        line_type = 'header'  # Card account numbers
+                    else:
+                        line_type = 'detail'
                     
                     # CR means credit/repayment
                     trans_type = "credit" if trans_cr_marker else "debit"
                     
+                    # 🆕 All lines are preserved with line_type classification
                     transactions.append({
                         "date": trans_date,
                         "description": trans_desc,
                         "amount": trans_amount,
-                        "type": trans_type
+                        "type": trans_type,
+                        "line_type": line_type  # 🆕 detail/summary/remark/header
                     })
         else:
             df = pd.read_excel(file_path)
@@ -639,25 +644,29 @@ def parse_alliance_statement(file_path):
                 trans_amount = abs(float(match.group(4).replace(",", "")))
                 trans_cr_marker = match.group(5)
                 
-                # Skip summary/header lines
-                skip_keywords = ['PREVIOUS BALANCE', 'PREVIOUS STATEMENT BALANCE', 'CHARGES THIS MONTH',
-                               'CURRENT BALANCE', 'TOTAL MINIMUM PAYMENT', 'Balance From Last Statement',
-                               'Payment Amount', 'Minimum Payment']
-                if any(kw in trans_desc.upper() for kw in skip_keywords):
-                    continue
+                # 🆕 100% PARSE: No skip logic - classify by line type instead
+                summary_keywords = ['PREVIOUS BALANCE', 'PREVIOUS STATEMENT BALANCE', 'CHARGES THIS MONTH',
+                                  'CURRENT BALANCE', 'TOTAL MINIMUM PAYMENT', 'Balance From Last Statement',
+                                  'Payment Amount', 'Minimum Payment']
                 
-                # Skip if description is too short or just numbers
-                if len(trans_desc) < 3 or re.match(r'^[\d\s,\.\-]+$', trans_desc):
-                    continue
+                # Determine line type
+                if any(kw in trans_desc.upper() for kw in summary_keywords):
+                    line_type = 'summary'
+                elif len(trans_desc) < 3 or re.match(r'^[\d\s,\.\-]+$', trans_desc):
+                    line_type = 'remark'
+                else:
+                    line_type = 'detail'
                 
                 # CR marker means credit/payment, no CR means debit/purchase
                 trans_type = "credit" if trans_cr_marker else "debit"
                 
+                # 🆕 All lines are preserved with line_type classification
                 transactions.append({
                     "date": posting_date,  # Use posting date for consistency
                     "description": trans_desc,
                     "amount": trans_amount,
-                    "type": trans_type
+                    "type": trans_type,
+                    "line_type": line_type  # 🆕 detail/summary/remark
                 })
         else:
             df = pd.read_excel(file_path)
@@ -782,24 +791,28 @@ def parse_hsbc_statement(file_path):
                     trans_amount = abs(float(match.group(3).replace(",", "")))
                     trans_cr_marker = match.group(4)
                     
-                    # Skip summary/header lines
-                    skip_keywords = ['Your Previous Statement Balance', 'Your statement balance', 'Total credit limit used',
-                                   'Your charge', 'Credit Limit', 'MINIMUM PAYMENT', 'Please forward']
-                    if any(kw in trans_desc for kw in skip_keywords):
-                        continue
+                    # 🆕 100% PARSE: No skip logic - classify by line type instead
+                    summary_keywords = ['Your Previous Statement Balance', 'Your statement balance', 'Total credit limit used',
+                                      'Your charge', 'Credit Limit', 'MINIMUM PAYMENT', 'Please forward']
                     
-                    # Skip if description is too short or just numbers
-                    if len(trans_desc) < 3 or re.match(r'^[\d\s,\.]+$', trans_desc):
-                        continue
+                    # Determine line type
+                    if any(kw in trans_desc for kw in summary_keywords):
+                        line_type = 'summary'
+                    elif len(trans_desc) < 3 or re.match(r'^[\d\s,\.]+$', trans_desc):
+                        line_type = 'remark'
+                    else:
+                        line_type = 'detail'
                     
                     # CR means credit/repayment
                     trans_type = "credit" if trans_cr_marker else "debit"
                     
+                    # 🆕 All lines are preserved with line_type classification
                     transactions.append({
                         "date": trans_date,
                         "description": trans_desc,
                         "amount": trans_amount,
-                        "type": trans_type
+                        "type": trans_type,
+                        "line_type": line_type  # 🆕 detail/summary/remark
                     })
         else:
             df = pd.read_excel(file_path, sheet_name="Sheet1")
@@ -875,39 +888,41 @@ def parse_standard_chartered_statement(file_path):
                     amount_str = match.group(4).strip()
                     is_credit = match.group(5) is not None
                     
-                    # Filter out header/summary lines
-                    skip_keywords = ['BALANCE FROM PREVIOUS', 'NEW BALANCE', 'MINIMUM PAYMENT', 
-                                   'Baki dari penyata', 'Baki Baru', 'Pembayaran Minima',
-                                   'Previous Balance', 'New Balance', 'Posting Date', 'Transaction Date',
-                                   'Tarikh Bil', 'Diterima', 'Transaksi']
+                    # 🆕 100% PARSE: No skip logic - classify by line type instead
+                    summary_keywords = ['BALANCE FROM PREVIOUS', 'NEW BALANCE', 'MINIMUM PAYMENT', 
+                                      'Baki dari penyata', 'Baki Baru', 'Pembayaran Minima',
+                                      'Previous Balance', 'New Balance', 'Posting Date', 'Transaction Date',
+                                      'Tarikh Bil', 'Diterima', 'Transaksi']
                     
-                    if any(kw.lower() in description.lower() for kw in skip_keywords):
-                        continue
-                    
-                    # Skip if description is too short
-                    if len(description) < 5:
-                        continue
+                    # Determine line type
+                    if any(kw.lower() in description.lower() for kw in summary_keywords):
+                        line_type = 'summary'
+                    elif len(description) < 5:
+                        line_type = 'remark'
+                    else:
+                        line_type = 'detail'
                     
                     # Parse amount
                     try:
                         trans_amount = abs(float(amount_str.replace(',', '')))
                     except:
-                        continue
+                        line_type = 'error'  # Parse error
+                        trans_amount = 0.0
                     
-                    # Skip zero amounts without meaningful description
-                    if trans_amount == 0.0 and len(description) < 10:
-                        continue
+                    # Note: Even zero amounts are preserved (not skipped)
                     
                     # Complete the date with year
                     trans_date = transaction_date.strip()
                     if statement_year and re.match(r'^\d{1,2}\s+[A-Za-z]{3}$', trans_date):
                         trans_date = f"{trans_date} {statement_year}"
                     
+                    # 🆕 All lines are preserved with line_type classification
                     transactions.append({
                         "date": trans_date,
                         "description": description,
                         "amount": trans_amount,
-                        "type": "credit" if is_credit else "debit"
+                        "type": "credit" if is_credit else "debit",
+                        "line_type": line_type  # 🆕 detail/summary/remark/error
                     })
         else:
             df = pd.read_excel(file_path)
