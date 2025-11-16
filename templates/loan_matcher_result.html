@@ -27,7 +27,7 @@
                         <div class="col-md-3">
                             <div class="text-silver-pearl small mb-2">{{ t('monthly_commitment') }}</div>
                             <div class="text-white fw-bold fs-5 mb-2">RM {{ '%.2f' | format(total_commitment) }}</div>
-                            <div class="ctos-status-indicator {% if '成功' in ctos_notes or 'Success' in ctos_notes %}ctos-success{% elif '警告' in ctos_notes or '未' in ctos_notes or 'Warning' in ctos_notes or 'Not' in ctos_notes %}ctos-warning{% else %}ctos-error{% endif %}">
+                            <div class="ctos-status-indicator {% if '成功' in ctos_notes or 'Success' in ctos_notes or 'Successful' in ctos_notes %}ctos-success{% elif '警告' in ctos_notes or '未' in ctos_notes or 'Warning' in ctos_notes or 'Not' in ctos_notes or 'Pending' in ctos_notes %}ctos-warning{% else %}ctos-error{% endif %}">
                                 {{ ctos_notes }}
                             </div>
                         </div>

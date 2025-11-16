@@ -58,7 +58,7 @@
                     <label class="form-label" style="color: rgba(255, 255, 255, 0.85); font-size: 1.2rem; font-weight: 500; margin-bottom: 0.75rem;">{{ t('month__') }}</label>
                     <select id="reportMonth" name="month" class="form-select form-select-lg" style="background: rgba(30, 20, 45, 0.8); color: #FFFFFF; border: 2px solid rgba(255, 0, 127, 0.3); padding: 1rem; font-size: 1.1rem; border-radius: 12px;">
                         {% for m in range(1, 13) %}
-                        <option value="{{ m }}" {% if m == 9 %}selected{% endif %}>{{ m }}月</option>
+                        <option value="{{ m }}" {% if m == 9 %}selected{% endif %}>{{ m }}{{ t('month_unit') }}</option>
                         {% endfor %}
                     </select>
                 </div>

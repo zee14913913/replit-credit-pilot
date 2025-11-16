@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}通知设置 - {{ t('system_name') }}{% endblock %}
+{% block title %}{{ t('notification_settings') }} - {{ t('system_name') }}{% endblock %}
 
 {% block content %}
 <div class="container-professional" style="max-width: 800px; margin: 40px auto;">
     <div class="card-professional">
         <div class="card-header-pro">
-            <h2><i class="bi bi-gear-fill"></i> 通知设置</h2>
+            <h2><i class="bi bi-gear-fill"></i> {{ t('notification_settings') }}</h2>
             <p style="margin: 8px 0 0 0; opacity: 0.8;">{{ t('auto_text_970') }}</p>
         </div>
         
@@ -14,7 +14,7 @@
             <form id="settingsForm">
                 <div class="form-section">
                     <h3 style="color: #FF007F; margin-bottom: 20px;">
-                        <i class="bi bi-envelope-fill"></i> 通知渠道
+                        <i class="bi bi-envelope-fill"></i> {{ t('notification_channels') }}
                     </h3>
                     
                     <div class="setting-item">
@@ -51,7 +51,7 @@
                 
                 <div class="form-section" style="margin-top: 32px;">
                     <h3 style="color: #322446; margin-bottom: 20px;">
-                        <i class="bi bi-person-fill"></i> 联系方式
+                        <i class="bi bi-person-fill"></i> {{ t('contact_information') }}
                     </h3>
                     
                     <div class="mb-3">
@@ -69,10 +69,10 @@
                 
                 <div class="text-center" style="margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255, 0, 127, 0.2);">
                     <button type="submit" class="btn-action">
-                        <i class="bi bi-check-circle"></i> 保存设置
+                        <i class="bi bi-check-circle"></i> {{ t('save_settings') }}
                     </button>
                     <button type="button" class="btn-secondary" onclick="window.history.back()" style="margin-left: 12px;">
-                        <i class="bi bi-x-circle"></i> 取消
+                        <i class="bi bi-x-circle"></i> {{ t('cancel') }}
                     </button>
                 </div>
             </form>
@@ -135,6 +135,11 @@
 </style>
 
 <script>
+    const i18n = {
+        settingsSaved: "{{ t('settings_saved_successfully') }}",
+        saveFailed: "{{ t('save_failed_retry') }}"
+    };
+    
     // {{ t('____documentaddeventlistener') }}('DOMContentLoaded', async function() {
         await loadSettings();
     });
@@ -160,11 +165,11 @@
             // {{ t('todo_api') }}
             console.log('Saving settings:', settings);
             
-            alert('✅ 设置已保存！');
+            alert(i18n.settingsSaved);
             
         } catch (error) {
             console.error('Failed to save settings:', error);
-            alert('❌ 保存失败，请稍后重试');
+            alert(i18n.saveFailed);
         }
     });
 </script>
