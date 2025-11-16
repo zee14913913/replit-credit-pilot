@@ -7219,11 +7219,10 @@ def browse_credit_card_excel_files(customer_id):
     import re
     
     # 获取客户信息
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, name, customer_code FROM customers WHERE id = ?", (customer_id,))
-    customer = cursor.fetchone()
-    conn.close()
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, name, customer_code FROM customers WHERE id = ?", (customer_id,))
+        customer = cursor.fetchone()
     
     if not customer:
         flash('客户不存在', 'error')
