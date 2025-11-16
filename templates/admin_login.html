@@ -84,8 +84,8 @@
     <div class="login-card">
         <div class="logo">
             <img src="/static/logo.png" alt="{{ t('logo') }}" onerror="this.style.display='none'">
-            <h2 data-i18n="{{ t('admin_login_title_1') }}">{{ t('admin_login_title') }}</h2>
-            <p data-i18n="{{ t('financial_system_admin_1') }}">{{ t('financial_system_admin') }}</p>
+            <h2 data-i18n="admin_login_title">{{ t('admin_login_title') }}</h2>
+            <p data-i18n="financial_system_admin">{{ t('financial_system_admin') }}</p>
         </div>
         
         <!-- Language Switcher -->
@@ -97,7 +97,7 @@
                 </button>
                 <button type="button" class="btn btn-sm {{ 'btn-primary' if current_lang == 'zh' else 'btn-outline-secondary' }}" 
                         onclick="window.location.href='{{ url_for('set_language', lang='zh') }}'">
-                    中文
+                    ZH
                 </button>
             </div>
         </div>
@@ -115,26 +115,26 @@
 
         <form method="POST" action="{{ url_for('admin_login') }}">
             <div class="mb-3">
-                <label for="username" class="form-label" data-i18n="{{ t('username_1') }}">{{ t('username') }}</label>
+                <label for="username" class="form-label" data-i18n="username">{{ t('username') }}</label>
                 <input type="text" class="form-control" id="username" name="username" placeholder="{{ t('enter_username') }}" required autofocus>
             </div>
 
             <div class="mb-4">
-                <label for="password" class="form-label" data-i18n="{{ t('password_1') }}">{{ t('password') }}</label>
+                <label for="password" class="form-label" data-i18n="password">{{ t('password') }}</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="{{ t('enter_password') }}" required>
             </div>
 
-            <button type="submit" class="btn btn-login" data-i18n="{{ t('login_btn_1') }}">{{ t('login_btn') }}</button>
+            <button type="submit" class="btn btn-login" data-i18n="login_btn">{{ t('login_btn') }}</button>
         </form>
         
         <div class="mt-3 text-center">
             <a href="{{ url_for('admin_register') }}" style="color: #FF007F; text-decoration: none; font-weight: 600;">
-                <i class="bi bi-person-plus"></i> <span data-i18n="{{ t('dont_have_account_1') }}">{{ t('dont_have_account') }}</span> <span data-i18n="{{ t('register_here_1') }}">{{ t('register_here') }}</span>
+                <i class="bi bi-person-plus"></i> <span data-i18n="dont_have_account">{{ t('dont_have_account') }}</span> <span data-i18n="register_here">{{ t('register_here') }}</span>
             </a>
         </div>
 
         <div class="mt-4 text-center">
-            <small class="text-white-50" data-i18n="{{ t('multi_tenant_rbac_1') }}">
+            <small class="text-white-50" data-i18n="multi_tenant_rbac">
                 {{ t('multi_tenant_rbac') }}
             </small>
         </div>

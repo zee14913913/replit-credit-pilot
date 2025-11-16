@@ -5,14 +5,14 @@
 {% block content %}
 <div class="container mt-5">
     <h1 class="galaxy-heading mb-4">
-        <i class="bi bi-person-circle"></i> {{ customer.name }} - 收据管理
+        <i class="bi bi-person-circle"></i> {{ customer.name }} - <span data-i18n="receipts_management">{{ t('receipts_management') }}</span>
     </h1>
     
     {% if receipts_by_card %}
     {% for card_key, receipts in receipts_by_card.items() %}
     <div class="glass-panel p-4 mb-4">
         <h3 class="text-silver mb-3">
-            <i class="bi bi-credit-card"></i> 信用卡: ****{{ card_key }}
+            <i class="bi bi-credit-card"></i> <span data-i18n="credit_card_label">{{ t('credit_card_label') }}</span>: ****{{ card_key }}
         </h3>
         
         <div class="row">
@@ -45,7 +45,7 @@
     {% endif %}
     
     <a href="{{ url_for('receipts_home') }}" class="btn btn-secondary">
-        <i class="bi bi-arrow-left"></i> 返回
+        <i class="bi bi-arrow-left"></i> <span data-i18n="back_button">{{ t('back_button') }}</span>
     </a>
 </div>
 {% endblock %}

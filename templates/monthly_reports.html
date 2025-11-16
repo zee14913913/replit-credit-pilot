@@ -8,7 +8,7 @@
         <h1 class="section-title">
             <i class="bi bi-file-earmark-bar-graph"></i> Monthly Statement Reports
         </h1>
-        <p class="section-subtitle">月度账单汇总报表 - {{ customer.name }}</p>
+        <p class="section-subtitle"><span data-i18n="monthly_bill_summary_report">{{ t('monthly_bill_summary_report') }}</span> - {{ customer.name }}</p>
     </div>
 
     <!-- {{ t('summary_cards__') }} -->
@@ -180,26 +180,24 @@
                 <div class="col-md-6">
                     <div style="padding: 0.75rem; background: rgba(52, 73, 94, 0.1); border-radius: 6px;">
                         <strong style="color: #3498db;">{{ t('customer_transactions__') }}</strong>
-                        <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;">
-                            {{ t('your_personal_expenses_and_payments_on_this_card___1') }}                  您在此卡上的个人消费和付款。
+                        <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;" data-i18n="personal_expenses_on_card">
+                            {{ t('personal_expenses_on_card') }}
                         </p>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div style="padding: 0.75rem; background: rgba(142, 68, 173, 0.1); border-radius: 6px;">
                         <strong style="color: #8e44ad;">{{ t('infinite_gz_transactions__infinite') }}</strong>
-                        <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;">
-                            {{ t('company_expenses_at_7_designated_suppliers_and_3rd_1') }}ments.
-                            公司在7家指定商家的消费和第三方付款。
+                        <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;" data-i18n="company_designated_merchants">
+                            {{ t('company_designated_merchants') }}
                         </p>
                     </div>
                 </div>
                 <div class="col-12">
                     <div style="padding: 0.75rem; background: rgba(230, 126, 34, 0.1); border-radius: 6px;">
                         <strong style="color: #e67e22;">{{ t('percard_reports__') }}</strong>
-                        <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;">
-                            {{ t('each_credit_card_now_has_a_separate_report__no_mix_1') }}ansactions between cards!
-                            每张信用卡现在有独立的报表 - 不会混合不同卡的交易记录！
+                        <p style="color: var(--text-secondary); margin: 0; margin-top: 0.5rem;" data-i18n="independent_card_reports">
+                            {{ t('independent_card_reports') }}
                         </p>
                     </div>
                 </div>
@@ -209,9 +207,8 @@
         {% else %}
         <div class="professional-card text-center py-5">
             <i class="bi bi-inbox" style="font-size: 3rem; color: var(--text-secondary); opacity: 0.5;"></i>
-            <p style="color: var(--text-secondary); margin-top: 1rem;">
-                No monthly reports yet. Generate your first report above.<br>
-                暂无月度报表，请在上方生成第一份报表。
+            <p style="color: var(--text-secondary); margin-top: 1rem;" data-i18n="no_monthly_reports_yet">
+                {{ t('no_monthly_reports_yet') }}
             </p>
         </div>
         {% endif %}
