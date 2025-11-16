@@ -49,10 +49,6 @@
                                 <td class="fw-bold">交易总数</td>
                                 <td>{{ data.statistics.total_transactions }} 笔</td>
                             </tr>
-                            <tr>
-                                <td class="fw-bold">分类总数</td>
-                                <td>{{ data.statistics.category_breakdown|length }} 个分类</td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -614,51 +610,57 @@
 let customerId = {{ data.customer.id }};
 let yearMonth = '{{ data.year_month }}';
 let nextNewId = -1; // 新行使用负数ID
-let originalData = {}; // 存储原始数据用于撤销
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
-    // 存储所有原始数据
-    document.querySelectorAll('tr[data-transaction-id]').forEach(row => {
-        const txnId = row.getAttribute('data-transaction-id');
-        originalData[txnId] = row.getAttribute('data-original-data');
+    // 为每个银行的"添加行"按钮绑定事件
+    document.querySelectorAll('.add-bank-row-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const bankName = this.getAttribute('data-bank');
+            addNewRowToBank(bankName);
+        });
     });
     
-    // 添加行按钮
-    document.getElementById('addRowBtn').addEventListener('click', addNewRow);
+    // 为每个银行的"保存"按钮绑定事件
+    document.querySelectorAll('.save-bank-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const bankName = this.getAttribute('data-bank');
+            saveBankChanges(bankName);
+        });
+    });
     
-    // 删除行按钮（委托事件）
-    document.getElementById('transactionsTableBody').addEventListener('click', function(e) {
+    // 删除行按钮（全局委托事件）
+    document.body.addEventListener('click', function(e) {
         if (e.target.closest('.delete-row-btn')) {
             deleteRow(e.target.closest('.delete-row-btn'));
         }
     });
     
-    // 保存按钮
-    document.getElementById('saveChangesBtn').addEventListener('click', saveAllChanges);
-    
-    // 撤销按钮
-    document.getElementById('resetBtn').addEventListener('click', resetAllChanges);
-    
     // 监听输入变化，标记已修改行
-    document.getElementById('transactionsTableBody').addEventListener('input', function(e) {
-        if (e.target.classList.contains('editable-field')) {
-            const row = e.target.closest('tr');
-            if (!row.classList.contains('new-row')) {
-                row.classList.add('modified-row');
+    document.querySelectorAll('.bank-transactions-table').forEach(table => {
+        table.addEventListener('input', function(e) {
+            if (e.target.classList.contains('editable-field')) {
+                const row = e.target.closest('tr');
+                if (!row.classList.contains('new-row')) {
+                    row.classList.add('modified-row');
+                }
             }
-        }
+        });
     });
 });
 
-// 添加新行
-function addNewRow() {
-    const tbody = document.getElementById('transactionsTableBody');
+// 为指定银行添加新行
+function addNewRowToBank(bankName) {
+    const table = document.querySelector(`.bank-transactions-table[data-bank="${bankName}"]`);
+    if (!table) return;
+    
+    const tbody = table.querySelector('tbody');
     const rowCount = tbody.querySelectorAll('tr').length + 1;
     const today = new Date().toISOString().split('T')[0];
     
     const newRow = document.createElement('tr');
     newRow.setAttribute('data-transaction-id', nextNewId);
+    newRow.setAttribute('data-bank', bankName);
     newRow.classList.add('new-row');
     
     newRow.innerHTML = `
@@ -666,10 +668,6 @@ function addNewRow() {
         <td>
             <input type="date" class="form-control form-control-sm editable-field" 
                    data-field="transaction_date" value="${today}">
-        </td>
-        <td>
-            <input type="text" class="form-control form-control-sm editable-field" 
-                   data-field="bank_name" value="" placeholder="银行名称">
         </td>
         <td>
             <input type="text" class="form-control form-control-sm editable-field" 
@@ -718,7 +716,7 @@ function addNewRow() {
     nextNewId--;
     
     // 提示
-    showToast('success', '已添加新行，请填写内容后保存');
+    showToast('success', `已为 ${bankName} 添加新行，请填写内容后保存`);
 }
 
 // 删除行
@@ -739,31 +737,29 @@ function deleteRow(btn) {
     }
 }
 
-// 重新编号
-function renumberRows() {
-    const rows = document.querySelectorAll('#transactionsTableBody tr:not(.deleted-row)');
-    rows.forEach((row, index) => {
-        row.querySelector('td:first-child').textContent = index + 1;
-    });
-}
-
-// 保存所有更改
-async function saveAllChanges() {
+// 保存指定银行的更改
+async function saveBankChanges(bankName) {
+    const table = document.querySelector(`.bank-transactions-table[data-bank="${bankName}"]`);
+    if (!table) return;
+    
+    const tbody = table.querySelector('tbody');
+    const rows = tbody.querySelectorAll('tr[data-transaction-id]');
+    
     const changes = {
         customer_id: customerId,
         year_month: yearMonth,
+        bank_name: bankName,
         updated: [],
         deleted: [],
         created: []
     };
     
-    // 收集所有更改
-    document.querySelectorAll('#transactionsTableBody tr').forEach(row => {
+    rows.forEach(row => {
         const txnId = parseInt(row.getAttribute('data-transaction-id'));
         
         // 已删除的行
         if (row.classList.contains('deleted-row')) {
-            if (txnId > 0) {
+            if (txnId > 0) {  // 只删除已存在的行
                 changes.deleted.push(txnId);
             }
             return;
@@ -772,7 +768,7 @@ async function saveAllChanges() {
         // 收集行数据
         const rowData = {
             transaction_date: row.querySelector('[data-field="transaction_date"]').value,
-            bank_name: row.querySelector('[data-field="bank_name"]').value,
+            bank_name: bankName,
             description: row.querySelector('[data-field="description"]').value,
             amount: parseFloat(row.querySelector('[data-field="amount"]').value),
             category: row.querySelector('[data-field="category"]').value
@@ -793,14 +789,15 @@ async function saveAllChanges() {
     
     // 检查是否有更改
     if (changes.updated.length === 0 && changes.deleted.length === 0 && changes.created.length === 0) {
-        showToast('info', '没有需要保存的更改');
+        showToast('info', `${bankName} 没有需要保存的更改`);
         return;
     }
     
     // 发送到后端
+    const saveBtn = document.querySelector(`.save-bank-btn[data-bank="${bankName}"]`);
     try {
-        document.getElementById('saveChangesBtn').disabled = true;
-        document.getElementById('saveChangesBtn').innerHTML = '<i class="bi bi-hourglass-split"></i> 保存中...';
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> 保存中...';
         
         const response = await fetch('/credit-card/transactions/update', {
             method: 'POST',
@@ -813,26 +810,19 @@ async function saveAllChanges() {
         const result = await response.json();
         
         if (response.ok && result.success) {
-            showToast('success', `保存成功！更新 ${result.updated_count} 条，删除 ${result.deleted_count} 条，新增 ${result.created_count} 条`);
+            showToast('success', `${bankName} 保存成功！更新 ${result.updated_count} 条，删除 ${result.deleted_count} 条，新增 ${result.created_count} 条`);
             // 刷新页面以显示最新数据
             setTimeout(() => {
                 window.location.reload();
             }, 1500);
         } else {
-            showToast('error', '保存失败：' + (result.message || '未知错误'));
+            showToast('error', `${bankName} 保存失败：` + (result.message || '未知错误'));
         }
     } catch (error) {
-        showToast('error', '保存失败：' + error.message);
+        showToast('error', `${bankName} 保存失败：` + error.message);
     } finally {
-        document.getElementById('saveChangesBtn').disabled = false;
-        document.getElementById('saveChangesBtn').innerHTML = '<i class="bi bi-save"></i> 保存修改';
-    }
-}
-
-// 撤销所有更改
-function resetAllChanges() {
-    if (confirm('确定要撤销所有更改吗？这将重置为原始数据。')) {
-        window.location.reload();
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="bi bi-save"></i> 保存此银行的修改';
     }
 }
 
