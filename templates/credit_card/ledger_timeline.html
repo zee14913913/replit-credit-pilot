@@ -11,9 +11,15 @@
         <p class="section-subtitle">{{ customer.code }}</p>
     </div>
 
-    <div class="mb-4">
+    <div class="mb-4 d-flex gap-3">
         <a href="{{ url_for('credit_card_ledger') }}" class="btn-professional-outline" style="border-color: #FF1493; color: #FF1493; padding: 0.75rem 1.5rem; font-size: 1.1rem;">
-            {{ t('back_to_all_customers') }}
+            <i class="bi bi-arrow-left"></i> {{ t('back_to_all_customers') }}
+        </a>
+        
+        <a href="{{ url_for('browse_accounting_files', customer_id=customer.id) }}" 
+           class="btn-professional" 
+           style="background: linear-gradient(135deg, #FF007F 0%, #322446 100%); color: white; padding: 0.75rem 1.5rem; font-size: 1.1rem; border: none;">
+            <i class="bi bi-file-earmark-spreadsheet"></i> 查看会计文件 (Excel)
         </a>
     </div>
 

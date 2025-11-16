@@ -7206,6 +7206,127 @@ def ctos_company_submit_route():
     return ctos_company_submit()
 
 
+# ============================================================================
+# ACCOUNTING FILES BROWSER - 会计文件浏览系统
+# ============================================================================
+
+@app.route('/credit-card/accounting-files/<int:customer_id>')
+@require_admin_or_accountant
+def browse_accounting_files(customer_id):
+    """浏览客户的会计文件（月结单、交易明细等）"""
+    from pathlib import Path
+    import os
+    
+    # 获取客户信息
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, name, customer_code FROM customers WHERE id = ?", (customer_id,))
+    customer = cursor.fetchone()
+    conn.close()
+    
+    if not customer:
+        flash('客户不存在', 'error')
+        return redirect(url_for('credit_card_ledger'))
+    
+    customer_name = customer[1]
+    customer_code = customer[2]
+    
+    # 查找客户的accounting_files文件夹
+    accounting_dir = Path('accounting_files') / customer_name
+    
+    if not accounting_dir.exists():
+        flash(f'客户 {customer_name} 的会计文件尚未生成，请先运行文件生成脚本', 'warning')
+        return redirect(url_for('credit_card_ledger'))
+    
+    # 扫描所有Excel文件
+    files = {
+        'monthly_statements': [],
+        'transaction_details': [],
+        'reports': []
+    }
+    
+    # 月结单文件
+    statements_dir = accounting_dir / 'monthly_statements'
+    if statements_dir.exists():
+        for file in sorted(statements_dir.glob('*.xlsx')):
+            files['monthly_statements'].append({
+                'name': file.name,
+                'path': str(file.relative_to('accounting_files')),
+                'size': file.stat().st_size,
+                'modified': datetime.fromtimestamp(file.stat().st_mtime).strftime('%Y-%m-%d %H:%M'),
+                'type': 'Summary' if 'Summary' in file.name else 'Statement'
+            })
+    
+    # 交易明细文件
+    details_dir = accounting_dir / 'transaction_details'
+    if details_dir.exists():
+        for file in sorted(details_dir.glob('*.xlsx')):
+            files['transaction_details'].append({
+                'name': file.name,
+                'path': str(file.relative_to('accounting_files')),
+                'size': file.stat().st_size,
+                'modified': datetime.fromtimestamp(file.stat().st_mtime).strftime('%Y-%m-%d %H:%M')
+            })
+    
+    # 报告文件
+    reports_dir = accounting_dir / 'reports'
+    if reports_dir.exists():
+        for file in sorted(reports_dir.glob('*.xlsx')):
+            files['reports'].append({
+                'name': file.name,
+                'path': str(file.relative_to('accounting_files')),
+                'size': file.stat().st_size,
+                'modified': datetime.fromtimestamp(file.stat().st_mtime).strftime('%Y-%m-%d %H:%M')
+            })
+    
+    return render_template(
+        'accounting_files_browser.html',
+        customer=customer,
+        customer_name=customer_name,
+        files=files
+    )
+
+
+@app.route('/credit-card/download-accounting-file')
+@require_admin_or_accountant
+def download_accounting_file():
+    """下载会计文件"""
+    from flask import send_file
+    from pathlib import Path
+    
+    file_path = request.args.get('path')
+    if not file_path:
+        flash('文件路径缺失', 'error')
+        return redirect(url_for('credit_card_ledger'))
+    
+    # 安全检查：确保路径在accounting_files目录内
+    full_path = Path('accounting_files') / file_path
+    
+    # 规范化路径，防止目录遍历攻击
+    try:
+        full_path = full_path.resolve()
+        accounting_base = Path('accounting_files').resolve()
+        
+        if not str(full_path).startswith(str(accounting_base)):
+            flash('非法文件路径', 'error')
+            return redirect(url_for('credit_card_ledger'))
+        
+        if not full_path.exists():
+            flash('文件不存在', 'error')
+            return redirect(url_for('credit_card_ledger'))
+        
+        # 发送文件
+        return send_file(
+            full_path,
+            as_attachment=True,
+            download_name=full_path.name
+        )
+    
+    except Exception as e:
+        flash(f'文件下载失败: {str(e)}', 'error')
+        return redirect(url_for('credit_card_ledger'))
+
+
 if __name__ == '__main__':
     # Get environment settings
     flask_env = os.getenv('FLASK_ENV', 'development')

@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}会计文件浏览 - {{ customer_name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- 标题栏 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="bi bi-file-earmark-spreadsheet"></i> 会计文件浏览</h2>
+            <p class="text-muted">客户: {{ customer_name }}</p>
+        </div>
+        <div>
+            <a href="{{ url_for('credit_card_ledger') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> 返回账本
+            </a>
+        </div>
+    </div>
+
+    <!-- 月结单文件 -->
+    <div class="card mb-4" style="border-color: #FF007F;">
+        <div class="card-header" style="background-color: #FF007F; color: white;">
+            <h5 class="mb-0">
+                <i class="bi bi-file-bar-graph"></i> 月结单文件
+                <span class="badge bg-light text-dark ms-2">{{ files.monthly_statements|length }} 个文件</span>
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if files.monthly_statements %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th width="5%">类型</th>
+                                <th width="40%">文件名</th>
+                                <th width="15%">大小</th>
+                                <th width="20%">修改时间</th>
+                                <th width="20%">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in files.monthly_statements %}
+                            <tr>
+                                <td>
+                                    {% if file.type == 'Summary' %}
+                                        <span class="badge" style="background-color: #322446;">汇总</span>
+                                    {% else %}
+                                        <span class="badge bg-info">账单</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <i class="bi bi-file-earmark-excel text-success"></i>
+                                    {{ file.name }}
+                                </td>
+                                <td>{{ (file.size / 1024) | round(1) }} KB</td>
+                                <td>{{ file.modified }}</td>
+                                <td>
+                                    <a href="{{ url_for('download_accounting_file', path=file.path) }}" 
+                                       class="btn btn-sm" 
+                                       style="background-color: #FF007F; color: white;">
+                                        <i class="bi bi-download"></i> 下载
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted">暂无月结单文件</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 交易明细文件 -->
+    <div class="card mb-4" style="border-color: #322446;">
+        <div class="card-header" style="background-color: #322446; color: white;">
+            <h5 class="mb-0">
+                <i class="bi bi-list-ul"></i> 交易明细文件
+                <span class="badge bg-light text-dark ms-2">{{ files.transaction_details|length }} 个文件</span>
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if files.transaction_details %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th width="50%">文件名</th>
+                                <th width="15%">大小</th>
+                                <th width="20%">修改时间</th>
+                                <th width="15%">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in files.transaction_details %}
+                            <tr>
+                                <td>
+                                    <i class="bi bi-file-earmark-excel text-success"></i>
+                                    {{ file.name }}
+                                </td>
+                                <td>{{ (file.size / 1024) | round(1) }} KB</td>
+                                <td>{{ file.modified }}</td>
+                                <td>
+                                    <a href="{{ url_for('download_accounting_file', path=file.path) }}" 
+                                       class="btn btn-sm" 
+                                       style="background-color: #322446; color: white;">
+                                        <i class="bi bi-download"></i> 下载
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted">暂无交易明细文件</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 报告文件 -->
+    <div class="card mb-4" style="border-color: #00CED1;">
+        <div class="card-header" style="background-color: #00CED1; color: white;">
+            <h5 class="mb-0">
+                <i class="bi bi-file-text"></i> 报告文件
+                <span class="badge bg-light text-dark ms-2">{{ files.reports|length }} 个文件</span>
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if files.reports %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th width="50%">文件名</th>
+                                <th width="15%">大小</th>
+                                <th width="20%">修改时间</th>
+                                <th width="15%">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in files.reports %}
+                            <tr>
+                                <td>
+                                    <i class="bi bi-file-earmark-excel text-success"></i>
+                                    {{ file.name }}
+                                </td>
+                                <td>{{ (file.size / 1024) | round(1) }} KB</td>
+                                <td>{{ file.modified }}</td>
+                                <td>
+                                    <a href="{{ url_for('download_accounting_file', path=file.path) }}" 
+                                       class="btn btn-sm btn-info">
+                                        <i class="bi bi-download"></i> 下载
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted">暂无报告文件</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 说明信息 -->
+    <div class="alert alert-info">
+        <h6><i class="bi bi-info-circle"></i> 文件说明</h6>
+        <ul class="mb-0">
+            <li><strong>月结单文件</strong>: 每个银行每个月的独立账单 + 月度汇总（Summary）</li>
+            <li><strong>交易明细</strong>: 每月所有交易的完整记录，包含Owner/GZ分类</li>
+            <li><strong>报告文件</strong>: 年度汇总、GZ结算报告等</li>
+        </ul>
+    </div>
+</div>
+
+<style>
+.table-hover tbody tr:hover {
+    background-color: rgba(255, 0, 127, 0.05);
+}
+
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    font-weight: 500;
+}
+</style>
+{% endblock %}
