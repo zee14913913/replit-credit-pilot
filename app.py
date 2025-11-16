@@ -7311,6 +7311,109 @@ def credit_card_month_detail(customer_id, year_month):
     )
 
 
+@app.route('/credit-card/transactions/update', methods=['POST'])
+@require_admin_or_accountant
+def update_credit_card_transactions():
+    """更新交易记录（编辑、添加、删除）- 用于Mac VBA 92%准确度修正"""
+    from flask import jsonify
+    
+    try:
+        data = request.get_json()
+        customer_id = data.get('customer_id')
+        year_month = data.get('year_month')
+        updated = data.get('updated', [])
+        deleted = data.get('deleted', [])
+        created = data.get('created', [])
+        
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            updated_count = 0
+            deleted_count = 0
+            created_count = 0
+            
+            # 1. 更新现有交易
+            for txn in updated:
+                cursor.execute("""
+                    UPDATE transactions 
+                    SET transaction_date = %s,
+                        description = %s,
+                        amount = %s,
+                        category = %s
+                    WHERE id = %s
+                """, (
+                    txn['transaction_date'],
+                    txn['description'],
+                    txn['amount'],
+                    txn['category'],
+                    txn['id']
+                ))
+                updated_count += cursor.rowcount
+            
+            # 2. 删除交易
+            for txn_id in deleted:
+                cursor.execute("DELETE FROM transactions WHERE id = %s", (txn_id,))
+                deleted_count += cursor.rowcount
+            
+            # 3. 创建新交易
+            # 首先获取对应的月结单ID
+            cursor.execute("""
+                SELECT id FROM monthly_statements 
+                WHERE customer_id = %s AND statement_month = %s
+                LIMIT 1
+            """, (customer_id, year_month))
+            
+            statement_row = cursor.fetchone()
+            if not statement_row:
+                return jsonify({
+                    'success': False,
+                    'message': f'找不到{year_month}月份的账单记录'
+                }), 400
+            
+            statement_id = statement_row[0]
+            
+            for txn in created:
+                cursor.execute("""
+                    INSERT INTO transactions (
+                        monthly_statement_id,
+                        transaction_date,
+                        description,
+                        amount,
+                        category
+                    ) VALUES (%s, %s, %s, %s, %s)
+                """, (
+                    statement_id,
+                    txn['transaction_date'],
+                    txn['description'],
+                    txn['amount'],
+                    txn['category']
+                ))
+                created_count += cursor.rowcount
+            
+            conn.commit()
+            
+            # 记录审计日志
+            log_audit(
+                action='UPDATE_TRANSACTIONS',
+                table_name='transactions',
+                details=f'Updated: {updated_count}, Deleted: {deleted_count}, Created: {created_count} for {year_month}'
+            )
+            
+            return jsonify({
+                'success': True,
+                'updated_count': updated_count,
+                'deleted_count': deleted_count,
+                'created_count': created_count,
+                'message': '保存成功'
+            })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500
+
+
 @app.route('/credit-card/download-excel-file')
 @require_admin_or_accountant
 def download_credit_card_excel_file():

@@ -283,6 +283,120 @@
     {% endif %}
 
     <!-- ============================================================ -->
+    <!-- 新增：交易明细（可编辑）- Mac VBA 92%准确度需手动修正 -->
+    <!-- ============================================================ -->
+    <div class="card calculation-card mb-4">
+        <div class="card-header calculation-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="bi bi-pencil-square"></i> 
+                交易明细（可编辑）- Mac VBA 92%准确度
+            </h5>
+            <div class="edit-controls">
+                <button type="button" class="btn btn-success btn-sm" id="addRowBtn">
+                    <i class="bi bi-plus-circle"></i> 添加行
+                </button>
+                <button type="button" class="btn btn-warning btn-sm" id="saveChangesBtn">
+                    <i class="bi bi-save"></i> 保存修改
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" id="resetBtn">
+                    <i class="bi bi-arrow-counterclockwise"></i> 撤销
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle"></i>
+                <strong>提示：</strong>Mac版VBA准确度约92%，请仔细检查并修正以下交易记录。您可以直接编辑表格内容、添加新行或删除错误行。
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-bordered editable-table" id="transactionsTable">
+                    <thead>
+                        <tr class="bg-gradient-purple">
+                            <th style="width: 5%">#</th>
+                            <th style="width: 15%">交易日期</th>
+                            <th style="width: 10%">银行</th>
+                            <th style="width: 30%">描述</th>
+                            <th style="width: 12%">金额 (RM)</th>
+                            <th style="width: 18%">分类</th>
+                            <th style="width: 10%">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsTableBody">
+                        {% for txn in data.transactions %}
+                        <tr data-transaction-id="{{ txn.id }}" data-original-data='{{ txn|tojson }}'>
+                            <td class="text-center">{{ loop.index }}</td>
+                            <td>
+                                <input type="date" class="form-control form-control-sm editable-field" 
+                                       data-field="transaction_date" 
+                                       value="{{ txn.transaction_date }}">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm editable-field" 
+                                       data-field="bank_name" 
+                                       value="{{ txn.bank_name }}" readonly>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm editable-field" 
+                                       data-field="description" 
+                                       value="{{ txn.description }}">
+                            </td>
+                            <td>
+                                <input type="number" step="0.01" class="form-control form-control-sm editable-field" 
+                                       data-field="amount" 
+                                       value="{{ txn.amount }}">
+                            </td>
+                            <td>
+                                <select class="form-select form-select-sm editable-field" data-field="category">
+                                    <option value="{{ txn.category }}" selected>{{ txn.category }}</option>
+                                    <option value="OWNER_EXPENSE">OWNER_EXPENSE</option>
+                                    <option value="OWNER_PAYMENT">OWNER_PAYMENT</option>
+                                    <option value="GZ_EXPENSE">GZ_EXPENSE</option>
+                                    <option value="GZ_PAYMENT">GZ_PAYMENT</option>
+                                    <option value="DINING">DINING</option>
+                                    <option value="GROCERIES">GROCERIES</option>
+                                    <option value="TRANSPORT">TRANSPORT</option>
+                                    <option value="UTILITIES">UTILITIES</option>
+                                    <option value="SHOPPING">SHOPPING</option>
+                                    <option value="HEALTHCARE">HEALTHCARE</option>
+                                    <option value="ENTERTAINMENT">ENTERTAINMENT</option>
+                                    <option value="TRAVEL">TRAVEL</option>
+                                    <option value="FUEL">FUEL</option>
+                                    <option value="PARKING">PARKING</option>
+                                    <option value="INSURANCE">INSURANCE</option>
+                                    <option value="TELCO">TELCO</option>
+                                    <option value="SUPPLIER_7SL">SUPPLIER_7SL</option>
+                                    <option value="SUPPLIER_DINAS">SUPPLIER_DINAS</option>
+                                    <option value="SUPPLIER_RAUB_SYC">SUPPLIER_RAUB_SYC</option>
+                                    <option value="SUPPLIER_AI_SMART">SUPPLIER_AI_SMART</option>
+                                    <option value="SUPPLIER_HUAWEI">SUPPLIER_HUAWEI</option>
+                                    <option value="SUPPLIER_PASAR_RAYA">SUPPLIER_PASAR_RAYA</option>
+                                    <option value="SUPPLIER_PUCHONG_HERBS">SUPPLIER_PUCHONG_HERBS</option>
+                                    <option value="UNCATEGORIZED">UNCATEGORIZED</option>
+                                </select>
+                            </td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-danger btn-sm delete-row-btn" 
+                                        title="删除此行">
+                                    <i class="bi bi-dash-circle"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mt-3">
+                <small class="text-muted">
+                    <i class="bi bi-info-circle"></i> 
+                    修改后请点击"保存修改"按钮。所有更改将实时同步到数据库。
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
     <!-- 第六部分：原始PDF文件 -->
     <!-- ============================================================ -->
     <div class="card calculation-card mb-4">
@@ -469,6 +583,293 @@
     display: flex;
     gap: 8px;
 }
+
+.editable-table input, 
+.editable-table select {
+    border: 1px solid #ddd;
+}
+
+.editable-table input:focus, 
+.editable-table select:focus {
+    border-color: #FF007F;
+    box-shadow: 0 0 0 0.2rem rgba(255, 0, 127, 0.25);
+}
+
+.editable-table tbody tr.new-row {
+    background-color: #e7f3ff;
+}
+
+.editable-table tbody tr.modified-row {
+    background-color: #fff3cd;
+}
+
+.editable-table tbody tr.deleted-row {
+    background-color: #f8d7da;
+    text-decoration: line-through;
+    opacity: 0.6;
+}
 </style>
+
+<script>
+// 全局变量
+let customerId = {{ data.customer.id }};
+let yearMonth = '{{ data.year_month }}';
+let nextNewId = -1; // 新行使用负数ID
+let originalData = {}; // 存储原始数据用于撤销
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', function() {
+    // 存储所有原始数据
+    document.querySelectorAll('tr[data-transaction-id]').forEach(row => {
+        const txnId = row.getAttribute('data-transaction-id');
+        originalData[txnId] = row.getAttribute('data-original-data');
+    });
+    
+    // 添加行按钮
+    document.getElementById('addRowBtn').addEventListener('click', addNewRow);
+    
+    // 删除行按钮（委托事件）
+    document.getElementById('transactionsTableBody').addEventListener('click', function(e) {
+        if (e.target.closest('.delete-row-btn')) {
+            deleteRow(e.target.closest('.delete-row-btn'));
+        }
+    });
+    
+    // 保存按钮
+    document.getElementById('saveChangesBtn').addEventListener('click', saveAllChanges);
+    
+    // 撤销按钮
+    document.getElementById('resetBtn').addEventListener('click', resetAllChanges);
+    
+    // 监听输入变化，标记已修改行
+    document.getElementById('transactionsTableBody').addEventListener('input', function(e) {
+        if (e.target.classList.contains('editable-field')) {
+            const row = e.target.closest('tr');
+            if (!row.classList.contains('new-row')) {
+                row.classList.add('modified-row');
+            }
+        }
+    });
+});
+
+// 添加新行
+function addNewRow() {
+    const tbody = document.getElementById('transactionsTableBody');
+    const rowCount = tbody.querySelectorAll('tr').length + 1;
+    const today = new Date().toISOString().split('T')[0];
+    
+    const newRow = document.createElement('tr');
+    newRow.setAttribute('data-transaction-id', nextNewId);
+    newRow.classList.add('new-row');
+    
+    newRow.innerHTML = `
+        <td class="text-center">${rowCount}</td>
+        <td>
+            <input type="date" class="form-control form-control-sm editable-field" 
+                   data-field="transaction_date" value="${today}">
+        </td>
+        <td>
+            <input type="text" class="form-control form-control-sm editable-field" 
+                   data-field="bank_name" value="" placeholder="银行名称">
+        </td>
+        <td>
+            <input type="text" class="form-control form-control-sm editable-field" 
+                   data-field="description" value="" placeholder="交易描述">
+        </td>
+        <td>
+            <input type="number" step="0.01" class="form-control form-control-sm editable-field" 
+                   data-field="amount" value="0.00">
+        </td>
+        <td>
+            <select class="form-select form-select-sm editable-field" data-field="category">
+                <option value="UNCATEGORIZED" selected>UNCATEGORIZED</option>
+                <option value="OWNER_EXPENSE">OWNER_EXPENSE</option>
+                <option value="OWNER_PAYMENT">OWNER_PAYMENT</option>
+                <option value="GZ_EXPENSE">GZ_EXPENSE</option>
+                <option value="GZ_PAYMENT">GZ_PAYMENT</option>
+                <option value="DINING">DINING</option>
+                <option value="GROCERIES">GROCERIES</option>
+                <option value="TRANSPORT">TRANSPORT</option>
+                <option value="UTILITIES">UTILITIES</option>
+                <option value="SHOPPING">SHOPPING</option>
+                <option value="HEALTHCARE">HEALTHCARE</option>
+                <option value="ENTERTAINMENT">ENTERTAINMENT</option>
+                <option value="TRAVEL">TRAVEL</option>
+                <option value="FUEL">FUEL</option>
+                <option value="PARKING">PARKING</option>
+                <option value="INSURANCE">INSURANCE</option>
+                <option value="TELCO">TELCO</option>
+                <option value="SUPPLIER_7SL">SUPPLIER_7SL</option>
+                <option value="SUPPLIER_DINAS">SUPPLIER_DINAS</option>
+                <option value="SUPPLIER_RAUB_SYC">SUPPLIER_RAUB_SYC</option>
+                <option value="SUPPLIER_AI_SMART">SUPPLIER_AI_SMART</option>
+                <option value="SUPPLIER_HUAWEI">SUPPLIER_HUAWEI</option>
+                <option value="SUPPLIER_PASAR_RAYA">SUPPLIER_PASAR_RAYA</option>
+                <option value="SUPPLIER_PUCHONG_HERBS">SUPPLIER_PUCHONG_HERBS</option>
+            </select>
+        </td>
+        <td class="text-center">
+            <button type="button" class="btn btn-danger btn-sm delete-row-btn" title="删除此行">
+                <i class="bi bi-dash-circle"></i>
+            </button>
+        </td>
+    `;
+    
+    tbody.appendChild(newRow);
+    nextNewId--;
+    
+    // 提示
+    showToast('success', '已添加新行，请填写内容后保存');
+}
+
+// 删除行
+function deleteRow(btn) {
+    const row = btn.closest('tr');
+    const txnId = row.getAttribute('data-transaction-id');
+    
+    if (confirm('确定要删除这条交易记录吗？')) {
+        // 如果是新添加的行（负数ID），直接删除
+        if (parseInt(txnId) < 0) {
+            row.remove();
+            renumberRows();
+        } else {
+            // 如果是已存在的行，标记为删除
+            row.classList.add('deleted-row');
+        }
+        showToast('warning', '已标记删除，请点击"保存修改"确认');
+    }
+}
+
+// 重新编号
+function renumberRows() {
+    const rows = document.querySelectorAll('#transactionsTableBody tr:not(.deleted-row)');
+    rows.forEach((row, index) => {
+        row.querySelector('td:first-child').textContent = index + 1;
+    });
+}
+
+// 保存所有更改
+async function saveAllChanges() {
+    const changes = {
+        customer_id: customerId,
+        year_month: yearMonth,
+        updated: [],
+        deleted: [],
+        created: []
+    };
+    
+    // 收集所有更改
+    document.querySelectorAll('#transactionsTableBody tr').forEach(row => {
+        const txnId = parseInt(row.getAttribute('data-transaction-id'));
+        
+        // 已删除的行
+        if (row.classList.contains('deleted-row')) {
+            if (txnId > 0) {
+                changes.deleted.push(txnId);
+            }
+            return;
+        }
+        
+        // 收集行数据
+        const rowData = {
+            transaction_date: row.querySelector('[data-field="transaction_date"]').value,
+            bank_name: row.querySelector('[data-field="bank_name"]').value,
+            description: row.querySelector('[data-field="description"]').value,
+            amount: parseFloat(row.querySelector('[data-field="amount"]').value),
+            category: row.querySelector('[data-field="category"]').value
+        };
+        
+        // 新添加的行
+        if (txnId < 0) {
+            changes.created.push(rowData);
+        }
+        // 已修改的行
+        else if (row.classList.contains('modified-row')) {
+            changes.updated.push({
+                id: txnId,
+                ...rowData
+            });
+        }
+    });
+    
+    // 检查是否有更改
+    if (changes.updated.length === 0 && changes.deleted.length === 0 && changes.created.length === 0) {
+        showToast('info', '没有需要保存的更改');
+        return;
+    }
+    
+    // 发送到后端
+    try {
+        document.getElementById('saveChangesBtn').disabled = true;
+        document.getElementById('saveChangesBtn').innerHTML = '<i class="bi bi-hourglass-split"></i> 保存中...';
+        
+        const response = await fetch('/credit-card/transactions/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(changes)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+            showToast('success', `保存成功！更新 ${result.updated_count} 条，删除 ${result.deleted_count} 条，新增 ${result.created_count} 条`);
+            // 刷新页面以显示最新数据
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            showToast('error', '保存失败：' + (result.message || '未知错误'));
+        }
+    } catch (error) {
+        showToast('error', '保存失败：' + error.message);
+    } finally {
+        document.getElementById('saveChangesBtn').disabled = false;
+        document.getElementById('saveChangesBtn').innerHTML = '<i class="bi bi-save"></i> 保存修改';
+    }
+}
+
+// 撤销所有更改
+function resetAllChanges() {
+    if (confirm('确定要撤销所有更改吗？这将重置为原始数据。')) {
+        window.location.reload();
+    }
+}
+
+// Toast提示
+function showToast(type, message) {
+    const colors = {
+        success: '#28a745',
+        error: '#dc3545',
+        warning: '#ffc107',
+        info: '#17a2b8'
+    };
+    
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${colors[type] || '#333'};
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 9999;
+        font-size: 14px;
+        max-width: 400px;
+    `;
+    toast.textContent = message;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+</script>
 
 {% endblock %}
