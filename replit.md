@@ -8,6 +8,38 @@ Preferred communication style: Simple, everyday language.
 Design requirements: Premium, sophisticated, high-end - suitable for professional client demonstrations.
 User language: Chinese (使用中文与我沟通).
 
+### 🔒 UI样式强保护条款（MANDATORY - 所有批次开发强制遵守）
+
+**总则**：任何批次、任何页面、所有新功能上线均必须**禁止更换/覆盖**全局或局部CSS，包括：卡片背景、描边、色板、圆角、按钮、文字颜色与字体家族、字号等视觉设计。
+
+**禁止项（严格禁止）**：
+- ❌ 修改全局或局部CSS/Sass/Less/Bootstrap文件
+- ❌ 使用`!important`或覆盖式新样式
+- ❌ 变更全局变量、主色系、主卡片背景
+- ❌ 修改卡片背景、描边、色板、圆角、按钮样式
+- ❌ 修改文字颜色、字体家族、字号
+- ❌ 重写Bootstrap/Sass/Less配置
+
+**允许项（安全实施）**：
+- ✅ 复用现有样式class进行布局与配色
+- ✅ 新增内容结构（不动样式参数）
+- ✅ 通过新增icon/小图标/辅助局部class实现交互效果
+- ✅ 注入式辅助class（需业务确认，不影响原始色板）
+
+**验收标准**：
+- 上线前必须进行全页面UI视觉比对（快照对比）
+- 业务团队有权凭快照判定是否存在"样式污染"
+- 发现任何视觉差异（颜色、描边、字体等）→ **立即回退** → 不得作为正式交付
+- 主干CSS文件保持零变更
+
+**分批次开发承诺**：
+- 🟩 第一批：主结构和核心导航优化 - 纯入口增补，旧UI色不动
+- 🟦 第二批：账单上传、流水明细、异常批量处理 - 复用现有卡片/表格/按钮样式class
+- 🟨 第三批：客户体验升级、管理端批量处理 - 全部复用当前样式文件，无全局UI变量变更
+- 🟫 终极批次：全站统一双语切换 - 仅限内容级变化，UI风格/色彩/主题/边框/卡片背景/字体保持一致
+
+**未来定制化主题**：如需新主题或个性化色板选择，必须在**未来专门批次**开发，不与当前迭代合流。
+
 ## System Architecture
 
 ### UI/UX Decisions
@@ -89,7 +121,32 @@ A production-ready Unified RBAC Implementation protects 32 functions. The `@requ
 ### SFTP ERP Automation System
 A production-ready SFTP synchronization system, implemented with a FastAPI backend (Port 8000) and Paramiko, automatically exports 7 types of financial data to SQL ACC ERP Edition via secure SFTP every 10 minutes.
 
-## Recent Changes (Nov 15, 2024)
+## Recent Changes
+
+### Nov 16, 2025 - 双语系统Session持久化修复
+
+**发现问题**：系统已有完整的i18n基础架构（2127行翻译资源、后端session管理、前端JavaScript框架），但前端切换语言时未调用后端API保存session，导致刷新页面后语言重置。
+
+**实施修复**（100%符合UI样式强保护条款）：
+1. **static/js/i18n.js** - 添加`fetch('/set-language/${lang}')`调用，确保session持久化
+2. **templates/layout.html** - 优化语言切换按钮UI（添加图标，高亮当前语言）
+
+**修复验证**：
+- ✅ 零CSS文件变更（`git diff` 无输出）
+- ✅ 100%复用现有样式class（`.lang-btn`, `.lang-btn.active`）
+- ✅ 零新增样式规则
+- ✅ Architect专业审查通过
+- ✅ 符合"零样式污染、零视觉变化"保护原则
+
+**功能状态**：
+- ✅ 用户点击语言按钮 → 全站即时切换（EN ⇄ 中文）
+- ✅ 刷新页面后语言保持一致
+- ✅ 2000+翻译条目自动应用
+- ✅ 可安全上线生产环境
+
+**技术文档**：详见 `BILINGUAL_SYSTEM_IMPLEMENTATION_REPORT.md`
+
+### Nov 15, 2024
 
 ### VBA Hybrid Architecture Implementation
 Added complete VBA-based hybrid processing system for INFINITE GZ credit card and bank statement parsing:
