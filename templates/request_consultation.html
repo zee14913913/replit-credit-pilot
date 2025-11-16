@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}申请咨询 - {{ customer_name }}{% endblock %}
+{% block title %}{{ t('request_consultation') }} - {{ customer_name }}{% endblock %}
 
 {% block content %}
 <div class="fade-in">
@@ -17,7 +17,7 @@
                 <form method="POST">
                     <div class="mb-4">
                         <h3 style="color: rgba(255,255,255,0.95); font-weight: 700; margin-bottom: 1.5rem;">
-                            ✅ 您即将获得的服务：
+                            <span data-i18n="services_you_will_receive">{{ t('services_you_will_receive') }}</span>
                         </h3>
                         <ul style="color: rgba(255,255,255,0.9); font-weight: 600; font-size: 1.1rem; line-height: 2;">
                             <li>{{ t('__28') }}</li>
@@ -30,7 +30,7 @@
 
                     <div class="mb-4">
                         <label for="notes" class="form-label" style="color: rgba(255,255,255,0.95); font-weight: 700;">
-                            <i class="bi bi-chat-dots"></i> 备注说明（可选）
+                            <i class="bi bi-chat-dots"></i> <span data-i18n="notes_optional">{{ t('notes_optional') }}</span>
                         </label>
                         <textarea 
                             class="form-control" 
@@ -43,18 +43,18 @@
 
                     <div class="alert-professional alert-info-pro mb-4">
                         <i class="bi bi-shield-check"></i> <strong>{{ t('auto_text_1087') }}</strong><br>
-                        • 只在实际节省/收益后才收费<br>
-                        • 50/50利润分成，您保留50%的节省金额<br>
-                        • 没有隐藏费用，完全透明
+                        • <span data-i18n="fee_only_on_savings">{{ t('fee_only_on_savings') }}</span><br>
+                        • <span data-i18n="profit_sharing_50_50">{{ t('profit_sharing_50_50') }}</span><br>
+                        • <span data-i18n="no_hidden_fees">{{ t('no_hidden_fees') }}</span>
                     </div>
 
                     <div class="d-flex gap-2">
                         <a href="{{ url_for('show_optimization_proposal', customer_id=customer_id) }}" 
                            class="btn-professional-outline flex-fill">
-                            <i class="bi bi-arrow-left"></i> 返回查看方案
+                            <i class="bi bi-arrow-left"></i> <span data-i18n="return_view_proposal">{{ t('return_view_proposal') }}</span>
                         </a>
                         <button type="submit" class="btn-white-glow flex-fill">
-                            <i class="bi bi-send-check"></i> 提交咨询申请
+                            <i class="bi bi-send-check"></i> <span data-i18n="submit_consultation_request">{{ t('submit_consultation_request') }}</span>
                         </button>
                     </div>
                 </form>
@@ -63,7 +63,7 @@
             <!-- 服务流程说明 -->
             <div class="professional-card mt-4" style="background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%);">
                 <h3 style="color: #FFFFFF; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">
-                    📋 服务流程（7个步骤）
+                    <span data-i18n="service_process_7_steps">{{ t('service_process_7_steps') }}</span>
                 </h3>
                 <div class="row">
                     <div class="col-md-6">

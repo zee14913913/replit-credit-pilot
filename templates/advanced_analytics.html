@@ -9,14 +9,10 @@
         <div class="col-12">
             <h1 class="gradient-text">
                 <i class="bi bi-graph-up-arrow"></i>
-                {% if current_lang == 'zh' %}高级财务分析{% else %}Advanced Analytics{% endif %}
+                <span data-i18n="advanced_financial_analytics">{{ t('advanced_financial_analytics') }}</span>
             </h1>
             <p class="text-secondary">
-                {% if current_lang == 'zh' %}
-                {{ t('ai_4') }}
-                {% else %}
-                AI-Powered Financial Health Analysis & Predictions
-                {% endif %}
+                <span data-i18n="ai_powered_financial_health">{{ t('ai_powered_financial_health') }}</span>
             </p>
         </div>
     </div>
@@ -27,7 +23,7 @@
             <div class="card shadow-sm">
                 <div class="card-body text-center">
                     <h3 class="text-secondary">
-                        {% if current_lang == 'zh' %}财务健康评分{% else %}Financial Health Score{% endif %}
+                        <span data-i18n="financial_health_score">{{ t('financial_health_score') }}</span>
                     </h3>
                     <div class="display-1 my-4 
                         {% if health_score.total_score >= 80 %}text-success
@@ -49,7 +45,7 @@
             <div class="card shadow-sm">
                 <div class="card-body text-center">
                     <h3 class="text-secondary">
-                        {% if current_lang == 'zh' %}客户等级{% else %}Customer Tier{% endif %}
+                        <span data-i18n="customer_tier">{{ t('customer_tier') }}</span>
                     </h3>
                     <div class="display-3 my-4">
                         {% if tier_info.current_tier == 'Platinum' %}
@@ -64,7 +60,7 @@
                     {% if tier_info.fee_discount > 0 %}
                     <p class="text-success">
                         <i class="bi bi-tag-fill"></i>
-                        {{ (tier_info.fee_discount * 100)|int }}% {% if current_lang == 'zh' %}服务费折扣{% else %}Fee Discount{% endif %}
+                        {{ (tier_info.fee_discount * 100)|int }}% <span data-i18n="fee_discount">{{ t('fee_discount') }}</span>
                     </p>
                     {% endif %}
                 </div>
@@ -76,19 +72,19 @@
             <div class="card shadow-sm border-{{ 'danger' if anomalies.critical_count > 0 else ('warning' if anomalies.warning_count > 0 else 'success') }}">
                 <div class="card-body text-center">
                     <h3 class="text-secondary">
-                        {% if current_lang == 'zh' %}异常监控{% else %}Anomaly Detection{% endif %}
+                        <span data-i18n="anomaly_detection">{{ t('anomaly_detection') }}</span>
                     </h3>
                     <div class="display-4 my-4 text-{{ 'danger' if anomalies.critical_count > 0 else ('warning' if anomalies.warning_count > 0 else 'success') }}">
                         <i class="bi bi-{% if anomalies.total_anomalies > 0 %}exclamation-triangle{% else %}check-circle{% endif %}"></i>
                     </div>
                     <h4>
                         {{ anomalies.total_anomalies }}
-                        {% if current_lang == 'zh' %}个异常{% else %}Anomalies{% endif %}
+                        <span data-i18n="anomalies">{{ t('anomalies') }}</span>
                     </h4>
                     {% if anomalies.critical_count > 0 %}
                     <p class="text-danger mb-0">
                         <i class="bi bi-exclamation-circle-fill"></i>
-                        {{ anomalies.critical_count }} {% if current_lang == 'zh' %}严重{% else %}Critical{% endif %}
+                        {{ anomalies.critical_count }} <span data-i18n="critical">{{ t('critical') }}</span>
                     </p>
                     {% endif %}
                 </div>
@@ -104,13 +100,13 @@
                 <div class="card-header">
                     <h4>
                         <i class="bi bi-graph-up"></i>
-                        {% if current_lang == 'zh' %}12个月现金流预测{% else %}12-Month Cashflow Prediction{% endif %}
+                        <span data-i18n="cashflow_prediction_12_months">{{ t('cashflow_prediction_12_months') }}</span>
                     </h4>
                 </div>
                 <div class="card-body">
                     <div class="alert alert-info">
                         <strong>
-                            {% if current_lang == 'zh' %}优化收益：{% else %}Optimization Benefit:{% endif %}
+                            <span data-i18n="optimization_benefit">{{ t('optimization_benefit') }}</span>
                         </strong>
                         RM {{ cashflow_data.comparison.total_improvement|abs }}
                         ({{ cashflow_data.comparison.improvement_percentage|abs }}%)
@@ -129,7 +125,7 @@
                 <div class="card-header">
                     <h4>
                         <i class="bi bi-clipboard-data"></i>
-                        {% if current_lang == 'zh' %}评分维度明细{% else %}Score Breakdown{% endif %}
+                        <span data-i18n="score_breakdown">{{ t('score_breakdown') }}</span>
                     </h4>
                 </div>
                 <div class="card-body">
@@ -138,15 +134,15 @@
                         <div class="col-md-6 mb-3">
                             <label class="form-label">
                                 {% if dimension == 'payment_timeliness' %}
-                                    {% if current_lang == 'zh' %}还款及时率{% else %}Payment Timeliness{% endif %}
+                                    <span data-i18n="payment_timeliness">{{ t('payment_timeliness') }}</span>
                                 {% elif dimension == 'dsr' %}
-                                    {% if current_lang == 'zh' %}{{ t('dsr_1') }}{% else %}DSR Ratio{% endif %}
+                                    <span data-i18n="dsr_1">{{ t('dsr_1') }}</span>
                                 {% elif dimension == 'utilization' %}
-                                    {% if current_lang == 'zh' %}信用卡使用率{% else %}Utilization Rate{% endif %}
+                                    <span data-i18n="utilization_rate">{{ t('utilization_rate') }}</span>
                                 {% elif dimension == 'category_health' %}
-                                    {% if current_lang == 'zh' %}消费分类健康度{% else %}Category Health{% endif %}
+                                    <span data-i18n="category_health">{{ t('category_health') }}</span>
                                 {% else %}
-                                    {% if current_lang == 'zh' %}财务稳定性{% else %}Financial Stability{% endif %}
+                                    <span data-i18n="financial_stability">{{ t('financial_stability') }}</span>
                                 {% endif %}
                             </label>
                             <div class="progress" style="height: 25px;">
@@ -175,7 +171,7 @@
                 <div class="card-header">
                     <h4>
                         <i class="bi bi-lightbulb"></i>
-                        {% if current_lang == 'zh' %}优化建议{% else %}Optimization Suggestions{% endif %}
+                        <span data-i18n="optimization_suggestions">{{ t('optimization_suggestions') }}</span>
                     </h4>
                 </div>
                 <div class="card-body">
@@ -186,7 +182,7 @@
                                 <h5 class="mb-1">{{ suggestion.area }}</h5>
                                 {% if suggestion.potential_saving > 0 %}
                                 <span class="badge bg-success">
-                                    {% if current_lang == 'zh' %}可节省{% else %}Save{% endif %} RM {{ suggestion.potential_saving }}
+                                    <span data-i18n="save">{{ t('save') }}</span> RM {{ suggestion.potential_saving }}
                                 </span>
                                 {% endif %}
                             </div>
@@ -208,7 +204,7 @@
                 <div class="card-header">
                     <h4>
                         <i class="bi bi-stars"></i>
-                        {% if current_lang == 'zh' %}个性化推荐{% else %}Personalized Recommendations{% endif %}
+                        <span data-i18n="personalized_recommendations">{{ t('personalized_recommendations') }}</span>
                     </h4>
                 </div>
                 <div class="card-body">
@@ -222,7 +218,7 @@
                                     {% if rec.potential_saving > 0 %}
                                     <p class="text-success mb-2">
                                         <i class="bi bi-piggy-bank"></i>
-                                        {% if current_lang == 'zh' %}潜在节省：{% else %}Potential Saving:{% endif %}
+                                        <span data-i18n="potential_saving">{{ t('potential_saving') }}</span>
                                         RM {{ rec.potential_saving }}
                                     </p>
                                     {% endif %}
@@ -248,7 +244,7 @@
                 <div class="card-header bg-danger text-white">
                     <h4>
                         <i class="bi bi-exclamation-triangle"></i>
-                        {% if current_lang == 'zh' %}检测到的异常{% else %}Detected Anomalies{% endif %}
+                        <span data-i18n="detected_anomalies">{{ t('detected_anomalies') }}</span>
                     </h4>
                 </div>
                 <div class="card-body">
@@ -260,7 +256,7 @@
                         </h5>
                         <p>{{ anomaly.description }}</p>
                         <p class="mb-0">
-                            <strong>{% if current_lang == 'zh' %}建议操作：{% else %}Action Required:{% endif %}</strong>
+                            <strong><span data-i18n="action_required">{{ t('action_required') }}</span></strong>
                             {{ anomaly.action_required }}
                         </p>
                     </div>
@@ -278,7 +274,7 @@
                 <div class="card-header">
                     <h4>
                         <i class="bi bi-award"></i>
-                        {% if current_lang == 'zh' %}{{ tier_info.current_tier }} 等级权益{% else %}{{ tier_info.current_tier }} Tier Benefits{% endif %}
+                        {{ tier_info.current_tier }} <span data-i18n="tier_benefits">{{ t('tier_benefits') }}</span>
                     </h4>
                 </div>
                 <div class="card-body">
@@ -294,13 +290,13 @@
                     {% if tier_info.next_tier_requirements %}
                     <div class="mt-4">
                         <h5>
-                            {% if current_lang == 'zh' %}升级到{% else %}Upgrade to{% endif %}
+                            <span data-i18n="upgrade_to">{{ t('upgrade_to') }}</span>
                             {{ tier_info.next_tier_requirements.next_tier }}
                         </h5>
                         <p class="text-secondary">
-                            {% if current_lang == 'zh' %}预计{% else %}Estimated{% endif %}
+                            <span data-i18n="estimated">{{ t('estimated') }}</span>
                             {{ tier_info.next_tier_requirements.estimated_months_to_upgrade }}
-                            {% if current_lang == 'zh' %}个月可升级{% else %}months to upgrade{% endif %}
+                            <span data-i18n="months_to_upgrade">{{ t('months_to_upgrade') }}</span>
                         </p>
                         {% for gap in tier_info.next_tier_requirements.gaps %}
                         <div class="mb-2">
