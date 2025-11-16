@@ -7724,8 +7724,10 @@ def report_center():
 @app.route('/api/reports/export', methods=['POST'])
 @require_admin_or_accountant
 def api_export_reports():
-    """批量导出API"""
+    """批量导出API - 真实文件导出"""
     try:
+        from utils.export_engine import ReportExportEngine, get_sample_data_from_db
+        
         data = request.json
         record_ids = data.get('record_ids', [])
         export_format = data.get('export_format', 'Excel')
@@ -7741,34 +7743,72 @@ def api_export_reports():
                 (export_format, len(record_ids), datetime.now().isoformat())
             )
             
-            # 这里应该启动后台任务生成文件，暂时模拟
-            # TODO: 实现实际的导出逻辑（使用reportlab/openpyxl等）
+            try:
+                # 初始化导出引擎
+                engine = ReportExportEngine()
+                
+                # 获取数据
+                export_data, columns = get_sample_data_from_db(db, record_ids)
+                
+                if not export_data:
+                    raise Exception("No data to export")
+                
+                # 根据格式导出文件
+                if export_format == 'Excel':
+                    filepath, file_size = engine.export_to_excel(export_data, columns)
+                elif export_format == 'CSV':
+                    filepath, file_size = engine.export_to_csv(export_data, columns)
+                elif export_format == 'PDF':
+                    filepath, file_size = engine.export_to_pdf(export_data, columns, title='交易数据报表')
+                else:
+                    raise Exception(f"Unsupported format: {export_format}")
+                
+                # 生成下载URL
+                filename = os.path.basename(filepath)
+                download_url = f'/static/downloads/{filename}'
+                
+                # 更新任务状态为成功
+                db.execute(
+                    """UPDATE export_tasks 
+                       SET status = 'completed', 
+                           download_url = ?,
+                           file_size = ?,
+                           completed_at = ?,
+                           updated_at = ?
+                       WHERE id = ?""",
+                    (download_url, file_size,
+                     datetime.now().isoformat(),
+                     datetime.now().isoformat(),
+                     task_id)
+                )
+                
+                # 记录审计日志
+                db.execute(
+                    """INSERT INTO audit_logs (log_action, operator_email, operation_content, status, created_at)
+                       VALUES (?, ?, ?, ?, ?)""",
+                    ('report_export', session.get('email', 'system'),
+                     f'Exported {len(record_ids)} records as {export_format} - {filename}',
+                     'success', datetime.now().isoformat())
+                )
+                
+                return jsonify({
+                    'success': True, 
+                    'task_id': task_id,
+                    'download_url': download_url,
+                    'file_size': file_size
+                })
             
-            # 模拟成功
-            db.execute(
-                """UPDATE export_tasks 
-                   SET status = 'completed', 
-                       download_url = ?,
-                       file_size = '1.2 MB',
-                       completed_at = ?,
-                       updated_at = ?
-                   WHERE id = ?""",
-                (f'/downloads/export_{task_id}.{export_format.lower()}',
-                 datetime.now().isoformat(),
-                 datetime.now().isoformat(),
-                 task_id)
-            )
-            
-            # 记录审计日志
-            db.execute(
-                """INSERT INTO audit_logs (log_action, operator_email, operation_content, status, created_at)
-                   VALUES (?, ?, ?, ?, ?)""",
-                ('report_export', session.get('email', 'system'),
-                 f'Exported {len(record_ids)} records as {export_format}',
-                 'success', datetime.now().isoformat())
-            )
-        
-        return jsonify({'success': True, 'task_id': task_id})
+            except Exception as export_error:
+                # 更新任务状态为失败
+                db.execute(
+                    """UPDATE export_tasks 
+                       SET status = 'failed', 
+                           error_msg = ?,
+                           updated_at = ?
+                       WHERE id = ?""",
+                    (str(export_error), datetime.now().isoformat(), task_id)
+                )
+                raise export_error
     
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500

@@ -128,6 +128,8 @@ A production-ready SFTP synchronization system, implemented with a FastAPI backe
 - **Templates**: 3 new templates (report_center.html, export_filter.html, export_progress_card.html)
 - **API Routes**: 4 Flask JSON endpoints (/reports/center, /api/reports/export, /api/reports/history, /api/reports/retry)
 - **Navigation**: Integrated Report Center into main navigation (base.html and layout.html)
-- **Translations**: Added 33 bilingual entries (EN/ZH), total 2196 translation entries
-- **UI Compliance**: 100% adherence to UI Style Protection Clause (CSS zero-change, class reuse only)
-- **Status**: Production-ready, fully functional, accessible from main navigation
+- **Translations**: Added 34 bilingual entries (EN/ZH), total 2197 translation entries
+- **UI Compliance**: 100% adherence to UI Style Protection Clause (CSS zero-change, class reuse only, main card icon 2.5rem)
+- **Export Engine**: Real file generation (Excel/CSV/PDF) using openpyxl, pandas, reportlab with brand styling
+- **File Naming**: Automatic timestamped filenames (报告中心-yyyyMMdd-HHmmss.xlsx)
+- **Status**: Production-ready, fully functional, accessible from main navigation, file download links operational

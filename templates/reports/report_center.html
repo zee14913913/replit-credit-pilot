@@ -18,10 +18,14 @@
         {% include "components/export_filter.html" %}
     </div>
 
-    <!-- 批量操作区 -->
+    <!-- 批量操作区（主卡片 - 带大型图标） -->
     <div class="professional-card mb-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 style="color: var(--primary-pink); font-weight: 700;">{{ t('export_tasks') }}</h4>
+            <div class="d-flex align-items-center">
+                <i class="bi bi-bar-chart-line-fill" 
+                   style="font-size: 2.5rem; color: var(--primary-pink); margin-right: 12px; vertical-align: middle;"></i>
+                <h4 style="color: var(--primary-pink); font-weight: 700; margin: 0;">{{ t('batch_export_center') }}</h4>
+            </div>
             <div class="d-flex gap-2">
                 <button class="btn-professional-outline btn-sm" onclick="exportSelected('PDF')">{{ t('export_pdf') }}</button>
                 <button class="btn-professional-outline btn-sm" onclick="exportSelected('Excel')">{{ t('export_excel') }}</button>

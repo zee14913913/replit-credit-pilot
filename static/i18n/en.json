@@ -2194,5 +2194,6 @@
   "records": "Records",
   "confirm_retry": "Confirm retry",
   "retry_failed": "Retry failed",
-  "export_format": "Export Format"
+  "export_format": "Export Format",
+  "batch_export_center": "Batch Export Center"
 }
