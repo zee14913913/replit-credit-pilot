@@ -52,12 +52,24 @@ class I18nManager {
         });
     }
 
-    setLanguage(lang) {
+    async setLanguage(lang) {
         if (!['en', 'zh'].includes(lang)) return;
         
         this.currentLang = lang;
-        // 不使用 localStorage，由服务器端 session 管理
-        // 这样关闭浏览器后会恢复默认英文，但会话期间保持用户选择
+        
+        // 🔥 CRITICAL FIX: 调用后端API保存session，确保刷新后语言保持一致
+        try {
+            const response = await fetch(`/set-language/${lang}`, {
+                method: 'GET',
+                credentials: 'same-origin'  // 确保发送session cookie
+            });
+            
+            if (!response.ok) {
+                console.warn('Failed to save language preference to session');
+            }
+        } catch (error) {
+            console.error('Error saving language to session:', error);
+        }
         
         // Apply language to all elements
         this.applyLanguage(lang);
