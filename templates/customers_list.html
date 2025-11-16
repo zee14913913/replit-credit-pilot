@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}客户列表 - Customers List{% endblock %}
+{% block title %}{{ t('customers_list') }} - {{ t('company_name') }}{% endblock %}
 
 {% block content %}
 <div class="fade-in">
     <!-- Page Header -->
     <div class="section-header mb-4">
-        <h1 class="section-title">客户列表</h1>
+        <h1 class="section-title" data-i18n="customers_list">客户列表</h1>
         <a href="{{ url_for('add_customer_page') }}" class="btn-professional">
-            <i class="bi bi-person-plus"></i> 添加新客户
+            <i class="bi bi-person-plus"></i> <span data-i18n="add_new_customer">添加新客户</span>
         </a>
     </div>
 
@@ -18,14 +18,14 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th style="width: 18%;">客户名称</th>
-                        <th style="width: 10%;">客户代码</th>
-                        <th style="width: 24%;">收款账户</th>
-                        <th style="width: 15%;">电子邮件</th>
-                        <th style="width: 10%;">联系号码</th>
-                        <th style="width: 8%; text-align: center;">信用卡</th>
-                        <th style="width: 8%; text-align: center;">储蓄账户</th>
-                        <th style="width: 7%; text-align: center;">操作</th>
+                        <th style="width: 18%;" data-i18n="customer_name">客户名称</th>
+                        <th style="width: 10%;" data-i18n="customer_code">客户代码</th>
+                        <th style="width: 24%;" data-i18n="payment_accounts">收款账户</th>
+                        <th style="width: 15%;" data-i18n="email_address">电子邮件</th>
+                        <th style="width: 10%;" data-i18n="contact_number">联系号码</th>
+                        <th style="width: 8%; text-align: center;" data-i18n="credit_cards_count">信用卡</th>
+                        <th style="width: 8%; text-align: center;" data-i18n="savings_accounts_count">储蓄账户</th>
+                        <th style="width: 7%; text-align: center;" data-i18n="operations">操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -90,11 +90,13 @@
                                 <div class="action-buttons">
                                     <a href="{{ url_for('customer_dashboard', customer_id=customer.id) }}" 
                                        class="btn-icon" 
+                                       data-i18n-title="dashboard_page"
                                        title="Dashboard">
                                         <i class="bi bi-speedometer2"></i>
                                     </a>
                                     <a href="{{ url_for('edit_customer_page', customer_id=customer.id) }}" 
                                        class="btn-icon" 
+                                       data-i18n-title="edit_action"
                                        title="编辑">
                                         <i class="bi bi-pencil"></i>
                                     </a>
@@ -106,7 +108,7 @@
                         <tr>
                             <td colspan="8" class="text-center" style="padding: 2rem;">
                                 <i class="bi bi-inbox" style="font-size: 2rem; color: #666;"></i><br>
-                                <span class="text-muted-custom">暂无客户数据</span>
+                                <span class="text-muted-custom" data-i18n="no_customers_yet">暂无客户数据</span>
                             </td>
                         </tr>
                     {% endif %}

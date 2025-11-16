@@ -22,7 +22,7 @@
                         <input type="text" class="form-control" id="customerName" name="name" required
                                value="{{ customer.name }}"
                                style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;"
-                               placeholder="例：CHEOK JUN YOON">
+                               placeholder="{{ t('example_customer_name') }}">
                     </div>
 
                     <div class="mb-3">
@@ -32,7 +32,7 @@
                         <input type="email" class="form-control" id="customerEmail" name="email" required
                                value="{{ customer.email }}"
                                style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;"
-                               placeholder="例：customer@example.com">
+                               placeholder="{{ t('example_email') }}">
                     </div>
 
                     <div class="mb-3">
@@ -42,7 +42,7 @@
                         <input type="tel" class="form-control" id="customerPhone" name="phone" required
                                value="{{ customer.phone or '' }}"
                                style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;"
-                               placeholder="例：+60123456789">
+                               placeholder="{{ t('example_phone') }}">
                     </div>
 
                     <div class="mb-4">
@@ -52,7 +52,7 @@
                         <input type="number" class="form-control" id="customerIncome" name="monthly_income" step="0.01" required
                                value="{{ customer.monthly_income or 0 }}"
                                style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;"
-                               placeholder="例：5000.00">
+                               placeholder="{{ t('example_monthly_income') }}">
                     </div>
 
                     <!-- 收款账户信息区域 -->
@@ -70,7 +70,7 @@
                                 <input type="text" class="form-control" id="personalAccountName" name="personal_account_name"
                                        value="{{ customer.personal_account_name or '' }}"
                                        style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,0,127,0.2); color: #FFFFFF; font-weight: 500; padding: 0.75rem;"
-                                       placeholder="例：CHEOK JUN YOON">
+                                       placeholder="{{ t('example_customer_name') }}">
                             </div>
                             <div class="col-md-6">
                                 <label for="personalAccountNumber" class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
@@ -79,7 +79,7 @@
                                 <input type="text" class="form-control" id="personalAccountNumber" name="personal_account_number"
                                        value="{{ customer.personal_account_number or '' }}"
                                        style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,0,127,0.2); color: #FFFFFF; font-weight: 500; padding: 0.75rem;"
-                                       placeholder="例：1234567890123">
+                                       placeholder="{{ t('example_ic_number') }}">
                             </div>
                         </div>
 
@@ -92,7 +92,7 @@
                                 <input type="text" class="form-control" id="companyAccountName" name="company_account_name"
                                        value="{{ customer.company_account_name or '' }}"
                                        style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,0,127,0.2); color: #FFFFFF; font-weight: 500; padding: 0.75rem;"
-                                       placeholder="例：CJY TRADING SDN BHD">
+                                       placeholder="{{ t('example_company_name') }}">
                             </div>
                             <div class="col-md-6">
                                 <label for="companyAccountNumber" class="form-label" style="color: rgba(255,255,255,0.9); font-weight: 600;">
@@ -101,7 +101,7 @@
                                 <input type="text" class="form-control" id="companyAccountNumber" name="company_account_number"
                                        value="{{ customer.company_account_number or '' }}"
                                        style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,0,127,0.2); color: #FFFFFF; font-weight: 500; padding: 0.75rem;"
-                                       placeholder="例：9876543210987">
+                                       placeholder="{{ t('example_company_registration') }}">
                             </div>
                         </div>
                         
