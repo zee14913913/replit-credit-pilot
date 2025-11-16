@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}添加信用卡 - {{ customer.name }}{% endblock %}
+{% block title %}{{ t('add_credit_card_title') }} - {{ customer.name }}{% endblock %}
 
 {% block content %}
 <div class="fade-in">
-    <!-- 页面标题 -->
+    <!-- Page Header -->
     <div class="section-header">
-        <h1 class="section-title">{{ t('__1') }}</h1>
-        <p class="section-subtitle">为 {{ customer.name }} 添加信用卡账户</p>
+        <h1 class="section-title" data-i18n="add_credit_card_title">{{ t('add_credit_card_title') }}</h1>
+        <p class="section-subtitle">{{ t('add_cc_for_customer').replace('{name}', customer.name) }}</p>
     </div>
 
     <!-- 添加信用卡表单 -->
@@ -15,8 +15,8 @@
         <div class="col-md-8">
             <div class="professional-card">
                 <form method="POST" action="{{ url_for('add_credit_card', customer_id=customer.id) }}">
-                    <h3 style="color: rgba(255,255,255,0.95); font-weight: 700; margin-bottom: 2rem; text-align: center;" data-i18n="credit_card_info_title">
-                        🏦 信用卡信息
+                    <h3 style="color: rgba(255,255,255,0.95); font-weight: 700; margin-bottom: 2rem; text-align: center;" data-i18n="credit_card_info">
+                        🏦 {{ t('credit_card_info') }}
                     </h3>
 
                     <!-- 银行名称 -->
@@ -109,38 +109,38 @@
                             style="background: rgba(0,0,0,0.3); border: 2px solid rgba(255,122,67,0.3); color: #FFFFFF; font-weight: 600; padding: 0.875rem;">
                             <option value="">{{ t('___select_date_') }}</option>
                             {% for day in range(1, 32) %}
-                            <option value="{{ day }}">{{ day }} 号</option>
+                            <option value="{{ day }}">{{ day }} {{ t('day_suffix') }}</option>
                             {% endfor %}
                         </select>
                         <small style="color: rgba(255,255,255,0.7);">{{ t('15_1') }}</small>
                     </div>
 
-                    <!-- 提示信息 -->
+                    <!-- Information Notice -->
                     <div class="alert-professional alert-info-pro mb-4">
                         <i class="bi bi-info-circle"></i> <strong>{{ t('auto_text_182') }}</strong><br>
-                        • 添加信用卡后，您可以上传该卡的账单进行分析<br>
+                        • <span data-i18n="after_add_cc_hint">{{ t('after_add_cc_hint') }}</span><br>
                         • {{ t('pdfexcel') }}格式的账单文件<br>
-                        • 所有信息将被安全加密保存
+                        • <span data-i18n="all_info_encrypted">{{ t('all_info_encrypted') }}</span>
                     </div>
 
-                    <!-- 按钮组 -->
+                    <!-- Action Buttons -->
                     <div class="d-flex gap-2">
                         <a href="{{ url_for('customer_dashboard', customer_id=customer.id) }}" 
                            class="btn-professional-outline flex-fill">
-                            <i class="bi bi-arrow-left"></i> 返回
+                            <i class="bi bi-arrow-left"></i> <span data-i18n="return_button">{{ t('return_button') }}</span>
                         </a>
                         <button type="submit" class="btn-white-glow flex-fill">
-                            <i class="bi bi-plus-circle"></i> 添加信用卡
+                            <i class="bi bi-plus-circle"></i> <span data-i18n="add_credit_card_button">{{ t('add_credit_card_button') }}</span>
                         </button>
                     </div>
                 </form>
             </div>
 
-            <!-- 已有信用卡列表 -->
+            <!-- Existing Credit Cards List -->
             {% if existing_cards %}
             <div class="professional-card mt-4" style="background: rgba(30,30,30,0.5); border: 1px solid rgba(192,192,192,0.2);">
-                <h4 style="color: rgba(255,255,255,0.95); font-weight: 700; margin-bottom: 1.5rem;">
-                    <i class="bi bi-credit-card-2-front"></i> 已有信用卡
+                <h4 style="color: rgba(255,255,255,0.95); font-weight: 700; margin-bottom: 1.5rem;" data-i18n="existing_credit_cards">
+                    <i class="bi bi-credit-card-2-front"></i> {{ t('existing_credit_cards') }}
                 </h4>
                 <div class="row g-3">
                     {% for card in existing_cards %}

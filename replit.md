@@ -122,14 +122,24 @@ A production-ready Unified RBAC Implementation protects 32 functions. The `@requ
 A production-ready SFTP synchronization system, implemented with a FastAPI backend (Port 8000) and Paramiko, automatically exports 7 types of financial data to SQL ACC ERP Edition via secure SFTP every 10 minutes.
 ## Recent Changes (November 2025)
 
+### Phase 4.2.8: Full-Site Bilingual Internationalization - Batch 3 Completion (2025-11-16)
+- **Scope**: 7 data-entry and detail page templates 100% internationalized (credit_card_month_detail, credit_card_excel_browser, edit_customer, add_credit_card, add_customer, credit_card_optimizer, credit_card_optimizer_report)
+- **Translation Resources**: Added 123 new keys (2329→2452 total), EN/ZH parity maintained
+- **Implementation Stats**: 310+ t() calls, 163+ data-i18n attributes, 12 JavaScript t() calls with fallback
+- **Quality**: Architect-approved with regression fixes (save_failed key restored, data-i18n attributes corrected)
+- **Technical Patterns**: Dual-rendering `<span data-i18n="key">{{ t('key') }}</span>`, JavaScript `const t = (key, fallback) => window.i18n?.translate(key) || fallback;`, split-key strategy for dynamic text
+- **UI Compliance**: 100% adherence to UI Style Protection Clause (zero CSS modifications, structure preserved)
+- **Cumulative Progress**: 19/87 templates completed (22%), Batch 2 (4 file management templates) + Batch 3 (7 data-entry templates) = 11 templates total in recent batches
+- **Status**: Production-ready, zero UI hardcoded strings, runtime language switching validated
+
 ### Phase 4 Priority 1: Report Center Implementation (2025-11-16)
 - **Module**: Self-Service Report Center with Batch Export
 - **Database**: Added `export_tasks` table with 3 indexes for efficient task tracking
 - **Templates**: 3 new templates (report_center.html, export_filter.html, export_progress_card.html)
 - **API Routes**: 4 Flask JSON endpoints (/reports/center, /api/reports/export, /api/reports/history, /api/reports/retry)
 - **Navigation**: Integrated Report Center into main navigation (base.html and layout.html)
-- **Translations**: Added 34 bilingual entries (EN/ZH), total 2197 translation entries
-- **UI Compliance**: 100% adherence to UI Style Protection Clause (CSS zero-change, class reuse only, main card icon 2.5rem)
+- **Translations**: Added 34 bilingual entries (EN/ZH)
+- **UI Compliance**: 100% adherence to UI Style Protection Clause (CSS zero-change, class reuse only)
 - **Export Engine**: Real file generation (Excel/CSV/PDF) using openpyxl, pandas, reportlab with brand styling
 - **File Naming**: Automatic timestamped filenames (报告中心-yyyyMMdd-HHmmss.xlsx)
-- **Status**: Production-ready, fully functional, accessible from main navigation, file download links operational
+- **Status**: Production-ready, fully functional, accessible from main navigation

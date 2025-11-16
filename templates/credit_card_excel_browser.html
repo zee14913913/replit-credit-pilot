@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}信用卡Excel文件 - {{ customer_name }}{% endblock %}
+{% block title %}<span data-i18n="credit_card_excel_files">{{ t('credit_card_excel_files') }}</span> - {{ customer_name }}{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <!-- 标题栏 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2><i class="bi bi-folder2-open"></i> {{ customer_name }} - 信用卡Excel文件</h2>
+            <h2><i class="bi bi-folder2-open"></i> {{ customer_name }} - <span data-i18n="credit_card_excel_files">{{ t('credit_card_excel_files') }}</span></h2>
             <p class="text-muted">
                 <i class="bi bi-info-circle"></i> 
-                共 {{ months_data|length }} 个月份的记录
+                <span data-i18n="total">{{ t('total') }}</span> {{ months_data|length }} <span data-i18n="months_records">{{ t('months_records') }}</span>
             </p>
         </div>
         <div>
             <a href="{{ url_for('credit_card_ledger') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> 返回账本
+                <i class="bi bi-arrow-left"></i> <span data-i18n="back_to_ledger">{{ t('back_to_ledger') }}</span>
             </a>
         </div>
     </div>
@@ -38,9 +38,9 @@
                             <strong>{{ month.display_name }}</strong>
                         </div>
                         <div class="month-stats">
-                            <span class="badge bg-primary me-2">{{ month.bank_count }} 家银行</span>
+                            <span class="badge bg-primary me-2">{{ month.bank_count }} <span data-i18n="banks_unit">{{ t('banks_unit') }}</span></span>
                             {% if month.summary %}
-                            <span class="badge bg-success">含月度汇总</span>
+                            <span class="badge bg-success" data-i18n="includes_monthly_summary">{{ t('includes_monthly_summary') }}</span>
                             {% endif %}
                         </div>
                     </div>
@@ -54,25 +54,25 @@
                  data-bs-parent="#monthsAccordion">
                 <div class="card-body">
                     
-                    <!-- 查看详细计算按钮 -->
+                    <!-- View detailed calculation button -->
                     <div class="mb-4 text-center">
                         <a href="{{ url_for('credit_card_month_detail', customer_id=customer.id, year_month=month.year_month) }}" 
                            class="btn btn-lg btn-gradient-detail">
                             <i class="bi bi-calculator-fill"></i> 
-                            查看详细计算与原始凭证
+                            <span data-i18n="view_detailed_calculation">{{ t('view_detailed_calculation') }}</span>
                             <i class="bi bi-arrow-right-circle"></i>
                         </a>
-                        <div class="detail-hint">
-                            查看完整的算法展示、30+分类统计、Supplier明细和原始PDF账单
+                        <div class="detail-hint" data-i18n="detail_calculation_hint">
+                            {{ t('detail_calculation_hint') }}
                         </div>
                     </div>
                     
-                    <!-- 月度汇总文件 -->
+                    <!-- Monthly summary file -->
                     {% if month.summary %}
                     <div class="summary-section mb-4">
                         <h6 class="section-title">
                             <i class="bi bi-file-bar-graph-fill text-warning"></i> 
-                            月度汇总
+                            <span data-i18n="monthly_summary">{{ t('monthly_summary') }}</span>
                         </h6>
                         <div class="file-item summary-item">
                             <div class="file-icon">
@@ -89,17 +89,17 @@
                             <div class="file-action">
                                 <a href="{{ url_for('download_credit_card_excel_file', path=month.summary.path) }}" 
                                    class="btn btn-sm btn-warning">
-                                    <i class="bi bi-download"></i> 下载汇总
+                                    <i class="bi bi-download"></i> <span data-i18n="download_summary">{{ t('download_summary') }}</span>
                                 </a>
                             </div>
                         </div>
                     </div>
                     {% endif %}
 
-                    <!-- 银行列表 -->
+                    <!-- Bank list -->
                     <h6 class="section-title">
                         <i class="bi bi-bank2"></i> 
-                        银行账单（{{ month.bank_count }} 家）
+                        <span data-i18n="bank_statements">{{ t('bank_statements') }}</span>（{{ month.bank_count }} <span data-i18n="banks_unit">{{ t('banks_unit') }}</span>）
                     </h6>
                     
                     <div class="banks-grid">
@@ -125,7 +125,7 @@
                                 <div class="file-action">
                                     <a href="{{ url_for('download_credit_card_excel_file', path=file.path) }}" 
                                        class="btn btn-sm btn-download">
-                                        <i class="bi bi-download"></i> 下载
+                                        <i class="bi bi-download"></i> <span data-i18n="download">{{ t('download') }}</span>
                                     </a>
                                 </div>
                             </div>
@@ -142,17 +142,17 @@
     {% else %}
     <div class="alert alert-info">
         <i class="bi bi-info-circle"></i> 
-        暂无Excel文件记录
+        <span data-i18n="no_excel_files_yet">{{ t('no_excel_files_yet') }}</span>
     </div>
     {% endif %}
 
-    <!-- 使用说明 -->
+    <!-- Usage instructions -->
     <div class="alert alert-light mt-4">
-        <h6><i class="bi bi-lightbulb"></i> 使用说明</h6>
+        <h6><i class="bi bi-lightbulb"></i> <span data-i18n="usage_instructions">{{ t('usage_instructions') }}</span></h6>
         <ul class="mb-0">
-            <li>点击月份可展开查看该月的所有银行账单</li>
-            <li>每个月包含：月度汇总 + 各银行账单</li>
-            <li>点击"下载"按钮即可下载对应的Excel文件</li>
+            <li data-i18n="expand_month_to_view">{{ t('expand_month_to_view') }}</li>
+            <li data-i18n="each_month_includes">{{ t('each_month_includes') }}</li>
+            <li data-i18n="click_download_to_get">{{ t('click_download_to_get') }}</li>
         </ul>
     </div>
 </div>

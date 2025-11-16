@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}信用卡优化报告 - {{ report.customer.name }}{% endblock %}
+{% block title %}<span data-i18n="credit_card_optimization_report">{{ t('credit_card_optimization_report') }}</span> - {{ report.customer.name }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-4">
@@ -9,10 +9,10 @@
             <!-- 报告标题 -->
             <div class="text-center mb-4">
                 <h1 class="galaxy-gradient-text mb-2">
-                    <i class="bi bi-stars me-2"></i>信用卡优化报告
+                    <i class="bi bi-stars me-2"></i><span data-i18n="credit_card_optimization_report">{{ t('credit_card_optimization_report') }}</span>
                 </h1>
                 <p class="text-silver-pearl">
-                    客户：{{ report.customer.name }} | 报告编号：{{ report.report_id }}
+                    <span data-i18n="customer">{{ t('customer') }}</span>：{{ report.customer.name }} | <span data-i18n="report_number">{{ t('report_number') }}</span>：{{ report.report_id }}
                 </p>
                 <p class="text-silver-pearl small"><span data-i18n="generated_time_colon">{{ t('generated_time_colon') }}</span> {{ report.generated_at }}</p>
             </div>
@@ -21,7 +21,7 @@
             <div class="galaxy-card mb-4">
                 <div class="card-body">
                     <h5 class="galaxy-gradient-text mb-3">
-                        <i class="bi bi-bar-chart-fill me-2"></i>消费概览（最近6个月）
+                        <i class="bi bi-bar-chart-fill me-2"></i><span data-i18n="spending_overview">{{ t('spending_overview') }}</span>（<span data-i18n="recent">{{ t('recent') }}</span>6<span data-i18n="months">{{ t('months') }}</span>）
                     </h5>
                     <div class="row g-3 text-center">
                         <div class="col-md-4">
@@ -53,7 +53,7 @@
                     <div class="galaxy-card h-100">
                         <div class="card-body">
                             <h5 class="text-white mb-4">
-                                <i class="bi bi-archive-fill me-2"></i>📊 当前状态
+                                <i class="bi bi-archive-fill me-2"></i>📊 <span data-i18n="current_status">{{ t('current_status') }}</span>
                             </h5>
                             
                             {% if report.current_state.cards %}
@@ -91,7 +91,7 @@
                     <div class="galaxy-card h-100" style="border: 2px solid rgba(76, 175, 80, 0.5);">
                         <div class="card-body">
                             <h5 class="text-success mb-4">
-                                <i class="bi bi-rocket-takeoff-fill me-2"></i>🚀 优化方案
+                                <i class="bi bi-rocket-takeoff-fill me-2"></i>🚀 <span data-i18n="optimization_solutions">{{ t('optimization_solutions') }}</span>
                             </h5>
                             
                             {% if report.optimized_solution.recommended_cards %}
@@ -134,13 +134,13 @@
             <div class="galaxy-card mb-4" style="background: linear-gradient(135deg, rgba(45, 80, 22, 0.3) 0%, rgba(26, 58, 15, 0.3) 100%); border: 2px solid rgba(76, 175, 80, 0.5);">
                 <div class="card-body text-center py-5">
                     <h3 class="text-success mb-3">
-                        <i class="bi bi-piggy-bank-fill me-2"></i>年度节省金额
+                        <i class="bi bi-piggy-bank-fill me-2"></i><span data-i18n="annual_savings">{{ t('annual_savings') }}</span>
                     </h3>
                     <div class="display-2 text-success fw-bold mb-3">
                         RM {{ "{:,.2f}".format(report.comparison.annual_savings) }}
                     </div>
                     <div class="fs-4 text-silver-pearl mb-3">
-                        ({{ report.comparison.savings_percentage }}% 提升)
+                        ({{ report.comparison.savings_percentage }}% <span data-i18n="improvement">{{ t('improvement') }}</span>)
                     </div>
                     <div class="recommendation-level">
                         <h5 class="text-golden">{{ report.comparison.recommendation_level }}</h5>
@@ -153,7 +153,7 @@
             <div class="galaxy-card mb-4">
                 <div class="card-body">
                     <h5 class="galaxy-gradient-text mb-3">
-                        <i class="bi bi-list-check me-2"></i>行动建议
+                        <i class="bi bi-list-check me-2"></i><span data-i18n="action_recommendations">{{ t('action_recommendations') }}</span>
                     </h5>
                     <ul class="action-list">
                         {% for item in report.comparison.action_items %}
@@ -224,10 +224,10 @@
             <!-- 操作按钮 -->
             <div class="text-center mb-4">
                 <a href="{{ url_for('download_credit_card_report', customer_id=report.customer.id) }}" class="btn btn-golden btn-lg me-3">
-                    <i class="bi bi-download me-2"></i>下载完整报告
+                    <i class="bi bi-download me-2"></i><span data-i18n="download_full_report">{{ t('download_full_report') }}</span>
                 </a>
                 <a href="{{ url_for('credit_card_optimizer') }}" class="btn btn-outline-golden btn-lg">
-                    <i class="bi bi-arrow-left me-2"></i>返回
+                    <i class="bi bi-arrow-left me-2"></i><span data-i18n="return">{{ t('return') }}</span>
                 </a>
             </div>
         </div>
