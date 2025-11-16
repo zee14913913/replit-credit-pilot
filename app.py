@@ -7336,11 +7336,11 @@ def update_credit_card_transactions():
             for txn in updated:
                 cursor.execute("""
                     UPDATE transactions 
-                    SET transaction_date = %s,
-                        description = %s,
-                        amount = %s,
-                        category = %s
-                    WHERE id = %s
+                    SET transaction_date = ?,
+                        description = ?,
+                        amount = ?,
+                        category = ?
+                    WHERE id = ?
                 """, (
                     txn['transaction_date'],
                     txn['description'],
@@ -7352,14 +7352,14 @@ def update_credit_card_transactions():
             
             # 2. 删除交易
             for txn_id in deleted:
-                cursor.execute("DELETE FROM transactions WHERE id = %s", (txn_id,))
+                cursor.execute("DELETE FROM transactions WHERE id = ?", (txn_id,))
                 deleted_count += cursor.rowcount
             
             # 3. 创建新交易
             # 首先获取对应的月结单ID
             cursor.execute("""
                 SELECT id FROM monthly_statements 
-                WHERE customer_id = %s AND statement_month = %s
+                WHERE customer_id = ? AND statement_month = ?
                 LIMIT 1
             """, (customer_id, year_month))
             
@@ -7380,7 +7380,7 @@ def update_credit_card_transactions():
                         description,
                         amount,
                         category
-                    ) VALUES (%s, %s, %s, %s, %s)
+                    ) VALUES (?, ?, ?, ?, ?)
                 """, (
                     statement_id,
                     txn['transaction_date'],

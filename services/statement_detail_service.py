@@ -71,7 +71,7 @@ class StatementDetailService:
         with get_db() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT id, name, customer_code FROM customers WHERE id = %s",
+                "SELECT id, name, customer_code FROM customers WHERE id = ?",
                 (customer_id,)
             )
             row = cursor.fetchone()
@@ -102,7 +102,7 @@ class StatementDetailService:
                     gz_payments,
                     transaction_count
                 FROM monthly_statements
-                WHERE customer_id = %s AND statement_month = %s
+                WHERE customer_id = ? AND statement_month = ?
                 ORDER BY bank_name
             """, (customer_id, year_month))
             
@@ -135,7 +135,7 @@ class StatementDetailService:
                     ms.bank_name
                 FROM transactions t
                 JOIN monthly_statements ms ON t.monthly_statement_id = ms.id
-                WHERE ms.customer_id = %s AND ms.statement_month = %s
+                WHERE ms.customer_id = ? AND ms.statement_month = ?
                 ORDER BY t.transaction_date, t.id
             """, (customer_id, year_month))
             
