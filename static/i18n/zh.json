@@ -2506,5 +2506,11 @@
   "not_prefix": "未",
   "total_count": "总共",
   "month_unit": "月",
-  "customers_unit": "位客户"
+  "customers_unit": "位客户",
+  "test_running": "⏳ 正在测试...",
+  "test_error_dialog_not_found": "❌ 错误：找不到编辑对话框元素！",
+  "test_dialog_opened": "- 对话框已弹出",
+  "test_input_filled": "- 输入框已填充测试数据",
+  "test_input_focused": "- 输入框已聚焦",
+  "test_error_prefix": "❌ 错误："
 }

@@ -122,15 +122,24 @@ A production-ready Unified RBAC Implementation protects 32 functions. The `@requ
 A production-ready SFTP synchronization system, implemented with a FastAPI backend (Port 8000) and Paramiko, automatically exports 7 types of financial data to SQL ACC ERP Edition via secure SFTP every 10 minutes.
 ## Recent Changes (November 2025)
 
-### Phase 4.2.8: Full-Site Bilingual Internationalization - Batch 3 Completion (2025-11-16)
-- **Scope**: 7 data-entry and detail page templates 100% internationalized (credit_card_month_detail, credit_card_excel_browser, edit_customer, add_credit_card, add_customer, credit_card_optimizer, credit_card_optimizer_report)
-- **Translation Resources**: Added 123 new keys (2329→2452 total), EN/ZH parity maintained
-- **Implementation Stats**: 310+ t() calls, 163+ data-i18n attributes, 12 JavaScript t() calls with fallback
-- **Quality**: Architect-approved with regression fixes (save_failed key restored, data-i18n attributes corrected)
-- **Technical Patterns**: Dual-rendering `<span data-i18n="key">{{ t('key') }}</span>`, JavaScript `const t = (key, fallback) => window.i18n?.translate(key) || fallback;`, split-key strategy for dynamic text
-- **UI Compliance**: 100% adherence to UI Style Protection Clause (zero CSS modifications, structure preserved)
-- **Cumulative Progress**: 19/87 templates completed (22%), Batch 2 (4 file management templates) + Batch 3 (7 data-entry templates) = 11 templates total in recent batches
-- **Status**: Production-ready, zero UI hardcoded strings, runtime language switching validated
+### Phase 4.2.9-4.2.10: Full-Site Bilingual Internationalization - Batch 4+5 Completion (2025-11-16)
+- **Batch 4 (2 medium-priority templates)**: advanced_analytics.html, request_consultation.html
+  - Upgraded advanced_analytics.html from legacy `{% if current_lang %}` pattern to modern `{{ t('key') }}` pattern, enabling runtime language switching
+  - Fixed request_consultation.html title block to use plain text (no HTML tags in `<title>`)
+  - Added 32 new translation keys (2452→2484 total)
+  - Implementation: 60 t() calls, 35 data-i18n attributes
+  - Architect-approved after regression fixes
+- **Batch 5 (32 low-priority templates, 6 processed + 26 already complete)**: 
+  - Group 1 (3 templates): business_plan, savings_admin_dashboard, notification_settings (+18 keys, 70 t() calls)
+  - Group 2 (3 templates): loan_matcher_result, customers_list, monthly_reports (+5 keys, multi-language CTOS status support)
+  - Group 3 (26 templates): Already 100% internationalized (admin_*, savings_*, loan_*, customer_*, etc.)
+  - Discovered i18n.js limitation: No parameterized translation support (26 placeholder keys identified)
+  - Workaround: Created non-parameterized fallback keys (e.g., customers_unit instead of customers_count with {count})
+  - Architect-approved with recommendation to implement interpolation in future phase
+- **Translation Resources**: 2484→2508 total keys (+24 net), EN/ZH parity maintained
+- **UI Compliance**: 100% adherence to UI Style Protection Clause (zero CSS modifications)
+- **Cumulative Progress**: 29/87 templates completed (33%), Batch 4 (2 templates) + Batch 5 (6 templates processed, 26 already complete)
+- **Status**: Production-ready, runtime language switching validated across all processed templates
 
 ### Phase 4 Priority 1: Report Center Implementation (2025-11-16)
 - **Module**: Self-Service Report Center with Batch Export

@@ -2506,5 +2506,11 @@
   "not_prefix": "Not",
   "total_count": "Total",
   "month_unit": "month",
-  "customers_unit": "customers"
+  "customers_unit": "customers",
+  "test_running": "⏳ Testing...",
+  "test_error_dialog_not_found": "❌ Error: Edit dialog element not found!",
+  "test_dialog_opened": "- Dialog opened",
+  "test_input_filled": "- Input filled with test data",
+  "test_input_focused": "- Input focused",
+  "test_error_prefix": "❌ Error: "
 }

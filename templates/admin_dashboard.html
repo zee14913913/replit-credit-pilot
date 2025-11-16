@@ -979,13 +979,14 @@ document.addEventListener('DOMContentLoaded', function() {
 // TEST FUNCTION
 function testEditFunction() {
     const resultDiv = document.getElementById('test_result');
-    resultDiv.innerHTML = '⏳ 正在测试...';
+    const t = (key, fallback) => window.i18n?.translate(key) || fallback;
+    resultDiv.innerHTML = t('test_running', '⏳ Testing...');
     
     try {
         // Test 1: Check if modal exists
         const modalElement = document.getElementById('editStatementModal');
         if (!modalElement) {
-            resultDiv.innerHTML = '❌ 错误：找不到编辑对话框元素！';
+            resultDiv.innerHTML = t('test_error_dialog_not_found', '❌ Error: Edit dialog element not found!');
             return;
         }
         
@@ -1004,9 +1005,9 @@ function testEditFunction() {
             
             resultDiv.innerHTML = `
                 ✅ <strong>{{ t('auto_text_218') }}</strong><br>
-                - 对话框已弹出<br>
-                - 输入框已填充测试数据<br>
-                - 输入框已聚焦<br>
+                ${t('test_dialog_opened', '- Dialog opened')}<br>
+                ${t('test_input_filled', '- Input filled with test data')}<br>
+                ${t('test_input_focused', '- Input focused')}<br>
                 <br>
                 <strong style="color: #FF007F;">{{ t('__8') }}</strong><br>
                 <small>{{ t('auto_text_223') }}</small>
@@ -1014,7 +1015,7 @@ function testEditFunction() {
         }, 500);
         
     } catch (error) {
-        resultDiv.innerHTML = '❌ 错误：' + error.message;
+        resultDiv.innerHTML = t('test_error_prefix', '❌ Error: ') + error.message;
     }
 }
 
@@ -1075,8 +1076,9 @@ function openEditModal(stmtId, customerName, bank, month, prevBal, ownerBal, gzB
         
     } catch (error) {
         if (debugDiv) {
+            const t = (key, fallback) => window.i18n?.translate(key) || fallback;
             debugDiv.style.display = 'block';
-            debugDiv.innerHTML = '❌ 错误: ' + error.message;
+            debugDiv.innerHTML = t('test_error_prefix', '❌ Error: ') + error.message;
         }
         console.error('Error opening edit modal:', error);
     }
