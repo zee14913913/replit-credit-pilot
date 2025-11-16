@@ -28,14 +28,14 @@
         <div class="card-body">
             {% if files.monthly_statements %}
                 <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+                    <table class="table table-bordered table-hover excel-file-table">
+                        <thead class="table-header">
                             <tr>
-                                <th width="5%">类型</th>
-                                <th width="40%">文件名</th>
+                                <th width="8%">类型</th>
+                                <th width="42%">文件名</th>
                                 <th width="15%">大小</th>
                                 <th width="20%">修改时间</th>
-                                <th width="20%">操作</th>
+                                <th width="15%">操作</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -83,8 +83,8 @@
         <div class="card-body">
             {% if files.transaction_details %}
                 <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+                    <table class="table table-bordered table-hover excel-file-table">
+                        <thead class="table-header">
                             <tr>
                                 <th width="50%">文件名</th>
                                 <th width="15%">大小</th>
@@ -130,8 +130,8 @@
         <div class="card-body">
             {% if files.reports %}
                 <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+                    <table class="table table-bordered table-hover excel-file-table">
+                        <thead class="table-header">
                             <tr>
                                 <th width="50%">文件名</th>
                                 <th width="15%">大小</th>
@@ -177,16 +177,116 @@
 </div>
 
 <style>
-.table-hover tbody tr:hover {
-    background-color: rgba(255, 0, 127, 0.05);
+/* 专业表格样式 - 清晰易读 */
+.excel-file-table {
+    margin-bottom: 0;
+    background-color: white;
 }
 
+/* 表头样式 */
+.excel-file-table thead.table-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 3px solid #dee2e6;
+}
+
+.excel-file-table thead th {
+    padding: 18px 20px !important;
+    font-weight: 600;
+    font-size: 15px;
+    color: #2c3e50;
+    text-align: left;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+}
+
+/* 表格主体行 */
+.excel-file-table tbody tr {
+    border-bottom: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+}
+
+.excel-file-table tbody td {
+    padding: 16px 20px !important;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    line-height: 1.6;
+}
+
+/* 悬停效果 */
+.excel-file-table tbody tr:hover {
+    background-color: rgba(255, 0, 127, 0.08);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* 文件名列特殊样式 */
+.excel-file-table tbody td:nth-child(2) {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+/* 按钮样式优化 */
+.excel-file-table .btn-sm {
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.excel-file-table .btn-sm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Badge样式优化 */
+.excel-file-table .badge {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+}
+
+/* 图标样式 */
+.excel-file-table i.bi-file-earmark-excel {
+    font-size: 18px;
+    margin-right: 8px;
+}
+
+/* 卡片样式 */
 .card {
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 24px;
 }
 
 .card-header {
-    font-weight: 500;
+    font-weight: 600;
+    padding: 16px 24px;
+    border-bottom: none;
+}
+
+.card-body {
+    padding: 0;
+}
+
+/* 表格容器 */
+.table-responsive {
+    border-radius: 0;
+    margin: 0;
+}
+
+/* 空状态样式 */
+.card-body .text-muted {
+    padding: 40px 24px;
+    text-align: center;
+    font-size: 15px;
 }
 </style>
 {% endblock %}
