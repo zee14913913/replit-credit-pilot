@@ -148,8 +148,7 @@ class CCCSettlementReportGenerator:
             total_gz_expenses += Decimal(str(record['gz_expenses'] or 0))
             total_gz_payments += Decimal(str(record['gz_payments'] or 0))
         
-        # 计算Supplier费用
-        supplier_fees = Decimal('0')
+        # 计算Supplier交易明细
         supplier_transactions = []
         
         for txn in transactions:
@@ -157,8 +156,7 @@ class CCCSettlementReportGenerator:
             for supplier in self.supplier_list:
                 if supplier.upper() in desc_upper:
                     amount = Decimal(str(txn['amount']))
-                    fee = amount * Decimal('0.01')
-                    supplier_fees += fee
+                    fee = amount * Decimal('0.01')  # 每笔Supplier交易的1%费用
                     supplier_transactions.append({
                         **txn,
                         'supplier': supplier,
@@ -166,16 +164,24 @@ class CCCSettlementReportGenerator:
                     })
                     break
         
-        # 计算GZ OS Balance
-        gz_os_balance = total_gz_expenses - total_gz_payments + supplier_fees
+        # 计算1%刷卡机费用（由OWNER承担，不是GZ收入）
+        # 业务逻辑：用客户信用卡刷卡购物换取现金，1%是银行征收的刷卡机费用
+        card_processing_fee = total_gz_expenses * Decimal('0.01')
+        
+        # OWNER应付总额 = OWNER消费 + 1%刷卡机费用 - OWNER付款
+        owner_outstanding = total_owner_expenses + card_processing_fee - total_owner_payments
+        
+        # GZ应付余额 = GZ消费 - GZ付款（不包含1%费用，因为由OWNER承担）
+        gz_outstanding = total_gz_expenses - total_gz_payments
         
         return {
             'total_owner_expenses': float(total_owner_expenses),
             'total_owner_payments': float(total_owner_payments),
             'total_gz_expenses': float(total_gz_expenses),
             'total_gz_payments': float(total_gz_payments),
-            'supplier_fees': float(supplier_fees),
-            'gz_os_balance': float(gz_os_balance),
+            'card_processing_fee': float(card_processing_fee),  # 刷卡机费用（OWNER承担）
+            'owner_outstanding': float(owner_outstanding),  # OWNER应付总额
+            'gz_outstanding': float(gz_outstanding),  # GZ应付余额（不含1%）
             'total_months': len(monthly_summary),
             'total_transactions': len(transactions),
             'supplier_transactions': supplier_transactions
@@ -192,19 +198,25 @@ class CCCSettlementReportGenerator:
         print(f"总交易笔数: {stats['total_transactions']} 笔")
         print("=" * 100)
         
-        print("\n【Owner账户】")
-        print(f"  消费合计: RM {stats['total_owner_expenses']:,.2f}")
-        print(f"  付款合计: RM {stats['total_owner_payments']:,.2f}")
-        print(f"  净额: RM {(stats['total_owner_expenses'] - stats['total_owner_payments']):,.2f}")
+        print("\n【OWNER账户】")
+        print(f"  OWNER消费: RM {stats['total_owner_expenses']:,.2f}")
+        print(f"  OWNER付款: RM {stats['total_owner_payments']:,.2f}")
+        print(f"  1%刷卡机费用: RM {stats['card_processing_fee']:,.2f}  ← 客户OWNER承担")
+        print(f"  {'-' * 80}")
+        print(f"  OWNER应付总额: RM {stats['owner_outstanding']:,.2f}")
+        print(f"    (计算公式: OWNER消费 + 1%刷卡机费用 - OWNER付款)")
         
         print("\n【GZ账户】")
-        print(f"  消费合计: RM {stats['total_gz_expenses']:,.2f}")
-        print(f"  付款合计: RM {stats['total_gz_payments']:,.2f}")
-        print(f"  Supplier Fees (1%): RM {stats['supplier_fees']:,.2f}")
+        print(f"  GZ消费(Supplier刷卡): RM {stats['total_gz_expenses']:,.2f}")
+        print(f"  GZ付款: RM {stats['total_gz_payments']:,.2f}")
         print(f"  Supplier交易数: {len(stats['supplier_transactions'])} 笔")
+        print(f"  {'-' * 80}")
+        print(f"  GZ应付余额: RM {stats['gz_outstanding']:,.2f}")
+        print(f"    (计算公式: GZ消费 - GZ付款, 不含1%费用)")
         
         print("\n" + "=" * 100)
-        print(f"【GZ Outstanding Balance】: RM {stats['gz_os_balance']:,.2f}")
+        print(f"💰 重要说明：1%刷卡机费用由客户OWNER承担，不是GZ收入")
+        print(f"   业务逻辑：用客户信用卡刷卡购物换取现金，1%是银行征收的刷卡机费用")
         print("=" * 100)
     
     def _print_monthly_breakdown(self, monthly_summary):

@@ -174,11 +174,15 @@ class StatementDetailService:
             category_breakdown[category]['count'] += 1
             category_breakdown[category]['total_amount'] += txn['amount']
         
-        # 计算1% Management Fee (基于GZ Expenses)
-        management_fee = total_gz_expenses * 0.01
+        # 计算1%刷卡机费用（由OWNER承担，不是GZ管理费）
+        # 业务逻辑：用客户信用卡刷卡购物换取现金，1%是银行征收的刷卡机费用
+        card_processing_fee = total_gz_expenses * 0.01
         
-        # 计算GZ Outstanding Balance
-        gz_outstanding = total_previous_balance + total_gz_expenses - total_gz_payments + management_fee
+        # OWNER总欠款 = OWNER消费 + 1%刷卡机费用 - OWNER付款
+        owner_outstanding = total_owner_expenses + card_processing_fee - total_owner_payments
+        
+        # GZ欠款 = GZ消费 - GZ付款（不包含1%费用，因为这是OWNER承担的）
+        gz_outstanding = total_gz_expenses - total_gz_payments
         
         return {
             'total_previous_balance': total_previous_balance,
@@ -188,8 +192,9 @@ class StatementDetailService:
             'total_gz_expenses': total_gz_expenses,
             'total_gz_payments': total_gz_payments,
             'total_transactions': total_transactions,
-            'management_fee': management_fee,
-            'gz_outstanding_balance': gz_outstanding,
+            'card_processing_fee': card_processing_fee,  # 刷卡机费用（OWNER承担）
+            'owner_outstanding_balance': owner_outstanding,  # OWNER总欠款
+            'gz_outstanding_balance': gz_outstanding,  # GZ欠款（不含1%费用）
             'category_breakdown': category_breakdown,
             'bank_count': len(statements)
         }

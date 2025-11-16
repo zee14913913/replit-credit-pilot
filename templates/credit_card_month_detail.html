@@ -105,14 +105,25 @@
                                 <td><strong>OWNER 付款 (Payments)</strong></td>
                                 <td class="text-end amount-positive">{{ "%.2f"|format(data.statistics.total_owner_payments) }}</td>
                             </tr>
-                            <tr class="table-info">
-                                <td><strong>OWNER 净额</strong></td>
-                                <td class="text-end fw-bold">
-                                    {{ "%.2f"|format(data.statistics.total_owner_payments - data.statistics.total_owner_expenses) }}
+                            <tr class="table-danger">
+                                <td><strong>1% 刷卡机费用 (Card Processing Fee)</strong></td>
+                                <td class="text-end amount-fee">{{ "%.2f"|format(data.statistics.card_processing_fee) }}</td>
+                            </tr>
+                            <tr class="table-warning">
+                                <td><strong>OWNER 应付总额 (Total Due)</strong></td>
+                                <td class="text-end fw-bold amount-negative">
+                                    {{ "%.2f"|format(data.statistics.owner_outstanding_balance) }}
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    <div class="alert alert-info mt-2">
+                        <i class="bi bi-info-circle"></i>
+                        <small>
+                            <strong>说明：</strong>刷卡机费用是银行征收的1%手续费，由客户OWNER承担。<br>
+                            <strong>应付总额 = OWNER消费 + 1%刷卡机费用 - OWNER付款</strong>
+                        </small>
+                    </div>
                 </div>
 
                 <!-- INFINITE GZ 账本 -->
@@ -129,18 +140,14 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><strong>GZ 消费 (Expenses)</strong></td>
+                                <td><strong>GZ 消费 (Supplier刷卡)</strong></td>
                                 <td class="text-end amount-negative">{{ "%.2f"|format(data.statistics.total_gz_expenses) }}</td>
                             </tr>
                             <tr>
                                 <td><strong>GZ 付款 (Payments)</strong></td>
                                 <td class="text-end amount-positive">{{ "%.2f"|format(data.statistics.total_gz_payments) }}</td>
                             </tr>
-                            <tr>
-                                <td><strong>1% 管理费 (GZ Expenses × 1%)</strong></td>
-                                <td class="text-end amount-fee">{{ "%.2f"|format(data.statistics.management_fee) }}</td>
-                            </tr>
-                            <tr class="table-warning">
+                            <tr class="table-success">
                                 <td><strong>GZ 应付余额 (Outstanding)</strong></td>
                                 <td class="text-end fw-bold">
                                     {{ "%.2f"|format(data.statistics.gz_outstanding_balance) }}
@@ -148,6 +155,13 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="alert alert-warning mt-2">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <small>
+                            <strong>注意：</strong>GZ应付余额不包含1%刷卡机费用（该费用由OWNER承担）。<br>
+                            <strong>GZ应付 = GZ消费 - GZ付款</strong>
+                        </small>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1573,8 +1573,15 @@ def admin_dashboard():
         total_owner_payments = sum(stmt['owner_payments'] for stmt in cc_statements)
         total_gz_expenses = sum(stmt['infinite_expenses'] for stmt in cc_statements)
         total_gz_payments = sum(stmt['infinite_payments'] for stmt in cc_statements)
-        total_gz_revenue = total_gz_expenses * 0.01  # 1% supplier fee
-        total_owner_balance = total_owner_expenses - total_owner_payments
+        
+        # 1% 刷卡机费用由客户OWNER承担（不是GZ收入）
+        # 业务逻辑：用客户信用卡刷卡购物换取现金，1%是银行收取的刷卡机费用
+        card_processing_fee = total_gz_expenses * 0.01  # 刷卡机费用
+        
+        # OWNER总欠款 = OWNER消费 + 1%刷卡机费用 - OWNER付款
+        total_owner_balance = (total_owner_expenses + card_processing_fee) - total_owner_payments
+        
+        # GZ欠款 = GZ消费 - GZ付款（不包含1%费用，因为这是OWNER承担的）
         total_gz_balance = total_gz_expenses - total_gz_payments
         
         # Count unique banks
@@ -1644,7 +1651,7 @@ def admin_dashboard():
                          total_owner_payments=total_owner_payments,
                          total_gz_expenses=total_gz_expenses,
                          total_gz_payments=total_gz_payments,
-                         total_gz_revenue=total_gz_revenue,
+                         card_processing_fee=card_processing_fee,
                          total_owner_balance=total_owner_balance,
                          total_gz_balance=total_gz_balance,
                          unique_banks=unique_banks,
