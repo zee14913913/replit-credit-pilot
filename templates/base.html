@@ -106,13 +106,13 @@
                     </button>
                     <div class="notification-dropdown" id="notificationDropdown" style="display: none;">
                         <div class="notification-header">
-                            <h6 data-i18n="{{ t('notification_center_1') }}">{{ t('notification_center') }}</h6>
-                            <button class="btn btn-sm btn-link" onclick="markAllAsRead()" data-i18n="{{ t('mark_all_read_1') }}">{{ t('mark_all_read') }}</button>
+                            <h6 data-i18n="notification_center">{{ t('notification_center') }}</h6>
+                            <button class="btn btn-sm btn-link" onclick="markAllAsRead()" data-i18n="mark_all_read">{{ t('mark_all_read') }}</button>
                         </div>
                         <div class="notification-list" id="notificationList">
                             <div class="text-center text-muted p-3">
                                 <i class="bi bi-inbox"></i><br>
-                                <span data-i18n="{{ t('no_notifications_1') }}">{{ t('no_notifications') }}</span>
+                                <span data-i18n="no_notifications">{{ t('no_notifications') }}</span>
                             </div>
                         </div>
                     </div>
@@ -128,7 +128,7 @@
                     </button>
                     <button class="lang-btn {{ 'active' if current_lang == 'zh' }}" 
                             onclick="window.location.href='{{ url_for('set_language', lang='zh') }}'">
-                        中文
+                        ZH
                     </button>
                 </div>
             </div>
@@ -783,16 +783,27 @@
             const diff = now - date;
             
             const minutes = Math.floor(diff / 60000);
-            if (minutes < 1) return '刚刚';
-            if (minutes < 60) return `${minutes}分钟前`;
+            if (minutes < 1) {
+                return window.i18n?.translate('time_just_now') || 'Just Now';
+            }
+            if (minutes < 60) {
+                const template = window.i18n?.translate('time_minutes_ago') || '{minutes} minutes ago';
+                return template.replace('{minutes}', minutes);
+            }
             
             const hours = Math.floor(minutes / 60);
-            if (hours < 24) return `${hours}小时前`;
+            if (hours < 24) {
+                const template = window.i18n?.translate('time_hours_ago') || '{hours} hours ago';
+                return template.replace('{hours}', hours);
+            }
             
             const days = Math.floor(hours / 24);
-            if (days < 7) return `${days}天前`;
+            if (days < 7) {
+                const template = window.i18n?.translate('time_days_ago') || '{days} days ago';
+                return template.replace('{days}', days);
+            }
             
-            return date.toLocaleDateString('zh-CN');
+            return date.toLocaleDateString();
         }
     </script>
     
