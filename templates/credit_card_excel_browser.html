@@ -7,8 +7,11 @@
     <!-- 标题栏 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2><i class="bi bi-file-earmark-spreadsheet"></i> 信用卡Excel文件浏览</h2>
-            <p class="text-muted">客户: {{ customer_name }}</p>
+            <h2><i class="bi bi-folder2-open"></i> {{ customer_name }} - 信用卡Excel文件</h2>
+            <p class="text-muted">
+                <i class="bi bi-info-circle"></i> 
+                共 {{ months_data|length }} 个月份的记录
+            </p>
         </div>
         <div>
             <a href="{{ url_for('credit_card_ledger') }}" class="btn btn-outline-secondary">
@@ -17,276 +20,339 @@
         </div>
     </div>
 
-    <!-- 月结单文件 -->
-    <div class="card mb-4" style="border-color: #FF007F;">
-        <div class="card-header" style="background-color: #FF007F; color: white;">
-            <h5 class="mb-0">
-                <i class="bi bi-file-bar-graph"></i> 月结单文件
-                <span class="badge bg-light text-dark ms-2">{{ files.monthly_statements|length }} 个文件</span>
-            </h5>
-        </div>
-        <div class="card-body">
-            {% if files.monthly_statements %}
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover excel-file-table">
-                        <thead class="table-header">
-                            <tr>
-                                <th width="8%">类型</th>
-                                <th width="42%">文件名</th>
-                                <th width="15%">大小</th>
-                                <th width="20%">修改时间</th>
-                                <th width="15%">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for file in files.monthly_statements %}
-                            <tr>
-                                <td>
-                                    {% if file.type == 'Summary' %}
-                                        <span class="badge" style="background-color: #322446;">汇总</span>
-                                    {% else %}
-                                        <span class="badge bg-info">账单</span>
-                                    {% endif %}
-                                </td>
-                                <td>
+    <!-- 月份列表 - 手风琴式展开 -->
+    {% if months_data %}
+    <div class="accordion" id="monthsAccordion">
+        {% for month in months_data %}
+        <div class="card month-card mb-3">
+            <!-- 月份标题 - 可点击展开 -->
+            <div class="card-header month-header" id="heading{{ loop.index }}">
+                <button class="accordion-button collapsed" type="button" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#collapse{{ loop.index }}"
+                        aria-expanded="false" 
+                        aria-controls="collapse{{ loop.index }}">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                        <div class="month-title">
+                            <i class="bi bi-calendar3"></i>
+                            <strong>{{ month.display_name }}</strong>
+                        </div>
+                        <div class="month-stats">
+                            <span class="badge bg-primary me-2">{{ month.bank_count }} 家银行</span>
+                            {% if month.summary %}
+                            <span class="badge bg-success">含月度汇总</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </button>
+            </div>
+
+            <!-- 月份内容 - 银行列表 -->
+            <div id="collapse{{ loop.index }}" 
+                 class="accordion-collapse collapse" 
+                 aria-labelledby="heading{{ loop.index }}"
+                 data-bs-parent="#monthsAccordion">
+                <div class="card-body">
+                    
+                    <!-- 月度汇总文件 -->
+                    {% if month.summary %}
+                    <div class="summary-section mb-4">
+                        <h6 class="section-title">
+                            <i class="bi bi-file-bar-graph-fill text-warning"></i> 
+                            月度汇总
+                        </h6>
+                        <div class="file-item summary-item">
+                            <div class="file-icon">
+                                <i class="bi bi-file-earmark-excel-fill text-success"></i>
+                            </div>
+                            <div class="file-info">
+                                <div class="file-name">{{ month.summary.name }}</div>
+                                <div class="file-meta">
+                                    {{ (month.summary.size / 1024) | round(1) }} KB
+                                    <span class="mx-2">|</span>
+                                    {{ month.summary.modified }}
+                                </div>
+                            </div>
+                            <div class="file-action">
+                                <a href="{{ url_for('download_credit_card_excel_file', path=month.summary.path) }}" 
+                                   class="btn btn-sm btn-warning">
+                                    <i class="bi bi-download"></i> 下载汇总
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- 银行列表 -->
+                    <h6 class="section-title">
+                        <i class="bi bi-bank2"></i> 
+                        银行账单（{{ month.bank_count }} 家）
+                    </h6>
+                    
+                    <div class="banks-grid">
+                        {% for bank_name, files in month.banks.items() %}
+                        <div class="bank-item">
+                            <div class="bank-header">
+                                <i class="bi bi-building"></i>
+                                <strong>{{ bank_name }}</strong>
+                            </div>
+                            {% for file in files %}
+                            <div class="file-item">
+                                <div class="file-icon">
                                     <i class="bi bi-file-earmark-excel text-success"></i>
-                                    {{ file.name }}
-                                </td>
-                                <td>{{ (file.size / 1024) | round(1) }} KB</td>
-                                <td>{{ file.modified }}</td>
-                                <td>
+                                </div>
+                                <div class="file-info">
+                                    <div class="file-name">{{ file.name }}</div>
+                                    <div class="file-meta">
+                                        {{ (file.size / 1024) | round(1) }} KB
+                                        <span class="mx-2">|</span>
+                                        {{ file.modified }}
+                                    </div>
+                                </div>
+                                <div class="file-action">
                                     <a href="{{ url_for('download_credit_card_excel_file', path=file.path) }}" 
-                                       class="btn btn-sm" 
-                                       style="background-color: #FF007F; color: white;">
+                                       class="btn btn-sm btn-download">
                                         <i class="bi bi-download"></i> 下载
                                     </a>
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
                             {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <p class="text-muted">暂无月结单文件</p>
-            {% endif %}
-        </div>
-    </div>
+                        </div>
+                        {% endfor %}
+                    </div>
 
-    <!-- 交易明细文件 -->
-    <div class="card mb-4" style="border-color: #322446;">
-        <div class="card-header" style="background-color: #322446; color: white;">
-            <h5 class="mb-0">
-                <i class="bi bi-list-ul"></i> 交易明细文件
-                <span class="badge bg-light text-dark ms-2">{{ files.transaction_details|length }} 个文件</span>
-            </h5>
-        </div>
-        <div class="card-body">
-            {% if files.transaction_details %}
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover excel-file-table">
-                        <thead class="table-header">
-                            <tr>
-                                <th width="50%">文件名</th>
-                                <th width="15%">大小</th>
-                                <th width="20%">修改时间</th>
-                                <th width="15%">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for file in files.transaction_details %}
-                            <tr>
-                                <td>
-                                    <i class="bi bi-file-earmark-excel text-success"></i>
-                                    {{ file.name }}
-                                </td>
-                                <td>{{ (file.size / 1024) | round(1) }} KB</td>
-                                <td>{{ file.modified }}</td>
-                                <td>
-                                    <a href="{{ url_for('download_credit_card_excel_file', path=file.path) }}" 
-                                       class="btn btn-sm" 
-                                       style="background-color: #322446; color: white;">
-                                        <i class="bi bi-download"></i> 下载
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
                 </div>
-            {% else %}
-                <p class="text-muted">暂无交易明细文件</p>
-            {% endif %}
+            </div>
         </div>
+        {% endfor %}
     </div>
-
-    <!-- 报告文件 -->
-    <div class="card mb-4" style="border-color: #00CED1;">
-        <div class="card-header" style="background-color: #00CED1; color: white;">
-            <h5 class="mb-0">
-                <i class="bi bi-file-text"></i> 报告文件
-                <span class="badge bg-light text-dark ms-2">{{ files.reports|length }} 个文件</span>
-            </h5>
-        </div>
-        <div class="card-body">
-            {% if files.reports %}
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover excel-file-table">
-                        <thead class="table-header">
-                            <tr>
-                                <th width="50%">文件名</th>
-                                <th width="15%">大小</th>
-                                <th width="20%">修改时间</th>
-                                <th width="15%">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for file in files.reports %}
-                            <tr>
-                                <td>
-                                    <i class="bi bi-file-earmark-excel text-success"></i>
-                                    {{ file.name }}
-                                </td>
-                                <td>{{ (file.size / 1024) | round(1) }} KB</td>
-                                <td>{{ file.modified }}</td>
-                                <td>
-                                    <a href="{{ url_for('download_credit_card_excel_file', path=file.path) }}" 
-                                       class="btn btn-sm btn-info">
-                                        <i class="bi bi-download"></i> 下载
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <p class="text-muted">暂无报告文件</p>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- 说明信息 -->
+    {% else %}
     <div class="alert alert-info">
-        <h6><i class="bi bi-info-circle"></i> 文件说明</h6>
+        <i class="bi bi-info-circle"></i> 
+        暂无Excel文件记录
+    </div>
+    {% endif %}
+
+    <!-- 使用说明 -->
+    <div class="alert alert-light mt-4">
+        <h6><i class="bi bi-lightbulb"></i> 使用说明</h6>
         <ul class="mb-0">
-            <li><strong>月结单文件</strong>: 每个银行每个月的独立账单 + 月度汇总（Summary）</li>
-            <li><strong>交易明细</strong>: 每月所有交易的完整记录，包含Owner/GZ分类</li>
-            <li><strong>报告文件</strong>: 年度汇总、GZ结算报告等</li>
+            <li>点击月份可展开查看该月的所有银行账单</li>
+            <li>每个月包含：月度汇总 + 各银行账单</li>
+            <li>点击"下载"按钮即可下载对应的Excel文件</li>
         </ul>
     </div>
 </div>
 
 <style>
-/* 专业表格样式 - 清晰易读 */
-.excel-file-table {
-    margin-bottom: 0;
-    background-color: white;
-}
-
-/* 表头样式 */
-.excel-file-table thead.table-header {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-bottom: 3px solid #dee2e6;
-}
-
-.excel-file-table thead th {
-    padding: 18px 20px !important;
-    font-weight: 600;
-    font-size: 15px;
-    color: #2c3e50;
-    text-align: left;
-    border: 1px solid #dee2e6;
-    white-space: nowrap;
-    letter-spacing: 0.3px;
-}
-
-/* 表格主体行 */
-.excel-file-table tbody tr {
-    border-bottom: 1px solid #e9ecef;
-    transition: all 0.2s ease;
-}
-
-.excel-file-table tbody td {
-    padding: 16px 20px !important;
-    vertical-align: middle;
-    font-size: 14px;
-    color: #495057;
-    border: 1px solid #dee2e6;
-    line-height: 1.6;
-}
-
-/* 悬停效果 */
-.excel-file-table tbody tr:hover {
-    background-color: rgba(255, 0, 127, 0.08);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-/* 文件名列特殊样式 */
-.excel-file-table tbody td:nth-child(2) {
-    font-weight: 500;
-    color: #2c3e50;
-}
-
-/* 按钮样式优化 */
-.excel-file-table .btn-sm {
-    padding: 8px 16px;
-    font-size: 13px;
-    font-weight: 500;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    border: none;
-}
-
-.excel-file-table .btn-sm:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* Badge样式优化 */
-.excel-file-table .badge {
-    padding: 6px 12px;
-    font-size: 12px;
-    font-weight: 600;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-}
-
-/* 图标样式 */
-.excel-file-table i.bi-file-earmark-excel {
-    font-size: 18px;
-    margin-right: 8px;
-}
-
-/* 卡片样式 */
-.card {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    border-radius: 10px;
+/* 月份卡片样式 */
+.month-card {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
     overflow: hidden;
-    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
 }
 
-.card-header {
-    font-weight: 600;
-    padding: 16px 24px;
-    border-bottom: none;
+.month-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
 }
 
-.card-body {
+/* 月份标题 */
+.month-header {
+    background: linear-gradient(135deg, #FF007F 0%, #322446 100%);
+    border: none;
     padding: 0;
 }
 
-/* 表格容器 */
-.table-responsive {
-    border-radius: 0;
-    margin: 0;
+.month-header .accordion-button {
+    background: transparent;
+    color: white;
+    padding: 20px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    box-shadow: none;
 }
 
-/* 空状态样式 */
-.card-body .text-muted {
-    padding: 40px 24px;
-    text-align: center;
+.month-header .accordion-button:not(.collapsed) {
+    background: transparent;
+    color: white;
+}
+
+.month-header .accordion-button::after {
+    filter: brightness(0) invert(1);
+}
+
+.month-header .accordion-button:focus {
+    box-shadow: none;
+}
+
+.month-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.month-title i {
+    font-size: 20px;
+}
+
+.month-stats {
+    display: flex;
+    gap: 8px;
+}
+
+/* 卡片主体 */
+.card-body {
+    padding: 24px;
+    background-color: #fafbfc;
+}
+
+/* 区块标题 */
+.section-title {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.section-title i {
+    margin-right: 8px;
+}
+
+/* 月度汇总区域 */
+.summary-section {
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+    border-left: 4px solid #ffc107;
+}
+
+.summary-item {
+    border: none !important;
+    background: transparent !important;
+}
+
+/* 银行网格 */
+.banks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    gap: 16px;
+}
+
+.bank-item {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.2s ease;
+}
+
+.bank-item:hover {
+    border-color: #FF007F;
+    box-shadow: 0 2px 8px rgba(255, 0, 127, 0.15);
+}
+
+.bank-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #322446;
     font-size: 15px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.bank-header i {
+    font-size: 18px;
+    color: #FF007F;
+}
+
+/* 文件项 */
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.file-item:last-child {
+    margin-bottom: 0;
+}
+
+.file-icon {
+    flex-shrink: 0;
+}
+
+.file-icon i {
+    font-size: 28px;
+}
+
+.file-info {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.file-name {
+    font-weight: 500;
+    color: #2c3e50;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-meta {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 4px;
+}
+
+.file-action {
+    flex-shrink: 0;
+}
+
+/* 下载按钮 */
+.btn-download {
+    background: linear-gradient(135deg, #FF007F 0%, #322446 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-download:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 0, 127, 0.3);
+    color: white;
+}
+
+/* 徽章样式 */
+.badge {
+    padding: 6px 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .banks-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .month-stats {
+        flex-direction: column;
+        align-items: flex-end;
+    }
 }
 </style>
 {% endblock %}

@@ -7213,9 +7213,10 @@ def ctos_company_submit_route():
 @app.route('/credit-card/excel-files/<int:customer_id>')
 @require_admin_or_accountant
 def browse_credit_card_excel_files(customer_id):
-    """浏览信用卡客户的Excel文件（月结单、交易明细等）"""
+    """浏览信用卡客户的Excel文件 - 三层目录结构：客户→月份→银行"""
     from pathlib import Path
-    import os
+    from collections import defaultdict
+    import re
     
     # 获取客户信息
     conn = get_db_connection()
@@ -7238,52 +7239,57 @@ def browse_credit_card_excel_files(customer_id):
         flash(f'客户 {customer_name} 的Excel文件尚未生成，请先运行文件生成脚本', 'warning')
         return redirect(url_for('credit_card_ledger'))
     
-    # 扫描所有Excel文件
-    files = {
-        'monthly_statements': [],
-        'transaction_details': [],
-        'reports': []
-    }
+    # 按月份和银行组织文件 - 三层结构
+    months_data = defaultdict(lambda: {'banks': defaultdict(list), 'summary': None})
     
-    # 月结单文件
+    # 扫描月结单文件
     statements_dir = credit_card_dir / 'monthly_statements'
     if statements_dir.exists():
         for file in sorted(statements_dir.glob('*.xlsx')):
-            files['monthly_statements'].append({
-                'name': file.name,
-                'path': str(file.relative_to('credit_card_files')),
-                'size': file.stat().st_size,
-                'modified': datetime.fromtimestamp(file.stat().st_mtime).strftime('%Y-%m-%d %H:%M'),
-                'type': 'Summary' if 'Summary' in file.name else 'Statement'
-            })
+            # 解析文件名：2024-09_Alliance_Bank_Statement.xlsx 或 2024-09_Summary.xlsx
+            match = re.match(r'(\d{4})-(\d{2})_(.+)\.xlsx', file.name)
+            if match:
+                year, month, rest = match.groups()
+                year_month = f"{year}-{month}"
+                
+                file_info = {
+                    'name': file.name,
+                    'path': str(file.relative_to('credit_card_files')),
+                    'size': file.stat().st_size,
+                    'modified': datetime.fromtimestamp(file.stat().st_mtime).strftime('%Y-%m-%d %H:%M'),
+                    'year': year,
+                    'month': month,
+                    'display_month': f"{year}年{int(month)}月"
+                }
+                
+                if 'Summary' in rest:
+                    # 月度汇总文件
+                    months_data[year_month]['summary'] = file_info
+                else:
+                    # 银行账单文件
+                    bank_name = rest.replace('_Statement', '').replace('_', ' ')
+                    months_data[year_month]['banks'][bank_name].append(file_info)
     
-    # 交易明细文件
-    details_dir = credit_card_dir / 'transaction_details'
-    if details_dir.exists():
-        for file in sorted(details_dir.glob('*.xlsx')):
-            files['transaction_details'].append({
-                'name': file.name,
-                'path': str(file.relative_to('credit_card_files')),
-                'size': file.stat().st_size,
-                'modified': datetime.fromtimestamp(file.stat().st_mtime).strftime('%Y-%m-%d %H:%M')
-            })
-    
-    # 报告文件
-    reports_dir = credit_card_dir / 'reports'
-    if reports_dir.exists():
-        for file in sorted(reports_dir.glob('*.xlsx')):
-            files['reports'].append({
-                'name': file.name,
-                'path': str(file.relative_to('credit_card_files')),
-                'size': file.stat().st_size,
-                'modified': datetime.fromtimestamp(file.stat().st_mtime).strftime('%Y-%m-%d %H:%M')
-            })
+    # 转换为有序列表
+    sorted_months = []
+    for year_month in sorted(months_data.keys(), reverse=True):
+        month_info = months_data[year_month]
+        year, month = year_month.split('-')
+        sorted_months.append({
+            'year_month': year_month,
+            'year': year,
+            'month': month,
+            'display_name': f"{year}年{int(month)}月",
+            'banks': dict(month_info['banks']),
+            'summary': month_info['summary'],
+            'bank_count': len(month_info['banks'])
+        })
     
     return render_template(
         'credit_card_excel_browser.html',
         customer=customer,
         customer_name=customer_name,
-        files=files
+        months_data=sorted_months
     )
 
 
