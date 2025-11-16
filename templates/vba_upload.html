@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VBA JSON上传 - INFINITE GZ</title>
+    <title data-i18n="vba_json_upload_system">VBA JSON上传 - INFINITE GZ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="/static/js/i18n.js"></script>
     <style>
         :root {
             --bg-black: #000000;
@@ -114,37 +115,37 @@
 <body>
     <div class="upload-container">
         <div class="header">
-            <h1><i class="bi bi-cloud-upload"></i> VBA JSON上传系统</h1>
-            <p class="text-white-50">INFINITE GZ 混合架构 - VBA客户端 + Replit云端</p>
+            <h1><i class="bi bi-cloud-upload"></i> <span data-i18n="vba_json_upload_system">VBA JSON上传系统</span></h1>
+            <p class="text-white-50" data-i18n="infinite_hybrid_architecture">INFINITE GZ 混合架构 - VBA客户端 + Replit云端</p>
         </div>
 
         <!-- 下载VBA模板区 -->
         <div class="download-section">
-            <h4><i class="bi bi-download"></i> 下载VBA模板套件</h4>
-            <p class="mb-3">包含7个文件：解析器、验证器、使用指南</p>
+            <h4><i class="bi bi-download"></i> <span data-i18n="download_vba_template_suite">下载VBA模板套件</span></h4>
+            <p class="mb-3" data-i18n="template_suite_description">包含7个文件：解析器、验证器、使用指南</p>
             <a href="/static/vba_templates.tar.gz" class="btn btn-pink" download>
-                <i class="bi bi-file-zip"></i> 下载 vba_templates.tar.gz (16KB)
+                <i class="bi bi-file-zip"></i> <span data-i18n="download_template_file">下载 vba_templates.tar.gz (16KB)</span>
             </a>
         </div>
 
         <!-- 单文件上传区 -->
         <div class="mb-4">
-            <h4><i class="bi bi-file-earmark-arrow-up"></i> 单文件上传</h4>
+            <h4><i class="bi bi-file-earmark-arrow-up"></i> <span data-i18n="single_file_upload">单文件上传</span></h4>
             <div class="upload-zone" id="uploadZone">
                 <i class="bi bi-cloud-upload upload-icon"></i>
-                <h5>拖放JSON文件到此处</h5>
-                <p class="text-white-50">或点击选择文件</p>
+                <h5 data-i18n="drag_json_file_here">拖放JSON文件到此处</h5>
+                <p class="text-white-50" data-i18n="or_click_to_select">或点击选择文件</p>
                 <input type="file" id="fileInput" accept=".json" class="d-none">
             </div>
         </div>
 
         <!-- 批量上传区 -->
         <div class="mb-4">
-            <h4><i class="bi bi-files"></i> 批量上传</h4>
+            <h4><i class="bi bi-files"></i> <span data-i18n="batch_upload">批量上传</span></h4>
             <div class="upload-zone" id="batchUploadZone">
                 <i class="bi bi-folder2-open upload-icon"></i>
-                <h5>拖放多个JSON文件到此处</h5>
-                <p class="text-white-50">或点击选择多个文件</p>
+                <h5 data-i18n="drag_multiple_json_files">拖放多个JSON文件到此处</h5>
+                <p class="text-white-50" data-i18n="or_click_to_select_multiple">或点击选择多个文件</p>
                 <input type="file" id="batchFileInput" accept=".json" multiple class="d-none">
             </div>
         </div>
@@ -155,7 +156,7 @@
         <!-- 上传按钮 -->
         <div class="text-center mt-4" id="uploadButtonContainer" style="display:none;">
             <button class="btn btn-pink btn-lg" id="uploadButton">
-                <i class="bi bi-send"></i> 上传到Replit
+                <i class="bi bi-send"></i> <span data-i18n="upload_to_replit">上传到Replit</span>
             </button>
         </div>
 
@@ -164,6 +165,9 @@
     </div>
 
     <script>
+        // i18n translate function
+        const t = (key, fallback) => window.i18n?.translate(key) || fallback || key;
+        
         const uploadZone = document.getElementById('uploadZone');
         const fileInput = document.getElementById('fileInput');
         const batchUploadZone = document.getElementById('batchUploadZone');
@@ -244,7 +248,7 @@
 
         uploadButton.addEventListener('click', async () => {
             uploadButton.disabled = true;
-            uploadButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> 上传中...';
+            uploadButton.innerHTML = `<span class="spinner-border spinner-border-sm"></span> ${t('uploading', '上传中...')}`;
             resultBox.style.display = 'none';
 
             const formData = new FormData();
@@ -280,23 +284,23 @@
             }
 
             uploadButton.disabled = false;
-            uploadButton.innerHTML = '<i class="bi bi-send"></i> 上传到Replit';
+            uploadButton.innerHTML = `<i class="bi bi-send"></i> ${t('upload_to_replit', '上传到Replit')}`;
         });
 
         function displayResult(result) {
             resultBox.style.display = 'block';
             if (result.status === 'success') {
                 resultBox.innerHTML = `
-                    <h5 class="text-success"><i class="bi bi-check-circle"></i> 上传成功！</h5>
-                    <p><strong>消息：</strong> ${result.message}</p>
-                    <p><strong>账单ID：</strong> ${result.statement_id}</p>
-                    <p><strong>银行：</strong> ${result.bank}</p>
-                    <p><strong>月份：</strong> ${result.month}</p>
-                    <p><strong>交易数：</strong> ${result.total_transactions}</p>
+                    <h5 class="text-success"><i class="bi bi-check-circle"></i> ${t('upload_successful', '上传成功！')}</h5>
+                    <p><strong>${t('message', '消息')}:</strong> ${result.message}</p>
+                    <p><strong>${t('statement_id', '账单ID')}:</strong> ${result.statement_id}</p>
+                    <p><strong>${t('bank', '银行')}:</strong> ${result.bank}</p>
+                    <p><strong>${t('month', '月份')}:</strong> ${result.month}</p>
+                    <p><strong>${t('transaction_count', '交易数')}:</strong> ${result.total_transactions}</p>
                 `;
             } else {
                 resultBox.innerHTML = `
-                    <h5 class="text-danger"><i class="bi bi-x-circle"></i> 上传失败</h5>
+                    <h5 class="text-danger"><i class="bi bi-x-circle"></i> ${t('upload_failed', '上传失败')}</h5>
                     <p>${result.message}</p>
                 `;
             }
@@ -305,12 +309,12 @@
         function displayBatchResult(result) {
             resultBox.style.display = 'block';
             let html = `
-                <h5 class="text-success"><i class="bi bi-check-circle"></i> 批量上传完成</h5>
-                <p><strong>总文件数：</strong> ${result.total_files}</p>
-                <p><strong>成功：</strong> ${result.success_count}</p>
-                <p><strong>失败：</strong> ${result.failed_count}</p>
+                <h5 class="text-success"><i class="bi bi-check-circle"></i> ${t('batch_upload_completed', '批量上传完成')}</h5>
+                <p><strong>${t('total_files', '总文件数')}:</strong> ${result.total_files}</p>
+                <p><strong>${t('success_count', '成功')}:</strong> ${result.success_count}</p>
+                <p><strong>${t('failed_count', '失败')}:</strong> ${result.failed_count}</p>
                 <hr>
-                <h6>详细结果：</h6>
+                <h6>${t('detailed_results', '详细结果')}:</h6>
             `;
             
             result.results.forEach(r => {
@@ -323,7 +327,7 @@
                         </div>
                         <div>
                             ${r.status === 'success' ? 
-                                `<span class="badge bg-success">${r.transactions} 笔交易</span>` :
+                                `<span class="badge bg-success">${r.transactions} ${t('transactions_count', '笔交易')}</span>` :
                                 `<span class="text-danger">${r.message}</span>`
                             }
                         </div>
@@ -337,7 +341,7 @@
         function displayError(message) {
             resultBox.style.display = 'block';
             resultBox.innerHTML = `
-                <h5 class="text-danger"><i class="bi bi-x-circle"></i> 错误</h5>
+                <h5 class="text-danger"><i class="bi bi-x-circle"></i> ${t('error', '错误')}</h5>
                 <p>${message}</p>
             `;
         }
