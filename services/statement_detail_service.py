@@ -24,7 +24,7 @@ class StatementDetailService:
     
     def get_monthly_detail(self, customer_id: int, year_month: str) -> Optional[Dict[str, Any]]:
         """
-        获取指定月份的详细计算数据
+        获取指定月份的详细计算数据（按银行分组）
         
         Args:
             customer_id: 客户ID
@@ -53,8 +53,8 @@ class StatementDetailService:
         # 5. 获取Supplier明细
         supplier_breakdown = self._get_supplier_breakdown(transactions)
         
-        # 6. 获取原始PDF文件
-        source_pdfs = self._get_source_pdfs(customer['name'], year_month)
+        # 6. 按银行分组数据并关联PDF文件
+        bank_groups = self._build_bank_groups(customer['customer_code'], year_month, monthly_statements, transactions)
         
         return {
             'customer': customer,
@@ -63,7 +63,7 @@ class StatementDetailService:
             'transactions': transactions,
             'statistics': statistics,
             'supplier_breakdown': supplier_breakdown,
-            'source_pdfs': source_pdfs
+            'bank_groups': bank_groups  # 新增：按银行分组的数据
         }
     
     def _get_customer_info(self, customer_id: int) -> Optional[Dict[str, Any]]:
@@ -214,8 +214,109 @@ class StatementDetailService:
         
         return supplier_data
     
+    def _build_bank_groups(self, customer_code: str, year_month: str, 
+                          statements: List[Dict], transactions: List[Dict]) -> List[Dict[str, Any]]:
+        """
+        按银行分组数据并关联原始PDF文件
+        
+        Returns:
+            列表，每个元素包含：
+            - bank_name: 银行名称
+            - statement: 该银行的月结单数据
+            - transactions: 该银行的交易列表
+            - credit_card_pdfs: 信用卡账单PDF列表
+            - bank_statement_pdf: GZ bank list PDF（如果有）
+        """
+        bank_groups = []
+        
+        # 按银行分组
+        for statement in statements:
+            bank_name = statement['bank_name']
+            
+            # 过滤该银行的交易
+            bank_transactions = [
+                txn for txn in transactions 
+                if txn['bank_name'] == bank_name
+            ]
+            
+            # 查找该银行的PDF文件
+            credit_card_pdfs = self._find_credit_card_pdfs(customer_code, bank_name, year_month)
+            bank_statement_pdf = self._find_bank_statement_pdf(customer_code, year_month)
+            
+            bank_groups.append({
+                'bank_name': bank_name,
+                'statement': statement,
+                'transactions': bank_transactions,
+                'credit_card_pdfs': credit_card_pdfs,
+                'bank_statement_pdf': bank_statement_pdf
+            })
+        
+        return bank_groups
+    
+    def _find_credit_card_pdfs(self, customer_code: str, bank_name: str, year_month: str) -> List[Dict[str, Any]]:
+        """查找指定银行和月份的信用卡PDF文件"""
+        
+        # 构建搜索路径（处理银行名称的多种格式）
+        upload_base = Path('static/uploads/customers') / customer_code / 'credit_cards'
+        
+        # 银行名称可能的格式
+        bank_variants = [
+            bank_name,  # 原始名称，例如: Alliance Bank
+            bank_name.replace(' ', '_'),  # 下划线格式，例如: Alliance_Bank
+            bank_name.replace(' Bank', ''),  # 去掉Bank，例如: Alliance
+            bank_name.upper(),  # 大写，例如: ALLIANCE BANK
+            bank_name.upper().replace(' ', '_')  # 大写下划线，例如: ALLIANCE_BANK
+        ]
+        
+        pdf_files = []
+        
+        for variant in bank_variants:
+            search_dir = upload_base / variant / year_month
+            if search_dir.exists():
+                for pdf_file in search_dir.glob('*.pdf'):
+                    file_stats = pdf_file.stat()
+                    pdf_files.append({
+                        'filename': pdf_file.name,
+                        'path': str(pdf_file),
+                        'size': file_stats.st_size,
+                        'size_mb': round(file_stats.st_size / (1024 * 1024), 2),
+                        'modified_time': file_stats.st_mtime
+                    })
+        
+        # 去重（避免找到重复文件）
+        seen_filenames = set()
+        unique_pdfs = []
+        for pdf in pdf_files:
+            if pdf['filename'] not in seen_filenames:
+                seen_filenames.add(pdf['filename'])
+                unique_pdfs.append(pdf)
+        
+        return sorted(unique_pdfs, key=lambda x: x['filename'])
+    
+    def _find_bank_statement_pdf(self, customer_code: str, year_month: str) -> Optional[Dict[str, Any]]:
+        """查找GZ bank list月结单PDF"""
+        
+        # GZ bank list通常存放在savings/Public_Bank目录
+        search_dir = Path('static/uploads/customers') / customer_code / 'savings' / 'Public_Bank' / year_month
+        
+        if not search_dir.exists():
+            return None
+        
+        # 查找第一个PDF文件
+        for pdf_file in search_dir.glob('*.pdf'):
+            file_stats = pdf_file.stat()
+            return {
+                'filename': pdf_file.name,
+                'path': str(pdf_file),
+                'size': file_stats.st_size,
+                'size_mb': round(file_stats.st_size / (1024 * 1024), 2),
+                'modified_time': file_stats.st_mtime
+            }
+        
+        return None
+    
     def _get_source_pdfs(self, customer_name: str, year_month: str) -> List[Dict[str, Any]]:
-        """获取该月的原始PDF文件"""
+        """获取该月的原始PDF文件（已弃用，使用_build_bank_groups代替）"""
         
         customer_dir = self.base_dir / customer_name / 'source_pdfs'
         
