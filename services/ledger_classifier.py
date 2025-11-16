@@ -73,9 +73,15 @@ class LedgerClassifier:
         分类付款类型
         
         返回: 'customer' (客户本名), 'company' (公司KENG CHOW), 'infinite' (INFINITE)
+        
+        规则（按PDF文件要求）:
+        1. CC账单CR付款记录有客户名字 → customer
+        2. 没有任何付款details注释的无名付款 → customer (Owner's Payment)
+        3. 其他 → infinite
         """
-        if not description:
-            return 'infinite'
+        # PDF要求: 无名付款归入Owner's Payment
+        if not description or description.strip() == '':
+            return 'customer'
         
         description_lower = description.lower()
         

@@ -188,36 +188,40 @@ class MonthlyLedgerEngine:
                     customer_rolling_balance = calculated_customer_balance
                     infinite_rolling_balance = calculated_infinite_balance
                 
-                # 计算供应商手续费
-                supplier_fee = sum([
+                # 计算供应商手续费（1% - Miscellaneous Fee）
+                miscellaneous_fee = sum([
                     self.classifier.calculate_supplier_fee(txn['amount'], txn['supplier_name'])
                     for txn in infinite_supplier_transactions
                 ])
                 
+                # PDF要求: 1%手续费独立记录，并计入Owner账户
+                customer_rolling_balance += miscellaneous_fee
+                
                 print(f"  客户消费: RM {customer_spend:,.2f}")
                 print(f"  客户付款: RM {customer_payments:,.2f}")
+                print(f"  Miscellaneous Fee (1%): RM {miscellaneous_fee:,.2f} (已计入客户)")
                 print(f"  客户余额: RM {customer_rolling_balance:,.2f}")
-                print(f"  INFINITE消费: RM {infinite_spend:,.2f} (手续费: RM {supplier_fee:,.2f})")
+                print(f"  INFINITE消费: RM {infinite_spend:,.2f}")
                 print(f"  INFINITE付款: RM {infinite_payments:,.2f}")
                 print(f"  INFINITE余额: RM {infinite_rolling_balance:,.2f}")
                 
-                # 插入或更新客户月度账本（使用新的OWNER/INFINITE字段）
+                # 插入或更新客户月度账本（使用新的OWNER/INFINITE字段 + Miscellaneous Fee）
                 cursor.execute("""
                     INSERT OR REPLACE INTO monthly_ledger 
                     (card_id, customer_id, month_start, statement_id, previous_balance, 
                      customer_spend, customer_payments, rolling_balance,
                      owner_expenses, owner_payments, infinite_expenses, infinite_payments,
-                     owner_balance, infinite_balance, updated_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     owner_balance, infinite_balance, miscellaneous_fee, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     card_id, customer_id, month_start, statement_id,
                     previous_customer_balance, customer_spend, customer_payments,
                     customer_rolling_balance,
                     customer_spend, customer_payments, infinite_spend, infinite_payments,
-                    customer_rolling_balance, infinite_rolling_balance, datetime.now()
+                    customer_rolling_balance, infinite_rolling_balance, miscellaneous_fee, datetime.now()
                 ))
                 
-                # 插入或更新INFINITE月度账本
+                # 插入或更新INFINITE月度账本（注：手续费已转移到Owner账户）
                 cursor.execute("""
                     INSERT OR REPLACE INTO infinite_monthly_ledger 
                     (card_id, customer_id, month_start, statement_id, previous_balance,
@@ -225,7 +229,7 @@ class MonthlyLedgerEngine:
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     card_id, customer_id, month_start, statement_id,
-                    previous_infinite_balance, infinite_spend, supplier_fee,
+                    previous_infinite_balance, infinite_spend, miscellaneous_fee,
                     infinite_payments, infinite_rolling_balance, datetime.now()
                 ))
                 
