@@ -1,276 +1,341 @@
-# INFINITE GZ - VBA混合架构项目结构
+# 项目完整文件和目录结构
 
-## 📌 项目概述
-INFINITE GZ信用卡系统 - VBA客户端 + Replit云端混合架构
-- **客户端**: Windows + Excel + VBA解析器
-- **云端**: Flask后端接收标准JSON数据
-- **数据库**: SQLite (本地开发)
+## 一、主要目录结构
 
----
+### 核心应用目录
+- **accounting_app/** - 主要会计应用模块
+  - db/ - 数据库相关
+  - middleware/ - 中间件
+  - migrations/ - 数据库迁移文件
+  - parsers/ - 解析器
+  - routes/ - 路由
+  - schemas/ - 数据模式
+  - services/ - 服务层
+  - static/ - 静态资源
+  - templates/ - 模板文件
+  - tests/ - 测试文件
+  - tasks/ - 任务
+  - utils/ - 工具函数
 
-## 🗂️ 核心文件结构
+### 功能模块目录
+- **admin/** - 管理员功能
+- **advisory/** - 咨询服务
+- **analytics/** - 分析功能
+- **api/** - API接口
+- **auth/** - 认证授权
+- **batch/** - 批处理
+- **email_service/** - 邮件服务
+- **export/** - 导出功能
+- **ingest/** - 数据导入
+- **loan/** - 贷款相关
+- **report/** - 报表生成
+- **search/** - 搜索功能
+- **services/** - 服务层
+- **validate/** - 验证功能
 
-### 1️⃣ VBA模板系统 (客户端)
-```
-vba_templates/
-├── 1_CreditCardParser.vba          # 信用卡账单解析器 (12KB)
-├── 2_BankStatementParser.vba       # 银行账单解析器 (13KB)
-├── 3_PDFtoExcel_Guide.vba          # PDF转Excel指南 (7KB)
-├── 4_DataValidator.vba             # 数据验证器 (10KB)
-├── 5_Usage_Guide.md                # 使用指南 (6KB)
-├── JSON_Format_Specification.md    # JSON格式规范 (9KB)
-└── COMPLETE_INTEGRATION_GUIDE.md   # 完整集成指南 (14KB)
-```
-**用途**: VBA模板套件，用户下载后在Excel中运行解析账单
+### 数据存储目录
+- **accounting_data/** - 会计数据
+  - companies/ - 公司数据
+  - reports/ - 报表
+  - statements/ - 对账单
+  
+- **accounting_files/** - 会计文件
+- **credit_card_files/** - 信用卡文件（按客户分类）
+  - AI SMART TECH SDN. BHD.
+  - CHANG CHOON CHOW
+  - CHEOK JUN YOON
+  - INFINITE GZ SDN. BHD.
+  - Tan Zee Liang
+  - TEO YOK CHU
+  - YEO CHEE WANG
 
-**发布位置**: 
-- 打包文件: `static/vba_templates.tar.gz` (16KB)
-- 下载页面: `/vba/upload` 页面顶部下载按钮
+- **evidence_bundles/** - 证据包
+- **logs/** - 日志文件
 
----
+### 数据库目录
+- **db/** - 数据库相关
+  - migrations/ - 数据库迁移
+    - 011_supplier_fee_split.sql
 
-### 2️⃣ PDF转换工具 (可选客户端工具)
-```
-tools/pdf_converter/
-├── pdf_to_excel.py                 # Python批量转换工具
-└── README.md                       # 工具使用说明
-```
-**用途**: 批量将PDF账单转换为Excel格式，方便VBA解析
+- **data/banks/** - 银行数据
 
----
+## 二、templates/ 目录详细内容
 
-### 3️⃣ VBA JSON处理服务 (云端核心)
-```
-services/vba_json_processor.py      # 540行核心处理逻辑
-```
-**功能**:
-- 解析VBA生成的标准JSON
-- 验证数据格式
-- 插入SQLite数据库 (monthly_statements, transactions表)
-- 自动创建客户和信用卡记录
-- 支持单文件和批量处理
+### 模板组件
+- **components/** - 组件模板
+  - card_timeline_12months.html
 
----
+- **partials/** - 部分模板
+  - chatbot.html
 
-### 4️⃣ Web上传界面 (云端前端)
-```
-templates/vba_upload.html           # VBA JSON上传页面
-```
-**访问URL**: `/vba/upload`
+### 功能模板目录
+- **credit_card/** - 信用卡模板
+  - ledger_detail.html
+  - ledger_index.html
+  - ledger_monthly.html
+  - ledger_timeline.html
 
-**功能**:
-- 下载VBA模板套件
-- 单文件拖放上传
-- 批量文件拖放上传
-- 实时上传结果显示
-- 美观UI (黑色+热粉色+深紫色)
+- **ctos/** - CTOS相关
+  - ctos_company.html
+  - ctos_personal.html
 
----
+- **income/** - 收入相关
+  - index.html
+  - upload.html
 
-### 5️⃣ API端点 (云端接口)
-```python
-# app.py 中的API路由
+- **invoices/** - 发票
+  - home.html
 
-@app.route('/vba/upload')                    # 上传页面
-@app.route('/api/upload/vba-json')           # 单文件上传API
-@app.route('/api/upload/vba-batch')          # 批量上传API
-```
+- **monthly_summary/** - 月度总结
+  - index.html
+  - report.html
+  - yearly.html
 
-**完整URL**:
-```
-https://6020cca9-a8d9-41a4-b1b0-5f1ba22a7012-00-3vonlpnvgsuce.riker.replit.dev/vba/upload
-https://6020cca9-a8d9-41a4-b1b0-5f1ba22a7012-00-3vonlpnvgsuce.riker.replit.dev/api/upload/vba-json
-https://6020cca9-a8d9-41a4-b1b0-5f1ba22a7012-00-3vonlpnvgsuce.riker.replit.dev/api/upload/vba-batch
-```
+- **receipts/** - 收据
+  - customer_receipts.html
+  - home.html
+  - pending.html
+  - upload.html
+  - upload_results.html
 
----
+- **savings/** - 储蓄
+  - account_detail.html
+  - accounts.html
+  - customers.html
+  - search.html
+  - settlement.html
+  - upload.html
+  - verify.html
 
-## 🗄️ 数据库结构
+### 主要模板文件（根目录）
+- accounting_files.html
+- add_credit_card.html
+- add_customer.html
+- admin_client_detail.html
+- admin_customers_cards.html
+- admin_dashboard.html
+- admin_login.html
+- admin_payment_accounts.html
+- admin_portfolio.html
+- admin_register.html
+- advanced_analytics.html
+- analytics.html
+- api_keys_management.html
+- banking_news.html
+- base.html
+- batch_upload.html
+- business_plan.html
+- cheok_jun_yoon_report.html
+- credit_card_excel_browser.html
+- credit_card_month_detail.html
+- credit_card_optimizer.html
+- credit_card_optimizer_report.html
+- customer_dashboard.html
+- customer_portal.html
+- customer_register.html
+- customer_resources.html
+- customers_list.html
+- edit_customer.html
+- evidence_archive.html
+- file_detail.html
+- files_list.html
+- financial_advisory.html
+- financial_dashboard.html
+- index.html
+- layout.html
+- loan_evaluate.html
+- loan_matcher_result.html
+- loan_modern_evaluate.html
+- loan_products.html
+- loan_products_dashboard.html
+- loan_reports.html
+- monthly_reports.html
+- monthly_statement_detail.html
+- notification_settings.html
+- notifications_history.html
+- optimization_proposal.html
+- reminders.html
+- request_consultation.html
+- savings_admin_dashboard.html
+- savings_report.html
+- sme_loan_evaluate.html
+- statement_comparison.html
+- test_invoice.html
+- validate_statement.html
+- vba_upload.html
 
-### SQLite数据库
-**路径**: `db/smart_loan_manager.db`
+## 三、static/ 目录详细内容
 
-**核心表**:
-- `customers` - 客户信息
-- `credit_cards` - 信用卡信息
-- `monthly_statements` - 月度账单汇总
-- `monthly_statement_cards` - 卡片关联
-- `transactions` - 交易明细
+### CSS样式文件
+- **css/**
+  - galaxy-theme.css
+  - loan_evaluate.css
+  - loan_marketplace_dashboard.css
+  - loan_products_catalog.css
+  - loan_result.css
+  - matrix.css
 
----
+### JavaScript文件
+- **js/**
+  - ai_predict.js
+  - bank-support.js
+  - evidence-archive.js
+  - i18n.js
+  - loan_evaluate.js
+  - loan_products_catalog.js
+  - loan_result_renderer.js
+  - next-actions.js
+  - status-badge.js
+  - toast.js
+  - unified-ui-enhancements.js
 
-## 📋 测试配置文档
-```
-VBA_TESTING_GUIDE.md                # 完整测试配置指南
-```
+### 国际化文件
+- **i18n/**
+  - en.json
+  - zh.json
 
-**包含内容**:
-- VBA模板下载方式 (3种)
-- API访问信息 (完整URL)
-- 认证方式说明
-- 测试账号配置
-- 端到端测试流程
-- 故障排除指南
+### 静态资源目录
+- **downloads/** - 下载文件
+- **exports/** - 导出文件
+- **invoices/** - 发票（包含多个PDF文件）
+- **templates/** - 模板文件
+  - bank_statement_template.csv
 
----
+### 上传文件目录
+- **uploads/** - 上传文件（按客户组织）
+  - Chang_Choon_Chow/
+    - credit_cards/ - 信用卡（按银行和月份）
+      - Alliance_Bank/
+      - Hong_Leong_Bank/
+  - Be_rich_CCC/
+    - bank_statements/
+    - credit_cards/ - 信用卡（多家银行）
+      - Alliance Bank/
+      - Alliance_Bank/
+      - Hong Leong Bank/
+      - Hong_Leong_Bank/
+      - HSBC/
+      - Maybank/
+      - UOB/
+    - invoices/
+      - supplier/ - 供应商发票（按月份）
+    - savings/
+      - Public_Bank/
+    - vba_json_files/ - VBA JSON文件
+  - customers/
+    - AISMART20251030225947/
+      - savings/
+        - Public_Bank/
+    - Be_rich_CCC/ (如上)
 
-## 🎯 数据流程
+### 报表目录
+- **reports/monthly/** - 月度报表
+  - Galaxy_Report_CHEOK JUN YOON_2025_09.pdf
 
-### 完整工作流：
-```
-1. 用户下载VBA模板
-   ↓
-2. 客户端Excel运行VBA解析PDF/Excel账单
-   ↓
-3. VBA生成标准JSON文件
-   ↓
-4. 用户访问 /vba/upload 上传JSON
-   ↓
-5. Flask接收并调用 vba_json_processor.py
-   ↓
-6. 数据验证 + 插入SQLite数据库
-   ↓
-7. 返回上传结果 (statement_id, 银行, 月份, 交易数)
-   ↓
-8. 用户访问 /credit-cards 查看数据
-```
+### 其他静态文件
+- LOAN_PRODUCTS_完整产品目录.xlsx
+- LOAN_PRODUCTS_对比排名表.xlsx
+- logo.png
+- sample_invoice.pdf
+- vba_templates.tar.gz
 
----
+## 四、migrations/ 目录详细内容
 
-## 🔐 认证系统
+### 根目录 migrations/
+- **archived/** - 归档的迁移
+  - migrate_to_monthly_statements.py
+  - README.md
+- create_monthly_statements.py
+- fix_owner_gz_balances.py
 
-**登录方式**: Flask Session认证
+### accounting_app/migrations/
+- 001_add_new_tables_and_fields.py
+- 001_add_raw_document_protection.sql
+- 002_extend_file_index.sql
+- 003_create_audit_logs.sql
+- 004_create_users_rbac.sql
+- 005_user_company_roles.sql
+- 006_export_level_permissions.sql
+- 007_create_api_keys.sql
+- 008_add_validation_fields.sql
+- 009_fix_status_constraint.sql
+- 010_extend_file_status.sql
+- create_notification_tables.py
 
-**测试账号**:
-```
-Email:    infinitegz.reminder@gmail.com
-Password: Be_rich13
-权限:     Admin (完全访问)
-```
+### db/migrations/
+- 011_supplier_fee_split.sql
 
-**访问控制**:
-- `/vba/upload` - 需要登录
-- `/api/upload/vba-json` - 需要Admin或Accountant权限
-- `/api/upload/vba-batch` - 需要Admin或Accountant权限
+## 五、其他重要目录
 
----
+### 工具和脚本
+- **scripts/** - 脚本文件
+  - archived/ - 归档脚本
+- **batch_scripts/** - 批处理脚本
+- **tools/** - 工具
+  - pdf_converter/ - PDF转换器
 
-## 📦 发布资源
+### 模块和解析器
+- **modules/** - 模块
+  - parsers/ - 解析器
+  - recommendations/ - 推荐系统
+- **parsers/** - 解析器
 
-### 静态资源
-```
-static/vba_templates.tar.gz         # VBA模板打包文件 (16KB)
-```
+### 测试和文档
+- **tests/** - 测试
+  - unit/ - 单元测试
+- **docs/** - 文档
+  - archived/ - 归档文档
+  - business/ - 业务文档
+  - core/ - 核心文档
+  - deployment/ - 部署文档
+  - features/ - 功能文档
 
-**生成方式**:
-```bash
-cd vba_templates
-tar -czf ../static/vba_templates.tar.gz *
-```
+### 测试数据
+- **test_csvs/** - CSV测试文件
+- **test_pdfs/** - PDF测试文件
+- **vba_templates/** - VBA模板
 
----
+### 国际化和配置
+- **i18n/** - 国际化
+- **lang/** - 语言文件
+- **config/** - 配置文件
+- **.config/** - 系统配置
 
-## 🔧 开发工具
+### 附件资源
+- **attached_assets/** - 附件资源（包含大量PDF、图片等文件）
+- **archive_old/** - 旧归档
+  - attached_assets/
 
-### Python后端服务 (备用)
-```
-services/excel_parsers/
-├── bank_statement_excel_parser.py  # 银行账单解析器 (备用)
-├── credit_card_excel_parser.py     # 信用卡解析器 (备用)
-├── bank_detector.py                # 银行格式检测
-└── transaction_classifier.py       # 交易分类器 (30+类别)
-```
-**用途**: VBA的Python备份方案，系统韧性保障
+### 报表和导出
+- **reports/** - 报表
+  - CCC_Detailed_Reports/
+  - monthly/
+- **export/** - 导出
 
----
+### 验证和搜索
+- **verification/** - 验证
+- **search/** - 搜索
 
-## 📊 系统监控
+## 六、配置和系统文件
 
-### 日志查看
-```
-/admin/logs                         # 系统日志查看
-/admin/audit                        # 审计日志查看
-```
+- .git/ - Git版本控制
+- .cache/ - 缓存
+- .pythonlibs/ - Python库
+- .local/ - 本地配置
+- __pycache__/ - Python缓存（多处）
 
-### 数据查看
-```
-/credit-cards                       # 信用卡和账单查看
-/statements/<statement_id>          # 交易明细查看
-/reports                            # 报表生成和导出
-```
+## 总结
 
----
+这是一个大型的财务/会计管理系统，包含：
+1. 信用卡管理
+2. 储蓄账户管理
+3. 发票和收据管理
+4. 贷款评估
+5. 财务报表和分析
+6. 客户管理
+7. RBAC权限系统
+8. API接口
+9. 多语言支持（中英文）
+10. 文档管理和验证
 
-## 🗃️ 归档文件
-
-### 测试文件归档
-```
-archive_old/
-└── attached_assets/                # 旧测试PDF和图片文件
-```
-**说明**: 已清理的测试文件存档，不影响系统运行
-
----
-
-## 🚀 快速开始
-
-### 用户端操作：
-```
-1. 访问: https://.../vba/upload
-2. 下载VBA模板套件
-3. 在Excel中运行VBA解析账单
-4. 上传生成的JSON文件
-5. 查看数据入库结果
-```
-
-### 开发端操作：
-```
-1. 修改 vba_templates/ 中的VBA代码
-2. 重新打包: tar -czf static/vba_templates.tar.gz vba_templates/*
-3. 重启Flask服务器
-4. 测试上传功能
-```
-
----
-
-## 📝 文档索引
-
-### 用户文档
-- `VBA_TESTING_GUIDE.md` - 测试配置指南
-- `vba_templates/5_Usage_Guide.md` - VBA使用指南
-- `vba_templates/JSON_Format_Specification.md` - JSON格式规范
-- `vba_templates/COMPLETE_INTEGRATION_GUIDE.md` - 完整集成指南
-
-### 技术文档
-- `PROJECT_STRUCTURE.md` - 项目结构说明 (本文档)
-- `replit.md` - 系统架构和技术决策
-- `tools/pdf_converter/README.md` - PDF转换工具说明
-
----
-
-## 🎯 未来开发计划
-
-### 待开发功能
-1. **GZ vs OWNER费用分摊结算系统**
-   - 自动区分Owner消费和GZ消费
-   - 计算月度分摊金额
-   - 生成结算报表 (明细 + 汇总)
-
-### 技术改进
-- [ ] 增强VBA错误处理
-- [ ] 支持更多银行格式
-- [ ] 优化大文件上传性能
-- [ ] 添加数据导出功能
-
----
-
-## 📞 技术支持
-
-**项目**: INFINITE GZ Smart Credit & Loan Manager  
-**架构**: VBA Hybrid (Client + Replit Cloud)  
-**版本**: 1.0.0  
-**更新日期**: 2024-11-15
-
----
-
-**系统就绪！开始使用吧！** 🚀
+系统支持多家马来西亚银行（Alliance Bank, Hong Leong Bank, HSBC, Maybank, UOB, Public Bank等）的数据处理。
