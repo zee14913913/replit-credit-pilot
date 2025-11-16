@@ -80,6 +80,19 @@
                         </a></li>
                     </ul>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ 'active' if 'batch' in request.endpoint }}" href="#" id="filesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-files"></i> {{ t('nav_file_management') }}
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="filesDropdown" style="background: #1a1a1a; border: 2px solid #FF007F;">
+                        <li><a class="dropdown-item" href="{{ url_for('batch_auto_upload') }}" style="color: #FFFFFF;">
+                            <i class="bi bi-file-earmark-arrow-up me-2" style="color: #FF007F;"></i>{{ t('batch_auto_upload_title') }}
+                        </a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('batch_unassigned') }}" style="color: #FFFFFF;">
+                            <i class="bi bi-folder-x me-2" style="color: #ffc107;"></i>{{ t('unassigned_files_management') }}
+                        </a></li>
+                    </ul>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if 'report' in request.endpoint }}" href="{{ url_for('report_center') }}">
                         {{ t('report_center') }}

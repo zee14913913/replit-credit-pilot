@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block title %}<span data-i18n="unassigned_files_management">{{ t('unassigned_files_management') }}</span> - Infinite Gz Sdn Bhd{% endblock %}
+
+{% block extra_css %}
+<style>
+/* 未归档文件卡片样式 */
+.unassigned-file-card {
+    border: 1px solid #ffc107;
+    border-left: 4px solid #ffc107;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    background: rgba(255, 193, 7, 0.05);
+    transition: all 0.3s ease;
+}
+
+.unassigned-file-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.2);
+}
+
+.file-info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.file-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #F0F0F0;
+}
+
+.file-meta {
+    display: flex;
+    gap: 20px;
+    font-size: 14px;
+    color: #B0B0B0;
+}
+
+.assign-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.customer-select {
+    background: #000;
+    color: #F0F0F0;
+    border: 1px solid #322446;
+    border-radius: 6px;
+    padding: 8px 12px;
+    min-width: 250px;
+}
+
+.assign-btn {
+    background: #FF007F;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.assign-btn:hover {
+    background: #cc0066;
+    transform: scale(1.05);
+}
+
+.delete-btn {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    background: #c82333;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.empty-state-icon {
+    font-size: 64px;
+    color: #28a745;
+    margin-bottom: 20px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="mb-2" style="color: #F0F0F0;">
+                <i class="bi bi-folder-x"></i>
+                <span data-i18n="unassigned_files_management">{{ t('unassigned_files_management') }}</span>
+            </h1>
+            <p style="color: #B0B0B0;" data-i18n="unassigned_files_desc">{{ t('unassigned_files_desc') }}</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="/batch/auto-upload" class="btn btn-outline-light">
+                <i class="bi bi-arrow-left"></i>
+                <span data-i18n="back_to_upload">{{ t('back_to_upload') }}</span>
+            </a>
+        </div>
+    </div>
+
+    {% if unassigned_files|length == 0 %}
+    <!-- 空状态 -->
+    <div class="empty-state">
+        <div class="empty-state-icon">
+            <i class="bi bi-check-circle"></i>
+        </div>
+        <h3 style="color: #F0F0F0;" data-i18n="no_unassigned_files">{{ t('no_unassigned_files') }}</h3>
+        <p style="color: #B0B0B0;" data-i18n="all_files_classified">{{ t('all_files_classified') }}</p>
+        <a href="/batch/auto-upload" class="btn" style="background: #FF007F; color: #fff; margin-top: 20px;">
+            <i class="bi bi-cloud-upload"></i>
+            <span data-i18n="upload_more_files">{{ t('upload_more_files') }}</span>
+        </a>
+    </div>
+    {% else %}
+    <!-- 统计信息 -->
+    <div class="alert" style="background: rgba(255, 193, 7, 0.1); border: 1px solid #ffc107; color: #ffc107;">
+        <i class="bi bi-exclamation-triangle"></i>
+        <span data-i18n="total_unassigned">{{ t('total_unassigned') }}</span>: <strong>{{ unassigned_files|length }}</strong>
+        <span data-i18n="files_need_manual_assignment">{{ t('files_need_manual_assignment') }}</span>
+    </div>
+
+    <!-- 未归档文件列表 -->
+    <div id="unassignedFilesList">
+        {% for file in unassigned_files %}
+        <div class="unassigned-file-card" data-file-path="{{ file.path }}">
+            <div class="file-info-row">
+                <div>
+                    <div class="file-name">
+                        <i class="bi bi-file-earmark"></i>
+                        {{ file.filename }}
+                    </div>
+                    <div class="file-meta">
+                        <span>
+                            <i class="bi bi-hdd"></i>
+                            {{ (file.size / 1024)|round(2) }} KB
+                        </span>
+                        <span>
+                            <i class="bi bi-clock"></i>
+                            {{ file.upload_time }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="assign-section">
+                <label style="color: #B0B0B0; margin: 0;">
+                    <span data-i18n="assign_to_customer">{{ t('assign_to_customer') }}</span>:
+                </label>
+                <select class="customer-select" id="customer_{{ loop.index }}">
+                    <option value="" data-i18n="select_customer">{{ t('select_customer') }}</option>
+                    {% for customer in customers %}
+                    <option value="{{ customer[0] }}">{{ customer[1] }} ({{ customer[2] }})</option>
+                    {% endfor %}
+                </select>
+                <button class="assign-btn" onclick="assignFile('{{ file.path }}', {{ loop.index }})">
+                    <i class="bi bi-check-lg"></i>
+                    <span data-i18n="assign">{{ t('assign') }}</span>
+                </button>
+                <button class="delete-btn" onclick="deleteFile('{{ file.path }}', '{{ file.filename }}')">
+                    <i class="bi bi-trash"></i>
+                    <span data-i18n="delete">{{ t('delete') }}</span>
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// 分配文件到客户
+async function assignFile(filePath, index) {
+    const selectId = `customer_${index}`;
+    const customerId = document.getElementById(selectId).value;
+    
+    if (!customerId) {
+        alert(window.i18n?.translate('please_select_customer') || '请选择客户');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/batch/assign-file', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                file_path: filePath,
+                customer_id: parseInt(customerId)
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert(result.message || (window.i18n?.translate('assign_success') || '分配成功'));
+            // 移除已分配的文件卡片
+            const card = document.querySelector(`[data-file-path="${filePath}"]`);
+            if (card) {
+                card.style.transition = 'all 0.3s ease';
+                card.style.opacity = '0';
+                card.style.transform = 'translateX(50px)';
+                setTimeout(() => {
+                    card.remove();
+                    // 检查是否还有未归档文件
+                    const remainingCards = document.querySelectorAll('.unassigned-file-card');
+                    if (remainingCards.length === 0) {
+                        location.reload();
+                    }
+                }, 300);
+            }
+        } else {
+            alert(window.i18n?.translate('assign_failed') || '分配失败: ' + result.message);
+        }
+    } catch (error) {
+        alert(window.i18n?.translate('assign_error') || '分配错误: ' + error.message);
+    }
+}
+
+// 删除文件
+async function deleteFile(filePath, filename) {
+    const confirmMsg = window.i18n?.translate('confirm_delete_file') || '确定要删除这个文件吗？';
+    if (!confirm(`${confirmMsg}\n${filename}`)) {
+        return;
+    }
+    
+    try {
+        // TODO: 实现删除API
+        alert(window.i18n?.translate('delete_function_coming_soon') || '删除功能即将推出');
+    } catch (error) {
+        alert(window.i18n?.translate('delete_error') || '删除错误: ' + error.message);
+    }
+}
+</script>
+{% endblock %}

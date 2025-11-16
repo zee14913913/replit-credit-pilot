@@ -1,0 +1,368 @@
+{% extends "base.html" %}
+
+{% block title %}<span data-i18n="batch_auto_upload_title">{{ t('batch_auto_upload_title') }}</span> - Infinite Gz Sdn Bhd{% endblock %}
+
+{% block extra_css %}
+<style>
+/* 拖拽上传区样式 */
+.upload-drop-zone {
+    border: 3px dashed #322446;
+    border-radius: 12px;
+    padding: 60px 20px;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(50, 36, 70, 0.05) 0%, rgba(255, 0, 127, 0.05) 100%);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-bottom: 30px;
+}
+
+.upload-drop-zone:hover {
+    border-color: #FF007F;
+    background: linear-gradient(135deg, rgba(50, 36, 70, 0.1) 0%, rgba(255, 0, 127, 0.1) 100%);
+}
+
+.upload-drop-zone.dragging {
+    border-color: #FF007F;
+    background: linear-gradient(135deg, rgba(50, 36, 70, 0.2) 0%, rgba(255, 0, 127, 0.2) 100%);
+    transform: scale(1.02);
+}
+
+.upload-icon {
+    font-size: 64px;
+    color: #FF007F;
+    margin-bottom: 20px;
+}
+
+/* 文件列表样式 */
+.file-item {
+    border: 1px solid #322446;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: rgba(50, 36, 70, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.file-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-pending {
+    background: #6c757d;
+    color: #fff;
+}
+
+.status-success {
+    background: #28a745;
+    color: #fff;
+}
+
+.status-unassigned {
+    background: #ffc107;
+    color: #000;
+}
+
+.status-error {
+    background: #dc3545;
+    color: #fff;
+}
+
+/* 进度条样式 */
+.upload-progress {
+    width: 100%;
+    height: 6px;
+    background: rgba(50, 36, 70, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 20px;
+    display: none;
+}
+
+.upload-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #FF007F 0%, #322446 100%);
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+/* 统计卡片样式 */
+.stats-card {
+    background: rgba(50, 36, 70, 0.05);
+    border: 1px solid #322446;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+}
+
+.stats-number {
+    font-size: 36px;
+    font-weight: 700;
+    color: #FF007F;
+}
+
+.stats-label {
+    color: #322446;
+    font-size: 14px;
+    margin-top: 8px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="mb-2" style="color: #F0F0F0;">
+                <i class="bi bi-file-earmark-arrow-up"></i>
+                <span data-i18n="batch_auto_upload_title">{{ t('batch_auto_upload_title') }}</span>
+            </h1>
+            <p style="color: #B0B0B0;" data-i18n="batch_auto_upload_subtitle">{{ t('batch_auto_upload_subtitle') }}</p>
+        </div>
+    </div>
+
+    <!-- 上传统计 -->
+    <div class="row mb-4" id="statsRow" style="display: none;">
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="stats-number" id="totalCount">0</div>
+                <div class="stats-label" data-i18n="total_files">{{ t('total_files') }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="stats-number" style="color: #28a745;" id="successCount">0</div>
+                <div class="stats-label" data-i18n="auto_classified">{{ t('auto_classified') }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="stats-number" style="color: #ffc107;" id="unassignedCount">0</div>
+                <div class="stats-label" data-i18n="unassigned_files">{{ t('unassigned_files') }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="stats-number" style="color: #dc3545;" id="errorCount">0</div>
+                <div class="stats-label" data-i18n="error_files">{{ t('error_files') }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 拖拽上传区 -->
+    <div class="upload-drop-zone" id="dropZone">
+        <div class="upload-icon">
+            <i class="bi bi-cloud-upload"></i>
+        </div>
+        <h3 style="color: #322446;" data-i18n="drag_drop_files">{{ t('drag_drop_files') }}</h3>
+        <p style="color: #6c757d;" data-i18n="or_click_to_select">{{ t('or_click_to_select') }}</p>
+        <p style="color: #6c757d; font-size: 12px;" data-i18n="supported_formats">{{ t('supported_formats') }}</p>
+        <input type="file" id="fileInput" multiple accept=".pdf,.xlsx,.xls,.jpg,.jpeg,.png,.doc,.docx" style="display: none;">
+    </div>
+
+    <!-- 上传进度 -->
+    <div class="upload-progress" id="uploadProgress">
+        <div class="upload-progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- 文件列表 -->
+    <div id="fileListContainer" style="display: none;">
+        <h4 class="mb-3" style="color: #F0F0F0;">
+            <i class="bi bi-list-check"></i>
+            <span data-i18n="file_classification_results">{{ t('file_classification_results') }}</span>
+        </h4>
+        <div id="fileList"></div>
+        
+        <!-- 操作按钮 -->
+        <div class="mt-4 text-center">
+            <button class="btn btn-outline-light" onclick="resetUpload()">
+                <i class="bi bi-arrow-clockwise"></i>
+                <span data-i18n="upload_more">{{ t('upload_more') }}</span>
+            </button>
+            <a href="/batch/unassigned" class="btn" style="background: #FF007F; color: #fff;">
+                <i class="bi bi-folder-x"></i>
+                <span data-i18n="manage_unassigned">{{ t('manage_unassigned') }}</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+// 全局变量
+let selectedFiles = [];
+let uploadResults = null;
+
+// DOM元素
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const fileList = document.getElementById('fileList');
+const fileListContainer = document.getElementById('fileListContainer');
+const uploadProgress = document.getElementById('uploadProgress');
+const progressBar = document.getElementById('progressBar');
+const statsRow = document.getElementById('statsRow');
+
+// 点击上传区触发文件选择
+dropZone.addEventListener('click', () => {
+    fileInput.click();
+});
+
+// 文件选择
+fileInput.addEventListener('change', (e) => {
+    handleFiles(e.target.files);
+});
+
+// 拖拽事件
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('dragging');
+});
+
+dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('dragging');
+});
+
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragging');
+    handleFiles(e.dataTransfer.files);
+});
+
+// 处理文件选择
+function handleFiles(files) {
+    if (files.length === 0) return;
+    
+    selectedFiles = Array.from(files);
+    uploadFiles();
+}
+
+// 上传文件
+async function uploadFiles() {
+    if (selectedFiles.length === 0) return;
+    
+    // 显示进度条
+    uploadProgress.style.display = 'block';
+    progressBar.style.width = '0%';
+    
+    // 隐藏上传区
+    dropZone.style.display = 'none';
+    
+    // 准备FormData
+    const formData = new FormData();
+    selectedFiles.forEach(file => {
+        formData.append('files', file);
+    });
+    
+    try {
+        // 模拟进度
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+            progress += 5;
+            if (progress <= 90) {
+                progressBar.style.width = progress + '%';
+            }
+        }, 200);
+        
+        // 发送请求
+        const response = await fetch('/api/batch/classify', {
+            method: 'POST',
+            body: formData
+        });
+        
+        clearInterval(progressInterval);
+        progressBar.style.width = '100%';
+        
+        if (response.ok) {
+            uploadResults = await response.json();
+            displayResults(uploadResults);
+        } else {
+            throw new Error('上传失败');
+        }
+        
+    } catch (error) {
+        alert(window.i18n?.translate('upload_error') || '上传失败: ' + error.message);
+        resetUpload();
+    } finally {
+        setTimeout(() => {
+            uploadProgress.style.display = 'none';
+        }, 1000);
+    }
+}
+
+// 显示结果
+function displayResults(results) {
+    // 更新统计
+    document.getElementById('totalCount').textContent = results.total;
+    document.getElementById('successCount').textContent = results.success;
+    document.getElementById('unassignedCount').textContent = results.unassigned;
+    document.getElementById('errorCount').textContent = results.error;
+    statsRow.style.display = 'flex';
+    
+    // 显示文件列表
+    fileListContainer.style.display = 'block';
+    fileList.innerHTML = '';
+    
+    results.files.forEach(file => {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item';
+        
+        let statusBadge = '';
+        let statusIcon = '';
+        let statusText = '';
+        
+        if (file.status === 'success') {
+            statusBadge = 'status-success';
+            statusIcon = '<i class="bi bi-check-circle-fill"></i>';
+            statusText = window.i18n?.translate('classified_to') || '已归档至';
+            statusText += `: ${file.customer_name}`;
+        } else if (file.status === 'unassigned') {
+            statusBadge = 'status-unassigned';
+            statusIcon = '<i class="bi bi-exclamation-triangle-fill"></i>';
+            statusText = window.i18n?.translate('unassigned') || '未归档';
+            if (file.error_message) {
+                statusText += ` (${file.error_message})`;
+            }
+        } else {
+            statusBadge = 'status-error';
+            statusIcon = '<i class="bi bi-x-circle-fill"></i>';
+            statusText = file.error_message || (window.i18n?.translate('processing_failed') || '处理失败');
+        }
+        
+        fileItem.innerHTML = `
+            <div class="file-info">
+                <i class="bi bi-file-earmark"></i>
+                <strong style="margin-left: 10px;">${file.filename}</strong>
+                ${file.identification_method ? `<small style="margin-left: 10px; color: #6c757d;">(${window.i18n?.translate('identified_by') || '识别方式'}: ${file.identification_method})</small>` : ''}
+            </div>
+            <div class="file-status">
+                <span class="status-badge ${statusBadge}">
+                    ${statusIcon} ${statusText}
+                </span>
+            </div>
+        `;
+        
+        fileList.appendChild(fileItem);
+    });
+}
+
+// 重置上传
+function resetUpload() {
+    selectedFiles = [];
+    uploadResults = null;
+    fileList.innerHTML = '';
+    fileListContainer.style.display = 'none';
+    statsRow.style.display = 'none';
+    dropZone.style.display = 'block';
+    fileInput.value = '';
+}
+</script>
+{% endblock %}

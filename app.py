@@ -7884,6 +7884,182 @@ def api_retry_export(task_id):
         return jsonify({'success': False, 'message': str(e)}), 500
 
 
+# ============================================================
+# 批量文件自动归类路由
+# Batch Auto File Classification Routes
+# ============================================================
+
+@app.route('/batch/auto-upload', methods=['GET', 'POST'])
+@require_admin_or_accountant
+def batch_auto_upload():
+    """
+    批量文件自动归类上传页面
+    Batch Auto File Classification Upload Page
+    
+    功能：
+    1. 显示批量上传界面
+    2. 支持拖拽和多文件选择
+    3. 自动识别客户并归档
+    """
+    return render_template('batch_auto_upload.html', current_lang=session.get('lang', 'en'))
+
+
+@app.route('/api/batch/classify', methods=['POST'])
+@require_admin_or_accountant
+def api_batch_classify():
+    """
+    批量文件自动归类API
+    Batch Auto File Classification API
+    
+    接收多个文件，自动识别客户并归档
+    
+    Returns:
+        JSON: {
+            'total': 总文件数,
+            'success': 成功归档数,
+            'unassigned': 未归档数,
+            'error': 错误数,
+            'files': [文件处理结果列表]
+        }
+    """
+    import tempfile
+    import os
+    import shutil
+    
+    temp_dir = None
+    
+    try:
+        files = request.files.getlist('files')
+        
+        if not files or len(files) == 0:
+            return jsonify({
+                'status': 'error',
+                'message': 'No files uploaded'
+            }), 400
+        
+        # 准备文件信息
+        files_info = []
+        temp_dir = tempfile.mkdtemp()
+        
+        try:
+            for file in files:
+                if file.filename == '':
+                    continue
+                
+                # 保存到临时目录
+                temp_path = os.path.join(temp_dir, file.filename)
+                file.save(temp_path)
+                
+                files_info.append({
+                    'path': temp_path,
+                    'filename': file.filename
+                })
+            
+            # 调用自动归类服务
+            from services.auto_classifier_service import classify_uploaded_files
+            results = classify_uploaded_files(files_info)
+            
+            logger.info(f"批量归类完成: 总计={results['total']}, 成功={results['success']}, 未归档={results['unassigned']}, 错误={results['error']}")
+            
+            return jsonify(results), 200
+        
+        finally:
+            # 确保临时目录总是被清理（无论成功或异常）
+            if temp_dir and os.path.exists(temp_dir):
+                try:
+                    shutil.rmtree(temp_dir)
+                except Exception as cleanup_err:
+                    logger.warning(f"临时目录清理失败: {cleanup_err}")
+    
+    except Exception as e:
+        logger.error(f"批量归类API错误: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Batch classification failed: {str(e)}'
+        }), 500
+
+
+@app.route('/batch/unassigned', methods=['GET'])
+@require_admin_or_accountant
+def batch_unassigned():
+    """
+    未归档文件管理页面
+    Unassigned Files Management Page
+    
+    显示所有未能自动归档的文件，支持手动分配
+    """
+    try:
+        from services.auto_classifier_service import AutoFileClassifier
+        classifier = AutoFileClassifier()
+        unassigned_files = classifier.get_unassigned_files()
+        
+        # 获取所有活跃客户（用于手动分配）
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT id, name, customer_code FROM customers WHERE is_active = 1 ORDER BY name')
+            customers = cursor.fetchall()
+        
+        return render_template(
+            'batch_unassigned.html',
+            unassigned_files=unassigned_files,
+            customers=customers,
+            current_lang=session.get('lang', 'en')
+        )
+    
+    except Exception as e:
+        logger.error(f"未归档文件页面错误: {str(e)}")
+        flash('Failed to load unassigned files', 'danger')
+        return redirect(url_for('index'))
+
+
+@app.route('/api/batch/assign-file', methods=['POST'])
+@require_admin_or_accountant
+def api_assign_file():
+    """
+    手动分配文件到客户API
+    Manually Assign File to Customer API
+    
+    Body:
+        file_path: 文件路径
+        customer_id: 客户ID
+        
+    Returns:
+        JSON: {
+            'status': 'success'|'error',
+            'message': 消息,
+            'final_path': 最终路径
+        }
+    """
+    try:
+        data = request.get_json()
+        file_path = data.get('file_path')
+        customer_id = data.get('customer_id')
+        
+        if not file_path or not customer_id:
+            return jsonify({
+                'status': 'error',
+                'message': 'Missing file_path or customer_id'
+            }), 400
+        
+        from services.auto_classifier_service import AutoFileClassifier
+        classifier = AutoFileClassifier()
+        result = classifier.manually_assign_file(file_path, customer_id)
+        
+        if result['status'] == 'success':
+            logger.info(f"手动分配文件成功: {file_path} → 客户ID={customer_id}")
+            return jsonify(result), 200
+        else:
+            logger.error(f"手动分配文件失败: {result['message']}")
+            return jsonify(result), 400
+    
+    except Exception as e:
+        logger.error(f"手动分配文件API错误: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Assignment failed: {str(e)}'
+        }), 500
+
+
 if __name__ == '__main__':
     # Get environment settings
     flask_env = os.getenv('FLASK_ENV', 'development')
@@ -7895,3 +8071,5 @@ if __name__ == '__main__':
         start_scheduler()
     
     app.run(host='0.0.0.0', port=port, debug=debug_mode)
+
+
