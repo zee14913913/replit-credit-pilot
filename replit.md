@@ -50,7 +50,7 @@ The platform enforces a professional design using a **MINIMAL 3-COLOR PALETTE ON
 The design system emphasizes clean layouts with bilingual support (English/Chinese).
 
 **Navigation Structure**:
-The main navigation features 7 core modules aligned with business workflow: DASHBOARD, CREDIT CARDS, SAVINGS, RECEIPTS, LOANS, REPORTS, and ADMIN.
+The main navigation features 8 core modules aligned with business workflow: DASHBOARD, CUSTOMERS, CREDIT CARDS, SAVINGS, RECEIPTS, LOANS, REPORT CENTER, MONTHLY SUMMARY, and ADMIN. The Report Center module provides batch export and self-service reporting capabilities.
 
 **Department Separation (CRITICAL)**:
 - **CREDIT CARDS Department**: Manages credit card customers. Files stored in `credit_card_files/{customer_name}/` with Excel exports, monthly statements, and transaction details.
@@ -70,7 +70,7 @@ The backend uses Flask with SQLite and a context manager for database interactio
 - **AI Smart Assistant V3 (Enterprise Intelligence):** Advanced multi-provider AI system with real-time web search, floating chatbot UI, cross-module analysis, automated daily financial reports, system analytics, and comprehensive conversation history logging.
 - **Income Document System:** Upload, OCR processing, and standardization of income proof documents with intelligent aggregation and confidence scoring.
 - **Dual-Engine Loan Evaluation System (CREDITPILOT):** Production-ready dual-mode architecture supporting both legacy DSR/DSCR engines and modern Malaysian banking standards (DTI/FOIR/CCRIS/BRR). Implements comprehensive risk scoring with intelligent product matching across 12+ banks/Fintech providers. CTOS data serves as the exclusive debt commitment source.
-- **Reporting & Export:** Professional Excel/CSV/PDF reports, automated monthly reports.
+- **Reporting & Export:** Professional Excel/CSV/PDF reports, automated monthly reports, self-service Report Center with batch export (Phase 4 Priority 1 - November 2025).
 - **Workflow Automation:** Batch operations, rule engine for transaction matching.
 - **Security & Compliance:** Multi-role authentication & authorization (RBAC), audit logging, data integrity validation.
 - **User Experience:** Unified navigation, context-aware buttons, bilingual i18n, responsive design.
@@ -120,3 +120,14 @@ A production-ready Unified RBAC Implementation protects 32 functions. The `@requ
 
 ### SFTP ERP Automation System
 A production-ready SFTP synchronization system, implemented with a FastAPI backend (Port 8000) and Paramiko, automatically exports 7 types of financial data to SQL ACC ERP Edition via secure SFTP every 10 minutes.
+## Recent Changes (November 2025)
+
+### Phase 4 Priority 1: Report Center Implementation (2025-11-16)
+- **Module**: Self-Service Report Center with Batch Export
+- **Database**: Added `export_tasks` table with 3 indexes for efficient task tracking
+- **Templates**: 3 new templates (report_center.html, export_filter.html, export_progress_card.html)
+- **API Routes**: 4 Flask JSON endpoints (/reports/center, /api/reports/export, /api/reports/history, /api/reports/retry)
+- **Navigation**: Integrated Report Center into main navigation (base.html and layout.html)
+- **Translations**: Added 33 bilingual entries (EN/ZH), total 2196 translation entries
+- **UI Compliance**: 100% adherence to UI Style Protection Clause (CSS zero-change, class reuse only)
+- **Status**: Production-ready, fully functional, accessible from main navigation

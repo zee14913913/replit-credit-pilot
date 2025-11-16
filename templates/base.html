@@ -81,6 +81,11 @@
                     </ul>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {{ 'active' if 'report' in request.endpoint }}" href="{{ url_for('report_center') }}">
+                        {{ t('report_center') }}
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link {{ 'active' if 'monthly_summary' in request.endpoint }}" href="{{ url_for('monthly_summary_index') }}">
                         {{ t('nav_monthly_summary') }}
                     </a>
