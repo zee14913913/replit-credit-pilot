@@ -1,0 +1,37 @@
+<!-- 审批表单组件（无图标版） -->
+<form id="approvalForm">
+    <input type="hidden" id="uploadId" name="upload_id">
+    
+    <div class="mb-3">
+        <label class="form-label" style="font-weight: 600; color: rgba(255,255,255,0.9);">{{ t('customer') }}</label>
+        <input type="text" class="form-control" id="customerName" readonly style="background: rgba(255,255,255,0.1); border-color: var(--primary-pink);">
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label" style="font-weight: 600; color: rgba(255,255,255,0.9);">{{ t('bank') }}</label>
+        <input type="text" class="form-control" id="bankName" readonly style="background: rgba(255,255,255,0.1); border-color: var(--primary-pink);">
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label" style="font-weight: 600; color: rgba(255,255,255,0.9);">{{ t('amount') }}</label>
+        <input type="text" class="form-control" id="totalAmount" readonly style="background: rgba(255,255,255,0.1); border-color: var(--primary-pink);">
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label" style="font-weight: 600; color: rgba(255,255,255,0.9);">{{ t('review_comment') }}</label>
+        <textarea class="form-control" id="reviewComment" name="comment" rows="3" style="background: rgba(255,255,255,0.1); border-color: var(--primary-pink); color: white;" placeholder="{{ t('enter_review_comment') }}"></textarea>
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label" style="font-weight: 600; color: rgba(255,255,255,0.9);">{{ t('status') }}</label>
+        <select class="form-select" id="reviewStatus" name="status" style="background: rgba(255,255,255,0.1); border-color: var(--primary-pink); color: white;">
+            <option value="approved">{{ t('approved') }}</option>
+            <option value="rejected">{{ t('rejected') }}</option>
+        </select>
+    </div>
+    
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn-professional flex-fill">{{ t('submit') }}</button>
+        <button type="button" class="btn-professional-outline flex-fill" data-bs-dismiss="modal">{{ t('cancel') }}</button>
+    </div>
+</form>

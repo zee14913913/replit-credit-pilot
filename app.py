@@ -7472,3 +7472,165 @@ if __name__ == '__main__':
         start_scheduler()
     
     app.run(host='0.0.0.0', port=port, debug=debug_mode)
+
+
+# ============================================================
+# Phase 3: Batch Management Routes (No Icons Design)
+# Created: 2025-11-16
+# Description: 批量审核管理路由（无图标设计）
+# ============================================================
+
+@app.route('/admin/batch-management')
+@require_admin_or_accountant
+def batch_management():
+    """批量管理页面 - 显示所有待审核的批量上传"""
+    with DatabaseManager() as db:
+        # 获取所有批量上传记录
+        query = """
+        SELECT 
+            bj.id,
+            bj.customer_id,
+            c.name as customer_name,
+            bj.status,
+            bj.reason,
+            bj.created_at,
+            COUNT(s.id) as statement_count,
+            SUM(s.statement_total) as total_amount
+        FROM batch_jobs bj
+        LEFT JOIN customers c ON bj.customer_id = c.id
+        LEFT JOIN statements s ON s.batch_job_id = bj.id
+        WHERE bj.status IN ('pending', 'approved', 'rejected')
+        GROUP BY bj.id
+        ORDER BY bj.created_at DESC
+        LIMIT 100
+        """
+        batch_uploads = db.fetch_all(query)
+        
+        # 转换为字典列表，添加银行信息
+        uploads_list = []
+        for upload in batch_uploads:
+            upload_dict = {
+                'id': upload[0],
+                'customer_id': upload[1],
+                'customer_name': upload[2] or 'Unknown',
+                'status': upload[3] or 'pending',
+                'reason': upload[4],
+                'created_at': datetime.fromisoformat(upload[5]) if upload[5] else datetime.now(),
+                'statement_count': upload[6] or 0,
+                'total_amount': upload[7] or 0.0,
+                'bank_name': 'Various'  # 简化显示
+            }
+            uploads_list.append(upload_dict)
+    
+    return render_template('admin/batch_management.html', 
+                         batch_uploads=uploads_list)
+
+
+@app.route('/admin/batch-uploads/<int:upload_id>/approve', methods=['POST'])
+@require_admin_or_accountant
+def approve_batch_upload(upload_id):
+    """批准单个批量上传"""
+    try:
+        with DatabaseManager() as db:
+            db.execute(
+                "UPDATE batch_jobs SET status = 'approved', updated_at = ? WHERE id = ?",
+                (datetime.now().isoformat(), upload_id)
+            )
+            
+            # 记录审计日志
+            db.execute(
+                """INSERT INTO audit_logs (log_action, operator_email, operation_content, status, created_at)
+                   VALUES (?, ?, ?, ?, ?)""",
+                ('batch_approve', session.get('email', 'system'), 
+                 f'Approved batch upload #{upload_id}', 'success', datetime.now().isoformat())
+            )
+            
+        return jsonify({'success': True, 'message': 'Approved successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/admin/batch-uploads/<int:upload_id>/reject', methods=['POST'])
+@require_admin_or_accountant
+def reject_batch_upload(upload_id):
+    """退回单个批量上传"""
+    try:
+        data = request.json
+        reason = data.get('reason', 'No reason provided')
+        
+        with DatabaseManager() as db:
+            db.execute(
+                "UPDATE batch_jobs SET status = 'rejected', reason = ?, updated_at = ? WHERE id = ?",
+                (reason, datetime.now().isoformat(), upload_id)
+            )
+            
+            # 记录审计日志
+            db.execute(
+                """INSERT INTO audit_logs (log_action, operator_email, operation_content, status, created_at)
+                   VALUES (?, ?, ?, ?, ?)""",
+                ('batch_reject', session.get('email', 'system'), 
+                 f'Rejected batch upload #{upload_id}: {reason}', 'success', datetime.now().isoformat())
+            )
+            
+        return jsonify({'success': True, 'message': 'Rejected successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/admin/batch-uploads/approve-all', methods=['POST'])
+@require_admin_or_accountant
+def approve_all_batch_uploads():
+    """批准所有待审核的上传"""
+    try:
+        with DatabaseManager() as db:
+            # 更新所有待审核状态为已批准
+            result = db.execute(
+                "UPDATE batch_jobs SET status = 'approved', updated_at = ? WHERE status = 'pending'",
+                (datetime.now().isoformat(),)
+            )
+            
+            # 获取受影响的行数
+            count = db.cursor.rowcount
+            
+            # 记录审计日志
+            db.execute(
+                """INSERT INTO audit_logs (log_action, operator_email, operation_content, status, created_at)
+                   VALUES (?, ?, ?, ?, ?)""",
+                ('batch_approve_all', session.get('email', 'system'), 
+                 f'Approved {count} pending uploads', 'success', datetime.now().isoformat())
+            )
+            
+        return jsonify({'success': True, 'count': count})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/admin/batch-uploads/reject-all', methods=['POST'])
+@require_admin_or_accountant
+def reject_all_batch_uploads():
+    """退回所有待审核的上传"""
+    try:
+        data = request.json
+        reason = data.get('reason', 'Batch rejection')
+        
+        with DatabaseManager() as db:
+            # 更新所有待审核状态为已退回
+            result = db.execute(
+                "UPDATE batch_jobs SET status = 'rejected', reason = ?, updated_at = ? WHERE status = 'pending'",
+                (reason, datetime.now().isoformat())
+            )
+            
+            count = db.cursor.rowcount
+            
+            # 记录审计日志
+            db.execute(
+                """INSERT INTO audit_logs (log_action, operator_email, operation_content, status, created_at)
+                   VALUES (?, ?, ?, ?, ?)""",
+                ('batch_reject_all', session.get('email', 'system'), 
+                 f'Rejected {count} pending uploads: {reason}', 'success', datetime.now().isoformat())
+            )
+            
+        return jsonify({'success': True, 'count': count})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+

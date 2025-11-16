@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('batch_review') }} - Admin{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- 页面标题 -->
+    <div class="section-header">
+        <h1 class="section-title" style="color: var(--primary-pink); font-weight: 700;">
+            {{ t('batch_review') }}
+        </h1>
+        <p class="section-subtitle">{{ t('pending_review') }}</p>
+    </div>
+
+    <!-- 批量管理卡片 -->
+    <div class="professional-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 style="color: var(--primary-pink); font-weight: 700;">{{ t('batch_review') }}</h4>
+            <div class="d-flex gap-2">
+                <button class="btn-professional-outline btn-sm" onclick="approveAll()">{{ t('approve_all') }}</button>
+                <button class="btn-professional btn-sm" onclick="rejectAll()">{{ t('reject_all') }}</button>
+            </div>
+        </div>
+
+        <!-- 批量上传列表 -->
+        <div class="list-group">
+            {% for upload in batch_uploads %}
+            <div class="list-group-item" style="background: rgba(255,255,255,0.05); border-left: 4px solid {% if upload.status == 'pending' %}var(--primary-pink){% elif upload.status == 'approved' %}#28a745{% else %}#dc3545{% endif %}; margin-bottom: 10px;">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="mb-2">
+                            {% if upload.status == 'pending' %}
+                                <span class="badge-pink-custom me-2">{{ t('pending_review_status') }}</span>
+                            {% elif upload.status == 'approved' %}
+                                <span class="badge-success-pro me-2">{{ t('approved') }}</span>
+                            {% else %}
+                                <span class="badge badge-danger me-2">{{ t('rejected') }}</span>
+                            {% endif %}
+                            <strong style="color: white;">{{ t('statement_upload') }} #{{ upload.id }}</strong>
+                            <span class="badge-professional ms-2">{{ upload.customer_name }}</span>
+                        </div>
+                        <div class="text-muted small">
+                            {{ t('bank') }}: {{ upload.bank_name }} | {{ t('amount') }}: RM {{ "{:,.2f}".format(upload.total_amount) }} | {{ upload.created_at.strftime('%Y-%m-%d %H:%M') }}
+                        </div>
+                        {% if upload.reason %}
+                        <div style="color: #dc3545; font-weight: 600; margin-top: 5px;">
+                            {{ t('reject_reason') }}: {{ upload.reason }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="text-end" style="min-width: 180px;">
+                        {% if upload.status == 'pending' %}
+                            <button class="btn btn-sm btn-success-pro mb-1" style="min-width: 80px;" onclick="approveUpload({{ upload.id }})">{{ t('approve') }}</button>
+                            <button class="btn btn-sm btn-professional-outline" style="min-width: 80px;" onclick="rejectUpload({{ upload.id }})">{{ t('reject') }}</button>
+                        {% elif upload.status == 'rejected' %}
+                            <button class="btn btn-sm btn-professional-outline" onclick="reviewAgain({{ upload.id }})">{{ t('re_review') }}</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="text-center text-muted py-5">
+                {{ t('no_pending_reviews') }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- 审批弹窗 -->
+{% include "components/no_icon_modals.html" %}
+
+<script>
+// 审批相关JavaScript函数
+function approveUpload(uploadId) {
+    if (confirm('{{ t("confirm_approve") }}')) {
+        fetch(`/admin/batch-uploads/${uploadId}/approve`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('{{ t("operation_failed") }}: ' + data.message);
+            }
+        });
+    }
+}
+
+function rejectUpload(uploadId) {
+    const reason = prompt('{{ t("enter_reject_reason") }}:');
+    if (reason) {
+        fetch(`/admin/batch-uploads/${uploadId}/reject`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({reason: reason})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('{{ t("operation_failed") }}: ' + data.message);
+            }
+        });
+    }
+}
+
+function approveAll() {
+    if (confirm('{{ t("confirm_approve_all") }}')) {
+        fetch('/admin/batch-uploads/approve-all', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(`{{ t("approved") }}: ${data.count} {{ t("items") }}`);
+            location.reload();
+        });
+    }
+}
+
+function rejectAll() {
+    const reason = prompt('{{ t("enter_reject_reason") }}:');
+    if (reason) {
+        fetch('/admin/batch-uploads/reject-all', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({reason: reason})
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(`{{ t("rejected") }}: ${data.count} {{ t("items") }}`);
+            location.reload();
+        });
+    }
+}
+
+function reviewAgain(uploadId) {
+    location.href = `/admin/batch-uploads/${uploadId}`;
+}
+</script>
+{% endblock %}

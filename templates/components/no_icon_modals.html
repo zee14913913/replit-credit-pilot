@@ -1,0 +1,62 @@
+<!-- 无图标弹窗组件库 -->
+
+<!-- 审批操作弹窗 -->
+<div class="modal fade" id="approvalModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background: var(--accent-purple); color: white; border: 2px solid var(--primary-pink);">
+            <div class="modal-header" style="border-color: var(--primary-pink);">
+                <h5 class="modal-title" style="color: var(--primary-pink); font-weight: 700;">
+                    {{ t('approval_operation') }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% include "components/approval_form.html" %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 批量操作确认弹窗 -->
+<div class="modal fade" id="batchConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background: var(--accent-purple); color: white; border: 2px solid var(--primary-pink);">
+            <div class="modal-header" style="border-color: var(--primary-pink);">
+                <h5 class="modal-title" style="color: var(--primary-pink); font-weight: 700;">
+                    {{ t('confirm_operation') }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="batchConfirmMessage" style="color: white; font-size: 1.1rem;"></p>
+                <div class="alert-professional alert-warning-pro mt-3">
+                    <strong>{{ t('warning') }}:</strong> {{ t('batch_operation_warning') }}
+                </div>
+            </div>
+            <div class="modal-footer" style="border-color: var(--primary-pink);">
+                <button type="button" class="btn-professional-outline" data-bs-dismiss="modal">{{ t('cancel') }}</button>
+                <button type="button" class="btn-white-glow" id="batchConfirmBtn">{{ t('confirm') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 详情查看弹窗 -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" style="background: var(--accent-purple); color: white; border: 2px solid var(--primary-pink);">
+            <div class="modal-header" style="border-color: var(--primary-pink);">
+                <h5 class="modal-title" style="color: var(--primary-pink); font-weight: 700;">
+                    {{ t('upload_details') }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detailModalBody">
+                <!-- 动态加载内容 -->
+            </div>
+            <div class="modal-footer" style="border-color: var(--primary-pink);">
+                <button type="button" class="btn-professional-outline" data-bs-dismiss="modal">{{ t('close') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
