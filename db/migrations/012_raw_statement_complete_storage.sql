@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS raw_bank_statement (
     
     -- 原始行信息
     line_number INTEGER NOT NULL CHECK (line_number >= 1),  -- 账单原始行号（从1开始）
-    original_line TEXT NOT NULL CHECK (length(original_line) > 0 AND length(original_line) <= 2000),  -- 账单原文
+    original_line TEXT NOT NULL CHECK (length(original_line) <= 2000),  -- 账单原文（允许空行，blank类型）
     
     -- 行类型分类
     original_line_type VARCHAR(20) NOT NULL CHECK (
@@ -141,18 +141,74 @@ CREATE INDEX IF NOT EXISTS idx_audit_raw_statement ON raw_statement_audit_logs(r
 CREATE INDEX IF NOT EXISTS idx_audit_action_type ON raw_statement_audit_logs(action_type);
 
 -- =============================================================================
--- 5. 数据迁移说明
+-- 5. 数据迁移执行 (CRITICAL FIX: 处理全新安装和迁移两种场景)
 -- =============================================================================
 
--- 迁移现有transactions数据到transactions_v2（如果需要）
--- 注意：实际执行时需要先备份数据，然后逐步迁移
+-- 🔒 SAFETY PATTERN: 确保旧表存在（即使为空），以避免FROM子句解析错误
+-- 场景1: 全新安装 → 创建空旧表 → 迁移（无数据）→ 删除旧表 → 重命名新表
+-- 场景2: 已有数据 → 旧表存在 → 迁移（有数据）→ 删除旧表 → 重命名新表
 
--- INSERT INTO transactions_v2 
--- SELECT *, NULL, 'detail', 'unverified', created_at, updated_at
--- FROM transactions;
+-- 5.1 创建旧schema的transactions表（如果不存在）
+-- 这确保FROM子句不会因表不存在而报错
+CREATE TABLE IF NOT EXISTS transactions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    customer_code TEXT,
+    customer_id INTEGER,
+    card_id INTEGER,
+    statement_id INTEGER,
+    transaction_date TEXT,
+    description TEXT,
+    amount REAL,
+    transaction_type TEXT,
+    category TEXT,
+    merchant_category TEXT,
+    is_supplier BOOLEAN DEFAULT 0,
+    supplier_name TEXT,
+    supplier_fee REAL,
+    is_merchant_fee BOOLEAN DEFAULT 0,
+    fee_reference_id INTEGER,
+    is_fee_split BOOLEAN DEFAULT 0,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
 
--- DROP TABLE transactions;
--- ALTER TABLE transactions_v2 RENAME TO transactions;
+-- 5.2 安全迁移：现在transactions表必定存在，可以安全SELECT
+INSERT INTO transactions_v2 (
+    id, customer_code, customer_id, card_id, statement_id,
+    transaction_date, description, amount, transaction_type, category, merchant_category,
+    is_supplier, supplier_name, supplier_fee, is_merchant_fee, fee_reference_id, is_fee_split,
+    raw_statement_id, original_line_type, verify_status,
+    created_at, updated_at
+)
+SELECT 
+    id, customer_code, customer_id, card_id, statement_id,
+    transaction_date, description, amount, transaction_type, category, merchant_category,
+    COALESCE(is_supplier, 0), supplier_name, supplier_fee, 
+    COALESCE(is_merchant_fee, 0), fee_reference_id, COALESCE(is_fee_split, 0),
+    NULL as raw_statement_id,  -- 旧数据无raw_statement关联
+    'detail' as original_line_type,  -- 旧数据默认为明细行
+    'unverified' as verify_status,  -- 旧数据未验证
+    COALESCE(created_at, CURRENT_TIMESTAMP),
+    COALESCE(updated_at, CURRENT_TIMESTAMP)
+FROM transactions;
+-- 如果是全新安装，transactions为空，INSERT不会添加任何行
+-- 如果有旧数据，所有行都会被迁移
+
+-- 5.3 删除旧表（无论是空表还是有数据的表）
+DROP TABLE transactions;
+
+-- 5.4 重命名新表（激活新schema）
+-- 如果transactions已被删除，transactions_v2会被重命名为transactions
+-- 如果transactions从未存在（全新安装），transactions_v2也会被重命名
+ALTER TABLE transactions_v2 RENAME TO transactions;
+
+-- 5.5 重建索引（提高查询性能）
+CREATE INDEX IF NOT EXISTS idx_transactions_statement ON transactions(statement_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_customer ON transactions(customer_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_card ON transactions(card_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_type ON transactions(original_line_type);
+CREATE INDEX IF NOT EXISTS idx_transactions_verify_status ON transactions(verify_status);
+CREATE INDEX IF NOT EXISTS idx_transactions_raw_statement ON transactions(raw_statement_id);
 
 COMMIT;
 
