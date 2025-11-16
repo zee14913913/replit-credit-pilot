@@ -31,10 +31,10 @@ class LedgerClassifier:
             FROM payer_aliases 
             WHERE is_active = 1
         """)
-        self.payer_aliases = {}  # {customer_id: {'customer': [...], 'company': [...]}}
+        self.payer_aliases = {}  # {customer_id: {'customer': [...], 'company': [...], 'infinite': [...]}}
         for customer_id, payer_type, alias in cursor.fetchall():
             if customer_id not in self.payer_aliases:
-                self.payer_aliases[customer_id] = {'customer': [], 'company': []}
+                self.payer_aliases[customer_id] = {'customer': [], 'company': [], 'infinite': []}
             self.payer_aliases[customer_id][payer_type].append(alias)
         
         # 加载转账收款人别名
@@ -76,16 +76,17 @@ class LedgerClassifier:
         
         规则（按PDF文件要求）:
         1. CC账单CR付款记录有客户名字 → customer
-        2. 没有任何付款details注释的无名付款 → customer (Owner's Payment)
-        3. 其他 → infinite
+        2. 无名付款 + 无details → customer (Owner's Payment)
+        3. 无名付款 + 有details (payment on behalf/for client) → infinite (GZ's Payment)
+        4. 其他 → infinite
         """
-        # PDF要求: 无名付款归入Owner's Payment
+        # 完全空的描述 → Owner's Payment
         if not description or description.strip() == '':
             return 'customer'
         
         description_lower = description.lower()
         
-        # 检查是否是该客户的别名
+        # 优先检查客户名字（最高优先级）
         if customer_id in self.payer_aliases:
             # 优先检查客户本名
             for alias in self.payer_aliases[customer_id]['customer']:
@@ -96,6 +97,21 @@ class LedgerClassifier:
             for alias in self.payer_aliases[customer_id]['company']:
                 if alias in description_lower:
                     return 'company'
+        
+        # 检查是否包含GZ代客户付款的关键词
+        gz_payment_keywords = [
+            'on behalf',
+            'behalf of',
+            'for client',
+            'client request',
+            'payment for',
+            'on behalf of client',
+            'payment on behalf'
+        ]
+        
+        for keyword in gz_payment_keywords:
+            if keyword in description_lower:
+                return 'infinite'  # GZ代客户付款
         
         # 默认为INFINITE付款
         return 'infinite'
