@@ -1,0 +1,474 @@
+{% extends "base.html" %}
+
+{% block title %}{{ data.year_month }} 月度详情 - {{ data.customer.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- 页面标题 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>
+                <i class="bi bi-calendar-check"></i> 
+                {{ data.customer.name }} - {{ data.year_month }} 月度详细账单
+            </h2>
+            <p class="text-muted">
+                <i class="bi bi-info-circle"></i> 
+                完整的计算过程和原始凭证
+            </p>
+        </div>
+        <div>
+            <a href="{{ url_for('browse_credit_card_excel_files', customer_id=data.customer.id) }}" 
+               class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> 返回文件浏览
+            </a>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- 第一部分：月度汇总统计 -->
+    <!-- ============================================================ -->
+    <div class="card calculation-card mb-4">
+        <div class="card-header calculation-header">
+            <h5><i class="bi bi-calculator"></i> 月度汇总统计</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <table class="table table-bordered detail-table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" class="text-center bg-gradient-pink">基本信息</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold">银行数量</td>
+                                <td>{{ data.statistics.bank_count }} 家银行</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">交易总数</td>
+                                <td>{{ data.statistics.total_transactions }} 笔</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">分类总数</td>
+                                <td>{{ data.statistics.category_breakdown|length }} 个分类</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <table class="table table-bordered detail-table">
+                        <thead>
+                            <tr>
+                                <th colspan="2" class="text-center bg-gradient-pink">余额信息</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold">上月余额</td>
+                                <td class="amount-positive">RM {{ "%.2f"|format(data.statistics.total_previous_balance) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">本月余额</td>
+                                <td class="amount-positive">RM {{ "%.2f"|format(data.statistics.total_closing_balance) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- 第二部分：双账本分类 (OWNER vs INFINITE GZ) -->
+    <!-- ============================================================ -->
+    <div class="card calculation-card mb-4">
+        <div class="card-header calculation-header">
+            <h5><i class="bi bi-diagram-3"></i> 双账本分类 (OWNER vs INFINITE GZ)</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- OWNER 账本 -->
+                <div class="col-md-6">
+                    <h6 class="section-subtitle">
+                        <i class="bi bi-person-circle text-info"></i> OWNER 账本
+                    </h6>
+                    <table class="table table-bordered detail-table">
+                        <thead>
+                            <tr>
+                                <th>项目</th>
+                                <th class="text-end">金额 (RM)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>OWNER 消费 (Expenses)</strong></td>
+                                <td class="text-end amount-negative">{{ "%.2f"|format(data.statistics.total_owner_expenses) }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>OWNER 付款 (Payments)</strong></td>
+                                <td class="text-end amount-positive">{{ "%.2f"|format(data.statistics.total_owner_payments) }}</td>
+                            </tr>
+                            <tr class="table-info">
+                                <td><strong>OWNER 净额</strong></td>
+                                <td class="text-end fw-bold">
+                                    {{ "%.2f"|format(data.statistics.total_owner_payments - data.statistics.total_owner_expenses) }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- INFINITE GZ 账本 -->
+                <div class="col-md-6">
+                    <h6 class="section-subtitle">
+                        <i class="bi bi-building text-warning"></i> INFINITE GZ 账本
+                    </h6>
+                    <table class="table table-bordered detail-table">
+                        <thead>
+                            <tr>
+                                <th>项目</th>
+                                <th class="text-end">金额 (RM)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>GZ 消费 (Expenses)</strong></td>
+                                <td class="text-end amount-negative">{{ "%.2f"|format(data.statistics.total_gz_expenses) }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>GZ 付款 (Payments)</strong></td>
+                                <td class="text-end amount-positive">{{ "%.2f"|format(data.statistics.total_gz_payments) }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>1% 管理费 (GZ Expenses × 1%)</strong></td>
+                                <td class="text-end amount-fee">{{ "%.2f"|format(data.statistics.management_fee) }}</td>
+                            </tr>
+                            <tr class="table-warning">
+                                <td><strong>GZ 应付余额 (Outstanding)</strong></td>
+                                <td class="text-end fw-bold">
+                                    {{ "%.2f"|format(data.statistics.gz_outstanding_balance) }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- 第三部分：银行账单明细 -->
+    <!-- ============================================================ -->
+    <div class="card calculation-card mb-4">
+        <div class="card-header calculation-header">
+            <h5><i class="bi bi-bank2"></i> 各银行账单明细</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered detail-table">
+                    <thead>
+                        <tr class="bg-gradient-purple">
+                            <th>银行</th>
+                            <th class="text-end">上月余额</th>
+                            <th class="text-end">本月余额</th>
+                            <th class="text-end">Owner 消费</th>
+                            <th class="text-end">Owner 付款</th>
+                            <th class="text-end">GZ 消费</th>
+                            <th class="text-end">GZ 付款</th>
+                            <th class="text-center">交易数</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stmt in data.monthly_statements %}
+                        <tr>
+                            <td class="fw-bold">{{ stmt.bank_name }}</td>
+                            <td class="text-end">{{ "%.2f"|format(stmt.previous_balance) }}</td>
+                            <td class="text-end">{{ "%.2f"|format(stmt.closing_balance) }}</td>
+                            <td class="text-end amount-negative">{{ "%.2f"|format(stmt.owner_expenses) }}</td>
+                            <td class="text-end amount-positive">{{ "%.2f"|format(stmt.owner_payments) }}</td>
+                            <td class="text-end amount-negative">{{ "%.2f"|format(stmt.gz_expenses) }}</td>
+                            <td class="text-end amount-positive">{{ "%.2f"|format(stmt.gz_payments) }}</td>
+                            <td class="text-center">{{ stmt.transaction_count }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="table-secondary fw-bold">
+                            <td>合计</td>
+                            <td class="text-end">{{ "%.2f"|format(data.statistics.total_previous_balance) }}</td>
+                            <td class="text-end">{{ "%.2f"|format(data.statistics.total_closing_balance) }}</td>
+                            <td class="text-end amount-negative">{{ "%.2f"|format(data.statistics.total_owner_expenses) }}</td>
+                            <td class="text-end amount-positive">{{ "%.2f"|format(data.statistics.total_owner_payments) }}</td>
+                            <td class="text-end amount-negative">{{ "%.2f"|format(data.statistics.total_gz_expenses) }}</td>
+                            <td class="text-end amount-positive">{{ "%.2f"|format(data.statistics.total_gz_payments) }}</td>
+                            <td class="text-center">{{ data.statistics.total_transactions }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- 第四部分：30+ 分类统计 -->
+    <!-- ============================================================ -->
+    <div class="card calculation-card mb-4">
+        <div class="card-header calculation-header">
+            <h5><i class="bi bi-tags"></i> 交易分类统计（30+ 分类）</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered detail-table">
+                    <thead>
+                        <tr class="bg-gradient-pink">
+                            <th>分类名称</th>
+                            <th class="text-center">交易笔数</th>
+                            <th class="text-end">总金额 (RM)</th>
+                            <th class="text-center">占比</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set total_amount = data.transactions|sum(attribute='amount') %}
+                        {% for category, stats in data.statistics.category_breakdown.items()|sort(attribute='1.total_amount', reverse=True) %}
+                        <tr>
+                            <td><strong>{{ category }}</strong></td>
+                            <td class="text-center">{{ stats.count }}</td>
+                            <td class="text-end">{{ "%.2f"|format(stats.total_amount) }}</td>
+                            <td class="text-center">
+                                {% set percentage = (stats.total_amount / total_amount * 100) if total_amount > 0 else 0 %}
+                                <span class="badge bg-info">{{ "%.1f"|format(percentage) }}%</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- 第五部分：7 家 Supplier 明细 -->
+    <!-- ============================================================ -->
+    {% if data.supplier_breakdown %}
+    <div class="card calculation-card mb-4">
+        <div class="card-header calculation-header">
+            <h5><i class="bi bi-building-fill-check"></i> Supplier 明细（7 家公司）</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for supplier, info in data.supplier_breakdown.items() %}
+                <div class="col-md-6 mb-3">
+                    <div class="supplier-card">
+                        <div class="supplier-header">
+                            <i class="bi bi-shop"></i>
+                            <strong>{{ supplier }}</strong>
+                        </div>
+                        <div class="supplier-stats">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="stat-label">交易笔数</div>
+                                    <div class="stat-value">{{ info.count }}</div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-label">总金额</div>
+                                    <div class="stat-value">RM {{ "%.2f"|format(info.total_amount) }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ============================================================ -->
+    <!-- 第六部分：原始PDF文件 -->
+    <!-- ============================================================ -->
+    <div class="card calculation-card mb-4">
+        <div class="card-header calculation-header">
+            <h5><i class="bi bi-file-pdf"></i> 原始PDF账单（凭证附件）</h5>
+        </div>
+        <div class="card-body">
+            {% if data.source_pdfs %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i>
+                共找到 <strong>{{ data.source_pdfs|length }}</strong> 份原始PDF文件
+            </div>
+            
+            <div class="row">
+                {% for pdf in data.source_pdfs %}
+                <div class="col-md-6 mb-3">
+                    <div class="pdf-card">
+                        <div class="pdf-icon">
+                            <i class="bi bi-file-pdf-fill text-danger"></i>
+                        </div>
+                        <div class="pdf-info">
+                            <div class="pdf-name">{{ pdf.filename }}</div>
+                            <div class="pdf-meta">
+                                {{ pdf.size_mb }} MB
+                            </div>
+                        </div>
+                        <div class="pdf-actions">
+                            <a href="{{ url_for('download_credit_card_excel_file', path=pdf.path.replace('credit_card_files/', '')) }}" 
+                               class="btn btn-sm btn-outline-danger" 
+                               target="_blank">
+                                <i class="bi bi-download"></i> 下载
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle"></i>
+                暂无原始PDF文件。请上传该月份的信用卡账单和银行流水PDF文件到：
+                <br>
+                <code>credit_card_files/{{ data.customer.name }}/source_pdfs/{{ data.year_month }}_BankName.pdf</code>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+<!-- 自定义样式 -->
+<style>
+.calculation-card {
+    border: 2px solid #322446;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.calculation-header {
+    background: linear-gradient(135deg, #FF007F 0%, #322446 100%);
+    color: white;
+    border-bottom: 3px solid #FF007F;
+    padding: 16px 20px;
+}
+
+.calculation-header h5 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.detail-table {
+    margin-bottom: 0;
+}
+
+.detail-table th {
+    background-color: #322446;
+    color: white;
+    font-weight: 600;
+    padding: 16px 18px;
+    border: 1px solid #444;
+}
+
+.detail-table td {
+    padding: 14px 18px;
+    border: 1px solid #ddd;
+}
+
+.detail-table tbody tr:hover {
+    background-color: rgba(255, 0, 127, 0.05);
+}
+
+.bg-gradient-pink {
+    background: linear-gradient(135deg, #FF007F 0%, #ff3399 100%) !important;
+    color: white !important;
+}
+
+.bg-gradient-purple {
+    background: linear-gradient(135deg, #322446 0%, #553377 100%) !important;
+    color: white !important;
+}
+
+.amount-positive {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.amount-negative {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.amount-fee {
+    color: #FF007F;
+    font-weight: 600;
+}
+
+.section-subtitle {
+    color: #322446;
+    border-bottom: 2px solid #FF007F;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
+
+.supplier-card {
+    border: 2px solid #322446;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.supplier-header {
+    background: linear-gradient(135deg, #322446 0%, #553377 100%);
+    color: white;
+    padding: 12px 16px;
+    font-weight: 600;
+}
+
+.supplier-stats {
+    padding: 16px;
+    background: #f8f9fa;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #FF007F;
+}
+
+.pdf-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border: 2px solid #dc3545;
+    border-radius: 8px;
+    background: white;
+}
+
+.pdf-icon i {
+    font-size: 42px;
+}
+
+.pdf-info {
+    flex: 1;
+}
+
+.pdf-name {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.pdf-meta {
+    font-size: 13px;
+    color: #666;
+}
+
+.pdf-actions {
+    display: flex;
+    gap: 8px;
+}
+</style>
+
+{% endblock %}

@@ -7292,6 +7292,25 @@ def browse_credit_card_excel_files(customer_id):
     )
 
 
+@app.route('/credit-card/excel-files/<int:customer_id>/<year_month>/detail')
+@require_admin_or_accountant
+def credit_card_month_detail(customer_id, year_month):
+    """查看月度详细计算和原始PDF文件"""
+    from services.statement_detail_service import StatementDetailService
+    
+    service = StatementDetailService()
+    detail_data = service.get_monthly_detail(customer_id, year_month)
+    
+    if not detail_data:
+        flash(f'未找到{year_month}月份的数据', 'warning')
+        return redirect(url_for('browse_credit_card_excel_files', customer_id=customer_id))
+    
+    return render_template(
+        'credit_card_month_detail.html',
+        data=detail_data
+    )
+
+
 @app.route('/credit-card/download-excel-file')
 @require_admin_or_accountant
 def download_credit_card_excel_file():

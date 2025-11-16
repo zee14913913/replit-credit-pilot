@@ -54,6 +54,19 @@
                  data-bs-parent="#monthsAccordion">
                 <div class="card-body">
                     
+                    <!-- 查看详细计算按钮 -->
+                    <div class="mb-4 text-center">
+                        <a href="{{ url_for('credit_card_month_detail', customer_id=customer.id, year_month=month.year_month) }}" 
+                           class="btn btn-lg btn-gradient-detail">
+                            <i class="bi bi-calculator-fill"></i> 
+                            查看详细计算与原始凭证
+                            <i class="bi bi-arrow-right-circle"></i>
+                        </a>
+                        <div class="detail-hint">
+                            查看完整的算法展示、30+分类统计、Supplier明细和原始PDF账单
+                        </div>
+                    </div>
+                    
                     <!-- 月度汇总文件 -->
                     {% if month.summary %}
                     <div class="summary-section mb-4">
@@ -208,6 +221,32 @@
 .card-body {
     padding: 24px;
     background-color: #fafbfc;
+}
+
+/* 查看详细计算按钮 */
+.btn-gradient-detail {
+    background: linear-gradient(135deg, #FF007F 0%, #322446 100%);
+    color: white;
+    font-weight: 600;
+    padding: 14px 32px;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 0, 127, 0.3);
+}
+
+.btn-gradient-detail:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 0, 127, 0.4);
+    color: white;
+}
+
+.detail-hint {
+    margin-top: 12px;
+    color: #666;
+    font-size: 13px;
+    font-style: italic;
 }
 
 /* 区块标题 */
