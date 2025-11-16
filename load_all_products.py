@@ -42,9 +42,8 @@ def load_excel_products() -> List[Dict]:
                 cell_value = sheet.cell(1, col).value
                 headers.append(str(cell_value).strip() if cell_value else f"Col{col}")
             
-            # 读取数据行（只读取前50行示例）
-            max_rows = min(sheet.max_row + 1, 52)
-            for row in range(2, max_rows):
+            # 读取所有数据行
+            for row in range(2, sheet.max_row + 1):
                 row_data = {}
                 for col_idx, header in enumerate(headers, start=1):
                     cell_value = sheet.cell(row, col_idx).value
