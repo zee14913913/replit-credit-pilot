@@ -2306,5 +2306,16 @@
   "initialization_failed": "Initialization Failed",
   "failed_to_load_evidence": "Failed To Load Evidence Bundles",
   "info_title": "Information",
-  "chinese": "Chinese"
+  "chinese": "Chinese",
+  "edit_customer_info": "Edit Customer Info",
+  "previous_balance_label": "Previous Balance",
+  "customer_total_spend_label": "Customer Total Spend",
+  "this_month_spend": "This Month Spend",
+  "this_month_payment": "This Month Payment",
+  "calculation_formula": "Calculation Formula: ",
+  "total_spend_label": "Total Spend",
+  "customer_cumulative_balance": "Customer Cumulative Balance",
+  "total_payments_label": "Total Payments",
+  "cumulative_balance": "Cumulative Balance",
+  "infinite_ledger_description": "Records consumption from 7 suppliers (including 1% service fee), other payments, rolling balance, and transfers to customer personal account"
 }

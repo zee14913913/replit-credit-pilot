@@ -14,7 +14,7 @@
             <a href="{{ url_for('edit_customer_page', customer_id=customer.id) }}" 
                class="btn-professional-outline" 
                style="padding: 0.875rem 1.5rem;">
-                <i class="bi bi-pencil-square"></i> 编辑客户信息
+                <i class="bi bi-pencil-square"></i> <span data-i18n="edit_customer_info">{{ t('edit_customer_info') }}</span>
             </a>
         </div>
     </div>
@@ -141,7 +141,7 @@
                     <div class="col-md-3 col-sm-6">
                         <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px; border: 1px solid rgba(212,175,55,0.2);">
                             <small style="color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">
-                                <i class="bi bi-1-circle"></i>{{ t('previous_balance') }}<br>上月余额
+                                <i class="bi bi-1-circle"></i><span data-i18n="previous_balance">{{ t('previous_balance') }}</span>
                             </small>
                             <div style="color: var(--text-primary); font-weight: 700; font-size: 1.1rem;">
                                 RM {{ "{:,.2f}".format(ledger.customer.previous_balance) }}
@@ -151,7 +151,7 @@
                     <div class="col-md-3 col-sm-6">
                         <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px; border: 1px solid rgba(212,175,55,0.2);">
                             <small style="color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">
-                                <i class="bi bi-2-circle"></i>{{ t('total_spend') }}<br>客户总消费
+                                <i class="bi bi-2-circle"></i><span data-i18n="total_spend">{{ t('total_spend') }}</span>
                             </small>
                             <div style="color: #FF7A43; font-weight: 700; font-size: 1.1rem;">
                                 RM {{ "{:,.2f}".format(ledger.customer.total_spend) }}
@@ -161,7 +161,7 @@
                     <div class="col-md-3 col-sm-6">
                         <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px; border: 1px solid rgba(212,175,55,0.2);">
                             <small style="color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">
-                                <i class="bi bi-3-circle"></i>{{ t('total_payments') }}<br>客户总付款
+                                <i class="bi bi-3-circle"></i><span data-i18n="total_payments">{{ t('total_payments') }}</span>
                             </small>
                             <div style="color: #4CAF50; font-weight: 700; font-size: 1.1rem;">
                                 RM {{ "{:,.2f}".format(ledger.customer.total_payments) }}
@@ -171,7 +171,7 @@
                     <div class="col-md-3 col-sm-6">
                         <div style="background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(255,122,67,0.1)); padding: 1rem; border-radius: 8px; border: 2px solid var(--accent-primary);">
                             <small style="color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">
-                                <i class="bi bi-4-circle-fill"></i>{{ t('customerdashboard_text_389') }}<br>客户累计余额
+                                <i class="bi bi-4-circle-fill"></i><span data-i18n="customer_cumulative_balance">{{ t('customer_cumulative_balance') }}</span>
                             </small>
                             <div style="color: var(--accent-primary); font-weight: 700; font-size: 1.2rem;">
                                 RM {{ "{:,.2f}".format(ledger.customer.rolling_balance) }}
@@ -183,8 +183,8 @@
                 <!-- Calculation Formula -->
                 <div style="margin-top: 1rem; padding: 0.75rem 1rem; background: rgba(212,175,55,0.05); border-radius: 6px; border-left: 3px solid var(--accent-primary);">
                     <small style="color: var(--text-secondary); font-family: 'Courier New', monospace;">
-                        <i class="bi bi-calculator"></i> 计算公式: 
-                        <span style="color: var(--text-primary);">上月余额 ({{ "{:,.2f}".format(ledger.customer.previous_balance) }}) + 本月消费 ({{ "{:,.2f}".format(ledger.customer.total_spend) }}) - 本月付款 ({{ "{:,.2f}".format(ledger.customer.total_payments) }}) = <strong style="color: var(--accent-primary);">{{ t('_rm_3') }} {{ "{:,.2f}".format(ledger.customer.rolling_balance) }}</strong></span>
+                        <i class="bi bi-calculator"></i> <span data-i18n="calculation_formula">{{ t('calculation_formula') }}</span>
+                        <span style="color: var(--text-primary);"><span data-i18n="previous_balance">{{ t('previous_balance') }}</span> ({{ "{:,.2f}".format(ledger.customer.previous_balance) }}) + <span data-i18n="this_month_spend">{{ t('this_month_spend') }}</span> ({{ "{:,.2f}".format(ledger.customer.total_spend) }}) - <span data-i18n="this_month_payment">{{ t('this_month_payment') }}</span> ({{ "{:,.2f}".format(ledger.customer.total_payments) }}) = <strong style="color: var(--accent-primary);">{{ t('_rm_3') }} {{ "{:,.2f}".format(ledger.customer.rolling_balance) }}</strong></span>
                     </small>
                 </div>
             </div>
@@ -200,7 +200,7 @@
                     <div class="col-md-2 col-sm-6">
                         <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px; border: 1px solid rgba(139,92,246,0.2);">
                             <small style="color: var(--text-secondary); display: block; margin-bottom: 0.5rem; font-size: 0.85rem;">
-                                <i class="bi bi-1-circle"></i>{{ t('previous') }}<br>上月余额
+                                <i class="bi bi-1-circle"></i><span data-i18n="previous_balance">{{ t('previous_balance') }}</span>
                             </small>
                             <div style="color: var(--text-primary); font-weight: 700; font-size: 1rem;">
                                 RM {{ "{:,.2f}".format(ledger.infinite.previous_balance) }}
@@ -210,7 +210,7 @@
                     <div class="col-md-2 col-sm-6">
                         <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px; border: 1px solid rgba(139,92,246,0.2);">
                             <small style="color: var(--text-secondary); display: block; margin-bottom: 0.5rem; font-size: 0.85rem;">
-                                <i class="bi bi-5-circle"></i>{{ t('total_spend') }}<br>总消费
+                                <i class="bi bi-5-circle"></i><span data-i18n="total_spend">{{ t('total_spend') }}</span>
                             </small>
                             <div style="color: #FF7A43; font-weight: 700; font-size: 1rem;">
                                 RM {{ "{:,.2f}".format(ledger.infinite.total_spend) }}
@@ -220,7 +220,7 @@
                     <div class="col-md-2 col-sm-6">
                         <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px; border: 1px solid rgba(139,92,246,0.2);">
                             <small style="color: var(--text-secondary); display: block; margin-bottom: 0.5rem; font-size: 0.85rem;">
-                                <i class="bi bi-tag"></i>{{ t('fee_1') }}<br>手续费
+                                <i class="bi bi-tag"></i><span data-i18n="service_fee">{{ t('service_fee') }}</span>
                             </small>
                             <div style="color: #FFC107; font-weight: 700; font-size: 1rem;">
                                 RM {{ "{:,.2f}".format(ledger.infinite.supplier_fee) }}
@@ -230,7 +230,7 @@
                     <div class="col-md-2 col-sm-6">
                         <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px; border: 1px solid rgba(139,92,246,0.2);">
                             <small style="color: var(--text-secondary); display: block; margin-bottom: 0.5rem; font-size: 0.85rem;">
-                                <i class="bi bi-6-circle"></i>{{ t('payments') }}<br>总付款
+                                <i class="bi bi-6-circle"></i><span data-i18n="total_payments">{{ t('total_payments') }}</span>
                             </small>
                             <div style="color: #4CAF50; font-weight: 700; font-size: 1rem;">
                                 RM {{ "{:,.2f}".format(ledger.infinite.total_payments) }}
@@ -240,7 +240,7 @@
                     <div class="col-md-2 col-sm-6">
                         <div style="background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(255,122,67,0.1)); padding: 1rem; border-radius: 8px; border: 2px solid var(--accent-secondary);">
                             <small style="color: var(--text-secondary); display: block; margin-bottom: 0.5rem; font-size: 0.85rem;">
-                                <i class="bi bi-7-circle-fill"></i>{{ t('balance') }}<br>累计余额
+                                <i class="bi bi-7-circle-fill"></i><span data-i18n="cumulative_balance">{{ t('cumulative_balance') }}</span>
                             </small>
                             <div style="color: var(--accent-secondary); font-weight: 700; font-size: 1rem;">
                                 RM {{ "{:,.2f}".format(ledger.infinite.rolling_balance) }}
@@ -250,7 +250,7 @@
                     <div class="col-md-2 col-sm-6">
                         <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px; border: 1px solid rgba(139,92,246,0.2);">
                             <small style="color: var(--text-secondary); display: block; margin-bottom: 0.5rem; font-size: 0.85rem;">
-                                <i class="bi bi-8-circle"></i>{{ t('transfers') }}<br>转账
+                                <i class="bi bi-8-circle"></i><span data-i18n="transfers">{{ t('transfers') }}</span>
                             </small>
                             <div style="color: #2196F3; font-weight: 700; font-size: 1rem;">
                                 RM {{ "{:,.2f}".format(ledger.infinite.transfers) }}
@@ -262,8 +262,8 @@
                 <!-- INFINITE Formula -->
                 <div style="margin-top: 1rem; padding: 0.75rem 1rem; background: rgba(139,92,246,0.05); border-radius: 6px; border-left: 3px solid var(--accent-secondary);">
                     <small style="color: var(--text-secondary); font-family: 'Courier New', monospace;">
-                        <i class="bi bi-calculator"></i> 计算公式: 
-                        <span style="color: var(--text-primary);">上月余额 ({{ "{:,.2f}".format(ledger.infinite.previous_balance) }}) + 本月消费 ({{ "{:,.2f}".format(ledger.infinite.total_spend) }}) - 本月付款 ({{ "{:,.2f}".format(ledger.infinite.total_payments) }}) = <strong style="color: var(--accent-secondary);">{{ t('_rm_3') }} {{ "{:,.2f}".format(ledger.infinite.rolling_balance) }}</strong></span>
+                        <i class="bi bi-calculator"></i> <span data-i18n="calculation_formula">{{ t('calculation_formula') }}</span>
+                        <span style="color: var(--text-primary);"><span data-i18n="previous_balance">{{ t('previous_balance') }}</span> ({{ "{:,.2f}".format(ledger.infinite.previous_balance) }}) + <span data-i18n="this_month_spend">{{ t('this_month_spend') }}</span> ({{ "{:,.2f}".format(ledger.infinite.total_spend) }}) - <span data-i18n="this_month_payment">{{ t('this_month_payment') }}</span> ({{ "{:,.2f}".format(ledger.infinite.total_payments) }}) = <strong style="color: var(--accent-secondary);">{{ t('_rm_3') }} {{ "{:,.2f}".format(ledger.infinite.rolling_balance) }}</strong></span>
                     </small>
                 </div>
                 
@@ -287,7 +287,7 @@
                     </h6>
                     <p style="margin-bottom: 0.5rem; color: var(--text-secondary); line-height: 1.6;">
                         <strong style="color: var(--text-primary);">{{ t('14') }}</strong>{{ t('keng_chow') }}<br>
-                        <strong style="color: var(--text-primary);">{{ t('infinite58') }}</strong>记录7个供应商的消费（含1%手续费）、其他付款、滚动余额、以及转账到客户私人户口的金额
+                        <strong style="color: var(--text-primary);">{{ t('infinite58') }}</strong><span data-i18n="infinite_ledger_description">{{ t('infinite_ledger_description') }}</span>
                     </p>
                     <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">
                         💡 <strong>{{ t('8_1') }}</strong>{{ t('build_profile_1') }}和信用卡还款。

@@ -2306,5 +2306,16 @@
   "initialization_failed": "初始化失败",
   "failed_to_load_evidence": "加载证据列表失败",
   "info_title": "信息",
-  "chinese": "中文"
+  "chinese": "中文",
+  "edit_customer_info": "编辑客户信息",
+  "previous_balance_label": "上月余额",
+  "customer_total_spend_label": "客户总消费",
+  "this_month_spend": "本月消费",
+  "this_month_payment": "本月付款",
+  "calculation_formula": "计算公式: ",
+  "total_spend_label": "总消费",
+  "customer_cumulative_balance": "客户累计余额",
+  "total_payments_label": "客户总付款",
+  "cumulative_balance": "累计余额",
+  "infinite_ledger_description": "记录7个供应商的消费（含1%手续费）、其他付款、滚动余额、以及转账到客户私人户口的金额"
 }
