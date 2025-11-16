@@ -81,27 +81,23 @@ class UnifiedNavigation {
 // ============================================
 class NextActionButton {
     static ACTION_CONFIGS = {
-        'review_manually': { icon: 'eye', key: 'manual_review', label_zh: '人工审核', label_en: 'Manual Review', color: 'warning' },
-        'upload_new_file': { icon: 'upload', key: 're_upload', label_zh: '重新上传', label_en: 'Re-upload', color: 'primary' },
-        'edit_record': { icon: 'pencil', key: 'edit_button', label_zh: '编辑', label_en: 'Edit', color: 'info' },
-        'delete_record': { icon: 'trash', key: 'delete_button', label_zh: '删除', label_en: 'Delete', color: 'danger' },
-        'retry': { icon: 'arrow-repeat', key: 'retry_button', label_zh: '重试', label_en: 'Retry', color: 'success' },
-        'ignore': { icon: 'x-circle', key: 'ignore_button', label_zh: '忽略', label_en: 'Ignore', color: 'secondary' }
+        'review_manually': { icon: 'eye', key: 'manual_review', color: 'warning' },
+        'upload_new_file': { icon: 'upload', key: 're_upload', color: 'primary' },
+        'edit_record': { icon: 'pencil', key: 'edit_button', color: 'info' },
+        'delete_record': { icon: 'trash', key: 'delete_button', color: 'danger' },
+        'retry': { icon: 'arrow-repeat', key: 'retry_button', color: 'success' },
+        'ignore': { icon: 'x-circle', key: 'ignore_button', color: 'secondary' }
     };
     
     static render(action, recordId, language = 'zh') {
-        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+        const t = (key, fallback) => window.i18n?.translate(key) || fallback;
         const config = this.ACTION_CONFIGS[action] || {
             icon: 'question',
-            key: null,
-            label_zh: action,
-            label_en: action,
+            key: action,
             color: 'secondary'
         };
         
-        const label = config.key 
-            ? t(config.key, language === 'zh' ? config.label_zh : config.label_en)
-            : (language === 'zh' ? config.label_zh : config.label_en);
+        const label = config.key ? t(config.key, action) : action;
         
         return `
             <button class="btn btn-sm btn-${config.color}" 
@@ -146,10 +142,11 @@ class I18nManager {
         const selector = document.getElementById('language-selector');
         if (!selector) return;
         
+        const t = (key, fallback) => window.i18n?.translate(key) || fallback;
         selector.innerHTML = `
-            <select class="form-select form-select-sm" onchange="i18n.setLanguage(this.value)" aria-label="${this.translate('select_language', '选择语言')}">
-                <option value="zh" ${this.currentLanguage === 'zh' ? 'selected' : ''}>中文</option>
-                <option value="en" ${this.currentLanguage === 'en' ? 'selected' : ''}>English</option>
+            <select class="form-select form-select-sm" onchange="i18n.setLanguage(this.value)" aria-label="${t('select_language', 'Select Language')}">
+                <option value="zh" ${this.currentLanguage === 'zh' ? 'selected' : ''}>${t('chinese', '中文')}</option>
+                <option value="en" ${this.currentLanguage === 'en' ? 'selected' : ''}>${t('english', 'English')}</option>
             </select>
         `;
     }
@@ -168,18 +165,14 @@ class I18nManager {
 // ============================================
 class ErrorHandler {
     static show(message, options = {}) {
-        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+        const t = (key, fallback) => window.i18n?.translate(key) || fallback;
         const {
-            title_zh = t('error_title', '错误'),
-            title_en = t('error_title', 'Error'),
+            title = t('error_title', 'Error'),
             type = 'error',
             duration = 5000,
             showRetry = false,
             onRetry = null
         } = options;
-        
-        const language = localStorage.getItem('language') || 'zh';
-        const title = language === 'zh' ? title_zh : title_en;
         
         const alertClass = type === 'error' ? 'danger' : type === 'warning' ? 'warning' : 'info';
         
@@ -192,7 +185,7 @@ class ErrorHandler {
                 ${showRetry ? `
                     <hr>
                     <button class="btn btn-sm btn-outline-${alertClass}" onclick="errorRetry()">
-                        <i class="bi bi-arrow-repeat"></i> ${language === 'zh' ? t('retry_button', '重试') : t('retry_button', 'Retry')}
+                        <i class="bi bi-arrow-repeat"></i> ${t('retry_button', 'Retry')}
                     </button>
                 ` : ''}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -226,20 +219,17 @@ class ErrorHandler {
     }
     
     static success(message) {
-        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
-        const language = localStorage.getItem('language') || 'zh';
+        const t = (key, fallback) => window.i18n?.translate(key) || fallback;
         this.show(message, {
-            title_zh: t('success_title', '成功'),
-            title_en: t('success_title', 'Success'),
+            title: t('success_title', 'Success'),
             type: 'success'
         });
     }
     
     static warning(message) {
-        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+        const t = (key, fallback) => window.i18n?.translate(key) || fallback;
         this.show(message, {
-            title_zh: t('warning_title', '警告'),
-            title_en: t('warning_title', 'Warning'),
+            title: t('warning_title', 'Warning'),
             type: 'warning'
         });
     }
@@ -280,19 +270,16 @@ class LoadingState {
         }
     }
     
-    static showSpinner(message_zh = null, message_en = null) {
-        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
-        const language = localStorage.getItem('language') || 'zh';
-        message_zh = message_zh || t('loading_text', '加载中...');
-        message_en = message_en || t('loading_text', 'Loading...');
-        const message = language === 'zh' ? message_zh : message_en;
+    static showSpinner(message = null) {
+        const t = (key, fallback) => window.i18n?.translate(key) || fallback;
+        const displayMessage = message || t('loading_text', 'Loading...');
         
         const spinnerHTML = `
             <div id="global-spinner" class="position-fixed top-50 start-50 translate-middle" style="z-index: 9999;">
                 <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                    <span class="visually-hidden">${message}</span>
+                    <span class="visually-hidden">${displayMessage}</span>
                 </div>
-                <p class="mt-2 text-center">${message}</p>
+                <p class="mt-2 text-center">${displayMessage}</p>
             </div>
             <div id="global-spinner-overlay" class="position-fixed top-0 start-0 w-100 h-100" 
                  style="background: rgba(0,0,0,0.3); z-index: 9998;"></div>
@@ -309,18 +296,15 @@ class LoadingState {
         if (overlay) overlay.remove();
     }
     
-    static showProgress(percent, message_zh = null, message_en = null) {
-        const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
-        const language = localStorage.getItem('language') || 'zh';
-        message_zh = message_zh || t('processing_text', '处理中...');
-        message_en = message_en || t('processing_text', 'Processing...');
-        const message = language === 'zh' ? message_zh : message_en;
+    static showProgress(percent, message = null) {
+        const t = (key, fallback) => window.i18n?.translate(key) || fallback;
+        const displayMessage = message || t('processing_text', 'Processing...');
         
         const progressHTML = `
             <div id="global-progress" class="position-fixed top-50 start-50 translate-middle" style="z-index: 9999; width: 400px;">
                 <div class="card">
                     <div class="card-body">
-                        <p class="mb-2">${message}</p>
+                        <p class="mb-2">${displayMessage}</p>
                         <div class="progress">
                             <div class="progress-bar progress-bar-striped progress-bar-animated" 
                                  role="progressbar" 

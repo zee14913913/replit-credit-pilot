@@ -180,7 +180,7 @@
   "alert_file_id": "\nFile ID: ",
   "alert_download_function": "Download Function:\nFile Path: ",
   "alert_download_endpoint": "\n\nNeed To Implement Download Endpoint",
-  "confirm_delete_file": "Are You Sure You Want To Delete This File? This Action Cannot Be Undone.",
+  "confirm_delete_file": "Confirm Delete: {filename}?",
   "alert_delete_not_implemented": "⚠️ Delete API Not Implemented",
   "fallback_na": "N/A",
   "all_fields_required": "All Fields Are Required",
@@ -2298,5 +2298,13 @@
   "toast_info": "Info",
   "operation_success": "Operation Successful",
   "save_success": "Saved Successfully",
-  "delete_success": "Deleted Successfully"
+  "delete_success": "Deleted Successfully",
+  "enter_task_secret_token": "Please Enter TASK_SECRET_TOKEN:",
+  "deleted_successfully": "Deleted Successfully",
+  "failed_to_delete": "Failed To Delete",
+  "failed_to_run_rotation": "Failed To Run Rotation",
+  "initialization_failed": "Initialization Failed",
+  "failed_to_load_evidence": "Failed To Load Evidence Bundles",
+  "info_title": "Information",
+  "chinese": "Chinese"
 }

@@ -15,8 +15,9 @@ async function initPage() {
         await loadEvidenceList();
         setupEventListeners();
     } catch (error) {
-        console.error('初始化失败:', error);
-        showToast('Failed to initialize page', 'error');
+        console.error('Initialization error:', error);
+        const t = (key, fallback) => window.i18n?.translate(key) || fallback;
+        showToast(t('initialization_failed', 'Failed to initialize page'), 'error');
     }
 }
 
@@ -46,11 +47,12 @@ async function loadEvidenceList() {
         
         renderTable();
     } catch (error) {
-        console.error('加载证据列表失败:', error);
+        console.error('Load evidence error:', error);
+        const t = (key, fallback) => window.i18n?.translate(key) || fallback;
         document.getElementById('evidence-tbody').innerHTML = `
             <tr>
-                <td colspan="6" class="no-records" data-i18n="failed_to_load">
-                    Failed to load evidence bundles
+                <td colspan="6" class="no-records" data-i18n="failed_to_load_evidence">
+                    ${t('failed_to_load_evidence', 'Failed to load evidence bundles')}
                 </td>
             </tr>
         `;
@@ -123,7 +125,10 @@ function isAdmin() {
 }
 
 async function deleteBundle(filename) {
-    const confirmMsg = getTranslation('confirm_delete') || `确认删除: ${filename}?`;
+    const t = (key, fallback) => window.i18n?.translate(key) || fallback;
+    const template = t('confirm_delete_file', 'Confirm Delete: {filename}?');
+    const confirmMsg = template.replace('{filename}', filename);
+    
     if (!confirm(confirmMsg)) {
         return;
     }
@@ -140,30 +145,33 @@ async function deleteBundle(filename) {
         const result = await response.json();
         
         if (!result.success) {
-            throw new Error(result.error || 'Delete failed');
+            throw new Error(result.error || t('delete_failed', 'Delete failed'));
         }
         
-        showToast(result.message || 'Deleted successfully', 'success');
+        showToast(result.message || t('deleted_successfully', 'Deleted successfully'), 'success');
         await loadEvidenceList();
     } catch (error) {
-        console.error('删除失败:', error);
-        showToast(error.message || 'Failed to delete', 'error');
+        console.error('Delete error:', error);
+        showToast(error.message || t('failed_to_delete', 'Failed to delete'), 'error');
     }
 }
 
 async function runRotation() {
-    const confirmMsg = getTranslation('confirm_rotation') || '确认执行证据包轮转策略？';
+    const t = (key, fallback) => window.i18n?.translate(key) || fallback;
+    const confirmMsg = t('confirm_rotation', 'Confirm Evidence Bundle Rotation?');
+    
     if (!confirm(confirmMsg)) {
         return;
     }
     
-    const token = prompt('请输入TASK_SECRET_TOKEN:', '');
+    const promptMsg = t('enter_task_secret_token', 'Please Enter TASK_SECRET_TOKEN:');
+    const token = prompt(promptMsg, '');
     if (!token) {
         return;
     }
     
     try {
-        showToast(getTranslation('rotation_running') || '正在执行轮转...', 'info');
+        showToast(t('rotation_running', 'Running Rotation...'), 'info');
         
         const response = await fetch('/tasks/evidence/rotate', {
             method: 'POST',
@@ -176,17 +184,17 @@ async function runRotation() {
         const result = await response.json();
         
         if (!result.success) {
-            throw new Error(result.error || 'Rotation failed');
+            throw new Error(result.error || t('rotation_failed', 'Rotation failed'));
         }
         
-        const msg = getTranslation('rotation_done') || 
-            `轮转完成！保留${result.kept.length}个，删除${result.deleted.length}个`;
+        const template = t('rotation_done', 'Rotation Completed! Kept {kept} Files, Deleted {deleted} Files');
+        const msg = template.replace('{kept}', result.kept.length).replace('{deleted}', result.deleted.length);
         showToast(msg, 'success');
         
         await loadEvidenceList();
     } catch (error) {
-        console.error('轮转失败:', error);
-        showToast(error.message || 'Failed to run rotation', 'error');
+        console.error('Rotation error:', error);
+        showToast(error.message || t('failed_to_run_rotation', 'Failed to run rotation'), 'error');
     }
 }
 

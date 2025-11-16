@@ -335,7 +335,7 @@
   "alert_file_id": "\n文件ID：",
   "alert_download_function": "下载功能：\n文件路径：",
   "alert_download_endpoint": "\n\n需要实现文件下载端点",
-  "confirm_delete_file": "确定要删除此文件吗？此操作不可撤销。",
+  "confirm_delete_file": "确认删除: {filename}?",
   "alert_delete_not_implemented": "⚠️ 删除接口未实现",
   "fallback_na": "N/A",
   "invalid_email_password": "邮箱或密码错误",
@@ -2298,5 +2298,13 @@
   "toast_info": "信息",
   "operation_success": "操作成功",
   "save_success": "保存成功",
-  "delete_success": "删除成功"
+  "delete_success": "删除成功",
+  "enter_task_secret_token": "请输入TASK_SECRET_TOKEN:",
+  "deleted_successfully": "删除成功",
+  "failed_to_delete": "删除失败",
+  "failed_to_run_rotation": "轮转失败",
+  "initialization_failed": "初始化失败",
+  "failed_to_load_evidence": "加载证据列表失败",
+  "info_title": "信息",
+  "chinese": "中文"
 }
