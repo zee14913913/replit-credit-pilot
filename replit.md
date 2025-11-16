@@ -53,15 +53,15 @@ The design system emphasizes clean layouts with bilingual support (English/Chine
 The main navigation features 7 core modules aligned with business workflow: DASHBOARD, CREDIT CARDS, SAVINGS, RECEIPTS, LOANS, REPORTS, and ADMIN.
 
 **Department Separation (CRITICAL)**:
-- **CREDIT CARDS Department**: Manages credit card customers (CHANG CHOON CHOW, CHEOK JUN YOON, etc.). All files stored in `credit_card_files/{customer_name}/` with Excel exports, monthly statements, and transaction details.
-- **ACCOUNTING Department** (Future): Reserved exclusively for Acc & Audit professional clients. Completely separate from credit card management. Files will be stored in `accounting_files/` when implemented.
+- **CREDIT CARDS Department**: Manages credit card customers. Files stored in `credit_card_files/{customer_name}/` with Excel exports, monthly statements, and transaction details.
+- **ACCOUNTING Department** (Future): Reserved for Acc & Audit professional clients. Completely separate from credit card management. Files will be stored in `accounting_files/` when implemented.
 
 The **CREDIT CARDS** page is a central hub for uploading statements, managing suppliers, processing payments, OCR receipts, and viewing Excel files.
 
 ### Technical Implementations
 The backend uses Flask with SQLite and a context manager for database interactions. Jinja2 handles server-side rendering, complemented by Bootstrap 5 and Bootstrap Icons for the UI. Plotly.js provides client-side data visualization, and PDF.js is used for client-side PDF-to-CSV conversion. A robust notification system provides real-time updates. The AI system uses a unified client architecture supporting multiple providers (Perplexity primary, OpenAI backup) with automatic failover and environment-based configuration.
 
-**VBA Hybrid Architecture (INFINITE GZ Extension):** The system implements a client-server hybrid architecture where VBA (Windows Excel client) handles primary statement parsing, and Replit receives standardized JSON data via REST API. This architecture prioritizes accuracy and cost-efficiency: VBA directly reads Excel cells with 95%+ accuracy, avoiding expensive OCR services. PDF statements are converted to Excel using Tabula/Adobe Acrobat Pro client-side, then parsed by VBA. The system provides 5 VBA templates, Python PDF conversion tools, and dual API endpoints (/api/upload/vba-json for single files, /api/upload/vba-batch for batch uploads) with JSON format validation. Python Excel parsers are retained as backup for system resilience.
+**VBA Hybrid Architecture (INFINITE GZ Extension):** The system implements a client-server hybrid architecture where VBA (Windows Excel client) handles primary statement parsing, and Replit receives standardized JSON data via REST API. This architecture prioritizes accuracy and cost-efficiency: VBA directly reads Excel cells with 95%+ accuracy, avoiding expensive OCR services. PDF statements are converted to Excel using Tabula/Adobe Acrobat Pro client-side, then parsed by VBA. The system provides 5 VBA templates, Python PDF conversion tools, and dual API endpoints (`/api/upload/vba-json` for single files, `/api/upload/vba-batch` for batch uploads) with JSON format validation. Python Excel parsers are retained as backup for system resilience.
 
 ### Feature Specifications
 **Core Features:**
@@ -69,7 +69,7 @@ The backend uses Flask with SQLite and a context manager for database interactio
 - **AI-Powered Advisory:** Credit card recommendations, financial optimization, cash flow prediction, anomaly detection, financial health scoring, and loan eligibility assessment.
 - **AI Smart Assistant V3 (Enterprise Intelligence):** Advanced multi-provider AI system with real-time web search, floating chatbot UI, cross-module analysis, automated daily financial reports, system analytics, and comprehensive conversation history logging.
 - **Income Document System:** Upload, OCR processing, and standardization of income proof documents with intelligent aggregation and confidence scoring.
-- **Dual-Engine Loan Evaluation System (CREDITPILOT):** Production-ready dual-mode architecture supporting both legacy DSR/DSCR engines and modern Malaysian banking standards (DTI/FOIR/CCRIS/BRR). Implements comprehensive risk scoring (Personal: DTI/FOIR/CCRIS bucket, SME: BRR/DSCR/DSR/Industry/Cashflow Variance) with intelligent product matching across 12+ banks/Fintech providers. CTOS data serves as the exclusive debt commitment source.
+- **Dual-Engine Loan Evaluation System (CREDITPILOT):** Production-ready dual-mode architecture supporting both legacy DSR/DSCR engines and modern Malaysian banking standards (DTI/FOIR/CCRIS/BRR). Implements comprehensive risk scoring with intelligent product matching across 12+ banks/Fintech providers. CTOS data serves as the exclusive debt commitment source.
 - **Reporting & Export:** Professional Excel/CSV/PDF reports, automated monthly reports.
 - **Workflow Automation:** Batch operations, rule engine for transaction matching.
 - **Security & Compliance:** Multi-role authentication & authorization (RBAC), audit logging, data integrity validation.
@@ -120,58 +120,3 @@ A production-ready Unified RBAC Implementation protects 32 functions. The `@requ
 
 ### SFTP ERP Automation System
 A production-ready SFTP synchronization system, implemented with a FastAPI backend (Port 8000) and Paramiko, automatically exports 7 types of financial data to SQL ACC ERP Edition via secure SFTP every 10 minutes.
-
-## Recent Changes
-
-### Nov 16, 2025 - 双语系统Session持久化修复
-
-**发现问题**：系统已有完整的i18n基础架构（2127行翻译资源、后端session管理、前端JavaScript框架），但前端切换语言时未调用后端API保存session，导致刷新页面后语言重置。
-
-**实施修复**（100%符合UI样式强保护条款）：
-1. **static/js/i18n.js** - 添加`fetch('/set-language/${lang}')`调用，确保session持久化
-2. **templates/layout.html** - 优化语言切换按钮UI（添加图标，高亮当前语言）
-
-**修复验证**：
-- ✅ 零CSS文件变更（`git diff` 无输出）
-- ✅ 100%复用现有样式class（`.lang-btn`, `.lang-btn.active`）
-- ✅ 零新增样式规则
-- ✅ Architect专业审查通过
-- ✅ 符合"零样式污染、零视觉变化"保护原则
-
-**功能状态**：
-- ✅ 用户点击语言按钮 → 全站即时切换（EN ⇄ 中文）
-- ✅ 刷新页面后语言保持一致
-- ✅ 2000+翻译条目自动应用
-- ✅ 可安全上线生产环境
-
-**技术文档**：详见 `BILINGUAL_SYSTEM_IMPLEMENTATION_REPORT.md`
-
-### Nov 15, 2024
-
-### VBA Hybrid Architecture Implementation
-Added complete VBA-based hybrid processing system for INFINITE GZ credit card and bank statement parsing:
-
-**Client-Side Components (vba_templates/):**
-- `1_CreditCardParser.vba`: Credit card statement parser with 30+ intelligent categories
-- `2_BankStatementParser.vba`: Bank statement parser supporting PBB/MBB/CIMB/RHB/HLB
-- `3_PDFtoExcel_Guide.vba`: PDF conversion workflow documentation
-- `4_DataValidator.vba`: Balance verification and data quality checker
-- `5_Usage_Guide.md`: Quick start guide for VBA templates
-- `JSON_Format_Specification.md`: Standard JSON format specification
-- `COMPLETE_INTEGRATION_GUIDE.md`: End-to-end integration documentation
-
-**PDF Conversion Tools (tools/pdf_converter/):**
-- `pdf_to_excel.py`: Python tool using Tabula/PDFPlumber for batch PDF-to-Excel conversion
-- `README.md`: Tool usage instructions and troubleshooting guide
-
-**Server-Side API (app.py):**
-- `POST /api/upload/vba-json`: Single JSON file upload endpoint with format validation
-- `POST /api/upload/vba-batch`: Batch JSON upload endpoint supporting multiple files
-
-**Python Backup Parsers (services/excel_parsers/):**
-- `bank_statement_excel_parser.py`: Server-side Excel parser for bank statements
-- `credit_card_excel_parser.py`: Server-side Excel parser for credit cards
-- `bank_detector.py`: Automatic bank format detection
-- `transaction_classifier.py`: 30+ transaction classification rules
-
-**Architecture Decision:** VBA client-side processing chosen for high accuracy (95%+), low cost (no OCR fees), and team expertise. PDF-to-Excel conversion happens client-side using Tabula/Adobe tools. Standardized JSON format ensures reliable data exchange. Python parsers retained as backup for system resilience.
