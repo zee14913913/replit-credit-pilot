@@ -4177,6 +4177,25 @@ def select_product_for_evaluation():
         return jsonify({'error': str(e)}), 500
 
 
+@app.route('/all-products-catalog')
+def all_products_catalog():
+    """完整产品目录 - 展示所有797个真实产品"""
+    from load_all_products import get_all_products
+    
+    try:
+        result = get_all_products()
+        
+        return render_template('all_products_catalog.html',
+                             excel_products=result['excel'],
+                             json_products=result['json'],
+                             excel_count=len(result['excel']),
+                             json_count=len(result['json']),
+                             total_count=result['total'])
+    except Exception as e:
+        logger.error(f"加载产品目录失败: {e}")
+        flash(f"加载产品目录失败: {str(e)}", "danger")
+        return redirect(url_for('index'))
+
 @app.route('/loan-products-dashboard')
 @require_admin_or_accountant
 def loan_products_dashboard():
