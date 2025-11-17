@@ -53,7 +53,9 @@ The main navigation features 8 core modules: DASHBOARD, CUSTOMERS, CREDIT CARDS,
 ### Technical Implementations
 The backend uses Flask with SQLite and a context manager for database interactions. Jinja2 handles server-side rendering, complemented by Bootstrap 5 and Bootstrap Icons for the UI. Plotly.js provides client-side data visualization, and PDF.js is used for client-side PDF-to-CSV conversion. A robust notification system provides real-time updates. The AI system uses a unified client architecture supporting multiple providers (Perplexity primary, OpenAI backup) with automatic failover and environment-based configuration.
 
-**VBA Hybrid Architecture (INFINITE GZ Extension) - MANDATORY:** The system implements a client-server hybrid architecture where VBA (Windows Excel client) handles **primary and ONLY** statement parsing, and Replit receives standardized JSON data via REST API. This prioritizes accuracy and cost-efficiency. PDF statements are converted to Excel client-side, then parsed by VBA. Dual API endpoints (`/api/upload/vba-json` for single files, `/api/upload/vba-batch` for batch uploads) are provided. Python Excel/OCR parsers are retained as **backup only** (manual trigger). **Direct PDF upload with auto-parsing is DISABLED** via `config/pdf_parser_config.py` (PARSER_MODE = VBA_ONLY).
+**PDF Parsing Architecture - Google Document AI (2025-11-17):** System now uses Google Document AI for PDF parsing instead of DocParser. Authentication requires Service Account JSON. Google Document AI provides 98-99.9% OCR accuracy for text extraction but has limitations with multi-column table layouts in Malaysian bank statements. Text extraction works well but transaction details (dates, amounts) may require additional post-processing logic due to column layout preservation issues.
+
+**VBA Hybrid Architecture (LEGACY):** Previously used VBA-based parsing with Excel client. Kept for reference. Python Excel/OCR parsers are retained as backup.
 
 ### Feature Specifications
 **Core Features:**

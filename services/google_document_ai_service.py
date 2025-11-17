@@ -36,7 +36,7 @@ class GoogleDocumentAIService:
         """
         # 获取配置
         self.project_id = project_id or os.getenv('GOOGLE_PROJECT_ID')
-        self.location = location or os.getenv('GOOGLE_LOCATION', 'asia-southeast1')
+        self.location = location or os.getenv('GOOGLE_LOCATION', 'us')
         self.processor_id = processor_id or os.getenv('GOOGLE_PROCESSOR_ID')
         
         if not self.project_id:
@@ -208,7 +208,7 @@ class GoogleDocumentAIService:
     
     def extract_bank_statement_fields(self, parsed_doc: Dict) -> Dict[str, Any]:
         """
-        从解析结果中提取银行账单字段
+        从解析结果中提取银行账单字段（改进版 - 直接从文本解析）
         
         Args:
             parsed_doc: parse_pdf返回的字典
@@ -216,6 +216,10 @@ class GoogleDocumentAIService:
         Returns:
             Dict: 标准化的账单字段
         """
+        import re
+        
+        text = parsed_doc.get('text', '')
+        
         fields = {
             'card_number': None,
             'statement_date': None,
@@ -229,48 +233,71 @@ class GoogleDocumentAIService:
             'transactions': []
         }
         
-        # 从entities提取字段
-        for entity in parsed_doc.get('entities', []):
-            entity_type = entity['type'].lower()
-            mention_text = entity['mention_text']
-            
-            if 'card' in entity_type or 'account' in entity_type:
-                # 提取卡号后4位
-                import re
-                match = re.search(r'\d{4}', mention_text)
-                if match:
-                    fields['card_number'] = match.group()
-            
-            elif 'date' in entity_type:
-                if 'statement' in entity_type or 'billing' in entity_type:
-                    fields['statement_date'] = mention_text
-                elif 'due' in entity_type or 'payment' in entity_type:
-                    fields['payment_due_date'] = mention_text
-            
-            elif 'name' in entity_type or 'cardholder' in entity_type:
-                fields['cardholder_name'] = mention_text
-            
-            elif 'balance' in entity_type:
-                amount = self._parse_amount(mention_text)
-                if 'previous' in entity_type or 'last' in entity_type:
-                    fields['previous_balance'] = amount
-                elif 'current' in entity_type or 'new' in entity_type:
-                    fields['current_balance'] = amount
-            
-            elif 'payment' in entity_type:
-                amount = self._parse_amount(mention_text)
-                if 'minimum' in entity_type:
-                    fields['minimum_payment'] = amount
-                else:
-                    fields['total_credit'] = amount
-            
-            elif 'purchase' in entity_type or 'debit' in entity_type:
-                fields['total_debit'] = self._parse_amount(mention_text)
+        # 提取卡号（16位，空格分隔）
+        card_pattern = r'(\d{4}\s+\d{4}\s+\d{4}\s+\d{4})'
+        card_match = re.search(card_pattern, text)
+        if card_match:
+            full_card = card_match.group(1).replace(' ', '')
+            fields['card_number'] = full_card[-4:]  # 后4位
+        
+        # 提取账单日期
+        date_patterns = [
+            r'Statement Date[^\n]*?(\d{1,2}\s+[A-Z]{3}\s+\d{2})',
+            r'Tarikh Penyata[^\n]*?(\d{1,2}\s+[A-Z]{3}\s+\d{2})',
+            r'STATEMENT DATE[^\n]*?(\d{1,2}\s+[A-Z]{3}\s+\d{4})'
+        ]
+        for pattern in date_patterns:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                fields['statement_date'] = match.group(1)
+                break
+        
+        # 提取上期结余
+        prev_patterns = [
+            r'Previous Balance[^\n]*?RM\s*([\d,]+\.\d{2})',
+            r'Baki Terdahulu[^\n]*?RM\s*([\d,]+\.\d{2})',
+            r'PREVIOUS BALANCE[^\n]*?RM\s*([\d,]+\.\d{2})',
+            r'Last Balance[^\n]*?RM\s*([\d,]+\.\d{2})'
+        ]
+        for pattern in prev_patterns:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                fields['previous_balance'] = self._parse_amount(match.group(1))
+                break
+        
+        # 提取本期结余
+        curr_patterns = [
+            r'Current Balance[^\n]*?RM\s*([\d,]+\.\d{2})',
+            r'Baki Semasa[^\n]*?RM\s*([\d,]+\.\d{2})',
+            r'New Balance[^\n]*?RM\s*([\d,]+\.\d{2})',
+            r'CURRENT BALANCE[^\n]*?RM\s*([\d,]+\.\d{2})'
+        ]
+        for pattern in curr_patterns:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                fields['current_balance'] = self._parse_amount(match.group(1))
+                break
+        
+        # 提取最低还款额
+        min_patterns = [
+            r'Minimum Payment[^\n]*?RM\s*([\d,]+\.\d{2})',
+            r'Bayaran Minimum[^\n]*?RM\s*([\d,]+\.\d{2})',
+            r'MINIMUM PAYMENT[^\n]*?RM\s*([\d,]+\.\d{2})'
+        ]
+        for pattern in min_patterns:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                fields['minimum_payment'] = self._parse_amount(match.group(1))
+                break
         
         # 从表格提取交易
         fields['transactions'] = self._extract_transactions_from_tables(
             parsed_doc.get('tables', [])
         )
+        
+        # 如果表格没有交易，尝试从文本提取
+        if len(fields['transactions']) == 0:
+            fields['transactions'] = self._extract_transactions_from_text(text)
         
         logger.info(f"✅ 提取字段完成，交易数: {len(fields['transactions'])}")
         
@@ -292,13 +319,104 @@ class GoogleDocumentAIService:
         for table in tables:
             for row in table.get('body_rows', []):
                 if len(row) >= 3:
-                    trans = {
-                        'date': row[0],
-                        'description': row[1],
-                        'amount': self._parse_amount(row[2]),
-                        'type': 'CR' if 'CR' in row[2] or 'PAYMENT' in row[1].upper() else 'DR'
-                    }
-                    transactions.append(trans)
+                    date_col = row[0].strip()
+                    desc_col = row[1].strip()
+                    amount_col = row[2].strip()
+                    
+                    # 过滤掉标题行
+                    if date_col.lower() in ['date', 'tarikh', 'posting date']:
+                        continue
+                    
+                    # 解析金额
+                    amount = self._parse_amount(amount_col)
+                    
+                    if amount > 0:
+                        trans = {
+                            'date': date_col,
+                            'description': desc_col,
+                            'amount': amount,
+                            'type': 'CR' if 'CR' in amount_col.upper() or 'PAYMENT' in desc_col.upper() else 'DR'
+                        }
+                        transactions.append(trans)
+        
+        return transactions
+    
+    def _extract_transactions_from_text(self, text: str) -> List[Dict]:
+        """从文本中智能提取交易（逐行解析马来西亚银行格式）"""
+        import re
+        
+        transactions = []
+        lines = text.split('\n')
+        
+        # 找到交易部分的开始
+        in_transaction_section = False
+        
+        for i, line in enumerate(lines):
+            line = line.strip()
+            
+            # 检测交易部分的开始
+            if 'PREVIOUS BALANCE' in line.upper():
+                in_transaction_section = True
+                continue
+            
+            # 检测交易部分的结束
+            if in_transaction_section and ('Total Current Balance' in line or 'PAYMENT ADVICE' in line):
+                break
+            
+            if not in_transaction_section:
+                continue
+            
+            # 匹配日期（DD MMM）
+            date_match = re.match(r'(\d{2}\s+[A-Z]{3})', line)
+            
+            if date_match:
+                date = date_match.group(1)
+                # 描述在同一行或下一行
+                description = line[len(date):].strip()
+                
+                # 检查下一行是否有金额
+                if i + 1 < len(lines):
+                    next_line = lines[i + 1].strip()
+                    amount_match = re.search(r'^([\d,]+\.\d{2})\s*(CR)?$', next_line)
+                    
+                    if amount_match:
+                        amount = self._parse_amount(amount_match.group(1))
+                        trans_type = 'CR' if amount_match.group(2) else 'DR'
+                        
+                        if amount > 0:
+                            transactions.append({
+                                'date': date,
+                                'description': description or 'Transaction',
+                                'amount': amount,
+                                'type': trans_type
+                            })
+            
+            # 也匹配描述行后面的金额
+            elif in_transaction_section and re.match(r'^[\d,]+\.\d{2}\s*(CR)?$', line):
+                amount_match = re.match(r'^([\d,]+\.\d{2})\s*(CR)?$', line)
+                if amount_match and i > 0:
+                    amount = self._parse_amount(amount_match.group(1))
+                    trans_type = 'CR' if amount_match.group(2) else 'DR'
+                    description = lines[i - 1].strip()
+                    
+                    # 避免重复（如果上一行已经有日期）
+                    if not re.match(r'^\d{2}\s+[A-Z]{3}', description) and amount > 0:
+                        # 尝试向前查找日期
+                        date = None
+                        for j in range(max(0, i - 3), i):
+                            prev_line = lines[j].strip()
+                            date_match = re.match(r'(\d{2}\s+[A-Z]{3})', prev_line)
+                            if date_match:
+                                date = date_match.group(1)
+                                break
+                        
+                        if date and description:
+                            transactions.append({
+                                'date': date,
+                                'description': description,
+                                'amount': amount,
+                                'type': trans_type
+                            })
         
         return transactions
     
