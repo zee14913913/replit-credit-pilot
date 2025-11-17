@@ -45,3 +45,4 @@ paramiko
 schedule
 weasyprint
 google-cloud-documentai
+openpyxl
