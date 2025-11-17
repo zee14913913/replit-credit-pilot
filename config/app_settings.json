@@ -1,0 +1,109 @@
+{
+  "creditpilot_app": {
+    "name": "CreditPilot - Smart Credit & Loan Manager",
+    "version": "3.0.0",
+    "environment": "development",
+    "description": "Premium Enterprise-Grade SaaS Platform for Malaysian banking customers",
+    "last_updated": "2025-11-17",
+    
+    "server": {
+      "flask": {
+        "host": "0.0.0.0",
+        "port": 5000,
+        "debug": true,
+        "secret_key_env": "FLASK_SECRET_KEY"
+      },
+      "fastapi": {
+        "host": "0.0.0.0",
+        "port": 8000,
+        "debug": true,
+        "reload": true
+      }
+    },
+    
+    "database": {
+      "type": "sqlite",
+      "path": "db/smart_loan_manager.db",
+      "postgres_env": "DATABASE_URL",
+      "connection_pool": {
+        "min_size": 5,
+        "max_size": 20
+      }
+    },
+    
+    "file_storage": {
+      "base_path": "static/uploads",
+      "customer_files": "static/uploads/customers/{customer_code}",
+      "credit_card_files": "credit_card_files/{customer_name}",
+      "max_upload_size_mb": 50
+    },
+    
+    "ai_services": {
+      "primary_provider": "perplexity",
+      "backup_provider": "openai",
+      "perplexity": {
+        "model": "sonar",
+        "api_key_env": "PERPLEXITY_API_KEY"
+      },
+      "openai": {
+        "model": "gpt-4o-mini",
+        "api_key_env": "OPENAI_API_KEY"
+      }
+    },
+    
+    "external_services": {
+      "google_document_ai": {
+        "enabled": true,
+        "project_id_env": "GOOGLE_PROJECT_ID",
+        "location": "us",
+        "processor_id_env": "DOCUMENT_AI_PROCESSOR_ID"
+      },
+      "sendgrid": {
+        "enabled": true,
+        "api_key_env": "SENDGRID_API_KEY",
+        "from_email": "noreply@creditpilot.com"
+      },
+      "twilio": {
+        "enabled": true,
+        "account_sid_env": "TWILIO_ACCOUNT_SID",
+        "auth_token_env": "TWILIO_AUTH_TOKEN",
+        "phone_number_env": "TWILIO_PHONE_NUMBER"
+      },
+      "bnm_api": {
+        "base_url": "https://api.bnm.gov.my",
+        "enabled": true
+      }
+    },
+    
+    "features": {
+      "credit_card_processing": true,
+      "loan_evaluation": true,
+      "ai_assistant": true,
+      "receipt_management": true,
+      "savings_tracking": true,
+      "monthly_reports": true,
+      "ctos_integration": true,
+      "sftp_erp_sync": true
+    },
+    
+    "security": {
+      "rbac_enabled": true,
+      "roles": ["admin", "accountant", "customer", "unauthenticated"],
+      "session_timeout_minutes": 60,
+      "max_login_attempts": 5
+    },
+    
+    "ui": {
+      "theme": "creditpilot_official",
+      "color_palette": "3_color_minimal",
+      "language": "bilingual_en_zh",
+      "timezone": "Asia/Kuala_Lumpur"
+    },
+    
+    "logging": {
+      "level": "INFO",
+      "audit_enabled": true,
+      "file_path": "logs/creditpilot.log"
+    }
+  }
+}
