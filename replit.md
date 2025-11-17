@@ -57,6 +57,8 @@ The backend uses Flask with SQLite and a context manager for database interactio
 
 **PDF Batch Processing System (2025-11-17):** Complete automated system for processing Cheok Jun Yoon's 41 credit card statement PDFs. Features Document AI extraction, intelligent 5-category transaction classification (Owners/GZ/Suppliers + Payments), automated Outstanding Balance calculation with 1% supplier fee, and dual Excel/JSON reporting. System supports concurrent processing with configurable business rules.
 
+**Professional Excel Formatting Engine (2025-11-17):** Enterprise-grade Excel formatting system implementing 13 professional standards using CreditPilot official color scheme (Main Pink #FFB6C1 + Deep Brown #3E2723). Features include optimized column widths (18-40 chars), row heights (30px header/25px data), custom category colors (5 types), intelligent icons (🏪 suppliers/💼 GZ), alternating row colors, freeze panes, auto filters, and print optimization (landscape/headers/footers). All colors managed via config/colors.json for brand consistency. Excel formatter class (utils/excel_formatter.py) provides reusable formatting methods across all reports.
+
 **VBA Hybrid Architecture (LEGACY):** Previously used VBA-based parsing with Excel client. Kept for reference. Python Excel/OCR parsers are retained as backup.
 
 ### Feature Specifications
