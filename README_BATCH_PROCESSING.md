@@ -102,9 +102,23 @@ python3 scripts/process_cheok_statements.py
 
 ---
 
-## 📊 Excel报告内容
+## 📊 专业格式化Excel报告
 
-打开 `settlement_report_YYYYMMDD.xlsx`，包含4个工作表：
+打开 `CheokJunYoon_Settlement_YYYYMMDD_HHMMSS.xlsx`，包含4个专业格式化工作表：
+
+### ✨ 13项专业格式化标准
+- 🎨 **CreditPilot官方配色**: 主粉色#FFB6C1 + 深棕色#3E2723
+- 📏 **优化列宽**: 18-40字符宽，自动适应内容
+- 🖼️ **精美样式**: 标题行深棕色背景+白色文字，数据行交替颜色
+- 💰 **专业格式**: RM 1,234.56（千位分隔符），负数红色显示
+- 🎯 **分类颜色**: 5种分类专属颜色（粉色系）
+- 🏪 **智能图标**: 供应商🏪和GZ💼交易自动标记
+- 🖨️ **打印优化**: 横向打印、页眉页脚、冻结窗格
+- 🔍 **自动筛选**: 所有标题行可筛选
+
+📖 **详细格式化说明**: `docs/excel_formatting_guide.md`
+
+---
 
 ### 1️⃣ 账单汇总
 | 文件名 | 银行 | 卡号 | 账单日期 | Outstanding Balance |
