@@ -55,6 +55,8 @@ The backend uses Flask with SQLite and a context manager for database interactio
 
 **PDF Parsing Architecture - Google Document AI (2025-11-17):** System now uses Google Document AI for PDF parsing instead of DocParser. Authentication requires Service Account JSON. Google Document AI provides 98-99.9% OCR accuracy for text extraction but has limitations with multi-column table layouts in Malaysian bank statements. Text extraction works well but transaction details (dates, amounts) may require additional post-processing logic due to column layout preservation issues.
 
+**PDF Batch Processing System (2025-11-17):** Complete automated system for processing Cheok Jun Yoon's 41 credit card statement PDFs. Features Document AI extraction, intelligent 5-category transaction classification (Owners/GZ/Suppliers + Payments), automated Outstanding Balance calculation with 1% supplier fee, and dual Excel/JSON reporting. System supports concurrent processing with configurable business rules.
+
 **VBA Hybrid Architecture (LEGACY):** Previously used VBA-based parsing with Excel client. Kept for reference. Python Excel/OCR parsers are retained as backup.
 
 ### Feature Specifications
