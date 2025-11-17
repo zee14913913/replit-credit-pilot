@@ -54,7 +54,8 @@ def test_docparser_flow():
     try:
         # 上传PDF
         print('⏳ 上传PDF到DocParser...')
-        doc_id = docparser.upload_document(test_file, parser_id)
+        upload_result = docparser.upload_document(test_file, parser_id)
+        doc_id = upload_result.get('id')
         print(f'✅ 上传成功，文档ID: {doc_id}')
         
         # 等待解析

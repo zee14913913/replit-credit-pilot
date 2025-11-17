@@ -206,7 +206,8 @@ def test_docparser_connection():
         print("DocParser连接测试")
         print("="*80)
         
-        print(f"\n✅ API Key: {service.api_key[:10]}***")
+        if service.api_key:
+            print(f"\n✅ API Key: {service.api_key[:10]}***")
         print(f"✅ Parser ID: {service.parser_id}")
         
         if service.ping():
