@@ -31,7 +31,8 @@ PARSER_MODE = ParserPriority.VBA_ONLY
 ALLOWED_UPLOAD_METHODS = {
     'vba_json': True,           # ✅ VBA解析后的JSON上传（主要方式）
     'vba_batch': True,          # ✅ VBA批量JSON上传
-    'direct_pdf': False,        # ❌ 禁止直接上传PDF自动解析
+    'direct_pdf_upload': True,  # ✅ 允许直接上传PDF文件（保存文件）
+    'auto_parse_pdf': False,    # ❌ 禁止自动解析PDF（必须用VBA）
     'ocr_manual': True,         # ✅ 允许管理员手动触发OCR（备用）
 }
 
@@ -72,13 +73,15 @@ PDF_WORKFLOW = """
 # ============================================================
 
 FORBIDDEN_OPERATIONS = [
-    "自动PDF上传并OCR解析",
-    "跳过VBA直接入库PDF",
-    "前端直接上传PDF触发自动解析",
+    "自动解析PDF（Python/OCR）",
+    "跳过VBA直接解析并入库",
+    "上传后自动触发解析",
 ]
 
 ALLOWED_OPERATIONS = [
-    "VBA JSON上传（推荐）",
+    "上传PDF文件并保存到正确位置",
+    "使用VBA客户端解析PDF生成JSON",
+    "VBA JSON上传入库（推荐）",
     "VBA批量JSON上传",
     "管理员手动OCR（备用）",
 ]
@@ -113,9 +116,14 @@ def is_vba_upload_allowed() -> bool:
     return ALLOWED_UPLOAD_METHODS.get('vba_json', False)
 
 
-def is_direct_pdf_allowed() -> bool:
-    """检查直接PDF上传是否允许"""
-    return ALLOWED_UPLOAD_METHODS.get('direct_pdf', False)
+def is_pdf_upload_allowed() -> bool:
+    """检查PDF文件上传是否允许（仅保存文件，不自动解析）"""
+    return ALLOWED_UPLOAD_METHODS.get('direct_pdf_upload', True)
+
+
+def is_auto_parse_allowed() -> bool:
+    """检查是否允许自动解析PDF（禁止自动解析，必须用VBA）"""
+    return ALLOWED_UPLOAD_METHODS.get('auto_parse_pdf', False)
 
 
 def is_ocr_manual_allowed() -> bool:
