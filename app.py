@@ -14,6 +14,17 @@ import requests
 # Configure logger
 logger = logging.getLogger(__name__)
 
+# ==================== PDF PARSER CONFIG ====================
+# PDF解析器强制配置（VBA优先）
+from config.pdf_parser_config import (
+    PARSER_MODE,
+    is_direct_pdf_allowed,
+    is_vba_upload_allowed,
+    get_upload_guidance,
+    ERROR_MESSAGES
+)
+# ==================== END PDF PARSER CONFIG ====================
+
 # ==================== FEATURE TOGGLES ====================
 # 功能开关配置（环境变量控制，默认关闭）
 FEATURE_ADVANCED_ANALYTICS = os.getenv('FEATURE_ADVANCED_ANALYTICS', 'false').lower() == 'true'
@@ -1036,6 +1047,25 @@ def search_transactions(customer_id):
 def batch_upload(customer_id):
     """Batch upload statements with auto-create credit cards"""
     if request.method == 'POST':
+        # ==================== VBA强制检查 ====================
+        # 检查是否允许直接PDF上传
+        if not is_direct_pdf_allowed():
+            lang = get_current_language()
+            error_msg = ERROR_MESSAGES['pdf_upload_disabled'][lang]
+            guidance = get_upload_guidance(lang)
+            
+            flash(f"{error_msg}\n\n{guidance}", 'error')
+            return jsonify({
+                'success': False,
+                'message': error_msg,
+                'guidance': guidance,
+                'vba_endpoints': {
+                    'single': '/api/upload/vba-json',
+                    'batch': '/api/upload/vba-batch'
+                }
+            }), 403
+        # ==================== END VBA强制检查 ====================
+        
         # Phase 2-3 Task 2: Import audit helper
         from utils.upload_audit import record_upload_event_async
         
