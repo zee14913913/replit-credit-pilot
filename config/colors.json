@@ -1,16 +1,46 @@
 {
   "creditpilot_theme": {
     "name": "CreditPilot Official Theme",
-    "version": "1.0.0",
-    "description": "Official color scheme for CreditPilot - Premium, Sophisticated, High-end",
+    "version": "2.0.0",
+    "description": "Official unified color scheme for CreditPilot - Premium, Sophisticated, High-end. This is the ONLY color configuration file for the entire system.",
+    "last_updated": "2025-11-17",
     
-    "primary_colors": {
-      "main_pink": "#FFB6C1",
-      "deep_brown": "#3E2723",
-      "pure_white": "#FFFFFF"
+    "core_colors": {
+      "description": "Mandatory 3-color palette for ALL Web UI components. NEVER use any other colors for Web UI.",
+      "black": "#000000",
+      "hot_pink": "#FF007F",
+      "dark_purple": "#322446",
+      "white": "#FFFFFF",
+      "usage": {
+        "black": "Primary background color for all pages",
+        "hot_pink": "Primary accent, buttons, links, revenue, income, credits, highlights",
+        "dark_purple": "Secondary accent, borders, expenses, debits, secondary buttons",
+        "white": "Primary text color on dark backgrounds"
+      }
     },
     
-    "excel_formatting": {
+    "status_colors": {
+      "description": "Functional status colors for success/warning/error indicators. These are the ONLY non-core colors allowed in Web UI.",
+      "success": "#00ff87",
+      "warning": "#ffcc00",
+      "error": "#ff4444",
+      "info": "#1e40af",
+      "usage": {
+        "success": "Success messages, positive indicators, 'Excellent' risk grade",
+        "warning": "Warning messages, caution indicators, 'Good/Fair' risk grade",
+        "error": "Error messages, negative indicators, 'Poor' risk grade",
+        "info": "Informational messages, neutral indicators"
+      }
+    },
+    
+    "excel_colors": {
+      "description": "Colors exclusively for Excel report formatting. Do NOT use these colors in Web UI.",
+      "primary_colors": {
+        "main_pink": "#FFB6C1",
+        "deep_brown": "#3E2723",
+        "pure_white": "#FFFFFF"
+      },
+      
       "header_row": {
         "background": "#3E2723",
         "text": "#FFFFFF",
@@ -51,22 +81,77 @@
       }
     },
     
-    "web_ui_colors": {
-      "primary": "#FFB6C1",
-      "secondary": "#3E2723",
-      "accent": "#FF007F",
-      "background": "#000000",
-      "text_primary": "#FFFFFF",
-      "text_secondary": "#3E2723",
-      "border": "#322446",
-      "hover": "#FF8FA3"
+    "deprecated_colors": {
+      "description": "These colors are NO LONGER ALLOWED. If you find them in code, replace them immediately.",
+      "galaxy_theme": {
+        "silver": "#C0C0C0",
+        "gold": "#D4AF37",
+        "champagne": "#E6DCC8",
+        "reason": "Galaxy Theme has been archived. Use core_colors instead."
+      },
+      "monthly_report_old": {
+        "orange_red": "#FF5722",
+        "orange": "#FF7043",
+        "reason": "Old monthly report colors. Use hot_pink #FF007F instead."
+      },
+      "loan_system_old": {
+        "gold": "#FFD700",
+        "reason": "Old loan system gold accent. Use hot_pink #FF007F instead."
+      }
     },
     
-    "usage_notes": {
-      "main_pink": "Used for headers, important buttons, highlights, revenue/income/credits",
-      "deep_brown": "Used for text, borders, secondary elements",
-      "title_row": "Deep brown background #3E2723 + white text #FFFFFF",
-      "border_style": "All borders use deep brown #3E2723, thin borders with 80% opacity"
+    "button_styles": {
+      "description": "Standard button color combinations using core colors only",
+      "primary": {
+        "background": "#FF007F",
+        "text": "#FFFFFF",
+        "hover_background": "#E6007A",
+        "border": "#FF007F"
+      },
+      "secondary": {
+        "background": "#322446",
+        "text": "#FFFFFF",
+        "hover_background": "#3A2A4E",
+        "border": "#322446"
+      },
+      "dark": {
+        "background": "#000000",
+        "text": "#FF007F",
+        "hover_background": "#1a1a1a",
+        "border": "#FF007F"
+      },
+      "outline": {
+        "background": "transparent",
+        "text": "#FF007F",
+        "hover_background": "#FF007F",
+        "hover_text": "#FFFFFF",
+        "border": "#FF007F"
+      }
+    },
+    
+    "gradient_styles": {
+      "description": "Approved gradient combinations using core colors only",
+      "primary_gradient": "linear-gradient(135deg, #FF007F 0%, #322446 100%)",
+      "dark_gradient": "linear-gradient(135deg, #000000 0%, #322446 100%)",
+      "hover_gradient": "linear-gradient(135deg, #E6007A 0%, #241A36 100%)"
+    },
+    
+    "compliance_rules": {
+      "mandatory": [
+        "All Web UI components MUST use only core_colors (black, hot_pink, dark_purple, white)",
+        "Status indicators may use status_colors (success, warning, error, info)",
+        "Excel reports MUST use only excel_colors",
+        "NO hardcoded color values in .py, .css, .html files",
+        "ALL color references must load from this config/colors.json file",
+        "Any color in deprecated_colors must be replaced immediately"
+      ],
+      "prohibited": [
+        "Galaxy Theme colors (silver, gold, champagne)",
+        "Old monthly report colors (orange-red #FF5722, #FF7043)",
+        "Old loan system gold (#FFD700, #D4AF37)",
+        "Any hardcoded hex color values",
+        "Creating new color schemes without approval"
+      ]
     }
   }
 }
