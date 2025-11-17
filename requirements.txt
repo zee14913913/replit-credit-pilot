@@ -44,3 +44,4 @@ lxml
 paramiko
 schedule
 weasyprint
+google-cloud-documentai
