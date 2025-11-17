@@ -109,15 +109,19 @@ class SystemIntegrityChecker:
         active_py_files = list(Path(".").rglob("*.py"))
         
         for py_file in active_py_files:
+            # Skip deprecated files, utility scripts, and this checker itself
             if 'DEPRECATED' in str(py_file):
-                continue  # Skip deprecated files themselves
+                continue
+            if 'check_system_integrity.py' in str(py_file):
+                continue
             if any(x in str(py_file) for x in ['.cache', '.pythonlibs', 'node_modules']):
                 continue
             
             try:
                 with open(py_file, 'r', encoding='utf-8', errors='ignore') as f:
                     content = f.read()
-                    if 'from DEPRECATED' in content or 'import DEPRECATED' in content:
+                    # Look for actual import statements from DEPRECATED
+                    if 'from DEPRECATED.' in content or 'import DEPRECATED.' in content:
                         self.errors.append(f"Deprecated import found in: {py_file}")
                         deprecated_imports += 1
             except:

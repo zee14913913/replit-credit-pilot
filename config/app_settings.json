@@ -25,10 +25,7 @@
       "type": "sqlite",
       "path": "db/smart_loan_manager.db",
       "postgres_env": "DATABASE_URL",
-      "connection_pool": {
-        "min_size": 5,
-        "max_size": 20
-      }
+      "detailed_config": "config/database.json"
     },
     
     "file_storage": {

@@ -104,12 +104,14 @@ creditpilot/
 
 **ALL configurations MUST be loaded from `config/` directory:**
 
-| File | Purpose | Used By |
-|------|---------|---------|
-| `config/app_settings.json` | Application settings, server config, feature flags | app.py, main.py, all services |
-| `config/colors.json` | UI color palette (3-color system) | All frontend, PDF generators, email templates |
-| `config/database.json` | Database connections, schema versions | db/database.py, migrations |
-| `config/business_rules.json` | Business logic, calculation formulas | loan/, validate/, report/ |
+| File | Purpose | Used By | Status |
+|------|---------|---------|--------|
+| `config/app_settings.json` | Application settings, server config, feature flags, basic DB config | app.py, main.py, all services | ✅ Active |
+| `config/colors.json` | UI color palette (3-color system) | All frontend, PDF generators, email templates | ✅ Active |
+| `config/database.json` | Detailed database configuration (pools, migrations, schema) | Future: db/database.py, migrations | ⏳ Prepared |
+| `config/business_rules.json` | Business logic, calculation formulas | loan/, validate/, report/ | ✅ Active |
+
+**NOTE**: `config/database.json` is prepared for future database configuration unification. Current code (db/database.py) still uses hardcoded paths. Migration to unified config is planned for future release.
 
 ### ❌ DEPRECATED Config Locations
 
@@ -304,9 +306,10 @@ Response + Conversation history
    - Reason: Live customer data
    - Risk: Irreversible data loss
 
-5. **config/colors.json** - UI color system
-   - Reason: Enforces brand consistency
-   - Risk: Breaking UI across entire system
+5. **static/css/colors.css** - Generated CSS color variables
+   - Reason: Generated from config/colors.json
+   - Risk: Changes will be overwritten
+   - Action: Edit config/colors.json instead
 
 ### ⚠️ Modify with Extreme Caution
 
@@ -323,10 +326,13 @@ Response + Conversation history
 
 ### ✅ You Can Safely Edit These
 
-**Configuration Files** (JSON only):
-- `config/app_settings.json` - Add new features, change ports
+**Configuration Files** (JSON only - requires team review):
+- `config/app_settings.json` - Add new features, change server settings
+- `config/colors.json` - Update UI color palette (respects 3-color mandate)
 - `config/business_rules.json` - Update business logic rules
-- `config/database.json` - Adjust connection pools
+- `config/database.json` - Adjust connection pools, schema settings
+
+**IMPORTANT**: config/colors.json changes must preserve the 3-color palette mandate (Black #000000, Hot Pink #FF007F, Dark Purple #322446). Helper colors can be added but core palette is protected.
 
 **Templates** (UI):
 - `templates/**/*.html` - Frontend templates
