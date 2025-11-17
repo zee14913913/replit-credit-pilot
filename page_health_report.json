@@ -1,0 +1,94 @@
+{
+  "timestamp": "2025-11-17T18:29:28.887658",
+  "base_url": "http://127.0.0.1:5000",
+  "total_tests": 13,
+  "passed_tests": 11,
+  "failed_tests": 1,
+  "success_rate": 84.62,
+  "results": [
+    {
+      "route": "/",
+      "description": "Homepage/Dashboard",
+      "status": "\u2705 OK",
+      "status_code": 200,
+      "requires_auth": false
+    },
+    {
+      "route": "/admin/login",
+      "description": "Admin Login Page",
+      "status": "\u2705 OK",
+      "status_code": 200,
+      "requires_auth": false
+    },
+    {
+      "route": "/admin",
+      "description": "Admin Dashboard",
+      "status": "\u2705 OK (Protected)",
+      "status_code": 302,
+      "requires_auth": true
+    },
+    {
+      "route": "/customers",
+      "description": "Customers List",
+      "status": "\u2705 OK (Protected)",
+      "status_code": 302,
+      "requires_auth": true
+    },
+    {
+      "route": "/credit-cards",
+      "description": "Credit Cards List",
+      "status": "\u274c ERROR 404",
+      "status_code": 404,
+      "requires_auth": true
+    },
+    {
+      "route": "/credit-card/ledger",
+      "description": "Credit Card Ledger",
+      "status": "\u2705 OK (Protected)",
+      "status_code": 302,
+      "requires_auth": true
+    },
+    {
+      "route": "/loan-evaluate",
+      "description": "Loan Evaluation",
+      "status": "\u2705 OK (Protected)",
+      "status_code": 302,
+      "requires_auth": true
+    },
+    {
+      "route": "/receipts",
+      "description": "Receipts Management",
+      "status": "\u2705 OK",
+      "status_code": 200,
+      "requires_auth": true
+    },
+    {
+      "route": "/savings/customers",
+      "description": "Savings Customers",
+      "status": "\u2705 OK (Protected)",
+      "status_code": 302,
+      "requires_auth": true
+    },
+    {
+      "route": "/reports/center",
+      "description": "Report Center",
+      "status": "\u2705 OK (Protected)",
+      "status_code": 302,
+      "requires_auth": true
+    },
+    {
+      "route": "/batch/auto-upload",
+      "description": "Batch Upload",
+      "status": "\u2705 OK (Protected)",
+      "status_code": 302,
+      "requires_auth": true
+    },
+    {
+      "route": "/monthly-summary",
+      "description": "Monthly Summary",
+      "status": "\u2705 OK (Protected)",
+      "status_code": 302,
+      "requires_auth": true
+    }
+  ]
+}

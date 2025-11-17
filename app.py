@@ -7508,7 +7508,7 @@ def download_credit_card_excel_file():
 @require_admin_or_accountant
 def batch_management():
     """批量管理页面 - 显示所有待审核的批量上传"""
-    with DatabaseManager() as db:
+    with get_db() as db:
         # 获取所有批量上传记录
         query = """
         SELECT 
@@ -7555,7 +7555,7 @@ def batch_management():
 def approve_batch_upload(upload_id):
     """批准单个批量上传"""
     try:
-        with DatabaseManager() as db:
+        with get_db() as db:
             db.execute(
                 "UPDATE batch_jobs SET status = 'approved', updated_at = ? WHERE id = ?",
                 (datetime.now().isoformat(), upload_id)
@@ -7582,7 +7582,7 @@ def reject_batch_upload(upload_id):
         data = request.json
         reason = data.get('reason', 'No reason provided')
         
-        with DatabaseManager() as db:
+        with get_db() as db:
             db.execute(
                 "UPDATE batch_jobs SET status = 'rejected', reason = ?, updated_at = ? WHERE id = ?",
                 (reason, datetime.now().isoformat(), upload_id)
@@ -7606,7 +7606,7 @@ def reject_batch_upload(upload_id):
 def approve_all_batch_uploads():
     """批准所有待审核的上传"""
     try:
-        with DatabaseManager() as db:
+        with get_db() as db:
             # 更新所有待审核状态为已批准
             result = db.execute(
                 "UPDATE batch_jobs SET status = 'approved', updated_at = ? WHERE status = 'pending'",
@@ -7637,7 +7637,7 @@ def reject_all_batch_uploads():
         data = request.json
         reason = data.get('reason', 'Batch rejection')
         
-        with DatabaseManager() as db:
+        with get_db() as db:
             # 更新所有待审核状态为已退回
             result = db.execute(
                 "UPDATE batch_jobs SET status = 'rejected', reason = ?, updated_at = ? WHERE status = 'pending'",
@@ -7675,7 +7675,7 @@ def report_center():
     date_from = request.args.get('date_from', '')
     date_to = request.args.get('date_to', '')
     
-    with DatabaseManager() as db:
+    with get_db() as db:
         # 获取所有客户（用于筛选器）
         customers = db.fetch_all("SELECT id, name FROM customers ORDER BY name")
         
@@ -7771,7 +7771,7 @@ def api_export_reports():
         if not record_ids:
             return jsonify({'success': False, 'message': 'No records selected'}), 400
         
-        with DatabaseManager() as db:
+        with get_db() as db:
             # 创建导出任务
             task_id = db.execute(
                 """INSERT INTO export_tasks (export_format, record_count, status, created_at)
@@ -7855,7 +7855,7 @@ def api_export_reports():
 def api_export_history():
     """获取导出历史"""
     try:
-        with DatabaseManager() as db:
+        with get_db() as db:
             tasks = db.fetch_all(
                 """SELECT id, export_format, record_count, file_size, download_url,
                           status, error_msg, created_at, completed_at
@@ -7889,7 +7889,7 @@ def api_export_history():
 def api_retry_export(task_id):
     """重试失败的导出任务"""
     try:
-        with DatabaseManager() as db:
+        with get_db() as db:
             # 重置任务状态
             db.execute(
                 """UPDATE export_tasks 
