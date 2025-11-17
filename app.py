@@ -18,7 +18,8 @@ logger = logging.getLogger(__name__)
 # PDF解析器强制配置（VBA优先）
 from config.pdf_parser_config import (
     PARSER_MODE,
-    is_direct_pdf_allowed,
+    is_pdf_upload_allowed,
+    is_auto_parse_allowed,
     is_vba_upload_allowed,
     get_upload_guidance,
     ERROR_MESSAGES
@@ -1048,22 +1049,8 @@ def batch_upload(customer_id):
     """Batch upload statements with auto-create credit cards"""
     if request.method == 'POST':
         # ==================== VBA强制检查 ====================
-        # 检查是否允许直接PDF上传
-        if not is_direct_pdf_allowed():
-            lang = get_current_language()
-            error_msg = ERROR_MESSAGES['pdf_upload_disabled'][lang]
-            guidance = get_upload_guidance(lang)
-            
-            flash(f"{error_msg}\n\n{guidance}", 'error')
-            return jsonify({
-                'success': False,
-                'message': error_msg,
-                'guidance': guidance,
-                'vba_endpoints': {
-                    'single': '/api/upload/vba-json',
-                    'batch': '/api/upload/vba-batch'
-                }
-            }), 403
+        # 允许上传PDF文件，但禁止自动解析（必须用VBA）
+        # 注意：这里只是保存文件，不做解析
         # ==================== END VBA强制检查 ====================
         
         # Phase 2-3 Task 2: Import audit helper
