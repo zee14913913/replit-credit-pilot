@@ -50,8 +50,19 @@ class ColorComplianceChecker:
             'unapproved_colors': 0
         }
         
-        # Regex pattern for hex colors
-        self.hex_pattern = re.compile(r'#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{3}')
+        # Regex patterns for all color formats
+        self.hex_pattern = re.compile(r'#[0-9A-Fa-f]{8}|#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{4}|#[0-9A-Fa-f]{3}')
+        self.rgb_pattern = re.compile(r'rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*[\d.]+)?\s*\)', re.IGNORECASE)
+        self.hsl_pattern = re.compile(r'hsla?\s*\(\s*([\d.]+)\s*,\s*([\d.]+)%\s*,\s*([\d.]+)%(?:\s*,\s*[\d.]+)?\s*\)', re.IGNORECASE)
+        
+        # Common CSS named colors that should be avoided
+        self.named_colors = {
+            'red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink', 'brown',
+            'gray', 'grey', 'silver', 'gold', 'cyan', 'magenta', 'lime', 'maroon',
+            'navy', 'olive', 'teal', 'aqua', 'fuchsia', 'indigo', 'violet', 'tan',
+            'beige', 'khaki', 'coral', 'salmon', 'crimson', 'tomato', 'chocolate'
+        }
+        self.named_color_pattern = re.compile(r'\b(' + '|'.join(self.named_colors) + r')\b', re.IGNORECASE)
         
         # Files to exclude
         self.excluded_patterns = [
@@ -102,6 +113,54 @@ class ColorComplianceChecker:
         
         self.print_summary()
     
+    def normalize_hex_color(self, color: str) -> str:
+        """
+        Normalize hex color to 6-digit uppercase format.
+        Converts shorthand (#fff, #ffff) to full (#FFFFFF, #FFFFFFFF).
+        """
+        color = color.upper()
+        
+        # Convert 3-digit shorthand to 6-digit (#fff → #FFFFFF)
+        if len(color) == 4:
+            return '#' + ''.join([c*2 for c in color[1:]])
+        
+        # Convert 4-digit shorthand to 8-digit (#ffff → #FFFFFFFF)
+        if len(color) == 5:
+            return '#' + ''.join([c*2 for c in color[1:]])
+        
+        # Already normalized (6 or 8 digits)
+        return color
+    
+    def rgb_to_hex(self, r: int, g: int, b: int) -> str:
+        """Convert RGB values to hex color."""
+        return f'#{r:02X}{g:02X}{b:02X}'
+    
+    def hsl_to_rgb(self, h: float, s: float, l: float) -> tuple:
+        """Convert HSL to RGB (simplified conversion)."""
+        # Normalize
+        h = h / 360.0
+        s = s / 100.0
+        l = l / 100.0
+        
+        if s == 0:
+            r = g = b = int(l * 255)
+        else:
+            def hue_to_rgb(p, q, t):
+                if t < 0: t += 1
+                if t > 1: t -= 1
+                if t < 1/6: return p + (q - p) * 6 * t
+                if t < 1/2: return q
+                if t < 2/3: return p + (q - p) * (2/3 - t) * 6
+                return p
+            
+            q = l * (1 + s) if l < 0.5 else l + s - l * s
+            p = 2 * l - q
+            r = int(hue_to_rgb(p, q, h + 1/3) * 255)
+            g = int(hue_to_rgb(p, q, h) * 255)
+            b = int(hue_to_rgb(p, q, h - 1/3) * 255)
+        
+        return (r, g, b)
+    
     def check_file(self, file_path: Path) -> None:
         """Check a single file for hardcoded colors"""
         self.stats['total_files'] += 1
@@ -114,34 +173,108 @@ class ColorComplianceChecker:
             file_violations = []
             
             for line_num, line in enumerate(lines, 1):
-                # Find all hex colors in line
-                matches = self.hex_pattern.findall(line)
+                violations_in_line = []
                 
-                for color in matches:
-                    # Normalize color
-                    normalized_color = color.upper()
+                # 1. Check hex colors (#RRGGBB, #RGB, #RRGGBBAA, #RGBA)
+                hex_matches = self.hex_pattern.findall(line)
+                for color in hex_matches:
+                    normalized_color = self.normalize_hex_color(color)
+                    # Strip alpha channel for validation (last 2 digits)
+                    validation_color = normalized_color[:7] if len(normalized_color) > 7 else normalized_color
                     
-                    # Check if color is approved
-                    is_approved = COLORS.validate_color(normalized_color)
-                    is_deprecated = COLORS.is_deprecated(normalized_color)
+                    is_approved = COLORS.validate_color(validation_color)
+                    is_deprecated = COLORS.is_deprecated(validation_color)
                     
                     if is_deprecated:
-                        file_violations.append({
-                            'line': line_num,
+                        violations_in_line.append({
                             'color': color,
+                            'normalized': normalized_color,
                             'type': 'DEPRECATED',
-                            'message': f'Deprecated color {color} - Replace with core colors'
+                            'format': 'hex',
+                            'message': f'Deprecated hex color {color} - Replace with core colors'
                         })
                         self.stats['deprecated_colors'] += 1
-                    
                     elif not is_approved:
-                        file_violations.append({
-                            'line': line_num,
+                        violations_in_line.append({
                             'color': color,
+                            'normalized': normalized_color,
                             'type': 'UNAPPROVED',
-                            'message': f'Unapproved color {color} - Not in color palette'
+                            'format': 'hex',
+                            'message': f'Unapproved hex color {color} - Not in color palette'
                         })
                         self.stats['unapproved_colors'] += 1
+                
+                # 2. Check RGB/RGBA colors
+                rgb_matches = self.rgb_pattern.findall(line)
+                for match in rgb_matches:
+                    r, g, b = int(match[0]), int(match[1]), int(match[2])
+                    hex_color = self.rgb_to_hex(r, g, b)
+                    
+                    is_approved = COLORS.validate_color(hex_color)
+                    is_deprecated = COLORS.is_deprecated(hex_color)
+                    
+                    original = f'rgb({r}, {g}, {b})'
+                    if is_deprecated:
+                        violations_in_line.append({
+                            'color': original,
+                            'normalized': hex_color,
+                            'type': 'DEPRECATED',
+                            'format': 'rgb',
+                            'message': f'Deprecated RGB color {original} ({hex_color}) - Replace with CSS variables'
+                        })
+                        self.stats['deprecated_colors'] += 1
+                    elif not is_approved:
+                        violations_in_line.append({
+                            'color': original,
+                            'normalized': hex_color,
+                            'type': 'UNAPPROVED',
+                            'format': 'rgb',
+                            'message': f'Unapproved RGB color {original} ({hex_color}) - Use CSS variables'
+                        })
+                        self.stats['unapproved_colors'] += 1
+                
+                # 3. Check HSL/HSLA colors
+                hsl_matches = self.hsl_pattern.findall(line)
+                for match in hsl_matches:
+                    h, s, l = float(match[0]), float(match[1]), float(match[2])
+                    r, g, b = self.hsl_to_rgb(h, s, l)
+                    hex_color = self.rgb_to_hex(r, g, b)
+                    
+                    is_approved = COLORS.validate_color(hex_color)
+                    
+                    original = f'hsl({h}, {s}%, {l}%)'
+                    if not is_approved:
+                        violations_in_line.append({
+                            'color': original,
+                            'normalized': hex_color,
+                            'type': 'UNAPPROVED',
+                            'format': 'hsl',
+                            'message': f'Unapproved HSL color {original} ({hex_color}) - Use CSS variables'
+                        })
+                        self.stats['unapproved_colors'] += 1
+                
+                # 4. Check named colors
+                named_matches = self.named_color_pattern.findall(line)
+                for color_name in named_matches:
+                    # Skip if it's part of a word (e.g., 'directory' contains 'red')
+                    if not re.search(r'\b' + color_name + r'\s*:', line, re.IGNORECASE):
+                        continue
+                    
+                    violations_in_line.append({
+                        'color': color_name,
+                        'normalized': color_name.lower(),
+                        'type': 'UNAPPROVED',
+                        'format': 'named',
+                        'message': f'Named color "{color_name}" not allowed - Use CSS variables'
+                    })
+                    self.stats['unapproved_colors'] += 1
+                
+                # Add all violations from this line
+                for violation in violations_in_line:
+                    file_violations.append({
+                        'line': line_num,
+                        **violation
+                    })
             
             if file_violations:
                 self.violations.append({

@@ -95,6 +95,9 @@ class CreditPilotColors:
         # Status colors (Functional indicators)
         self.status = ColorConfig(theme.get('status_colors', {}))
         
+        # Helper colors (Derived from core colors)
+        self.helper = ColorConfig(theme.get('helper_colors', {}))
+        
         # Excel colors (Excel reports only)
         self.excel = ColorConfig(theme.get('excel_colors', {}))
         
@@ -117,19 +120,52 @@ class CreditPilotColors:
     
     def get_web_ui_palette(self) -> Dict[str, str]:
         """
-        Get the complete Web UI color palette (core + status colors).
+        Get the complete Web UI color palette (core + status + helper colors).
         Returns a flat dictionary for easy CSS variable generation.
         """
-        return {
+        palette = {
+            # Core colors
             'black': self.core.black,
             'hot_pink': self.core.hot_pink,
             'dark_purple': self.core.dark_purple,
             'white': self.core.white,
+            
+            # Status colors
             'success': self.status.success,
+            'success_bg': self.status.success_bg,
             'warning': self.status.warning,
+            'warning_bg': self.status.warning_bg,
             'error': self.status.error,
+            'error_bg': self.status.error_bg,
             'info': self.status.info,
+            'info_bg': self.status.info_bg,
         }
+        
+        # Add helper colors
+        try:
+            palette.update({
+                # Helper backgrounds
+                'bg_primary': self.helper.backgrounds.primary,
+                'bg_secondary': self.helper.backgrounds.secondary,
+                'bg_tertiary': self.helper.backgrounds.tertiary,
+                
+                # Helper text
+                'text_primary': self.helper.text.primary,
+                'text_secondary': self.helper.text.secondary,
+                'text_dim': self.helper.text.dim,
+                'text_muted': self.helper.text.muted,
+                
+                # Helper hover states
+                'hot_pink_hover': self.helper.hover_states.hot_pink_hover,
+                'hot_pink_light': self.helper.hover_states.hot_pink_light,
+                'dark_purple_hover': self.helper.hover_states.dark_purple_hover,
+                'dark_purple_dark': self.helper.hover_states.dark_purple_dark,
+            })
+        except AttributeError:
+            # Helper colors not defined in config (backward compatibility)
+            pass
+        
+        return palette
     
     def get_excel_palette(self) -> Dict[str, Any]:
         """
@@ -151,21 +187,9 @@ class CreditPilotColors:
         # Normalize color
         color = color.upper()
         
-        # Check core colors
-        core_colors = [
-            self.core.black.upper(),
-            self.core.hot_pink.upper(),
-            self.core.dark_purple.upper(),
-            self.core.white.upper(),
-        ]
-        
-        # Check status colors
-        status_colors = [
-            self.status.success.upper(),
-            self.status.warning.upper(),
-            self.status.error.upper(),
-            self.status.info.upper(),
-        ]
+        # Get all allowed colors from web UI palette
+        web_ui_palette = self.get_web_ui_palette()
+        allowed_colors = [c.upper() for c in web_ui_palette.values() if isinstance(c, str) and c.startswith('#')]
         
         # Check Excel colors (flatten all excel colors)
         excel_colors = []
@@ -179,7 +203,10 @@ class CreditPilotColors:
         
         flatten_colors(self.excel.to_dict())
         
-        return color in (core_colors + status_colors + excel_colors)
+        # Combine all allowed colors
+        all_allowed_colors = allowed_colors + excel_colors
+        
+        return color in all_allowed_colors
     
     def is_deprecated(self, color: str) -> bool:
         """
