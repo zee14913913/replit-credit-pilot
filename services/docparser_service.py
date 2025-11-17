@@ -77,18 +77,18 @@ class DocParserService:
             Dict: 上传响应，包含document_id等信息
         """
         try:
-            file_path = Path(file_path)
+            file_path_obj = Path(file_path)
             
-            if not file_path.exists():
+            if not file_path_obj.exists():
                 raise FileNotFoundError(f"文件不存在: {file_path}")
             
-            if not file_path.suffix.lower() == '.pdf':
-                raise ValueError(f"仅支持PDF文件，当前文件: {file_path.suffix}")
+            if not file_path_obj.suffix.lower() == '.pdf':
+                raise ValueError(f"仅支持PDF文件，当前文件: {file_path_obj.suffix}")
             
-            logger.info(f"正在上传PDF到DocParser: {file_path.name}")
+            logger.info(f"正在上传PDF到DocParser: {file_path_obj.name}")
             
             with open(file_path, 'rb') as pdf_file:
-                files = {'file': (file_path.name, pdf_file, 'application/pdf')}
+                files = {'file': (file_path_obj.name, pdf_file, 'application/pdf')}
                 data = {}
                 
                 if remote_id:
@@ -218,8 +218,9 @@ def test_docparser_connection():
         parsers = service.list_parsers()
         print(f"\n可用Parser数量: {len(parsers)}")
         
-        for parser in parsers:
-            print(f"  - {parser.get('label')} (ID: {parser.get('id')})")
+        if parsers:
+            for parser in parsers:
+                print(f"  - {parser.get('label')} (ID: {parser.get('id')})")
         
         print("\n" + "="*80)
         return True
