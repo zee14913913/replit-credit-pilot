@@ -18,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from services.google_document_ai_service import GoogleDocumentAIService
 from scripts.calculate_balances import BalanceCalculator
 from config.settings_loader import get_settings
+from utils.excel_formatter import ExcelFormatter
 
 
 class CheokStatementProcessor:
@@ -30,6 +31,7 @@ class CheokStatementProcessor:
         
         self.doc_ai_service = GoogleDocumentAIService()
         self.calculator = BalanceCalculator()
+        self.excel_formatter = ExcelFormatter()
         
         self.customer_name = "Cheok Jun Yoon"
         self.customer_code = "Be_rich_CJY"
@@ -250,33 +252,70 @@ class CheokStatementProcessor:
                     '金额': total
                 })
         
-        # 创建Excel
-        with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
-            # 账单汇总
-            if summary_data:
-                df_summary = pd.DataFrame(summary_data)
-                df_summary.to_excel(writer, sheet_name='账单汇总', index=False)
-            
-            # 交易明细
-            if transaction_data:
-                df_transactions = pd.DataFrame(transaction_data)
-                df_transactions.to_excel(writer, sheet_name='交易明细', index=False)
-            
-            # 分类汇总
-            if category_summary:
-                df_category = pd.DataFrame(category_summary)
-                df_category.to_excel(writer, sheet_name='分类汇总', index=False)
-            
-            # 错误记录
-            if self.errors:
-                error_data = [{
-                    '文件名': e['file_name'],
-                    '错误信息': e['error']
-                } for e in self.errors]
-                df_errors = pd.DataFrame(error_data)
-                df_errors.to_excel(writer, sheet_name='错误记录', index=False)
+        # 创建专业格式化Excel
+        from openpyxl import Workbook
         
-        print(f"✅ Excel报告已生成")
+        wb = Workbook()
+        wb.remove(wb.active)
+        
+        # 账单汇总工作表
+        if summary_data:
+            ws_summary = wb.create_sheet("账单汇总")
+            
+            headers = list(summary_data[0].keys())
+            ws_summary.append(headers)
+            
+            for row_data in summary_data:
+                ws_summary.append(list(row_data.values()))
+            
+            self.excel_formatter.format_worksheet(ws_summary, 'summary', self.customer_name)
+        
+        # 交易明细工作表
+        if transaction_data:
+            ws_trans = wb.create_sheet("交易明细")
+            
+            headers = list(transaction_data[0].keys())
+            ws_trans.append(headers)
+            
+            for row_data in transaction_data:
+                ws_trans.append(list(row_data.values()))
+            
+            self.excel_formatter.format_worksheet(ws_trans, 'transactions', self.customer_name)
+            self.excel_formatter.add_transaction_icons(ws_trans, 'G')
+        
+        # 分类汇总工作表
+        if category_summary:
+            ws_category = wb.create_sheet("分类汇总")
+            
+            headers = list(category_summary[0].keys())
+            ws_category.append(headers)
+            
+            for idx, row_data in enumerate(category_summary, start=2):
+                ws_category.append(list(row_data.values()))
+                category_name = row_data.get('分类', '')
+                self.excel_formatter.format_category_summary_row(ws_category, idx, category_name)
+            
+            self.excel_formatter.format_worksheet(ws_category, 'categories', self.customer_name)
+        
+        # 错误记录工作表
+        if self.errors:
+            ws_errors = wb.create_sheet("错误记录")
+            
+            error_data = [{
+                '文件名': e['file_name'],
+                '错误信息': e['error']
+            } for e in self.errors]
+            
+            headers = list(error_data[0].keys())
+            ws_errors.append(headers)
+            
+            for row_data in error_data:
+                ws_errors.append(list(row_data.values()))
+            
+            self.excel_formatter.format_worksheet(ws_errors, 'errors', self.customer_name)
+        
+        wb.save(output_path)
+        print(f"✅ 专业格式化Excel报告已生成")
     
     def generate_json_report(self, results: List[Dict], output_path: Path):
         """生成JSON详细报告"""
