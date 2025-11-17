@@ -13,6 +13,9 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 
+# 导入统一配色系统
+from config.colors import COLORS
+
 
 class MonthlyReportScheduler:
     """自动化月结报表调度器"""
@@ -190,16 +193,16 @@ class MonthlyReportScheduler:
             msg['To'] = customer_email
             msg['Subject'] = f'🌌 您的{year}年{month}月信用卡月度报表 - Infinite GZ Financial'
             
-            # 邮件正文（HTML格式）
+            # 邮件正文（HTML格式） - 使用统一的粉色系配色
             html_body = f"""
             <html>
-            <body style="font-family: Arial, sans-serif; background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%); padding: 40px;">
+            <body style="font-family: Arial, sans-serif; background: linear-gradient(135deg, {COLORS.core.hot_pink} 0%, {COLORS.core.dark_purple} 100%); padding: 40px;">
                 <div style="max-width: 600px; margin: 0 auto; background: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">
                     <!-- Header -->
-                    <div style="background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%); padding: 30px; text-align: center;">
-                        <h1 style="color: #FFFFFF; margin: 0; font-size: 28px; font-weight: 900;">🌌 月度财务报表</h1>
+                    <div style="background: linear-gradient(135deg, {COLORS.core.hot_pink} 0%, {COLORS.core.dark_purple} 100%); padding: 30px; text-align: center;">
+                        <h1 style="color: {COLORS.core.white}; margin: 0; font-size: 28px; font-weight: 900;">🌌 月度财务报表</h1>
                         <p style="color: rgba(255,255,255,0.95); margin: 10px 0 0 0; font-size: 16px; font-weight: 700;">
-                            {year}年{month}月 银河主题专业报表
+                            {year}年{month}月 CreditPilot专业报表
                         </p>
                     </div>
                     
@@ -212,8 +215,8 @@ class MonthlyReportScheduler:
                             请查看附件中的详细分析报告。
                         </p>
                         
-                        <div style="background: #FFF3E0; border-left: 4px solid #FF7043; padding: 20px; margin: 30px 0; border-radius: 8px;">
-                            <h3 style="color: #FF5722; margin: 0 0 15px 0; font-size: 18px;">📊 本月报表包含：</h3>
+                        <div style="background: #FFE4E1; border-left: 4px solid {COLORS.core.hot_pink}; padding: 20px; margin: 30px 0; border-radius: 8px;">
+                            <h3 style="color: {COLORS.core.hot_pink}; margin: 0 0 15px 0; font-size: 18px;">📊 本月报表包含：</h3>
                             <ul style="color: #333333; margin: 0; padding-left: 20px; line-height: 2;">
                                 <li>✨ 所有信用卡完整交易明细</li>
                                 <li>📈 消费分类统计分析</li>
@@ -228,7 +231,7 @@ class MonthlyReportScheduler:
                         </p>
                         
                         <div style="text-align: center; margin: 30px 0;">
-                            <p style="font-size: 18px; color: #FF5722; font-weight: 900; margin: 0;">
+                            <p style="font-size: 18px; color: {COLORS.core.hot_pink}; font-weight: 900; margin: 0;">
                                 💡 发现节省机会？立即申请咨询！
                             </p>
                         </div>

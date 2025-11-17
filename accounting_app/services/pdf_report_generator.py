@@ -22,12 +22,15 @@ from typing import Dict, List, Any, Optional
 import io
 import logging
 
+# 导入统一配色系统
+from config.colors import COLORS
+
 logger = logging.getLogger(__name__)
 
-# 严格3色调色板
-COLOR_BLACK = colors.HexColor('#000000')
-COLOR_HOT_PINK = colors.HexColor('#FF007F')
-COLOR_DARK_PURPLE = colors.HexColor('#322446')
+# 严格3色调色板 - 从统一配置加载
+COLOR_BLACK = colors.HexColor(COLORS.core.black)
+COLOR_HOT_PINK = colors.HexColor(COLORS.core.hot_pink)
+COLOR_DARK_PURPLE = colors.HexColor(COLORS.core.dark_purple)
 
 
 class PDFReportGenerator:

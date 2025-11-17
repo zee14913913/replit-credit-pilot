@@ -7,6 +7,9 @@ import logging
 from typing import Optional
 from twilio.rest import Client as TwilioClient
 
+# 导入统一配色系统
+from config.colors import COLORS
+
 logger = logging.getLogger(__name__)
 
 
@@ -205,15 +208,15 @@ class EmailNotificationService:
         Returns:
             str: HTML邮件内容
         """
-        # 根据通知类型选择颜色主题
+        # 根据通知类型选择颜色主题 - 从统一配置加载
         color_map = {
-            'upload_success': '#FF007F',  # Hot Pink
-            'upload_failure': '#DC3545',  # Red
-            'admin_alert': '#322446',      # Dark Purple
-            'system': '#6C757D'            # Gray
+            'upload_success': COLORS.core.hot_pink,  # Hot Pink
+            'upload_failure': COLORS.status.error,   # Error Red
+            'admin_alert': COLORS.core.dark_purple,  # Dark Purple
+            'system': '#6C757D'  # Gray (neutral, not in core palette)
         }
         
-        primary_color = color_map.get(notification_type, '#FF007F')
+        primary_color = color_map.get(notification_type, COLORS.core.hot_pink)
         
         html = f"""
 <!DOCTYPE html>
@@ -223,15 +226,15 @@ class EmailNotificationService:
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title}</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background-color: #000000;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #000000;">
+<body style="margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background-color: {COLORS.core.black};">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: {COLORS.core.black};">
         <tr>
             <td align="center" style="padding: 40px 20px;">
                 <table width="600" cellpadding="0" cellspacing="0" style="background-color: #1a1a1a; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(255, 0, 127, 0.2);">
                     <!-- Header -->
                     <tr>
-                        <td style="background: linear-gradient(135deg, {primary_color} 0%, #322446 100%); padding: 30px; text-align: center;">
-                            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">GZ财务会计系统</h1>
+                        <td style="background: linear-gradient(135deg, {primary_color} 0%, {COLORS.core.dark_purple} 100%); padding: 30px; text-align: center;">
+                            <h1 style="color: {COLORS.core.white}; margin: 0; font-size: 24px; font-weight: 700;">GZ财务会计系统</h1>
                             <p style="color: rgba(255, 255, 255, 0.8); margin: 8px 0 0 0; font-size: 14px;">银行月结单智能管理平台</p>
                         </td>
                     </tr>
