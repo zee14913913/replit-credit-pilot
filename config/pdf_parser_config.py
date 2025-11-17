@@ -15,9 +15,11 @@ PDF解析器配置 - INFINITE GZ文件处理强制规范
 
 class ParserPriority:
     """PDF解析器优先级枚举"""
-    VBA_ONLY = "vba_only"           # 强制仅VBA（推荐）
-    VBA_PRIMARY = "vba_primary"     # VBA优先，失败后OCR
-    OCR_BACKUP = "ocr_backup"       # OCR备用（仅手动触发）
+    DOCPARSER_ONLY = "docparser_only"       # 强制仅DocParser云端解析（推荐⭐）
+    VBA_ONLY = "vba_only"                   # 强制仅VBA
+    VBA_PRIMARY = "vba_primary"             # VBA优先，失败后OCR
+    OCR_BACKUP = "ocr_backup"               # OCR备用（仅手动触发）
+    DOCPARSER_VBA = "docparser_vba"         # DocParser优先，VBA备用
     
     
 # ============================================================
@@ -25,15 +27,23 @@ class ParserPriority:
 # ============================================================
 
 # 当前强制执行的解析策略
-PARSER_MODE = ParserPriority.VBA_ONLY
+PARSER_MODE = ParserPriority.DOCPARSER_ONLY
 
 # 允许的上传方式
 ALLOWED_UPLOAD_METHODS = {
-    'vba_json': True,           # ✅ VBA解析后的JSON上传（主要方式）
+    'vba_json': True,           # ✅ VBA解析后的JSON上传
     'vba_batch': True,          # ✅ VBA批量JSON上传
     'direct_pdf_upload': True,  # ✅ 允许直接上传PDF文件（保存文件）
-    'auto_parse_pdf': False,    # ❌ 禁止自动解析PDF（必须用VBA）
+    'auto_parse_pdf': True,     # ✅ 允许自动解析PDF（使用DocParser）
     'ocr_manual': True,         # ✅ 允许管理员手动触发OCR（备用）
+}
+
+# DocParser配置
+DOCPARSER_CONFIG = {
+    'enabled': True,                    # DocParser启用状态
+    'sync_mode': True,                  # 同步模式（等待解析完成）
+    'max_wait_seconds': 60,             # 最大等待时间（秒）
+    'auto_delete_after_parse': False,   # 解析后是否删除云端文档
 }
 
 # VBA API端点
@@ -44,27 +54,26 @@ VBA_ENDPOINTS = {
 
 # PDF处理工作流程
 PDF_WORKFLOW = """
-标准PDF处理流程（强制执行）:
-==========================
+标准PDF处理流程（DocParser云端解析）:
+====================================
 
-1. 客户端（Windows Excel + VBA）:
-   - 接收PDF账单文件
-   - VBA解析PDF → Excel数据
-   - 标准化为JSON格式
-   
-2. 上传到Replit:
-   - 调用VBA API端点
-   - 上传标准化JSON
-   
-3. Replit服务器:
-   - 接收JSON数据
-   - 验证数据完整性
-   - 入库SQLite数据库
-   
-4. OCR备用方案（仅手动）:
-   - 仅在VBA不可用时
-   - 管理员手动触发
-   - 使用pytesseract OCR识别
+方案A：DocParser自动解析（推荐⭐）
+1. 客户上传PDF文件
+2. Replit保存PDF到正确位置
+3. Replit自动调用DocParser API上传PDF
+4. DocParser云端解析并返回JSON
+5. Replit接收JSON并入库
+
+方案B：VBA客户端解析（备用）
+1. 客户端（Windows Excel + VBA）解析PDF
+2. 标准化为JSON格式
+3. 调用VBA API端点上传JSON
+4. Replit接收JSON并入库
+
+方案C：OCR手动解析（紧急备用）
+1. 管理员手动触发
+2. 使用pytesseract OCR识别
+3. 人工验证后入库
 """
 
 
@@ -73,17 +82,17 @@ PDF_WORKFLOW = """
 # ============================================================
 
 FORBIDDEN_OPERATIONS = [
-    "自动解析PDF（Python/OCR）",
-    "跳过VBA直接解析并入库",
-    "上传后自动触发解析",
+    "使用Python本地OCR自动解析（低准确度）",
+    "跳过DocParser直接本地解析",
+    "不保存PDF原件直接删除",
 ]
 
 ALLOWED_OPERATIONS = [
-    "上传PDF文件并保存到正确位置",
-    "使用VBA客户端解析PDF生成JSON",
-    "VBA JSON上传入库（推荐）",
-    "VBA批量JSON上传",
-    "管理员手动OCR（备用）",
+    "上传PDF → DocParser云端解析 → 自动入库（推荐⭐）",
+    "上传PDF文件并保存到INFINITE GZ标准位置",
+    "使用DocParser API自动解析PDF",
+    "VBA客户端解析JSON上传（备用方案）",
+    "管理员手动OCR（紧急备用）",
 ]
 
 
