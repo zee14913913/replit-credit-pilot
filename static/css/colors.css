@@ -1,0 +1,219 @@
+/**
+ * CreditPilot Unified Color System - CSS Variables
+ * ================================================
+ * 
+ * This is the ONLY CSS file defining color variables for the entire system.
+ * All other CSS files MUST use these variables - NO hardcoded hex values!
+ * 
+ * Generated from: config/colors.json
+ * Version: 2.0.0
+ * Last Updated: 2025-11-17
+ * 
+ * Usage:
+ *   background: var(--color-black);
+ *   color: var(--color-hot-pink);
+ *   border: 1px solid var(--color-dark-purple);
+ */
+
+:root {
+  /* ==========================================
+     CORE COLORS - Mandatory 3-Color Palette
+     ========================================== */
+  
+  /* Primary background for all pages */
+  --color-black: #000000;
+  
+  /* Primary accent, buttons, links, revenue, credits, highlights */
+  --color-hot-pink: #FF007F;
+  --color-hot-pink-hover: #E6007A;
+  --color-hot-pink-light: #FF8FA3;
+  
+  /* Secondary accent, borders, expenses, debits */
+  --color-dark-purple: #322446;
+  --color-dark-purple-hover: #3A2A4E;
+  --color-dark-purple-dark: #241A36;
+  
+  /* Primary text color on dark backgrounds */
+  --color-white: #FFFFFF;
+  
+  
+  /* ==========================================
+     STATUS COLORS - Functional Indicators
+     ========================================== */
+  
+  /* Success messages, positive indicators, 'Excellent' risk grade */
+  --color-success: #00ff87;
+  --color-success-bg: #143d1b;
+  
+  /* Warning messages, caution indicators, 'Good/Fair' risk grade */
+  --color-warning: #ffcc00;
+  --color-warning-bg: #4d2b2b;
+  
+  /* Error messages, negative indicators, 'Poor' risk grade */
+  --color-error: #ff4444;
+  --color-error-bg: #4d2b2b;
+  
+  /* Informational messages, neutral indicators */
+  --color-info: #1e40af;
+  --color-info-bg: #1a1a2e;
+  
+  
+  /* ==========================================
+     GRADIENT STYLES
+     ========================================== */
+  
+  --gradient-primary: linear-gradient(135deg, var(--color-hot-pink) 0%, var(--color-dark-purple) 100%);
+  --gradient-dark: linear-gradient(135deg, var(--color-black) 0%, var(--color-dark-purple) 100%);
+  --gradient-hover: linear-gradient(135deg, var(--color-hot-pink-hover) 0%, var(--color-dark-purple-dark) 100%);
+  
+  
+  /* ==========================================
+     HELPER COLORS (Based on Core Colors)
+     ========================================== */
+  
+  /* Background variations */
+  --color-bg-primary: var(--color-black);
+  --color-bg-secondary: #1a1a1a;
+  --color-bg-tertiary: #0a0a0a;
+  
+  /* Text variations */
+  --color-text-primary: var(--color-white);
+  --color-text-secondary: #cccccc;
+  --color-text-dim: #888888;
+  --color-text-accent: var(--color-hot-pink);
+  
+  /* Border variations */
+  --border-primary: 1px solid var(--color-dark-purple);
+  --border-accent: 1px solid var(--color-hot-pink);
+  --border-subtle: 1px solid rgba(255, 255, 255, 0.1);
+  
+  
+  /* ==========================================
+     DEPRECATED COLORS - DO NOT USE!
+     ========================================== */
+  
+  /* Galaxy Theme colors - ARCHIVED */
+  /* --color-silver: #C0C0C0;  DEPRECATED - Use var(--color-hot-pink) */
+  /* --color-gold: #D4AF37;    DEPRECATED - Use var(--color-hot-pink) */
+  
+  /* Old monthly report colors - ARCHIVED */
+  /* --color-orange-red: #FF5722;  DEPRECATED - Use var(--color-hot-pink) */
+}
+
+
+/* ==========================================
+   BUTTON STYLES - Predefined Classes
+   ========================================== */
+
+.btn-primary {
+  background: var(--color-hot-pink);
+  color: var(--color-white);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: var(--color-hot-pink-hover);
+}
+
+.btn-secondary {
+  background: var(--color-dark-purple);
+  color: var(--color-white);
+  border: none;
+}
+
+.btn-secondary:hover {
+  background: var(--color-dark-purple-hover);
+}
+
+.btn-dark {
+  background: var(--color-black);
+  color: var(--color-hot-pink);
+  border: var(--border-accent);
+}
+
+.btn-dark:hover {
+  background: #1a1a1a;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-hot-pink);
+  border: var(--border-accent);
+}
+
+.btn-outline:hover {
+  background: var(--color-hot-pink);
+  color: var(--color-white);
+}
+
+
+/* ==========================================
+   CARD STYLES - Predefined Classes
+   ========================================== */
+
+.card-primary {
+  background: var(--color-bg-primary);
+  border: var(--border-primary);
+  color: var(--color-text-primary);
+}
+
+.card-accent {
+  background: var(--color-bg-secondary);
+  border: var(--border-accent);
+  color: var(--color-text-primary);
+}
+
+
+/* ==========================================
+   STATUS BADGES - Predefined Classes
+   ========================================== */
+
+.badge-success {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.badge-warning {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.badge-error {
+  background: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+.badge-info {
+  background: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+
+/* ==========================================
+   USAGE NOTES
+   ========================================== */
+
+/*
+  MANDATORY RULES:
+  
+  1. ALL CSS files MUST import this file at the top:
+     @import url('/static/css/colors.css');
+  
+  2. NEVER use hardcoded hex color values (#FF007F, #000000, etc.)
+     Always use CSS variables: var(--color-hot-pink), var(--color-black)
+  
+  3. For Web UI, only use:
+     - Core colors (black, hot-pink, dark-purple, white)
+     - Status colors (success, warning, error, info)
+  
+  4. PROHIBITED colors:
+     - Silver (#C0C0C0)
+     - Gold (#D4AF37, #FFD700)
+     - Orange-red (#FF5722, #FF7043)
+     - Any color not defined in this file
+  
+  5. If you need a new color:
+     - First try to use existing variables
+     - If absolutely necessary, update config/colors.json
+     - DO NOT add hardcoded colors to individual CSS files
+*/
