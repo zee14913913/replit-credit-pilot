@@ -13,8 +13,10 @@
     </div>
 
     <!-- 筛选器卡片 -->
-    <div class="professional-card mb-4">
-        <h4 style="color: var(--primary-pink); font-weight: 700; margin-bottom: 20px;">{{ t('filter_conditions') }}</h4>
+    <div class="professional-card mb-4" style="padding: 30px;">
+        <h4 style="color: var(--primary-pink); font-weight: 700; margin-bottom: 24px; font-size: 1.3rem;">
+            <i class="bi bi-funnel-fill me-2"></i>{{ t('filter_conditions') }}
+        </h4>
         {% include "components/export_filter.html" %}
     </div>
 
