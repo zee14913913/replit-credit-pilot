@@ -36,8 +36,14 @@
                     <span style="color: #FF007F; font-weight: 700; font-size: 0.75rem; letter-spacing: 1px;">{{ t('sdn_bhd') }}</span>
                 </div>
             </a>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileMenu()" style="display: none; background: none; border: 2px solid #FF007F; color: #FF007F; padding: 0.5rem 1rem; border-radius: 8px; font-size: 1.5rem; cursor: pointer;">
+                <i class="bi bi-list" id="menuIconOpen"></i>
+                <i class="bi bi-x" id="menuIconClose" style="display: none;"></i>
+            </button>
             
-            <ul class="nav-menu">
+            <ul class="nav-menu" id="navMenu">
                 <!-- Public Navigation - Optimized Order by Business Workflow -->
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if request.endpoint == 'index' }}" href="{{ url_for('index') }}">
@@ -833,6 +839,39 @@
             
             return date.toLocaleDateString();
         }
+    </script>
+
+    <!-- Mobile Menu Toggle Script -->
+    <script>
+    function toggleMobileMenu() {
+        const navMenu = document.getElementById('navMenu');
+        const navUtilities = document.querySelector('.nav-utilities');
+        const menuIconOpen = document.getElementById('menuIconOpen');
+        const menuIconClose = document.getElementById('menuIconClose');
+        
+        if (navMenu.classList.contains('mobile-active')) {
+            navMenu.classList.remove('mobile-active');
+            navUtilities.classList.remove('mobile-active');
+            menuIconOpen.style.display = 'inline-block';
+            menuIconClose.style.display = 'none';
+        } else {
+            navMenu.classList.add('mobile-active');
+            navUtilities.classList.add('mobile-active');
+            menuIconOpen.style.display = 'none';
+            menuIconClose.style.display = 'inline-block';
+        }
+    }
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const navMenu = document.getElementById('navMenu');
+        const mobileToggle = document.getElementById('mobileMenuToggle');
+        const isClickInside = navMenu.contains(event.target) || mobileToggle.contains(event.target);
+        
+        if (!isClickInside && navMenu.classList.contains('mobile-active')) {
+            toggleMobileMenu();
+        }
+    });
     </script>
     
     {% block scripts %}{% endblock %}

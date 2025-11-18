@@ -20,11 +20,11 @@
             <i class="bi bi-arrow-left"></i> {{ t('back_to_all_customers') }}
         </a>
         {% if statement.is_confirmed %}
-        <span class="badge" style="background: #28a745; color: white; padding: 0.5rem 1rem; margin-left: 1rem; border-radius: 8px;">
+        <span class="badge" style="background: #FF007F; color: white; padding: 0.5rem 1rem; margin-left: 1rem; border-radius: 8px;">
             <i class="bi bi-check-circle-fill"></i> {{ t('approved') }}
         </span>
         {% else %}
-        <span class="badge" style="background: #ffc107; color: #000; padding: 0.5rem 1rem; margin-left: 1rem; border-radius: 8px;">
+        <span class="badge" style="background: #322446; color: white; padding: 0.5rem 1rem; margin-left: 1rem; border-radius: 8px;">
             <i class="bi bi-clock-fill"></i> {{ t('pending_review') }}
         </span>
         {% endif %}
@@ -139,7 +139,7 @@
                                     {% endif %}
                                 </td>
                                 <td style="padding: 0.8rem; text-align: right; font-weight: 600; white-space: nowrap;">
-                                    <span style="{% if txn.transaction_type == 'payment' %}color: #28a745;{% else %}color: #FF007F;{% endif %}">
+                                    <span style="{% if txn.transaction_type == 'payment' %}color: #FF007F;{% else %}color: #322446;{% endif %}">
                                         {% if txn.transaction_type == 'payment' %}-{% endif %}RM {{ "{:,.2f}".format(txn.amount|abs) }}
                                     </span>
                                 </td>
@@ -183,12 +183,12 @@
                 </a>
                 {% if not statement.is_confirmed %}
                 <form method="POST" action="{{ url_for('approve_statement', statement_id=statement.statement_id) }}" style="margin: 0;">
-                    <button type="submit" class="btn-professional" style="padding: 0.8rem 2rem; font-size: 1rem; background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                    <button type="submit" class="btn-professional" style="padding: 0.8rem 2rem; font-size: 1rem; background: linear-gradient(135deg, #FF007F 0%, #322446 100%);">
                         <i class="bi bi-check-circle-fill"></i> {{ t('approve_statement') }}
                     </button>
                 </form>
                 {% else %}
-                <button class="btn-professional" disabled style="padding: 0.8rem 2rem; font-size: 1rem; background: #6c757d; cursor: not-allowed;">
+                <button class="btn-professional" disabled style="padding: 0.8rem 2rem; font-size: 1rem; background: #322446; cursor: not-allowed; opacity: 0.5;">
                     <i class="bi bi-check-circle-fill"></i> {{ t('already_approved') }}
                 </button>
                 {% endif %}
