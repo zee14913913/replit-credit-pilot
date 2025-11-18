@@ -8443,3 +8443,131 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port, debug=debug_mode)
 
 
+
+@app.route('/credit-card/transaction-classifier')
+@require_admin_or_accountant
+def transaction_classifier_page():
+    """交易分类器页面 - 修复624笔未分类交易"""
+    from services.transaction_classifier import get_classifier
+    
+    classifier = get_classifier()
+    
+    # 获取分类预览
+    preview = classifier.get_classification_preview(limit=624)
+    
+    # 统计
+    stats = {
+        'total': len(preview),
+        'by_category': {}
+    }
+    
+    for txn in preview:
+        category = txn['new_category']
+        if category not in stats['by_category']:
+            stats['by_category'][category] = 0
+        stats['by_category'][category] += 1
+    
+    return render_template('credit_card/transaction_classifier.html',
+                         preview=preview,
+                         stats=stats)
+
+@app.route('/credit-card/reclassify-transactions', methods=['POST'])
+@require_admin_or_accountant
+def reclassify_transactions():
+    """执行交易重新分类"""
+    from services.transaction_classifier import get_classifier
+    
+    classifier = get_classifier()
+    result = classifier.reclassify_all_transactions()
+    
+    lang = get_current_language()
+    flash(f"✅ 成功重新分类 {result['reclassified']} 笔交易！", 'success')
+    
+    return redirect(url_for('transaction_classifier_page'))
+
+@app.route('/credit-card/optimization-proposal/<int:customer_id>')
+def optimization_proposal(customer_id):
+    """客户优化方案页面 - 显示18%利息对比5%方案"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # 获取客户信息
+        cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+        customer = cursor.fetchone()
+        
+        if not customer:
+            flash('客户不存在', 'error')
+            return redirect(url_for('index'))
+        
+        # 获取客户所有信用卡未结余额
+        cursor.execute("""
+            SELECT cc.id, cc.bank_name, cc.card_number_last4,
+                   ml.closing_balance as outstanding
+            FROM credit_cards cc
+            LEFT JOIN monthly_ledger ml ON cc.id = ml.card_id
+            WHERE cc.customer_id = ?
+            ORDER BY ml.year DESC, ml.month DESC
+        """, (customer_id,))
+        
+        cards = cursor.fetchall()
+        
+        # 计算总未结余额
+        total_outstanding = sum(card['outstanding'] or 0 for card in cards)
+        
+        # 当前18%利息计算
+        current_interest_rate = 0.18
+        current_monthly_interest = total_outstanding * (current_interest_rate / 12)
+        current_yearly_interest = total_outstanding * current_interest_rate
+        
+        # 我们的5%方案
+        our_interest_rate = 0.05
+        our_monthly_interest = total_outstanding * (our_interest_rate / 12)
+        our_yearly_interest = total_outstanding * our_interest_rate
+        
+        # 节省金额
+        monthly_savings = current_monthly_interest - our_monthly_interest
+        yearly_savings = current_yearly_interest - our_yearly_interest
+    
+    return render_template('credit_card/optimization_proposal.html',
+                         customer=dict(customer),
+                         total_outstanding=total_outstanding,
+                         current_rate=current_interest_rate,
+                         current_monthly=current_monthly_interest,
+                         current_yearly=current_yearly_interest,
+                         our_rate=our_interest_rate,
+                         our_monthly=our_monthly_interest,
+                         our_yearly=our_yearly_interest,
+                         monthly_savings=monthly_savings,
+                         yearly_savings=yearly_savings)
+
+@app.route('/credit-card/accept-proposal/<int:customer_id>', methods=['POST'])
+def accept_proposal(customer_id):
+    """客户接受优化方案"""
+    # 显示预约电话
+    return jsonify({
+        'success': True,
+        'phone': '0167154052',
+        'message': '感谢您的信任！请拨打电话预约咨询：0167154052'
+    })
+
+@app.route('/credit-card/monthly-report/<int:customer_id>/<year>/<month>')
+def monthly_report_download(customer_id, year, month):
+    """生成并下载月度报表PDF"""
+    from services.monthly_report_generator import generate_monthly_pdf_report
+    from flask import send_file
+    import os
+    
+    try:
+        # 生成PDF
+        pdf_path = generate_monthly_pdf_report(customer_id, int(year), int(month))
+        
+        if pdf_path and os.path.exists(pdf_path):
+            return send_file(pdf_path, as_attachment=True, 
+                           download_name=f"Monthly_Report_{year}_{month}.pdf")
+        else:
+            flash('报表生成失败', 'error')
+            return redirect(url_for('index'))
+    
+    except Exception as e:
+        flash(f'生成报表时出错: {str(e)}', 'error')
+        return redirect(url_for('index'))
