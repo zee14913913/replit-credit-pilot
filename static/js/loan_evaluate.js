@@ -7,74 +7,61 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Loan Evaluate JS Loaded");
 
     // Mode buttons
-    const modeFull = document.getElementById("mode-full-auto");
-    const modeIncome = document.getElementById("mode-income-only");
-    const modeIncomeCommit = document.getElementById("mode-income-commit");
+    const modeFull = document.getElementById("mode_auto");
+    const modeIncome = document.getElementById("mode_income");
+    const modeIncomeCommit = document.getElementById("mode_commit");
 
     // Sections
-    const fullSection = document.getElementById("full-auto-section");
-    const incomeSection = document.getElementById("quick-income-section");
-    const incomeCommitSection = document.getElementById("quick-income-commit-section");
-
-    // Result panel
-    const resultPanel = document.getElementById("evaluation-result");
-    const riskCard = document.getElementById("risk-card");
-    const approvalCircle = document.getElementById("approval-odds");
-    const maxLoanText = document.getElementById("max-loan-amount");
-    const maxEmiText = document.getElementById("max-emi");
-    const dtiText = document.getElementById("dti-value");
-    const foirText = document.getElementById("foir-value");
-
-    // Advisor & products
-    const advisorPanel = document.getElementById("ai-advisor-panel");
-    const productList = document.getElementById("product-list");
+    const fullSection = document.getElementById("auto_mode_block");
+    const incomeSection = document.getElementById("income_mode_block");
+    const incomeCommitSection = document.getElementById("commit_mode_block");
 
     // Utility function for hiding all sections
     function hideAll() {
-        fullSection.style.display = "none";
-        incomeSection.style.display = "none";
-        incomeCommitSection.style.display = "none";
+        if (fullSection) fullSection.classList.add("hidden");
+        if (incomeSection) incomeSection.classList.add("hidden");
+        if (incomeCommitSection) incomeCommitSection.classList.add("hidden");
     }
 
     // ============================================================
     // Mode Switching Logic
     // ============================================================
 
-    modeFull.addEventListener("click", () => {
-        hideAll();
-        fullSection.style.display = "block";
-        setActiveMode(modeFull);
+    if (modeFull) {
+        modeFull.addEventListener("click", () => {
+            hideAll();
+            if (fullSection) fullSection.classList.remove("hidden");
+            setActiveMode(modeFull);
+        });
+    }
 
-        resultPanel.style.opacity = "0";
-    });
+    if (modeIncome) {
+        modeIncome.addEventListener("click", () => {
+            hideAll();
+            if (incomeSection) incomeSection.classList.remove("hidden");
+            setActiveMode(modeIncome);
+        });
+    }
 
-    modeIncome.addEventListener("click", () => {
-        hideAll();
-        incomeSection.style.display = "block";
-        setActiveMode(modeIncome);
-
-        resultPanel.style.opacity = "0";
-    });
-
-    modeIncomeCommit.addEventListener("click", () => {
-        hideAll();
-        incomeCommitSection.style.display = "block";
-        setActiveMode(modeIncomeCommit);
-
-        resultPanel.style.opacity = "0";
-    });
+    if (modeIncomeCommit) {
+        modeIncomeCommit.addEventListener("click", () => {
+            hideAll();
+            if (incomeCommitSection) incomeCommitSection.classList.remove("hidden");
+            setActiveMode(modeIncomeCommit);
+        });
+    }
 
     // Highlight selected mode button
     function setActiveMode(activeBtn) {
         [modeFull, modeIncome, modeIncomeCommit].forEach(btn => {
-            btn.classList.remove("active-mode");
+            if (btn) btn.classList.remove("active");
         });
-        activeBtn.classList.add("active-mode");
+        if (activeBtn) activeBtn.classList.add("active");
     }
 
     // Default
     hideAll();
-    fullSection.style.display = "block";
+    if (fullSection) fullSection.classList.remove("hidden");
     setActiveMode(modeFull);
 
 });
@@ -91,23 +78,22 @@ document.addEventListener("DOMContentLoaded", function () {
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", function () {
-    const btnIncome = document.getElementById("btn-income-calc");
-    const incomeInput = document.getElementById("qe-income-input");
+    const btnIncome = document.getElementById("btn_qe_income");
+    const incomeInput = document.getElementById("qe_income");
 
     if (btnIncome) {
         btnIncome.addEventListener("click", async () => {
             const income = parseFloat(incomeInput.value || 0);
 
             if (income <= 0) {
-                const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
-                alert(t('please_enter_valid_income_amount', '请输入有效的收入金额'));
+                alert('请输入有效的收入金额');
                 return;
             }
 
             const payload = { income: income };
 
             try {
-                const res = await fetch("/loan-evaluate/quick_income", {
+                const res = await fetch("/api/loans/quick-income", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
@@ -123,6 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             } catch (err) {
                 console.error("Quick-income error:", err);
+                alert('计算失败，请重试');
             }
         });
     }
@@ -134,10 +121,10 @@ document.addEventListener("DOMContentLoaded", function () {
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", function () {
-    const btnIncomeCommit = document.getElementById("btn-income-commit-calc");
+    const btnIncomeCommit = document.getElementById("btn_qe_commit");
 
-    const incomeInput = document.getElementById("qe2-income-input");
-    const commitInput = document.getElementById("qe2-commit-input");
+    const incomeInput = document.getElementById("qe2_income");
+    const commitInput = document.getElementById("qe2_commit");
 
     if (btnIncomeCommit) {
         btnIncomeCommit.addEventListener("click", async () => {
@@ -145,8 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const commitments = parseFloat(commitInput.value || 0);
 
             if (income <= 0) {
-                const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
-                alert(t('please_enter_valid_income_amount', '请输入有效的收入金额'));
+                alert('请输入有效的收入金额');
                 return;
             }
 
@@ -156,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
             try {
-                const res = await fetch("/loan-evaluate/quick_income_commitment", {
+                const res = await fetch("/api/loans/quick-income-commitment", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
@@ -172,6 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             } catch (err) {
                 console.error("Quick-income-commitment error:", err);
+                alert('计算失败，请重试');
             }
         });
     }
