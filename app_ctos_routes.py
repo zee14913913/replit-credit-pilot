@@ -7,21 +7,40 @@ Phase 7: CTOS Consent Integration
 import os
 import base64
 from datetime import datetime
-from flask import render_template, request, redirect, url_for, flash, send_file
+from flask import render_template, request, redirect, url_for, flash, send_file, jsonify
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 from io import BytesIO
 from PIL import Image
+import sqlite3
 
 from auth.admin_auth_helper import require_admin_or_accountant
-from db.database import log_audit
+from db.database import log_audit, get_db
+
+
+@require_admin_or_accountant
+def ctos_consent():
+    """CTOS Consent Main Page - Select Personal or Company"""
+    return render_template('ctos/ctos_index.html')
 
 
 @require_admin_or_accountant
 def ctos_personal():
     """个人CTOS Consent页面"""
-    return render_template('ctos/ctos_personal.html', current_date=datetime.now().strftime('%Y-%m-%d'))
+    customer_id = request.args.get('customer_id')
+    customer = None
+    
+    if customer_id:
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+            row = cursor.fetchone()
+            customer = dict(row) if row else None
+    
+    return render_template('ctos/ctos_personal.html', 
+                         current_date=datetime.now().strftime('%Y-%m-%d'),
+                         customer=customer)
 
 
 @require_admin_or_accountant  
@@ -75,10 +94,30 @@ def ctos_personal_submit():
             signature_path
         )
         
+        # 保存到数据库
+        customer_id = request.form.get('customer_id')
+        if customer_id:
+            with get_db() as conn:
+                cursor = conn.cursor()
+                cursor.execute('''
+                    INSERT INTO ctos_applications (
+                        customer_id, application_type, application_date, status,
+                        full_name, ic_number, phone, email, address, occupation,
+                        ic_front_path, ic_back_path, signature_path, pdf_path
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (
+                    customer_id, 'personal', datetime.now().date(), 'pending',
+                    full_name, ic_number, phone, email, address, 'Manager',
+                    f"{customer_dir}/IC_FRONT.{ic_front.filename.split('.')[-1]}" if ic_front else None,
+                    f"{customer_dir}/IC_BACK.{ic_back.filename.split('.')[-1]}" if ic_back else None,
+                    signature_path, pdf_path
+                ))
+                conn.commit()
+        
         # Flash成功消息并重定向，让用户看到确认
         flash(f'✅ Personal CTOS Consent submitted successfully! PDF generated: {pdf_filename}', 'success')
         flash(f'📄 Download your consent PDF: <a href="/{pdf_path}" class="text-decoration-underline">Click Here</a>', 'info')
-        return redirect(url_for('ctos_personal'))
+        return redirect(url_for('ctos_consent'))
         
     except Exception as e:
         flash(f'Error processing CTOS consent: {str(e)}', 'error')
@@ -167,7 +206,19 @@ def generate_ctos_personal_pdf(pdf_path, name, ic, phone, email, address, signat
 @require_admin_or_accountant
 def ctos_company():
     """公司CTOS Consent页面"""
-    return render_template('ctos/ctos_company.html', current_date=datetime.now().strftime('%Y-%m-%d'))
+    customer_id = request.args.get('customer_id')
+    customer = None
+    
+    if customer_id:
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT * FROM customers WHERE id = ?', (customer_id,))
+            row = cursor.fetchone()
+            customer = dict(row) if row else None
+    
+    return render_template('ctos/ctos_company.html', 
+                         current_date=datetime.now().strftime('%Y-%m-%d'),
+                         customer=customer)
 
 
 @require_admin_or_accountant
@@ -219,10 +270,31 @@ def ctos_company_submit():
             stamp_path
         )
         
+        # 保存到数据库
+        customer_id = request.form.get('customer_id')
+        if customer_id:
+            with get_db() as conn:
+                cursor = conn.cursor()
+                cursor.execute('''
+                    INSERT INTO ctos_applications (
+                        customer_id, application_type, application_date, status,
+                        company_name, registration_number, company_address,
+                        authorized_person, authorized_phone,
+                        ssm_path, seal_path, pdf_path
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (
+                    customer_id, 'company', datetime.now().date(), 'pending',
+                    company_name, ssm_number, company_address,
+                    authorized_person, authorized_phone,
+                    f"{company_dir}/SSM_FRONT.{ssm_front.filename.split('.')[-1]}" if ssm_front else None,
+                    stamp_path, pdf_path
+                ))
+                conn.commit()
+        
         # Flash成功消息并重定向，让用户看到确认
         flash(f'✅ Company CTOS Consent submitted successfully! PDF generated: {pdf_filename}', 'success')
         flash(f'📄 Download your consent PDF: <a href="/{pdf_path}" class="text-decoration-underline">Click Here</a>', 'info')
-        return redirect(url_for('ctos_company'))
+        return redirect(url_for('ctos_consent'))
         
     except Exception as e:
         flash(f'Error processing company CTOS consent: {str(e)}', 'error')

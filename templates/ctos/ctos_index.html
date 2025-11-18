@@ -1,0 +1,92 @@
+
+{% extends "base.html" %}
+
+{% block title %}CTOS Consent Forms{% endblock %}
+
+{% block content %}
+<div class="container-fluid" style="padding: 40px 60px; background: #000000; min-height: 100vh;">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%); padding: 32px; border-radius: 16px; border: 2px solid #FF007F; margin-bottom: 40px; box-shadow: 0 8px 32px rgba(255, 0, 127, 0.2);">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-file-earmark-lock2-fill" style="font-size: 48px; color: #FF007F; margin-right: 24px;"></i>
+                    <div>
+                        <h1 style="color: #FFFFFF; font-size: 32px; margin: 0;">CTOS Consent Forms</h1>
+                        <p style="color: rgba(255, 255, 255, 0.7); margin: 8px 0 0 0; font-size: 16px;">Credit Report Authorization System</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selection Cards -->
+            <div class="row g-4">
+                <!-- Personal CTOS Card -->
+                <div class="col-md-6">
+                    <div style="background: linear-gradient(135deg, #1a0a0f 0%, #0d0d0d 100%); padding: 32px; border-radius: 16px; border: 2px solid rgba(255, 0, 127, 0.5); height: 100%; cursor: pointer; transition: all 0.3s;" 
+                         onclick="window.location.href='{{ url_for('ctos_personal_route') }}'">
+                        <div class="text-center">
+                            <i class="bi bi-person-badge-fill" style="font-size: 72px; color: #FF007F; margin-bottom: 20px;"></i>
+                            <h3 style="color: #FFFFFF; font-size: 24px; margin-bottom: 16px;">Personal CTOS Consent</h3>
+                            <p style="color: rgba(255, 255, 255, 0.7); font-size: 14px; line-height: 1.6; margin-bottom: 24px;">
+                                Individual credit report authorization for personal loan applications and credit assessments.
+                            </p>
+                            <ul style="list-style: none; padding: 0; text-align: left; color: rgba(255, 255, 255, 0.8); font-size: 13px;">
+                                <li style="margin-bottom: 8px;"><i class="bi bi-check-circle-fill me-2" style="color: #FF007F;"></i>IC Upload (Front & Back)</li>
+                                <li style="margin-bottom: 8px;"><i class="bi bi-check-circle-fill me-2" style="color: #FF007F;"></i>Electronic Signature</li>
+                                <li style="margin-bottom: 8px;"><i class="bi bi-check-circle-fill me-2" style="color: #FF007F;"></i>Auto-fill Customer Data</li>
+                                <li style="margin-bottom: 8px;"><i class="bi bi-check-circle-fill me-2" style="color: #FF007F;"></i>Instant PDF Generation</li>
+                            </ul>
+                            <button class="btn btn-lg w-100 mt-3" style="background: linear-gradient(135deg, #FF007F 0%, #E6006F 100%); color: #FFFFFF; border: none; padding: 12px; border-radius: 8px; font-weight: 600;">
+                                Start Personal Form <i class="bi bi-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Company CTOS Card -->
+                <div class="col-md-6">
+                    <div style="background: linear-gradient(135deg, #1a1004 0%, #0d0d0d 100%); padding: 32px; border-radius: 16px; border: 2px solid rgba(212, 175, 55, 0.5); height: 100%; cursor: pointer; transition: all 0.3s;" 
+                         onclick="window.location.href='{{ url_for('ctos_company_route') }}'">
+                        <div class="text-center">
+                            <i class="bi bi-building-lock" style="font-size: 72px; color: #D4AF37; margin-bottom: 20px;"></i>
+                            <h3 style="color: #FFFFFF; font-size: 24px; margin-bottom: 16px;">Company CTOS Consent</h3>
+                            <p style="color: rgba(255, 255, 255, 0.7); font-size: 14px; line-height: 1.6; margin-bottom: 24px;">
+                                SME credit report authorization for business loans and corporate financing.
+                            </p>
+                            <ul style="list-style: none; padding: 0; text-align: left; color: rgba(255, 255, 255, 0.8); font-size: 13px;">
+                                <li style="margin-bottom: 8px;"><i class="bi bi-check-circle-fill me-2" style="color: #D4AF37;"></i>SSM Document Upload</li>
+                                <li style="margin-bottom: 8px;"><i class="bi bi-check-circle-fill me-2" style="color: #D4AF37;"></i>Company Seal/Stamp</li>
+                                <li style="margin-bottom: 8px;"><i class="bi bi-check-circle-fill me-2" style="color: #D4AF37;"></i>Authorized Representative</li>
+                                <li style="margin-bottom: 8px;"><i class="bi bi-check-circle-fill me-2" style="color: #D4AF37;"></i>Instant PDF Generation</li>
+                            </ul>
+                            <button class="btn btn-lg w-100 mt-3" style="background: linear-gradient(135deg, #D4AF37 0%, #C4A033 100%); color: #000000; border: none; padding: 12px; border-radius: 8px; font-weight: 700;">
+                                Start Company Form <i class="bi bi-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Banner -->
+            <div style="background: rgba(255, 0, 127, 0.1); border: 1px solid rgba(255, 0, 127, 0.3); padding: 20px; border-radius: 12px; margin-top: 32px;">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-shield-fill-check" style="font-size: 32px; color: #FF007F; margin-right: 16px;"></i>
+                    <div>
+                        <strong style="color: #FFFFFF; font-size: 16px;">Data Protection Compliance</strong>
+                        <p style="color: rgba(255, 255, 255, 0.8); margin: 4px 0 0 0; font-size: 13px;">
+                            All information is encrypted and handled in accordance with Malaysian PDPA 2010. Consents are valid for 12 months from the date of submission.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.col-md-6 > div:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 48px rgba(255, 0, 127, 0.3);
+}
+</style>
+{% endblock %}

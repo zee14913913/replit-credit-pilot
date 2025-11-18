@@ -17,7 +17,10 @@
                 </div>
             </div>
 
-            <form id="ctosCompanyForm" method="POST" action="{{ url_for('ctos_company_submit') }}" enctype="multipart/form-data">
+            <form id="ctosCompanyForm" method="POST" action="{{ url_for('ctos_company_submit_route') }}" enctype="multipart/form-data">
+                {% if customer %}
+                <input type="hidden" name="customer_id" value="{{ customer.id }}">
+                {% endif %}
                 <div class="row">
                     <!-- 左侧：表单输入区 -->
                     <div class="col-lg-7">
@@ -31,7 +34,8 @@
                                 <label class="form-label" style="color: #FFFFFF;">{{ t('company_name_1') }}<span style="color: #D4AF37;">*</span></label>
                                 <input type="text" name="company_name" class="form-control" required 
                                        style="background: #0d0d0d; border: 1px solid #322446; color: #FFFFFF; border-radius: 8px; padding: 12px;"
-                                       placeholder="{{ t('enter_company_name_placeholder') }}">
+                                       placeholder="{{ t('enter_company_name_placeholder') }}"
+                                       value="{% if customer %}{{ customer.name }}{% endif %}">
                             </div>
 
                             <div class="mb-3">

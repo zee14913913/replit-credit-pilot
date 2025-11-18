@@ -88,6 +88,7 @@ from admin.portfolio_manager import PortfolioManager
 
 # CTOS Consent Management (Phase 7)
 from app_ctos_routes import (
+    ctos_consent,
     ctos_personal,
     ctos_personal_submit,
     ctos_company,
@@ -1677,6 +1678,31 @@ def admin_dashboard():
                          invoices_count=invoices_count,
                          invoices_total=invoices_total)
 
+
+@app.route('/ctos/consent')
+@require_admin_or_accountant
+def ctos_consent_route():
+    return ctos_consent()
+
+@app.route('/ctos/personal')
+@require_admin_or_accountant
+def ctos_personal_route():
+    return ctos_personal()
+
+@app.route('/ctos/personal/submit', methods=['POST'])
+@require_admin_or_accountant
+def ctos_personal_submit_route():
+    return ctos_personal_submit()
+
+@app.route('/ctos/company')
+@require_admin_or_accountant
+def ctos_company_route():
+    return ctos_company()
+
+@app.route('/ctos/company/submit', methods=['POST'])
+@require_admin_or_accountant
+def ctos_company_submit_route():
+    return ctos_company_submit()
 
 @app.route('/admin/payment-accounts')
 @require_admin_or_accountant
