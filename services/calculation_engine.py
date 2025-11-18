@@ -13,8 +13,8 @@ class CalculationEngine:
     def __init__(self, db_path: str = 'db/smart_loan_manager.db'):
         self.db_path = db_path
         
-        # 7个供应商
-        self.suppliers = ['HUAWEI', 'APPLE', 'XIAOMI', 'OPPO', 'VIVO', 'SAMSUNG', 'REALME']
+        # 7个供应商（Ji-Suan文档指定）
+        self.suppliers = ['7SL', 'Dinas Raub', 'SYC Hainan', 'Ai Smart Tech', 'HUAWEI', 'Pasar Raya', 'Puchong Herbs']
         
         # 9间GZ银行
         self.gz_banks = [

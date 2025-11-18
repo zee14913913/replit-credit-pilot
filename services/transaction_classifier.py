@@ -14,26 +14,28 @@ class TransactionClassifier:
     def __init__(self, db_path: str = 'db/smart_loan_manager.db'):
         self.db_path = db_path
         
-        # 供应商关键词（7个主要供应商）
+        # 供应商关键词（7个主要供应商 - Ji-Suan文档指定）
         self.suppliers = [
-            'HUAWEI', 'APPLE', 'XIAOMI', 'OPPO', 'VIVO', 'SAMSUNG', 'REALME'
+            '7SL', 'Dinas Raub', 'SYC Hainan', 'Ai Smart Tech', 
+            'HUAWEI', 'Pasar Raya', 'Puchong Herbs'
         ]
         
-        # GZ银行列表（9间银行）
-        self.gz_banks = [
-            'GX BANK', 'GXBANK',  # INFINITE GZ - Tan Zee Liang
-            'MAYBANK',  # Yeo Chee Wang
-            'UOB',  # Yeo Chee Wang
-            'OCBC',  # Yeo Chee Wang + Teo Yok Chu
-            'HONG LEONG', 'HLB',  # Infinite GZ Sdn Bhd
-            'PUBLIC BANK', 'PBB',  # Ai Smart Tech
-            'ALLIANCE BANK', 'ALLIANCE'  # Ai Smart Tech
-        ]
-        
-        # GZ持卡人关键词
-        self.gz_cardholders = [
-            'INFINITE', 'GZ', 'TAN ZEE LIANG', 'YEO CHEE WANG',
-            'TEO YOK CHU', 'AI SMART TECH', 'INFINITE GZ'
+        # 9间GZ银行的精确组合（银行+持卡人）
+        self.gz_bank_combinations = [
+            ('GX BANK', 'TAN ZEE LIANG'),           # 1. INFINITE GZ - Tan Zee Liang
+            ('GXBANK', 'TAN ZEE LIANG'),
+            ('MAYBANK', 'YEO CHEE WANG'),           # 2. Yeo Chee Wang
+            ('GX BANK', 'YEO CHEE WANG'),           # 3. Yeo Chee Wang
+            ('GXBANK', 'YEO CHEE WANG'),
+            ('UOB', 'YEO CHEE WANG'),               # 4. Yeo Chee Wang
+            ('OCBC', 'YEO CHEE WANG'),              # 5. Yeo Chee Wang
+            ('OCBC', 'TEO YOK CHU'),                # 6. Teo Yok Chu - Yeo Chee Wang
+            ('HONG LEONG', 'INFINITE GZ'),          # 7. Infinite GZ Sdn Bhd
+            ('HLB', 'INFINITE GZ'),
+            ('PUBLIC BANK', 'AI SMART TECH'),       # 8. Ai Smart Tech
+            ('PBB', 'AI SMART TECH'),
+            ('ALLIANCE BANK', 'AI SMART TECH'),     # 9. Ai Smart Tech
+            ('ALLIANCE', 'AI SMART TECH')
         ]
         
         # 付款关键词
@@ -54,17 +56,14 @@ class TransactionClassifier:
         return any(supplier in desc_upper for supplier in self.suppliers)
     
     def is_gz_cardholder(self, cardholder: str, bank_name: str = '') -> bool:
-        """判断是否为GZ持卡人"""
+        """判断是否为GZ持卡人 - 精确匹配9间GZ银行组合"""
         cardholder_upper = cardholder.upper() if cardholder else ''
         bank_upper = bank_name.upper() if bank_name else ''
         
-        # 检查持卡人名称
-        if any(kw in cardholder_upper for kw in self.gz_cardholders):
-            return True
-        
-        # 检查银行是否在GZ银行列表
-        if any(bank in bank_upper for bank in self.gz_banks):
-            return True
+        # 精确匹配9间GZ银行+持卡人组合
+        for bank, holder in self.gz_bank_combinations:
+            if bank in bank_upper and holder in cardholder_upper:
+                return True
         
         return False
     

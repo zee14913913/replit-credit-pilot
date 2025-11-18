@@ -92,12 +92,12 @@ def generate_monthly_pdf_report(customer_id: int, year: int, month: int) -> str:
         txn_table = Table(txn_data, colWidths=[1.2*inch, 2.5*inch, 1*inch, 1.3*inch, 1.5*inch])
         txn_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#FF007F')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor('#FFFFFF')),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
             ('FONTSIZE', (0, 0), (-1, 0), 10),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black)
+            ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#000000'))
         ]))
         story.append(txn_table)
     else:

@@ -8,15 +8,46 @@
       "statement_format": "PDF",
       "date_format": "dd/MM/yyyy",
       "field_mapping": {
-        "statement_date": ["Statement Date", "Tarikh Penyata"],
-        "due_date": ["Payment Due Date", "Tarikh Akhir Bayaran"],
-        "card_number": ["Card Number", "Nombor Kad"],
-        "total_amount": ["Total Amount Due", "Jumlah Perlu Dibayar"],
-        "minimum_payment": ["Minimum Payment", "Bayaran Minimum"],
-        "previous_balance": ["Previous Balance", "Baki Terdahulu"]
+        "statement_date": [
+          "Statement Date",
+          "Tarikh Penyata"
+        ],
+        "due_date": [
+          "Payment Due Date",
+          "Tarikh Akhir Bayaran"
+        ],
+        "card_number": [
+          "Card Number",
+          "Nombor Kad"
+        ],
+        "total_amount": [
+          "Total Amount Due",
+          "Jumlah Perlu Dibayar"
+        ],
+        "minimum_payment": [
+          "Minimum Payment",
+          "Bayaran Minimum"
+        ],
+        "previous_balance": [
+          "Previous Balance",
+          "Baki Terdahulu"
+        ]
       },
-      "transaction_headers": ["Date", "Description", "Amount", "DR/CR"],
-      "supplier_keywords": ["HUAWEI", "APPLE", "XIAOMI", "OPPO", "VIVO", "SAMSUNG", "REALME"],
+      "transaction_headers": [
+        "Date",
+        "Description",
+        "Amount",
+        "DR/CR"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
       "enabled": true
     },
     "CIMB": {
@@ -25,15 +56,39 @@
       "statement_format": "PDF",
       "date_format": "dd MMM yyyy",
       "field_mapping": {
-        "statement_date": ["Statement Date"],
-        "due_date": ["Payment Due Date"],
-        "card_number": ["Card No."],
-        "total_amount": ["Total Amount Due"],
-        "minimum_payment": ["Minimum Payment"],
-        "previous_balance": ["Previous Balance"]
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due Date"
+        ],
+        "card_number": [
+          "Card No."
+        ],
+        "total_amount": [
+          "Total Amount Due"
+        ],
+        "minimum_payment": [
+          "Minimum Payment"
+        ],
+        "previous_balance": [
+          "Previous Balance"
+        ]
       },
-      "transaction_headers": ["Date", "Transaction Details", "Amount"],
-      "supplier_keywords": ["HUAWEI", "APPLE", "XIAOMI", "OPPO", "VIVO", "SAMSUNG", "REALME"],
+      "transaction_headers": [
+        "Date",
+        "Transaction Details",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
       "enabled": true
     },
     "Hong Leong Bank": {
@@ -42,15 +97,40 @@
       "statement_format": "PDF",
       "date_format": "dd/MM/yyyy",
       "field_mapping": {
-        "statement_date": ["Statement Date"],
-        "due_date": ["Payment Due"],
-        "card_number": ["Card Number"],
-        "total_amount": ["Total Amount Payable"],
-        "minimum_payment": ["Minimum Payment Due"],
-        "previous_balance": ["Balance B/F"]
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due"
+        ],
+        "card_number": [
+          "Card Number"
+        ],
+        "total_amount": [
+          "Total Amount Payable"
+        ],
+        "minimum_payment": [
+          "Minimum Payment Due"
+        ],
+        "previous_balance": [
+          "Balance B/F"
+        ]
       },
-      "transaction_headers": ["Trans Date", "Posting Date", "Description", "Amount"],
-      "supplier_keywords": ["HUAWEI", "APPLE", "XIAOMI", "OPPO", "VIVO", "SAMSUNG", "REALME"],
+      "transaction_headers": [
+        "Trans Date",
+        "Posting Date",
+        "Description",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
       "enabled": true
     },
     "Public Bank": {
@@ -59,15 +139,40 @@
       "statement_format": "PDF",
       "date_format": "dd-MM-yyyy",
       "field_mapping": {
-        "statement_date": ["Statement Date"],
-        "due_date": ["Payment Due Date"],
-        "card_number": ["Card Number"],
-        "total_amount": ["Total Outstanding Balance"],
-        "minimum_payment": ["Minimum Payment"],
-        "previous_balance": ["Previous Balance"]
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due Date"
+        ],
+        "card_number": [
+          "Card Number"
+        ],
+        "total_amount": [
+          "Total Outstanding Balance"
+        ],
+        "minimum_payment": [
+          "Minimum Payment"
+        ],
+        "previous_balance": [
+          "Previous Balance"
+        ]
       },
-      "transaction_headers": ["Date", "Description", "Amount", "Dr/Cr"],
-      "supplier_keywords": ["HUAWEI", "APPLE", "XIAOMI", "OPPO", "VIVO", "SAMSUNG", "REALME"],
+      "transaction_headers": [
+        "Date",
+        "Description",
+        "Amount",
+        "Dr/Cr"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
       "enabled": true
     },
     "RHB": {
@@ -76,15 +181,39 @@
       "statement_format": "PDF",
       "date_format": "dd/MM/yyyy",
       "field_mapping": {
-        "statement_date": ["Statement Date"],
-        "due_date": ["Payment Due Date"],
-        "card_number": ["Card No"],
-        "total_amount": ["Total Outstanding"],
-        "minimum_payment": ["Minimum Payment"],
-        "previous_balance": ["Previous Balance"]
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due Date"
+        ],
+        "card_number": [
+          "Card No"
+        ],
+        "total_amount": [
+          "Total Outstanding"
+        ],
+        "minimum_payment": [
+          "Minimum Payment"
+        ],
+        "previous_balance": [
+          "Previous Balance"
+        ]
       },
-      "transaction_headers": ["Date", "Particulars", "Amount"],
-      "supplier_keywords": ["HUAWEI", "APPLE", "XIAOMI", "OPPO", "VIVO", "SAMSUNG", "REALME"],
+      "transaction_headers": [
+        "Date",
+        "Particulars",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
       "enabled": true
     },
     "AmBank": {
@@ -93,15 +222,40 @@
       "statement_format": "PDF",
       "date_format": "dd MMM yyyy",
       "field_mapping": {
-        "statement_date": ["Statement Date"],
-        "due_date": ["Payment Due Date"],
-        "card_number": ["Credit Card No."],
-        "total_amount": ["Total Amount Due"],
-        "minimum_payment": ["Minimum Payment Due"],
-        "previous_balance": ["Balance from Previous Statement"]
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due Date"
+        ],
+        "card_number": [
+          "Credit Card No."
+        ],
+        "total_amount": [
+          "Total Amount Due"
+        ],
+        "minimum_payment": [
+          "Minimum Payment Due"
+        ],
+        "previous_balance": [
+          "Balance from Previous Statement"
+        ]
       },
-      "transaction_headers": ["Trans Date", "Post Date", "Description", "Amount"],
-      "supplier_keywords": ["HUAWEI", "APPLE", "XIAOMI", "OPPO", "VIVO", "SAMSUNG", "REALME"],
+      "transaction_headers": [
+        "Trans Date",
+        "Post Date",
+        "Description",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
       "enabled": true
     },
     "UOB": {
@@ -110,15 +264,39 @@
       "statement_format": "PDF",
       "date_format": "dd MMM yyyy",
       "field_mapping": {
-        "statement_date": ["Statement Date"],
-        "due_date": ["Payment Due Date"],
-        "card_number": ["Card Number"],
-        "total_amount": ["Total Amount Due"],
-        "minimum_payment": ["Minimum Payment"],
-        "previous_balance": ["Previous Balance"]
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due Date"
+        ],
+        "card_number": [
+          "Card Number"
+        ],
+        "total_amount": [
+          "Total Amount Due"
+        ],
+        "minimum_payment": [
+          "Minimum Payment"
+        ],
+        "previous_balance": [
+          "Previous Balance"
+        ]
       },
-      "transaction_headers": ["Trans Date", "Description", "Amount"],
-      "supplier_keywords": ["HUAWEI", "APPLE", "XIAOMI", "OPPO", "VIVO", "SAMSUNG", "REALME"],
+      "transaction_headers": [
+        "Trans Date",
+        "Description",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
       "enabled": true
     },
     "OCBC": {
@@ -127,15 +305,40 @@
       "statement_format": "PDF",
       "date_format": "dd MMM yyyy",
       "field_mapping": {
-        "statement_date": ["Statement Date"],
-        "due_date": ["Payment Due Date"],
-        "card_number": ["Card Number"],
-        "total_amount": ["Total Amount Due"],
-        "minimum_payment": ["Minimum Payment"],
-        "previous_balance": ["Balance from Previous Statement"]
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due Date"
+        ],
+        "card_number": [
+          "Card Number"
+        ],
+        "total_amount": [
+          "Total Amount Due"
+        ],
+        "minimum_payment": [
+          "Minimum Payment"
+        ],
+        "previous_balance": [
+          "Balance from Previous Statement"
+        ]
       },
-      "transaction_headers": ["Date", "Description", "Debit", "Credit"],
-      "supplier_keywords": ["HUAWEI", "APPLE", "XIAOMI", "OPPO", "VIVO", "SAMSUNG", "REALME"],
+      "transaction_headers": [
+        "Date",
+        "Description",
+        "Debit",
+        "Credit"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
       "enabled": true
     },
     "Alliance Bank": {
@@ -144,15 +347,39 @@
       "statement_format": "PDF",
       "date_format": "dd/MM/yyyy",
       "field_mapping": {
-        "statement_date": ["Statement Date"],
-        "due_date": ["Payment Due Date"],
-        "card_number": ["Card No"],
-        "total_amount": ["Total Outstanding Balance"],
-        "minimum_payment": ["Minimum Payment Due"],
-        "previous_balance": ["Previous Balance"]
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due Date"
+        ],
+        "card_number": [
+          "Card No"
+        ],
+        "total_amount": [
+          "Total Outstanding Balance"
+        ],
+        "minimum_payment": [
+          "Minimum Payment Due"
+        ],
+        "previous_balance": [
+          "Previous Balance"
+        ]
       },
-      "transaction_headers": ["Date", "Transaction Description", "Amount"],
-      "supplier_keywords": ["HUAWEI", "APPLE", "XIAOMI", "OPPO", "VIVO", "SAMSUNG", "REALME"],
+      "transaction_headers": [
+        "Date",
+        "Transaction Description",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
       "enabled": true
     },
     "GXBank": {
@@ -161,15 +388,39 @@
       "statement_format": "PDF",
       "date_format": "dd MMM yyyy",
       "field_mapping": {
-        "statement_date": ["Statement Date"],
-        "due_date": ["Payment Due"],
-        "card_number": ["Card Number"],
-        "total_amount": ["Amount Due"],
-        "minimum_payment": ["Minimum Payment"],
-        "previous_balance": ["Opening Balance"]
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due"
+        ],
+        "card_number": [
+          "Card Number"
+        ],
+        "total_amount": [
+          "Amount Due"
+        ],
+        "minimum_payment": [
+          "Minimum Payment"
+        ],
+        "previous_balance": [
+          "Opening Balance"
+        ]
       },
-      "transaction_headers": ["Date", "Description", "Amount"],
-      "supplier_keywords": ["HUAWEI", "APPLE", "XIAOMI", "OPPO", "VIVO", "SAMSUNG", "REALME"],
+      "transaction_headers": [
+        "Date",
+        "Description",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
       "enabled": true
     },
     "Bank Islam": {
@@ -178,15 +429,48 @@
       "statement_format": "PDF",
       "date_format": "dd/MM/yyyy",
       "field_mapping": {
-        "statement_date": ["Tarikh Penyata", "Statement Date"],
-        "due_date": ["Tarikh Akhir Bayaran", "Payment Due Date"],
-        "card_number": ["Nombor Kad", "Card Number"],
-        "total_amount": ["Jumlah Perlu Dibayar", "Total Amount Due"],
-        "minimum_payment": ["Bayaran Minimum", "Minimum Payment"],
-        "previous_balance": ["Baki Terdahulu", "Previous Balance"]
+        "statement_date": [
+          "Tarikh Penyata",
+          "Statement Date"
+        ],
+        "due_date": [
+          "Tarikh Akhir Bayaran",
+          "Payment Due Date"
+        ],
+        "card_number": [
+          "Nombor Kad",
+          "Card Number"
+        ],
+        "total_amount": [
+          "Jumlah Perlu Dibayar",
+          "Total Amount Due"
+        ],
+        "minimum_payment": [
+          "Bayaran Minimum",
+          "Minimum Payment"
+        ],
+        "previous_balance": [
+          "Baki Terdahulu",
+          "Previous Balance"
+        ]
       },
-      "transaction_headers": ["Tarikh", "Butiran", "Amaun", "Date", "Description", "Amount"],
-      "supplier_keywords": ["HUAWEI", "APPLE", "XIAOMI", "OPPO", "VIVO", "SAMSUNG", "REALME"],
+      "transaction_headers": [
+        "Tarikh",
+        "Butiran",
+        "Amaun",
+        "Date",
+        "Description",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
       "enabled": true
     },
     "HSBC": {
@@ -195,15 +479,40 @@
       "statement_format": "PDF",
       "date_format": "dd MMM yyyy",
       "field_mapping": {
-        "statement_date": ["Statement date"],
-        "due_date": ["Payment due date"],
-        "card_number": ["Card number"],
-        "total_amount": ["Total amount due"],
-        "minimum_payment": ["Minimum payment"],
-        "previous_balance": ["Balance from last statement"]
+        "statement_date": [
+          "Statement date"
+        ],
+        "due_date": [
+          "Payment due date"
+        ],
+        "card_number": [
+          "Card number"
+        ],
+        "total_amount": [
+          "Total amount due"
+        ],
+        "minimum_payment": [
+          "Minimum payment"
+        ],
+        "previous_balance": [
+          "Balance from last statement"
+        ]
       },
-      "transaction_headers": ["Transaction date", "Posting date", "Description", "Amount"],
-      "supplier_keywords": ["HUAWEI", "APPLE", "XIAOMI", "OPPO", "VIVO", "SAMSUNG", "REALME"],
+      "transaction_headers": [
+        "Transaction date",
+        "Posting date",
+        "Description",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
       "enabled": true
     }
   },
@@ -211,13 +520,13 @@
     "default_currency": "MYR",
     "timezone": "Asia/Kuala_Lumpur",
     "suppliers": [
+      "7SL",
+      "Dinas Raub",
+      "SYC Hainan",
+      "Ai Smart Tech",
       "HUAWEI",
-      "APPLE",
-      "XIAOMI",
-      "OPPO",
-      "VIVO",
-      "SAMSUNG",
-      "REALME"
+      "Pasar Raya",
+      "Puchong Herbs"
     ],
     "owners_categories": [
       "Owners",

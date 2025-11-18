@@ -12,13 +12,13 @@
             <h2 style="color: #FFFEF0; margin-bottom: 2rem;">尊敬的 {{ customer.name }}，</h2>
             
             <!-- 当前状况 -->
-            <div style="background: rgba(255, 0, 0, 0.1); border-left: 4px solid #FF0000; padding: 1.5rem; margin-bottom: 2rem;">
-                <h3 style="color: #FF0000; margin-top: 0;">😰 当前财务负担</h3>
+            <div style="background: rgba(50, 36, 70, 0.3); border-left: 4px solid #322446; padding: 1.5rem; margin-bottom: 2rem;">
+                <h3 style="color: #322446; margin-top: 0;">😰 当前财务负担</h3>
                 <p style="color: rgba(255,255,255,0.9); font-size: 1.1rem;">
                     总未结余额: <strong style="color: #FF007F; font-size: 1.5rem;">RM {{ "{:,.2f}".format(total_outstanding) }}</strong>
                 </p>
                 <p style="color: rgba(255,255,255,0.9); font-size: 1.1rem;">
-                    当前利率: <strong style="color: #FF0000;">{{ (current_rate * 100)|int }}%</strong> 年利率
+                    当前利率: <strong style="color: #322446;">{{ (current_rate * 100)|int }}%</strong> 年利率
                 </p>
                 <div style="margin-top: 1rem;">
                     <p style="color: rgba(255,255,255,0.7);">每月利息负担: RM {{ "{:,.2f}".format(current_monthly) }}</p>
@@ -27,10 +27,10 @@
             </div>
             
             <!-- 我们的方案 -->
-            <div style="background: rgba(0, 255, 0, 0.1); border-left: 4px solid #00FF00; padding: 1.5rem; margin-bottom: 2rem;">
-                <h3 style="color: #00FF00; margin-top: 0;">🎉 我们的专属低利息方案</h3>
+            <div style="background: rgba(255, 0, 127, 0.1); border-left: 4px solid #FF007F; padding: 1.5rem; margin-bottom: 2rem;">
+                <h3 style="color: #FF007F; margin-top: 0;">🎉 我们的专属低利息方案</h3>
                 <p style="color: rgba(255,255,255,0.9); font-size: 1.1rem;">
-                    优惠利率: <strong style="color: #00FF00; font-size: 1.5rem;">{{ (our_rate * 100)|int }}%</strong> 年利率
+                    优惠利率: <strong style="color: #FF007F; font-size: 1.5rem;">{{ (our_rate * 100)|int }}%</strong> 年利率
                 </p>
                 <div style="margin-top: 1rem;">
                     <p style="color: rgba(255,255,255,0.7);">每月利息: RM {{ "{:,.2f}".format(our_monthly) }}</p>
@@ -39,9 +39,9 @@
             </div>
             
             <!-- 节省金额 -->
-            <div style="background: rgba(255, 215, 0, 0.1); border: 3px solid #FFD700; padding: 2rem; text-align: center; margin-bottom: 2rem;">
-                <h3 style="color: #FFD700; margin-top: 0;">💎 您可以节省</h3>
-                <div style="font-size: 3rem; color: #FFD700; font-weight: 700; margin: 1rem 0;">
+            <div style="background: rgba(255, 0, 127, 0.2); border: 3px solid #FF007F; padding: 2rem; text-align: center; margin-bottom: 2rem;">
+                <h3 style="color: #FF007F; margin-top: 0;">💎 您可以节省</h3>
+                <div style="font-size: 3rem; color: #FF007F; font-weight: 700; margin: 1rem 0;">
                     RM {{ "{:,.2f}".format(yearly_savings) }}
                 </div>
                 <p style="color: rgba(255,255,255,0.9);">每年节省！</p>
@@ -56,10 +56,10 @@
                     您是否对我们的低利息方案感兴趣？
                 </p>
                 <div class="btn-group" style="display: flex; gap: 1rem; justify-content: center;">
-                    <button onclick="acceptProposal()" style="background: linear-gradient(135deg, #00FF00 0%, #00CC00 100%); color: #000; padding: 1rem 3rem; font-size: 1.3rem; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,255,0,0.3);">
+                    <button onclick="acceptProposal()" style="background: linear-gradient(135deg, #FF007F 0%, #FF007F 100%); color: #FFF; padding: 1rem 3rem; font-size: 1.3rem; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 15px rgba(255,0,127,0.3);">
                         ✅ Yes, 我感兴趣！
                     </button>
-                    <button onclick="window.history.back()" style="background: linear-gradient(135deg, #666 0%, #444 100%); color: #FFF; padding: 1rem 3rem; font-size: 1.3rem; font-weight: 700; border: none; border-radius: 10px; cursor: pointer;">
+                    <button onclick="window.history.back()" style="background: linear-gradient(135deg, #322446 0%, #322446 100%); color: #FFF; padding: 1rem 3rem; font-size: 1.3rem; font-weight: 700; border: none; border-radius: 10px; cursor: pointer;">
                         ❌ No, 谢谢
                     </button>
                 </div>
@@ -70,7 +70,7 @@
                 <h2 style="color: #FF007F; margin-top: 0;">🎊 感谢您的信任！</h2>
                 <p style="color: #FFF; font-size: 1.2rem; margin: 2rem 0;">请拨打以下电话预约咨询：</p>
                 <div style="background: rgba(255, 0, 127, 0.2); padding: 1.5rem; border-radius: 10px; margin: 1.5rem 0;">
-                    <a href="tel:0167154052" style="color: #FFD700; font-size: 2.5rem; font-weight: 700; text-decoration: none;">
+                    <a href="tel:0167154052" style="color: #FF007F; font-size: 2.5rem; font-weight: 700; text-decoration: none;">
                         📞 016-715-4052
                     </a>
                 </div>
