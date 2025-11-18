@@ -48,16 +48,123 @@
                 </a>
             </div>
             
-            <div class="alert" style="background: rgba(255, 0, 127, 0.1); border: 2px solid #FF007F; border-radius: 10px; padding: 1.5rem; margin-top: 2rem;">
-                <h5 style="color: #FF007F; margin-bottom: 0.75rem;">
-                    <i class="bi bi-info-circle"></i> {{ t('info') }}
-                </h5>
-                <p style="color: rgba(255, 255, 255, 0.8); margin: 0; line-height: 1.6;">
-                    {{ t('receipts_moved_to_cc') }}<br>
-                    <a href="{{ url_for('credit_card_ledger') }}" style="color: #FF007F; text-decoration: none; font-weight: 600;">
-                        <i class="bi bi-arrow-right"></i> {{ t('view_all_financial_docs') }}
-                    </a>
-                </p>
+        </div>
+    </div>
+
+    <!-- =============== SUPPLIER INVOICES SECTION =============== -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="professional-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.05) 0%, rgba(0, 0, 0, 0.95) 100%); border: 2px solid #FF007F;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 style="color: #FF007F; font-weight: 700; margin: 0;">
+                        <i class="bi bi-file-earmark-text"></i> {{ t('supplier_invoices') }}
+                    </h2>
+                    <span class="badge" style="background: #FF007F; color: white; padding: 0.6rem 1.2rem; font-size: 1rem; border-radius: 8px;">
+                        {{ supplier_invoices|length }} {{ t('invoices') }}
+                    </span>
+                </div>
+                
+                {% if supplier_invoices %}
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover elegant-table">
+                        <thead>
+                            <tr>
+                                <th>{{ t('invoice_no') }}</th>
+                                <th>{{ t('date') }}</th>
+                                <th>{{ t('customer') }}</th>
+                                <th>{{ t('supplier') }}</th>
+                                <th>{{ t('amount') }}</th>
+                                <th>{{ t('fee_1') }} (1%)</th>
+                                <th>{{ t('total') }}</th>
+                                <th>{{ t('action') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for invoice in supplier_invoices %}
+                            <tr class="hover-glow-row">
+                                <td style="color: rgba(255,255,255,0.9); font-weight: 600;">{{ invoice.remarks }}</td>
+                                <td style="color: rgba(255,255,255,0.7);">{{ invoice.date }}</td>
+                                <td style="color: rgba(255,255,255,0.9);">{{ invoice.from_customer }}</td>
+                                <td style="color: #FF007F; font-weight: 600;">{{ invoice.description }}</td>
+                                <td style="color: rgba(255,255,255,0.9);">RM {{ "{:,.2f}".format(invoice.amount) }}</td>
+                                <td style="color: #322446; font-weight: 600;">RM {{ "{:,.2f}".format(invoice.supplier_fee) }}</td>
+                                <td style="color: #FF007F; font-weight: 700;">RM {{ "{:,.2f}".format(invoice.amount + invoice.supplier_fee) }}</td>
+                                <td>
+                                    {% if invoice.pdf_path %}
+                                    <a href="/static/uploads/{{ invoice.pdf_path }}" target="_blank" class="btn btn-sm btn-view-details" style="background: linear-gradient(135deg, #FF007F 0%, #322446 100%); color: white; padding: 0.4rem 0.8rem; border-radius: 6px; border: none;">
+                                        <i class="bi bi-eye"></i> {{ t('view') }}
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center" style="padding: 2rem; color: rgba(255,255,255,0.6);">
+                    <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                    <p class="mt-3">{{ t('no_supplier_invoices_found') }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- =============== PAYMENT RECEIPTS SECTION =============== -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="professional-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.2) 0%, rgba(0, 0, 0, 0.95) 100%); border: 2px solid #322446;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 style="color: #FF007F; font-weight: 700; margin: 0;">
+                        <i class="bi bi-receipt-cutoff"></i> {{ t('payment_receipts') }}
+                    </h2>
+                    <span class="badge" style="background: #322446; color: white; padding: 0.6rem 1.2rem; font-size: 1rem; border-radius: 8px;">
+                        {{ payment_receipts|length }} {{ t('receipts') }}
+                    </span>
+                </div>
+                
+                {% if payment_receipts %}
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover elegant-table">
+                        <thead>
+                            <tr>
+                                <th>{{ t('date') }}</th>
+                                <th>{{ t('description') }}</th>
+                                <th>{{ t('amount') }}</th>
+                                <th>{{ t('customer') }}</th>
+                                <th>{{ t('card_bank') }}</th>
+                                <th>{{ t('action') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for receipt in payment_receipts %}
+                            <tr class="hover-glow-row">
+                                <td style="color: rgba(255,255,255,0.7);">{{ receipt.date }}</td>
+                                <td style="color: rgba(255,255,255,0.9);">{{ receipt.description }}</td>
+                                <td style="color: #FF007F; font-weight: 700;">RM {{ "{:,.2f}".format(receipt.amount) }}</td>
+                                <td style="color: rgba(255,255,255,0.9);">{{ receipt.from_customer }}</td>
+                                <td style="color: #322446; font-weight: 600;">{{ receipt.remarks }}</td>
+                                <td>
+                                    {% if receipt.receipt_file_path %}
+                                    <a href="/static/uploads/{{ receipt.receipt_file_path }}" target="_blank" class="btn btn-sm btn-view-details" style="background: linear-gradient(135deg, #322446 0%, #FF007F 100%); color: white; padding: 0.4rem 0.8rem; border-radius: 6px; border: none;">
+                                        <i class="bi bi-file-image"></i> {{ t('view') }}
+                                    </a>
+                                    {% else %}
+                                    <span style="color: rgba(255,255,255,0.4);">-</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center" style="padding: 2rem; color: rgba(255,255,255,0.6);">
+                    <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                    <p class="mt-3">{{ t('no_payment_receipts_found') }}</p>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

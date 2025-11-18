@@ -114,6 +114,75 @@
         <p style="color: var(--text-secondary); margin-top: 1rem;">{{ t('no_customers_with_data') }}</p>
     </div>
     {% endif %}
+
+    <!-- =============== QUICK ACCESS NAVIGATION =============== -->
+    <div class="section-divider" style="margin: 4rem 0;"></div>
+    
+    <div class="section-header" style="margin-bottom: 2rem;">
+        <h2 class="section-title" style="font-size: 1.8rem; color: #FF007F;">
+            <i class="bi bi-grid-3x3-gap-fill"></i> 快速访问 - Quick Access
+        </h2>
+        <p class="section-subtitle">访问相关的验证和管理页面</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Supplier Invoices Card -->
+        <div class="col-md-4">
+            <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
+                <div class="professional-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 2px solid #FF007F; padding: 2.5rem; text-align: center; cursor: pointer; transition: all 0.3s ease; height: 100%;">
+                    <i class="bi bi-file-earmark-text" style="font-size: 4rem; color: #FF007F; margin-bottom: 1rem;"></i>
+                    <h3 style="color: #FFFEF0; font-weight: 700; font-size: 1.5rem; margin-bottom: 1rem;">
+                        Supplier Invoices
+                    </h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                        供应商发票管理<br>
+                        查看所有自动生成的供应商发票和费用明细
+                    </p>
+                    <div class="btn-professional-outline" style="display: inline-block; padding: 0.6rem 1.5rem;">
+                        <i class="bi bi-arrow-right-circle"></i> 进入查看
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Payment Receipts Card -->
+        <div class="col-md-4">
+            <a href="{{ url_for('receipts_home') }}" style="text-decoration: none;">
+                <div class="professional-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 2px solid #322446; padding: 2.5rem; text-align: center; cursor: pointer; transition: all 0.3s ease; height: 100%;">
+                    <i class="bi bi-receipt-cutoff" style="font-size: 4rem; color: #FF007F; margin-bottom: 1rem;"></i>
+                    <h3 style="color: #FFFEF0; font-weight: 700; font-size: 1.5rem; margin-bottom: 1rem;">
+                        Payment Receipts
+                    </h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                        付款收据管理<br>
+                        查看客户付款记录和收据验证
+                    </p>
+                    <div class="btn-professional-outline" style="display: inline-block; padding: 0.6rem 1.5rem;">
+                        <i class="bi bi-arrow-right-circle"></i> 进入查看
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- OCR Receipts Card -->
+        <div class="col-md-4">
+            <a href="{{ url_for('receipts_home') }}" style="text-decoration: none;">
+                <div class="professional-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 2px solid #FF007F; padding: 2.5rem; text-align: center; cursor: pointer; transition: all 0.3s ease; height: 100%;">
+                    <i class="bi bi-upc-scan" style="font-size: 4rem; color: #FF007F; margin-bottom: 1rem;"></i>
+                    <h3 style="color: #FFFEF0; font-weight: 700; font-size: 1.5rem; margin-bottom: 1rem;">
+                        OCR Receipts
+                    </h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                        智能OCR识别<br>
+                        自动识别和匹配商户收据交易
+                    </p>
+                    <div class="btn-professional-outline" style="display: inline-block; padding: 0.6rem 1.5rem;">
+                        <i class="bi bi-arrow-right-circle"></i> 进入查看
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
 </div>
 
 <!-- Scripts -->
@@ -135,4 +204,12 @@ document.getElementById('statement_file').addEventListener('change', function(e)
     document.getElementById('file-name').textContent = fileName;
 });
 </script>
+
+<style>
+/* Quick Access Card Hover Effects */
+.professional-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(255, 0, 127, 0.3);
+}
+</style>
 {% endblock %}
