@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('my_profile') }} - {{ t('company_name') }}{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- Page Header -->
+    <div class="section-header mb-4">
+        <h1 class="section-title">
+            <i class="bi bi-person-circle"></i> {{ t('my_profile') }}
+        </h1>
+        <div>
+            <span class="badge-purple" style="font-size: 0.9rem; padding: 8px 16px;">
+                {{ customer.customer_code }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Customer Info Card -->
+    <div class="card-professional mb-4">
+        <h3 class="card-title">
+            <i class="bi bi-person-badge"></i> {{ t('personal_information') }}
+        </h3>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label-professional">{{ t('customer_name') }}</label>
+                <div class="info-value">{{ customer.name }}</div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label-professional">{{ t('email_address') }}</label>
+                <div class="info-value">{{ customer.email or '-' }}</div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label-professional">{{ t('contact_number') }}</label>
+                <div class="info-value">{{ customer.phone or '-' }}</div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label-professional">{{ t('monthly_income') }}</label>
+                <div class="info-value">
+                    {% if customer.monthly_income %}
+                        RM {{ "{:,.2f}".format(customer.monthly_income) }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label-professional">{{ t('employment_type') }}</label>
+                <div class="info-value">
+                    {% if customer.employment_type %}
+                        {{ customer.employment_type.replace('_', ' ').title() }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label-professional">{{ t('member_since') }}</label>
+                <div class="info-value">{{ customer.created_at[:10] if customer.created_at else '-' }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credit Cards Section -->
+    <div class="card-professional mb-4">
+        <h3 class="card-title">
+            <i class="bi bi-credit-card-2-front"></i> {{ t('my_credit_cards') }}
+            <span class="badge-pink ms-2">{{ credit_cards|length }}</span>
+        </h3>
+        
+        {% if credit_cards %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{{ t('bank_name') }}</th>
+                            <th>{{ t('card_number') }}</th>
+                            <th>{{ t('card_type') }}</th>
+                            <th>{{ t('credit_limit') }}</th>
+                            <th>{{ t('total_outstanding') }}</th>
+                            <th>{{ t('last_statement') }}</th>
+                            <th>{{ t('due_date') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for card in credit_cards %}
+                        <tr>
+                            <td>
+                                <strong style="color: #FF007F;">{{ card.bank_name }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge-purple">**** {{ card.card_number_last4 }}</span>
+                            </td>
+                            <td>{{ card.card_type or '-' }}</td>
+                            <td>RM {{ "{:,.2f}".format(card.credit_limit) }}</td>
+                            <td>
+                                <span style="color: {% if card.total_outstanding > 0 %}#FF007F{% else %}#4CAF50{% endif %};">
+                                    RM {{ "{:,.2f}".format(card.total_outstanding) }}
+                                </span>
+                            </td>
+                            <td>{{ card.last_statement_date or '-' }}</td>
+                            <td>
+                                <span class="badge-purple">{{ t('day') }} {{ card.due_date }}</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="bi bi-credit-card" style="font-size: 3rem; color: #666;"></i>
+                <p>{{ t('no_credit_cards_found') }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Savings Accounts Section -->
+    <div class="card-professional mb-4">
+        <h3 class="card-title">
+            <i class="bi bi-piggy-bank"></i> {{ t('my_savings_accounts') }}
+            <span class="badge-pink ms-2">{{ savings_accounts|length }}</span>
+        </h3>
+        
+        {% if savings_accounts %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{{ t('bank_name') }}</th>
+                            <th>{{ t('account_number') }}</th>
+                            <th>{{ t('account_type') }}</th>
+                            <th>{{ t('total_statements') }}</th>
+                            <th>{{ t('last_statement') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for account in savings_accounts %}
+                        <tr>
+                            <td>
+                                <strong style="color: #FF007F;">{{ account.bank_name }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge-purple">**** {{ account.account_number_last4 }}</span>
+                            </td>
+                            <td>{{ account.account_type or '-' }}</td>
+                            <td>{{ account.total_statements }}</td>
+                            <td>{{ account.last_statement_date or '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="bi bi-piggy-bank" style="font-size: 3rem; color: #666;"></i>
+                <p>{{ t('no_savings_accounts_found') }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Recent Statements Section -->
+    <div class="card-professional mb-4">
+        <h3 class="card-title">
+            <i class="bi bi-file-earmark-text"></i> {{ t('recent_statements') }}
+        </h3>
+        
+        {% if recent_statements %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{{ t('statement_date') }}</th>
+                            <th>{{ t('bank_name') }}</th>
+                            <th>{{ t('card_number') }}</th>
+                            <th>{{ t('due_date') }}</th>
+                            <th>{{ t('due_amount') }}</th>
+                            <th>{{ t('payment_status') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stmt in recent_statements %}
+                        <tr>
+                            <td>{{ stmt.statement_date }}</td>
+                            <td>
+                                <strong style="color: #FF007F;">{{ stmt.bank_name }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge-purple">**** {{ stmt.card_number_last4 }}</span>
+                            </td>
+                            <td>{{ stmt.due_date or '-' }}</td>
+                            <td>RM {{ "{:,.2f}".format(stmt.due_amount) }}</td>
+                            <td>
+                                {% if stmt.payment_status == 'paid' %}
+                                    <span class="badge-success">{{ t('paid') }}</span>
+                                {% elif stmt.payment_status == 'pending' %}
+                                    <span class="badge-warning">{{ t('pending') }}</span>
+                                {% else %}
+                                    <span class="badge-danger">{{ t('unpaid') }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="bi bi-file-earmark-text" style="font-size: 3rem; color: #666;"></i>
+                <p>{{ t('no_recent_statements') }}</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.info-value {
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 0, 127, 0.2);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+.empty-state p {
+    margin-top: 16px;
+    font-size: 1.1rem;
+}
+
+.badge-success {
+    background: #4CAF50;
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.badge-warning {
+    background: #FF9800;
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.badge-danger {
+    background: #F44336;
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+</style>
+{% endblock %}

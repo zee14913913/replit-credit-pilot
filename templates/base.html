@@ -44,11 +44,13 @@
                         {{ t('nav_dashboard') }}
                     </a>
                 </li>
+                {% if is_admin_or_accountant %}
                 <li class="nav-item">
-                    <a class="nav-link {{ 'active' if request.endpoint == 'customers_list' }}" href="{{ url_for('customers_list') }}">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_customers_list' }}" href="{{ url_for('admin_customers_list') }}">
                         <i class="bi bi-people"></i> CUSTOMERS
                     </a>
                 </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if 'credit_card_ledger' in request.endpoint }}" 
                        href="{{ url_for('credit_card_ledger') }}">

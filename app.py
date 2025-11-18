@@ -207,11 +207,49 @@ register_card_optimizer_routes(app)
 
 @app.context_processor
 def inject_language():
-    """Inject language into all templates"""
+    """Inject language and user role info into all templates"""
     lang = get_current_language()
+    
+    # Check session for admin/accountant role without making API calls
+    # This is safe for anonymous requests and doesn't mutate session
+    def check_admin_or_accountant():
+        try:
+            # Quick check: look for existing session data first
+            flask_user_id = session.get('flask_rbac_user_id')
+            flask_user = session.get('flask_rbac_user')
+            
+            if flask_user_id and flask_user:
+                # User already verified via Flask RBAC
+                role = flask_user.get('role')
+                return role in ['admin', 'accountant']
+            
+            # Check FastAPI session
+            if session.get('user_role'):
+                return session.get('user_role') in ['admin', 'accountant']
+            
+            return False
+        except:
+            return False
+    
+    def check_admin():
+        try:
+            # Quick check: look for existing session data first
+            flask_user = session.get('flask_rbac_user')
+            if flask_user:
+                return flask_user.get('role') == 'admin'
+            
+            if session.get('user_role'):
+                return session.get('user_role') == 'admin'
+            
+            return False
+        except:
+            return False
+    
     return {
         'current_lang': lang,
-        't': lambda key, **kwargs: translate(key, lang, **kwargs)
+        't': lambda key, **kwargs: translate(key, lang, **kwargs),
+        'is_admin_or_accountant': check_admin_or_accountant(),
+        'is_admin': check_admin()
     }
 
 @app.route('/set-language/<lang>')
@@ -1819,10 +1857,10 @@ def savings_admin_dashboard():
 
 # ==================== END SAVINGS ADMIN AUTHENTICATION ====================
 
-@app.route('/customers')
+@app.route('/admin/customers')
 @require_admin_or_accountant
-def customers_list():
-    """客户列表页面 - 支持多账户显示"""
+def admin_customers_list():
+    """管理员客户列表页面 - 仅管理员和会计可见所有客户"""
     
     with get_db() as conn:
         cursor = conn.cursor()
@@ -1854,7 +1892,125 @@ def customers_list():
             """, (customer['id'],))
             customer['accounts'] = [dict(row) for row in cursor.fetchall()]
     
-    return render_template('customers_list.html', customers=customers)
+    return render_template('admin_customers_list.html', customers=customers)
+
+@app.route('/customers')
+def customers_profile():
+    """客户个人资料页面 - 客户只能查看自己的数据"""
+    
+    # Check if customer is logged in
+    customer_session_token = session.get('customer_session_token')
+    
+    # If admin/accountant is accessing, redirect to admin view
+    if is_admin_or_accountant():
+        return redirect(url_for('admin_customers_list'))
+    
+    # If no customer session, redirect to login
+    if not customer_session_token:
+        flash('Please login to view your profile', 'warning')
+        return redirect(url_for('index'))
+    
+    # Verify customer session
+    session_data = verify_session(customer_session_token)
+    
+    if not session_data['success']:
+        session.pop('customer_session_token', None)
+        flash('Your session has expired. Please login again.', 'warning')
+        return redirect(url_for('index'))
+    
+    # Validate session data has required keys
+    if 'customer_id' not in session_data or 'customer_name' not in session_data:
+        session.pop('customer_session_token', None)
+        flash('Invalid session data. Please login again.', 'error')
+        return redirect(url_for('index'))
+    
+    customer_id = session_data['customer_id']
+    customer_name = session_data['customer_name']
+    
+    # Get customer's complete data
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # Get customer info
+        cursor.execute("""
+            SELECT id, name, email, phone, customer_code, monthly_income, 
+                   employment_type, created_at
+            FROM customers 
+            WHERE id = ?
+        """, (customer_id,))
+        
+        customer_row = cursor.fetchone()
+        
+        # Handle edge case: customer record not found
+        if not customer_row:
+            session.pop('customer_session_token', None)
+            flash('Customer profile not found. Please contact support.', 'error')
+            return redirect(url_for('index'))
+        
+        customer = dict(customer_row)
+        
+        # Get customer's credit cards with latest statement info
+        cursor.execute("""
+            SELECT 
+                cc.id,
+                cc.bank_name,
+                cc.card_number_last4,
+                cc.credit_limit,
+                cc.interest_rate,
+                cc.cashback_rate,
+                cc.due_date,
+                cc.card_type,
+                COUNT(DISTINCT s.id) as total_statements,
+                MAX(s.statement_date) as last_statement_date,
+                COALESCE(SUM(CASE WHEN s.payment_status != 'paid' THEN s.due_amount ELSE 0 END), 0) as total_outstanding
+            FROM credit_cards cc
+            LEFT JOIN statements s ON cc.id = s.card_id
+            WHERE cc.customer_id = ?
+            GROUP BY cc.id
+            ORDER BY cc.bank_name
+        """, (customer_id,))
+        credit_cards = [dict(row) for row in cursor.fetchall()]
+        
+        # Get customer's savings accounts
+        cursor.execute("""
+            SELECT 
+                sa.id,
+                sa.bank_name,
+                sa.account_number_last4,
+                sa.account_type,
+                COUNT(DISTINCT ss.id) as total_statements,
+                MAX(ss.statement_date) as last_statement_date
+            FROM savings_accounts sa
+            LEFT JOIN savings_statements ss ON sa.id = ss.savings_account_id
+            WHERE sa.customer_id = ?
+            GROUP BY sa.id
+            ORDER BY sa.bank_name
+        """, (customer_id,))
+        savings_accounts = [dict(row) for row in cursor.fetchall()]
+        
+        # Get recent statements (last 5)
+        cursor.execute("""
+            SELECT 
+                s.id,
+                s.statement_date,
+                s.due_date,
+                s.due_amount,
+                s.payment_status,
+                cc.bank_name,
+                cc.card_number_last4
+            FROM statements s
+            JOIN credit_cards cc ON s.card_id = cc.id
+            WHERE cc.customer_id = ?
+            ORDER BY s.statement_date DESC
+            LIMIT 5
+        """, (customer_id,))
+        recent_statements = [dict(row) for row in cursor.fetchall()]
+    
+    return render_template('customer_profile.html',
+                         customer=customer,
+                         credit_cards=credit_cards,
+                         savings_accounts=savings_accounts,
+                         recent_statements=recent_statements)
 
 @app.route('/admin/customers-cards')
 @require_admin_or_accountant
