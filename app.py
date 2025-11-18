@@ -7857,9 +7857,12 @@ def report_center():
     date_from = request.args.get('date_from', '')
     date_to = request.args.get('date_to', '')
     
-    with get_db() as db:
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
         # 获取所有客户（用于筛选器）
-        customers = db.fetch_all("SELECT id, name FROM customers ORDER BY name")
+        cursor.execute("SELECT id, name FROM customers ORDER BY name")
+        customers = [dict(row) for row in cursor.fetchall()]
         
         # 构建查询条件
         where_clauses = ["1=1"]
@@ -7895,7 +7898,8 @@ def report_center():
         LIMIT 100
         """
         
-        records_raw = db.fetch_all(query, params)
+        cursor.execute(query, params)
+        records_raw = cursor.fetchall()
         
         # 转换为字典列表
         records = []
@@ -7910,28 +7914,33 @@ def report_center():
                 'status': 'confirmed' if rec[6] else 'pending'
             })
         
-        # 获取导出历史
-        export_tasks_raw = db.fetch_all(
-            """SELECT id, export_format, record_count, file_size, download_url, 
-                      status, error_msg, created_at, completed_at
-               FROM export_tasks 
-               ORDER BY created_at DESC 
-               LIMIT 20"""
-        )
+        # 获取导出历史（检查表是否存在）
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='export_tasks'")
+        table_exists = cursor.fetchone()
         
         export_tasks = []
-        for task in export_tasks_raw:
-            export_tasks.append({
-                'id': task[0],
-                'export_format': task[1],
-                'record_count': task[2] or 0,
-                'file_size': task[3],
-                'download_url': task[4],
-                'status': task[5] or 'waiting',
-                'error_msg': task[6],
-                'created_at': datetime.fromisoformat(task[7]) if task[7] else datetime.now(),
-                'completed_at': datetime.fromisoformat(task[8]) if task[8] else None
-            })
+        if table_exists:
+            cursor.execute(
+                """SELECT id, export_format, record_count, file_size, download_url, 
+                          status, error_msg, created_at, completed_at
+                   FROM export_tasks 
+                   ORDER BY created_at DESC 
+                   LIMIT 20"""
+            )
+            export_tasks_raw = cursor.fetchall()
+            
+            for task in export_tasks_raw:
+                export_tasks.append({
+                    'id': task[0],
+                    'export_format': task[1],
+                    'record_count': task[2] or 0,
+                    'file_size': task[3],
+                    'download_url': task[4],
+                    'status': task[5] or 'waiting',
+                    'error_msg': task[6],
+                    'created_at': datetime.fromisoformat(task[7]) if task[7] else datetime.now(),
+                    'completed_at': datetime.fromisoformat(task[8]) if task[8] else None
+                })
     
     return render_template('reports/report_center.html',
                          customers=customers,
