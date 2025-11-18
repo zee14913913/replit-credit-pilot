@@ -5420,6 +5420,74 @@ def credit_card_ledger_detail(statement_id):
                           transactions=transactions)
 
 
+@app.route('/credit-card/statement/<int:statement_id>/review')
+@require_admin_or_accountant
+def credit_card_statement_review(statement_id):
+    """Credit Card Statement Review Page - PDF viewer + Transaction table side-by-side"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        
+        # Get statement information
+        cursor.execute('''
+            SELECT 
+                s.id as statement_id,
+                s.statement_date,
+                s.due_date,
+                s.statement_total,
+                s.minimum_payment,
+                s.previous_balance,
+                s.file_path,
+                s.is_confirmed,
+                s.card_id,
+                cc.bank_name,
+                cc.card_number_last4,
+                cc.credit_limit,
+                cc.customer_id,
+                c.name as customer_name
+            FROM statements s
+            JOIN credit_cards cc ON s.card_id = cc.id
+            JOIN customers c ON cc.customer_id = c.id
+            WHERE s.id = ?
+        ''', (statement_id,))
+        
+        statement_row = cursor.fetchone()
+        if not statement_row:
+            flash('Statement not found', 'error')
+            return redirect(url_for('credit_card_ledger'))
+        
+        statement = dict(statement_row)
+        
+        # Get all transactions for this statement
+        cursor.execute('''
+            SELECT 
+                id, transaction_date, description, amount, 
+                transaction_type, category, is_supplier, 
+                supplier_name, supplier_fee, payer_name
+            FROM transactions
+            WHERE statement_id = ?
+            ORDER BY transaction_date ASC
+        ''', (statement_id,))
+        
+        transactions = [dict(row) for row in cursor.fetchall()]
+    
+    return render_template('credit_card/statement_review.html', 
+                          statement=statement,
+                          transactions=transactions)
+
+
+@app.route('/credit-card/statement/<int:statement_id>/approve', methods=['POST'])
+@require_admin_or_accountant
+def approve_statement(statement_id):
+    """Approve a credit card statement after review"""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute('UPDATE statements SET is_confirmed = 1 WHERE id = ?', (statement_id,))
+        conn.commit()
+    
+    flash('Statement approved successfully!', 'success')
+    return redirect(url_for('credit_card_statement_review', statement_id=statement_id))
+
+
 # ============================================================================
 # CREDIT CARD OPTIMIZER - 信用卡优化推荐系统
 # ============================================================================
