@@ -12,12 +12,133 @@
         <p class="section-subtitle">{{ t('batch_export_and_download') }}</p>
     </div>
 
-    <!-- 筛选器卡片 -->
-    <div class="professional-card mb-4" style="padding: 30px;">
-        <h4 style="color: var(--primary-pink); font-weight: 700; margin-bottom: 24px; font-size: 1.3rem;">
+    <!-- 筛选器卡片 - 直接嵌入版本（解决缓存问题）-->
+    <div class="professional-card mb-4" style="padding: 35px !important;">
+        <h4 style="color: var(--primary-pink); font-weight: 700; margin-bottom: 28px; font-size: 1.4rem;">
             <i class="bi bi-funnel-fill me-2"></i>{{ t('filter_conditions') }}
         </h4>
-        {% include "components/export_filter.html" %}
+        
+        <!-- 筛选表单 - 超宽版本 -->
+        <form id="filterForm" class="row g-4" style="width: 100%;">
+            <!-- 客户筛选 -->
+            <div class="col-md-4" style="padding: 0 15px;">
+                <label class="form-label" style="font-weight: 700; color: #FF007F; font-size: 1.1rem; margin-bottom: 12px; display: block;">
+                    <i class="bi bi-person-circle me-2"></i>{{ t('customer') }}
+                </label>
+                <select class="form-select" id="filterCustomer" name="customer_id" 
+                        style="background: rgba(255,255,255,0.05) !important; 
+                               border: 2px solid #FF007F !important; 
+                               color: white !important; 
+                               font-size: 1.05rem !important; 
+                               padding: 18px 20px !important; 
+                               border-radius: 12px !important;
+                               min-height: 58px !important;
+                               width: 100% !important;">
+                    <option value="">🔍 {{ t('all_customers') }}</option>
+                    {% for customer in customers %}
+                    <option value="{{ customer.id }}">{{ customer.name }}</option>
+                    {% endfor %}
+                </select>
+                <small class="text-muted d-block mt-2" style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">
+                    选择特定客户以查看其报表记录
+                </small>
+            </div>
+            
+            <!-- 账户类型筛选 -->
+            <div class="col-md-4" style="padding: 0 15px;">
+                <label class="form-label" style="font-weight: 700; color: #FF007F; font-size: 1.1rem; margin-bottom: 12px; display: block;">
+                    <i class="bi bi-wallet2 me-2"></i>账户类型
+                </label>
+                <select class="form-select" id="filterAccount" name="account_type" 
+                        style="background: rgba(255,255,255,0.05) !important; 
+                               border: 2px solid #FF007F !important; 
+                               color: white !important; 
+                               font-size: 1.05rem !important; 
+                               padding: 18px 20px !important; 
+                               border-radius: 12px !important;
+                               min-height: 58px !important;
+                               width: 100% !important;">
+                    <option value="">🔍 {{ t('all_accounts') }}</option>
+                    <option value="credit_card">💳 {{ t('credit_card') }}</option>
+                    <option value="savings">🏦 {{ t('savings_account') }}</option>
+                    <option value="loan">🏠 {{ t('loan_account') }}</option>
+                </select>
+                <small class="text-muted d-block mt-2" style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">
+                    按账户类型筛选报表数据
+                </small>
+            </div>
+            
+            <!-- 日期范围筛选 -->
+            <div class="col-md-4" style="padding: 0 15px;">
+                <label class="form-label" style="font-weight: 700; color: #FF007F; font-size: 1.1rem; margin-bottom: 12px; display: block;">
+                    <i class="bi bi-calendar-range me-2"></i>日期范围
+                </label>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <input type="date" class="form-control" id="filterDateFrom" name="date_from" 
+                               placeholder="开始日期"
+                               style="background: rgba(255,255,255,0.05) !important; 
+                                      border: 2px solid #322446 !important; 
+                                      color: white !important; 
+                                      font-size: 1rem !important; 
+                                      padding: 16px 14px !important; 
+                                      border-radius: 12px !important;
+                                      min-height: 58px !important;">
+                    </div>
+                    <div class="col-6">
+                        <input type="date" class="form-control" id="filterDateTo" name="date_to" 
+                               placeholder="结束日期"
+                               style="background: rgba(255,255,255,0.05) !important; 
+                                      border: 2px solid #322446 !important; 
+                                      color: white !important; 
+                                      font-size: 1rem !important; 
+                                      padding: 16px 14px !important; 
+                                      border-radius: 12px !important;
+                                      min-height: 58px !important;">
+                    </div>
+                </div>
+                <small class="text-muted d-block mt-2" style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">
+                    选择报表数据的起止日期
+                </small>
+            </div>
+            
+            <!-- 操作按钮组 -->
+            <div class="col-12" style="margin-top: 25px;">
+                <div class="d-flex gap-3 justify-content-end">
+                    <button type="button" class="btn-professional-outline" onclick="resetFilter()" 
+                            style="padding: 16px 36px !important; 
+                                   font-size: 1.05rem !important; 
+                                   border-radius: 12px !important;
+                                   min-width: 140px;">
+                        <i class="bi bi-arrow-clockwise me-2"></i>重置筛选
+                    </button>
+                    <button type="submit" class="btn-professional" 
+                            style="padding: 16px 44px !important; 
+                                   font-size: 1.05rem !important; 
+                                   border-radius: 12px !important; 
+                                   min-width: 180px;">
+                        <i class="bi bi-funnel-fill me-2"></i>{{ t('apply_filter') }}
+                    </button>
+                </div>
+            </div>
+        </form>
+        
+        <script>
+        document.getElementById('filterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const params = new URLSearchParams(formData);
+            window.location.href = '/reports/center?' + params.toString();
+        });
+        
+        function resetFilter() {
+            document.getElementById('filterCustomer').value = '';
+            document.getElementById('filterAccount').value = '';
+            document.getElementById('filterDateFrom').value = '';
+            document.getElementById('filterDateTo').value = '';
+            window.location.href = '/reports/center';
+        }
+        </script>
     </div>
 
     <!-- 批量操作区（主卡片 - 带大型图标） -->
