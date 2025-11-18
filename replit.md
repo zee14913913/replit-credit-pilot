@@ -46,6 +46,26 @@ The design system emphasizes clean layouts with bilingual support (English/Chine
 **Navigation Structure**:
 The main navigation features 8 core modules: DASHBOARD, CUSTOMERS, CREDIT CARDS, SAVINGS, RECEIPTS, LOANS, REPORT CENTER, MONTHLY SUMMARY, and ADMIN.
 
+**Customer Pages Reorganization (2025-11-18):**
+The customer management pages have been reorganized to properly separate admin views from customer views with strict access control:
+
+**Admin-Only Routes**:
+- `/admin/customers` - Full customer list (admin/accountant only, protected by `@require_admin_or_accountant`)
+- Navigation "CUSTOMERS" button only visible to admin/accountant roles
+- Template: `admin_customers_list.html`
+
+**Customer-Facing Routes**:
+- `/customers` - Individual customer profile view (customer authentication required)
+- Displays only the logged-in customer's own data (cards, accounts, statements)
+- Redirects admins to `/admin/customers`
+- Template: `customer_profile.html`
+
+**Access Control Implementation**:
+- Context processor injects `is_admin_or_accountant` and `is_admin` flags via session data inspection (no API calls)
+- Navigation visibility controlled by `{% if is_admin_or_accountant %}` template guards
+- Session-based authentication prevents cross-customer data access
+- All customer data queries parameterized by verified `customer_id`
+
 **Department Separation (CRITICAL)**:
 - **CREDIT CARDS Department**: Manages credit card customers. Files stored in `credit_card_files/{customer_name}/`.
 - **ACCOUNTING Department** (Future): Reserved for Acc & Audit professional clients.
@@ -91,7 +111,13 @@ The backend uses Flask with SQLite and a context manager for database interactio
 - **Dual-Engine Loan Architecture:** Legacy DSR/DSCR engines preserved alongside modern risk_engine. API layer supports mode-based routing with backward compatibility. Product matcher recommends 3-10 suitable banks based on risk grade. System uses CTOS commitment data exclusively.
 
 ### Security & Access Control
-A production-ready Unified RBAC Implementation protects 32 functions. The `@require_admin_or_accountant` decorator supports Flask session-based RBAC and FastAPI token verification. Access levels include Admin (full access) and Accountant (full operational access), with Customer and Unauthenticated roles restricted.
+A production-ready Unified RBAC Implementation protects 32+ functions. The `@require_admin_or_accountant` decorator supports Flask session-based RBAC and FastAPI token verification. Access levels include Admin (full access) and Accountant (full operational access), with Customer and Unauthenticated roles restricted.
+
+**Route-Level Access Control (2025-11-18)**:
+- `/admin/customers`: Protected by `@require_admin_or_accountant` decorator
+- `/customers`: Validates customer session tokens, includes edge case handling for missing/invalid sessions
+- Context processor provides safe role checking without API calls or session mutations
+- Navigation visibility dynamically adjusts based on user role
 
 ## External Dependencies
 
