@@ -674,18 +674,18 @@
             });
         });
         
-        // {{ t('________function_startnotificationpolling') }}() {
+        function startNotificationPolling() {
             notificationCheckInterval = setInterval(checkNotifications, 30000);
         }
         
-        // {{ t('________function_stopnotificationpolling') }}() {
+        function stopNotificationPolling() {
             if (notificationCheckInterval) {
                 clearInterval(notificationCheckInterval);
                 notificationCheckInterval = null;
             }
         }
         
-        // {{ t('________async_function_checknotifications') }}() {
+        async function checkNotifications() {
             if (isAuthenticated === false) {
                 return;
             }
@@ -713,7 +713,7 @@
             }
         }
         
-        // {{ t('________function_updatenotificationbadgecount') }}) {
+        function updateNotificationBadge(count) {
             const badge = document.getElementById('notificationBadge');
             if (count > 0) {
                 badge.textContent = count > 99 ? '99+' : count;
@@ -723,7 +723,7 @@
             }
         }
         
-        // {{ t('________async_function_togglenotifications') }}() {
+        async function toggleNotifications() {
             const dropdown = document.getElementById('notificationDropdown');
             const isVisible = dropdown.style.display === 'block';
             
@@ -735,7 +735,7 @@
             }
         }
         
-        // {{ t('________async_function_loadnotifications') }}() {
+        async function loadNotifications() {
             try {
                 const response = await fetch(`${API_BASE_URL}/api/notifications/list`, {
                     credentials: 'include'
@@ -743,30 +743,43 @@
                 
                 if (!response.ok) {
                     document.getElementById('notificationList').innerHTML = 
-                        '<div class="text-center text-muted p-3">{{ t('auto_text_404') }}</div>{{ t('____________________return_________________________1') }}<div class="text-center text-muted p-3">{{ t('auto_text_404') }}</div>{{ t('_____________________________________________funct') }}<div class="text-center text-muted p-3"><i class="bi bi-inbox"></i><br>{{ t('auto_text_407') }}</div>';
-                return;
-            }
+                        '<div class="text-center text-muted p-3">{{ t('no_notifications') }}</div>';
+                    return;
+                }
+                
+                const data = await response.json();
+                const notifications = data.notifications || [];
+                const listContainer = document.getElementById('notificationList');
+                
+                if (notifications.length === 0) {
+                    listContainer.innerHTML = '<div class="text-center text-muted p-3"><i class="bi bi-inbox"></i><br>{{ t('no_notifications') }}</div>';
+                    return;
+                }
             
-            listContainer.innerHTML = notifications.map(n => `
-                <div class="notification-item ${n.status === 'unread' ? 'unread' : ''}" 
-                     onclick="handleNotificationClick(${n.id}, '${n.action_url || ''}')">
-                    <div class="notification-title">${n.title}</div>
-                    <div class="notification-message">${n.message}</div>
-                    <div class="notification-time">${formatTime(n.created_at)}</div>
-                </div>
-            `).join('');
+                listContainer.innerHTML = notifications.map(n => `
+                    <div class="notification-item ${n.status === 'unread' ? 'unread' : ''}" 
+                         onclick="handleNotificationClick(${n.id}, '${n.action_url || ''}')">
+                        <div class="notification-title">${n.title}</div>
+                        <div class="notification-message">${n.message}</div>
+                        <div class="notification-time">${formatTime(n.created_at)}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load notifications:', error);
+            }
         }
         
-        // {{ t('________async_function_handlenotificationclicknoti') }}cationId, actionUrl) {
+        async function handleNotificationClick(notificationId, actionUrl) {
             try {
-                // {{ t('________________await_fetch') }}(`${API_BASE_URL}/api/notifications/mark-as-read`, {
+                await fetch(`${API_BASE_URL}/api/notifications/mark-as-read`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
                     body: JSON.stringify({ notification_id: notificationId })
                 });
                 
-                // {{ t('________________await_checknotifications__________') }}     
+                await checkNotifications();
+                
                 // 跳转到相关页面
                 if (actionUrl) {
                     window.location.href = actionUrl;
@@ -776,7 +789,7 @@
             }
         }
         
-        // {{ t('________async_function_markallasread') }}() {
+        async function markAllAsRead() {
             try {
                 await fetch(`${API_BASE_URL}/api/notifications/mark-all-as-read`, {
                     method: 'POST',
@@ -790,7 +803,7 @@
             }
         }
         
-        // {{ t('________function_formattimeisostring') }}) {
+        function formatTime(isoString) {
             const date = new Date(isoString);
             const now = new Date();
             const diff = now - date;
