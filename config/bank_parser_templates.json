@@ -282,6 +282,11 @@
           "(\\d{4})[\\s-]?(\\d{4})[\\s-]?(\\d{4})[\\s-]?(\\d{4})"
         ]
       },
+      "card_type": {
+        "regex": [
+          "Card Type[\\s\\S]{0,100}?([A-Z][A-Za-z\\s]+?)(?:\\n|Credit)"
+        ]
+      },
       "statement_date": {
         "regex": [
           "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"
@@ -299,18 +304,343 @@
       },
       "credit_limit": {
         "regex": [
-          "Credit Limit[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.?\\d*)"
+          "Credit Limit[\\s\\S]{0,100}?([\\d,]+)"
         ]
       },
       "current_balance": {
         "regex": [
-          "New Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
         ]
       },
       "minimum_payment": {
         "regex": [
-          "Minimum Payment[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})"
+          "Minimum Payment[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
         ]
+      }
+    },
+    "transaction_patterns": {
+      "transaction_date": {
+        "regex": [
+          "^(\\d{4})\\s+\\d{4}"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{4}\\s+\\d{4}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?:\\s+CR)?"
+        ]
+      },
+      "dr_cr_detection": {
+        "cr_keywords": [
+          "CR",
+          "PAYMENT",
+          "REFUND"
+        ],
+        "negative_is_credit": true
+      }
+    }
+  },
+  "AFFIN_BANK": {
+    "bank_name": "AFFIN_BANK",
+    "patterns": {
+      "customer_name": {
+        "regex": [
+          "^([A-Z][A-Z\\s]{8,40})$"
+        ]
+      },
+      "card_number": {
+        "regex": [
+          "(\\d{4})[\\s-]?(\\d{4})[\\s-]?(\\d{4})[\\s-]?(\\d{4})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "Card Type[\\s\\S]{0,100}?([A-Z][A-Za-z\\s]+?)(?:\\n|Credit)"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "Previous Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Credit Limit[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      },
+      "current_balance": {
+        "regex": [
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "Minimum Payment[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      }
+    },
+    "transaction_patterns": {
+      "transaction_date": {
+        "regex": [
+          "^(\\d{8})\\s+\\d{8}"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{8}\\s+\\d{8}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?:\\s+CR)?"
+        ]
+      },
+      "dr_cr_detection": {
+        "cr_keywords": [
+          "CR",
+          "PAYMENT",
+          "REFUND"
+        ],
+        "negative_is_credit": true
+      }
+    }
+  },
+  "CIMB": {
+    "bank_name": "CIMB",
+    "patterns": {
+      "customer_name": {
+        "regex": [
+          "^([A-Z][A-Z\\s]{8,40})$"
+        ]
+      },
+      "card_number": {
+        "regex": [
+          "(\\d{4})[\\s-]?(\\d{4})[\\s-]?(\\d{4})[\\s-]?(\\d{4})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "Card Type[\\s\\S]{0,100}?([A-Z][A-Za-z\\s]+?)(?:\\n|Credit)"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "Previous Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Credit Limit[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      },
+      "current_balance": {
+        "regex": [
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "Minimum Payment[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      }
+    },
+    "transaction_patterns": {
+      "transaction_date": {
+        "regex": [
+          "^(\\d{2}\\s+[A-Z]{3})\\s+\\d{2}\\s+[A-Z]{3}"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{2}\\s+[A-Z]{3}\\s+\\d{2}\\s+[A-Z]{3}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?:\\s+CR)?"
+        ]
+      },
+      "dr_cr_detection": {
+        "cr_keywords": [
+          "CR",
+          "PAYMENT",
+          "REFUND"
+        ],
+        "negative_is_credit": true
+      }
+    }
+  },
+  "ALLIANCE_BANK": {
+    "bank_name": "ALLIANCE_BANK",
+    "patterns": {
+      "customer_name": {
+        "regex": [
+          "^([A-Z][A-Z\\s]{8,40})$"
+        ]
+      },
+      "card_number": {
+        "regex": [
+          "(\\d{4})[\\s-]?(\\d{4})[\\s-]?(\\d{4})[\\s-]?(\\d{4})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "Card Type[\\s\\S]{0,100}?([A-Z][A-Za-z\\s]+?)(?:\\n|Credit)"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "Previous Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Credit Limit[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      },
+      "current_balance": {
+        "regex": [
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "Minimum Payment[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      }
+    },
+    "transaction_patterns": {
+      "transaction_date": {
+        "regex": [
+          "^(\\d{6})\\s+\\d{6}"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{6}\\s+\\d{6}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?:\\s+CR)?"
+        ]
+      },
+      "dr_cr_detection": {
+        "cr_keywords": [
+          "CR",
+          "PAYMENT",
+          "REFUND"
+        ],
+        "negative_is_credit": true
+      }
+    }
+  },
+  "PUBLIC_BANK": {
+    "bank_name": "PUBLIC_BANK",
+    "patterns": {
+      "customer_name": {
+        "regex": [
+          "^([A-Z][A-Z\\s]{8,40})$"
+        ]
+      },
+      "card_number": {
+        "regex": [
+          "(\\d{4})[\\s-]?(\\d{4})[\\s-]?(\\d{4})[\\s-]?(\\d{4})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "Card Type[\\s\\S]{0,100}?([A-Z][A-Za-z\\s]+?)(?:\\n|Credit)"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "Previous Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Credit Limit[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      },
+      "current_balance": {
+        "regex": [
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "Minimum Payment[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      }
+    },
+    "transaction_patterns": {
+      "transaction_date": {
+        "regex": [
+          "^(\\d{2}\\s+[A-Z]{3})\\s+\\d{2}\\s+[A-Z]{3}"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{2}\\s+[A-Z]{3}\\s+\\d{2}\\s+[A-Z]{3}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?:\\s+CR)?"
+        ]
+      },
+      "dr_cr_detection": {
+        "cr_keywords": [
+          "CR",
+          "PAYMENT",
+          "REFUND"
+        ],
+        "negative_is_credit": true
       }
     }
   }
