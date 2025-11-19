@@ -868,7 +868,8 @@ class BankSpecificParser:
         amounts = []
         
         date_pattern = r'^\d{1,2}\s+[A-Z]{3}$'
-        amount_pattern = r'^([\d,]+\.?\d{0,2})(\s+CR)?$'
+        # 金额必须有小数点（排除交易参考号）
+        amount_pattern = r'^([\d,]+\.\d{2})(\s+CR)?$'
         
         # 标记各区域
         in_date_section = True
