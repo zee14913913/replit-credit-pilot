@@ -4,7 +4,9 @@
     "patterns": {
       "customer_name": {
         "regex": [
-          "MALAYSIA\\n([A-Z][A-Z\\s]{8,40})\\n"
+          "MALAYSIA\\n([A-Z\\s]{10,45})\\n",
+          "NEGERI SEMBILAN\\nMALAYSIA\\n([A-Z\\s]{10,45})\\n",
+          "^([A-Z]{5,}\\s+[A-Z]{3,}\\s+[A-Z]{3,})$"
         ]
       },
       "card_number": {
@@ -24,7 +26,8 @@
       },
       "previous_balance": {
         "regex": [
-          "PREVIOUS BALANCE[\\s\\S]{0,50}?([\\d,]+\\.\\d{2})"
+          "PREVIOUS BALANCE[\\s\\S]{0,500}?^([\\d,]+\\.\\d{2})$",
+          "PREVIOUS BALANCE[\\s\\S]{0,300}?\\n([\\d,]+\\.\\d{2})\\n"
         ]
       },
       "credit_limit": {
@@ -34,12 +37,13 @@
       },
       "minimum_payment": {
         "regex": [
-          "Minimum Payment[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})"
+          "Minimum Payment[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "MINIMUM.*?RM\\s*([\\d,]+\\.\\d{2})"
         ]
       },
       "full_due_amount": {
         "regex": [
-          "Current Balance[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})"
+          "Total Current Balance[\\s\\S]{0,50}?\\n([\\d,]+\\.\\d{2})"
         ]
       }
     }
@@ -159,6 +163,7 @@
       },
       "previous_balance": {
         "regex": [
+          "Last Statement Balance[\\s\\S]{0,50}?\\n([\\d,]+\\.\\d{2})",
           "Previous Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
         ]
       },
@@ -169,12 +174,14 @@
       },
       "minimum_payment": {
         "regex": [
-          "Minimum Payment[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+          "Minimum Payment.*?RM[\\s\\S]{0,200}?\\n([\\d,]+\\.\\d{2})\\n([\\d,]+\\.\\d{2})",
+          "Bayaran Minima.*?RM[\\s\\S]{0,200}?([\\d,]+\\.\\d{2})(?!.*\\d)"
         ]
       },
       "full_due_amount": {
         "regex": [
-          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+          "Current Balance.*?RM.*?\\n.*?\\n.*?\\n.*?\\n.*?\\n.*?\\n.*?\\n([\\d,]+\\.\\d{2})",
+          "Baki Semasa.*?RM[\\s\\S]{0,200}?\\n([\\d,]+\\.\\d{2})"
         ]
       }
     }
@@ -204,7 +211,8 @@
       },
       "previous_balance": {
         "regex": [
-          "Previous Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+          "Previous Balance[\\s\\n]+Baki Sebelumnya[\\s\\n]+(?:[-+]\\s*[A-Za-z]+[\\s\\n]+[A-Za-z]+[\\s\\n]+)*([\\d,]+\\.\\d{2})",
+          "Previous Balance[\\s\\S]{0,200}?\\n([\\d,]+\\.\\d{2})"
         ]
       },
       "credit_limit": {
@@ -249,7 +257,8 @@
       },
       "previous_balance": {
         "regex": [
-          "Previous Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+          "Opening Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})",
+          "(?:Previous|Last)\\s+Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
         ]
       },
       "credit_limit": {
