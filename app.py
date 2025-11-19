@@ -356,6 +356,27 @@ def serve_uploaded_file(filename):
     
     return response
 
+@app.route('/mcp', methods=['GET'])
+@app.route('/mcp/<path:subpath>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def mcp_proxy(subpath=''):
+    """代理所有 /mcp 请求到 MCP Server (port 8080)"""
+    try:
+        mcp_url = f"http://localhost:8080/mcp/{subpath}" if subpath else "http://localhost:8080/mcp"
+        
+        if request.method == 'GET':
+            response = requests.get(mcp_url, params=request.args)
+        else:
+            response = requests.request(
+                method=request.method,
+                url=mcp_url,
+                json=request.get_json(silent=True),
+                headers={'Content-Type': 'application/json'}
+            )
+        
+        return jsonify(response.json()), response.status_code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/')
 def index():
     """Dashboard - 权限过滤：验证后才加载数据，确保安全"""
