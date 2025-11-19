@@ -1,0 +1,137 @@
+{
+  "bank": "STANDARD_CHARTERED",
+  "total_statements": 6,
+  "parsed_count": 6,
+  "total_transactions": 0,
+  "total_cr": 0,
+  "total_dr": 0,
+  "total_gz": 0,
+  "results": [
+    {
+      "file": "STANDARD_CHARTERED_1237_2025-05-14.pdf",
+      "bank": "STANDARD_CHARTERED",
+      "fields": {
+        "customer_name": "opts to pay partial or minimum payment within",
+        "ic_no": "79458665107001",
+        "card_type": "Standard Chartered VISA",
+        "card_no": "2025",
+        "credit_limit": "0.00",
+        "statement_date": "03 Jun 20",
+        "payment_due_date": "03 Jun 20",
+        "full_due_amount": "0.00",
+        "minimum_payment": "0.00",
+        "previous_balance": "0.00"
+      },
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0
+    },
+    {
+      "file": "STANDARD_CHARTERED_1237_2025-06-15.pdf",
+      "bank": "STANDARD_CHARTERED",
+      "fields": {
+        "customer_name": "opts to pay partial or minimum payment within",
+        "ic_no": "75437605159080",
+        "card_type": "Standard Chartered VISA",
+        "card_no": "2025",
+        "credit_limit": "67775.00",
+        "statement_date": "07 Jul 20",
+        "payment_due_date": "07 Jul 20",
+        "full_due_amount": "67775.00",
+        "minimum_payment": "67775.00",
+        "previous_balance": "67775.00"
+      },
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0
+    },
+    {
+      "file": "STANDARD_CHARTERED_1237_2025-07-14.pdf",
+      "bank": "STANDARD_CHARTERED",
+      "fields": {
+        "customer_name": "opts to pay partial or minimum payment within",
+        "ic_no": "20250709008515",
+        "card_type": "Standard Chartered VISA",
+        "card_no": "2025",
+        "credit_limit": "60738.83",
+        "statement_date": "04 Aug 20",
+        "payment_due_date": "04 Aug 20",
+        "full_due_amount": "60738.83",
+        "minimum_payment": "60738.83",
+        "previous_balance": "60738.83"
+      },
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0
+    },
+    {
+      "file": "STANDARD_CHARTERED_1237_2025-08-14.pdf",
+      "bank": "STANDARD_CHARTERED",
+      "fields": {
+        "customer_name": "opts to pay a partial or minimum amount",
+        "ic_no": "75437605211300",
+        "card_type": "Standard Chartered VISA",
+        "card_no": "2025",
+        "credit_limit": "68813.39",
+        "statement_date": "14 Aug 20",
+        "payment_due_date": "14 Aug 20",
+        "full_due_amount": "68813.39",
+        "minimum_payment": "68813.39",
+        "previous_balance": "68813.39"
+      },
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0
+    },
+    {
+      "file": "STANDARD_CHARTERED_1237_2025-09-14.pdf",
+      "bank": "STANDARD_CHARTERED",
+      "fields": {
+        "customer_name": "opts to pay a partial or minimum amount",
+        "ic_no": "05404785230001",
+        "card_type": "Standard Chartered VISA",
+        "card_no": "2025",
+        "credit_limit": "72718.54",
+        "statement_date": "14 Sep 20",
+        "payment_due_date": "14 Sep 20",
+        "full_due_amount": "72718.54",
+        "minimum_payment": "72718.54",
+        "previous_balance": "72718.54"
+      },
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0
+    },
+    {
+      "file": "STANDARD_CHARTERED_1237_2025-10-14.pdf",
+      "bank": "STANDARD_CHARTERED",
+      "fields": {
+        "customer_name": "opts to pay a partial or minimum amount",
+        "ic_no": "198401003274",
+        "card_type": "Standard Chartered VISA",
+        "card_no": "2025",
+        "credit_limit": "73889.93",
+        "statement_date": "14 Oct 20",
+        "payment_due_date": "14 Oct 20",
+        "full_due_amount": "73889.93",
+        "minimum_payment": "73889.93",
+        "previous_balance": "73889.93"
+      },
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0
+    }
+  ]
+}

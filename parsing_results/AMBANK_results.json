@@ -2,87 +2,263 @@
   "bank": "AMBANK",
   "total_statements": 6,
   "parsed_count": 6,
-  "total_transactions": 0,
-  "total_cr": 0,
-  "total_dr": 0,
-  "total_gz": 0,
+  "total_transactions": 13,
+  "total_cr": 6,
+  "total_dr": 7,
+  "total_gz": 6,
   "results": [
     {
       "file": "AMBANK_9902_2025-05-28.pdf",
       "month": "2025-05",
       "bank": "AMBANK",
-      "fields": {},
-      "field_extraction_rate": 0.0,
-      "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
+      "fields": {
+        "customer_name": "P\nAmBank Islamic\nPERBANKAN\nISLAM\nVISA",
+        "ic_no": "00000579489405",
+        "card_type": "Jenis Kad",
+        "card_no": "4031 4947 0045 9902",
+        "credit_limit": "7.00",
+        "statement_date": "28 MAY 25",
+        "payment_due_date": "28 MAY 25",
+        "full_due_amount": "7.00",
+        "minimum_payment": "7.00",
+        "previous_balance": "7.00"
+      },
+      "field_extraction_rate": 62.5,
+      "transactions": [
+        {
+          "date": "17 JUN 25",
+          "description": "Total Credit Limit / Jumlah Had Kredit",
+          "dr_amount": 0.0,
+          "cr_amount": 15000.0,
+          "type": "CR",
+          "classification": "GZ"
+        }
+      ],
+      "transaction_count": 1,
+      "cr_count": 1,
       "dr_count": 0,
-      "gz_count": 0,
+      "gz_count": 1,
       "owner_count": 0
     },
     {
       "file": "AMBANK_9902_2025-06-28.pdf",
       "month": "2025-06",
       "bank": "AMBANK",
-      "fields": {},
-      "field_extraction_rate": 0.0,
-      "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
-      "dr_count": 0,
-      "gz_count": 0,
-      "owner_count": 0
+      "fields": {
+        "customer_name": "P\nAmBank Islamic\nPERBANKAN\nISLAM\nVISA",
+        "ic_no": "00000579489406",
+        "card_type": "Jenis Kad",
+        "card_no": "4031 4947 0045 9902",
+        "credit_limit": "7.00",
+        "statement_date": "28 JUN 25",
+        "payment_due_date": "28 JUN 25",
+        "full_due_amount": "7.00",
+        "minimum_payment": "7.00",
+        "previous_balance": "7.00"
+      },
+      "field_extraction_rate": 62.5,
+      "transactions": [
+        {
+          "date": "18 JUL 25",
+          "description": "Total Credit Limit / Jumlah Had Kredit",
+          "dr_amount": 0.0,
+          "cr_amount": 15000.0,
+          "type": "CR",
+          "classification": "GZ"
+        },
+        {
+          "date": "25 JUN 25",
+          "description": "25 JUN 25",
+          "dr_amount": 1500.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        },
+        {
+          "date": "28 JUN 25",
+          "description": "28 JUN 25",
+          "dr_amount": 174.68,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        }
+      ],
+      "transaction_count": 3,
+      "cr_count": 1,
+      "dr_count": 2,
+      "gz_count": 1,
+      "owner_count": 2
     },
     {
       "file": "AMBANK_9902_2025-07-28.pdf",
       "month": "2025-07",
       "bank": "AMBANK",
-      "fields": {},
-      "field_extraction_rate": 0.0,
-      "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
+      "fields": {
+        "customer_name": "P\nAmBank Islamic\nPERBANKAN\nISLAM\nVISA",
+        "ic_no": "00000579489407",
+        "card_type": "Jenis Kad",
+        "card_no": "4031 4947 0045 9902",
+        "credit_limit": "7.00",
+        "statement_date": "28 JUL 25",
+        "payment_due_date": "28 JUL 25",
+        "full_due_amount": "7.00",
+        "minimum_payment": "7.00",
+        "previous_balance": "7.00"
+      },
+      "field_extraction_rate": 62.5,
+      "transactions": [
+        {
+          "date": "17 AUG 25",
+          "description": "Total Credit Limit / Jumlah Had Kredit",
+          "dr_amount": 0.0,
+          "cr_amount": 15000.0,
+          "type": "CR",
+          "classification": "GZ"
+        }
+      ],
+      "transaction_count": 1,
+      "cr_count": 1,
       "dr_count": 0,
-      "gz_count": 0,
+      "gz_count": 1,
       "owner_count": 0
     },
     {
       "file": "AMBANK_9902_2025-08-28.pdf",
       "month": "2025-08",
       "bank": "AMBANK",
-      "fields": {},
-      "field_extraction_rate": 0.0,
-      "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
-      "dr_count": 0,
-      "gz_count": 0,
-      "owner_count": 0
+      "fields": {
+        "customer_name": "P\nAmBank Islamic\nPERBANKAN\nISLAM\nVISA",
+        "ic_no": "00000579489408",
+        "card_type": "Jenis Kad",
+        "card_no": "4031 4947 0045 9902",
+        "credit_limit": "7.00",
+        "statement_date": "28 AUG 25",
+        "payment_due_date": "28 AUG 25",
+        "full_due_amount": "7.00",
+        "minimum_payment": "7.00",
+        "previous_balance": "7.00"
+      },
+      "field_extraction_rate": 62.5,
+      "transactions": [
+        {
+          "date": "17 SEP 25",
+          "description": "Total Credit Limit / Jumlah Had Kredit",
+          "dr_amount": 0.0,
+          "cr_amount": 15000.0,
+          "type": "CR",
+          "classification": "GZ"
+        },
+        {
+          "date": "16 AUG 25",
+          "description": "17 AUG 25",
+          "dr_amount": 10674.24,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        },
+        {
+          "date": "21 AUG 25",
+          "description": "21 AUG 25",
+          "dr_amount": 2000.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        },
+        {
+          "date": "21 AUG 25",
+          "description": "21 AUG 25",
+          "dr_amount": 3000.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        },
+        {
+          "date": "28 AUG 25",
+          "description": "28 AUG 25",
+          "dr_amount": 7999.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        }
+      ],
+      "transaction_count": 5,
+      "cr_count": 1,
+      "dr_count": 4,
+      "gz_count": 1,
+      "owner_count": 4
     },
     {
       "file": "AMBANK_9902_2025-09-28.pdf",
       "month": "2025-09",
       "bank": "AMBANK",
-      "fields": {},
-      "field_extraction_rate": 0.0,
-      "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
-      "dr_count": 0,
-      "gz_count": 0,
-      "owner_count": 0
+      "fields": {
+        "customer_name": "P\nAmBank Islamic\nPERBANKAN\nISLAM\nVISA",
+        "ic_no": "00000579489409",
+        "card_type": "Jenis Kad",
+        "card_no": "4031 4947 0045 9902",
+        "credit_limit": "7.00",
+        "statement_date": "28 SEP 25",
+        "payment_due_date": "28 SEP 25",
+        "full_due_amount": "7.00",
+        "minimum_payment": "7.00",
+        "previous_balance": "7.00"
+      },
+      "field_extraction_rate": 62.5,
+      "transactions": [
+        {
+          "date": "18 OCT 25",
+          "description": "Total Credit Limit / Jumlah Had Kredit",
+          "dr_amount": 0.0,
+          "cr_amount": 15000.0,
+          "type": "CR",
+          "classification": "GZ"
+        },
+        {
+          "date": "28 SEP 25",
+          "description": "28 SEP 25",
+          "dr_amount": 219.62,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        }
+      ],
+      "transaction_count": 2,
+      "cr_count": 1,
+      "dr_count": 1,
+      "gz_count": 1,
+      "owner_count": 1
     },
     {
       "file": "AMBANK_9902_2025-10-28.pdf",
       "month": "2025-10",
       "bank": "AMBANK",
-      "fields": {},
-      "field_extraction_rate": 0.0,
-      "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
+      "fields": {
+        "customer_name": "P\nAmBank Islamic\nPERBANKAN\nISLAM\nVISA",
+        "ic_no": "00000579489410",
+        "card_type": "Jenis Kad",
+        "card_no": "4031 4947 0045 9902",
+        "credit_limit": "7.00",
+        "statement_date": "28 OCT 25",
+        "payment_due_date": "28 OCT 25",
+        "full_due_amount": "7.00",
+        "minimum_payment": "7.00",
+        "previous_balance": "7.00"
+      },
+      "field_extraction_rate": 62.5,
+      "transactions": [
+        {
+          "date": "17 NOV 25",
+          "description": "Total Credit Limit / Jumlah Had Kredit",
+          "dr_amount": 0.0,
+          "cr_amount": 15000.0,
+          "type": "CR",
+          "classification": "GZ"
+        }
+      ],
+      "transaction_count": 1,
+      "cr_count": 1,
       "dr_count": 0,
-      "gz_count": 0,
+      "gz_count": 1,
       "owner_count": 0
     }
   ]
