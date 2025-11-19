@@ -1,174 +1,262 @@
 {
   "bank": "STANDARD_CHARTERED",
   "total_statements": 6,
-  "total_transactions": 15,
-  "total_cr": 6,
-  "total_dr": 9,
-  "total_gz": 7,
+  "total_transactions": 22,
+  "total_cr": 4,
+  "total_dr": 18,
+  "total_gz": 6,
+  "zero_amount_transactions": 0,
   "results": [
     {
+      "month": "2025-05",
       "file": "STANDARD_CHARTERED_1237_2025-05-14.pdf",
       "transactions": [
         {
-          "date": "24 Apr",
-          "description": "MAR25 SIMPLYCASH Cashback +0",
-          "dr_amount": 0.0,
-          "cr_amount": 0.0,
-          "type": "DR",
-          "classification": "Owner"
-        },
-        {
-          "date": "17 Apr",
-          "description": "Txn Ref: 79458665107001000849712\n1,250.00\nCOC+ 0.00% EFF 0.00% 12M\n#10/12\n07 May\n07 May",
-          "dr_amount": 0.0,
-          "cr_amount": 1250.0,
-          "type": "CR",
-          "classification": "GZ"
-        },
-        {
           "date": "14 May",
-          "description": "COC+ 8.88% EFF 15.52% 60M INT",
+          "description": "COC+ 8.88% EFF 15.52% 60M INT Txn Ref: 13400985116",
           "dr_amount": 549.36,
           "cr_amount": 0.0,
           "type": "DR",
-          "classification": "Owner"
+          "classification": "Owner",
+          "amount": 549.36
         }
       ],
-      "cr": 1,
-      "dr": 2,
-      "gz": 1
+      "cr": 0,
+      "dr": 1,
+      "gz": 0
     },
     {
+      "month": "2025-06",
       "file": "STANDARD_CHARTERED_1237_2025-06-15.pdf",
       "transactions": [
         {
           "date": "09 Jun",
-          "description": "HUAWEI - I-CITY SHAH ALAMMY",
+          "description": "HUAWEI - I-CITY SHAH ALAMMY Txn Ref: 75437605159080602173702",
           "dr_amount": 29999.0,
           "cr_amount": 0.0,
           "type": "DR",
-          "classification": "GZ"
+          "classification": "GZ",
+          "amount": 29999.0
         },
         {
           "date": "09 Jun",
-          "description": "HUAWEI I-CITY SHAH ALAMMY",
+          "description": "HUAWEI I-CITY SHAH ALAMMY Txn Ref: 75437605159080602173694",
           "dr_amount": 37776.0,
           "cr_amount": 0.0,
           "type": "DR",
-          "classification": "GZ"
-        },
-        {
-          "date": "17 May",
-          "description": "Txn Ref: 79458665137001000902218\nCOC+ 0.00% EFF 0.00% 12M\n#11/12\n1,250.00\nNEW BALANCE / Baki Baru\nMINIMUM PAYMENT DUE / Pembayaran\nMinima\n1,250.00\n1,250.00\nStandard Chartered\nCredit Card Statement\nPenyata Kad Anda\nCHEOK JUN YOON\nPage/Halaman 3 of 4\nYOUR ACCOUNT ACTIVITIES I AKTIVITI-AKTIVITI AKAUN ANDA\nCASH ON CALL PLUS\n9458-66XX-XXXX-9153\ne-Statement\nPosting\nDate\nTarikh Bil\nDiterima\nTransaction\nDate\nTarikh\nTransaksi\nDescription\nDiskripsi\nRM Amount\nJumlah RM\nCurrency Amount\nJumlah Matawang\nTransaction Reference [Txn Ref]\nRujukan Urusniaga\n/\nTax Invoice Ref. No [Inv Ref]\nNombor Rujukan Cukai Invois\n549.36\nBALANCE FROM PREVIOUS\nSTATEMENT\nBaki dari penyata sebelumnya\n27 May\n27 May\n-CTP INT CHGS",
-          "dr_amount": 0.0,
-          "cr_amount": 2608.91,
-          "type": "CR",
-          "classification": "Owner"
+          "classification": "GZ",
+          "amount": 37776.0
         },
         {
           "date": "27 May",
-          "description": "Txn Ref: 79458665147001000061823\n68,000.00\nCOC+ 8.88% EFF 15.52% 60M\n#01/60\n03 Jun\n03 Jun",
-          "dr_amount": 0.0,
-          "cr_amount": 20000.0,
-          "type": "CR",
-          "classification": "GZ"
-        },
-        {
-          "date": "05 Jun",
-          "description": "Txn Ref: 2025060404785929153808\n19,900.00CR\nDUITNOW PAY-TO-ACCOUNT\nAI SMART TECH SDN. B\n20250604MFBBMYKLO100CM0448\n544\nTRANSFER FROM ABMB\n05 Jun\n04 Jun",
-          "dr_amount": 0.0,
-          "cr_amount": 31258.27,
-          "type": "CR",
-          "classification": "GZ"
+          "description": "-CTP INT CHGS Txn Ref: 14700101002",
+          "dr_amount": 2608.91,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 2608.91
         }
       ],
-      "cr": 3,
-      "dr": 2,
-      "gz": 4
+      "cr": 0,
+      "dr": 3,
+      "gz": 2
     },
     {
+      "month": "2025-07",
       "file": "STANDARD_CHARTERED_1237_2025-07-14.pdf",
       "transactions": [
         {
           "date": "07 Jul",
-          "description": "LATE CHARGES",
+          "description": "LATE CHARGES Txn Ref: 18800014232",
           "dr_amount": 100.0,
           "cr_amount": 0.0,
           "type": "DR",
-          "classification": "Owner"
-        },
-        {
-          "date": "09 Jul",
-          "description": "Txn Ref: 2025070900851591237805\n790.00CR\nDUITNOW PAY-TO-ACCOUNT\nYEO CHEE WANG\n20250709MBBEMYKL0100RM1194\n1889\nPAY ON BEHALF\n09 Jul\n09 Jul",
-          "dr_amount": 0.0,
-          "cr_amount": 7900.0,
-          "type": "CR",
-          "classification": "GZ"
+          "classification": "Owner",
+          "amount": 100.0
         },
         {
           "date": "14 Jul",
-          "description": "EMIS 2126102978US",
+          "description": "EMIS 2126102978US Txn Ref: 52653845194742863292415",
           "dr_amount": 126.25,
           "cr_amount": 0.0,
           "type": "DR",
-          "classification": "Owner"
+          "classification": "Owner",
+          "amount": 126.25
         },
         {
           "date": "14 Jul",
-          "description": "ANNUAL FEE",
+          "description": "ANNUAL FEE Txn Ref: 19500006289",
           "dr_amount": 250.0,
           "cr_amount": 0.0,
           "type": "DR",
-          "classification": "Owner"
+          "classification": "Owner",
+          "amount": 250.0
         },
         {
           "date": "14 Jul",
-          "description": "INTEREST",
+          "description": "INTEREST Txn Ref: 00000000000",
           "dr_amount": 1177.58,
           "cr_amount": 0.0,
           "type": "DR",
-          "classification": "Owner"
+          "classification": "Owner",
+          "amount": 1177.58
         },
         {
-          "date": "17 Jun",
-          "description": "Txn Ref: 79458665168001000785094\nCOC+ 0.00% EFF 0.00% 12M\n#12/12\n1,250.00\n07 Jul\n07 Jul\nLATE CHARGES",
+          "date": "07 Jul",
+          "description": "LATE CHARGES Txn Ref: 18800033207",
           "dr_amount": 12.5,
           "cr_amount": 0.0,
           "type": "DR",
-          "classification": "Owner"
+          "classification": "Owner",
+          "amount": 12.5
         },
         {
-          "date": "08 Jul",
-          "description": "Txn Ref: 2025070802270103234808\n2,512.50CR\nDUITNOW PAY-TO-ACCOUNT\nCHEOK JUN YOON\n20250708MBBEMYKL010ORM1088\n7304\nJUNE\n14 Jul\n14 Jul\nINTEREST",
-          "dr_amount": 0.0,
-          "cr_amount": 45.0,
-          "type": "CR",
-          "classification": "GZ"
+          "date": "14 Jul",
+          "description": "INTEREST Txn Ref: 00000000000",
+          "dr_amount": 45.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 45.0
         }
       ],
-      "cr": 2,
-      "dr": 5,
-      "gz": 2
+      "cr": 0,
+      "dr": 6,
+      "gz": 0
     },
     {
+      "month": "2025-08",
       "file": "STANDARD_CHARTERED_1237_2025-08-14.pdf",
-      "transactions": [],
-      "cr": 0,
-      "dr": 0,
-      "gz": 0
+      "transactions": [
+        {
+          "date": "16 Jul",
+          "description": "07SERVICE TAX Txn Ref: 19700940555",
+          "dr_amount": 25.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 25.0
+        },
+        {
+          "date": "06 Aug",
+          "description": "3,036.94CR Txn Ref:",
+          "dr_amount": 0.0,
+          "cr_amount": 2.0250806034097913e+21,
+          "type": "CR",
+          "classification": "GZ",
+          "amount": 2.0250806034097913e+21
+        },
+        {
+          "date": "14 Aug",
+          "description": "INTEREST Txn Ref:00000000000",
+          "dr_amount": 987.5,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 987.5
+        },
+        {
+          "date": "14 Aug",
+          "description": "INTEREST Txn Ref:00000000000",
+          "dr_amount": 0.69,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 0.69
+        }
+      ],
+      "cr": 1,
+      "dr": 3,
+      "gz": 1
     },
     {
+      "month": "2025-09",
       "file": "STANDARD_CHARTERED_1237_2025-09-14.pdf",
-      "transactions": [],
-      "cr": 0,
-      "dr": 0,
-      "gz": 0
+      "transactions": [
+        {
+          "date": "04 Sep",
+          "description": "3,500.00CR Txn Ref:202509030487656",
+          "dr_amount": 0.0,
+          "cr_amount": 1237809.0,
+          "type": "CR",
+          "classification": "GZ",
+          "amount": 1237809.0
+        },
+        {
+          "date": "03 Sep",
+          "description": "LATE CHARGES Txn Ref:24600004401",
+          "dr_amount": 100.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 100.0
+        },
+        {
+          "date": "09 Sep",
+          "description": "1,000.00CR Txn Ref:202509090001808",
+          "dr_amount": 0.0,
+          "cr_amount": 1237800.0,
+          "type": "CR",
+          "classification": "GZ",
+          "amount": 1237800.0
+        },
+        {
+          "date": "13 Sep",
+          "description": "INTEREST Txn Ref:00000000000",
+          "dr_amount": 1074.38,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 1074.38
+        },
+        {
+          "date": "04 Sep",
+          "description": "45.69CR Txn Ref:202509030487449",
+          "dr_amount": 0.0,
+          "cr_amount": 3234805.0,
+          "type": "CR",
+          "classification": "GZ",
+          "amount": 3234805.0
+        },
+        {
+          "date": "13 Sep",
+          "description": "INTEREST Txn Ref:00000000000",
+          "dr_amount": 0.45,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 0.45
+        }
+      ],
+      "cr": 3,
+      "dr": 3,
+      "gz": 3
     },
     {
+      "month": "2025-10",
       "file": "STANDARD_CHARTERED_1237_2025-10-14.pdf",
-      "transactions": [],
+      "transactions": [
+        {
+          "date": "06 Oct",
+          "description": "LATE CHARGES Txn Ref:27900009620",
+          "dr_amount": 100.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 100.0
+        },
+        {
+          "date": "14 Oct",
+          "description": "INTEREST Txn Ref:00000000000",
+          "dr_amount": 1071.39,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 1071.39
+        }
+      ],
       "cr": 0,
-      "dr": 0,
+      "dr": 2,
       "gz": 0
     }
   ]

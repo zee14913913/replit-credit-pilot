@@ -4,11 +4,11 @@
   "total_statements": 41,
   "total_parsed": 41,
   "completion_rate": 100.0,
-  "total_transactions": 129,
-  "total_cr": 59,
-  "total_dr": 70,
-  "total_gz": 53,
-  "gz_percentage": 41.08527131782946,
+  "total_transactions": 136,
+  "total_cr": 57,
+  "total_dr": 79,
+  "total_gz": 52,
+  "gz_percentage": 38.23529411764706,
   "banks": [
     {
       "bank": "AMBANK",
@@ -53,10 +53,10 @@
     {
       "bank": "STANDARD_CHARTERED",
       "statements": 6,
-      "transactions": 15,
-      "cr": 6,
-      "dr": 9,
-      "gz": 7
+      "transactions": 22,
+      "cr": 4,
+      "dr": 18,
+      "gz": 6
     },
     {
       "bank": "UOB",
@@ -67,5 +67,12 @@
       "gz": 0
     }
   ],
-  "generated_at": "2025-11-19T09:43:10.191895"
+  "generated_at": "2025-11-19T09:51:57.340781",
+  "fixes_applied": [
+    "Fixed STANDARD_CHARTERED 5-line format parser with amount extraction",
+    "Added multi-format header detection for SC statements",
+    "Implemented OCBC 6-line format parser",
+    "Implemented HSBC multi-column format parser",
+    "Added zero-amount transaction filtering"
+  ]
 }
