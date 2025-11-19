@@ -12,13 +12,21 @@
         "extract": "last_4",
         "description": "16位卡号，提取后4位"
       },
+      "card_type": {
+        "regex": ["(Visa\\s+Signature)", "(Islamic\\s+Visa)", "(MasterCard)"],
+        "description": "卡片类型"
+      },
       "statement_date": {
-        "regex": ["Statement Date.*?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})", "Tarikh Penyata.*?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})"],
-        "description": "账单日期"
+        "regex": ["Statement Date.*?\\n\\s*(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})", "Tarikh Penyata.*?\\n\\s*(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})"],
+        "description": "账单日期（通常在标题下一行）"
       },
       "payment_due_date": {
-        "regex": ["Payment Due Date.*?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})", "Tarikh Matang Bayar.*?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})"],
-        "description": "到期日期"
+        "regex": ["Payment Due Date.*?\\n\\s*(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})", "Tarikh Matang Bayaran.*?\\n\\s*(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})"],
+        "description": "到期日期（通常在标题下一行）"
+      },
+      "ic_number": {
+        "regex": ["I/C\\s*[Nn]o[:.\\s]+(\\d{6}-\\d{2}-\\d{4})", "No\\.\\s*KP[:.\\s]+(\\d{6}-\\d{2}-\\d{4})", "NRIC[:.\\s]+(\\d{6}-\\d{2}-\\d{4})"],
+        "description": "身份证号码"
       },
       "previous_balance": {
         "regex": ["PREVIOUS BALANCE[\\s\\n]+([-]?[\\d,]+\\.\\d{2})", "Baki Terdahulu[\\s\\n]+([-]?[\\d,]+\\.\\d{2})"],
