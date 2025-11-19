@@ -1,0 +1,143 @@
+{
+  "field_keywords": {
+    "statement_date": [
+      "Statement Date",
+      "Billing Date",
+      "Tarikh Penyata",
+      "Tanggal Penyata"
+    ],
+    "payment_due_date": [
+      "Payment Due Date",
+      "Due Date",
+      "Tarikh Akhir Bayaran",
+      "Tarikh Matang Bayaran"
+    ],
+    "credit_limit": [
+      "Credit Limit",
+      "Had Kredit",
+      "Credit Line",
+      "Combine Credit Limit",
+      "Total Credit Limit"
+    ],
+    "minimum_payment": [
+      "Minimum Payment",
+      "Bayaran Minimum",
+      "MINIMUM PAYMENT DUE",
+      "Min. Payment Due",
+      "TOTAL Minimum Payment"
+    ],
+    "current_balance": [
+      "Total Amount Due",
+      "New Balance",
+      "Current Balance",
+      "Amount Due",
+      "Total Balance Due",
+      "Total Current Balance",
+      "Statement Balance Due",
+      "Baki Semasa",
+      "Baki Baru"
+    ],
+    "previous_balance": [
+      "Previous Balance",
+      "PREVIOUS BALANCE FROM LAST STATEMENT",
+      "Baki Terdahulu",
+      "Last Statement Balance",
+      "BALANCE FROM PREVIOUS STATEMENT"
+    ],
+    "customer_name": [
+      "Cardholder",
+      "Name",
+      "Customer Name"
+    ],
+    "ic_no": [
+      "IC No",
+      "IC Number",
+      "MyKad",
+      "NRIC"
+    ],
+    "card_type": [
+      "Card Type",
+      "Jenis Kad"
+    ],
+    "card_no": [
+      "Card No",
+      "Card Number",
+      "Card Account",
+      "Nombor Kad",
+      "Nombor Kad Kredit"
+    ],
+    "earned_point": [
+      "Points Earned",
+      "Reward Points",
+      "UNIRinggit",
+      "AmBonus",
+      "BonusLink",
+      "Cashback",
+      "Total Points"
+    ]
+  },
+  "transaction_keywords": {
+    "payment_refund": [
+      "payment",
+      "refund",
+      "rebate",
+      "bayaran",
+      "returned",
+      "payment rec'd",
+      "payment received",
+      "thank you",
+      "cash rebate"
+    ],
+    "installment": [
+      "instalment",
+      "installment",
+      "i-plan",
+      "easy payment",
+      "flexi pay",
+      "IPP"
+    ],
+    "online_payment": [
+      "tng",
+      "grab",
+      "boost",
+      "lazada",
+      "shopee",
+      "duitnow"
+    ],
+    "fuel": [
+      "shell",
+      "petronas",
+      "bhp",
+      "caltex"
+    ],
+    "supermarket": [
+      "giant",
+      "jaya grocer",
+      "aeon",
+      "lotus",
+      "99 speed mart"
+    ],
+    "fee_charge": [
+      "late payment",
+      "interest charge",
+      "management fee",
+      "service tax",
+      "paper stmt fee",
+      "late charge",
+      "finance charge",
+      "annual fee"
+    ]
+  },
+  "date_patterns": [
+    "\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}",
+    "\\d{1,2}\\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\s+\\d{2,4}",
+    "\\d{1,2}\\s+(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s+\\d{2,4}",
+    "\\d{1,2}\\s+(?:Jan|Feb|Mac|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)",
+    "\\d{1,2}\\s+(?:JAN|FEB|MAC|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)"
+  ],
+  "amount_patterns": [
+    "[\\d,]+\\.\\d{2}",
+    "[\\d,]+\\.\\d{2}\\s*CR",
+    "[\\d,]+\\.\\d{2}\\s*DR"
+  ]
+}
