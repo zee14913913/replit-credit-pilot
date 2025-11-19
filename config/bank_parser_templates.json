@@ -178,26 +178,79 @@
     "aliases": ["OCBC", "OCBC BANK"],
     "patterns": {
       "customer_name": {
-        "regex": ["([A-Z\\s]+)\\n.*?\\d{4}\\s+\\d{4}\\s+\\d{4}\\s+\\d{4}"]
+        "regex": [
+          "MR\\s+([A-Z\\s]+?)\\n",
+          "MS\\s+([A-Z\\s]+?)\\n",
+          "([A-Z]{4,}\\s+[A-Z]{3,}\\s+[A-Z]{3,})",
+          "Name[:\\s]+([A-Z\\s]{3,50})",
+          "Cardholder[:\\s]+([A-Z\\s]{3,50})",
+          "Dear\\s+([A-Z\\s]{3,50})"
+        ],
+        "description": "OCBC客户名称（MR/MS格式优先）"
+      },
+      "ic_number": {
+        "regex": [
+          "IC[/\\s]+(?:No\\.?|Number)[:\\s]*(\\d{6}-\\d{2}-\\d{4})",
+          "NRIC[:\\s]*(\\d{12}|\\d{6}-\\d{2}-\\d{4})",
+          "I/C\\s*No[.:\\s]*(\\d{6}-\\d{2}-\\d{4})"
+        ],
+        "description": "马来西亚IC身份证号码"
       },
       "card_number": {
-        "regex": ["(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})"],
-        "extract": "last_4"
+        "regex": [
+          "(\\d{4})-(\\d{4})-(\\d{4})-(\\d{4})",
+          "(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})",
+          "Card\\s+(?:No\\.?|Number)[:\\s]*(\\d{4})[\\s*-]*(\\d{4})[\\s*-]*(\\d{4})[\\s*-]*(\\d{4})"
+        ],
+        "extract": "last_4",
+        "description": "卡号（所有patterns保证4个capturing groups）"
       },
       "statement_date": {
-        "regex": ["Statement Date\\s*:?\\s*(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})", "Date\\s+(\\d{1,2}[/-]\\d{1,2}[/-]\\d{4})"]
+        "regex": [
+          "(\\d{1,2}\\s+[A-Z][a-z]+\\s+\\d{4})\\s*\\n?\\s*Statement Date",
+          "Statement Date[\\s\\S]{0,50}?(\\d{1,2}\\s+[A-Z][a-z]+\\s+\\d{4})",
+          "(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})",
+          "Tarikh\\s+Penyata[\\s\\S]{0,50}?(\\d{1,2}\\s+\\w+\\s+\\d{4})"
+        ],
+        "description": "账单日期（OCBC格式：值在标签前）"
       },
       "payment_due_date": {
-        "regex": ["Payment Due Date\\s*:?\\s*(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"]
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,50}?(\\d{1,2}\\s+[A-Z][a-z]+\\s+\\d{4})",
+          "Tarikh Akhir Pembayaran[\\s\\S]{0,50}?(\\d{1,2}\\s+[A-Z][a-z]+\\s+\\d{4})",
+          "Due\\s+Date[:\\s]*(\\d{1,2}\\s+\\w+\\s+\\d{4})"
+        ],
+        "description": "到期日（OCBC双语格式）"
       },
       "previous_balance": {
-        "regex": ["Previous Balance.*?([\\d,]+\\.\\d{2})", "Last Balance.*?([\\d,]+\\.\\d{2})"]
+        "regex": [
+          "Last\\s+Statement\\s+Balance[\\s\\S]{0,30}?([\\d,]+\\.\\d{2})",
+          "Previous\\s+Balance[:\\s]*(?:RM|MYR)?[\\s]*([\\d,]+\\.?\\d*)",
+          "Balance\\s+(?:B/F|Forward)[:\\s]*(?:RM)?[\\s]*([\\d,]+\\.?\\d*)",
+          "Opening\\s+Balance[:\\s]*(?:RM)?[\\s]*([\\d,]+\\.\\d{2})"
+        ],
+        "description": "上期结余（Last Statement Balance格式）"
       },
       "minimum_payment": {
-        "regex": ["Minimum Payment.*?([\\d,]+\\.\\d{2})"]
+        "regex": [
+          "Minimum Payment.*?([\\d,]+\\.\\d{2})",
+          "Min\\.?\\s+Payment[:\\s]*(?:RM)?[\\s]*([\\d,]+\\.\\d{2})"
+        ]
       },
       "total_amount_due": {
-        "regex": ["New Balance.*?([\\d,]+\\.\\d{2})", "Current Balance.*?([\\d,]+\\.\\d{2})"]
+        "regex": [
+          "New Balance.*?([\\d,]+\\.\\d{2})",
+          "Current Balance.*?([\\d,]+\\.\\d{2})",
+          "Total\\s+(?:Amount\\s+)?Due[:\\s]*(?:RM)?[\\s]*([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Credit\\s+Limit[:\\s]*(?:RM|MYR)?[\\s]*([\\d,]+\\.?\\d*)",
+          "Limit[:\\s]*(?:RM)?[\\s]*([\\d,]+)",
+          "Approved\\s+Limit[:\\s]*(?:RM)?[\\s]*([\\d,]+)"
+        ],
+        "description": "信用额度"
       }
     },
     "transaction_patterns": {
