@@ -161,6 +161,8 @@ class BankSpecificParser:
             return self._extract_hsbc(text, trans_patterns, customer_name)
         elif special_parser == 'hong_leong':
             return self._extract_hong_leong(text, trans_patterns, customer_name)
+        elif special_parser == 'uob':
+            return self._extract_uob(text, trans_patterns, customer_name)
         
         # 获取交易记录正则
         trans_line = trans_patterns.get('transaction_line', {})
@@ -964,6 +966,126 @@ class BankSpecificParser:
                 continue
         
         logger.info(f"📊 HONG_LEONG提取了 {len(transactions)} 笔交易")
+        return transactions
+    
+    def _extract_uob(self, text: str, trans_patterns: Dict, customer_name: Optional[str] = None) -> List[Dict]:
+        """
+        UOB专用解析器 - 处理多行交易格式
+        
+        UOB格式（多行）:
+        日期行：26 MAY
+        描述行1：LAZADA TOPUP
+        描述行2：KUALA LUMPUR
+        描述行3：MY
+        金额行：2,500.00 (或 370.00 CR)
+        """
+        from decimal import Decimal
+        import re
+        
+        transactions = []
+        lines = text.split('\n')
+        
+        logger.info("🔍 使用UOB专用解析器（多行格式）")
+        
+        # 查找交易区域（在"Transaction Date"标记之后）
+        trans_start = None
+        for i, line in enumerate(lines):
+            if 'Transaction Date' in line and i > 400:
+                trans_start = i + 10  # 跳过表头
+                logger.info(f"  找到UOB交易表头，起始位置: line {trans_start}")
+                break
+        
+        if not trans_start or trans_start >= len(lines):
+            logger.warning("⚠️ 未找到UOB交易区域")
+            return transactions
+        
+        # 策略：从金额行向上查找日期和描述
+        # 金额pattern（必须有小数点，可能有CR）
+        amount_pattern = r'^([\d,]+\.\d{2})(\s+CR)?$'
+        date_pattern = r'^\d{2}\s+[A-Z]{3}$'
+        
+        dr_cr_config = trans_patterns.get('dr_cr_detection', {})
+        
+        i = trans_start
+        while i < min(trans_start + 300, len(lines)):
+            line = lines[i].strip()
+            
+            # 找到金额行
+            amount_match = re.match(amount_pattern, line)
+            if amount_match:
+                try:
+                    amount_str = amount_match.group(1)
+                    cr_marker = amount_match.group(2)
+                    amount_decimal = Decimal(amount_str.replace(',', ''))
+                    
+                    # 跳过PREVIOUS BAL, CREDIT LIMIT等的金额
+                    if amount_decimal < 0.5:  # 跳过太小的金额
+                        i += 1
+                        continue
+                    
+                    # 向上查找日期和描述（最多向上看10行）
+                    date = None
+                    description_lines = []
+                    
+                    for j in range(i-1, max(i-12, trans_start-1), -1):
+                        prev_line = lines[j].strip()
+                        
+                        # 找到日期
+                        if re.match(date_pattern, prev_line):
+                            date = prev_line
+                            # 收集日期和金额之间的所有描述行
+                            for k in range(j+1, i):
+                                desc_line = lines[k].strip()
+                                if desc_line and not re.match(amount_pattern, desc_line):
+                                    # 跳过特殊标记
+                                    if not any(skip in desc_line for skip in ['PREVIOUS', 'PAYMENT REC', 'CREDIT LIMIT', 'WORLD MASTERCARD']):
+                                        description_lines.append(desc_line)
+                            break
+                    
+                    # 如果没有日期，向上查找描述（可能是PAYMENT这种）
+                    if not date:
+                        for j in range(i-1, max(i-5, trans_start-1), -1):
+                            prev_line = lines[j].strip()
+                            if prev_line and len(prev_line) > 5:
+                                if any(keyword in prev_line for keyword in ['PAYMENT', 'PREVIOUS', 'INTEREST', 'INSTALMENT']):
+                                    description_lines = [prev_line]
+                                    date = "UNKNOWN"
+                                    break
+                    
+                    if date and description_lines:
+                        description = ' '.join(description_lines)
+                        
+                        # 判断CR/DR
+                        is_credit = bool(cr_marker) or self._is_credit_transaction(description, amount_str, dr_cr_config)
+                        
+                        dr_amount = Decimal('0') if is_credit else amount_decimal
+                        cr_amount = amount_decimal if is_credit else Decimal('0')
+                        
+                        # 分类
+                        classification = self._classify_transaction(description, is_credit, customer_name)
+                        
+                        transaction = {
+                            'date': date,
+                            'description': description,
+                            'dr_amount': dr_amount,
+                            'cr_amount': cr_amount,
+                            'type': 'CR' if is_credit else 'DR',
+                            'classification': classification,
+                            'amount': amount_decimal
+                        }
+                        
+                        transactions.append(transaction)
+                        
+                except Exception as e:
+                    logger.warning(f"⚠️ UOB金额行{i}解析失败: {line} - {e}")
+            
+            # 遇到结束标记，停止
+            if 'END OF STATEMENT' in line or 'SUB-TOTAL' in line:
+                break
+            
+            i += 1
+        
+        logger.info(f"📊 UOB提取了 {len(transactions)} 笔交易")
         return transactions
 
 
