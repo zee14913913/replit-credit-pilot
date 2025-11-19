@@ -1,0 +1,843 @@
+INFO:__main__:================================================================================
+INFO:__main__:CreditPilot - 批量处理 CHEOK JUN YOON 的41张信用卡账单
+INFO:__main__:================================================================================
+INFO:__main__:客户：CHEOK JUN YOON (Be_rich_CJY)
+INFO:__main__:期间：2025年5月 - 2025年10月
+INFO:__main__:账单数量：41张
+INFO:__main__:开始时间：2025-11-19 01:48:04
+INFO:__main__:================================================================================
+INFO:__main__:
+================================================================================
+INFO:__main__:【1/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-05/AMBANK_9902_2025-05-28.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: AMBANK_9902_2025-05-28.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: AMBANK_9902_2025-05-28.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 0
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：0笔交易
+WARNING:ingest.statement_parser:⚠️ Document AI未提取到交易，尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: No transactions extracted
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：5笔交易
+INFO:__main__:✅ 解析成功：5笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 650.00
+INFO:__main__:   - FINAL GZ OS Bal: RM 650.00
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【2/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-05/AmBank_6354_2025-05-28.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: AmBank_6354_2025-05-28.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: AmBank_6354_2025-05-28.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 0
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：0笔交易
+WARNING:ingest.statement_parser:⚠️ Document AI未提取到交易，尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: No transactions extracted
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：32笔交易
+INFO:__main__:✅ 解析成功：32笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 861.17
+INFO:__main__:   - FINAL GZ OS Bal: RM 861.17
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【3/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/HSBC/2025-05/HSBC_0034_2025-05-13.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: HSBC_0034_2025-05-13.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: HSBC_0034_2025-05-13.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 0
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：0笔交易
+WARNING:ingest.statement_parser:⚠️ Document AI未提取到交易，尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: No transactions extracted
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：13笔交易
+INFO:__main__:✅ 解析成功：13笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 1,369.86
+INFO:__main__:   - FINAL GZ OS Bal: RM 1,369.86
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【4/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/OCBC/2025-05/OCBC_3506_2025-05-13.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: OCBC_3506_2025-05-13.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: OCBC_3506_2025-05-13.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 0
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：0笔交易
+WARNING:ingest.statement_parser:⚠️ Document AI未提取到交易，尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: No transactions extracted
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：10笔交易
+INFO:__main__:✅ 解析成功：10笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 487.81
+INFO:__main__:   - FINAL GZ OS Bal: RM 487.81
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【5/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED/2025-05/STANDARD_CHARTERED_1237_2025-05-14.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: STANDARD_CHARTERED_1237_2025-05-14.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: STANDARD_CHARTERED_1237_2025-05-14.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 0
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：0笔交易
+WARNING:ingest.statement_parser:⚠️ Document AI未提取到交易，尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: No transactions extracted
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：4笔交易
+INFO:__main__:✅ 解析成功：4笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 0.00
+INFO:__main__:   - FINAL GZ OS Bal: RM 0.00
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【6/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/UOB/2025-05/UOB_3530_2025-05-13.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: UOB_3530_2025-05-13.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: UOB_3530_2025-05-13.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 6
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：6笔交易
+WARNING:ingest.statement_parser:⚠️ 交易不完整（DR:6, CR:0），尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: Incomplete transactions: DR=6, CR=0
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：8笔交易
+INFO:__main__:✅ 解析成功：8笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 729.31
+INFO:__main__:   - FINAL GZ OS Bal: RM 729.31
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【7/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-06/AMBANK_9902_2025-06-28.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: AMBANK_9902_2025-06-28.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: AMBANK_9902_2025-06-28.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 3
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：3笔交易
+INFO:ingest.statement_parser:✅ 验证通过：2笔DR交易 + 1笔CR交易
+INFO:__main__:✅ 解析成功：3笔交易（DR:2, CR:1）
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：3笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 12,238.85
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 1,500.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 12,238.85
+INFO:__main__:   - FINAL GZ OS Bal: RM -1,500.00
+INFO:__main__:   - DR/CR Balance: DR=12,238.85 CR=1,500.00 Diff=10,738.85
+INFO:__main__:✔️ 步骤4：验证数据...
+WARNING:__main__:⚠️ DR/CR不平衡！差异: RM 10738.85
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【8/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-06/AmBank_6354_2025-06-28.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: AmBank_6354_2025-06-28.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: AmBank_6354_2025-06-28.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 0
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：0笔交易
+WARNING:ingest.statement_parser:⚠️ Document AI未提取到交易，尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: No transactions extracted
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：14笔交易
+INFO:__main__:✅ 解析成功：14笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 9,008.71
+INFO:__main__:   - FINAL GZ OS Bal: RM 9,008.71
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【9/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/HONG_LEONG/2025-06/HONG_LEONG_3964_2025-06-16.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: HONG_LEONG_3964_2025-06-16.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: HONG_LEONG_3964_2025-06-16.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 1
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：1笔交易
+WARNING:ingest.statement_parser:⚠️ 交易不完整（DR:1, CR:0），尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: Incomplete transactions: DR=1, CR=0
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：12笔交易
+INFO:__main__:✅ 解析成功：12笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 1.91
+INFO:__main__:   - FINAL GZ OS Bal: RM 1.91
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【10/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/HSBC/2025-06/HSBC_0034_2025-06-14.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: HSBC_0034_2025-06-14.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: HSBC_0034_2025-06-14.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 0
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：0笔交易
+WARNING:ingest.statement_parser:⚠️ Document AI未提取到交易，尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: No transactions extracted
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：6笔交易
+INFO:__main__:✅ 解析成功：6笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 50.00
+INFO:__main__:   - FINAL GZ OS Bal: RM 50.00
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【11/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/OCBC/2025-06/OCBC_3506_2025-06-13.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: OCBC_3506_2025-06-13.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: OCBC_3506_2025-06-13.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 0
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：0笔交易
+WARNING:ingest.statement_parser:⚠️ Document AI未提取到交易，尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: No transactions extracted
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：12笔交易
+INFO:__main__:✅ 解析成功：12笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 1,190.69
+INFO:__main__:   - FINAL GZ OS Bal: RM 1,190.69
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【12/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED/2025-06/STANDARD_CHARTERED_1237_2025-06-15.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: STANDARD_CHARTERED_1237_2025-06-15.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: STANDARD_CHARTERED_1237_2025-06-15.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 0
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：0笔交易
+WARNING:ingest.statement_parser:⚠️ Document AI未提取到交易，尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: No transactions extracted
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：8笔交易
+INFO:__main__:✅ 解析成功：8笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 549.36
+INFO:__main__:   - FINAL GZ OS Bal: RM 549.36
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【13/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/UOB/2025-06/UOB_3530_2025-06-13.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: UOB_3530_2025-06-13.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: UOB_3530_2025-06-13.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 4
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：4笔交易
+WARNING:ingest.statement_parser:⚠️ 交易不完整（DR:4, CR:0），尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: Incomplete transactions: DR=4, CR=0
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：7笔交易
+INFO:__main__:✅ 解析成功：7笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 10.38
+INFO:__main__:   - FINAL GZ OS Bal: RM 10.38
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【14/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-07/AMBANK_9902_2025-07-28.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: AMBANK_9902_2025-07-28.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: AMBANK_9902_2025-07-28.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 0
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：0笔交易
+WARNING:ingest.statement_parser:⚠️ Document AI未提取到交易，尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: No transactions extracted
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：7笔交易
+INFO:__main__:✅ 解析成功：7笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 12,064.17
+INFO:__main__:   - FINAL GZ OS Bal: RM 12,064.17
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【15/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-07/AmBank_6354_2025-07-28.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: AmBank_6354_2025-07-28.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: AmBank_6354_2025-07-28.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 0
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：0笔交易
+WARNING:ingest.statement_parser:⚠️ Document AI未提取到交易，尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: No transactions extracted
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：10笔交易
+INFO:__main__:✅ 解析成功：10笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 14,533.88
+INFO:__main__:   - FINAL GZ OS Bal: RM 14,533.88
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【16/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/HONG_LEONG/2025-07/HONG_LEONG_3964_2025-07-16.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: HONG_LEONG_3964_2025-07-16.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: HONG_LEONG_3964_2025-07-16.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 1
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：1笔交易
+WARNING:ingest.statement_parser:⚠️ 交易不完整（DR:1, CR:0），尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: Incomplete transactions: DR=1, CR=0
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：17笔交易
+INFO:__main__:✅ 解析成功：17笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 766.84
+INFO:__main__:   - FINAL GZ OS Bal: RM 766.84
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【17/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/HSBC/2025-07/HSBC_0034_2025-07-13.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: HSBC_0034_2025-07-13.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: HSBC_0034_2025-07-13.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 0
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：0笔交易
+WARNING:ingest.statement_parser:⚠️ Document AI未提取到交易，尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: No transactions extracted
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：4笔交易
+INFO:__main__:✅ 解析成功：4笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 24,007.94
+INFO:__main__:   - FINAL GZ OS Bal: RM 24,007.94
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【18/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/OCBC/2025-07/OCBC_3506_2025-07-13.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: OCBC_3506_2025-07-13.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: OCBC_3506_2025-07-13.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 0
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：0笔交易
+WARNING:ingest.statement_parser:⚠️ Document AI未提取到交易，尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: No transactions extracted
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：10笔交易
+INFO:__main__:✅ 解析成功：10笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 24,188.71
+INFO:__main__:   - FINAL GZ OS Bal: RM 24,188.71
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【19/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED/2025-07/STANDARD_CHARTERED_1237_2025-07-14.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: STANDARD_CHARTERED_1237_2025-07-14.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: STANDARD_CHARTERED_1237_2025-07-14.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 0
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：0笔交易
+WARNING:ingest.statement_parser:⚠️ Document AI未提取到交易，尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: No transactions extracted
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：10笔交易
+INFO:__main__:✅ 解析成功：10笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 69,025.00
+INFO:__main__:   - FINAL GZ OS Bal: RM 69,025.00
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【20/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/UOB/2025-07/UOB_3530_2025-07-13.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: UOB_3530_2025-07-13.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: UOB_3530_2025-07-13.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 6
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：6笔交易
+INFO:ingest.statement_parser:✅ 验证通过：5笔DR交易 + 1笔CR交易
+INFO:__main__:✅ 解析成功：6笔交易（DR:5, CR:1）
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：6笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 1,102.27
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 1,268.93
+INFO:__main__:   - FINAL Owner OS Bal: RM 1,102.27
+INFO:__main__:   - FINAL GZ OS Bal: RM -1,268.93
+INFO:__main__:   - DR/CR Balance: DR=1,102.27 CR=1,268.93 Diff=-166.66
+INFO:__main__:✔️ 步骤4：验证数据...
+WARNING:__main__:⚠️ DR/CR不平衡！差异: RM -166.66
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【21/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-08/AMBANK_9902_2025-08-28.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: AMBANK_9902_2025-08-28.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: AMBANK_9902_2025-08-28.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 4
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：4笔交易
+INFO:ingest.statement_parser:✅ 验证通过：3笔DR交易 + 1笔CR交易
+INFO:__main__:✅ 解析成功：4笔交易（DR:3, CR:1）
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：4笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 10,186.21
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 3,000.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 10,186.21
+INFO:__main__:   - FINAL GZ OS Bal: RM -3,000.00
+INFO:__main__:   - DR/CR Balance: DR=10,186.21 CR=3,000.00 Diff=7,186.21
+INFO:__main__:✔️ 步骤4：验证数据...
+WARNING:__main__:⚠️ DR/CR不平衡！差异: RM 7186.21
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【22/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-08/AmBank_6354_2025-08-28.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: AmBank_6354_2025-08-28.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: AmBank_6354_2025-08-28.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 6
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：6笔交易
+INFO:ingest.statement_parser:✅ 验证通过：4笔DR交易 + 2笔CR交易
+INFO:__main__:✅ 解析成功：6笔交易（DR:4, CR:2）
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：6笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 11,939.81
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 12,215.59
+INFO:__main__:   - FINAL Owner OS Bal: RM 11,939.81
+INFO:__main__:   - FINAL GZ OS Bal: RM -12,215.59
+INFO:__main__:   - DR/CR Balance: DR=11,939.81 CR=12,215.59 Diff=-275.78
+INFO:__main__:✔️ 步骤4：验证数据...
+WARNING:__main__:⚠️ DR/CR不平衡！差异: RM -275.78
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【23/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/HONG_LEONG/2025-08/HONG_LEONG_3964_2025-08-16.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: HONG_LEONG_3964_2025-08-16.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: HONG_LEONG_3964_2025-08-16.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 1
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：1笔交易
+WARNING:ingest.statement_parser:⚠️ 交易不完整（DR:1, CR:0），尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: Incomplete transactions: DR=1, CR=0
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：23笔交易
+INFO:__main__:✅ 解析成功：23笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 835.87
+INFO:__main__:   - FINAL GZ OS Bal: RM 835.87
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【24/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/HSBC/2025-08/HSBC_0034_2025-08-13.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: HSBC_0034_2025-08-13.pdf
+INFO:services.google_document_ai_service:✅ 解析成功: HSBC_0034_2025-08-13.pdf
+INFO:services.google_document_ai_service:✅ 提取字段完成，交易数: 0
+INFO:ingest.statement_parser:✅ Google Document AI解析成功：0笔交易
+WARNING:ingest.statement_parser:⚠️ Document AI未提取到交易，尝试fallback...
+WARNING:ingest.statement_parser:⚠️ Google Document AI解析失败: No transactions extracted
+INFO:ingest.statement_parser:🔄 Fallback到pdfplumber解析...
+INFO:ingest.statement_parser:✅ pdfplumber解析成功：4笔交易
+INFO:__main__:✅ 解析成功：4笔交易（DR:0, CR:0）
+WARNING:__main__:⚠️ 警告：DR或CR交易为0！DR:0, CR:0
+INFO:__main__:🔍 步骤2：分类交易...
+INFO:__main__:✅ 分类完成：0笔交易已分类
+INFO:__main__:🧮 步骤3：计算财务指标...
+INFO:__main__:✅ 计算完成：
+INFO:__main__:   - Owner's Expenses: RM 0.00
+INFO:__main__:   - GZ's Expenses: RM 0.00
+INFO:__main__:   - Owner's Payment: RM 0.00
+INFO:__main__:   - GZ's Payment1: RM 0.00
+INFO:__main__:   - FINAL Owner OS Bal: RM 23,305.18
+INFO:__main__:   - FINAL GZ OS Bal: RM 23,305.18
+INFO:__main__:   - DR/CR Balance: DR=0.00 CR=0.00 Diff=0.00
+INFO:__main__:✔️ 步骤4：验证数据...
+INFO:__main__:✅ DR/CR平衡验证通过！
+INFO:__main__:✅ 账单处理成功！
+
+INFO:__main__:
+================================================================================
+INFO:__main__:【25/41】处理账单: static/uploads/customers/Be_rich_CJY/credit_cards/OCBC/2025-08/OCBC_3506_2025-08-13.pdf
+INFO:__main__:================================================================================
+INFO:__main__:🚀 步骤1：解析PDF...
+INFO:ingest.statement_parser:🚀 使用Google Document AI解析PDF...
+INFO:services.google_document_ai_service:✅ Google Document AI客户端初始化成功
+INFO:services.google_document_ai_service:   Project: famous-tree-468019-b9
+INFO:services.google_document_ai_service:   Location: us
+INFO:services.google_document_ai_service:   Processor: d2ae5dd6e75710af
+INFO:services.google_document_ai_service:📄 正在解析PDF: OCBC_3506_2025-08-13.pdf
