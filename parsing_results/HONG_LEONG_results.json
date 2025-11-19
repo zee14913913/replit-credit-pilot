@@ -1,0 +1,76 @@
+{
+  "bank": "HONG_LEONG",
+  "total_statements": 5,
+  "parsed_count": 5,
+  "total_transactions": 0,
+  "total_cr": 0,
+  "total_dr": 0,
+  "total_gz": 0,
+  "results": [
+    {
+      "file": "HONG_LEONG_3964_2025-06-16.pdf",
+      "month": "2025-06",
+      "bank": "HONG_LEONG",
+      "fields": {},
+      "field_extraction_rate": 0.0,
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0,
+      "owner_count": 0
+    },
+    {
+      "file": "HONG_LEONG_3964_2025-07-16.pdf",
+      "month": "2025-07",
+      "bank": "HONG_LEONG",
+      "fields": {},
+      "field_extraction_rate": 0.0,
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0,
+      "owner_count": 0
+    },
+    {
+      "file": "HONG_LEONG_3964_2025-08-16.pdf",
+      "month": "2025-08",
+      "bank": "HONG_LEONG",
+      "fields": {},
+      "field_extraction_rate": 0.0,
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0,
+      "owner_count": 0
+    },
+    {
+      "file": "HONG_LEONG_3964_2025-09-16.pdf",
+      "month": "2025-09",
+      "bank": "HONG_LEONG",
+      "fields": {},
+      "field_extraction_rate": 0.0,
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0,
+      "owner_count": 0
+    },
+    {
+      "file": "HONG_LEONG_3964_2025-10-16.pdf",
+      "month": "2025-10",
+      "bank": "HONG_LEONG",
+      "fields": {},
+      "field_extraction_rate": 0.0,
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0,
+      "owner_count": 0
+    }
+  ]
+}

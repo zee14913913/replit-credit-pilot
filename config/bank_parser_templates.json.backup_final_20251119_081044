@@ -1,0 +1,828 @@
+{
+  "AMBANK": {
+    "bank_name": "AMBANK",
+    "statement_fields": {
+      "customer_name": [
+        "(?:Customer Name|Name)[:\\s]*([A-Z\\s]{3,50}?)(?:\\n|$)",
+        "^([A-Z][A-Z\\s]{3,50})(?:\\n)",
+        "([A-Z\\s]+)"
+      ],
+      "ic_no": [
+        "(?:IC No)[:\\s]*([0-9]{6}-[0-9]{2}-[0-9]{4})",
+        "([0-9]{6}[0-9\\-]{8})",
+        "([0-9]{12})"
+      ],
+      "card_type": [
+        "(?:Card Type)[:\\s]*(.+?)(?:\\n|$)",
+        "(AmBank.*?Visa|AmBank.*?MasterCard)",
+        "([A-Za-z\\s]+(?:Visa|MasterCard))"
+      ],
+      "card_no": [
+        "(?:Card No)[:\\s]*([0-9\\s]{16,19})",
+        "(\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{4})",
+        "(6354|9902)"
+      ],
+      "credit_limit": [
+        "(?:Credit Limit)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.?\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "(15,000|[0-9,]+)"
+      ],
+      "statement_date": [
+        "(?:Statement Date)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(28\\sOCT\\s25)"
+      ],
+      "payment_due_date": [
+        "(?:Payment Due|Due Date)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(17\\sNOV\\s25)"
+      ],
+      "full_due_amount": [
+        "(?:Full Due Amount|Total Due)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "(15,062\\.57)"
+      ],
+      "minimum_payment": [
+        "(?:Minimum Payment)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "(1,501\\.88)"
+      ],
+      "previous_balance": [
+        "(?:Previous Balance)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "(14,515\\.49)"
+      ]
+    },
+    "transaction_fields": {
+      "transaction_date": "(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+      "transaction_description": "([A-Z][A-Za-z0-9\\s\\-\\.]+?)(?:\\s{2,}|\\n)",
+      "amount_CR": "CR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "amount_DR": "DR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "earned_point": "(?:Earned|Point)[:\\s]*([0-9,]+)"
+    }
+  },
+  "UOB": {
+    "bank_name": "UOB",
+    "statement_fields": {
+      "customer_name": [
+        "(?:Cardmember|Name)[:\\s]*([A-Z\\s]{3,50}?)(?:\\n|$)",
+        "^([A-Z][A-Z\\s]{3,50})(?:\\n)",
+        "([A-Z\\s]+)"
+      ],
+      "ic_no": [
+        "(?:ID No|IC No)[:\\s]*([0-9]{6}-[0-9]{2}-[0-9]{4})",
+        "([0-9]{6}[0-9\\-]{8})",
+        "([0-9]{12})"
+      ],
+      "card_type": [
+        "(?:Card Type|Card Product)[:\\s]*(.+?)(?:\\n|$)",
+        "(UOB[\\w\\s]+Visa|UOB[\\w\\s]+MasterCard)",
+        "([A-Za-z\\s]+(?:Visa|MasterCard))"
+      ],
+      "card_no": [
+        "(?:Card No|Account No)[:\\s]*([0-9\\s]{16,19})",
+        "(\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{4})",
+        "(\\d{4})$"
+      ],
+      "credit_limit": [
+        "(?:Credit Limit|Available Credit)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.?\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "statement_date": [
+        "(?:Statement Date|Period)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(13\\sOCT\\s25)"
+      ],
+      "payment_due_date": [
+        "(?:Payment Due|Due Date)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2}\\s\\d{1,2})"
+      ],
+      "full_due_amount": [
+        "(?:Total Due|Amount Due)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "minimum_payment": [
+        "(?:Minimum Payment)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "previous_balance": [
+        "(?:Previous Balance|Opening)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ]
+    },
+    "transaction_fields": {
+      "transaction_date": "(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+      "transaction_description": "([A-Z][A-Za-z0-9\\s\\-\\.]+?)(?:\\s{2,}|\\n)",
+      "amount_CR": "CR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "amount_DR": "DR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "earned_point": "(?:Reward|Point)[:\\s]*([0-9,]+)"
+    }
+  },
+  "HONG_LEONG": {
+    "bank_name": "HONG_LEONG",
+    "statement_fields": {
+      "customer_name": [
+        "(?:Cardholder|Name)[:\\s]*([A-Z\\s]{3,50}?)(?:\\n|$)",
+        "^([A-Z][A-Z\\s]{3,50})(?:\\n)",
+        "([A-Z\\s]+)"
+      ],
+      "ic_no": [
+        "(?:ID|IC No)[:\\s]*([0-9]{6}-[0-9]{2}-[0-9]{4})",
+        "([0-9]{6}[0-9\\-]{8})",
+        "([0-9]{12})"
+      ],
+      "card_type": [
+        "(?:Card Type)[:\\s]*(.+?)(?:\\n|$)",
+        "(Hong Leong[\\w\\s]+Visa|Hong Leong[\\w\\s]+MasterCard)",
+        "([A-Za-z\\s]+(?:Visa|MasterCard))"
+      ],
+      "card_no": [
+        "(?:Card Number|Account)[:\\s]*([0-9\\s]{16,19})",
+        "(\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{4})",
+        "(\\d{4})$"
+      ],
+      "credit_limit": [
+        "(?:Credit Limit)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.?\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "statement_date": [
+        "(?:Statement Date)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2}\\s\\d{1,2})"
+      ],
+      "payment_due_date": [
+        "(?:Payment Due|Due Date)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2}\\s\\d{1,2})"
+      ],
+      "full_due_amount": [
+        "(?:Total Due|Amount)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "minimum_payment": [
+        "(?:Minimum Payment)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "previous_balance": [
+        "(?:Previous Balance|Opening)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ]
+    },
+    "transaction_fields": {
+      "transaction_date": "(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+      "transaction_description": "([A-Z][A-Za-z0-9\\s\\-\\.]+?)(?:\\s{2,}|\\n)",
+      "amount_CR": "CR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "amount_DR": "DR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "earned_point": "(?:Point)[:\\s]*([0-9,]+)"
+    }
+  },
+  "OCBC": {
+    "bank_name": "OCBC",
+    "statement_fields": {
+      "customer_name": [
+        "(?:Cardholder|Name)[:\\s]*([A-Z\\s]{3,50}?)(?:\\n|$)",
+        "^([A-Z][A-Z\\s]{3,50})(?:\\n)",
+        "([A-Z\\s]+)"
+      ],
+      "ic_no": [
+        "(?:ID No|IC No)[:\\s]*([0-9]{6}-[0-9]{2}-[0-9]{4})",
+        "([0-9]{6}[0-9\\-]{8})",
+        "([0-9]{12})"
+      ],
+      "card_type": [
+        "(?:Card Type)[:\\s]*(.+?)(?:\\n|$)",
+        "(OCBC[\\w\\s]+Visa|OCBC[\\w\\s]+MasterCard)",
+        "([A-Za-z\\s]+(?:Visa|MasterCard))"
+      ],
+      "card_no": [
+        "(?:Card No)[:\\s]*([0-9\\s]{16,19})",
+        "(\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{4})",
+        "(\\d{4})$"
+      ],
+      "credit_limit": [
+        "(?:Credit Limit)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.?\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "statement_date": [
+        "(?:Statement Date)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(13\\sOCT\\s25)"
+      ],
+      "payment_due_date": [
+        "(?:Payment Due|Due Date)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2}\\s\\d{1,2})"
+      ],
+      "full_due_amount": [
+        "(?:Current Balance|Total Due)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "minimum_payment": [
+        "(?:Minimum Payment)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "previous_balance": [
+        "(?:Previous Balance|Opening)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ]
+    },
+    "transaction_fields": {
+      "transaction_date": "(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+      "transaction_description": "([A-Z][A-Za-z0-9\\s\\-\\.]+?)(?:\\s{2,}|\\n)",
+      "amount_CR": "CR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "amount_DR": "DR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "earned_point": "(?:Point|Reward)[:\\s]*([0-9,]+)"
+    }
+  },
+  "HSBC": {
+    "bank_name": "HSBC",
+    "statement_fields": {
+      "customer_name": [
+        "(?:Cardholder|Name)[:\\s]*([A-Z\\s]{3,50}?)(?:\\n|$)",
+        "^([A-Z][A-Z\\s]{3,50})(?:\\n)",
+        "([A-Z\\s]+)"
+      ],
+      "ic_no": [
+        "(?:ID No|IC No)[:\\s]*([0-9]{6}-[0-9]{2}-[0-9]{4})",
+        "([0-9]{6}[0-9\\-]{8})",
+        "([0-9]{12})"
+      ],
+      "card_type": [
+        "(?:Card Type)[:\\s]*(.+?)(?:\\n|$)",
+        "(HSBC[\\w\\s]+Visa|HSBC[\\w\\s]+MasterCard)",
+        "([A-Za-z\\s]+(?:Visa|MasterCard))"
+      ],
+      "card_no": [
+        "(?:Card No|Account)[:\\s]*([0-9\\s]{16,19})",
+        "(\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{4})",
+        "(\\d{4})$"
+      ],
+      "credit_limit": [
+        "(?:Credit Limit)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.?\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "statement_date": [
+        "(?:Statement Date)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2}\\s\\d{1,2})"
+      ],
+      "payment_due_date": [
+        "(?:Payment Due|Due Date|IMMEDIATE)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2}|IMMEDIATE)",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(IMMEDIATE)"
+      ],
+      "full_due_amount": [
+        "(?:Total Due|Amount Due)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "minimum_payment": [
+        "(?:Minimum Payment)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "previous_balance": [
+        "(?:Previous Balance|Opening)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ]
+    },
+    "transaction_fields": {
+      "transaction_date": "(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+      "transaction_description": "([A-Z][A-Za-z0-9\\s\\-\\.]+?)(?:\\s{2,}|\\n)",
+      "amount_CR": "CR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "amount_DR": "DR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "earned_point": "(?:Point|Reward|Mile)[:\\s]*([0-9,]+)"
+    }
+  },
+  "STANDARD_CHARTERED": {
+    "bank_name": "STANDARD_CHARTERED",
+    "statement_fields": {
+      "customer_name": [
+        "(?:Cardholder|Name)[:\\s]*([A-Z\\s]{3,50}?)(?:\\n|$)",
+        "^([A-Z][A-Z\\s]{3,50})",
+        "([A-Z\\s]+)"
+      ],
+      "ic_no": [
+        "(?:ID No|IC No)[:\\s]*([0-9]{6}-[0-9]{2}-[0-9]{4})",
+        "([0-9]{6}[0-9\\-]{8})",
+        "([0-9]{12})"
+      ],
+      "card_type": [
+        "(?:Card Type)[:\\s]*(.+?)(?:\\n|$)",
+        "(Standard Chartered[\\w\\s]+Visa|Standard Chartered[\\w\\s]+MasterCard)",
+        "([A-Za-z\\s]+(?:Visa|MasterCard))"
+      ],
+      "card_no": [
+        "(?:Card No|Account)[:\\s]*([0-9\\s]{16,19})",
+        "(\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{4})",
+        "(\\d{4})$"
+      ],
+      "credit_limit": [
+        "(?:Credit Limit)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.?\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "statement_date": [
+        "(?:Statement Date)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2})"
+      ],
+      "payment_due_date": [
+        "(?:Payment Due|Due Date|IMMEDIATE)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2}|IMMEDIATE)",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(IMMEDIATE|\\d{1,2})"
+      ],
+      "full_due_amount": [
+        "(?:Total Due|Amount Due)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "minimum_payment": [
+        "(?:Minimum Payment)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "previous_balance": [
+        "(?:Previous Balance|Opening)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ]
+    },
+    "transaction_fields": {
+      "transaction_date": "(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+      "transaction_description": "([A-Z][A-Za-z0-9\\s\\-\\.]+?)(?:\\s{2,}|\\n)",
+      "amount_CR": "CR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "amount_DR": "DR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "earned_point": "(?:Point|Reward|Mile)[:\\s]*([0-9,]+)"
+    }
+  },
+  "MAYBANK": {
+    "bank_name": "MAYBANK",
+    "statement_fields": {
+      "customer_name": [
+        "(?:Cardholder|Name|Nama)[:\\s]*([A-Z\\s]{3,50}?)(?:\\n|$)",
+        "^([A-Z][A-Z\\s]{3,50})",
+        "([A-Z\\s]+)"
+      ],
+      "ic_no": [
+        "(?:ID No|IC No|No KP)[:\\s]*([0-9]{6}-[0-9]{2}-[0-9]{4})",
+        "([0-9]{6}[0-9\\-]{8})",
+        "([0-9]{12})"
+      ],
+      "card_type": [
+        "(?:Card Type|Jenis Kad)[:\\s]*(.+?)(?:\\n|$)",
+        "(Maybank[\\w\\s]+Visa|Maybank[\\w\\s]+MasterCard)",
+        "([A-Za-z\\s]+(?:Visa|MasterCard))"
+      ],
+      "card_no": [
+        "(?:Card No|No Kad)[:\\s]*([0-9\\s]{16,19})",
+        "(\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{4})",
+        "(\\d{4})$"
+      ],
+      "credit_limit": [
+        "(?:Credit Limit|Had Kredit)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.?\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "statement_date": [
+        "(?:Statement Date|Tarikh Penyata)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2})"
+      ],
+      "payment_due_date": [
+        "(?:Payment Due|Due Date|Tarikh Akhir)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2})"
+      ],
+      "full_due_amount": [
+        "(?:Total Due|Amount Due|Jumlah Terhutang)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "minimum_payment": [
+        "(?:Minimum Payment|Bayaran Minimum)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "previous_balance": [
+        "(?:Previous Balance|Opening|Baki Sebelumnya)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ]
+    },
+    "transaction_fields": {
+      "transaction_date": "(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2}|\\d{1,2}/\\d{1,2})",
+      "transaction_description": "([A-Z][A-Za-z0-9\\s\\-\\.]+?)(?:\\s{2,}|\\n)",
+      "amount_CR": "CR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})|CREDIT\\s+([0-9,]+\\.\\d{2})",
+      "amount_DR": "DR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})|DEBIT\\s+([0-9,]+\\.\\d{2})",
+      "earned_point": "(?:Point|Reward|Poin)[:\\s]*([0-9,]+)"
+    }
+  },
+  "AFFIN_BANK": {
+    "bank_name": "AFFIN_BANK",
+    "statement_fields": {
+      "customer_name": [
+        "(?:Cardholder|Name|Nama)[:\\s]*([A-Z\\s]{3,50}?)(?:\\n|$)",
+        "^([A-Z][A-Z\\s]{3,50})",
+        "([A-Z\\s]+)"
+      ],
+      "ic_no": [
+        "(?:IC No|No KP)[:\\s]*([0-9]{6}-[0-9]{2}-[0-9]{4})",
+        "([0-9]{6}[0-9\\-]{8})",
+        "([0-9]{12})"
+      ],
+      "card_type": [
+        "(?:Card Type|Jenis Kad)[:\\s]*(.+?)(?:\\n|$)",
+        "([A-Za-z\\w\\s]+(?:Visa|MasterCard))",
+        "(.*?)"
+      ],
+      "card_no": [
+        "(?:Card No|No Kad)[:\\s]*([0-9\\s]{16,19})",
+        "(\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{4})",
+        "(\\d{4})$"
+      ],
+      "credit_limit": [
+        "(?:Credit Limit|Had Kredit)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.?\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "statement_date": [
+        "(?:Statement Date|Tarikh)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2})"
+      ],
+      "payment_due_date": [
+        "(?:Due Date|Tarikh)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2})"
+      ],
+      "full_due_amount": [
+        "(?:Due Amount|Jumlah)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "minimum_payment": [
+        "(?:Minimum|Bayaran)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "previous_balance": [
+        "(?:Previous|Baki)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ]
+    },
+    "transaction_fields": {
+      "transaction_date": "(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+      "transaction_description": "([A-Z][A-Za-z0-9\\s\\-\\.]+?)(?:\\s{2,}|\\n)",
+      "amount_CR": "CR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "amount_DR": "DR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "earned_point": "(?:Point|Poin)[:\\s]*([0-9,]+)"
+    }
+  },
+  "CIMB": {
+    "bank_name": "CIMB",
+    "statement_fields": {
+      "customer_name": [
+        "(?:Cardholder|Name|Nama)[:\\s]*([A-Z\\s]{3,50}?)(?:\\n|$)",
+        "^([A-Z][A-Z\\s]{3,50})",
+        "([A-Z\\s]+)"
+      ],
+      "ic_no": [
+        "(?:IC No|No KP)[:\\s]*([0-9]{6}-[0-9]{2}-[0-9]{4})",
+        "([0-9]{6}[0-9\\-]{8})",
+        "([0-9]{12})"
+      ],
+      "card_type": [
+        "(?:Card Type|Jenis Kad)[:\\s]*(.+?)(?:\\n|$)",
+        "([A-Za-z\\w\\s]+(?:Visa|MasterCard))",
+        "(.*?)"
+      ],
+      "card_no": [
+        "(?:Card No|No Kad)[:\\s]*([0-9\\s]{16,19})",
+        "(\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{4})",
+        "(\\d{4})$"
+      ],
+      "credit_limit": [
+        "(?:Credit Limit|Had Kredit)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.?\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "statement_date": [
+        "(?:Statement Date|Tarikh)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2})"
+      ],
+      "payment_due_date": [
+        "(?:Due Date|Tarikh)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2})"
+      ],
+      "full_due_amount": [
+        "(?:Due Amount|Jumlah)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "minimum_payment": [
+        "(?:Minimum|Bayaran)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "previous_balance": [
+        "(?:Previous|Baki)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ]
+    },
+    "transaction_fields": {
+      "transaction_date": "(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+      "transaction_description": "([A-Z][A-Za-z0-9\\s\\-\\.]+?)(?:\\s{2,}|\\n)",
+      "amount_CR": "CR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "amount_DR": "DR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "earned_point": "(?:Point|Poin)[:\\s]*([0-9,]+)"
+    }
+  },
+  "ALLIANCE_BANK": {
+    "bank_name": "ALLIANCE_BANK",
+    "statement_fields": {
+      "customer_name": [
+        "(?:Cardholder|Name|Nama)[:\\s]*([A-Z\\s]{3,50}?)(?:\\n|$)",
+        "^([A-Z][A-Z\\s]{3,50})",
+        "([A-Z\\s]+)"
+      ],
+      "ic_no": [
+        "(?:IC No|No KP)[:\\s]*([0-9]{6}-[0-9]{2}-[0-9]{4})",
+        "([0-9]{6}[0-9\\-]{8})",
+        "([0-9]{12})"
+      ],
+      "card_type": [
+        "(?:Card Type|Jenis Kad)[:\\s]*(.+?)(?:\\n|$)",
+        "([A-Za-z\\w\\s]+(?:Visa|MasterCard))",
+        "(.*?)"
+      ],
+      "card_no": [
+        "(?:Card No|No Kad)[:\\s]*([0-9\\s]{16,19})",
+        "(\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{4})",
+        "(\\d{4})$"
+      ],
+      "credit_limit": [
+        "(?:Credit Limit|Had Kredit)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.?\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "statement_date": [
+        "(?:Statement Date|Tarikh)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2})"
+      ],
+      "payment_due_date": [
+        "(?:Due Date|Tarikh)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2})"
+      ],
+      "full_due_amount": [
+        "(?:Due Amount|Jumlah)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "minimum_payment": [
+        "(?:Minimum|Bayaran)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "previous_balance": [
+        "(?:Previous|Baki)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ]
+    },
+    "transaction_fields": {
+      "transaction_date": "(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+      "transaction_description": "([A-Z][A-Za-z0-9\\s\\-\\.]+?)(?:\\s{2,}|\\n)",
+      "amount_CR": "CR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "amount_DR": "DR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "earned_point": "(?:Point|Poin)[:\\s]*([0-9,]+)"
+    }
+  },
+  "PUBLIC_BANK": {
+    "bank_name": "PUBLIC_BANK",
+    "statement_fields": {
+      "customer_name": [
+        "(?:Cardholder|Name|Nama)[:\\s]*([A-Z\\s]{3,50}?)(?:\\n|$)",
+        "^([A-Z][A-Z\\s]{3,50})",
+        "([A-Z\\s]+)"
+      ],
+      "ic_no": [
+        "(?:IC No|No KP)[:\\s]*([0-9]{6}-[0-9]{2}-[0-9]{4})",
+        "([0-9]{6}[0-9\\-]{8})",
+        "([0-9]{12})"
+      ],
+      "card_type": [
+        "(?:Card Type|Jenis Kad)[:\\s]*(.+?)(?:\\n|$)",
+        "([A-Za-z\\w\\s]+(?:Visa|MasterCard))",
+        "(.*?)"
+      ],
+      "card_no": [
+        "(?:Card No|No Kad)[:\\s]*([0-9\\s]{16,19})",
+        "(\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{4})",
+        "(\\d{4})$"
+      ],
+      "credit_limit": [
+        "(?:Credit Limit|Had Kredit)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.?\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "statement_date": [
+        "(?:Statement Date|Tarikh)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2})"
+      ],
+      "payment_due_date": [
+        "(?:Due Date|Tarikh)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2})"
+      ],
+      "full_due_amount": [
+        "(?:Due Amount|Jumlah)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "minimum_payment": [
+        "(?:Minimum|Bayaran)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "previous_balance": [
+        "(?:Previous|Baki)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ]
+    },
+    "transaction_fields": {
+      "transaction_date": "(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+      "transaction_description": "([A-Z][A-Za-z0-9\\s\\-\\.]+?)(?:\\s{2,}|\\n)",
+      "amount_CR": "CR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "amount_DR": "DR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "earned_point": "(?:Point|Poin)[:\\s]*([0-9,]+)"
+    }
+  },
+  "RHB_BANK": {
+    "bank_name": "RHB_BANK",
+    "statement_fields": {
+      "customer_name": [
+        "(?:Cardholder|Name|Nama)[:\\s]*([A-Z\\s]{3,50}?)(?:\\n|$)",
+        "^([A-Z][A-Z\\s]{3,50})",
+        "([A-Z\\s]+)"
+      ],
+      "ic_no": [
+        "(?:IC No|No KP)[:\\s]*([0-9]{6}-[0-9]{2}-[0-9]{4})",
+        "([0-9]{6}[0-9\\-]{8})",
+        "([0-9]{12})"
+      ],
+      "card_type": [
+        "(?:Card Type|Jenis Kad)[:\\s]*(.+?)(?:\\n|$)",
+        "([A-Za-z\\w\\s]+(?:Visa|MasterCard))",
+        "(.*?)"
+      ],
+      "card_no": [
+        "(?:Card No|No Kad)[:\\s]*([0-9\\s]{16,19})",
+        "(\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{4})",
+        "(\\d{4})$"
+      ],
+      "credit_limit": [
+        "(?:Credit Limit|Had Kredit)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.?\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "statement_date": [
+        "(?:Statement Date|Tarikh)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2})"
+      ],
+      "payment_due_date": [
+        "(?:Due Date|Tarikh)[:\\s]*(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+        "(\\d{1,2}\\s[A-Z]{3}\\s\\d{2})",
+        "(\\d{1,2})"
+      ],
+      "full_due_amount": [
+        "(?:Due Amount|Jumlah)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "minimum_payment": [
+        "(?:Minimum|Bayaran)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ],
+      "previous_balance": [
+        "(?:Previous|Baki)[:\\s]*(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+        "([0-9]{1,3}(?:,[0-9]{3})*\\.\\d{2})",
+        "([0-9,]+)"
+      ]
+    },
+    "transaction_fields": {
+      "transaction_date": "(\\d{1,2}\\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\s\\d{2})",
+      "transaction_description": "([A-Z][A-Za-z0-9\\s\\-\\.]+?)(?:\\s{2,}|\\n)",
+      "amount_CR": "CR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "amount_DR": "DR\\s+(?:RM)?[\\s]*([0-9,]+\\.\\d{2})",
+      "earned_point": "(?:Point|Poin)[:\\s]*([0-9,]+)"
+    }
+  },
+  "AMBANK_ISLAMIC": {
+    "bank_name": "AMBANK_ISLAMIC",
+    "statement_fields": {
+      "customer_name": [
+        "(?:Cardholder|Nama|Name)[\\\\s:]+([A-Z][A-Za-z\\\\s]+)",
+        "(?:Nama Pemegang|Customer)[\\\\s:]+([A-Z].+?)(?:\\\\n|\\\\r|\\\\s{2,})",
+        "([A-Z][A-Za-z\\\\s]+)(?=\\\\s*IC\\\\s*No|\\\\s*No K)"
+      ],
+      "ic_no": [
+        "(?:IC\\\\s*No|No K|No\\\\.\\\\s*K)[\\\\s\\\\.:-]+(\\\\d{6}-\\\\d{2}-\\\\d{4}|\\\\d{12})",
+        "No[\\\\s\\\\.]*K\\\\.?[\\\\s:]+([\\\\d-]+)",
+        "([0-9]{6}[-]?[0-9]{2}[-]?[0-9]{4})"
+      ],
+      "card_type": [
+        "(?:Jenis|Type|Card)[\\\\s:]*([A-Za-z\\\\s&]+(?:Visa|MasterCard|Islamic|Debit|Kredit))",
+        "Card[\\\\s:]+([^\\\\n]*(?:Visa|MasterCard|Islamic|Islamic)[^\\\\n]*)",
+        "(?:Islamic)[\\\\s:]*([^\\\\n]{10,50})"
+      ],
+      "card_no": [
+        "(?:Card No|Kad|No Kad)[\\\\s\\\\.:-]*(\\\\d{4}\\\\s?\\\\d{4}\\\\s?\\\\d{4}\\\\s?\\\\d{4}|\\\\d{16})",
+        "(\\\\d{4}\\\\s?\\\\d{4}\\\\s?\\\\d{4}\\\\s?\\\\d{4})",
+        "No\\\\.\\\\s*Kad[\\\\s:]+([\\\\d\\\\s]+)"
+      ],
+      "credit_limit": [
+        "(?:Credit Limit|Hadiah Kredit|Had Kredit)[\\\\s:]*(?:RM)?([\\\\d,]+\\\\.\\\\d{2})",
+        "(?:Credit|Hadiah)[\\\\s:]*([\\\\d,\\\\.]+)",
+        "RM[\\\\s]?([\\\\d,]+\\\\.\\\\d{2})"
+      ],
+      "statement_date": [
+        "(?:Statement Date|Tarikh|Tarikh Penyata)[\\\\s:]*(?:([\\\\d]{1,2})[\\\\s-]([A-Za-z]{3})[\\\\s-]([\\\\d]{2,4}))",
+        "([\\\\d]{1,2})\\\\s*(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\\\s*([\\\\d]{2,4})",
+        "Tarikh Penyata[\\\\s:]+([\\\\d]{1,2})\\\\s+([A-Z]{3})\\\\s+([\\\\d]{4})"
+      ],
+      "payment_due_date": [
+        "(?:Payment Due Date|Due Date|Tarikh Akhir)[\\\\s:]*([\\\\d]{1,2})\\\\s+([A-Za-z]{3})\\\\s+([\\\\d]{2,4})",
+        "(?:Tarikh Akhir|Tarikh Pembayaran)[\\\\s:]+([\\\\d]{1,2})\\\\s+([A-Z]{3})\\\\s+([\\\\d]{4})",
+        "([\\\\d]{1,2})[\\\\s-]([A-Za-z]{3})[\\\\s-]([\\\\d]{2,4})"
+      ],
+      "full_due_amount": [
+        "(?:Total Due|Amount Due|Jumlah Terhutang)[\\\\s:]*(?:RM)?([\\\\d,]+\\\\.\\\\d{2})",
+        "(?:Jumlah|Total)[\\\\s:]*(?:RM)?([\\\\d,\\\\.]+)",
+        "(?:RM)?\\\\s?([\\\\d,]+\\\\.\\\\d{2})(?=\\\\s*(?:is|adalah|terhutang))"
+      ],
+      "minimum_payment": [
+        "(?:Minimum Payment|Bayaran Minimum)[\\\\s:]*(?:RM)?([\\\\d,]+\\\\.\\\\d{2})",
+        "(?:Bayaran Minimum|Minimum)[\\\\s:]*(?:RM)?([\\\\d,\\\\.]+)",
+        "RM\\\\s?([\\\\d,]+\\\\.\\\\d{2})(?=\\\\s*(?:minimum|minimum))"
+      ],
+      "previous_balance": [
+        "(?:Previous Balance|Opening Balance|Baki Sebelumnya)[\\\\s:]*(?:RM)?([\\\\d,]+\\\\.\\\\d{2})",
+        "(?:Baki|Previous|Opening)[\\\\s:]*(?:RM)?([\\\\d,\\\\.]+)",
+        "([\\\\d,]+\\\\.\\\\d{2})(?=\\\\s*(?:previous|opening))"
+      ]
+    },
+    "transaction_fields": {
+      "transaction_date": [
+        "([\\\\d]{1,2})\\\\s*(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\\\\s*([\\\\d]{2,4})",
+        "([\\\\d]{1,2})[\\\\s-]([A-Za-z]{3})[\\\\s-]([\\\\d]{2,4})",
+        "Tarikh[\\\\s:]*([\\\\d]{1,2})\\\\s+([A-Z]{3})"
+      ],
+      "transaction_description": [
+        "([A-Z][A-Za-z0-9\\\\s&.,-]{3,50})",
+        "Description[\\\\s:]*([^\\\\n]{10,})",
+        "([A-Z][A-Za-z0-9\\\\s\\\\-]{5,40})(?=RM|CR|DR)"
+      ],
+      "amount_CR": [
+        "(?:CR|Credit)[\\\\s:]*(?:RM)?([\\\\d,]+\\\\.\\\\d{2})",
+        "CREDIT\\\\s+([\\\\d,]+\\\\.\\\\d{2})",
+        "([\\\\d,]+\\\\.\\\\d{2})(?=\\\\s*(?:CR|CREDIT))"
+      ],
+      "amount_DR": [
+        "(?:DR|Debit)[\\\\s:]*(?:RM)?([\\\\d,]+\\\\.\\\\d{2})",
+        "DEBIT\\\\s+([\\\\d,]+\\\\.\\\\d{2})",
+        "([\\\\d,]+\\\\.\\\\d{2})(?=\\\\s*(?:DR|DEBIT))"
+      ],
+      "earned_point": [
+        "(?:Point|Reward|Poin)[\\\\s:]*([\\\\d,]+)",
+        "(?:Point|Reward|Point Earned)[\\\\s:]*([\\\\d]+)",
+        "([\\\\d]+)(?=\\\\s*(?:point|Point|Reward))"
+      ]
+    }
+  }
+}

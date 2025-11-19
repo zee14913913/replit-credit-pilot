@@ -1,0 +1,172 @@
+{
+  "metadata": {
+    "customer": "Cheok jun yoon",
+    "execution_date": "2025-11-19T08:59:16.089827",
+    "total_banks": 7,
+    "total_statements": 41,
+    "status": "executing",
+    "phase": 2
+  },
+  "banks": {
+    "AMBANK": {
+      "bank_name": "AMBANK",
+      "expected_statements": 6,
+      "found_statements": 0,
+      "months": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "statements_parsed": 0,
+      "fields_extracted": 0,
+      "transactions_found": 0,
+      "payment_categories": {
+        "owner_payment": 0,
+        "gz_payment": 0,
+        "other": 0
+      },
+      "total_amount": 0.0,
+      "error_log": []
+    },
+    "AMBANK_ISLAMIC": {
+      "bank_name": "AMBANK_ISLAMIC",
+      "expected_statements": 6,
+      "found_statements": 0,
+      "months": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "statements_parsed": 0,
+      "fields_extracted": 0,
+      "transactions_found": 0,
+      "payment_categories": {
+        "owner_payment": 0,
+        "gz_payment": 0,
+        "other": 0
+      },
+      "total_amount": 0.0,
+      "error_log": []
+    },
+    "HLB": {
+      "bank_name": "HLB",
+      "expected_statements": 5,
+      "found_statements": 0,
+      "months": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "statements_parsed": 0,
+      "fields_extracted": 0,
+      "transactions_found": 0,
+      "payment_categories": {
+        "owner_payment": 0,
+        "gz_payment": 0,
+        "other": 0
+      },
+      "total_amount": 0.0,
+      "error_log": []
+    },
+    "HSBC": {
+      "bank_name": "HSBC",
+      "expected_statements": 6,
+      "found_statements": 0,
+      "months": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "statements_parsed": 0,
+      "fields_extracted": 0,
+      "transactions_found": 0,
+      "payment_categories": {
+        "owner_payment": 0,
+        "gz_payment": 0,
+        "other": 0
+      },
+      "total_amount": 0.0,
+      "error_log": []
+    },
+    "OCBC": {
+      "bank_name": "OCBC",
+      "expected_statements": 6,
+      "found_statements": 0,
+      "months": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "statements_parsed": 0,
+      "fields_extracted": 0,
+      "transactions_found": 0,
+      "payment_categories": {
+        "owner_payment": 0,
+        "gz_payment": 0,
+        "other": 0
+      },
+      "total_amount": 0.0,
+      "error_log": []
+    },
+    "STANDARD_CHARTERED": {
+      "bank_name": "STANDARD_CHARTERED",
+      "expected_statements": 6,
+      "found_statements": 0,
+      "months": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "statements_parsed": 0,
+      "fields_extracted": 0,
+      "transactions_found": 0,
+      "payment_categories": {
+        "owner_payment": 0,
+        "gz_payment": 0,
+        "other": 0
+      },
+      "total_amount": 0.0,
+      "error_log": []
+    },
+    "UOB": {
+      "bank_name": "UOB",
+      "expected_statements": 6,
+      "found_statements": 0,
+      "months": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "statements_parsed": 0,
+      "fields_extracted": 0,
+      "transactions_found": 0,
+      "payment_categories": {
+        "owner_payment": 0,
+        "gz_payment": 0,
+        "other": 0
+      },
+      "total_amount": 0.0,
+      "error_log": []
+    }
+  }
+}

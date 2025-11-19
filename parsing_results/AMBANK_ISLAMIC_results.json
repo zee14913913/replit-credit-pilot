@@ -1,0 +1,89 @@
+{
+  "bank": "AMBANK_ISLAMIC",
+  "total_statements": 6,
+  "parsed_count": 6,
+  "total_transactions": 0,
+  "total_cr": 0,
+  "total_dr": 0,
+  "total_gz": 0,
+  "results": [
+    {
+      "file": "AmBank_6354_2025-05-28.pdf",
+      "month": "2025-05",
+      "bank": "AMBANK_ISLAMIC",
+      "fields": {},
+      "field_extraction_rate": 0.0,
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0,
+      "owner_count": 0
+    },
+    {
+      "file": "AmBank_6354_2025-06-28.pdf",
+      "month": "2025-06",
+      "bank": "AMBANK_ISLAMIC",
+      "fields": {},
+      "field_extraction_rate": 0.0,
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0,
+      "owner_count": 0
+    },
+    {
+      "file": "AmBank_6354_2025-07-28.pdf",
+      "month": "2025-07",
+      "bank": "AMBANK_ISLAMIC",
+      "fields": {},
+      "field_extraction_rate": 0.0,
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0,
+      "owner_count": 0
+    },
+    {
+      "file": "AmBank_6354_2025-08-28.pdf",
+      "month": "2025-08",
+      "bank": "AMBANK_ISLAMIC",
+      "fields": {},
+      "field_extraction_rate": 0.0,
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0,
+      "owner_count": 0
+    },
+    {
+      "file": "AmBank_6354_2025-09-28.pdf",
+      "month": "2025-09",
+      "bank": "AMBANK_ISLAMIC",
+      "fields": {},
+      "field_extraction_rate": 0.0,
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0,
+      "owner_count": 0
+    },
+    {
+      "file": "AmBank_6354_2025-10-28.pdf",
+      "month": "2025-10",
+      "bank": "AMBANK_ISLAMIC",
+      "fields": {},
+      "field_extraction_rate": 0.0,
+      "transactions": [],
+      "transaction_count": 0,
+      "cr_count": 0,
+      "dr_count": 0,
+      "gz_count": 0,
+      "owner_count": 0
+    }
+  ]
+}
