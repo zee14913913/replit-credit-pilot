@@ -206,16 +206,53 @@ class GoogleDocumentAIService:
         except:
             return ''
     
-    def extract_bank_statement_fields(self, parsed_doc: Dict) -> Dict[str, Any]:
+    def extract_bank_statement_fields(self, parsed_doc: Dict, bank_name: str = None) -> Dict[str, Any]:
         """
-        从解析结果中提取银行账单字段（改进版 - 直接从文本解析）
+        从解析结果中提取银行账单字段（使用银行专用模版）
         
         Args:
             parsed_doc: parse_pdf返回的字典
+            bank_name: 银行名称（可选，会自动检测）
         
         Returns:
             Dict: 标准化的账单字段
         """
+        from services.bank_specific_parsers import parse_with_bank_template
+        
+        text = parsed_doc.get('text', '')
+        
+        try:
+            # 使用银行专用模版解析
+            logger.info("🎯 使用银行专用模版解析器")
+            info, transactions = parse_with_bank_template(text, bank_name)
+            
+            # 转换为fields格式
+            fields = {
+                'card_number': info.get('card_last4'),
+                'statement_date': info.get('statement_date'),
+                'cardholder_name': info.get('customer_name'),
+                'previous_balance': info.get('previous_balance', 0.0),
+                'current_balance': info.get('total_amount_due', 0.0),
+                'minimum_payment': info.get('minimum_payment', 0.0),
+                'payment_due_date': info.get('payment_due_date'),
+                'credit_limit': info.get('credit_limit', 0.0),
+                'available_credit': info.get('available_credit', 0.0),
+                'reward_points': info.get('reward_points', '0'),
+                'transactions': transactions
+            }
+            
+            logger.info(f"✅ 银行模版提取完成：{len(transactions)}笔交易")
+            
+            return fields
+            
+        except Exception as e:
+            logger.warning(f"⚠️ 银行模版解析失败: {e}，尝试通用方法")
+            
+            # Fallback to original generic extraction
+            return self._extract_fields_generic(parsed_doc)
+    
+    def _extract_fields_generic(self, parsed_doc: Dict) -> Dict[str, Any]:
+        """通用字段提取方法（fallback）"""
         import re
         
         text = parsed_doc.get('text', '')
@@ -238,7 +275,7 @@ class GoogleDocumentAIService:
         card_match = re.search(card_pattern, text)
         if card_match:
             full_card = card_match.group(1).replace(' ', '')
-            fields['card_number'] = full_card[-4:]  # 后4位
+            fields['card_number'] = full_card[-4:]
         
         # 提取账单日期
         date_patterns = [
@@ -299,7 +336,7 @@ class GoogleDocumentAIService:
         if len(fields['transactions']) == 0:
             fields['transactions'] = self._extract_transactions_from_text(text)
         
-        logger.info(f"✅ 提取字段完成，交易数: {len(fields['transactions'])}")
+        logger.info(f"✅ 通用方法提取完成，交易数: {len(fields['transactions'])}")
         
         return fields
     

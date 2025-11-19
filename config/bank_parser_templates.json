@@ -1,0 +1,389 @@
+{
+  "AMBANK": {
+    "bank_name": "AMBANK",
+    "aliases": ["AMBANK", "AmBank", "AM BANK"],
+    "patterns": {
+      "customer_name": {
+        "regex": ["([A-Z\\s]+)\\n.*?\\d{4}\\s+\\d{4}\\s+\\d{4}\\s+\\d{4}"],
+        "description": "客户名称通常在卡号上方"
+      },
+      "card_number": {
+        "regex": ["(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})"],
+        "extract": "last_4",
+        "description": "16位卡号，提取后4位"
+      },
+      "statement_date": {
+        "regex": ["Statement Date.*?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})", "Tarikh Penyata.*?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})"],
+        "description": "账单日期"
+      },
+      "payment_due_date": {
+        "regex": ["Payment Due Date.*?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})", "Tarikh Matang Bayar.*?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})"],
+        "description": "到期日期"
+      },
+      "previous_balance": {
+        "regex": ["PREVIOUS BALANCE[\\s\\n]+([-]?[\\d,]+\\.\\d{2})", "Baki Terdahulu[\\s\\n]+([-]?[\\d,]+\\.\\d{2})"],
+        "description": "上月结余"
+      },
+      "minimum_payment": {
+        "regex": ["Minimum Payment.*?RM\\s*([\\d,]+\\.\\d{2})", "Bayaran Minimum.*?RM\\s*([\\d,]+\\.\\d{2})"],
+        "description": "最低还款额"
+      },
+      "total_amount_due": {
+        "regex": ["Total Amount Due.*?RM\\s*([\\d,]+\\.\\d{2})", "Jumlah Yang Perlu Dibayar.*?RM\\s*([\\d,]+\\.\\d{2})"],
+        "description": "到期应付总额"
+      },
+      "credit_limit": {
+        "regex": ["Credit Limit.*?RM\\s*([\\d,]+\\.\\d{2})", "Had Kredit.*?RM\\s*([\\d,]+\\.\\d{2})"],
+        "description": "信用额度"
+      },
+      "available_credit": {
+        "regex": ["Available Credit.*?RM\\s*([\\d,]+\\.\\d{2})", "Kredit Tersedia.*?RM\\s*([\\d,]+\\.\\d{2})"],
+        "description": "可用额度"
+      },
+      "reward_points": {
+        "regex": ["Points Balance.*?([\\d,]+)", "Baki Mata.*?([\\d,]+)"],
+        "description": "积分余额"
+      }
+    },
+    "transaction_patterns": {
+      "table_headers": ["Transaction Date", "Tarikh Transaksi", "Date", "Tarikh"],
+      "transaction_line": {
+        "regex": "(\\d{2}\\s+[A-Z]{3}\\s+\\d{2})\\s+([^\\n]+?)\\s+([-]?[\\d,]+\\.\\d{2})",
+        "groups": {
+          "date": 1,
+          "description": 2,
+          "amount": 3
+        },
+        "description": "交易记录格式：日期 + 描述 + 金额"
+      },
+      "posting_date_format": "(\\d{2}\\s+[A-Z]{3}\\s+\\d{2})",
+      "dr_cr_detection": {
+        "cr_keywords": ["PAYMENT", "BAYARAN", "CREDIT", "REFUND"],
+        "negative_is_credit": true,
+        "description": "检测CR交易：负数或包含PAYMENT关键词"
+      }
+    },
+    "column_layout": {
+      "type": "single_amount",
+      "columns": ["Date", "Description", "Amount"],
+      "description": "AMBANK使用单列金额格式，负数表示CR"
+    }
+  },
+  
+  "HONG_LEONG": {
+    "bank_name": "HONG LEONG",
+    "aliases": ["HONG LEONG", "HLB", "HONG LEONG BANK"],
+    "patterns": {
+      "customer_name": {
+        "regex": ["([A-Z\\s]+)\\n.*?Card Number", "([A-Z\\s]+)\\n.*?Nombor Kad"],
+        "description": "客户名称在Card Number上方"
+      },
+      "card_number": {
+        "regex": ["(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})"],
+        "extract": "last_4"
+      },
+      "statement_date": {
+        "regex": ["Statement Date.*?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{4})", "Tarikh Penyata.*?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{4})"]
+      },
+      "payment_due_date": {
+        "regex": ["Payment Due Date.*?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{4})", "Bayar Sebelum.*?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{4})"]
+      },
+      "previous_balance": {
+        "regex": ["PREVIOUS BALANCE FROM LAST STATEMENT[\\s\\n]+([-]?[\\d,]+\\.\\d{2})", "BAKI SEBELUM.*?[\\s\\n]+([-]?[\\d,]+\\.\\d{2})"]
+      },
+      "minimum_payment": {
+        "regex": ["Minimum Payment.*?RM\\s*([\\d,]+\\.\\d{2})", "Bayaran Minimum.*?RM\\s*([\\d,]+\\.\\d{2})"]
+      },
+      "total_amount_due": {
+        "regex": ["Current Balance.*?RM\\s*([\\d,]+\\.\\d{2})", "Baki Semasa.*?RM\\s*([\\d,]+\\.\\d{2})"]
+      },
+      "credit_limit": {
+        "regex": ["Credit Limit.*?RM\\s*([\\d,]+\\.\\d{2})", "Had Kredit.*?RM\\s*([\\d,]+\\.\\d{2})"]
+      }
+    },
+    "transaction_patterns": {
+      "table_headers": ["Transaction", "Transaksi", "Date"],
+      "transaction_line": {
+        "regex": "(\\d{2}\\s+[A-Z]{3})\\s+([^\\n]+?)\\s+([-]?[\\d,]+\\.\\d{2})",
+        "groups": {
+          "date": 1,
+          "description": 2,
+          "amount": 3
+        }
+      },
+      "dr_cr_detection": {
+        "cr_keywords": ["PAYMENT", "BAYARAN"],
+        "negative_is_credit": true
+      }
+    },
+    "column_layout": {
+      "type": "single_amount",
+      "columns": ["Date", "Description", "Foreign Amount", "Local Amount"]
+    }
+  },
+  
+  "HSBC": {
+    "bank_name": "HSBC",
+    "aliases": ["HSBC", "HSBC BANK"],
+    "patterns": {
+      "customer_name": {
+        "regex": ["([A-Z\\s]+)\\n.*?Card Number"]
+      },
+      "card_number": {
+        "regex": ["Card Number\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})", "(\\d{4})-(\\d{4})-(\\d{4})-(\\d{4})"],
+        "extract": "last_4"
+      },
+      "statement_date": {
+        "regex": ["Statement Date\\s+(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"]
+      },
+      "payment_due_date": {
+        "regex": ["Payment Due Date\\s+(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"]
+      },
+      "previous_balance": {
+        "regex": ["Previous Balance.*?RM\\s*([\\d,]+\\.\\d{2})", "Last Balance.*?RM\\s*([\\d,]+\\.\\d{2})"]
+      },
+      "minimum_payment": {
+        "regex": ["Minimum Payment.*?RM\\s*([\\d,]+\\.\\d{2})"]
+      },
+      "total_amount_due": {
+        "regex": ["Statement Balance.*?RM\\s*([\\d,]+\\.\\d{2})", "New Balance.*?RM\\s*([\\d,]+\\.\\d{2})"]
+      },
+      "credit_limit": {
+        "regex": ["Credit Limit.*?RM\\s*([\\d,]+\\.\\d{2})"]
+      }
+    },
+    "transaction_patterns": {
+      "table_headers": ["Transaction Date", "Posting Date", "Description"],
+      "transaction_line": {
+        "regex": "(\\d{2}\\s+[A-Za-z]{3})\\s+(\\d{2}\\s+[A-Za-z]{3})\\s+([^\\n]+?)\\s+([-]?[\\d,]+\\.\\d{2})",
+        "groups": {
+          "trans_date": 1,
+          "posting_date": 2,
+          "description": 3,
+          "amount": 4
+        }
+      },
+      "dr_cr_detection": {
+        "cr_keywords": ["PAYMENT RECEIVED", "PAYMENT - THANK YOU"],
+        "negative_is_credit": true
+      }
+    },
+    "column_layout": {
+      "type": "dual_amount",
+      "columns": ["Trans Date", "Posting Date", "Description", "Debit", "Credit"]
+    }
+  },
+  
+  "OCBC": {
+    "bank_name": "OCBC",
+    "aliases": ["OCBC", "OCBC BANK"],
+    "patterns": {
+      "customer_name": {
+        "regex": ["([A-Z\\s]+)\\n.*?\\d{4}\\s+\\d{4}\\s+\\d{4}\\s+\\d{4}"]
+      },
+      "card_number": {
+        "regex": ["(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})"],
+        "extract": "last_4"
+      },
+      "statement_date": {
+        "regex": ["Statement Date\\s*:?\\s*(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})", "Date\\s+(\\d{1,2}[/-]\\d{1,2}[/-]\\d{4})"]
+      },
+      "payment_due_date": {
+        "regex": ["Payment Due Date\\s*:?\\s*(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"]
+      },
+      "previous_balance": {
+        "regex": ["Previous Balance.*?([\\d,]+\\.\\d{2})", "Last Balance.*?([\\d,]+\\.\\d{2})"]
+      },
+      "minimum_payment": {
+        "regex": ["Minimum Payment.*?([\\d,]+\\.\\d{2})"]
+      },
+      "total_amount_due": {
+        "regex": ["New Balance.*?([\\d,]+\\.\\d{2})", "Current Balance.*?([\\d,]+\\.\\d{2})"]
+      }
+    },
+    "transaction_patterns": {
+      "table_headers": ["Date", "Transaction Description"],
+      "transaction_line": {
+        "regex": "(\\d{2}/\\d{2})\\s+([^\\n]+?)\\s+([-]?[\\d,]+\\.\\d{2})",
+        "groups": {
+          "date": 1,
+          "description": 2,
+          "amount": 3
+        }
+      },
+      "dr_cr_detection": {
+        "cr_keywords": ["PAYMENT", "CREDIT"],
+        "negative_is_credit": true
+      }
+    },
+    "column_layout": {
+      "type": "single_amount",
+      "columns": ["Date", "Description", "Amount"]
+    }
+  },
+  
+  "STANDARD_CHARTERED": {
+    "bank_name": "STANDARD CHARTERED",
+    "aliases": ["STANDARD CHARTERED", "STANDARD_CHARTERED", "SCB", "STANCHART"],
+    "patterns": {
+      "customer_name": {
+        "regex": ["([A-Z\\s]+)\\n.*?Card Number"]
+      },
+      "card_number": {
+        "regex": ["(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})"],
+        "extract": "last_4"
+      },
+      "statement_date": {
+        "regex": ["Statement Date\\s*:?\\s*(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"]
+      },
+      "payment_due_date": {
+        "regex": ["Payment Due Date\\s*:?\\s*(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"]
+      },
+      "previous_balance": {
+        "regex": ["Previous Balance.*?RM\\s*([\\d,]+\\.\\d{2})"]
+      },
+      "minimum_payment": {
+        "regex": ["Minimum Payment Due.*?RM\\s*([\\d,]+\\.\\d{2})"]
+      },
+      "total_amount_due": {
+        "regex": ["New Balance.*?RM\\s*([\\d,]+\\.\\d{2})"]
+      }
+    },
+    "transaction_patterns": {
+      "table_headers": ["Date", "Description", "Amount"],
+      "transaction_line": {
+        "regex": "(\\d{2}/\\d{2}/\\d{4})\\s+([^\\n]+?)\\s+([-]?[\\d,]+\\.\\d{2})",
+        "groups": {
+          "date": 1,
+          "description": 2,
+          "amount": 3
+        }
+      },
+      "dr_cr_detection": {
+        "cr_keywords": ["PAYMENT RECEIVED"],
+        "negative_is_credit": true
+      }
+    },
+    "column_layout": {
+      "type": "single_amount",
+      "columns": ["Date", "Description", "Amount"]
+    }
+  },
+  
+  "UOB": {
+    "bank_name": "UOB",
+    "aliases": ["UOB", "UNITED OVERSEAS BANK"],
+    "patterns": {
+      "customer_name": {
+        "regex": ["([A-Z\\s]+)\\n.*?Card Number"]
+      },
+      "card_number": {
+        "regex": ["(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})"],
+        "extract": "last_4"
+      },
+      "statement_date": {
+        "regex": ["Statement Date\\s*:?\\s*(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"]
+      },
+      "payment_due_date": {
+        "regex": ["Payment Due Date\\s*:?\\s*(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"]
+      },
+      "previous_balance": {
+        "regex": ["Previous Balance.*?([\\d,]+\\.\\d{2})"]
+      },
+      "minimum_payment": {
+        "regex": ["Minimum Payment.*?([\\d,]+\\.\\d{2})"]
+      },
+      "total_amount_due": {
+        "regex": ["New Balance.*?([\\d,]+\\.\\d{2})"]
+      }
+    },
+    "transaction_patterns": {
+      "table_headers": ["Date", "Description"],
+      "transaction_line": {
+        "regex": "(\\d{2}/\\d{2})\\s+([^\\n]+?)\\s+([-]?[\\d,]+\\.\\d{2})",
+        "groups": {
+          "date": 1,
+          "description": 2,
+          "amount": 3
+        }
+      },
+      "dr_cr_detection": {
+        "cr_keywords": ["PAYMENT"],
+        "negative_is_credit": true
+      }
+    },
+    "column_layout": {
+      "type": "single_amount",
+      "columns": ["Date", "Description", "Amount"]
+    }
+  },
+  
+  "SCB": {
+    "bank_name": "STANDARD CHARTERED",
+    "aliases": ["STANDARD CHARTERED", "STANDARD_CHARTERED", "SCB", "STANCHART"],
+    "patterns": {
+      "customer_name": {
+        "regex": ["([A-Z\\s]+)\\n.*?Card Number"]
+      },
+      "card_number": {
+        "regex": ["(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})"],
+        "extract": "last_4"
+      },
+      "statement_date": {
+        "regex": ["Statement Date\\s*:?\\s*(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"]
+      },
+      "payment_due_date": {
+        "regex": ["Payment Due Date\\s*:?\\s*(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})"]
+      },
+      "previous_balance": {
+        "regex": ["Previous Balance.*?RM\\s*([\\d,]+\\.\\d{2})"]
+      },
+      "minimum_payment": {
+        "regex": ["Minimum Payment Due.*?RM\\s*([\\d,]+\\.\\d{2})"]
+      },
+      "total_amount_due": {
+        "regex": ["New Balance.*?RM\\s*([\\d,]+\\.\\d{2})"]
+      }
+    },
+    "transaction_patterns": {
+      "table_headers": ["Date", "Description", "Amount"],
+      "transaction_line": {
+        "regex": "(\\d{2}/\\d{2}/\\d{4})\\s+([^\\n]+?)\\s+([-]?[\\d,]+\\.\\d{2})",
+        "groups": {
+          "date": 1,
+          "description": 2,
+          "amount": 3
+        }
+      },
+      "dr_cr_detection": {
+        "cr_keywords": ["PAYMENT RECEIVED"],
+        "negative_is_credit": true
+      }
+    },
+    "column_layout": {
+      "type": "single_amount",
+      "columns": ["Date", "Description", "Amount"]
+    }
+  },
+  
+  "classification_rules": {
+    "suppliers": [
+      "7SL",
+      "Dinas",
+      "Raub Syc Hainan",
+      "Ai Smart Tech",
+      "HUAWEI",
+      "PasarRaya",
+      "Puchong Herbs"
+    ],
+    "dr_classification": {
+      "rule": "如果交易描述包含任何Supplier → GZ，否则 → Owner",
+      "case_sensitive": false
+    },
+    "cr_classification": {
+      "rule": "如果交易描述包含PAYMENT/BAYARAN或为空 → Owner，否则 → GZ",
+      "case_sensitive": false,
+      "owner_keywords": ["PAYMENT", "BAYARAN", "THANK YOU", "客户名"]
+    }
+  }
+}
