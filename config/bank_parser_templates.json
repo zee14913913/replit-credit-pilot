@@ -1,50 +1,1277 @@
 {
   "AMBANK": {
     "bank_name": "AMBANK",
+    "aliases": [
+      "AMBANK",
+      "AmBank",
+      "AMBANK ISLAMIC"
+    ],
     "patterns": {
-      "customer_name": [
-        "([A-Z]{2,}\\s+[A-Z]{2,}\\s+[A-Z]{2,})\\s+NO\\s+\\d+",
-        "^([A-Z\\s]{15,50})$"
-      ],
-      "card_number": [
-        "(\\d{4}\\s+\\d{4}\\s+\\d{4}\\s+\\d{4})",
-        "P\\s+(\\d{4}\\s+\\d{4}\\s+\\d{4}\\s+\\d{4})"
-      ],
-      "statement_date": [
-        "Statement Date[\\s\\n]+(?:Tarikh Penyata[\\s\\n]+)?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2})",
-        "(\\d{2}\\s+[A-Z]{3}\\s+\\d{2})"
-      ],
-      "payment_due_date": [
-        "Payment Due Date[\\s\\n]+(?:Tarikh Matang Bayaran[\\s\\n]+)?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2})"
-      ],
-      "previous_balance": [
-        "PREVIOUS BALANCE\\s+([\\d,]+\\.\\d{2})",
-        "Previous Balance[\\s\\n]+(?:Baki Terdahulu[\\s\\n]+)?RM\\s+([\\d,]+\\.\\d{2})"
-      ],
-      "credit_limit": [
-        "Credit Limit[\\s\\n]+(?:Had Kredit[\\s\\n]+)?(?:RM\\s+)?([\\d,]+)",
-        "Total Credit Limit[\\s\\n]+(?:Jumlah Had Kredit[\\s\\n]+)?([\\d,]+)"
-      ],
-      "full_due_amount": [
-        "Current Balance[\\s\\n]+(?:Baki Semasa[\\s\\n]+)?RM\\s+([\\d,]+\\.\\d{2})",
-        "Total Current Balance\\s+([\\d,]+\\.\\d{2})"
-      ],
-      "minimum_payment": [
-        "Minimum Payment[\\s\\n]+(?:Bayaran Minimum[\\s\\n]+)?RM\\s+([\\d,]+\\.\\d{2})"
-      ]
-    },
-    "transaction_pattern": "(\\d{2}\\s+[A-Z]{3}\\s+\\d{2})\\s+(\\d{2}\\s+[A-Z]{3}\\s+\\d{2})\\s+(.+?)\\s+((?:CR\\s+)?[\\d,]+\\.\\d{2})",
-    "date_format": "%d %b %y"
+      "customer_name": {
+        "regex": [
+          "MALAYSIA\\n([A-Z][A-Z\\s]{8,45})\\n",
+          "^([A-Z]{5,}\\s+[A-Z]{3,}\\s+[A-Z]{3,})$"
+        ]
+      },
+      "ic_no": {
+        "regex": [
+          "I/?C\\s*(?:No\\.?|Number)?[:\\s]*(\\d{6}-\\d{2}-\\d{4})",
+          "NRIC[:\\s]*(\\d{6}-\\d{2}-\\d{4})",
+          "(\\d{12})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "(AmBank Islamic Visa Signature)",
+          "(Visa\\s+Signature)",
+          "(BonusLink.*?Visa)",
+          "(UnionPay)"
+        ]
+      },
+      "card_no": {
+        "regex": [
+          "(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Total Credit Limit[\\s\\S]{0,100}?([\\d,]+)",
+          "Credit Limit[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Total Current Balance[\\s\\S]{0,50}?\\n([\\d,]+\\.\\d{2})",
+          "Current Balance[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "Minimum Payment[\\s\\S]{0,200}?RM\\s*([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "PREVIOUS BALANCE[\\s\\S]{0,500}?\\n([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "transaction_date": {
+        "regex": [
+          "(\\d{2}\\s+[A-Z]{3})",
+          "(\\d{2}/\\d{2}/\\d{2})"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{2}\\s+[A-Z]{3}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2}|$)"
+        ]
+      },
+      "amount_CR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})\\s+CR",
+          "PAYMENT.*?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount_DR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?!\\s*CR)"
+        ]
+      },
+      "earned_point": {
+        "regex": [
+          "AmBonus[\\s\\S]{0,200}?\\n([\\d,]+)\\n",
+          "Total Points[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      }
+    }
   },
-  "classification_rules": {
-    "suppliers": [
-      "7SL",
-      "Dinas",
-      "Raub Syc Hainan",
-      "Ai Smart Tech",
-      "HUAWEI",
-      "PasarRaya",
-      "Puchong Herbs"
-    ]
+  "AMBANK_ISLAMIC": {
+    "bank_name": "AMBANK_ISLAMIC",
+    "aliases": [
+      "AmBank Islamic",
+      "AmBank-i"
+    ],
+    "patterns": {
+      "customer_name": {
+        "regex": [
+          "MALAYSIA\\n([A-Z][A-Z\\s]{8,45})\\n",
+          "^([A-Z]{5,}\\s+[A-Z]{3,}\\s+[A-Z]{3,})$"
+        ]
+      },
+      "ic_no": {
+        "regex": [
+          "I/?C\\s*(?:No\\.?|Number)?[:\\s]*(\\d{6}-\\d{2}-\\d{4})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "(AmBank.*?Visa.*?)",
+          "(UnionPay)",
+          "(BonusLink)"
+        ]
+      },
+      "card_no": {
+        "regex": [
+          "(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Total Credit Limit[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "Minimum Payment.*?\\n([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "PREVIOUS BALANCE[\\s\\S]{0,500}?\\n([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "transaction_date": {
+        "regex": [
+          "(\\d{2}\\s+[A-Z]{3})"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{2}\\s+[A-Z]{3}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount_CR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})\\s+CR"
+        ]
+      },
+      "amount_DR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?!\\s*CR)"
+        ]
+      },
+      "earned_point": {
+        "regex": [
+          "AmBonus[\\s\\S]{0,200}?\\n([\\d,]+)"
+        ]
+      }
+    }
+  },
+  "UOB": {
+    "bank_name": "UOB",
+    "aliases": [
+      "UOB",
+      "United Overseas Bank"
+    ],
+    "patterns": {
+      "customer_name": {
+        "regex": [
+          "^([A-Z]{3,}\\s+[A-Z]{3,}\\s+[A-Z]{3,})$",
+          "TMN DUYUNG.*?\\n([A-Z\\s]{10,45})\\n"
+        ]
+      },
+      "ic_no": {
+        "regex": [
+          "I/?C\\s*(?:No\\.?|Number)?[:\\s]*(\\d{6}-\\d{2}-\\d{4})",
+          "(\\d{12})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "(UOB.*?Card)",
+          "(VISA)",
+          "(Mastercard)",
+          "Card Type.*?\\n(.+?)\\n"
+        ]
+      },
+      "card_no": {
+        "regex": [
+          "(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})",
+          "\\*{3}(\\d{4})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Credit Limit[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})",
+          "Had Kredit[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})",
+          "Tarikh Penyata[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})",
+          "Tarikh Akhir Bayaran[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2,4})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Total Balance Due[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "New Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "Minimum Payment Due[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Bayaran Minimum[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "Opening Balance[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Previous Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "transaction_date": {
+        "regex": [
+          "(\\d{2}\\s+[A-Z]{3}\\s+\\d{2})",
+          "(\\d{2}/\\d{2}/\\d{4})"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{2}\\s+[A-Z]{3}\\s+\\d{2}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2}|$)"
+        ]
+      },
+      "amount_CR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})\\s*CR",
+          "PAYMENT.*?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount_DR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?!.*CR)"
+        ]
+      },
+      "earned_point": {
+        "regex": [
+          "UNI\\$[\\s\\S]{0,100}?([\\d,]+)",
+          "Points[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      }
+    }
+  },
+  "HONG_LEONG": {
+    "bank_name": "HONG_LEONG",
+    "aliases": [
+      "Hong Leong",
+      "HLB",
+      "HongLeong Bank"
+    ],
+    "patterns": {
+      "customer_name": {
+        "regex": [
+          "^([A-Z][A-Z\\s]{8,40})$",
+          "TAMAN DUYUNG.*?\\n([A-Z\\s]{10,45})\\n"
+        ]
+      },
+      "ic_no": {
+        "regex": [
+          "I/?C\\s*(?:No\\.?|Number)?[:\\s]*(\\d{6}-\\d{2}-\\d{4})",
+          "(\\d{12})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "(Visa.*?)",
+          "(Mastercard.*?)",
+          "(UnionPay)",
+          "Card Type.*?\\n(.+?)\\n"
+        ]
+      },
+      "card_no": {
+        "regex": [
+          "(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})",
+          "(\\d{4})-(\\d{4})-(\\d{4})-(\\d{4})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Combine Credit Limit[\\s\\S]{0,50}?([\\d,]+\\.\\d{2})",
+          "Credit Limit[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{4})",
+          "Tarikh Penyata[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{4})",
+          "Bayar Sebelum[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{4})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "TOTAL AMOUNT DUE[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "MINIMUM PAYMENT[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Bayaran Minimum[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "PREVIOUS BALANCE FROM LAST STATEMENT[\\s\\S]{0,500}?\\n([\\d,]+\\.\\d{2})",
+          "Baki Sebelum[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "transaction_date": {
+        "regex": [
+          "(\\d{2}\\s+[A-Z]{3})",
+          "(\\d{2}/\\d{2}/\\d{4})"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{2}\\s+[A-Z]{3}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2}|$)"
+        ]
+      },
+      "amount_CR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})\\s*CR",
+          "PAYMENT.*?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount_DR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?!.*CR)"
+        ]
+      },
+      "earned_point": {
+        "regex": [
+          "Reward Points[\\s\\S]{0,100}?([\\d,]+)",
+          "Points[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      }
+    }
+  },
+  "OCBC": {
+    "bank_name": "OCBC",
+    "aliases": [
+      "OCBC",
+      "OCBC Bank"
+    ],
+    "patterns": {
+      "customer_name": {
+        "regex": [
+          "^MR\\s+([A-Z][A-Z\\s]{8,40})$",
+          "^([A-Z]{3,}\\s+[A-Z]{3,}\\s+[A-Z]{3,})$"
+        ]
+      },
+      "ic_no": {
+        "regex": [
+          "I/?C\\s*(?:No\\.?|Number)?[:\\s]*(\\d{6}-\\d{2}-\\d{4})",
+          "(\\d{12})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "(GE.*?MASTERCARD.*?)",
+          "(Visa.*?)",
+          "Card Type.*?\\n(.+?)\\n"
+        ]
+      },
+      "card_no": {
+        "regex": [
+          "(\\d{4})-(\\d{4})-(\\d{4})-(\\d{4})",
+          "(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Combined Credit Limit[\\s\\n]+Available Credit Limit[\\s\\n]+([\\d,]+)",
+          "Credit Limit[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2}\\s+\\d{4})",
+          "Tarikh Penyata[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2}\\s+\\d{4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2}\\s+\\d{4})",
+          "Tarikh Akhir Bayaran[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2}\\s+\\d{4})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Current Balance.*?RM.*?\\n.*?\\n.*?\\n.*?\\n.*?\\n.*?\\n.*?\\n([\\d,]+\\.\\d{2})",
+          "Statement Balance Due[\\s\\S]{0,100}?\\n([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "Minimum Payment.*?RM.*?\\n.*?\\n.*?\\n.*?\\n.*?\\n.*?\\n.*?\\n.*?\\n([\\d,]+\\.\\d{2})",
+          "Bayaran Minima[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "Last Statement Balance[\\s\\S]{0,50}?\\n([\\d,]+\\.\\d{2})",
+          "Previous Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "transaction_date": {
+        "regex": [
+          "(\\d{2}\\s+[A-Z][a-z]{2})",
+          "(\\d{2}/\\d{2}/\\d{4})"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{2}\\s+[A-Z][a-z]{2}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2}|$)"
+        ]
+      },
+      "amount_CR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})\\s*CR",
+          "PAYMENT.*?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount_DR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?!.*CR)"
+        ]
+      },
+      "earned_point": {
+        "regex": [
+          "Reward Points[\\s\\S]{0,100}?([\\d,]+)",
+          "Points[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      }
+    }
+  },
+  "HSBC": {
+    "bank_name": "HSBC",
+    "aliases": [
+      "HSBC",
+      "Hongkong and Shanghai Banking Corporation"
+    ],
+    "patterns": {
+      "customer_name": {
+        "regex": [
+          "^([A-Z]{3,}\\s+[A-Z]{3,}\\s+[A-Z]{3,})$",
+          "MALAYSIA.*?\\n([A-Z\\s]{10,45})\\n"
+        ]
+      },
+      "ic_no": {
+        "regex": [
+          "I/?C\\s*(?:No\\.?|Number)?[:\\s]*(\\d{6}-\\d{2}-\\d{4})",
+          "(\\d{12})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "(HSBC.*?)",
+          "(Visa.*?)",
+          "(Mastercard)",
+          "Card Type.*?\\n(.+?)\\n"
+        ]
+      },
+      "card_no": {
+        "regex": [
+          "(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})",
+          "(\\d{4})-(\\d{4})-(\\d{4})-(\\d{4})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Credit Limit[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})",
+          "Had Kredit[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2}\\s+\\d{4})",
+          "Tarikh Penyata[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2}\\s+\\d{4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2}\\s+\\d{4})",
+          "Tarikh Akhir Bayaran[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2}\\s+\\d{4})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "New Balance[\\s\\S]{0,100}?\\n([\\d,]+\\.\\d{2})",
+          "Total Amount Due[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "Minimum Payment[\\s\\S]{0,100}?\\n([\\d,]+\\.\\d{2})",
+          "Bayaran Minimum[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "Previous Balance[\\s\\S]{0,100}?\\n([\\d,]+\\.\\d{2})",
+          "Baki Terdahulu[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "transaction_date": {
+        "regex": [
+          "(\\d{2}\\s+[A-Z][a-z]{2})",
+          "(\\d{2}/\\d{2}/\\d{4})"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{2}\\s+[A-Z][a-z]{2}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2}|$)"
+        ]
+      },
+      "amount_CR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})\\s*CR",
+          "PAYMENT.*?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount_DR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?!.*CR)"
+        ]
+      },
+      "earned_point": {
+        "regex": [
+          "RewardCash[\\s\\S]{0,100}?([\\d,]+)",
+          "Points[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      }
+    }
+  },
+  "STANDARD_CHARTERED": {
+    "bank_name": "STANDARD_CHARTERED",
+    "aliases": [
+      "Standard Chartered",
+      "SCB",
+      "StanChart"
+    ],
+    "patterns": {
+      "customer_name": {
+        "regex": [
+          "^([A-Z]{3,}\\s+[A-Z]{3,}\\s+[A-Z]{3,})$",
+          "MALAYSIA.*?\\n([A-Z\\s]{10,45})\\n"
+        ]
+      },
+      "ic_no": {
+        "regex": [
+          "I/?C\\s*(?:No\\.?|Number)?[:\\s]*(\\d{6}-\\d{2}-\\d{4})",
+          "(\\d{12})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "(SIMPLY CASH.*?)",
+          "(Visa.*?)",
+          "(Mastercard)",
+          "Card Type.*?\\n(.+?)\\n"
+        ]
+      },
+      "card_no": {
+        "regex": [
+          "(\\d{4})-?(\\d{2})XX-XXXX-(\\d{4})",
+          "(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Credit Limit[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Had Kredit[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})",
+          "Tarikh Penyata[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})",
+          "Tarikh Akhir Bayaran[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "New Balance[\\s\\n]+Baki Baru[\\s\\n]+[\\d,]+\\.\\d{2}[\\s\\n]+SIMPLY CASH CREDIT CARD[\\s\\S]{0,200}?([\\d,]+\\.\\d{2})",
+          "Total Amount Due[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "Minimum Payment[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Bayaran Minimum[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "Previous Balance[\\s\\n]+Baki Sebelumnya[\\s\\n]+- Payments[\\s\\n]+Pembayaran[\\s\\n]+- Credits[\\s\\n]+Kredit[\\s\\n]+\\+ Purchases[\\s\\n]+Pembelian[\\s\\n]+\\+ Cash Advance[\\s\\n]+Pendahuluan Tunai[\\s\\n]+\\+ Charges[\\s\\n]+Caj[\\s\\n]+= New Balance[\\s\\n]+Baki Baru[\\s\\n]+([\\d,]+\\.\\d{2})",
+          "Baki Terdahulu[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "transaction_date": {
+        "regex": [
+          "(\\d{2}\\s+[A-Z][a-z]{2})",
+          "(\\d{2}/\\d{2}/\\d{4})"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{2}\\s+[A-Z][a-z]{2}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2}|$)"
+        ]
+      },
+      "amount_CR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})\\s*CR",
+          "PAYMENT.*?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount_DR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?!.*CR)"
+        ]
+      },
+      "earned_point": {
+        "regex": [
+          "360° Rewards[\\s\\S]{0,100}?([\\d,]+)",
+          "Points[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      }
+    }
+  },
+  "MAYBANK": {
+    "bank_name": "MAYBANK",
+    "aliases": [
+      "Maybank",
+      "Malayan Banking"
+    ],
+    "patterns": {
+      "customer_name": {
+        "regex": [
+          "^([A-Z]{3,}\\s+[A-Z]{3,}\\s+[A-Z]{3,})$",
+          "MALAYSIA.*?\\n([A-Z\\s]{10,45})\\n"
+        ]
+      },
+      "ic_no": {
+        "regex": [
+          "I/?C\\s*(?:No\\.?|Number)?[:\\s]*(\\d{6}-\\d{2}-\\d{4})",
+          "(\\d{12})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "(Maybank.*?)",
+          "(Visa.*?)",
+          "(Mastercard)",
+          "Card Type.*?\\n(.+?)\\n"
+        ]
+      },
+      "card_no": {
+        "regex": [
+          "(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})",
+          "(\\d{4})-(\\d{4})-(\\d{4})-(\\d{4})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Credit Limit[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Had Kredit[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})",
+          "Tarikh Penyata[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})",
+          "Tarikh Akhir Bayaran[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Total Amount Due[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "Minimum Payment[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Bayaran Minimum[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "Previous Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})",
+          "Baki Terdahulu[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "transaction_date": {
+        "regex": [
+          "(\\d{2}\\s+[A-Z][a-z]{2})",
+          "(\\d{2}/\\d{2}/\\d{4})",
+          "(\\d{4})"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{2}\\s+[A-Z][a-z]{2}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2}|$)",
+          "\\d{4}\\s+(.+?)\\s+[\\d,]+\\.\\d{2}"
+        ]
+      },
+      "amount_CR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})\\s*CR",
+          "PAYMENT.*?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount_DR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?!.*CR)"
+        ]
+      },
+      "earned_point": {
+        "regex": [
+          "TreatsPoints[\\s\\S]{0,100}?([\\d,]+)",
+          "Points[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      }
+    }
+  },
+  "AFFIN_BANK": {
+    "bank_name": "AFFIN_BANK",
+    "aliases": [
+      "Affin Bank",
+      "AFFIN"
+    ],
+    "patterns": {
+      "customer_name": {
+        "regex": [
+          "^([A-Z]{3,}\\s+[A-Z]{3,}\\s+[A-Z]{3,})$",
+          "MALAYSIA.*?\\n([A-Z\\s]{10,45})\\n"
+        ]
+      },
+      "ic_no": {
+        "regex": [
+          "I/?C\\s*(?:No\\.?|Number)?[:\\s]*(\\d{6}-\\d{2}-\\d{4})",
+          "(\\d{12})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "(Affin.*?)",
+          "(Visa.*?)",
+          "(Mastercard)",
+          "Card Type.*?\\n(.+?)\\n"
+        ]
+      },
+      "card_no": {
+        "regex": [
+          "(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})",
+          "(\\d{4})-(\\d{4})-(\\d{4})-(\\d{4})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Credit Limit[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Had Kredit[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4})",
+          "Tarikh Penyata[\\s\\S]{0,100}?(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4})",
+          "Tarikh Akhir Bayaran[\\s\\S]{0,100}?(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Total Amount Due[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "Minimum Payment[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Bayaran Minimum[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "Previous Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})",
+          "Baki Terdahulu[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "transaction_date": {
+        "regex": [
+          "(\\d{2}[/-]\\d{2}[/-]\\d{2})",
+          "(\\d{1,2}\\s+[A-Z][a-z]{2})"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{2}[/-]\\d{2}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2}|$)"
+        ]
+      },
+      "amount_CR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})\\s*CR",
+          "PAYMENT.*?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount_DR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?!.*CR)"
+        ]
+      },
+      "earned_point": {
+        "regex": [
+          "Reward Points[\\s\\S]{0,100}?([\\d,]+)",
+          "Points[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      }
+    }
+  },
+  "CIMB": {
+    "bank_name": "CIMB",
+    "aliases": [
+      "CIMB",
+      "CIMB Bank"
+    ],
+    "patterns": {
+      "customer_name": {
+        "regex": [
+          "^([A-Z]{3,}\\s+[A-Z]{3,}\\s+[A-Z]{3,})$",
+          "MALAYSIA.*?\\n([A-Z\\s]{10,45})\\n"
+        ]
+      },
+      "ic_no": {
+        "regex": [
+          "I/?C\\s*(?:No\\.?|Number)?[:\\s]*(\\d{6}-\\d{2}-\\d{4})",
+          "(\\d{12})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "(CIMB.*?)",
+          "(Visa.*?)",
+          "(Mastercard)",
+          "Card Type.*?\\n(.+?)\\n"
+        ]
+      },
+      "card_no": {
+        "regex": [
+          "(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})",
+          "(\\d{4})-(\\d{4})-(\\d{4})-(\\d{4})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Credit Limit[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Had Kredit[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})",
+          "Tarikh Penyata[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})",
+          "Tarikh Akhir Bayaran[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Current Balance[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Total Amount Due[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "Minimum Payment[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Bayaran Minimum[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "Previous Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})",
+          "Baki Terdahulu[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "transaction_date": {
+        "regex": [
+          "(\\d{2}\\s+[A-Z]{3})",
+          "(\\d{2}/\\d{2}/\\d{4})"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{2}\\s+[A-Z]{3}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2}|$)"
+        ]
+      },
+      "amount_CR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})\\s*CR",
+          "PAYMENT.*?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount_DR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?!.*CR)"
+        ]
+      },
+      "earned_point": {
+        "regex": [
+          "Bonus Points[\\s\\S]{0,100}?([\\d,]+)",
+          "Points[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      }
+    }
+  },
+  "ALLIANCE_BANK": {
+    "bank_name": "ALLIANCE_BANK",
+    "aliases": [
+      "Alliance Bank",
+      "ALLIANCE"
+    ],
+    "patterns": {
+      "customer_name": {
+        "regex": [
+          "^([A-Z]{3,}\\s+[A-Z]{3,}\\s+[A-Z]{3,})$",
+          "MALAYSIA.*?\\n([A-Z\\s]{10,45})\\n"
+        ]
+      },
+      "ic_no": {
+        "regex": [
+          "I/?C\\s*(?:No\\.?|Number)?[:\\s]*(\\d{6}-\\d{2}-\\d{4})",
+          "(\\d{12})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "(Alliance.*?)",
+          "(Visa.*?)",
+          "(Mastercard)",
+          "Card Type.*?\\n(.+?)\\n"
+        ]
+      },
+      "card_no": {
+        "regex": [
+          "(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})",
+          "(\\d{4})-(\\d{4})-(\\d{4})-(\\d{4})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Credit Limit[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Had Kredit[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})",
+          "Tarikh Penyata[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})",
+          "Tarikh Akhir Bayaran[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Total Amount Due[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "Minimum Payment[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Bayaran Minimum[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "Previous Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})",
+          "Baki Terdahulu[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "transaction_date": {
+        "regex": [
+          "(\\d{2}[/-]\\d{2})",
+          "(\\d{1,2}\\s+[A-Z][a-z]{2})"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{2}[/-]\\d{2}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2}|$)"
+        ]
+      },
+      "amount_CR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})\\s*CR",
+          "PAYMENT.*?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount_DR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?!.*CR)"
+        ]
+      },
+      "earned_point": {
+        "regex": [
+          "Reward Points[\\s\\S]{0,100}?([\\d,]+)",
+          "Points[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      }
+    }
+  },
+  "PUBLIC_BANK": {
+    "bank_name": "PUBLIC_BANK",
+    "aliases": [
+      "Public Bank",
+      "PBB"
+    ],
+    "patterns": {
+      "customer_name": {
+        "regex": [
+          "^([A-Z]{3,}\\s+[A-Z]{3,}\\s+[A-Z]{3,})$",
+          "MALAYSIA.*?\\n([A-Z\\s]{10,45})\\n"
+        ]
+      },
+      "ic_no": {
+        "regex": [
+          "I/?C\\s*(?:No\\.?|Number)?[:\\s]*(\\d{6}-\\d{2}-\\d{4})",
+          "(\\d{12})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "(Public Bank.*?)",
+          "(Visa.*?)",
+          "(Mastercard)",
+          "Card Type.*?\\n(.+?)\\n"
+        ]
+      },
+      "card_no": {
+        "regex": [
+          "(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})",
+          "(\\d{4})-(\\d{4})-(\\d{4})-(\\d{4})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Credit Limit[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Had Kredit[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})",
+          "Tarikh Penyata[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})",
+          "Tarikh Akhir Bayaran[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\d{4})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Total Amount Due[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "Minimum Payment[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Bayaran Minimum[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "Previous Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})",
+          "Baki Terdahulu[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "transaction_date": {
+        "regex": [
+          "(\\d{2}[/-]\\d{2})",
+          "(\\d{1,2}\\s+[A-Z][a-z]{2})"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{2}[/-]\\d{2}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2}|$)"
+        ]
+      },
+      "amount_CR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})\\s*CR",
+          "PAYMENT.*?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount_DR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?!.*CR)"
+        ]
+      },
+      "earned_point": {
+        "regex": [
+          "Reward Points[\\s\\S]{0,100}?([\\d,]+)",
+          "Points[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      }
+    }
+  },
+  "RHB_BANK": {
+    "bank_name": "RHB_BANK",
+    "aliases": [
+      "RHB Bank",
+      "RHB"
+    ],
+    "patterns": {
+      "customer_name": {
+        "regex": [
+          "^([A-Z]{3,}\\s+[A-Z]{3,}\\s+[A-Z]{3,})$",
+          "MALAYSIA.*?\\n([A-Z\\s]{10,45})\\n"
+        ]
+      },
+      "ic_no": {
+        "regex": [
+          "I/?C\\s*(?:No\\.?|Number)?[:\\s]*(\\d{6}-\\d{2}-\\d{4})",
+          "(\\d{12})"
+        ]
+      },
+      "card_type": {
+        "regex": [
+          "(RHB.*?)",
+          "(Visa.*?)",
+          "(Mastercard)",
+          "Card Type.*?\\n(.+?)\\n"
+        ]
+      },
+      "card_no": {
+        "regex": [
+          "(\\d{4})\\s+(\\d{4})\\s+(\\d{4})\\s+(\\d{4})",
+          "(\\d{4})-(\\d{4})-(\\d{4})-(\\d{4})"
+        ]
+      },
+      "credit_limit": {
+        "regex": [
+          "Credit Limit[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Had Kredit[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      },
+      "statement_date": {
+        "regex": [
+          "Statement Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})",
+          "Tarikh Penyata[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})"
+        ]
+      },
+      "payment_due_date": {
+        "regex": [
+          "Payment Due Date[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})",
+          "Tarikh Akhir Bayaran[\\s\\S]{0,100}?(\\d{1,2}\\s+[A-Z][a-z]{2,}\\s+\\d{4})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Total Amount Due[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "minimum_payment": {
+        "regex": [
+          "Minimum Payment[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})",
+          "Bayaran Minimum[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "previous_balance": {
+        "regex": [
+          "Previous Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})",
+          "Baki Terdahulu[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "transaction_date": {
+        "regex": [
+          "(\\d{2}\\s+[A-Z][a-z]{2})",
+          "(\\d{2}/\\d{2}/\\d{4})"
+        ]
+      },
+      "description": {
+        "regex": [
+          "\\d{2}\\s+[A-Z][a-z]{2}\\s+(.+?)(?=\\s+[\\d,]+\\.\\d{2}|$)"
+        ]
+      },
+      "amount_CR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})\\s*CR",
+          "PAYMENT.*?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "amount_DR": {
+        "regex": [
+          "([\\d,]+\\.\\d{2})(?!.*CR)"
+        ]
+      },
+      "earned_point": {
+        "regex": [
+          "Reward Points[\\s\\S]{0,100}?([\\d,]+)",
+          "Points[\\s\\S]{0,100}?([\\d,]+)"
+        ]
+      }
+    }
   }
 }
