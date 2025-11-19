@@ -44,21 +44,41 @@ class CreditCardCore:
         'PUCHONG HERBS'
     ]
     
-    # 9个GZ银行的精确组合（银行+持卡人）
+    # 9个GZ银行的精确组合（银行+持卡人） - 强制完整法定名称
+    # 遵循ARCHITECT_CONSTRAINTS.md §1.2.1规范
+    # ⚠️ 持卡人名称必须完整，只允许银行名称别名
     GZ_BANK_COMBINATIONS = [
-        ('GX BANK', 'TAN ZEE LIANG'),           # 1. Tan Zee Liang (GX)
+        # 1. Tan Zee Liang (GX Bank) - 支持银行别名
+        ('GX BANK', 'TAN ZEE LIANG'),
         ('GXBANK', 'TAN ZEE LIANG'),
-        ('MAYBANK', 'YEO CHEE WANG'),           # 2. Yeo Chee Wang (Maybank)
-        ('GX BANK', 'YEO CHEE WANG'),           # 3. Yeo Chee Wang (GX)
+        
+        # 2. Yeo Chee Wang (Maybank)
+        ('MAYBANK', 'YEO CHEE WANG'),
+        
+        # 3. Yeo Chee Wang (GX Bank) - 支持银行别名
+        ('GX BANK', 'YEO CHEE WANG'),
         ('GXBANK', 'YEO CHEE WANG'),
-        ('UOB', 'YEO CHEE WANG'),               # 4. Yeo Chee Wang (UOB)
-        ('OCBC', 'YEO CHEE WANG'),              # 5. Yeo Chee Wang (OCBC)
-        ('OCBC', 'TEO YOK CHU'),                # 6. Teo Yok Chu & Yeo Chee Wang (OCBC)
-        ('HONG LEONG', 'INFINITE GZ'),          # 7. Infinite GZ (Hong Leong)
-        ('HLB', 'INFINITE GZ'),
-        ('PUBLIC BANK', 'AI SMART TECH'),       # 8. Ai Smart Tech (Public)
+        
+        # 4. Yeo Chee Wang (UOB)
+        ('UOB', 'YEO CHEE WANG'),
+        
+        # 5. Yeo Chee Wang (OCBC)
+        ('OCBC', 'YEO CHEE WANG'),
+        
+        # 6. Teo Yok Chu (OCBC)
+        ('OCBC', 'TEO YOK CHU'),
+        
+        # 7. Infinite GZ Sdn Bhd (Hong Leong Bank) - 完整法定名称强制执行，支持银行别名
+        ('HONG LEONG BANK', 'INFINITE GZ SDN BHD'),
+        ('HONG LEONG', 'INFINITE GZ SDN BHD'),
+        ('HLB', 'INFINITE GZ SDN BHD'),
+        
+        # 8. Ai Smart Tech (Public Bank) - 支持银行别名
+        ('PUBLIC BANK', 'AI SMART TECH'),
         ('PBB', 'AI SMART TECH'),
-        ('ALLIANCE BANK', 'AI SMART TECH'),     # 9. Ai Smart Tech (Alliance)
+        
+        # 9. Ai Smart Tech (Alliance Bank) - 支持银行别名
+        ('ALLIANCE BANK', 'AI SMART TECH'),
         ('ALLIANCE', 'AI SMART TECH')
     ]
     
@@ -227,6 +247,7 @@ class CreditCardCore:
         第2轮计算：GZ's Payment2
         
         计算从9个GZ Bank转账到客户银行账户的金额
+        **强制执行9个银行+持卡人精确配对**
         
         Args:
             statement_month: 账单月份 (YYYY-MM格式)
@@ -235,38 +256,39 @@ class CreditCardCore:
         Returns:
             GZ's Payment2金额
         """
-        # TODO: 这需要访问客户的银行流水数据
-        # 目前返回0，待实现银行流水解析后再补充
-        
-        # 预期实现逻辑：
-        # 1. 查询客户该月的银行流水记录
-        # 2. 筛选出来源为9个GZ Bank的CR记录
-        # 3. 求和
-        
         with get_db() as conn:
             cursor = conn.cursor()
             
-            # 查找该月从GZ银行转入的记录
-            # 假设有一个 bank_transfers 表记录银行流水
+            # 获取该月所有CR转账记录
             cursor.execute("""
-                SELECT COALESCE(SUM(amount), 0) as total
+                SELECT id, source_bank, source_account_holder, amount
                 FROM bank_transfers
                 WHERE customer_name = ?
                   AND strftime('%Y-%m', transfer_date) = ?
                   AND transfer_type = 'CR'
-                  AND (
-                      source_bank LIKE '%GX BANK%' OR
-                      source_bank LIKE '%MAYBANK%' OR
-                      source_bank LIKE '%UOB%' OR
-                      source_bank LIKE '%OCBC%' OR
-                      source_bank LIKE '%HONG LEONG%' OR
-                      source_bank LIKE '%PUBLIC BANK%' OR
-                      source_bank LIKE '%ALLIANCE%'
-                  )
             """, (customer_name, statement_month))
             
-            result = cursor.fetchone()
-            return Decimal(str(result[0] if result and result[0] else 0))
+            transfers = cursor.fetchall()
+            
+            # 强制执行9个GZ Bank组合匹配
+            gz_payment2_total = Decimal('0.00')
+            
+            for transfer in transfers:
+                source_bank = (transfer[1] or '').upper()
+                source_holder = (transfer[2] or '').upper()
+                amount = Decimal(str(transfer[3] or 0))
+                
+                # 检查是否匹配9个GZ Bank组合
+                is_gz_transfer = False
+                for bank, holder in self.GZ_BANK_COMBINATIONS:
+                    if bank in source_bank and holder in source_holder:
+                        is_gz_transfer = True
+                        break
+                
+                if is_gz_transfer:
+                    gz_payment2_total += amount
+            
+            return gz_payment2_total
     
     def _calculate_final(self, round1: Dict[str, Decimal], gz_payment2: Decimal) -> Dict[str, Decimal]:
         """

@@ -1,7 +1,7 @@
 # Smart Credit & Loan Manager
 
 ## Overview
-The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform for Malaysian banking customers, built with Flask. Its purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation for 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization (debt consolidation, balance transfers, loan refinancing). The long-term vision includes expanding into exclusive mortgage interest discounts and SME financing.
+The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. Its primary purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation for 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization (debt consolidation, balance transfers, loan refinancing). The long-term vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -41,83 +41,63 @@ The platform enforces a professional design using a **MINIMAL 3-COLOR PALETTE ON
 - **Black (#000000)**: Primary background
 - **Hot Pink (#FF007F)**: Primary accent, highlights, revenue, income, credits
 - **Dark Purple (#322446)**: Secondary accent, expenses, debits, borders
-The design system emphasizes clean layouts with bilingual support (English/Chinese).
+The design system emphasizes clean layouts with bilingual support (English/Chinese) and strict adherence to UI style protection clauses.
 
 **Navigation Structure**:
 The main navigation features 8 core modules: DASHBOARD, CUSTOMERS, CREDIT CARDS, SAVINGS, RECEIPTS, LOANS, REPORT CENTER, MONTHLY SUMMARY, and ADMIN.
 
-**Customer Pages Reorganization (2025-11-18):**
-The customer management pages have been reorganized to properly separate admin views from customer views with strict access control:
+**Customer Management**:
+Customer pages are reorganized with strict access control: `/admin/customers` for admin/accountant roles and `/customers` for individual customer profiles. Access control is session-based, implemented via context processors and template guards.
 
-**Admin-Only Routes**:
-- `/admin/customers` - Full customer list (admin/accountant only, protected by `@require_admin_or_accountant`)
-- Navigation "CUSTOMERS" button only visible to admin/accountant roles
-- Template: `admin_customers_list.html`
-
-**Customer-Facing Routes**:
-- `/customers` - Individual customer profile view (customer authentication required)
-- Displays only the logged-in customer's own data (cards, accounts, statements)
-- Redirects admins to `/admin/customers`
-- Template: `customer_profile.html`
-
-**Access Control Implementation**:
-- Context processor injects `is_admin_or_accountant` and `is_admin` flags via session data inspection (no API calls)
-- Navigation visibility controlled by `{% if is_admin_or_accountant %}` template guards
-- Session-based authentication prevents cross-customer data access
-- All customer data queries parameterized by verified `customer_id`
-
-**Department Separation (CRITICAL)**:
-- **CREDIT CARDS Department**: Manages credit card customers. Files stored in `credit_card_files/{customer_name}/`.
-- **ACCOUNTING Department** (Future): Reserved for Acc & Audit professional clients.
+**Department Separation**:
+- **CREDIT CARDS Department**: Manages credit card customers.
+- **ACCOUNTING Department**: Reserved for Acc & Audit professional clients (future).
 
 ### Technical Implementations
 The backend uses Flask with SQLite and a context manager for database interactions. Jinja2 handles server-side rendering, complemented by Bootstrap 5 and Bootstrap Icons for the UI. Plotly.js provides client-side data visualization, and PDF.js is used for client-side PDF-to-CSV conversion. A robust notification system provides real-time updates. The AI system uses a unified client architecture supporting multiple providers (Perplexity primary, OpenAI backup) with automatic failover and environment-based configuration.
 
-**PDF Parsing Architecture - Google Document AI (2025-11-17):** System now uses Google Document AI for PDF parsing instead of DocParser. Authentication requires Service Account JSON. Google Document AI provides 98-99.9% OCR accuracy for text extraction but has limitations with multi-column table layouts in Malaysian bank statements. Text extraction works well but transaction details (dates, amounts) may require additional post-processing logic due to column layout preservation issues.
+**Credit Card Calculation System**:
+A 2-round calculation engine (services/credit_card_core.py) implements 9 metrics, supporting negative balances and an independent 1% miscellaneous fee system (services/miscellaneous_fee.py). A 4-layer validation system (services/credit_card_validation.py) ensures data integrity. An automated pipeline (services/auto_processor.py) handles upload to fee generation. All calculations use Decimal types for precision.
 
-**PDF Batch Processing System (2025-11-17):** Complete automated system for processing Cheok Jun Yoon's 41 credit card statement PDFs. Features Document AI extraction, intelligent 5-category transaction classification (Owners/GZ/Suppliers + Payments), automated Outstanding Balance calculation with 1% supplier fee, and dual Excel/JSON reporting. System supports concurrent processing with configurable business rules.
+**PDF Parsing Architecture**:
+Uses Google Document AI for high-accuracy OCR parsing of PDFs, with post-processing logic for multi-column table layouts.
 
-**Professional Excel Formatting Engine (2025-11-17):** Enterprise-grade Excel formatting system implementing 13 professional standards using CreditPilot official color scheme (Main Pink #FFB6C1 + Deep Brown #3E2723). Features include optimized column widths (18-40 chars), row heights (30px header/25px data), custom category colors (5 types), intelligent icons (🏪 suppliers/💼 GZ), alternating row colors, freeze panes, auto filters, and print optimization (landscape/headers/footers). All colors managed via config/colors.json for brand consistency. Excel formatter class (utils/excel_formatter.py) provides reusable formatting methods across all reports.
+**PDF Batch Processing System**:
+Automated system for processing credit card statement PDFs, including Document AI extraction, 5-category transaction classification, automated outstanding balance calculation, and dual Excel/JSON reporting.
 
-**System Color Audit (2025-11-17):** Comprehensive color configuration audit across all Python, CSS, JSON, and HTML files. Found 239 instances of core 3-color palette usage (#000000 Black, #FF007F Hot Pink, #322446 Dark Purple). Excel formatting colors (#FFB6C1, #3E2723) fully compatible with Web UI core palette. Identified 3 potential conflicts: Galaxy Theme (silver/gold system), monthly report emails (orange-red vs pink), loan system gold accents. Complete audit report: docs/color_audit_report.md. Compliance score: 85/100.
+**Professional Excel Formatting Engine**:
+Enterprise-grade Excel formatting system using 13 professional standards and a CreditPilot official color scheme (Main Pink #FFB6C1 + Deep Brown #3E2723), providing consistent and visually appealing reports.
 
-**Unified Color Management System (2025-11-17):** Complete color configuration unification project establishing single source of truth for all system colors. Deprecated conflicting color schemes (Galaxy Theme gold/silver, monthly report orange-red). Created centralized config/colors.json v2.0.0 managing core colors, status colors, Excel colors, and deprecated colors. Built Python config/colors.py module with validation and CSS variable generation. Generated static/css/colors.css with predefined CSS variables and helper classes. Updated all Python services (PDF generator, email notifications, monthly reports) to use centralized config. Developed automated compliance checker (scripts/check_color_compliance.py) scanning all .py/.css/.html files for hardcoded colors. Published comprehensive COLOR_USAGE_GUIDE.md documenting mandatory usage patterns. Initial compliance scan: 117 files scanned, 77 files with 1283 violations (62 deprecated, 1221 unapproved colors) - flagged for future remediation. System now enforces strict 3-color palette via automated checks and documentation.
-
-**VBA Hybrid Architecture (LEGACY):** Previously used VBA-based parsing with Excel client. Kept for reference. Python Excel/OCR parsers are retained as backup.
+**Unified Color Management System**:
+Centralized color configuration via `config/colors.json` and a Python module (`config/colors.py`), generating CSS variables (`static/css/colors.css`). All components adhere to a strict 3-color palette (Black, Hot Pink, Dark Purple) enforced by automated compliance checks.
 
 ### Feature Specifications
 **Core Features:**
 - **Financial Management:** Statement ingestion (PDF OCR, Excel), transaction categorization, savings tracking, dual verification.
-- **AI-Powered Advisory:** Credit card recommendations, financial optimization, cash flow prediction, anomaly detection, financial health scoring, and loan eligibility assessment.
-- **AI Smart Assistant V3 (Enterprise Intelligence):** Advanced multi-provider AI system with real-time web search, floating chatbot UI, cross-module analysis, automated daily financial reports, system analytics, and comprehensive conversation history logging.
+- **AI-Powered Advisory:** Credit card recommendations, financial optimization, cash flow prediction, anomaly detection, financial health scoring, loan eligibility assessment.
+- **AI Smart Assistant V3:** Advanced multi-provider AI with real-time web search, floating chatbot, cross-module analysis, automated daily financial reports.
 - **Income Document System:** Upload, OCR processing, and standardization of income proof documents.
-- **Dual-Engine Loan Evaluation System (CREDITPILOT):** Production-ready dual-mode architecture supporting both legacy DSR/DSCR engines and modern Malaysian banking standards (DTI/FOIR/CCRIS/BRR). Implements comprehensive risk scoring with intelligent product matching across 12+ banks/Fintech providers. CTOS data serves as the exclusive debt commitment source.
-- **Reporting & Export:** Professional Excel/CSV/PDF reports, automated monthly reports, self-service Report Center with batch export.
+- **Dual-Engine Loan Evaluation System (CREDITPILOT):** Production-ready system supporting both legacy (DSR/DSCR) and modern Malaysian banking standards (DTI/FOIR/CCRIS/BRR), with comprehensive risk scoring and product matching across 12+ banks. CTOS data is the exclusive debt commitment source.
+- **Reporting & Export:** Professional Excel/CSV/PDF reports, automated monthly reports, self-service Report Center.
 - **Workflow Automation:** Batch operations, rule engine for transaction matching.
 - **Security & Compliance:** Multi-role authentication & authorization (RBAC), audit logging, data integrity validation.
 - **User Experience:** Unified navigation, context-aware buttons, bilingual i18n, responsive design.
-- **Specialized Systems:** Intelligent Loan Matcher (CTOS parsing, DSR calculation), Receipt Management (OCR for JPG/PNG), Credit Card Ledger, Exception Center.
+- **Specialized Systems:** Intelligent Loan Matcher (CTOS parsing, DSR calculation), Receipt Management (OCR), Credit Card Ledger, Exception Center.
 - **Multi-Channel Notifications:** In-app, email, and SMS.
 - **Admin System:** User registration, secure login, evidence archiving with RBAC.
-- **CTOS Consent System**: Integrates personal (e-signature + IC upload) and company (SSM upload + company stamp) CTOS consent, generating professional PDF reports.
+- **CTOS Consent System**: Integrates personal and company CTOS consent, generating professional PDF reports.
 
 ### System Design Choices
 - **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, and advisory.
 - **Design Patterns:** Repository Pattern, Template Inheritance, Context Manager, Service Layer, Strategy Pattern (multi-provider AI).
 - **Security:** Session secret key, file upload limits, SQL injection prevention, audit logging, API key management.
-- **Data Accuracy:** Robust monthly ledger engine ensuring 100% accuracy via previous balance extraction and DR/CR classification.
-- **Monthly Statement Architecture:** One monthly statement record per bank + month, aggregating 6 mandatory classification fields.
+- **Data Accuracy:** Robust monthly ledger engine ensuring 100% accuracy.
+- **Monthly Statement Architecture:** One monthly statement record per bank + month.
 - **AI Architecture:** Unified client interface with automatic provider switching, graceful degradation, and environment-based configuration.
-- **Dual-Engine Loan Architecture:** Legacy DSR/DSCR engines preserved alongside modern risk_engine. API layer supports mode-based routing with backward compatibility. Product matcher recommends 3-10 suitable banks based on risk grade. System uses CTOS commitment data exclusively.
+- **Dual-Engine Loan Architecture:** Preserves legacy DSR/DSCR engines alongside modern risk_engine, with an API layer for mode-based routing and product matching. Exclusively uses CTOS commitment data.
 
 ### Security & Access Control
-A production-ready Unified RBAC Implementation protects 32+ functions. The `@require_admin_or_accountant` decorator supports Flask session-based RBAC and FastAPI token verification. Access levels include Admin (full access) and Accountant (full operational access), with Customer and Unauthenticated roles restricted.
-
-**Route-Level Access Control (2025-11-18)**:
-- `/admin/customers`: Protected by `@require_admin_or_accountant` decorator
-- `/customers`: Validates customer session tokens, includes edge case handling for missing/invalid sessions
-- Context processor provides safe role checking without API calls or session mutations
-- Navigation visibility dynamically adjusts based on user role
+A production-ready Unified RBAC Implementation protects 32+ functions using `@require_admin_or_accountant` decorator supporting Flask session-based RBAC and FastAPI token verification. Access levels include Admin, Accountant, Customer, and Unauthenticated roles. Route-level access control is implemented for specific endpoints.
 
 ## External Dependencies
 
@@ -130,21 +110,23 @@ A production-ready Unified RBAC Implementation protects 32+ functions. The `@req
 - **Visualization**: `plotly.js`
 - **UI Framework**: `bootstrap@5.3.0`, `bootstrap-icons@1.11.0`
 - **Notification Services**: `sendgrid`, `twilio`, `py-vapid`, `pywebpush`
+- **SFTP**: `paramiko`
 
 ### External APIs & Integrations
 - **Bank Negara Malaysia Public API**: `https://api.bnm.gov.my` for interest rates.
-- **SendGrid API**: Production email delivery system.
+- **Google Document AI**: For PDF parsing and OCR.
+- **SendGrid API**: Email delivery.
 - **Twilio API**: SMS delivery.
-- **Perplexity AI API**: Primary AI provider with real-time web search capabilities (Model: `sonar`).
-- **OpenAI API**: Backup AI provider (gpt-4o-mini model) with automatic fallback.
-- **FastAPI Backend (Port 8000)**: Handles audit logging, notifications, AI assistant endpoints, and real-time APIs.
+- **Perplexity AI API**: Primary AI provider (Model: `sonar`).
+- **OpenAI API**: Backup AI provider (gpt-4o-mini).
+- **CTOS Data**: Exclusive source for debt commitment data in loan evaluation.
 
 ### Database
 - **SQLite**: Primary file-based relational database (`db/smart_loan_manager.db`).
 - **PostgreSQL**: Used for notifications and audit logs.
 
 ### File Storage
-- A `FileStorageManager` handles standard path generation and directory management, typically `static/uploads/customers/{customer_code}/`.
+- `FileStorageManager` handles standard path generation and directory management, typically `static/uploads/customers/{customer_code}/`.
 
 ### SFTP ERP Automation System
-A production-ready SFTP synchronization system, implemented with a FastAPI backend (Port 8000) and Paramiko, automatically exports 7 types of financial data to SQL ACC ERP Edition via secure SFTP every 10 minutes.
+A FastAPI backend (Port 8000) with Paramiko automatically exports 7 types of financial data to SQL ACC ERP Edition via secure SFTP every 10 minutes.

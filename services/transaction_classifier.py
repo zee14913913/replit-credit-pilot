@@ -20,21 +20,41 @@ class TransactionClassifier:
             'HUAWEI', 'Pasar Raya', 'Puchong Herbs'
         ]
         
-        # 9间GZ银行的精确组合（银行+持卡人）
+        # 9间GZ银行的精确组合（银行+持卡人） - 强制完整法定名称
+        # 遵循ARCHITECT_CONSTRAINTS.md §1.2.1规范
+        # ⚠️ 持卡人名称必须完整，只允许银行名称别名
         self.gz_bank_combinations = [
-            ('GX BANK', 'TAN ZEE LIANG'),           # 1. INFINITE GZ - Tan Zee Liang
+            # 1. Tan Zee Liang (GX Bank) - 支持银行别名
+            ('GX BANK', 'TAN ZEE LIANG'),
             ('GXBANK', 'TAN ZEE LIANG'),
-            ('MAYBANK', 'YEO CHEE WANG'),           # 2. Yeo Chee Wang
-            ('GX BANK', 'YEO CHEE WANG'),           # 3. Yeo Chee Wang
+            
+            # 2. Yeo Chee Wang (Maybank)
+            ('MAYBANK', 'YEO CHEE WANG'),
+            
+            # 3. Yeo Chee Wang (GX Bank) - 支持银行别名
+            ('GX BANK', 'YEO CHEE WANG'),
             ('GXBANK', 'YEO CHEE WANG'),
-            ('UOB', 'YEO CHEE WANG'),               # 4. Yeo Chee Wang
-            ('OCBC', 'YEO CHEE WANG'),              # 5. Yeo Chee Wang
-            ('OCBC', 'TEO YOK CHU'),                # 6. Teo Yok Chu - Yeo Chee Wang
-            ('HONG LEONG', 'INFINITE GZ'),          # 7. Infinite GZ Sdn Bhd
-            ('HLB', 'INFINITE GZ'),
-            ('PUBLIC BANK', 'AI SMART TECH'),       # 8. Ai Smart Tech
+            
+            # 4. Yeo Chee Wang (UOB)
+            ('UOB', 'YEO CHEE WANG'),
+            
+            # 5. Yeo Chee Wang (OCBC)
+            ('OCBC', 'YEO CHEE WANG'),
+            
+            # 6. Teo Yok Chu (OCBC)
+            ('OCBC', 'TEO YOK CHU'),
+            
+            # 7. Infinite GZ Sdn Bhd (Hong Leong Bank) - 完整法定名称强制执行，支持银行别名
+            ('HONG LEONG BANK', 'INFINITE GZ SDN BHD'),
+            ('HONG LEONG', 'INFINITE GZ SDN BHD'),
+            ('HLB', 'INFINITE GZ SDN BHD'),
+            
+            # 8. Ai Smart Tech (Public Bank) - 支持银行别名
+            ('PUBLIC BANK', 'AI SMART TECH'),
             ('PBB', 'AI SMART TECH'),
-            ('ALLIANCE BANK', 'AI SMART TECH'),     # 9. Ai Smart Tech
+            
+            # 9. Ai Smart Tech (Alliance Bank) - 支持银行别名
+            ('ALLIANCE BANK', 'AI SMART TECH'),
             ('ALLIANCE', 'AI SMART TECH')
         ]
         
