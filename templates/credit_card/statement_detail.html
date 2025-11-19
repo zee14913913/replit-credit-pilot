@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block title %}账单详情 - {{ statement.bank_name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid" style="padding: 2rem; max-width: 98%;">
+    
+    <!-- 页面标题 -->
+    <div class="section-header" style="margin-bottom: 2rem;">
+        <h1 style="color: #FF007F; font-weight: 700; font-size: 2.5rem;">
+            <i class="bi bi-file-text"></i> 账单详情 - {{ statement.bank_name }}
+        </h1>
+        <p style="color: rgba(255,255,255,0.7); font-size: 1.1rem;">
+            Credit Card Statement Detail - {{ statement.statement_month }}
+        </p>
+        <a href="/credit-card" class="btn btn-sm" style="background: linear-gradient(135deg, #322446 0%, #322446 100%); color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none;">
+            <i class="bi bi-arrow-left"></i> 返回信用卡列表
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- 左侧：计算表格 -->
+        <div class="col-lg-7">
+            <div class="professional-card" style="border: 2px solid #FF007F; margin-bottom: 2rem;">
+                <div style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #FF007F; padding: 1.5rem;">
+                    <h3 style="color: #FF007F; font-weight: 700; margin: 0;">
+                        <i class="bi bi-calculator"></i> 计算结果
+                    </h3>
+                </div>
+                <div style="padding: 2rem;">
+                    
+                    <!-- 第1轮计算 -->
+                    <h4 style="color: #FF007F; margin-bottom: 1rem;">第1轮计算（6个基础项目）</h4>
+                    <table class="table table-dark table-hover" style="margin-bottom: 2rem;">
+                        <tbody>
+                            <tr>
+                                <td style="color: rgba(255,255,255,0.9); padding: 0.8rem;">Previous Balance</td>
+                                <td style="color: #FFFFFF; font-weight: 700; text-align: right;">RM {{ "{:,.2f}".format(calculation.previous_balance) }}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: rgba(255,255,255,0.9); padding: 0.8rem;">1. Owner's Expenses</td>
+                                <td style="color: #FF007F; font-weight: 700; text-align: right;">RM {{ "{:,.2f}".format(calculation.owner_expenses) }}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: rgba(255,255,255,0.9); padding: 0.8rem;">2. GZ's Expenses</td>
+                                <td style="color: #FF007F; font-weight: 700; text-align: right;">RM {{ "{:,.2f}".format(calculation.gz_expenses) }}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: rgba(255,255,255,0.9); padding: 0.8rem;">3. Owner's Payment</td>
+                                <td style="color: #322446; font-weight: 700; text-align: right;">RM {{ "{:,.2f}".format(calculation.owner_payment) }}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: rgba(255,255,255,0.9); padding: 0.8rem;">4. GZ's Payment1</td>
+                                <td style="color: #322446; font-weight: 700; text-align: right;">RM {{ "{:,.2f}".format(calculation.gz_payment1) }}</td>
+                            </tr>
+                            <tr style="border-top: 2px solid #FF007F;">
+                                <td style="color: rgba(255,255,255,0.9); padding: 0.8rem;">5. Owner's OS Bal (Round 1)</td>
+                                <td style="color: #FFFFFF; font-weight: 700; text-align: right; font-size: 1.1rem;">RM {{ "{:,.2f}".format(calculation.owner_os_bal_round1) }}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: rgba(255,255,255,0.9); padding: 0.8rem;">6. GZ's OS Bal (Round 1)</td>
+                                <td style="color: #FFFFFF; font-weight: 700; text-align: right; font-size: 1.1rem;">RM {{ "{:,.2f}".format(calculation.gz_os_bal_round1) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 第2轮计算 -->
+                    <h4 style="color: #FF007F; margin-bottom: 1rem;">第2轮计算</h4>
+                    <table class="table table-dark table-hover" style="margin-bottom: 2rem;">
+                        <tbody>
+                            <tr>
+                                <td style="color: rgba(255,255,255,0.9); padding: 0.8rem;">7. GZ's Payment2 (从9个GZ Bank转账)</td>
+                                <td style="color: #322446; font-weight: 700; text-align: right;">RM {{ "{:,.2f}".format(calculation.gz_payment2) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 最终结果 -->
+                    <h4 style="color: #FF007F; margin-bottom: 1rem;">最终结果</h4>
+                    <table class="table table-dark table-hover">
+                        <tbody>
+                            <tr style="background: rgba(255, 0, 127, 0.1); border: 2px solid #FF007F;">
+                                <td style="color: #FF007F; font-weight: 700; padding: 1rem;">8. FINAL Owner OS Bal</td>
+                                <td style="color: #FF007F; font-weight: 700; text-align: right; font-size: 1.3rem;">RM {{ "{:,.2f}".format(calculation.final_owner_os_bal) }}</td>
+                            </tr>
+                            <tr style="background: rgba(255, 0, 127, 0.1); border: 2px solid #FF007F;">
+                                <td style="color: #FF007F; font-weight: 700; padding: 1rem;">9. FINAL GZ OS Bal</td>
+                                <td style="color: #FF007F; font-weight: 700; text-align: right; font-size: 1.3rem;">RM {{ "{:,.2f}".format(calculation.final_gz_os_bal) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- DR/CR验证 -->
+                    <div style="background: rgba(50, 36, 70, 0.3); border-left: 4px solid #322446; padding: 1rem; margin-top: 1.5rem;">
+                        <h5 style="color: #322446; margin-bottom: 0.5rem;">DR/CR平衡验证</h5>
+                        <p style="color: rgba(255,255,255,0.9); margin: 0;">
+                            Total DR: RM {{ "{:,.2f}".format(calculation.total_dr) }} | 
+                            Total CR: RM {{ "{:,.2f}".format(calculation.total_cr) }} | 
+                            差异: RM {{ "{:,.2f}".format((calculation.total_dr - calculation.total_cr)|abs) }}
+                            {% if (calculation.total_dr - calculation.total_cr)|abs <= 0.01 %}
+                            <span style="color: #FF007F; font-weight: 700;">✓ 平衡</span>
+                            {% else %}
+                            <span style="color: #FFFFFF; font-weight: 700;">✗ 不平衡</span>
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <!-- 手续费Invoice -->
+                    {% if fee_invoice %}
+                    <div style="background: rgba(255, 0, 127, 0.1); border: 2px solid #FF007F; padding: 1.5rem; margin-top: 1.5rem;">
+                        <h5 style="color: #FF007F; margin-bottom: 1rem;">💰 手续费Invoice</h5>
+                        <p style="color: rgba(255,255,255,0.9);">
+                            Invoice编号: <strong>{{ fee_invoice.invoice_number }}</strong><br>
+                            GZ's Expenses: RM {{ "{:,.2f}".format(fee_invoice.gz_expenses) }}<br>
+                            手续费 (1%): <strong style="color: #FF007F;">RM {{ "{:,.2f}".format(fee_invoice.fee_amount) }}</strong>
+                        </p>
+                        <a href="{{ fee_invoice.pdf_path }}" target="_blank" class="btn btn-sm" style="background: linear-gradient(135deg, #FF007F 0%, #322446 100%); color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none;">
+                            <i class="bi bi-file-pdf"></i> 下载Invoice PDF
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧：PDF预览 + Receipts附件 -->
+        <div class="col-lg-5">
+            <!-- PDF预览 -->
+            <div class="professional-card" style="border: 2px solid #322446; margin-bottom: 2rem;">
+                <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #322446; padding: 1.5rem;">
+                    <h3 style="color: #322446; font-weight: 700; margin: 0;">
+                        <i class="bi bi-file-pdf"></i> 原始PDF账单
+                    </h3>
+                </div>
+                <div style="padding: 1.5rem; text-align: center;">
+                    {% if statement.file_path %}
+                    <a href="/{{ statement.file_path }}" target="_blank" class="btn" style="background: linear-gradient(135deg, #FF007F 0%, #322446 100%); color: white; padding: 1rem 2rem; font-size: 1.1rem; border-radius: 8px; text-decoration: none; display: inline-block; margin-bottom: 1rem;">
+                        <i class="bi bi-eye"></i> 在新标签页查看PDF
+                    </a>
+                    <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">{{ statement.file_path.split('/')[-1] }}</p>
+                    {% else %}
+                    <p style="color: rgba(255,255,255,0.5);">无PDF文件</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Receipts附件 -->
+            <div class="professional-card" style="border: 2px solid #322446;">
+                <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #322446; padding: 1.5rem;">
+                    <h3 style="color: #322446; font-weight: 700; margin: 0;">
+                        <i class="bi bi-paperclip"></i> Receipts附件
+                    </h3>
+                </div>
+                <div style="padding: 1.5rem;">
+                    {% if receipts and receipts|length > 0 %}
+                    <div class="list-group">
+                        {% for receipt in receipts %}
+                        <a href="/{{ receipt.file_path }}" target="_blank" class="list-group-item list-group-item-action" style="background: rgba(50, 36, 70, 0.2); border: 1px solid #322446; color: #FFF; margin-bottom: 0.5rem; border-radius: 6px;">
+                            <div class="d-flex w-100 justify-content-between align-items-center">
+                                <h6 style="color: #FF007F; margin: 0;">
+                                    <i class="bi bi-file-image"></i> {{ receipt.description or receipt.filename }}
+                                </h6>
+                                <small style="color: rgba(255,255,255,0.6);">RM {{ "{:,.2f}".format(receipt.amount) }}</small>
+                            </div>
+                            <small style="color: rgba(255,255,255,0.5);">{{ receipt.date }}</small>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p style="color: rgba(255,255,255,0.5); text-align: center;">无Receipts附件</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

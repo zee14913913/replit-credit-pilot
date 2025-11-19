@@ -1175,6 +1175,20 @@ def batch_upload(customer_id):
                                 statement_id = cursor.lastrowid
                                 conn.commit()
                             
+                            # 🚀 自动触发计算系统（100%自动化）
+                            try:
+                                from services.auto_processor import auto_processor
+                                logger.info(f"🚀 自动触发计算系统 (Statement ID: {statement_id})")
+                                auto_result = auto_processor.process_uploaded_statement(statement_id)
+                                
+                                if auto_result['success']:
+                                    logger.info(f"✅ 自动处理成功 (Statement ID: {statement_id})")
+                                else:
+                                    logger.warning(f"⚠️ 自动处理有警告: {auto_result['errors']}")
+                            except Exception as auto_e:
+                                logger.error(f"❌ 自动处理失败: {auto_e}")
+                                # 不阻止上传流程，只记录错误
+                            
                             processed += 1
                             file_upload_success = True
                     else:
@@ -8544,6 +8558,76 @@ def optimization_proposal(customer_id):
 def accept_proposal(customer_id):
     """客户接受优化方案"""
     # 显示预约电话
+@app.route('/credit-card/statement/<int:statement_id>', methods=['GET'])
+@require_admin_or_accountant
+def credit_card_statement_detail(statement_id):
+    """信用卡账单详情页面 - 显示计算表格 + 原始PDF + Receipts附件"""
+    try:
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT s.id, s.statement_month, s.file_path, s.previous_balance_total,
+                       cc.bank_name, cc.card_holder_name, cc.card_number_last4,
+                       c.id as customer_id, c.name as customer_name
+                FROM statements s
+                JOIN credit_cards cc ON s.card_id = cc.id
+                JOIN customers c ON cc.customer_id = c.id
+                WHERE s.id = ?
+            ''', (statement_id,))
+            stmt_row = cursor.fetchone()
+            
+            if not stmt_row:
+                flash('账单不存在', 'error')
+                return redirect(url_for('credit_card'))
+            
+            statement = dict(stmt_row)
+            
+            # 获取计算结果
+            cursor.execute('SELECT * FROM statement_calculations WHERE statement_id = ?', (statement_id,))
+            calc_row = cursor.fetchone()
+            
+            if calc_row:
+                calculation = dict(calc_row)
+                calculation['previous_balance'] = statement.get('previous_balance_total', 0)
+            else:
+                calculation = {
+                    'previous_balance': statement.get('previous_balance_total', 0),
+                    'owner_expenses': 0, 'gz_expenses': 0, 'owner_payment': 0,
+                    'gz_payment1': 0, 'gz_payment2': 0, 'owner_os_bal_round1': 0,
+                    'gz_os_bal_round1': 0, 'final_owner_os_bal': 0, 'final_gz_os_bal': 0,
+                    'total_dr': 0, 'total_cr': 0
+                }
+            
+            # 获取手续费Invoice
+            cursor.execute('''
+                SELECT * FROM miscellaneous_fee_invoices
+                WHERE customer_id = ? AND year_month = ?
+            ''', (statement['customer_id'], statement['statement_month']))
+            fee_row = cursor.fetchone()
+            fee_invoice = dict(fee_row) if fee_row else None
+            
+            # 获取Receipts附件
+            try:
+                cursor.execute('''
+                    SELECT id, description as filename, amount, receipt_date as date, file_path
+                    FROM receipts
+                    WHERE customer_id = ? AND strftime('%Y-%m', receipt_date) = ?
+                    ORDER BY receipt_date DESC
+                ''', (statement['customer_id'], statement['statement_month']))
+                receipts = [dict(row) for row in cursor.fetchall()]
+            except:
+                receipts = []
+        
+        return render_template('credit_card/statement_detail.html',
+                             statement=statement, calculation=calculation,
+                             fee_invoice=fee_invoice, receipts=receipts)
+    
+    except Exception as e:
+        logger.error(f'Error loading statement detail: {e}', exc_info=True)
+        flash(f'加载账单详情失败: {str(e)}', 'error')
+        return redirect(url_for('credit_card'))
+
+
     return jsonify({
         'success': True,
         'phone': '0167154052',
