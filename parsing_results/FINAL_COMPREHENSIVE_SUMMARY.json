@@ -1,0 +1,71 @@
+{
+  "customer": "Cheok Jun Yoon",
+  "period": "2025-05 to 2025-10",
+  "total_statements": 41,
+  "total_parsed": 41,
+  "completion_rate": 100.0,
+  "total_transactions": 129,
+  "total_cr": 59,
+  "total_dr": 70,
+  "total_gz": 53,
+  "gz_percentage": 41.08527131782946,
+  "banks": [
+    {
+      "bank": "AMBANK",
+      "statements": 6,
+      "transactions": 13,
+      "cr": 6,
+      "dr": 7,
+      "gz": 6
+    },
+    {
+      "bank": "AMBANK_ISLAMIC",
+      "statements": 6,
+      "transactions": 10,
+      "cr": 6,
+      "dr": 4,
+      "gz": 6
+    },
+    {
+      "bank": "HONG_LEONG",
+      "statements": 5,
+      "transactions": 6,
+      "cr": 0,
+      "dr": 6,
+      "gz": 0
+    },
+    {
+      "bank": "HSBC",
+      "statements": 6,
+      "transactions": 25,
+      "cr": 14,
+      "dr": 11,
+      "gz": 7
+    },
+    {
+      "bank": "OCBC",
+      "statements": 6,
+      "transactions": 54,
+      "cr": 27,
+      "dr": 27,
+      "gz": 27
+    },
+    {
+      "bank": "STANDARD_CHARTERED",
+      "statements": 6,
+      "transactions": 15,
+      "cr": 6,
+      "dr": 9,
+      "gz": 7
+    },
+    {
+      "bank": "UOB",
+      "statements": 6,
+      "transactions": 6,
+      "cr": 0,
+      "dr": 6,
+      "gz": 0
+    }
+  ],
+  "generated_at": "2025-11-19T09:43:10.191895"
+}

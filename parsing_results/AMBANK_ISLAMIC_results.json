@@ -1,7 +1,6 @@
 {
   "bank": "AMBANK_ISLAMIC",
   "total_statements": 6,
-  "parsed_count": 6,
   "total_transactions": 10,
   "total_cr": 6,
   "total_dr": 4,
@@ -9,14 +8,6 @@
   "results": [
     {
       "file": "AmBank_6354_2025-05-28.pdf",
-      "month": "2025-05",
-      "bank": "AMBANK_ISLAMIC",
-      "fields": {
-        "ic_no": "000005795763",
-        "minimum_payment": ".",
-        "previous_balance": ""
-      },
-      "field_extraction_rate": 12.5,
       "transactions": [
         {
           "date": "17 JUN 25",
@@ -27,22 +18,12 @@
           "classification": "GZ"
         }
       ],
-      "transaction_count": 1,
-      "cr_count": 1,
-      "dr_count": 0,
-      "gz_count": 1,
-      "owner_count": 0
+      "cr": 1,
+      "dr": 0,
+      "gz": 1
     },
     {
       "file": "AmBank_6354_2025-06-28.pdf",
-      "month": "2025-06",
-      "bank": "AMBANK_ISLAMIC",
-      "fields": {
-        "ic_no": "000005795763",
-        "minimum_payment": ".",
-        "previous_balance": ""
-      },
-      "field_extraction_rate": 12.5,
       "transactions": [
         {
           "date": "18 JUL 25",
@@ -53,22 +34,12 @@
           "classification": "GZ"
         }
       ],
-      "transaction_count": 1,
-      "cr_count": 1,
-      "dr_count": 0,
-      "gz_count": 1,
-      "owner_count": 0
+      "cr": 1,
+      "dr": 0,
+      "gz": 1
     },
     {
       "file": "AmBank_6354_2025-07-28.pdf",
-      "month": "2025-07",
-      "bank": "AMBANK_ISLAMIC",
-      "fields": {
-        "ic_no": "000005795763",
-        "minimum_payment": ".",
-        "previous_balance": ""
-      },
-      "field_extraction_rate": 12.5,
       "transactions": [
         {
           "date": "17 AUG 25",
@@ -79,22 +50,12 @@
           "classification": "GZ"
         }
       ],
-      "transaction_count": 1,
-      "cr_count": 1,
-      "dr_count": 0,
-      "gz_count": 1,
-      "owner_count": 0
+      "cr": 1,
+      "dr": 0,
+      "gz": 1
     },
     {
       "file": "AmBank_6354_2025-08-28.pdf",
-      "month": "2025-08",
-      "bank": "AMBANK_ISLAMIC",
-      "fields": {
-        "ic_no": "000005795763",
-        "minimum_payment": ".",
-        "previous_balance": ""
-      },
-      "field_extraction_rate": 12.5,
       "transactions": [
         {
           "date": "17 SEP 25",
@@ -129,22 +90,12 @@
           "classification": "Owner"
         }
       ],
-      "transaction_count": 4,
-      "cr_count": 1,
-      "dr_count": 3,
-      "gz_count": 1,
-      "owner_count": 3
+      "cr": 1,
+      "dr": 3,
+      "gz": 1
     },
     {
       "file": "AmBank_6354_2025-09-28.pdf",
-      "month": "2025-09",
-      "bank": "AMBANK_ISLAMIC",
-      "fields": {
-        "ic_no": "000005795763",
-        "minimum_payment": ".",
-        "previous_balance": ""
-      },
-      "field_extraction_rate": 12.5,
       "transactions": [
         {
           "date": "18 OCT 25",
@@ -163,21 +114,12 @@
           "classification": "Owner"
         }
       ],
-      "transaction_count": 2,
-      "cr_count": 1,
-      "dr_count": 1,
-      "gz_count": 1,
-      "owner_count": 1
+      "cr": 1,
+      "dr": 1,
+      "gz": 1
     },
     {
       "file": "AmBank_6354_2025-10-28.pdf",
-      "month": "2025-10",
-      "bank": "AMBANK_ISLAMIC",
-      "fields": {
-        "ic_no": "000005795763",
-        "previous_balance": ""
-      },
-      "field_extraction_rate": 6.25,
       "transactions": [
         {
           "date": "17 NOV 25",
@@ -188,11 +130,9 @@
           "classification": "GZ"
         }
       ],
-      "transaction_count": 1,
-      "cr_count": 1,
-      "dr_count": 0,
-      "gz_count": 1,
-      "owner_count": 0
+      "cr": 1,
+      "dr": 0,
+      "gz": 1
     }
   ]
 }

@@ -1,137 +1,175 @@
 {
   "bank": "STANDARD_CHARTERED",
   "total_statements": 6,
-  "parsed_count": 6,
-  "total_transactions": 0,
-  "total_cr": 0,
-  "total_dr": 0,
-  "total_gz": 0,
+  "total_transactions": 15,
+  "total_cr": 6,
+  "total_dr": 9,
+  "total_gz": 7,
   "results": [
     {
       "file": "STANDARD_CHARTERED_1237_2025-05-14.pdf",
-      "bank": "STANDARD_CHARTERED",
-      "fields": {
-        "customer_name": "opts to pay partial or minimum payment within",
-        "ic_no": "79458665107001",
-        "card_type": "Standard Chartered VISA",
-        "card_no": "2025",
-        "credit_limit": "0.00",
-        "statement_date": "03 Jun 20",
-        "payment_due_date": "03 Jun 20",
-        "full_due_amount": "0.00",
-        "minimum_payment": "0.00",
-        "previous_balance": "0.00"
-      },
-      "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
-      "dr_count": 0,
-      "gz_count": 0
+      "transactions": [
+        {
+          "date": "24 Apr",
+          "description": "MAR25 SIMPLYCASH Cashback +0",
+          "dr_amount": 0.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        },
+        {
+          "date": "17 Apr",
+          "description": "Txn Ref: 79458665107001000849712\n1,250.00\nCOC+ 0.00% EFF 0.00% 12M\n#10/12\n07 May\n07 May",
+          "dr_amount": 0.0,
+          "cr_amount": 1250.0,
+          "type": "CR",
+          "classification": "GZ"
+        },
+        {
+          "date": "14 May",
+          "description": "COC+ 8.88% EFF 15.52% 60M INT",
+          "dr_amount": 549.36,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        }
+      ],
+      "cr": 1,
+      "dr": 2,
+      "gz": 1
     },
     {
       "file": "STANDARD_CHARTERED_1237_2025-06-15.pdf",
-      "bank": "STANDARD_CHARTERED",
-      "fields": {
-        "customer_name": "opts to pay partial or minimum payment within",
-        "ic_no": "75437605159080",
-        "card_type": "Standard Chartered VISA",
-        "card_no": "2025",
-        "credit_limit": "67775.00",
-        "statement_date": "07 Jul 20",
-        "payment_due_date": "07 Jul 20",
-        "full_due_amount": "67775.00",
-        "minimum_payment": "67775.00",
-        "previous_balance": "67775.00"
-      },
-      "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
-      "dr_count": 0,
-      "gz_count": 0
+      "transactions": [
+        {
+          "date": "09 Jun",
+          "description": "HUAWEI - I-CITY SHAH ALAMMY",
+          "dr_amount": 29999.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "GZ"
+        },
+        {
+          "date": "09 Jun",
+          "description": "HUAWEI I-CITY SHAH ALAMMY",
+          "dr_amount": 37776.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "GZ"
+        },
+        {
+          "date": "17 May",
+          "description": "Txn Ref: 79458665137001000902218\nCOC+ 0.00% EFF 0.00% 12M\n#11/12\n1,250.00\nNEW BALANCE / Baki Baru\nMINIMUM PAYMENT DUE / Pembayaran\nMinima\n1,250.00\n1,250.00\nStandard Chartered\nCredit Card Statement\nPenyata Kad Anda\nCHEOK JUN YOON\nPage/Halaman 3 of 4\nYOUR ACCOUNT ACTIVITIES I AKTIVITI-AKTIVITI AKAUN ANDA\nCASH ON CALL PLUS\n9458-66XX-XXXX-9153\ne-Statement\nPosting\nDate\nTarikh Bil\nDiterima\nTransaction\nDate\nTarikh\nTransaksi\nDescription\nDiskripsi\nRM Amount\nJumlah RM\nCurrency Amount\nJumlah Matawang\nTransaction Reference [Txn Ref]\nRujukan Urusniaga\n/\nTax Invoice Ref. No [Inv Ref]\nNombor Rujukan Cukai Invois\n549.36\nBALANCE FROM PREVIOUS\nSTATEMENT\nBaki dari penyata sebelumnya\n27 May\n27 May\n-CTP INT CHGS",
+          "dr_amount": 0.0,
+          "cr_amount": 2608.91,
+          "type": "CR",
+          "classification": "Owner"
+        },
+        {
+          "date": "27 May",
+          "description": "Txn Ref: 79458665147001000061823\n68,000.00\nCOC+ 8.88% EFF 15.52% 60M\n#01/60\n03 Jun\n03 Jun",
+          "dr_amount": 0.0,
+          "cr_amount": 20000.0,
+          "type": "CR",
+          "classification": "GZ"
+        },
+        {
+          "date": "05 Jun",
+          "description": "Txn Ref: 2025060404785929153808\n19,900.00CR\nDUITNOW PAY-TO-ACCOUNT\nAI SMART TECH SDN. B\n20250604MFBBMYKLO100CM0448\n544\nTRANSFER FROM ABMB\n05 Jun\n04 Jun",
+          "dr_amount": 0.0,
+          "cr_amount": 31258.27,
+          "type": "CR",
+          "classification": "GZ"
+        }
+      ],
+      "cr": 3,
+      "dr": 2,
+      "gz": 4
     },
     {
       "file": "STANDARD_CHARTERED_1237_2025-07-14.pdf",
-      "bank": "STANDARD_CHARTERED",
-      "fields": {
-        "customer_name": "opts to pay partial or minimum payment within",
-        "ic_no": "20250709008515",
-        "card_type": "Standard Chartered VISA",
-        "card_no": "2025",
-        "credit_limit": "60738.83",
-        "statement_date": "04 Aug 20",
-        "payment_due_date": "04 Aug 20",
-        "full_due_amount": "60738.83",
-        "minimum_payment": "60738.83",
-        "previous_balance": "60738.83"
-      },
-      "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
-      "dr_count": 0,
-      "gz_count": 0
+      "transactions": [
+        {
+          "date": "07 Jul",
+          "description": "LATE CHARGES",
+          "dr_amount": 100.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        },
+        {
+          "date": "09 Jul",
+          "description": "Txn Ref: 2025070900851591237805\n790.00CR\nDUITNOW PAY-TO-ACCOUNT\nYEO CHEE WANG\n20250709MBBEMYKL0100RM1194\n1889\nPAY ON BEHALF\n09 Jul\n09 Jul",
+          "dr_amount": 0.0,
+          "cr_amount": 7900.0,
+          "type": "CR",
+          "classification": "GZ"
+        },
+        {
+          "date": "14 Jul",
+          "description": "EMIS 2126102978US",
+          "dr_amount": 126.25,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        },
+        {
+          "date": "14 Jul",
+          "description": "ANNUAL FEE",
+          "dr_amount": 250.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        },
+        {
+          "date": "14 Jul",
+          "description": "INTEREST",
+          "dr_amount": 1177.58,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        },
+        {
+          "date": "17 Jun",
+          "description": "Txn Ref: 79458665168001000785094\nCOC+ 0.00% EFF 0.00% 12M\n#12/12\n1,250.00\n07 Jul\n07 Jul\nLATE CHARGES",
+          "dr_amount": 12.5,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        },
+        {
+          "date": "08 Jul",
+          "description": "Txn Ref: 2025070802270103234808\n2,512.50CR\nDUITNOW PAY-TO-ACCOUNT\nCHEOK JUN YOON\n20250708MBBEMYKL010ORM1088\n7304\nJUNE\n14 Jul\n14 Jul\nINTEREST",
+          "dr_amount": 0.0,
+          "cr_amount": 45.0,
+          "type": "CR",
+          "classification": "GZ"
+        }
+      ],
+      "cr": 2,
+      "dr": 5,
+      "gz": 2
     },
     {
       "file": "STANDARD_CHARTERED_1237_2025-08-14.pdf",
-      "bank": "STANDARD_CHARTERED",
-      "fields": {
-        "customer_name": "opts to pay a partial or minimum amount",
-        "ic_no": "75437605211300",
-        "card_type": "Standard Chartered VISA",
-        "card_no": "2025",
-        "credit_limit": "68813.39",
-        "statement_date": "14 Aug 20",
-        "payment_due_date": "14 Aug 20",
-        "full_due_amount": "68813.39",
-        "minimum_payment": "68813.39",
-        "previous_balance": "68813.39"
-      },
       "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
-      "dr_count": 0,
-      "gz_count": 0
+      "cr": 0,
+      "dr": 0,
+      "gz": 0
     },
     {
       "file": "STANDARD_CHARTERED_1237_2025-09-14.pdf",
-      "bank": "STANDARD_CHARTERED",
-      "fields": {
-        "customer_name": "opts to pay a partial or minimum amount",
-        "ic_no": "05404785230001",
-        "card_type": "Standard Chartered VISA",
-        "card_no": "2025",
-        "credit_limit": "72718.54",
-        "statement_date": "14 Sep 20",
-        "payment_due_date": "14 Sep 20",
-        "full_due_amount": "72718.54",
-        "minimum_payment": "72718.54",
-        "previous_balance": "72718.54"
-      },
       "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
-      "dr_count": 0,
-      "gz_count": 0
+      "cr": 0,
+      "dr": 0,
+      "gz": 0
     },
     {
       "file": "STANDARD_CHARTERED_1237_2025-10-14.pdf",
-      "bank": "STANDARD_CHARTERED",
-      "fields": {
-        "customer_name": "opts to pay a partial or minimum amount",
-        "ic_no": "198401003274",
-        "card_type": "Standard Chartered VISA",
-        "card_no": "2025",
-        "credit_limit": "73889.93",
-        "statement_date": "14 Oct 20",
-        "payment_due_date": "14 Oct 20",
-        "full_due_amount": "73889.93",
-        "minimum_payment": "73889.93",
-        "previous_balance": "73889.93"
-      },
       "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
-      "dr_count": 0,
-      "gz_count": 0
+      "cr": 0,
+      "dr": 0,
+      "gz": 0
     }
   ]
 }

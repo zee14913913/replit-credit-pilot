@@ -1,7 +1,6 @@
 {
   "bank": "UOB",
   "total_statements": 6,
-  "parsed_count": 6,
   "total_transactions": 6,
   "total_cr": 0,
   "total_dr": 6,
@@ -9,19 +8,6 @@
   "results": [
     {
       "file": "UOB_3530_2025-05-13.pdf",
-      "bank": "UOB",
-      "fields": {
-        "customer_name": "UOB CARD CENTRE",
-        "ic_no": "861222101234",
-        "card_type": " it will be converted through Visa",
-        "card_no": "2025\n2026\n2027\n2028",
-        "credit_limit": "16000.00",
-        "statement_date": "13 MAY 25",
-        "payment_due_date": "13 MAY 25",
-        "full_due_amount": "16000.00",
-        "minimum_payment": "16000.00",
-        "previous_balance": "16000.00"
-      },
       "transactions": [
         {
           "date": "02 JUN 25",
@@ -32,26 +18,12 @@
           "classification": "Owner"
         }
       ],
-      "transaction_count": 1,
-      "cr_count": 0,
-      "dr_count": 1,
-      "gz_count": 0
+      "cr": 0,
+      "dr": 1,
+      "gz": 0
     },
     {
       "file": "UOB_3530_2025-06-13.pdf",
-      "bank": "UOB",
-      "fields": {
-        "customer_name": "UOB CARD CENTRE",
-        "ic_no": "861222101234",
-        "card_type": " it will be converted through Visa",
-        "card_no": "2025\n2026\n2027\n2028",
-        "credit_limit": "16000.00",
-        "statement_date": "13 JUN 25",
-        "payment_due_date": "13 JUN 25",
-        "full_due_amount": "16000.00",
-        "minimum_payment": "16000.00",
-        "previous_balance": "16000.00"
-      },
       "transactions": [
         {
           "date": "03 JUL 25",
@@ -62,26 +34,12 @@
           "classification": "Owner"
         }
       ],
-      "transaction_count": 1,
-      "cr_count": 0,
-      "dr_count": 1,
-      "gz_count": 0
+      "cr": 0,
+      "dr": 1,
+      "gz": 0
     },
     {
       "file": "UOB_3530_2025-07-13.pdf",
-      "bank": "UOB",
-      "fields": {
-        "customer_name": "UOB CARD CENTRE",
-        "ic_no": "861222101234",
-        "card_type": " it will be converted through Visa",
-        "card_no": "2025\n2026\n2027\n2028",
-        "credit_limit": "16000.00",
-        "statement_date": "13 JUL 25",
-        "payment_due_date": "13 JUL 25",
-        "full_due_amount": "22000.00",
-        "minimum_payment": "22000.00",
-        "previous_balance": "22000.00"
-      },
       "transactions": [
         {
           "date": "02 AUG 25",
@@ -92,25 +50,12 @@
           "classification": "Owner"
         }
       ],
-      "transaction_count": 1,
-      "cr_count": 0,
-      "dr_count": 1,
-      "gz_count": 0
+      "cr": 0,
+      "dr": 1,
+      "gz": 0
     },
     {
       "file": "UOB_3530_2025-08-13.pdf",
-      "bank": "UOB",
-      "fields": {
-        "customer_name": "UOB CARD CENTRE",
-        "card_type": " it will be converted through Visa",
-        "card_no": "2025\n2026\n2027\n2028",
-        "credit_limit": "22000.00",
-        "statement_date": "13 AUG 25",
-        "payment_due_date": "13 AUG 25",
-        "full_due_amount": "22000.00",
-        "minimum_payment": "22000.00",
-        "previous_balance": "22000.00"
-      },
       "transactions": [
         {
           "date": "02 SEP 25",
@@ -121,25 +66,12 @@
           "classification": "Owner"
         }
       ],
-      "transaction_count": 1,
-      "cr_count": 0,
-      "dr_count": 1,
-      "gz_count": 0
+      "cr": 0,
+      "dr": 1,
+      "gz": 0
     },
     {
       "file": "UOB_3530_2025-09-13.pdf",
-      "bank": "UOB",
-      "fields": {
-        "customer_name": "UOB CARD CENTRE",
-        "card_type": " it will be converted through Visa",
-        "card_no": "2025\n2026\n2027\n2028",
-        "credit_limit": "16000.00",
-        "statement_date": "13 SEP 25",
-        "payment_due_date": "13 SEP 25",
-        "full_due_amount": "16000.00",
-        "minimum_payment": "16000.00",
-        "previous_balance": "16000.00"
-      },
       "transactions": [
         {
           "date": "03 OCT 25",
@@ -150,25 +82,12 @@
           "classification": "Owner"
         }
       ],
-      "transaction_count": 1,
-      "cr_count": 0,
-      "dr_count": 1,
-      "gz_count": 0
+      "cr": 0,
+      "dr": 1,
+      "gz": 0
     },
     {
       "file": "UOB_8387_2025-10-13.pdf",
-      "bank": "UOB",
-      "fields": {
-        "customer_name": "UOB CARD CENTRE",
-        "card_type": " it will be converted through Visa",
-        "card_no": "2025\n2026\n2027\n2028",
-        "credit_limit": "16000.00",
-        "statement_date": "13 OCT 25",
-        "payment_due_date": "13 OCT 25",
-        "full_due_amount": "16000.00",
-        "minimum_payment": "16000.00",
-        "previous_balance": "16000.00"
-      },
       "transactions": [
         {
           "date": "02 NOV 25",
@@ -179,10 +98,9 @@
           "classification": "Owner"
         }
       ],
-      "transaction_count": 1,
-      "cr_count": 0,
-      "dr_count": 1,
-      "gz_count": 0
+      "cr": 0,
+      "dr": 1,
+      "gz": 0
     }
   ]
 }

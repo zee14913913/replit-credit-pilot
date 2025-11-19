@@ -2,10 +2,10 @@
   "bank": "HSBC",
   "total_statements": 6,
   "parsed_count": 6,
-  "total_transactions": 0,
-  "total_cr": 0,
-  "total_dr": 0,
-  "total_gz": 0,
+  "total_transactions": 25,
+  "total_cr": 14,
+  "total_dr": 11,
+  "total_gz": 7,
   "results": [
     {
       "file": "HSBC_0034_2025-05-13.pdf",
@@ -24,12 +24,112 @@
         "previous_balance": "50.00"
       },
       "field_extraction_rate": 62.5,
-      "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
-      "dr_count": 0,
-      "gz_count": 0,
-      "owner_count": 0
+      "transactions": [
+        {
+          "date": "07 MAY",
+          "description": "PAYMENT - THANK YOU",
+          "dr_amount": 0.0,
+          "cr_amount": 1369.86,
+          "type": "CR",
+          "classification": "Owner",
+          "amount": 1369.86
+        },
+        {
+          "date": "07 MAY",
+          "description": "PETRON JALAN AMPANGAN SEREMBAN MY",
+          "dr_amount": 0.0,
+          "cr_amount": 13874.21,
+          "type": "CR",
+          "classification": "GZ",
+          "amount": 13874.21
+        },
+        {
+          "date": "14 APR",
+          "description": "BASE CASHBACK CREDIT",
+          "dr_amount": 0.0,
+          "cr_amount": 60.0,
+          "type": "CR",
+          "classification": "GZ",
+          "amount": 60.0
+        },
+        {
+          "date": "15 APR",
+          "description": "PETRON SEREMBAN 2 IJM SEREMBAN MY",
+          "dr_amount": 1200.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 1200.0
+        },
+        {
+          "date": "15 APR",
+          "description": "PETRON SEREMBAN 2 IJM SEREMBAN MY",
+          "dr_amount": 60.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 60.0
+        },
+        {
+          "date": "16 APR",
+          "description": "PETRON RSA SEREM BAN NB SEREM BAN MY",
+          "dr_amount": 60.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 60.0
+        },
+        {
+          "date": "20 APR",
+          "description": "PETRON RSA SEREMBAN NB SEREMBAN MY",
+          "dr_amount": 60.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 60.0
+        },
+        {
+          "date": "13 APR",
+          "description": "PETRON RSA SEREMBAN NB SEREM BAN MY",
+          "dr_amount": 50.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 50.0
+        },
+        {
+          "date": "14 APR",
+          "description": "PETRON LABU SPUR (FI) SEREMBAN MY",
+          "dr_amount": 60.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 60.0
+        },
+        {
+          "date": "14 APR",
+          "description": "PETRON SEREMBAN 2 IJM SEREMBAN MY",
+          "dr_amount": 60.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 60.0
+        },
+        {
+          "date": "15 APR",
+          "description": "PETRON IOI PARK (FI) PUCHONG MY",
+          "dr_amount": 60.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 60.0
+        }
+      ],
+      "transaction_count": 11,
+      "cr_count": 3,
+      "dr_count": 8,
+      "gz_count": 2,
+      "owner_count": 9
     },
     {
       "file": "HSBC_0034_2025-06-14.pdf",
@@ -48,12 +148,67 @@
         "previous_balance": "24007.94"
       },
       "field_extraction_rate": 62.5,
-      "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
-      "dr_count": 0,
-      "gz_count": 0,
-      "owner_count": 0
+      "transactions": [
+        {
+          "date": "15 MAY",
+          "description": "BASE CASHBACK CREDIT",
+          "dr_amount": 0.0,
+          "cr_amount": 50.0,
+          "type": "CR",
+          "classification": "GZ",
+          "amount": 50.0
+        },
+        {
+          "date": "27 MAY",
+          "description": "ShopeePay Top Up Kuala Lumpur MY",
+          "dr_amount": 0.0,
+          "cr_amount": 23.94,
+          "type": "CR",
+          "classification": "GZ",
+          "amount": 23.94
+        },
+        {
+          "date": "27 MAY",
+          "description": "ShopeePay Top Up Kuala Lumpur MY",
+          "dr_amount": 2500.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 2500.0
+        },
+        {
+          "date": "27 MAY",
+          "description": "AI SMART TECH SHAH ALAM MY",
+          "dr_amount": 2500.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "GZ",
+          "amount": 2500.0
+        },
+        {
+          "date": "27 MAY",
+          "description": "PETRON SEREMBAN 2 IJM SEREMBAN",
+          "dr_amount": 18888.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner",
+          "amount": 18888.0
+        },
+        {
+          "date": "14 MAY",
+          "description": "LATE PAYMENT CHARGE",
+          "dr_amount": 0.0,
+          "cr_amount": 40.0,
+          "type": "CR",
+          "classification": "Owner",
+          "amount": 40.0
+        }
+      ],
+      "transaction_count": 6,
+      "cr_count": 3,
+      "dr_count": 3,
+      "gz_count": 3,
+      "owner_count": 3
     },
     {
       "file": "HSBC_0034_2025-07-13.pdf",
@@ -72,12 +227,40 @@
         "previous_balance": "23305.18"
       },
       "field_extraction_rate": 62.5,
-      "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
+      "transactions": [
+        {
+          "date": "04 JUL",
+          "description": "PAYMENT - THANK YOU",
+          "dr_amount": 0.0,
+          "cr_amount": 24007.94,
+          "type": "CR",
+          "classification": "Owner",
+          "amount": 24007.94
+        },
+        {
+          "date": "06 JUL",
+          "description": "PAYMENT - THANK YOU",
+          "dr_amount": 0.0,
+          "cr_amount": 143.88,
+          "type": "CR",
+          "classification": "Owner",
+          "amount": 143.88
+        },
+        {
+          "date": "04 JUL",
+          "description": "BASE CASHBACK CREDIT",
+          "dr_amount": 0.0,
+          "cr_amount": 1083.0,
+          "type": "CR",
+          "classification": "GZ",
+          "amount": 1083.0
+        }
+      ],
+      "transaction_count": 3,
+      "cr_count": 3,
       "dr_count": 0,
-      "gz_count": 0,
-      "owner_count": 0
+      "gz_count": 1,
+      "owner_count": 2
     },
     {
       "file": "HSBC_0034_2025-08-13.pdf",
@@ -96,12 +279,31 @@
         "previous_balance": "23931.95"
       },
       "field_extraction_rate": 62.5,
-      "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
+      "transactions": [
+        {
+          "date": "04 AUG",
+          "description": "PAYMENT - THANK YOU",
+          "dr_amount": 0.0,
+          "cr_amount": 23305.18,
+          "type": "CR",
+          "classification": "Owner",
+          "amount": 23305.18
+        },
+        {
+          "date": "07 AUG",
+          "description": "PAYMENT - THANK YOU",
+          "dr_amount": 0.0,
+          "cr_amount": 1500.0,
+          "type": "CR",
+          "classification": "Owner",
+          "amount": 1500.0
+        }
+      ],
+      "transaction_count": 2,
+      "cr_count": 2,
       "dr_count": 0,
       "gz_count": 0,
-      "owner_count": 0
+      "owner_count": 2
     },
     {
       "file": "HSBC_0034_2025-09-13.pdf",
@@ -120,12 +322,31 @@
         "previous_balance": "23034.19"
       },
       "field_extraction_rate": 62.5,
-      "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
+      "transactions": [
+        {
+          "date": "03 SEP",
+          "description": "PAYMENT - THANK YOU",
+          "dr_amount": 0.0,
+          "cr_amount": 23931.95,
+          "type": "CR",
+          "classification": "Owner",
+          "amount": 23931.95
+        },
+        {
+          "date": "03 SEP",
+          "description": "BASE CASHBACK CREDIT",
+          "dr_amount": 0.0,
+          "cr_amount": 1196.6,
+          "type": "CR",
+          "classification": "GZ",
+          "amount": 1196.6
+        }
+      ],
+      "transaction_count": 2,
+      "cr_count": 2,
       "dr_count": 0,
-      "gz_count": 0,
-      "owner_count": 0
+      "gz_count": 1,
+      "owner_count": 1
     },
     {
       "file": "HSBC_0034_2025-10-13.pdf",
@@ -144,12 +365,22 @@
         "previous_balance": "22218.14"
       },
       "field_extraction_rate": 62.5,
-      "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
+      "transactions": [
+        {
+          "date": "05 OCT",
+          "description": "PAYMENT - THANK YOU",
+          "dr_amount": 0.0,
+          "cr_amount": 23034.19,
+          "type": "CR",
+          "classification": "Owner",
+          "amount": 23034.19
+        }
+      ],
+      "transaction_count": 1,
+      "cr_count": 1,
       "dr_count": 0,
       "gz_count": 0,
-      "owner_count": 0
+      "owner_count": 1
     }
   ]
 }

@@ -155,6 +155,10 @@ class BankSpecificParser:
             return self._extract_ambank_columnar(text, trans_patterns, customer_name)
         elif special_parser == 'standard_chartered':
             return self._extract_standard_chartered(text, trans_patterns, customer_name)
+        elif special_parser == 'ocbc':
+            return self._extract_ocbc(text, trans_patterns, customer_name)
+        elif special_parser == 'hsbc':
+            return self._extract_hsbc(text, trans_patterns, customer_name)
         
         # 获取交易记录正则
         trans_line = trans_patterns.get('transaction_line', {})
@@ -622,6 +626,220 @@ class BankSpecificParser:
         transactions = parsed_data.get('transactions', [])
         
         return info, transactions
+
+
+    def _extract_ocbc(self, text: str, trans_patterns: Dict, customer_name: Optional[str] = None) -> List[Dict]:
+        """
+        OCBC专用解析器 - 处理6行多行格式
+        
+        OCBC格式 (6行):
+        - 描述行1 (地点)
+        - 描述行2 (国家代码如MYS)
+        - 交易日期 (DD/MM/YYYY)
+        - 入账日期 (DD/MM/YYYY)
+        - DR/CR标记
+        - 金额
+        """
+        from decimal import Decimal
+        import re
+        
+        transactions = []
+        lines = text.split('\n')
+        
+        logger.info("🔍 使用OCBC专用解析器")
+        
+        # 查找包含日期格式DD/MM/YYYY的行
+        i = 0
+        while i < len(lines):
+            line = lines[i].strip()
+            
+            # 检测交易日期格式 (DD/MM/YYYY)
+            date_match = re.match(r'^(\d{2}/\d{2}/\d{4})$', line)
+            if date_match and i >= 2 and i + 3 < len(lines):
+                trans_date = date_match.group(1)
+                
+                # 前2行是描述
+                desc1 = lines[i-2].strip() if i >= 2 else ''
+                desc2 = lines[i-1].strip() if i >= 1 else ''
+                
+                # 后2行应该是：入账日期、DR/CR标记
+                post_date = lines[i+1].strip()
+                dr_cr_marker = lines[i+2].strip()
+                
+                # 再下一行应该是金额
+                if i + 3 < len(lines):
+                    amount_line = lines[i+3].strip()
+                    
+                    # 验证DR/CR标记
+                    if dr_cr_marker in ['DR', 'CR']:
+                        # 验证金额格式
+                        amount_match = re.match(r'^([\d,]+\.?\d{2})$', amount_line)
+                        if amount_match:
+                            try:
+                                description = f"{desc1} {desc2}".strip()
+                                amount_str = amount_match.group(1)
+                                amount_decimal = Decimal(amount_str.replace(',', ''))
+                                
+                                is_credit = (dr_cr_marker == 'CR')
+                                
+                                dr_amount = Decimal('0') if is_credit else amount_decimal
+                                cr_amount = amount_decimal if is_credit else Decimal('0')
+                                
+                                # 分类
+                                dr_cr_config = trans_patterns.get('dr_cr_detection', {})
+                                classification = self._classify_transaction(description, is_credit, customer_name)
+                                
+                                transaction = {
+                                    'date': trans_date,
+                                    'description': description,
+                                    'dr_amount': dr_amount,
+                                    'cr_amount': cr_amount,
+                                    'type': dr_cr_marker,
+                                    'classification': classification,
+                                    'amount': amount_decimal
+                                }
+                                
+                                transactions.append(transaction)
+                                logger.debug(f"  ✅ OCBC交易: {trans_date} {description[:30]}... {dr_cr_marker} {amount_str}")
+                                
+                                # 跳过已处理的行
+                                i += 4
+                                continue
+                                
+                            except Exception as e:
+                                logger.warning(f"⚠️ OCBC交易解析失败: {e}")
+            
+            i += 1
+        
+        logger.info(f"📊 OCBC提取了 {len(transactions)} 笔交易")
+        return transactions
+    
+    def _extract_hsbc(self, text: str, trans_patterns: Dict, customer_name: Optional[str] = None) -> List[Dict]:
+        """
+        HSBC专用解析器 - 处理多列格式
+        
+        HSBC格式（列式布局）:
+        - Post date列（多行日期）
+        - Transaction date列（多行日期）
+        - Transaction details列（多行描述）
+        - Amount列（多行金额，可能有CR标记）
+        """
+        from decimal import Decimal
+        import re
+        
+        transactions = []
+        lines = text.split('\n')
+        
+        logger.info("🔍 使用HSBC专用解析器")
+        
+        # 查找交易表头（HSBC表头可能分散在多行）
+        trans_start = None
+        for i, line in enumerate(lines):
+            if 'Transaction date' in line:
+                trans_start = i + 1
+                break
+            # 备选：查找"Post date"
+            if 'Post date' in line:
+                trans_start = i + 1
+                break
+        
+        if not trans_start:
+            logger.warning("⚠️ 未找到HSBC交易表头，尝试查找数据区域...")
+            # 尝试查找包含日期的行作为起点
+            for i, line in enumerate(lines):
+                if re.search(r'\d{1,2}\s+[A-Z]{3}', line):
+                    trans_start = i
+                    logger.info(f"  找到可能的交易起始位置: line {i}")
+                    break
+        
+        if not trans_start:
+            logger.warning("⚠️ 完全未找到HSBC交易数据")
+            return transactions
+        
+        # 收集日期列
+        dates = []
+        date_pattern = r'^\d{1,2}\s+[A-Z]{3}$'
+        
+        for i in range(trans_start, min(trans_start + 50, len(lines))):
+            line = lines[i].strip()
+            if re.match(date_pattern, line):
+                dates.append(line)
+        
+        logger.info(f"  找到 {len(dates)} 个日期")
+        
+        # 收集描述列（查找包含商家名称的行）
+        descriptions = []
+        for i in range(trans_start, min(trans_start + 100, len(lines))):
+            line = lines[i].strip()
+            # HSBC描述通常包含商家名和地点
+            if line and not re.match(r'^\d', line) and len(line) > 5:
+                # 跳过表头和金额
+                if line not in ['Transaction date', 'Transaction details', 'Amount (RM)', 'Post date']:
+                    if not re.match(r'^[\d,]+\.?\d{2}(\s+CR)?$', line):
+                        # 检查是否像商家名称
+                        if any(keyword in line for keyword in ['ShopeePay', 'SMART', 'PETRON', 'PAYMENT', 'CASHBACK', 'Top Up']):
+                            descriptions.append(line)
+        
+        logger.info(f"  找到 {len(descriptions)} 行描述")
+        
+        # 收集金额列
+        amounts = []
+        for i in range(trans_start, min(trans_start + 100, len(lines))):
+            line = lines[i].strip()
+            amount_match = re.match(r'^([\d,]+\.?\d{2})(\s+CR)?$', line)
+            if amount_match:
+                amounts.append(line)
+        
+        logger.info(f"  找到 {len(amounts)} 个金额")
+        
+        # 匹配交易
+        min_len = min(len(dates), len(descriptions), len(amounts))
+        
+        if min_len == 0:
+            logger.warning(f"⚠️ HSBC数据不完整: dates={len(dates)}, desc={len(descriptions)}, amounts={len(amounts)}")
+            return transactions
+        
+        dr_cr_config = trans_patterns.get('dr_cr_detection', {})
+        
+        for i in range(min_len):
+            try:
+                date = dates[i]
+                description = descriptions[i]
+                amount_str = amounts[i]
+                
+                # 解析金额和CR标记
+                is_credit = 'CR' in amount_str
+                amount_cleaned = amount_str.replace('CR', '').strip()
+                amount_decimal = Decimal(amount_cleaned.replace(',', ''))
+                
+                # 或者通过描述判断
+                if not is_credit:
+                    is_credit = self._is_credit_transaction(description, amount_cleaned, dr_cr_config)
+                
+                dr_amount = Decimal('0') if is_credit else amount_decimal
+                cr_amount = amount_decimal if is_credit else Decimal('0')
+                
+                # 分类
+                classification = self._classify_transaction(description, is_credit, customer_name)
+                
+                transaction = {
+                    'date': date,
+                    'description': description,
+                    'dr_amount': dr_amount,
+                    'cr_amount': cr_amount,
+                    'type': 'CR' if is_credit else 'DR',
+                    'classification': classification,
+                    'amount': amount_decimal
+                }
+                
+                transactions.append(transaction)
+                
+            except Exception as e:
+                logger.warning(f"⚠️ HSBC交易{i+1}解析失败: {e}")
+                continue
+        
+        logger.info(f"📊 HSBC提取了 {len(transactions)} 笔交易")
+        return transactions
 
 
 def parse_with_bank_template(text: str, bank_name: Optional[str] = None) -> tuple:

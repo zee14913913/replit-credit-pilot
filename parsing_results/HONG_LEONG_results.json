@@ -1,7 +1,6 @@
 {
   "bank": "HONG_LEONG",
   "total_statements": 5,
-  "parsed_count": 5,
   "total_transactions": 6,
   "total_cr": 0,
   "total_dr": 6,
@@ -9,21 +8,6 @@
   "results": [
     {
       "file": "HONG_LEONG_3964_2025-06-16.pdf",
-      "month": "2025-06",
-      "bank": "HONG_LEONG",
-      "fields": {
-        "customer_name": "s who do not fall within the above categories",
-        "ic_no": "03821285163223",
-        "card_type": "Credit Card Number",
-        "card_no": "4293 2092 0258 3964",
-        "credit_limit": "6000.00",
-        "statement_date": "16 JUN 20",
-        "payment_due_date": "16 JUN 20",
-        "full_due_amount": "6000.00",
-        "minimum_payment": "6000.00",
-        "previous_balance": "6000.00"
-      },
-      "field_extraction_rate": 62.5,
       "transactions": [
         {
           "date": "12 JUN\n12",
@@ -34,29 +18,12 @@
           "classification": "Owner"
         }
       ],
-      "transaction_count": 1,
-      "cr_count": 0,
-      "dr_count": 1,
-      "gz_count": 0,
-      "owner_count": 1
+      "cr": 0,
+      "dr": 1,
+      "gz": 0
     },
     {
       "file": "HONG_LEONG_3964_2025-07-16.pdf",
-      "month": "2025-07",
-      "bank": "HONG_LEONG",
-      "fields": {
-        "customer_name": "s who do not fall within the above categories",
-        "ic_no": "04953845189223",
-        "card_type": "Credit Card Number",
-        "card_no": "4293 2092 0258 3964",
-        "credit_limit": "9500.00",
-        "statement_date": "16 JUL 20",
-        "payment_due_date": "16 JUL 20",
-        "full_due_amount": "9500.00",
-        "minimum_payment": "9500.00",
-        "previous_balance": "9500.00"
-      },
-      "field_extraction_rate": 62.5,
       "transactions": [
         {
           "date": "08 JUL\n08",
@@ -67,29 +34,12 @@
           "classification": "Owner"
         }
       ],
-      "transaction_count": 1,
-      "cr_count": 0,
-      "dr_count": 1,
-      "gz_count": 0,
-      "owner_count": 1
+      "cr": 0,
+      "dr": 1,
+      "gz": 0
     },
     {
       "file": "HONG_LEONG_3964_2025-08-16.pdf",
-      "month": "2025-08",
-      "bank": "HONG_LEONG",
-      "fields": {
-        "customer_name": "s who do not fall within the above categories",
-        "ic_no": "05338945218223",
-        "card_type": "Credit Card Number",
-        "card_no": "4293 2092 0258 3964",
-        "credit_limit": "9500.00",
-        "statement_date": "16 AUG 20",
-        "payment_due_date": "16 AUG 20",
-        "full_due_amount": "9500.00",
-        "minimum_payment": "9500.00",
-        "previous_balance": "9500.00"
-      },
-      "field_extraction_rate": 62.5,
       "transactions": [
         {
           "date": "06 AUG\n06",
@@ -100,29 +50,12 @@
           "classification": "Owner"
         }
       ],
-      "transaction_count": 1,
-      "cr_count": 0,
-      "dr_count": 1,
-      "gz_count": 0,
-      "owner_count": 1
+      "cr": 0,
+      "dr": 1,
+      "gz": 0
     },
     {
       "file": "HONG_LEONG_3964_2025-09-16.pdf",
-      "month": "2025-09",
-      "bank": "HONG_LEONG",
-      "fields": {
-        "customer_name": "s who do not fall within the above categories",
-        "ic_no": "05114985248223",
-        "card_type": "Credit Card Number",
-        "card_no": "4293 2092 0258 3964",
-        "credit_limit": "6000.00",
-        "statement_date": "16 SEP 20",
-        "payment_due_date": "16 SEP 20",
-        "full_due_amount": "6000.00",
-        "minimum_payment": "6000.00",
-        "previous_balance": "6000.00"
-      },
-      "field_extraction_rate": 62.5,
       "transactions": [
         {
           "date": "16 SEP\n16",
@@ -149,35 +82,16 @@
           "classification": "Owner"
         }
       ],
-      "transaction_count": 3,
-      "cr_count": 0,
-      "dr_count": 3,
-      "gz_count": 0,
-      "owner_count": 3
+      "cr": 0,
+      "dr": 3,
+      "gz": 0
     },
     {
       "file": "HONG_LEONG_3964_2025-10-16.pdf",
-      "month": "2025-10",
-      "bank": "HONG_LEONG",
-      "fields": {
-        "customer_name": "s who do not fall within the above categories",
-        "ic_no": "193401000023",
-        "card_type": "Credit Card Number",
-        "card_no": "4293 2092 0258 3964",
-        "credit_limit": "6000.00",
-        "statement_date": "16 OCT 20",
-        "payment_due_date": "16 OCT 20",
-        "full_due_amount": "6000.00",
-        "minimum_payment": "6000.00",
-        "previous_balance": "6000.00"
-      },
-      "field_extraction_rate": 62.5,
       "transactions": [],
-      "transaction_count": 0,
-      "cr_count": 0,
-      "dr_count": 0,
-      "gz_count": 0,
-      "owner_count": 0
+      "cr": 0,
+      "dr": 0,
+      "gz": 0
     }
   ]
 }

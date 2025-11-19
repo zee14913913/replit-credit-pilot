@@ -365,15 +365,7 @@
       }
     },
     "transaction_patterns": {
-      "transaction_line": {
-        "regex": "(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2})\\s+(.*?)\\s+([\\d,]+\\.?\\d{2})(CR)?",
-        "groups": {
-          "date": 1,
-          "description": 2,
-          "amount": 3,
-          "cr_marker": 4
-        }
-      },
+      "special_parser": "ocbc",
       "dr_cr_detection": {
         "cr_keywords": [
           "CR",
@@ -462,20 +454,13 @@
       }
     },
     "transaction_patterns": {
-      "transaction_line": {
-        "regex": "(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2})\\s+(.*?)\\s+([\\d,]+\\.?\\d{2})(CR)?",
-        "groups": {
-          "date": 1,
-          "description": 2,
-          "amount": 3,
-          "cr_marker": 4
-        }
-      },
+      "special_parser": "hsbc",
       "dr_cr_detection": {
         "cr_keywords": [
           "CR",
           "PAYMENT",
-          "REFUND"
+          "REFUND",
+          "CASHBACK"
         ],
         "negative_is_credit": true
       }
@@ -559,15 +544,7 @@
       }
     },
     "transaction_patterns": {
-      "transaction_line": {
-        "regex": "(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2})\\s+(.*?)\\s+([\\d,]+\\.?\\d{2})(CR)?",
-        "groups": {
-          "date": 1,
-          "description": 2,
-          "amount": 3,
-          "cr_marker": 4
-        }
-      },
+      "special_parser": "standard_chartered",
       "dr_cr_detection": {
         "cr_keywords": [
           "CR",
