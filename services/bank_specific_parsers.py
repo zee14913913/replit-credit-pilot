@@ -153,6 +153,8 @@ class BankSpecificParser:
         special_parser = trans_patterns.get('special_parser')
         if special_parser == 'ambank_columnar':
             return self._extract_ambank_columnar(text, trans_patterns, customer_name)
+        elif special_parser == 'standard_chartered':
+            return self._extract_standard_chartered(text, trans_patterns, customer_name)
         
         # 获取交易记录正则
         trans_line = trans_patterns.get('transaction_line', {})
@@ -356,6 +358,159 @@ class BankSpecificParser:
                 continue
         
         logger.info(f"📊 AMBANK提取了 {len(transactions)} 笔交易")
+        
+        return transactions
+    
+    def _extract_standard_chartered(self, text: str, trans_patterns: Dict, customer_name: Optional[str] = None) -> List[Dict]:
+        """
+        STANDARD CHARTERED专用解析器 - 处理多行交易格式
+        
+        SCB格式：
+        - Posting Date (行1)
+        - Transaction Date (行2)
+        - Description (行3，可能多行)
+        - Txn Ref (行N)
+        - Amount (最后一行，可能有CR标记)
+        """
+        from decimal import Decimal
+        
+        transactions = []
+        lines = text.split('\n')
+        
+        logger.info("🔍 使用STANDARD_CHARTERED专用解析器")
+        
+        # 查找交易区域（在"YOUR ACCOUNT ACTIVITIES"之后）
+        trans_start = None
+        for i, line in enumerate(lines):
+            if 'YOUR ACCOUNT ACTIVITIES' in line or 'AKTIVITI-AKTIVITI AKAUN ANDA' in line:
+                trans_start = i
+                break
+        
+        if not trans_start:
+            logger.warning("⚠️ 未找到STANDARD_CHARTERED交易区域")
+            return transactions
+        
+        # Pattern 1: 匹配交易块（从Posting Date到Amount）
+        # 格式: DD MMM\nDD MMM\n描述\nTxn Ref: 数字\n金额
+        pattern1 = r'(\d{1,2}\s+[A-Z][a-z]{2})\n\d{1,2}\s+[A-Z][a-z]{2}\n(.*?)\nTxn Ref:\s*(\d+)\n([\d,]+\.?\d*)(CR)?'
+        
+        # Pattern 2: 简化格式（只需日期+描述+金额）
+        pattern2 = r'(\d{1,2}\s+[A-Z][a-z]{2})\n.*?\n(.*?)\n.*?([\\d,]+\\.\\d{2})(CR)?'
+        
+        # 使用正则查找所有交易
+        dr_cr_config = trans_patterns.get('dr_cr_detection', {})
+        
+        # 尝试Pattern 1
+        matches = list(re.finditer(pattern1, text[trans_start:], re.MULTILINE | re.DOTALL))
+        
+        if len(matches) == 0:
+            # 尝试更宽松的pattern - 逐块解析
+            logger.info("  尝试逐块解析...")
+            
+            i = trans_start
+            while i < len(lines):
+                line = lines[i].strip()
+                
+                # 检测日期行（Posting Date）
+                date_match = re.match(r'^(\d{1,2}\s+[A-Z][a-z]{2})$', line)
+                if date_match and i + 3 < len(lines):
+                    posting_date = date_match.group(1)
+                    
+                    # 查找后续的Txn Ref和金额
+                    description_parts = []
+                    j = i + 2  # 跳过Transaction Date
+                    amount = None
+                    is_cr = False
+                    
+                    # 收集描述和金额（最多查找20行）
+                    while j < min(i + 20, len(lines)):
+                        check_line = lines[j].strip()
+                        
+                        # 检测金额行（可能有CR标记）
+                        amount_match = re.match(r'^([\d,]+\.?\d*)(CR)?$', check_line)
+                        if amount_match:
+                            amount = amount_match.group(1)
+                            is_cr = bool(amount_match.group(2))
+                            break
+                        
+                        # 检测下一个交易的开始（又是日期）
+                        if re.match(r'^\d{1,2}\s+[A-Z][a-z]{2}$', check_line):
+                            break
+                        
+                        # 收集描述
+                        if check_line and not check_line.startswith('Txn Ref:'):
+                            description_parts.append(check_line)
+                        
+                        j += 1
+                    
+                    # 如果找到金额，创建交易记录
+                    if amount:
+                        description = ' '.join(description_parts[:3])  # 最多取前3行描述
+                        
+                        try:
+                            amount_decimal = Decimal(amount.replace(',', ''))
+                            
+                            # 判断DR/CR
+                            is_credit = is_cr or self._is_credit_transaction(description, amount, dr_cr_config)
+                            
+                            dr_amount = Decimal('0') if is_credit else amount_decimal
+                            cr_amount = amount_decimal if is_credit else Decimal('0')
+                            
+                            # 分类
+                            classification = self._classify_transaction(description, is_credit, customer_name)
+                            
+                            transaction = {
+                                'date': posting_date,
+                                'description': description.strip(),
+                                'dr_amount': dr_amount,
+                                'cr_amount': cr_amount,
+                                'type': 'CR' if is_credit else 'DR',
+                                'classification': classification
+                            }
+                            
+                            transactions.append(transaction)
+                            logger.debug(f"  ✅ SCB交易: {posting_date} | {description[:30]}... | {amount}")
+                        except Exception as e:
+                            logger.warning(f"  ⚠️ SCB交易解析失败: {e}")
+                        
+                        i = j  # 跳到金额行后
+                    else:
+                        i += 1
+                else:
+                    i += 1
+        else:
+            # Pattern 1成功匹配
+            for match in matches:
+                try:
+                    date = match.group(1)
+                    description = match.group(2).strip()
+                    amount_str = match.group(4)
+                    is_cr = bool(match.group(5))
+                    
+                    amount = Decimal(amount_str.replace(',', ''))
+                    
+                    is_credit = is_cr or self._is_credit_transaction(description, amount_str, dr_cr_config)
+                    
+                    dr_amount = Decimal('0') if is_credit else amount
+                    cr_amount = amount if is_credit else Decimal('0')
+                    
+                    classification = self._classify_transaction(description, is_credit, customer_name)
+                    
+                    transaction = {
+                        'date': date,
+                        'description': description,
+                        'dr_amount': dr_amount,
+                        'cr_amount': cr_amount,
+                        'type': 'CR' if is_credit else 'DR',
+                        'classification': classification
+                    }
+                    
+                    transactions.append(transaction)
+                    
+                except Exception as e:
+                    logger.warning(f"⚠️ SCB交易解析失败: {e}")
+        
+        logger.info(f"📊 STANDARD_CHARTERED提取了 {len(transactions)} 笔交易")
         
         return transactions
     

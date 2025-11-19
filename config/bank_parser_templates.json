@@ -362,6 +362,7 @@
       }
     },
     "transaction_patterns": {
+      "special_parser": "standard_chartered",
       "table_headers": ["Date", "Description", "Amount"],
       "transaction_line": {
         "regex": "(\\d{1,2}\\s+[A-Z][a-z]{2})\\s*[\\s\\S]{0,100}?Txn Ref:[\\s]*([\\d]+)[\\s\\S]{0,100}?([-]?[\\d,]+\\.\\d{2})",
@@ -373,7 +374,7 @@
         "description": "SCB交易格式：日期+多行+Txn Ref+金额"
       },
       "dr_cr_detection": {
-        "cr_keywords": ["PAYMENT", "CREDIT", "REFUND"],
+        "cr_keywords": ["PAYMENT", "CREDIT", "REFUND", "DUITNOW"],
         "negative_is_credit": true
       }
     },
