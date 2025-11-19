@@ -82,35 +82,53 @@ class BankSpecificParser:
         # 1. 提取基本字段
         patterns = template.get('patterns', {})
         for field_name, pattern_config in patterns.items():
+            # 跳过非dict类型的配置（如'description'字段）
+            if not isinstance(pattern_config, dict):
+                continue
+            
             regex_list = pattern_config.get('regex', [])
             
+            # 确保regex_list是列表
+            if isinstance(regex_list, str):
+                regex_list = [regex_list]
+            elif not isinstance(regex_list, list):
+                continue
+            
             for regex_pattern in regex_list:
-                match = re.search(regex_pattern, text, re.IGNORECASE | re.MULTILINE)
-                if match:
-                    value = match.group(1) if match.groups() else match.group(0)
-                    
-                    # 特殊处理：卡号提取后4位
-                    if field_name == 'card_number' and pattern_config.get('extract') == 'last_4':
-                        if match.groups() and len(match.groups()) >= 4:
-                            value = match.group(4)  # 最后一组
-                    
-                    # 特殊处理：金额去除逗号
-                    if any(keyword in field_name for keyword in ['balance', 'payment', 'amount', 'limit', 'credit']):
-                        value = value.replace(',', '')
-                    
-                    result['fields'][field_name] = value
-                    logger.debug(f"  ✅ {field_name}: {value}")
-                    break
+                # 跳过非字符串的regex
+                if not isinstance(regex_pattern, str):
+                    continue
+                
+                try:
+                    match = re.search(regex_pattern, text, re.IGNORECASE | re.MULTILINE)
+                    if match:
+                        value = match.group(1) if match.groups() else match.group(0)
+                        
+                        # 特殊处理：卡号提取后4位
+                        if field_name == 'card_number' and pattern_config.get('extract') == 'last_4':
+                            if match.groups() and len(match.groups()) >= 4:
+                                value = match.group(4)  # 最后一组
+                        
+                        # 特殊处理：金额去除逗号
+                        if any(keyword in field_name for keyword in ['balance', 'payment', 'amount', 'limit', 'credit']):
+                            value = value.replace(',', '')
+                        
+                        result['fields'][field_name] = value
+                        logger.debug(f"  ✅ {field_name}: {value}")
+                        break
+                except re.error as e:
+                    logger.warning(f"⚠️ 正则表达式错误 {field_name}: {e}")
         
-        # 2. 提取交易记录
-        transactions = self._extract_transactions(text, template)
+        # 2. 提取交易记录（传入客户名用于分类）
+        customer_name = result['fields'].get('customer_name')
+        transactions = self._extract_transactions(text, template, customer_name)
         result['transactions'] = transactions
         
         logger.info(f"✅ 提取完成：{len(result['fields'])}个字段，{len(transactions)}笔交易")
         
         return result
     
-    def _extract_transactions(self, text: str, template: Dict) -> List[Dict]:
+    def _extract_transactions(self, text: str, template: Dict, customer_name: Optional[str] = None) -> List[Dict]:
         """
         提取交易记录
         
@@ -130,6 +148,11 @@ class BankSpecificParser:
         if not trans_patterns:
             logger.warning("⚠️ 模版中未配置transaction_patterns")
             return transactions
+        
+        # 检查是否需要特殊解析器
+        special_parser = trans_patterns.get('special_parser')
+        if special_parser == 'ambank_columnar':
+            return self._extract_ambank_columnar(text, trans_patterns, customer_name)
         
         # 获取交易记录正则
         trans_line = trans_patterns.get('transaction_line', {})
@@ -161,15 +184,16 @@ class BankSpecificParser:
                     dr_cr_config
                 )
                 
-                # 分离DR和CR列
-                dr_amount = 0.0 if is_credit else amount
-                cr_amount = amount if is_credit else 0.0
+                # 分离DR和CR列（使用Decimal）
+                from decimal import Decimal
+                dr_amount = Decimal('0') if is_credit else amount
+                cr_amount = amount if is_credit else Decimal('0')
                 
-                # 分类（Owner or GZ）
+                # 分类（Owner or GZ）- 使用传入的客户名
                 classification = self._classify_transaction(
                     description, 
                     is_credit,
-                    customer_name=None  # TODO: 从字段中提取客户名
+                    customer_name=customer_name
                 )
                 
                 transaction = {
@@ -191,8 +215,153 @@ class BankSpecificParser:
         
         return transactions
     
-    def _parse_amount(self, amount_str: str) -> float:
-        """解析金额字符串"""
+    def _extract_ambank_columnar(self, text: str, trans_patterns: Dict, customer_name: Optional[str] = None) -> List[Dict]:
+        """
+        AMBANK专用解析器 - 处理列式布局
+        
+        AMBANK格式：
+        - Transaction Date列（多行日期）
+        - Posting Date列（多行日期）
+        - Amount列（多行金额）
+        - Transaction Description列（多行描述）
+        
+        这些列在文本中是分开的，需要特殊逻辑来匹配
+        """
+        import re
+        from decimal import Decimal
+        
+        transactions = []
+        lines = text.split('\n')
+        
+        # 1. 找到交易记录区域
+        trans_start = None
+        for i, line in enumerate(lines):
+            if 'YOUR TRANSACTION DETAILS' in line or 'TRANSAKSI TERPERINCI' in line:
+                trans_start = i
+                break
+        
+        if not trans_start:
+            logger.warning("⚠️ 未找到AMBANK交易记录起始位置")
+            return transactions
+        
+        # 2. 提取日期列（Transaction Date）
+        dates = []
+        date_pattern = r'^\d{2}\s+[A-Z]{3}\s+\d{2}$'
+        
+        for i in range(trans_start, min(trans_start + 50, len(lines))):
+            line = lines[i].strip()
+            if re.match(date_pattern, line) and line not in ['Transaction Date', 'Tarikh Transaksi']:
+                dates.append(line)
+        
+        logger.info(f"  找到 {len(dates)} 个日期")
+        
+        # 3. 提取描述列（Transaction Description）
+        descriptions = []
+        desc_start = None
+        
+        for i in range(trans_start, min(trans_start + 50, len(lines))):
+            if 'Transaction Description' in lines[i] or 'Butir-butir Transaksi' in lines[i]:
+                desc_start = i + 1
+                break
+        
+        if desc_start:
+            # 读取描述，直到遇到"SUB TOTAL"或金额行
+            for i in range(desc_start, min(desc_start + 30, len(lines))):
+                line = lines[i].strip()
+                
+                # 停止条件
+                if 'SUB TOTAL' in line or 'End of Transaction' in line:
+                    break
+                # 跳过纯金额行
+                if re.match(r'^[\d,]+\.\d{2}(\s+CR)?$', line):
+                    break
+                # 跳过空行
+                if not line:
+                    continue
+                # 跳过卡号相关行
+                if re.match(r'^\d{4}\s+\d{4}\s+\d{4}\s+\d{4}', line):
+                    continue
+                if 'AmBank' in line and re.search(r'\d{4}.*?\d{4}.*?\d{4}.*?\d{4}', line):
+                    continue
+                if 'Visa Signature' in line or 'Islamic' in line:
+                    continue
+                # 跳过表头行
+                if line in ['Transaction Description', 'Butir-butir Transaksi']:
+                    continue
+                
+                descriptions.append(line)
+        
+        logger.info(f"  找到 {len(descriptions)} 行描述")
+        
+        # 4. 提取金额列
+        amounts = []
+        amount_start = None
+        
+        # 金额通常在描述之后
+        for i in range(desc_start if desc_start else trans_start, len(lines)):
+            line = lines[i].strip()
+            # 纯金额格式：xxx.xx 或 xxx.xx CR
+            if re.match(r'^[\d,]+\.\d{2}(\s+CR)?$', line):
+                amounts.append(line)
+            # 遇到"Total Current Balance"停止
+            if 'Total Current Balance' in line or 'End of Transaction' in line:
+                break
+        
+        logger.info(f"  找到 {len(amounts)} 个金额")
+        
+        # 5. 匹配交易（取最小长度）
+        min_len = min(len(dates), len(descriptions), len(amounts))
+        
+        if min_len == 0:
+            logger.warning(f"⚠️ AMBANK数据不完整：dates={len(dates)}, desc={len(descriptions)}, amounts={len(amounts)}")
+            return transactions
+        
+        logger.info(f"  匹配 {min_len} 笔交易")
+        
+        # 6. 创建交易记录
+        dr_cr_config = trans_patterns.get('dr_cr_detection', {})
+        
+        for i in range(min_len):
+            try:
+                date = dates[i]
+                description = descriptions[i]
+                amount_str = amounts[i]
+                
+                # 解析金额
+                amount = self._parse_amount(amount_str.replace(' CR', '').strip())
+                
+                # 检测CR交易
+                is_credit = self._is_credit_transaction(description, amount_str, dr_cr_config)
+                
+                # 分离DR和CR
+                dr_amount = Decimal('0') if is_credit else amount
+                cr_amount = amount if is_credit else Decimal('0')
+                
+                # 分类
+                classification = self._classify_transaction(description, is_credit, customer_name)
+                
+                transaction = {
+                    'date': date,
+                    'description': description,
+                    'dr_amount': dr_amount,
+                    'cr_amount': cr_amount,
+                    'type': 'CR' if is_credit else 'DR',
+                    'classification': classification
+                }
+                
+                transactions.append(transaction)
+                
+            except Exception as e:
+                logger.warning(f"⚠️ AMBANK交易{i+1}解析失败: {e}")
+                continue
+        
+        logger.info(f"📊 AMBANK提取了 {len(transactions)} 笔交易")
+        
+        return transactions
+    
+    def _parse_amount(self, amount_str: str):
+        """解析金额字符串（使用Decimal确保精度）"""
+        from decimal import Decimal, InvalidOperation
         try:
             # 去除逗号和空格
             cleaned = amount_str.replace(',', '').replace(' ', '').strip()
@@ -201,10 +370,10 @@ class BankSpecificParser:
             is_negative = cleaned.startswith('-')
             cleaned = cleaned.lstrip('-')
             
-            amount = float(cleaned)
+            amount = Decimal(cleaned)
             return -amount if is_negative else amount
-        except:
-            return 0.0
+        except (InvalidOperation, ValueError):
+            return Decimal('0')
     
     def _is_credit_transaction(self, description: str, amount_str: str, dr_cr_config: Dict) -> bool:
         """
@@ -244,24 +413,30 @@ class BankSpecificParser:
             # 检查7个Supplier
             for supplier in SUPPLIERS:
                 if supplier.upper() in desc_upper:
+                    logger.debug(f"    ✅ {description[:30]}... 匹配Supplier: {supplier} → GZ")
                     return "GZ"
+            logger.debug(f"    ❌ {description[:30]}... 未匹配Supplier → Owner")
             return "Owner"
         
         else:  # CR交易
             # 检查客户名
             if customer_name and customer_name.upper() in desc_upper:
+                logger.debug(f"    ✅ {description[:30]}... 包含客户名 → Owner")
                 return "Owner"
             
             # 检查Owner关键词（PAYMENT, BAYARAN, THANK YOU等）
             owner_cr_keywords = ['PAYMENT', 'BAYARAN', 'THANK YOU', 'TERIMA KASIH']
             for keyword in owner_cr_keywords:
                 if keyword in desc_upper:
+                    logger.debug(f"    ✅ {description[:30]}... 包含{keyword} → Owner")
                     return "Owner"
             
             # 检查是否为空
             if len(description.strip()) == 0:
+                logger.debug(f"    ✅ 空描述 → Owner")
                 return "Owner"
             
+            logger.debug(f"    ❌ {description[:30]}... 未匹配Owner规则 → GZ")
             return "GZ"
     
     def convert_to_standard_format(self, parsed_data: Dict) -> tuple:

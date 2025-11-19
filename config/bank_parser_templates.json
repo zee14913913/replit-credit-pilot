@@ -46,27 +46,18 @@
       }
     },
     "transaction_patterns": {
-      "table_headers": ["Transaction Date", "Tarikh Transaksi", "Date", "Tarikh"],
-      "transaction_line": {
-        "regex": "(\\d{2}\\s+[A-Z]{3}\\s+\\d{2})\\s+([^\\n]+?)\\s+([-]?[\\d,]+\\.\\d{2})",
-        "groups": {
-          "date": 1,
-          "description": 2,
-          "amount": 3
-        },
-        "description": "交易记录格式：日期 + 描述 + 金额"
-      },
-      "posting_date_format": "(\\d{2}\\s+[A-Z]{3}\\s+\\d{2})",
+      "table_headers": ["Transaction Date", "Tarikh Transaksi", "YOUR TRANSACTION DETAILS"],
+      "special_parser": "ambank_columnar",
+      "description": "AMBANK使用特殊的列式布局，需要专门的解析器",
       "dr_cr_detection": {
-        "cr_keywords": ["PAYMENT", "BAYARAN", "CREDIT", "REFUND"],
+        "cr_keywords": ["PAYMENT", "BAYARAN", "CREDIT", "REFUND", " CR"],
         "negative_is_credit": true,
-        "description": "检测CR交易：负数或包含PAYMENT关键词"
+        "description": "检测CR交易：带CR标记或包含PAYMENT关键词"
       }
     },
     "column_layout": {
-      "type": "single_amount",
-      "columns": ["Date", "Description", "Amount"],
-      "description": "AMBANK使用单列金额格式，负数表示CR"
+      "type": "columnar",
+      "description": "AMBANK使用列式布局：日期列在前，描述列在中，金额列在后"
     }
   },
   
