@@ -32,14 +32,14 @@
           "Total Credit Limit[\\s\\S]{0,100}?([\\d,]+)"
         ]
       },
-      "current_balance": {
-        "regex": [
-          "Current Balance[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})"
-        ]
-      },
       "minimum_payment": {
         "regex": [
           "Minimum Payment[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Current Balance[\\s\\S]{0,100}?RM\\s*([\\d,]+\\.\\d{2})"
         ]
       }
     }
@@ -77,14 +77,14 @@
           "Combine Credit Limit[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
         ]
       },
-      "current_balance": {
-        "regex": [
-          "TOTAL BALANCE[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
-        ]
-      },
       "minimum_payment": {
         "regex": [
           "TOTAL.*?Minimum Payment[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "TOTAL BALANCE[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
         ]
       }
     }
@@ -122,14 +122,14 @@
           "Your Credit Limit[\\s\\S]{0,50}?RM\\s*([\\d,]+)"
         ]
       },
-      "current_balance": {
-        "regex": [
-          "Your statement balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
-        ]
-      },
       "minimum_payment": {
         "regex": [
           "Minimum Monthly Payment[\\s\\S]{0,50}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Your statement balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
         ]
       }
     }
@@ -167,14 +167,14 @@
           "Combined Credit Limit[\\s\\S]{0,100}?([\\d,]+)"
         ]
       },
-      "current_balance": {
-        "regex": [
-          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
-        ]
-      },
       "minimum_payment": {
         "regex": [
           "Minimum Payment[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
         ]
       }
     }
@@ -212,14 +212,14 @@
           "Approved Credit Limit[\\s\\S]{0,100}?([\\d,]+)"
         ]
       },
-      "current_balance": {
-        "regex": [
-          "New Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
-        ]
-      },
       "minimum_payment": {
         "regex": [
           "Min.*?Payment Due[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "New Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
         ]
       }
     }
@@ -257,14 +257,14 @@
           "Credit Limit[\\s\\S]{0,100}?([\\d,]+\\.?\\d*)"
         ]
       },
-      "current_balance": {
-        "regex": [
-          "(?:New|Total)\\s+Balance[\\s\\S]{0,150}?([\\d,]+\\.\\d{2})"
-        ]
-      },
       "minimum_payment": {
         "regex": [
           "Minimum Payment[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "(?:New|Total)\\s+Balance[\\s\\S]{0,150}?([\\d,]+\\.\\d{2})"
         ]
       }
     }
@@ -307,14 +307,14 @@
           "Credit Limit[\\s\\S]{0,100}?([\\d,]+)"
         ]
       },
-      "current_balance": {
-        "regex": [
-          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
-        ]
-      },
       "minimum_payment": {
         "regex": [
           "Minimum Payment[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
         ]
       }
     },
@@ -382,14 +382,14 @@
           "Credit Limit[\\s\\S]{0,100}?([\\d,]+)"
         ]
       },
-      "current_balance": {
-        "regex": [
-          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
-        ]
-      },
       "minimum_payment": {
         "regex": [
           "Minimum Payment[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
         ]
       }
     },
@@ -457,14 +457,14 @@
           "Credit Limit[\\s\\S]{0,100}?([\\d,]+)"
         ]
       },
-      "current_balance": {
-        "regex": [
-          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
-        ]
-      },
       "minimum_payment": {
         "regex": [
           "Minimum Payment[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
         ]
       }
     },
@@ -532,14 +532,14 @@
           "Credit Limit[\\s\\S]{0,100}?([\\d,]+)"
         ]
       },
-      "current_balance": {
-        "regex": [
-          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
-        ]
-      },
       "minimum_payment": {
         "regex": [
           "Minimum Payment[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
         ]
       }
     },
@@ -607,14 +607,14 @@
           "Credit Limit[\\s\\S]{0,100}?([\\d,]+)"
         ]
       },
-      "current_balance": {
-        "regex": [
-          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
-        ]
-      },
       "minimum_payment": {
         "regex": [
           "Minimum Payment[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
+        ]
+      },
+      "full_due_amount": {
+        "regex": [
+          "Current Balance[\\s\\S]{0,100}?([\\d,]+\\.\\d{2})"
         ]
       }
     },
