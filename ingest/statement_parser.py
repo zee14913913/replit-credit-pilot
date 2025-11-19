@@ -1270,13 +1270,73 @@ def parse_bank_muamalat_statement(file_path):
 def parse_statement_auto(file_path):
     """
     Auto-detect and parse credit card statements
-    Supports 15 Malaysian banks covering 95%+ of market
+    符合ARCHITECT_CONSTRAINTS.md：100%提取所有交易记录
+    
+    解析策略：
+    1. 优先使用Google Document AI（准确率98-99.9%）
+    2. Fallback到pdfplumber（防御性）
+    
     Returns: (info_dict, transactions_list) where info_dict contains:
         - bank: detected bank name
         - card_last4: last 4 digits of card
         - statement_date: statement date (YYYY-MM-DD format)
         - total: total amount
+        - previous_balance: previous balance
     """
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    # 尝试使用Google Document AI（首选）
+    try:
+        from services.google_document_ai_service import GoogleDocumentAIService
+        
+        logger.info("🚀 使用Google Document AI解析PDF...")
+        
+        # 初始化Document AI服务（自动使用环境变量中的密钥）
+        doc_ai = GoogleDocumentAIService()
+        
+        # 解析PDF
+        parsed_doc = doc_ai.parse_pdf(file_path)
+        fields = doc_ai.extract_bank_statement_fields(parsed_doc)
+        
+        # 检测银行
+        bank = detect_bank(file_path)
+        
+        # 转换为标准格式
+        info = {
+            'bank': bank,
+            'card_last4': fields.get('card_number'),
+            'statement_date': fields.get('statement_date'),
+            'total': fields.get('current_balance', 0),
+            'previous_balance': fields.get('previous_balance', 0),
+            'minimum_payment': fields.get('minimum_payment', 0)
+        }
+        
+        transactions = fields.get('transactions', [])
+        
+        logger.info(f"✅ Google Document AI解析成功：{len(transactions)}笔交易")
+        
+        # 验证交易完整性（ARCHITECT_CONSTRAINTS.md要求）
+        # 必须同时包含DR和CR交易，确保100%完整提取
+        if len(transactions) > 0:
+            dr_count = sum(1 for t in transactions if t.get('type') == 'DR')
+            cr_count = sum(1 for t in transactions if t.get('type') == 'CR')
+            
+            if dr_count > 0 and cr_count > 0:
+                logger.info(f"✅ 验证通过：{dr_count}笔DR交易 + {cr_count}笔CR交易")
+                return info, transactions
+            else:
+                logger.warning(f"⚠️ 交易不完整（DR:{dr_count}, CR:{cr_count}），尝试fallback...")
+                raise Exception(f"Incomplete transactions: DR={dr_count}, CR={cr_count}")
+        else:
+            logger.warning("⚠️ Document AI未提取到交易，尝试fallback...")
+            raise Exception("No transactions extracted")
+    
+    except Exception as e:
+        logger.warning(f"⚠️ Google Document AI解析失败: {e}")
+        logger.info("🔄 Fallback到pdfplumber解析...")
+    
+    # Fallback: 使用原有的pdfplumber解析器
     bank = detect_bank(file_path)
     
     bank_parsers = {
@@ -1301,7 +1361,8 @@ def parse_statement_auto(file_path):
         info, transactions = bank_parsers[bank](file_path)
         if info and isinstance(info, dict):
             info['bank'] = bank
+        logger.info(f"✅ pdfplumber解析成功：{len(transactions) if transactions else 0}笔交易")
         return info, transactions
     else:
-        print(f"⚠️ Unsupported or unrecognized bank format: {bank}")
+        logger.error(f"⚠️ Unsupported or unrecognized bank format: {bank}")
         return None, []

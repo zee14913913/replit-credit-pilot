@@ -313,33 +313,116 @@ class GoogleDocumentAIService:
             return 0.0
     
     def _extract_transactions_from_tables(self, tables: List[Dict]) -> List[Dict]:
-        """从表格中提取交易"""
+        """
+        从表格中提取交易（支持独立DR/CR列布局）
+        
+        马来西亚银行账单常见格式：
+        - 3列：Date | Description | Amount (DR/CR标记)
+        - 4列：Date | Description | DR | CR
+        - 5列：Date | Posting Date | Description | DR | CR
+        """
         transactions = []
         
         for table in tables:
             for row in table.get('body_rows', []):
-                if len(row) >= 3:
-                    date_col = row[0].strip()
+                if len(row) < 3:
+                    continue
+                
+                date_col = row[0].strip()
+                
+                # 过滤掉标题行
+                if date_col.lower() in ['date', 'tarikh', 'posting date', 'trans date']:
+                    continue
+                
+                # 尝试检测布局类型
+                if len(row) >= 4:
+                    # 可能是4列或5列布局（独立DR/CR列）
+                    desc_idx = 1
+                    dr_idx = 2
+                    cr_idx = 3
+                    
+                    # 如果有5列，检查第2列是否是日期（Posting Date）
+                    if len(row) >= 5 and self._is_date(row[1].strip()):
+                        desc_idx = 2
+                        dr_idx = 3
+                        cr_idx = 4
+                    
+                    desc_col = row[desc_idx].strip()
+                    dr_col = row[dr_idx].strip() if dr_idx < len(row) else ''
+                    cr_col = row[cr_idx].strip() if cr_idx < len(row) else ''
+                    
+                    # 解析DR金额
+                    dr_amount = self._parse_amount(dr_col)
+                    if dr_amount > 0:
+                        transactions.append({
+                            'date': date_col,
+                            'description': desc_col,
+                            'amount': dr_amount,
+                            'type': 'DR'
+                        })
+                    
+                    # 解析CR金额
+                    cr_amount = self._parse_amount(cr_col)
+                    if cr_amount > 0:
+                        transactions.append({
+                            'date': date_col,
+                            'description': desc_col,
+                            'amount': cr_amount,
+                            'type': 'CR'
+                        })
+                
+                elif len(row) == 3:
+                    # 3列布局：Date | Description | Amount
                     desc_col = row[1].strip()
                     amount_col = row[2].strip()
                     
-                    # 过滤掉标题行
-                    if date_col.lower() in ['date', 'tarikh', 'posting date']:
-                        continue
+                    # 解析金额和类型
+                    amount, trans_type = self._parse_amount_with_type(amount_col)
                     
-                    # 解析金额
-                    amount = self._parse_amount(amount_col)
+                    # 检查描述中的CR标记
+                    if trans_type == 'DR' and ('PAYMENT' in desc_col.upper() or 'BAYARAN' in desc_col.upper()):
+                        trans_type = 'CR'
                     
                     if amount > 0:
-                        trans = {
+                        transactions.append({
                             'date': date_col,
                             'description': desc_col,
                             'amount': amount,
-                            'type': 'CR' if 'CR' in amount_col.upper() or 'PAYMENT' in desc_col.upper() else 'DR'
-                        }
-                        transactions.append(trans)
+                            'type': trans_type
+                        })
         
         return transactions
+    
+    def _is_date(self, text: str) -> bool:
+        """检查文本是否是日期"""
+        import re
+        date_patterns = [
+            r'\d{1,2}\s+[A-Z]{3}',  # 01 JAN
+            r'\d{1,2}/\d{1,2}',      # 01/01
+            r'\d{4}-\d{2}-\d{2}'     # 2024-01-01
+        ]
+        for pattern in date_patterns:
+            if re.match(pattern, text, re.IGNORECASE):
+                return True
+        return False
+    
+    def _parse_amount_with_type(self, text: str) -> tuple:
+        """
+        解析金额和类型（保留DR/CR极性）
+        
+        Returns:
+            (amount: float, type: str)  # type = 'DR' or 'CR'
+        """
+        import re
+        
+        # 检查CR标记
+        is_credit = 'CR' in text.upper() or text.strip().startswith('-')
+        
+        # 清理并解析金额
+        cleaned = re.sub(r'[^\d.]', '', text)
+        amount = float(cleaned) if cleaned else 0.0
+        
+        return (amount, 'CR' if is_credit else 'DR')
     
     def _extract_transactions_from_text(self, text: str) -> List[Dict]:
         """从文本中智能提取交易（逐行解析马来西亚银行格式）"""
