@@ -23,11 +23,11 @@ Owner's Expenses = SUM(所有非Suppliers的DR交易)
 - **排除**所有包含7个Supplier关键词的交易
 - 7个Suppliers必须严格匹配：
   1. `7SL`
-  2. `Dinas Raub`
-  3. `SYC Hainan`
+  2. `Dinas`
+  3. `Raub Syc Hainan`
   4. `Ai Smart Tech`
   5. `HUAWEI`
-  6. `Pasar Raya`
+  6. `PasarRaya`
   7. `Puchong Herbs`
 
 **⚠️ 约束：**
@@ -396,10 +396,11 @@ statement_month TEXT NOT NULL  -- 格式: YYYY-MM
 ### 8.3 版本控制
 **本文档版本：**
 ```
-Version: 1.0.0
+Version: 1.1.0
 Created: 2025-11-18
-Last Updated: 2025-11-18
+Last Updated: 2025-11-19
 Status: ENFORCED
+Modification: 修正7个Suppliers名称为正确版本
 ```
 
 **⚠️ 修改本文档需要：**

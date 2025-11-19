@@ -15,9 +15,15 @@ class TransactionClassifier:
         self.db_path = db_path
         
         # 供应商关键词（7个主要供应商 - Ji-Suan文档指定）
+        # ⚠️ 绝对不允许修改此名单 - 遵循 ARCHITECT_CONSTRAINTS.md
         self.suppliers = [
-            '7SL', 'Dinas Raub', 'SYC Hainan', 'Ai Smart Tech', 
-            'HUAWEI', 'Pasar Raya', 'Puchong Herbs'
+            '7SL',
+            'Dinas',
+            'Raub Syc Hainan',
+            'Ai Smart Tech',
+            'HUAWEI',
+            'PasarRaya',
+            'Puchong Herbs'
         ]
         
         # 9间GZ银行的精确组合（银行+持卡人） - 强制完整法定名称

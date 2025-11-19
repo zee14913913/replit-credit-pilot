@@ -15,13 +15,14 @@ class OwnerInfiniteClassifier:
     """
     
     # 7个特定供应商（INFINITE Expenses）
+    # ⚠️ 绝对不允许修改此名单 - 遵循 ARCHITECT_CONSTRAINTS.md
     INFINITE_SUPPLIERS = [
         '7sl',
         'dinas',
         'raub syc hainan',
         'ai smart tech',
         'huawei',
-        'pasar raya',
+        'pasarraya',
         'puchong herbs'
     ]
     

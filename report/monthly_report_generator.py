@@ -25,9 +25,10 @@ import os
 
 
 # 7家指定Supplier商家（INFINITE交易）
+# ⚠️ 绝对不允许修改此名单 - 遵循 ARCHITECT_CONSTRAINTS.md
 INFINITE_SUPPLIERS = [
     '7sl', 'dinas', 'raub syc hainan', 
-    'ai smart tech', 'huawei', 'pasar raya', 'puchong herbs'
+    'ai smart tech', 'huawei', 'pasarraya', 'puchong herbs'
 ]
 
 

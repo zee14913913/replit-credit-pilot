@@ -34,14 +34,15 @@ class CreditCardCore:
     """CreditPilot 核心计算引擎"""
     
     # 7个供应商（Ji-Suan文档指定）
+    # ⚠️ 绝对不允许修改此名单 - 遵循 ARCHITECT_CONSTRAINTS.md
     SUPPLIERS = [
-        '7SL', 
-        'DINAS RAUB',
-        'SYC HAINAN', 
-        'AI SMART TECH', 
-        'HUAWEI', 
-        'PASAR RAYA', 
-        'PUCHONG HERBS'
+        '7SL',
+        'Dinas',
+        'Raub Syc Hainan',
+        'Ai Smart Tech',
+        'HUAWEI',
+        'PasarRaya',
+        'Puchong Herbs'
     ]
     
     # 9个GZ银行的精确组合（银行+持卡人） - 强制完整法定名称

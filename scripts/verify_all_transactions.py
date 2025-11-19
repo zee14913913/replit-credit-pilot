@@ -6,14 +6,15 @@ import sqlite3
 from typing import Dict, List, Tuple
 
 # 供应商列表
+# ⚠️ 绝对不允许修改此名单 - 遵循 ARCHITECT_CONSTRAINTS.md
 SUPPLIERS = [
-    '7SL', 
-    'DINAS', 
-    'RAUB SYC HAINAN', 
-    'AI SMART TECH', 
-    'HUAWEI', 
-    'PASAR RAYA', 
-    'PUCHONG HERBS'
+    '7SL',
+    'Dinas',
+    'Raub Syc Hainan',
+    'Ai Smart Tech',
+    'HUAWEI',
+    'PasarRaya',
+    'Puchong Herbs'
 ]
 
 # 客户名字（用于识别客户付款）
