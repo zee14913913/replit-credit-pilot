@@ -54,7 +54,7 @@ FIELDS = [
     'payment_due_date',
     'previous_balance',
     'credit_limit',
-    'current_balance',
+    'full_due_amount',
     'minimum_payment'
 ]
 
