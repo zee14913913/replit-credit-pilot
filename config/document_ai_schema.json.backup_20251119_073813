@@ -1,0 +1,133 @@
+{
+  "displayName": "Malaysian Credit Card Statement Extractor",
+  "description": "提取马来西亚银行信用卡账单关键字段",
+  "entityTypes": [
+    {
+      "name": "statement_date",
+      "displayName": "账单日期",
+      "baseTypes": [
+        "datetime"
+      ],
+      "occurrenceType": "REQUIRED_ONCE"
+    },
+    {
+      "name": "due_date",
+      "displayName": "到期日",
+      "baseTypes": [
+        "datetime"
+      ],
+      "occurrenceType": "REQUIRED_ONCE"
+    },
+    {
+      "name": "card_number",
+      "displayName": "信用卡号码",
+      "baseTypes": [
+        "string"
+      ],
+      "occurrenceType": "REQUIRED_ONCE"
+    },
+    {
+      "name": "cardholder_name",
+      "displayName": "持卡人姓名",
+      "baseTypes": [
+        "string"
+      ],
+      "occurrenceType": "REQUIRED_ONCE"
+    },
+    {
+      "name": "bank_name",
+      "displayName": "银行名称",
+      "baseTypes": [
+        "string"
+      ],
+      "occurrenceType": "REQUIRED_ONCE"
+    },
+    {
+      "name": "total_amount",
+      "displayName": "总金额",
+      "baseTypes": [
+        "money"
+      ],
+      "occurrenceType": "REQUIRED_ONCE"
+    },
+    {
+      "name": "minimum_payment",
+      "displayName": "最低还款额",
+      "baseTypes": [
+        "money"
+      ],
+      "occurrenceType": "REQUIRED_ONCE"
+    },
+    {
+      "name": "previous_balance",
+      "displayName": "上期余额",
+      "baseTypes": [
+        "money"
+      ],
+      "occurrenceType": "OPTIONAL_ONCE"
+    },
+    {
+      "name": "new_charges",
+      "displayName": "本期新增消费",
+      "baseTypes": [
+        "money"
+      ],
+      "occurrenceType": "OPTIONAL_ONCE"
+    },
+    {
+      "name": "payments_credits",
+      "displayName": "本期还款/贷记",
+      "baseTypes": [
+        "money"
+      ],
+      "occurrenceType": "OPTIONAL_ONCE"
+    },
+    {
+      "name": "transactions",
+      "displayName": "交易记录",
+      "baseTypes": [
+        "table"
+      ],
+      "occurrenceType": "OPTIONAL_MULTIPLE",
+      "properties": [
+        {
+          "name": "transaction_date",
+          "displayName": "交易日期",
+          "baseTypes": [
+            "date"
+          ],
+          "occurrenceType": "REQUIRED_ONCE"
+        },
+        {
+          "name": "description",
+          "displayName": "交易描述",
+          "baseTypes": [
+            "string"
+          ],
+          "occurrenceType": "REQUIRED_ONCE"
+        },
+        {
+          "name": "amount",
+          "displayName": "金额",
+          "baseTypes": [
+            "money"
+          ],
+          "occurrenceType": "REQUIRED_ONCE"
+        },
+        {
+          "name": "category",
+          "displayName": "分类",
+          "baseTypes": [
+            "string"
+          ],
+          "occurrenceType": "OPTIONAL_ONCE",
+          "enumValues": [
+            "Owners",
+            "GZ",
+            "Suppliers"
+          ]
+        }
+      ]
+    }
+  ]
+}
