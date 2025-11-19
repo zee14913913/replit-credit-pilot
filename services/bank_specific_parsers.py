@@ -159,6 +159,8 @@ class BankSpecificParser:
             return self._extract_ocbc(text, trans_patterns, customer_name)
         elif special_parser == 'hsbc':
             return self._extract_hsbc(text, trans_patterns, customer_name)
+        elif special_parser == 'hong_leong':
+            return self._extract_hong_leong(text, trans_patterns, customer_name)
         
         # 获取交易记录正则
         trans_line = trans_patterns.get('transaction_line', {})
@@ -828,6 +830,139 @@ class BankSpecificParser:
                 continue
         
         logger.info(f"📊 HSBC提取了 {len(transactions)} 笔交易")
+        return transactions
+    
+    def _extract_hong_leong(self, text: str, trans_patterns: Dict, customer_name: Optional[str] = None) -> List[Dict]:
+        """
+        HONG_LEONG专用解析器 - 处理分列布局
+        
+        HL格式（分列布局）:
+        - 第1块：所有Transaction Date (DD MMM)
+        - 第2块：所有Posting Date (DD MMM)  
+        - 第3块：所有Description (商家名称)
+        - 第4块：所有Amount (金额)
+        """
+        from decimal import Decimal
+        import re
+        
+        transactions = []
+        lines = text.split('\n')
+        
+        logger.info("🔍 使用HONG_LEONG专用解析器（分列布局）")
+        
+        # 查找交易区域开始标记
+        trans_start = None
+        for i, line in enumerate(lines):
+            if 'YOUR TRANSACTION DETAILS' in line or 'TRANSAKSI TERPERINCI ANDA' in line:
+                trans_start = i + 10
+                logger.info(f"  找到HL交易表头，起始位置: line {trans_start}")
+                break
+        
+        if not trans_start or trans_start >= len(lines):
+            logger.warning("⚠️ 未找到HONG_LEONG交易区域")
+            return transactions
+        
+        # 简化策略：直接查找并收集所有数据
+        trans_dates = []
+        descriptions = []
+        amounts = []
+        
+        date_pattern = r'^\d{1,2}\s+[A-Z]{3}$'
+        amount_pattern = r'^([\d,]+\.?\d{0,2})(\s+CR)?$'
+        
+        # 标记各区域
+        in_date_section = True
+        in_desc_section = False
+        in_amount_section = False
+        
+        for i in range(trans_start, min(trans_start + 400, len(lines))):
+            line = lines[i].strip()
+            
+            # 跳过空行
+            if not line:
+                continue
+            
+            # 阶段1：收集日期（直到遇到非日期行）
+            if in_date_section:
+                if re.match(date_pattern, line):
+                    # 只收集前N个（第1列），当日期数达到一定数量后检查是否进入描述区
+                    if len(trans_dates) < 100:
+                        trans_dates.append(line)
+                elif 'MYS' in line or 'PAYMENT' in line:
+                    # 发现描述行，切换到描述区
+                    in_date_section = False
+                    in_desc_section = True
+                    # 处理这一行
+                    if not any(skip in line for skip in ['PREVIOUS', 'NEW TRANSACTION']):
+                        descriptions.append(line)
+                        
+            # 阶段2：收集描述（直到遇到金额行）
+            elif in_desc_section:
+                if re.match(amount_pattern, line):
+                    # 发现金额行，切换到金额区
+                    in_desc_section = False
+                    in_amount_section = True
+                    amounts.append(line)
+                elif 'MYS' in line or 'PAYMENT' in line or 'REBATE' in line:
+                    descriptions.append(line)
+                    
+            # 阶段3：收集金额
+            elif in_amount_section:
+                if re.match(amount_pattern, line):
+                    amounts.append(line)
+                elif line and not re.match(date_pattern, line):
+                    # 遇到非金额行，停止收集
+                    break
+        
+        logger.info(f"  收集: {len(trans_dates)}个日期, {len(descriptions)}行描述, {len(amounts)}个金额")
+        
+        # 匹配交易（取最小长度）
+        min_len = min(len(trans_dates), len(descriptions), len(amounts))
+        
+        if min_len == 0:
+            logger.warning(f"⚠️ HL数据不完整: dates={len(trans_dates)}, desc={len(descriptions)}, amounts={len(amounts)}")
+            return transactions
+        
+        dr_cr_config = trans_patterns.get('dr_cr_detection', {})
+        
+        for i in range(min_len):
+            try:
+                date = trans_dates[i]
+                description = descriptions[i]
+                amount_str = amounts[i]
+                
+                # 解析金额和CR标记
+                is_credit = 'CR' in amount_str
+                amount_cleaned = amount_str.replace('CR', '').strip()
+                amount_decimal = Decimal(amount_cleaned.replace(',', ''))
+                
+                # 或者通过描述判断
+                if not is_credit:
+                    is_credit = self._is_credit_transaction(description, amount_cleaned, dr_cr_config)
+                
+                dr_amount = Decimal('0') if is_credit else amount_decimal
+                cr_amount = amount_decimal if is_credit else Decimal('0')
+                
+                # 分类
+                classification = self._classify_transaction(description, is_credit, customer_name)
+                
+                transaction = {
+                    'date': date,
+                    'description': description,
+                    'dr_amount': dr_amount,
+                    'cr_amount': cr_amount,
+                    'type': 'CR' if is_credit else 'DR',
+                    'classification': classification,
+                    'amount': amount_decimal
+                }
+                
+                transactions.append(transaction)
+                
+            except Exception as e:
+                logger.warning(f"⚠️ HL交易{i+1}解析失败: {e}")
+                continue
+        
+        logger.info(f"📊 HONG_LEONG提取了 {len(transactions)} 笔交易")
         return transactions
 
 

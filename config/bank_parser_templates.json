@@ -268,20 +268,13 @@
       }
     },
     "transaction_patterns": {
-      "transaction_line": {
-        "regex": "(\\d{1,2}\\s+[A-Z]{3}\\s+\\d{2})\\s+(.*?)\\s+([\\d,]+\\.?\\d{2})(CR)?",
-        "groups": {
-          "date": 1,
-          "description": 2,
-          "amount": 3,
-          "cr_marker": 4
-        }
-      },
+      "special_parser": "hong_leong",
       "dr_cr_detection": {
         "cr_keywords": [
           "CR",
           "PAYMENT",
-          "REFUND"
+          "REFUND",
+          "REBATE"
         ],
         "negative_is_credit": true
       }
