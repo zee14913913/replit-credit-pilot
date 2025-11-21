@@ -46,3 +46,6 @@ schedule
 weasyprint
 google-cloud-documentai
 openpyxl
+flask-cors
+google-auth
+sift-stack-py
