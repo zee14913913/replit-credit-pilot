@@ -234,15 +234,14 @@
 </div>
 
 <script>
-// {{ t('let_currentrevokekeyid__null_api_base_url_') }}递，支持生产环境配置)
-// 使用tojson过滤器确保安全的JSON编码
+let currentRevokeKeyId = null;
 const API_BASE_URL = {{ api_base_url|tojson }};
 
-// {{ t('apidocumentaddeventlistener') }}('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     refreshApiKeys();
 });
 
-// {{ t('apiasync_function_refreshapikeys') }}() {
+async function refreshApiKeys() {
     const container = document.getElementById('apiKeysContainer');
     const includeInactive = document.getElementById('showInactive').checked;
     
@@ -332,14 +331,15 @@ const API_BASE_URL = {{ api_base_url|tojson }};
     }
 }
 
-// {{ t('apiasync_function_createapikey') }}() {
-    // {{ t('____const_permissions') }} = ['upload:bank_statements'];  // {{ t('_____________documentqueryselectorall') }}('#createApiKeyForm input[type="checkbox"]:checked:not([disabled])').forEach(checkbox => {
+async function createApiKey() {
+    const permissions = ['upload:bank_statements'];
+    document.querySelectorAll('#createApiKeyForm input[type="checkbox"]:checked:not([disabled])').forEach(checkbox => {
         if (!permissions.includes(checkbox.value)) {
             permissions.push(checkbox.value);
         }
     });
 
-    // {{ t('uploadbank_statements____consolelog') }}('{{ t('__api') }}密钥权限:', permissions);
+    console.log('创建API密钥权限:', permissions);
 
     const data = {
         name: document.getElementById('keyName').value,
@@ -366,9 +366,9 @@ const API_BASE_URL = {{ api_base_url|tojson }};
             throw new Error(error.detail || `HTTP ${response.status}`);
         }
 
-        {{ t('const_result__await_responsejson_________') }}
+        const result = await response.json();
         const createModal = bootstrap.Modal.getInstance(document.getElementById('createApiKeyModal'));
-        {{ t('createmodalhide_________') }}
+        createModal.hide();
         document.getElementById('newApiKey').value = result.api_key;
         document.getElementById('newApiKeyName').textContent = result.name;
         document.getElementById('newApiKeyEnv').textContent = result.environment === 'live' ? '{{ t('live_3') }}）' : '{{ t('test_3') }}）';
@@ -376,7 +376,7 @@ const API_BASE_URL = {{ api_base_url|tojson }};
         document.getElementById('newApiKeyRate').textContent = `${data.rate_limit} ${t('requests_per_minute', '请求/分钟')}`;
 
         const showModal = new bootstrap.Modal(document.getElementById('showApiKeyModal'));
-        {{ t('showmodalshow_________') }}
+        showModal.show();
         document.getElementById('createApiKeyForm').reset();
 
     } catch (error) {
@@ -385,13 +385,13 @@ const API_BASE_URL = {{ api_base_url|tojson }};
     }
 }
 
-// {{ t('apifunction_copyapikey') }}() {
+function copyApiKey(event) {
     const input = document.getElementById('newApiKey');
     input.select();
     document.execCommand('copy');
     
     const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
-    // {{ t('____const_btn__eventtargetclosest') }}('button');
+    const btn = event.target.closest('button');
     const originalHTML = btn.innerHTML;
     btn.innerHTML = `<i class="bi bi-check"></i> ${t('copied', '已复制')}`;
     btn.classList.remove('btn-outline-primary');
@@ -404,7 +404,7 @@ const API_BASE_URL = {{ api_base_url|tojson }};
     }, 2000);
 }
 
-// {{ t('function_showrevokemodalkeyid_keyname') }}) {
+function showRevokeModal(keyId, keyName) {
     currentRevokeKeyId = keyId;
     document.getElementById('revokeKeyName').textContent = keyName;
     document.getElementById('revokeReason').value = '';
@@ -413,7 +413,7 @@ const API_BASE_URL = {{ api_base_url|tojson }};
     modal.show();
 }
 
-// {{ t('apiasync_function_confirmrevokeapikey') }}() {
+async function confirmRevokeApiKey() {
     const reason = document.getElementById('revokeReason').value.trim();
     const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
     

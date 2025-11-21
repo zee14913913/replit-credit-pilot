@@ -258,20 +258,21 @@
 <script src="{{ url_for('static', filename='js/ai_predict.js') }}"></script>
 
 <script>
-// {{ t('ai_8') }}
 function loadAllPredictions() {
-    // {{ t('id____const_customerid__getfirstcustomerid') }}    if (!customerId) {
+    const customerId = getFirstCustomerId();
+    if (!customerId) {
         alert(window.i18n.translate('please_add_customer_first'));
         return;
     }
     
-    // {{ t('ai____windowaipredictmanagerinitcustomerid___') }} window.aiPredictManager.loadHealthScore();
+    window.aiPredictManager.init(customerId);
+    window.aiPredictManager.loadHealthScore();
     window.aiPredictManager.loadPrediction();
     window.aiPredictManager.loadTrends();
 }
 
-// {{ t('idfunction_getfirstcustomerid') }}() {
-    // {{ t('urlcustomer_id____const_customerlink__documentqu') }}erySelector('a[href*="customer_dashboard"]');
+function getFirstCustomerId() {
+    const customerLink = document.querySelector('a[href*="customer_dashboard"]');
     if (!customerLink) return null;
     
     const match = customerLink.href.match(/customer_id=(\d+)/);

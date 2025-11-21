@@ -675,10 +675,11 @@
         // Notification System
         let notificationCheckInterval;
         let isAuthenticated = null;
-        const API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:8000`;
+        const API_BASE_URL = '/api/accounting';
 
-        // {{ t('________documentaddeventlistener') }}('DOMContentLoaded', function() {
-            {{ t('checknotifications____________startnotificationpol') }};
+        document.addEventListener('DOMContentLoaded', function() {
+            checkNotifications();
+            startNotificationPolling();
 
             // 点击外部关闭下拉菜单
             document.addEventListener('click', function(event) {
@@ -819,7 +820,6 @@
             }
         }
 
-        // {{ t('____function_formattimeisostring') }}
         function formatTime(isoString) {
             const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
             const date = new Date(isoString);

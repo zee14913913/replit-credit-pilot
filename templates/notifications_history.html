@@ -104,12 +104,12 @@
 <script>
     let currentFilter = 'all';
 
-    // {{ t('____documentaddeventlistener_1') }}('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
         loadNotifications('all');
     });
 
-    // {{ t('____async_function_loadnotificationsfilter') }}) {
-        {{ t('currentfilter__filter_________________') }}
+    async function loadNotifications(filter) {
+        currentFilter = filter;
         document.querySelectorAll('.btn-action, .btn-secondary').forEach(btn => {
             btn.classList.remove('btn-action');
             btn.classList.add('btn-secondary');
@@ -122,7 +122,7 @@
         container.innerHTML = `<div class="text-center" style="padding: 40px;"><i class="bi bi-hourglass-split"></i> ${t('loading', '加载中...')}</div>`;
 
         try {
-            const apiBaseUrl = `${window.location.protocol}//${window.location.hostname}:8000`;
+            const apiBaseUrl = '/api/accounting';
             const response = await fetch(`${apiBaseUrl}/api/notifications/history?status=${filter}&limit=100`, {
                 credentials: 'include'
             });
@@ -145,7 +145,7 @@
         }
     }
 
-    // {{ t('____function_displaynotificationsnotifications') }}) {
+    function displayNotifications(notifications) {
         const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         const container = document.getElementById('notificationsList');
 

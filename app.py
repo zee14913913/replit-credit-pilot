@@ -9054,3 +9054,53 @@ def monthly_report_download(customer_id, year, month):
     except Exception as e:
         flash(f'生成报表时出错: {str(e)}', 'error')
         return redirect(url_for('index'))
+
+
+# ============================================================================
+# API PROXY ROUTES - Unified Entry Point for Accounting API
+# ============================================================================
+
+@app.route('/api/accounting/<path:subpath>', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
+def accounting_api_proxy(subpath):
+    """
+    Proxy route to forward requests to Accounting API (Port 8000).
+    This allows frontend to use relative paths without hardcoding ports.
+    
+    Frontend URL:  /api/accounting/notifications/unread-count
+    Forwarded to:  http://localhost:8000/api/notifications/unread-count
+    """
+    import requests
+    
+    # Construct target URL with /api/ prefix
+    accounting_base_url = os.getenv('ACCOUNTING_API_URL', 'http://localhost:8000')
+    target_url = f"{accounting_base_url}/api/{subpath}"
+    
+    # Append query string if present
+    if request.query_string:
+        target_url += f"?{request.query_string.decode('utf-8')}"
+    
+    try:
+        # Forward the request with proper headers and body
+        response = requests.request(
+            method=request.method,
+            url=target_url,
+            headers={k: v for k, v in request.headers if k.lower() not in ['host', 'connection']},
+            data=request.get_data(),
+            cookies=request.cookies,
+            allow_redirects=False,
+            timeout=30
+        )
+        
+        # Return the response with filtered headers
+        excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
+        headers = [(name, value) for name, value in response.raw.headers.items()
+                   if name.lower() not in excluded_headers]
+        
+        return (response.content, response.status_code, headers)
+    
+    except requests.exceptions.RequestException as e:
+        logger.error(f'Accounting API proxy error: {e}')
+        return jsonify({
+            'success': False,
+            'error': f'Accounting API proxy error: {str(e)}'
+        }), 503
