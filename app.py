@@ -99,6 +99,22 @@ from services.dashboard_metrics import get_customer_monthly_metrics, get_all_car
 
 
 
+app = Flask(__name__)
+app.secret_key = os.environ.get('SESSION_SECRET', 'dev-secret-key-change-in-production')
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 200MB limit for batch uploads
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable static file caching
+
+# CORS Configuration
+CORS(app, resources={
+    r"/*": {
+        "origins": ["https://ynqoo4ipbuar.space.minimax.io", "http://localhost:3000", "http://localhost:5000"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    }
+})
+
 # ==================== API ENDPOINTS ====================
 @app.route('/api/customers', methods=['GET'])
 def api_get_customers():
@@ -229,21 +245,6 @@ benefit_calculator = BenefitCalculator()
 receipt_parser = ReceiptParser()
 receipt_matcher = ReceiptMatcher()
 
-app = Flask(__name__)
-app.secret_key = os.environ.get('SESSION_SECRET', 'dev-secret-key-change-in-production')
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
-app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 200MB limit for batch uploads
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable static file caching
-
-# CORS Configuration
-CORS(app, resources={
-    r"/*": {
-        "origins": ["https://ynqoo4ipbuar.space.minimax.io", "http://localhost:3000", "http://localhost:5000"],
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"],
-        "supports_credentials": True
-    }
-})
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 

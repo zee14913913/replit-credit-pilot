@@ -437,11 +437,11 @@ const API_BASE_URL = {{ api_base_url|tojson }};
             throw new Error(error.detail || `HTTP ${response.status}`);
         }
 
-        // {{ t('________const_modal__bootstrapmodalgetinstancedocu') }}ment.getElementById('revokeApiKeyModal'));
-        {{ t('modalhide_________') }}
+        const modal = bootstrap.Modal.getInstance(document.getElementById('revokeApiKeyModal'));
+        modal.hide();
         refreshApiKeys();
 
-        alert('{{ t('api_16') }}');
+        alert(t('api_key_revoked', 'API Key revoked successfully'));
 
     } catch (error) {
         const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;

@@ -176,7 +176,7 @@
         `).join('');
     }
 
-    // {{ t('____function_formattimeisostring') }}) {
+    function formatTime(isoString) {
         const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         const date = new Date(isoString);
         const now = new Date();
