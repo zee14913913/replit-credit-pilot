@@ -708,7 +708,7 @@
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}/api/notifications/unread-count`, {
+                const response = await fetch(`${API_BASE_URL}/notifications/unread-count`, {
                     credentials: 'include'
                 });
 
@@ -754,7 +754,7 @@
 
         async function loadNotifications() {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/notifications/list`, {
+                const response = await fetch(`${API_BASE_URL}/notifications/list`, {
                     credentials: 'include'
                 });
 
@@ -788,7 +788,7 @@
 
         async function handleNotificationClick(notificationId, actionUrl) {
             try {
-                await fetch(`${API_BASE_URL}/api/notifications/mark-as-read`, {
+                await fetch(`${API_BASE_URL}/notifications/mark-as-read`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
@@ -808,7 +808,7 @@
 
         async function markAllAsRead() {
             try {
-                await fetch(`${API_BASE_URL}/api/notifications/mark-all-as-read`, {
+                await fetch(`${API_BASE_URL}/notifications/mark-all-as-read`, {
                     method: 'POST',
                     credentials: 'include'
                 });

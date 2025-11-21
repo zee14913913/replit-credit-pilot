@@ -123,7 +123,7 @@
 
         try {
             const apiBaseUrl = '/api/accounting';
-            const response = await fetch(`${apiBaseUrl}/api/notifications/history?status=${filter}&limit=100`, {
+            const response = await fetch(`${apiBaseUrl}/notifications/history?status=${filter}&limit=100`, {
                 credentials: 'include'
             });
 
