@@ -6591,7 +6591,7 @@ document.querySelector('.test-input').focus();
     return html
 
 @app.route('/accounting/<path:path>')
-def accounting_api_proxy(path=''):
+def accounting_iframe_view(path=''):
     """代理到会计系统API (端口8000) - 使用iframe嵌入"""
     target_url = f'http://localhost:8000/{path}'
     
@@ -9104,3 +9104,4 @@ def accounting_api_proxy(subpath):
             'success': False,
             'error': f'Accounting API proxy error: {str(e)}'
         }), 503
+# Force reload Fri Nov 21 10:28:37 PM Asia 2025
