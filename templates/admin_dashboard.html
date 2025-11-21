@@ -6,7 +6,7 @@
 <div class="container-fluid" style="max-width: 98%; padding: 2rem;">
     <!-- Navigation Buttons Bar -->
     <div class="mb-4" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
-        <a href="{{ url_for('index') }}" 
+        <a href="" 
            class="btn btn-lg" 
            style="background: linear-gradient(135deg, #322446 0%, #1a1a2e 100%); 
                   color: #FFFFFF; 
@@ -18,7 +18,7 @@
             <i class="bi bi-arrow-left-circle"></i> 
         </a>
 
-        <a href="{{ url_for('admin_logout') }}" 
+        <a href="" 
            class="btn btn-lg" 
            style="background: linear-gradient(135deg, #FF007F 0%, #c7005f 100%); 
                   color: #FFFFFF; 
@@ -30,7 +30,7 @@
             <i class="bi bi-box-arrow-right"></i> 
         </a>
 
-        <a href="{{ url_for('admin_evidence_archive') }}" 
+        <a href="" 
            class="btn btn-lg" 
            style="background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); 
                   color: #FF007F; 
@@ -42,7 +42,7 @@
             <i class="bi bi-archive"></i> 
         </a>
 
-        <a href="{{ url_for('accounting_files') }}" 
+        <a href="" 
            class="btn btn-lg" 
            style="background: linear-gradient(135deg, #1a1a2e 0%, #322446 100%); 
                   color: #FFFFFF; 
@@ -60,40 +60,40 @@
         <button onclick="testEditFunction()" class="btn" style="background: #FF007F; color: white; font-weight: 700; padding: 15px 30px; font-size: 18px;">
             🧪 
         </button>
-        <p id="test_result" style="color: white; margin-top: 10px; font-weight: 600; font-size: 16px;"></p>
+        <p></p>
     </div>
 
     <div class="section-header">
         <h1 class="section-title" style="color: #FF007F; font-weight: 700;">📊 </h1>
-        <p class="section-description" style="color: #FF007F;"></p>
+        <p></p>
     </div>
 
     <!-- System Summary -->
     <div class="row g-4 mb-4">
         <div class="col-md-3">
             <div class="stat-card">
-                <div class="stat-value" style="font-size: 1.8rem;">{{ customers|length }}</div>
+                <div class="stat-value" style="font-size: 1.8rem;"></div>
                 <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
                 <div class="stat-corner"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card">
-                <div class="stat-value" style="font-size: 1.8rem;">{{ statement_count }}</div>
+                <div class="stat-value" style="font-size: 1.8rem;"></div>
                 <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
                 <div class="stat-corner"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card">
-                <div class="stat-value" style="font-size: 1.8rem;">{{ txn_count }}</div>
+                <div class="stat-value" style="font-size: 1.8rem;"></div>
                 <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
                 <div class="stat-corner"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card">
-                <div class="stat-value" style="font-size: 1.8rem;">{{ active_cards }}</div>
+                <div class="stat-value" style="font-size: 1.8rem;"></div>
                 <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
                 <div class="stat-corner"></div>
             </div>
@@ -124,9 +124,9 @@
             </div>
         </div>
         <div class="col-md-3">
-            <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
+            <a href="" style="text-decoration: none;">
                 <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(255,0,127,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                    <div class="stat-value" style="color: #FF007F; font-size: 1.8rem;">{{ invoices_count }}</div>
+                    <div class="stat-value" style="color: #FF007F; font-size: 1.8rem;"></div>
                     <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
                     <div class="stat-corner" style="background: #FF007F;"></div>
                 </div>
@@ -158,7 +158,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
+            <a href="" style="text-decoration: none;">
                 <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(50,36,70,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                     <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.2f}".format(invoices_total) }}</div>
                     <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;"></div>
@@ -174,7 +174,7 @@
             <h3 style="color: #FF007F; text-shadow: 0 0 15px rgba(255,0,127,0.5); font-weight: 700; font-size: 2rem; margin: 0;">
                 <i class="bi bi-grid-3x3-gap-fill"></i> 
             </h3>
-            <p style="color: #999; margin: 0.5rem 0 0 0; font-size: 1rem;"></p>
+            <p></p>
         </div>
 
         <!-- 1. 信用卡账单管理 -->
@@ -202,7 +202,7 @@
                     </h4>
                     <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
                         <div style="color: #FF007F; font-size: 1.8rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
-                            {{ cc_statements|length }}
+                            
                         </div>
                         <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;"></div>
                     </div>
@@ -235,7 +235,7 @@
                     </h4>
                     <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
                         <div style="color: #FF007F; font-size: 1.8rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
-                            {{ sa_statements|length }}
+                            
                         </div>
                         <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;"></div>
                     </div>
@@ -245,7 +245,7 @@
 
         <!-- 3. 付款收据管理 -->
         <div class="col-md-6 col-lg-4 col-xl-2">
-            <a href="{{ url_for('receipts_home') }}" style="text-decoration: none;">
+            <a href="" style="text-decoration: none;">
                 <div class="quick-action-card" style="
                     background: #000000;
                     border: 3px solid #FF007F;
@@ -268,7 +268,7 @@
                     </h4>
                     <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
                         <div style="color: #FF007F; font-size: 1.8rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
-                            {{ receipts_count }}
+                            
                         </div>
                         <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;"></div>
                     </div>
@@ -278,7 +278,7 @@
 
         <!-- 4.  -->
         <div class="col-md-6 col-lg-4 col-xl-2">
-            <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
+            <a href="" style="text-decoration: none;">
                 <div class="quick-action-card" style="
                     background: #000000;
                     border: 3px solid #FF007F;
@@ -301,7 +301,7 @@
                     </h4>
                     <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
                         <div style="color: #FF007F; font-size: 1.8rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
-                            {{ invoices_count }}
+                            
                         </div>
                         <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;"></div>
                     </div>
@@ -311,7 +311,7 @@
 
         <!-- 5. Monthly Summary Reports -->
         <div class="col-md-6 col-lg-4 col-xl-2">
-            <a href="{{ url_for('monthly_summary_index') }}" style="text-decoration: none;">
+            <a href="" style="text-decoration: none;">
                 <div class="quick-action-card" style="
                     background: #000000;
                     border: 3px solid #FF007F;
@@ -350,7 +350,7 @@
                         <h3 class="card-title-custom" style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; margin: 0;">
                             <i class="bi bi-credit-card"></i></h3>
                         <span style="background: rgba(255,0,127,0.2); padding: 0.5rem 1rem; border-radius: 8px; color: #FF007F; font-weight: 700;">
-                            {{ credit_card_customers|length }} Customers
+                             Customers
                         </span>
                     </div>
                 </div>
@@ -373,25 +373,25 @@
                                     {% for customer in credit_card_customers %}
                                     <tr class="hover-glow-row">
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">
-                                            {{ customer['name'] }}
+                                            
                                         </td>
                                         <td style="font-size: 0.75rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #999;">
-                                            {{ customer['email'] if customer['email'] else '-' }}
+                                            
                                         </td>
                                         <td style="font-size: 0.75rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #999;">
-                                            {{ customer['phone'] if customer['phone'] else '-' }}
+                                            
                                         </td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FF007F;">
                                             RM {{ "{:,.0f}".format(customer['monthly_income']) if customer['monthly_income'] else '-' }}
                                         </td>
                                         <td style="font-size: 0.85rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); text-align: center; font-weight: 700; color: #FF007F;">
-                                            {{ customer['total_cards'] }}
+                                            
                                         </td>
                                         <td style="font-size: 0.85rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); text-align: center; font-weight: 700; color: #FFF;">
-                                            {{ customer['total_statements'] }}
+                                            
                                         </td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center;">
-                                            <a href="{{ url_for('credit_card_ledger', customer_id=customer['id']) }}" 
+                                            <a href="" 
                                                class="btn btn-sm btn-view-details"
                                                style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
                                                       border: 2px solid #FF007F; 
@@ -424,7 +424,7 @@
                         <h3 class="card-title-custom" style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; margin: 0;">
                             <i class="bi bi-bank"></i></h3>
                         <span style="background: rgba(123,104,238,0.3); padding: 0.5rem 1rem; border-radius: 8px; color: #9370DB; font-weight: 700;">
-                            {{ savings_customers|length }} Customers
+                             Customers
                         </span>
                     </div>
                 </div>
@@ -447,25 +447,25 @@
                                     {% for customer in savings_customers %}
                                     <tr class="hover-glow-row">
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">
-                                            {{ customer['name'] }}
+                                            
                                         </td>
                                         <td style="font-size: 0.75rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #999;">
-                                            {{ customer['email'] if customer['email'] else '-' }}
+                                            
                                         </td>
                                         <td style="font-size: 0.75rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #999;">
-                                            {{ customer['phone'] if customer['phone'] else '-' }}
+                                            
                                         </td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #9370DB;">
                                             RM {{ "{:,.0f}".format(customer['monthly_income']) if customer['monthly_income'] else '-' }}
                                         </td>
                                         <td style="font-size: 0.85rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); text-align: center; font-weight: 700; color: #9370DB;">
-                                            {{ customer['total_accounts'] }}
+                                            
                                         </td>
                                         <td style="font-size: 0.85rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); text-align: center; font-weight: 700; color: #FFF;">
-                                            {{ customer['total_statements'] }}
+                                            
                                         </td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center;">
-                                            <a href="{{ url_for('savings_customers') }}" 
+                                            <a href="" 
                                                class="btn btn-sm btn-view-details"
                                                style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
                                                       border: 2px solid #7B68EE; 
@@ -529,55 +529,55 @@
                             <tbody>
                                 {% if cc_statements %}
                                     {% for stmt in cc_statements %}
-                                    <tr class="hover-glow-row" id="row_{{ stmt['statement_id'] }}" data-editing="false">
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ stmt['statement_date'][:7] }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; white-space: nowrap;">{{ stmt['customer_name'] }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ stmt['bank_abbr'] }}</td>
+                                    <tr class="hover-glow-row" id="row_" data-editing="false">
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;"></td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; white-space: nowrap;"></td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;"></td>
 
-                                        <td class="editable-cell" data-field="prev_bal" data-value="{{ stmt['prev_bal'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">
+                                        <td class="editable-cell" data-field="prev_bal" data-value="" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">
                                             <span class="display-value">RM {{ "{:,.2f}".format(stmt['prev_bal']) }}</span>
-                                            <input type="number" step="0.01" class="edit-input" value="{{ stmt['prev_bal'] }}" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
+                                            <input type="number" step="0.01" class="edit-input" value="" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
                                         </td>
 
-                                        <td class="editable-cell" data-field="closing_balance" data-value="{{ stmt['closing_balance'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFFFF; text-shadow: 0 0 10px rgba(255,255,255,0.4); white-space: nowrap;">
+                                        <td class="editable-cell" data-field="closing_balance" data-value="" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFFFF; text-shadow: 0 0 10px rgba(255,255,255,0.4); white-space: nowrap;">
                                             <span class="display-value">RM {{ "{:,.2f}".format(stmt['closing_balance']) }}</span>
-                                            <input type="number" step="0.01" class="edit-input" value="{{ stmt['closing_balance'] }}" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
+                                            <input type="number" step="0.01" class="edit-input" value="" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
                                         </td>
 
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">{{ stmt['due_date'] if stmt['due_date'] else '-' }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;"></td>
 
-                                        <td class="editable-cell" data-field="owner_expenses" data-value="{{ stmt['owner_expenses'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25); white-space: nowrap;">
+                                        <td class="editable-cell" data-field="owner_expenses" data-value="" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25); white-space: nowrap;">
                                             <span class="display-value">RM {{ "{:,.2f}".format(stmt['owner_expenses']) }}</span>
-                                            <input type="number" step="0.01" class="edit-input" value="{{ stmt['owner_expenses'] }}" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
+                                            <input type="number" step="0.01" class="edit-input" value="" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
                                         </td>
 
-                                        <td class="editable-cell" data-field="infinite_expenses" data-value="{{ stmt['infinite_expenses'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFFFF; text-shadow: 0 0 10px rgba(255,255,255,0.4); white-space: nowrap;">
+                                        <td class="editable-cell" data-field="infinite_expenses" data-value="" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFFFF; text-shadow: 0 0 10px rgba(255,255,255,0.4); white-space: nowrap;">
                                             <span class="display-value">RM {{ "{:,.2f}".format(stmt['infinite_expenses']) }}</span>
-                                            <input type="number" step="0.01" class="edit-input" value="{{ stmt['infinite_expenses'] }}" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
+                                            <input type="number" step="0.01" class="edit-input" value="" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
                                         </td>
 
-                                        <td class="editable-cell" data-field="owner_payments" data-value="{{ stmt['owner_payments'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25); white-space: nowrap;">
+                                        <td class="editable-cell" data-field="owner_payments" data-value="" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25); white-space: nowrap;">
                                             <span class="display-value">RM {{ "{:,.2f}".format(abs(stmt['owner_payments'])) }}</span>
-                                            <input type="number" step="0.01" class="edit-input" value="{{ abs(stmt['owner_payments']) }}" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
+                                            <input type="number" step="0.01" class="edit-input" value="" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
                                         </td>
 
-                                        <td class="editable-cell" data-field="infinite_payments" data-value="{{ stmt['infinite_payments'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFFFF; text-shadow: 0 0 10px rgba(255,255,255,0.4); white-space: nowrap;">
+                                        <td class="editable-cell" data-field="infinite_payments" data-value="" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFFFF; text-shadow: 0 0 10px rgba(255,255,255,0.4); white-space: nowrap;">
                                             <span class="display-value">RM {{ "{:,.2f}".format(abs(stmt['infinite_payments'])) }}</span>
-                                            <input type="number" step="0.01" class="edit-input" value="{{ abs(stmt['infinite_payments']) }}" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
+                                            <input type="number" step="0.01" class="edit-input" value="" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
                                         </td>
 
-                                        <td class="editable-cell" data-field="owner_balance" data-value="{{ stmt['owner_os_bal'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25); white-space: nowrap;">
+                                        <td class="editable-cell" data-field="owner_balance" data-value="" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25); white-space: nowrap;">
                                             <span class="display-value">RM {{ "{:,.2f}".format(stmt['owner_os_bal']) }}</span>
-                                            <input type="number" step="0.01" class="edit-input" value="{{ stmt['owner_os_bal'] }}" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
+                                            <input type="number" step="0.01" class="edit-input" value="" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
                                         </td>
 
-                                        <td class="editable-cell" data-field="gz_balance" data-value="{{ stmt['infinite_os_bal'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFFFF; text-shadow: 0 0 10px rgba(255,255,255,0.4); white-space: nowrap;">
+                                        <td class="editable-cell" data-field="gz_balance" data-value="" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFFFF; text-shadow: 0 0 10px rgba(255,255,255,0.4); white-space: nowrap;">
                                             <span class="display-value">RM {{ "{:,.2f}".format(stmt['infinite_os_bal']) }}</span>
-                                            <input type="number" step="0.01" class="edit-input" value="{{ stmt['infinite_os_bal'] }}" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
+                                            <input type="number" step="0.01" class="edit-input" value="" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
                                         </td>
 
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center; white-space: nowrap;">
-                                            <a href="{{ url_for('monthly_statement_detail', monthly_statement_id=stmt['statement_id']) }}" 
+                                            <a href="" 
                                                class="btn btn-sm btn-view-details view-btn"
                                                style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
                                                       border: 2px solid #FF007F; 
@@ -590,7 +590,7 @@
                                                 
                                             </a>
                                             <button class="btn btn-sm edit-toggle-btn"
-                                               onclick="toggleRowEdit({{ stmt['statement_id'] }})"
+                                               onclick="toggleRowEdit()"
                                                style="background: linear-gradient(135deg, #322446 0%, #4a3268 100%); 
                                                       border: 2px solid #FF007F; 
                                                       color: #FFFFFF;
@@ -599,9 +599,9 @@
                                                       padding: 0.25rem 0.75rem;
                                                       font-size: 0.75rem;">
                                                 <i class="bi bi-pencil-square"></i></button>
-                                            <button class="btn btn-sm save-btn" onclick="saveRowEdit({{ stmt['statement_id'] }})" style="display: none; background: #0f0; color: #000; border: none; padding: 0.25rem 0.75rem; font-size: 0.75rem; margin-right: 0.5rem; font-weight: 700;">
+                                            <button class="btn btn-sm save-btn" onclick="saveRowEdit()" style="display: none; background: #0f0; color: #000; border: none; padding: 0.25rem 0.75rem; font-size: 0.75rem; margin-right: 0.5rem; font-weight: 700;">
                                                 <i class="bi bi-check-circle"></i></button>
-                                            <button class="btn btn-sm cancel-btn" onclick="cancelRowEdit({{ stmt['statement_id'] }})" style="display: none; background: #f00; color: #fff; border: none; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 700;">
+                                            <button class="btn btn-sm cancel-btn" onclick="cancelRowEdit()" style="display: none; background: #f00; color: #fff; border: none; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 700;">
                                                 <i class="bi bi-x-circle"></i></button>
                                         </td>
                                     </tr>
@@ -650,16 +650,16 @@
                                 {% if sa_statements %}
                                     {% for stmt in sa_statements %}
                                     <tr class="hover-glow-row">
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">{{ stmt['statement_date'][:7] }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">{{ stmt['customer_name'] }}</td>
-                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">{{ stmt['bank_abbr'] }}</td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;"></td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;"></td>
+                                        <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;"></td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['monthly_credit']) }}</td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['monthly_debit']) }}</td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['closing_bal'] if stmt['closing_bal'] else 0) }}</td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['cc_sum_payment']) }}</td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">RM {{ "{:,.2f}".format(stmt['total_transfer']) }}</td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center; white-space: nowrap;">
-                                            <a href="{{ url_for('verify_savings_statement', statement_id=stmt['statement_id']) }}" 
+                                            <a href="" 
                                                class="btn btn-sm btn-view-details"
                                                style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
                                                       border: 2px solid #322446; 
@@ -1216,15 +1216,15 @@ function saveRowEdit(stmtId) {
                         <div class="row">
                             <div class="col-md-4">
                                 <strong style="color: #FF007F;"></strong><br>
-                                <span id="modal_customer_name"></span>
+                                
                             </div>
                             <div class="col-md-4">
                                 <strong style="color: #FF007F;"></strong><br>
-                                <span id="modal_bank"></span>
+                                
                             </div>
                             <div class="col-md-4">
                                 <strong style="color: #FF007F;"></strong><br>
-                                <span id="modal_month"></span>
+                                
                             </div>
                         </div>
                     </div>
@@ -1236,7 +1236,7 @@ function saveRowEdit(stmtId) {
                                 <i class="bi bi-arrow-left-circle"></i> 
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background: #322446; color: #FFFEF0; border-color: #FF007F;"></span>
+                                
                                 <input type="text" 
                                        class="form-control" 
                                        id="edit_prev_bal" 
@@ -1257,7 +1257,7 @@ function saveRowEdit(stmtId) {
                                 <i class="bi bi-check-circle"></i> 
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background: #322446; color: #FFFEF0; border-color: #FF007F;"></span>
+                                
                                 <input type="text" 
                                        class="form-control" 
                                        id="edit_closing_bal" 
@@ -1280,7 +1280,7 @@ function saveRowEdit(stmtId) {
                                 💳 
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background: #322446; color: #FF007F; border-color: #FF007F;"></span>
+                                
                                 <input type="text" 
                                        class="form-control" 
                                        id="edit_owner_expenses" 
@@ -1301,7 +1301,7 @@ function saveRowEdit(stmtId) {
                                 💰 
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background: #322446; color: #FF007F; border-color: #FF007F;"></span>
+                                
                                 <input type="text" 
                                        class="form-control" 
                                        id="edit_owner_payments" 
@@ -1322,7 +1322,7 @@ function saveRowEdit(stmtId) {
                                 🏢 
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background: #322446; color: #FFFFFF; border-color: #322446;"></span>
+                                
                                 <input type="text" 
                                        class="form-control" 
                                        id="edit_gz_expenses" 
@@ -1343,7 +1343,7 @@ function saveRowEdit(stmtId) {
                                 💵 
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background: #322446; color: #FFFFFF; border-color: #322446;"></span>
+                                
                                 <input type="text" 
                                        class="form-control" 
                                        id="edit_gz_payments" 
@@ -1366,7 +1366,7 @@ function saveRowEdit(stmtId) {
                                 📊 
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background: #322446; color: #FF007F; border-color: #FF007F;"></span>
+                                
                                 <input type="text" 
                                        class="form-control" 
                                        id="edit_owner_bal" 
@@ -1387,7 +1387,7 @@ function saveRowEdit(stmtId) {
                                 📈 
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background: #322446; color: #FFFFFF; border-color: #322446;"></span>
+                                
                                 <input type="text" 
                                        class="form-control" 
                                        id="edit_gz_bal" 

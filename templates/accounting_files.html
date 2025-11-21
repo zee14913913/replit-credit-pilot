@@ -431,7 +431,7 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     </script>
 
-    <!--  -->
+    
     <script src="/static/js/toast.js"></script>
 
     <!-- 全局翻译对象 -->
@@ -449,14 +449,14 @@
 
         // Action labels mapping
         window.ACTION_LABELS = {
-            "validate": "",
-            "view_original": "",
-            "generate_report": "",
-            "download_original": "",
-            "view_exceptions": "",
-            "reprocess": "",
-            "set_as_primary": "",
-            "view_other_files": "",
+            "validate": "Validate",
+            "view_original": "View Original",
+            "generate_report": "Generate Report",
+            "download_original": "Download",
+            "view_exceptions": "View Exceptions",
+            "reprocess": "Reprocess",
+            "set_as_primary": "Set Primary",
+            "view_other_files": "View Other Files",
             "view_report": ""
         };
 
@@ -859,7 +859,7 @@
             formData.append('file', uploadFile);
 
             try {
-                const response = await fetch('/api/proxy/files/smart-upload?company_id={{ company_id }}', {
+                const response = await fetch('/api/proxy/files/smart-upload?company_id=', {
                     method: 'POST',
                     body: formData
                 });

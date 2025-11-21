@@ -156,11 +156,11 @@ def api_dashboard_stats():
             cursor.execute('SELECT COUNT(*) FROM credit_cards')
             active_cards = cursor.fetchone()[0]
             
-            # 基本财务数据（不依赖不存在的classification列）
+            # 基本财务数据（使用amount列）
             cursor.execute("""
                 SELECT 
-                    COALESCE(SUM(debit_amount), 0) as total_debits,
-                    COALESCE(SUM(credit_amount), 0) as total_credits
+                    COALESCE(SUM(CASE WHEN amount > 0 THEN amount ELSE 0 END), 0) as total_expenses,
+                    COALESCE(SUM(CASE WHEN amount < 0 THEN ABS(amount) ELSE 0 END), 0) as total_payments
                 FROM transactions
             """)
             financial_row = cursor.fetchone()
@@ -168,7 +168,7 @@ def api_dashboard_stats():
             owner_payments = financial_row[1] or 0
             owner_balance = owner_expenses - owner_payments
             
-            # GZ财务数据（简化版）
+            # GZ财务数据
             gz_expenses = 0
             gz_payments = 0
             gz_balance = 0
