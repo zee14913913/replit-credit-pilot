@@ -16,8 +16,12 @@ import psycopg2
 from ..db import get_db
 from ..models import User, Permission, AuditLog
 from ..services.auth_service import get_user_by_token, get_user_role_for_company
+from ..utils.flask_session_parser import FlaskSessionParser
 
 logger = logging.getLogger(__name__)
+
+# Initialize Flask session parser for cross-service authentication
+flask_session_parser = FlaskSessionParser()
 
 
 # ========== Phase 2-2 Task 4: Request信息提取辅助函数 ==========
@@ -71,19 +75,22 @@ ROLE_HIERARCHY = {
 def get_current_user(
     db: Session = Depends(get_db),
     authorization: Optional[str] = Header(None),
-    session_token: Optional[str] = Cookie(None)
+    session_token: Optional[str] = Cookie(None),
+    session: Optional[str] = Cookie(None)
 ) -> Optional[User]:
     """
     FastAPI依赖函数：从请求中获取当前用户
     
     认证方式优先级：
     1. Authorization header (Bearer token)
-    2. Cookie (session_token)
+    2. Cookie (session_token) - FastAPI native session
+    3. Cookie (session) - Flask session (cross-service authentication)
     
     Args:
         db: 数据库session（自动注入）
         authorization: Authorization header
         session_token: Cookie中的session_token
+        session: Flask session cookie (for cross-service auth)
     
     Returns:
         User对象或None
@@ -96,18 +103,35 @@ def get_current_user(
     # 方式1：从Authorization header获取
     if authorization and authorization.startswith('Bearer '):
         token = authorization.split(' ')[1]
+        user = get_user_by_token(db, token)
+        if user:
+            return user
     
-    # 方式2：从Cookie获取
-    elif session_token:
+    # 方式2：从FastAPI session_token Cookie获取
+    if session_token:
         token = session_token
+        user = get_user_by_token(db, token)
+        if user:
+            return user
     
-    if not token:
-        return None
+    # 方式3：从Flask session cookie获取（跨服务认证）
+    if session:
+        try:
+            session_data = flask_session_parser.parse_session_cookie(session)
+            if session_data:
+                user_info = flask_session_parser.extract_user_from_session(session_data)
+                if user_info and user_info.get('user_id'):
+                    # 从数据库查找用户
+                    user = db.query(User).filter(User.id == user_info['user_id']).first()
+                    if user and user.is_active:
+                        logger.info(f"✅ Flask session验证成功：user_id={user.id}, username={user.username}")
+                        return user
+                    else:
+                        logger.warning(f"Flask session用户不存在或未激活：user_id={user_info['user_id']}")
+        except Exception as e:
+            logger.warning(f"Flask session解析失败: {e}")
     
-    # 验证token并获取用户
-    user = get_user_by_token(db, token)
-    
-    return user
+    return None
 
 
 def require_auth(
