@@ -20,14 +20,15 @@ class ParserPriority:
     VBA_PRIMARY = "vba_primary"             # VBA优先，失败后OCR
     OCR_BACKUP = "ocr_backup"               # OCR备用（仅手动触发）
     DOCPARSER_VBA = "docparser_vba"         # DocParser优先，VBA备用
-    
-    
+    FALLBACK_ONLY = "fallback_only"         # 仅Fallback Parser
+
+
 # ============================================================
 # 全局配置
 # ============================================================
 
 # 当前强制执行的解析策略
-PARSER_MODE = ParserPriority.DOCPARSER_ONLY
+PARSER_MODE = 'FALLBACK_ONLY'  # 永久禁用 Google Document AI，仅使用 Fallback Parser
 
 # 允许的上传方式
 ALLOWED_UPLOAD_METHODS = {
@@ -193,19 +194,19 @@ Current mode: {PARSER_MODE}
 def validate_config():
     """验证配置的一致性"""
     errors = []
-    
+
     # 检查：如果VBA_ONLY模式，直接PDF上传必须禁用
     if PARSER_MODE == ParserPriority.VBA_ONLY:
         if ALLOWED_UPLOAD_METHODS.get('direct_pdf', False):
             errors.append("VBA_ONLY模式下direct_pdf必须为False")
-    
+
     # 检查：VBA端点必须启用
     if not ALLOWED_UPLOAD_METHODS.get('vba_json', False):
         errors.append("VBA上传必须启用")
-    
+
     if errors:
         raise ValueError(f"配置错误: {'; '.join(errors)}")
-    
+
     return True
 
 
@@ -236,6 +237,6 @@ def upload_pdf():
             'message': ERROR_MESSAGES['pdf_upload_disabled']['zh'],
             'guidance': get_upload_guidance('zh')
         }), 403
-    
+
     # ... 后续处理
 """

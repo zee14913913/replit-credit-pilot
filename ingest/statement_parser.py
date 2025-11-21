@@ -1272,50 +1272,19 @@ def parse_bank_muamalat_statement(file_path):
         return info, transactions
 
 
-def parse_statement_auto(pdf_path: str) -> tuple:
+def parse_statement_auto(file_path):
     """
-    自动解析账单（使用免费Fallback Parser）
-
-    Returns:
-        (info, transactions)
+    自动解析银行账单（PDF/Excel）
+    使用 Fallback Parser（已禁用 Google Document AI）
     """
-    logger.info(f"📄 解析账单: {pdf_path}")
-
-    # 使用免费的 Fallback Parser
     try:
+        # 检测银行
+        bank = detect_bank(file_path)
+        # 强制使用 Fallback Parser（已禁用 Google Document AI）
+        logger.info(f"使用 Fallback Parser 解析 {bank} 账单")
         from services.fallback_parser import parse_statement_fallback
-
-        logger.info("🆓 使用免费Fallback Parser（无需Google API）")
-        info, transactions = parse_statement_fallback(pdf_path)
-
-        # 验证交易
-        if transactions:
-            dr_count = sum(1 for t in transactions if t.get('type') == 'DR')
-            cr_count = sum(1 for t in transactions if t.get('type') == 'CR')
-
-            logger.info(f"✅ 提取 {len(transactions)}笔交易 (DR:{dr_count}, CR:{cr_count})")
-
-            if dr_count == 0 and cr_count == 0:
-                logger.error("❌ 所有交易都没有DR/CR标记")
-                raise Exception("No DR/CR types found")
-            elif dr_count > 0 and cr_count > 0:
-                logger.info(f"✅ DR/CR都有，数据健康")
-            elif dr_count > 0:
-                logger.warning(f"⚠️ 只有DR交易（{dr_count}笔）- 可能该月无还款，继续处理")
-            elif cr_count > 0:
-                logger.warning(f"⚠️ 只有CR交易（{cr_count}笔）- 可能该月无消费，继续处理")
-
-            # 确保所有交易都有类型标记
-            untyped = [t for t in transactions if t.get('type') not in ['DR', 'CR']]
-            if untyped:
-                logger.error(f"❌ 发现{len(untyped)}笔交易没有DR/CR类型标记")
-                raise Exception(f"Found {len(untyped)} transactions without DR/CR type")
-
-            return info, transactions
-        else:
-            logger.error("❌ Fallback Parser未提取到任何交易")
-            raise Exception("No transactions extracted")
+        return parse_statement_fallback(file_path)
     except Exception as e:
         logger.error(f"❌ Fallback Parser解析失败: {e}")
-        logger.error(f"❌ PDF文件: {pdf_path}")
-        raise RuntimeError(f"Fallback parser failed for {pdf_path}. Error: {e}")
+        logger.error(f"❌ PDF文件: {file_path}")
+        raise RuntimeError(f"Fallback parser failed for {file_path}. Error: {e}")

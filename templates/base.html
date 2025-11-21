@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ t('system_name') }} - {{ t('company_name') }}{% endblock %}</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
@@ -42,7 +42,7 @@
                 <i class="bi bi-list" id="menuIconOpen"></i>
                 <i class="bi bi-x" id="menuIconClose" style="display: none;"></i>
             </button>
-            
+
             <ul class="nav-menu" id="navMenu">
                 <!-- Public Navigation - Optimized Order by Business Workflow -->
                 <li class="nav-item">
@@ -117,7 +117,7 @@
                     </a>
                 </li>
             </ul>
-            
+
             <!-- Right side utilities -->
             <div class="nav-utilities">
                 <div class="notification-bell-container" style="position: relative; display: inline-block;">
@@ -181,7 +181,7 @@
                 <img src="{{ url_for('static', filename='logo.png') }}" alt="INFINITE GZ SDN BHD" class="footer-logo">
                 <h3 class="footer-company-name">INFINITE GZ SDN BHD</h3>
             </div>
-            
+
             <!-- Three Column Layout -->
             <div class="footer-columns">
                 <!-- Left Column: Credit Card -->
@@ -193,7 +193,7 @@
                         <li><a href="{{ url_for('index') }}" class="footer-link">{{ t('footer_monthly_summary') }}</a></li>
                     </ul>
                 </div>
-                
+
                 <!-- Center Column: Customers -->
                 <div class="footer-column">
                     <h4 class="footer-heading">{{ t('footer_customers') }}</h4>
@@ -202,7 +202,7 @@
                         <li><a href="{{ url_for('savings_customers') }}" class="footer-link">{{ t('nav_savings') }}</a></li>
                     </ul>
                 </div>
-                
+
                 <!-- Right Column: Services -->
                 <div class="footer-column">
                     <h4 class="footer-heading">{{ t('footer_services') }}</h4>
@@ -213,7 +213,7 @@
                     </ul>
                 </div>
             </div>
-            
+
             <!-- Bottom: Copyright -->
             <div class="footer-bottom">
                 <p class="footer-copyright">&copy; 2025 INFINITE GZ SDN BHD. {{ t('all_rights_reserved') }}</p>
@@ -236,7 +236,7 @@
                         <h6 class="text-silver-pearl mb-3">
                             <i class="bi bi-rocket-takeoff me-2"></i><span data-i18n="{{ t('guide_quick_start_1') }}">{{ t('guide_quick_start') }}</span>
                         </h6>
-                        
+
                         <!-- Admin Features -->
                         <div class="guide-section mb-4">
                             <h6 class="text-golden">
@@ -265,7 +265,7 @@
                                 </li>
                             </ol>
                         </div>
-                        
+
                         <!-- Core Features -->
                         <div class="guide-section mb-4">
                             <h6 class="text-golden">
@@ -309,7 +309,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Customer Features -->
                         <div class="guide-section mb-4">
                             <h6 class="text-golden">
@@ -334,7 +334,7 @@
                                 </li>
                             </ol>
                         </div>
-                        
+
                         <!-- Tips & Tricks -->
                         <div class="guide-section">
                             <h6 class="text-golden">
@@ -364,7 +364,7 @@
                             </ul>
                         </div>
                     </div>
-                    
+
                     <div class="alert" style="background: rgba(229, 228, 226, 0.1); border: 1px solid rgba(229, 228, 226, 0.3); color: #e8e6e3;">
                         <i class="bi bi-info-circle me-2"></i>
                         <strong data-i18n="{{ t('guide_need_help_1') }}">{{ t('guide_need_help') }}</strong> 
@@ -391,54 +391,54 @@
         border-radius: 8px;
         border-left: 3px solid rgba(229, 228, 226, 0.3);
     }
-    
+
     .guide-list {
         margin-left: 1.2rem;
         line-height: 1.8;
     }
-    
+
     .guide-list li {
         margin-bottom: 0.8rem;
     }
-    
+
     /* Bilingual List Styling */
     .bilingual-list .en {
         color: #e8e6e3;
         margin-left: 0.5rem;
         font-size: 0.95rem;
     }
-    
+
     .bilingual-list .cn {
         color: rgba(229, 228, 226, 0.8);
         margin-left: 0.5rem;
         font-size: 0.9rem;
         font-style: italic;
     }
-    
+
     .bilingual-list .en,
     .bilingual-list .cn {
         display: block;
         padding-left: 1rem;
         line-height: 1.6;
     }
-    
+
     /* Inline bilingual text */
     span.en {
         color: #fff;
     }
-    
+
     span.cn {
         color: rgba(229, 228, 226, 0.85);
         margin-left: 0.3rem;
     }
-    
+
     .feature-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 1rem;
         margin-top: 1rem;
     }
-    
+
     .feature-item {
         background: rgba(0, 0, 0, 0.3);
         padding: 1rem;
@@ -447,54 +447,54 @@
         text-align: center;
         transition: all 0.3s ease;
     }
-    
+
     .feature-item:hover {
         border-color: rgba(229, 228, 226, 0.5);
         background: rgba(0, 0, 0, 0.4);
         transform: translateY(-2px);
     }
-    
+
     .feature-item i {
         font-size: 2rem;
         display: block;
         margin-bottom: 0.5rem;
     }
-    
+
     .feature-item strong {
         display: block;
         color: #fff;
         margin-bottom: 0.2rem;
         font-size: 0.95rem;
     }
-    
+
     .feature-item strong.cn-text {
         color: rgba(229, 228, 226, 0.85);
         font-size: 0.9rem;
         margin-bottom: 0.5rem;
     }
-    
+
     .feature-item small {
         display: block;
         color: #e8e6e3;
         font-size: 0.85rem;
         line-height: 1.4;
     }
-    
+
     .feature-item small.cn-text {
         color: rgba(229, 228, 226, 0.7);
         font-size: 0.8rem;
     }
-    
+
     /* Modal size adjustment for bilingual content */
     .modal-xl {
         max-width: 900px;
     }
-    
+
     @media (max-width: 768px) {
         .feature-grid {
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         }
-        
+
         .modal-xl {
             max-width: 95%;
         }
@@ -502,19 +502,19 @@
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- 用户指南自动弹出脚本 -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // {{ t('________const_dontshowagain__localstoragegetite') }}m('userGuideDontShow');
-        
+
         if (!dontShowAgain) {
             // {{ t('1____________settimeoutfunction') }}() {
                 const guideModal = new bootstrap.Modal(document.getElementById('userGuideModal'));
                 guideModal.show();
             }, 1000);
         }
-        
+
         // 处理"不再显示"{{ t('________documentgetelementbyid') }}('userGuideModal').addEventListener('hidden.bs.modal', function() {
             const checkbox = document.getElementById('dontShowAgain');
             if (checkbox.checked) {
@@ -523,14 +523,14 @@
         });
     });
     </script>
-    
+
     <!-- Theme Toggle Script -->
     <script>
         // Initialize theme on page load (before DOMContentLoaded for instant theme apply)
         (function() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
-            
+
             // Set initial icon state immediately if possible
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', function() {
@@ -545,10 +545,10 @@
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
+
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            
+
             // Update button icons
             updateThemeIcons(newTheme);
         }
@@ -557,7 +557,7 @@
         function updateThemeIcons(theme) {
             const sunIcon = document.getElementById('theme-icon-sun');
             const moonIcon = document.getElementById('theme-icon-moon');
-            
+
             if (sunIcon && moonIcon) {
                 if (theme === 'light') {
                     sunIcon.style.display = 'none';
@@ -575,13 +575,13 @@
             updateThemeIcons(currentTheme);
         });
     </script>
-    
+
     <!-- Notification System -->
     <style>
         .notification-bell-container {
             position: relative;
         }
-        
+
         .notification-badge {
             position: absolute;
             top: -5px;
@@ -595,7 +595,7 @@
             min-width: 18px;
             text-align: center;
         }
-        
+
         .notification-dropdown {
             position: absolute;
             top: 45px;
@@ -609,7 +609,7 @@
             z-index: 1000;
             overflow: hidden;
         }
-        
+
         .notification-header {
             padding: 12px 16px;
             border-bottom: 1px solid rgba(255, 0, 127, 0.2);
@@ -617,61 +617,61 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .notification-header h6 {
             margin: 0;
             color: var(--text-primary);
             font-weight: 600;
         }
-        
+
         .notification-list {
             max-height: 400px;
             overflow-y: auto;
         }
-        
+
         .notification-item {
             padding: 12px 16px;
             border-bottom: 1px solid rgba(255, 0, 127, 0.1);
             cursor: pointer;
             transition: background 0.2s;
         }
-        
+
         .notification-item:hover {
             background: rgba(255, 0, 127, 0.05);
         }
-        
+
         .notification-item.unread {
             background: rgba(255, 0, 127, 0.08);
         }
-        
+
         .notification-title {
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 4px;
         }
-        
+
         .notification-message {
             font-size: 13px;
             color: var(--text-secondary);
             white-space: pre-line;
         }
-        
+
         .notification-time {
             font-size: 11px;
             color: var(--text-muted);
             margin-top: 4px;
         }
     </style>
-    
+
     <script>
         // Notification System
         let notificationCheckInterval;
         let isAuthenticated = null;
         const API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:8000`;
-        
+
         // {{ t('________documentaddeventlistener') }}('DOMContentLoaded', function() {
             {{ t('checknotifications____________startnotificationpol') }};
-            
+
             // 点击外部关闭下拉菜单
             document.addEventListener('click', function(event) {
                 const dropdown = document.getElementById('notificationDropdown');
@@ -681,38 +681,38 @@
                 }
             });
         });
-        
+
         function startNotificationPolling() {
             notificationCheckInterval = setInterval(checkNotifications, 30000);
         }
-        
+
         function stopNotificationPolling() {
             if (notificationCheckInterval) {
                 clearInterval(notificationCheckInterval);
                 notificationCheckInterval = null;
             }
         }
-        
+
         async function checkNotifications() {
             if (isAuthenticated === false) {
                 return;
             }
-            
+
             try {
                 const response = await fetch(`${API_BASE_URL}/api/notifications/unread-count`, {
                     credentials: 'include'
                 });
-                
+
                 if (response.status === 401) {
                     isAuthenticated = false;
                     stopNotificationPolling();
                     return;
                 }
-                
+
                 if (!response.ok) {
                     return;
                 }
-                
+
                 isAuthenticated = true;
                 const data = await response.json();
                 updateNotificationBadge(data.unread_count);
@@ -720,7 +720,7 @@
                 // 静默处理网络错误，避免控制台噪音
             }
         }
-        
+
         function updateNotificationBadge(count) {
             const badge = document.getElementById('notificationBadge');
             if (count > 0) {
@@ -730,11 +730,11 @@
                 badge.style.display = 'none';
             }
         }
-        
+
         async function toggleNotifications() {
             const dropdown = document.getElementById('notificationDropdown');
             const isVisible = dropdown.style.display === 'block';
-            
+
             if (isVisible) {
                 dropdown.style.display = 'none';
             } else {
@@ -742,28 +742,28 @@
                 await loadNotifications();
             }
         }
-        
+
         async function loadNotifications() {
             try {
                 const response = await fetch(`${API_BASE_URL}/api/notifications/list`, {
                     credentials: 'include'
                 });
-                
+
                 if (!response.ok) {
                     document.getElementById('notificationList').innerHTML = 
                         '<div class="text-center text-muted p-3">{{ t('no_notifications') }}</div>';
                     return;
                 }
-                
+
                 const data = await response.json();
                 const notifications = data.notifications || [];
                 const listContainer = document.getElementById('notificationList');
-                
+
                 if (notifications.length === 0) {
                     listContainer.innerHTML = '<div class="text-center text-muted p-3"><i class="bi bi-inbox"></i><br>{{ t('no_notifications') }}</div>';
                     return;
                 }
-            
+
                 listContainer.innerHTML = notifications.map(n => `
                     <div class="notification-item ${n.status === 'unread' ? 'unread' : ''}" 
                          onclick="handleNotificationClick(${n.id}, '${n.action_url || ''}')">
@@ -776,7 +776,7 @@
                 console.error('Failed to load notifications:', error);
             }
         }
-        
+
         async function handleNotificationClick(notificationId, actionUrl) {
             try {
                 await fetch(`${API_BASE_URL}/api/notifications/mark-as-read`, {
@@ -785,9 +785,9 @@
                     credentials: 'include',
                     body: JSON.stringify({ notification_id: notificationId })
                 });
-                
+
                 await checkNotifications();
-                
+
                 // 跳转到相关页面
                 if (actionUrl) {
                     window.location.href = actionUrl;
@@ -796,26 +796,28 @@
                 console.error('Failed to mark notification as read:', error);
             }
         }
-        
+
         async function markAllAsRead() {
             try {
                 await fetch(`${API_BASE_URL}/api/notifications/mark-all-as-read`, {
                     method: 'POST',
                     credentials: 'include'
                 });
-                
+
                 await loadNotifications();
                 await checkNotifications();
             } catch (error) {
                 console.error('Failed to mark all as read:', error);
             }
         }
-        
+
+        // {{ t('____function_formattimeisostring') }}
         function formatTime(isoString) {
+            const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
             const date = new Date(isoString);
             const now = new Date();
             const diff = now - date;
-            
+
             const minutes = Math.floor(diff / 60000);
             if (minutes < 1) {
                 return window.i18n?.translate('time_just_now') || 'Just Now';
@@ -824,19 +826,19 @@
                 const template = window.i18n?.translate('time_minutes_ago') || '{minutes} minutes ago';
                 return template.replace('{minutes}', minutes);
             }
-            
+
             const hours = Math.floor(minutes / 60);
             if (hours < 24) {
                 const template = window.i18n?.translate('time_hours_ago') || '{hours} hours ago';
                 return template.replace('{hours}', hours);
             }
-            
+
             const days = Math.floor(hours / 24);
             if (days < 7) {
                 const template = window.i18n?.translate('time_days_ago') || '{days} days ago';
                 return template.replace('{days}', days);
             }
-            
+
             return date.toLocaleDateString();
         }
     </script>
@@ -848,7 +850,7 @@
         const navUtilities = document.querySelector('.nav-utilities');
         const menuIconOpen = document.getElementById('menuIconOpen');
         const menuIconClose = document.getElementById('menuIconClose');
-        
+
         if (navMenu.classList.contains('mobile-active')) {
             navMenu.classList.remove('mobile-active');
             navUtilities.classList.remove('mobile-active');
@@ -861,29 +863,29 @@
             menuIconClose.style.display = 'inline-block';
         }
     }
-    
+
     // Close mobile menu when clicking outside
     document.addEventListener('click', function(event) {
         const navMenu = document.getElementById('navMenu');
         const mobileToggle = document.getElementById('mobileMenuToggle');
         const isClickInside = navMenu.contains(event.target) || mobileToggle.contains(event.target);
-        
+
         if (!isClickInside && navMenu.classList.contains('mobile-active')) {
             toggleMobileMenu();
         }
     });
     </script>
-    
+
     {% block scripts %}{% endblock %}
-    
+
     <!-- {{ t('toastnextactionsstatusbadge') }}状态徽章 -->
     <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
     <script src="{{ url_for('static', filename='js/next-actions.js') }}"></script>
     <script src="{{ url_for('static', filename='js/status-badge.js') }}"></script>
-    
+
     <!-- {{ t('i18n') }} -->
     <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
-    
+
     <!-- {{ t('aisavings') }}） -->
     {% include 'partials/chatbot.html' %}
 </body>

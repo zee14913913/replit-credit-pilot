@@ -9,7 +9,7 @@
             <h2><i class="bi bi-clock-history"></i> <span data-i18n="notification_history">{{ t('notification_history') }}</span></h2>
             <p style="margin: 8px 0 0 0; opacity: 0.8;">{{ t('auto_text_992') }}</p>
         </div>
-        
+
         <div class="card-body-pro">
             <!-- 过滤器 -->
             <div style="margin-bottom: 20px; display: flex; gap: 12px; align-items: center;">
@@ -23,7 +23,7 @@
                     <i class="bi bi-envelope-open"></i> <span data-i18n="read">{{ t('read') }}</span>
                 </button>
             </div>
-            
+
             <!-- 通知列表 -->
             <div id="notificationsList" style="min-height: 300px;">
                 <div class="text-center" style="padding: 60px 20px; color: var(--text-muted);">
@@ -44,31 +44,31 @@
         background: rgba(255, 0, 127, 0.03);
         transition: all 0.2s;
     }
-    
+
     .notification-card:hover {
         background: rgba(255, 0, 127, 0.08);
         border-color: rgba(255, 0, 127, 0.4);
     }
-    
+
     .notification-card.read {
         opacity: 0.6;
         background: rgba(50, 36, 70, 0.05);
         border-color: rgba(50, 36, 70, 0.2);
     }
-    
+
     .notification-title {
         font-weight: 600;
         color: var(--text-primary);
         margin-bottom: 8px;
     }
-    
+
     .notification-message {
         color: var(--text-secondary);
         font-size: 14px;
         white-space: pre-line;
         margin-bottom: 12px;
     }
-    
+
     .notification-footer {
         display: flex;
         justify-content: space-between;
@@ -76,7 +76,7 @@
         font-size: 12px;
         color: var(--text-muted);
     }
-    
+
     .priority-badge {
         display: inline-block;
         padding: 2px 8px;
@@ -84,17 +84,17 @@
         font-size: 11px;
         font-weight: 600;
     }
-    
+
     .priority-high {
         background: #DC3545;
         color: white;
     }
-    
+
     .priority-normal {
         background: #FF007F;
         color: white;
     }
-    
+
     .priority-low {
         background: #6C757D;
         color: white;
@@ -103,11 +103,11 @@
 
 <script>
     let currentFilter = 'all';
-    
+
     // {{ t('____documentaddeventlistener_1') }}('DOMContentLoaded', function() {
         loadNotifications('all');
     });
-    
+
     // {{ t('____async_function_loadnotificationsfilter') }}) {
         {{ t('currentfilter__filter_________________') }}
         document.querySelectorAll('.btn-action, .btn-secondary').forEach(btn => {
@@ -116,24 +116,24 @@
         });
         document.getElementById(`btn-${filter}`).classList.remove('btn-secondary');
         document.getElementById(`btn-${filter}`).classList.add('btn-action');
-        
+
         const container = document.getElementById('notificationsList');
         const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         container.innerHTML = `<div class="text-center" style="padding: 40px;"><i class="bi bi-hourglass-split"></i> ${t('loading', '加载中...')}</div>`;
-        
+
         try {
             const apiBaseUrl = `${window.location.protocol}//${window.location.hostname}:8000`;
             const response = await fetch(`${apiBaseUrl}/api/notifications/history?status=${filter}&limit=100`, {
                 credentials: 'include'
             });
-            
+
             if (!response.ok) {
                 throw new Error('Failed to load notifications');
             }
-            
+
             const notifications = await response.json();
             displayNotifications(notifications);
-            
+
         } catch (error) {
             console.error('Failed to load notifications:', error);
             container.innerHTML = `
@@ -144,11 +144,11 @@
             `;
         }
     }
-    
+
     // {{ t('____function_displaynotificationsnotifications') }}) {
         const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         const container = document.getElementById('notificationsList');
-        
+
         if (notifications.length === 0) {
             container.innerHTML = `
                 <div class="text-center" style="padding: 60px 20px; color: var(--text-muted);">
@@ -158,7 +158,7 @@
             `;
             return;
         }
-        
+
         container.innerHTML = notifications.map(n => `
             <div class="notification-card ${n.status === 'read' ? 'read' : ''}">
                 <div class="notification-title">{{ t('ntitle') }}</div>
@@ -175,23 +175,23 @@
             </div>
         `).join('');
     }
-    
+
     // {{ t('____function_formattimeisostring') }}) {
         const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
         const date = new Date(isoString);
         const now = new Date();
         const diff = now - date;
-        
+
         const minutes = Math.floor(diff / 60000);
         if (minutes < 1) return t('just_now', '刚刚');
         if (minutes < 60) return t('minutes_ago', '{n}分钟前').replace('{n}', minutes);
-        
+
         const hours = Math.floor(minutes / 60);
         if (hours < 24) return t('hours_ago', '{n}小时前').replace('{n}', hours);
-        
+
         const days = Math.floor(hours / 24);
         if (days < 7) return t('days_ago', '{n}天前').replace('{n}', days);
-        
+
         return date.toLocaleString('zh-CN');
     }
 </script>

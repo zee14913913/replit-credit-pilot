@@ -10,32 +10,32 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             background: #000;
             color: #fff;
             font-family: 'Segoe UI', Arial, sans-serif;
             padding: 2rem;
         }
-        
+
         .container {
             max-width: 100%;
             margin: 0 auto;
             padding: 0 2rem;
         }
-        
+
         h1 {
             color: #FF007F;
             margin-bottom: 1rem;
             font-size: 2.5rem;
         }
-        
+
         .header-actions {
             display: flex;
             gap: 1rem;
             margin-bottom: 2rem;
         }
-        
+
         .btn {
             padding: 12px 24px;
             border: none;
@@ -47,55 +47,55 @@
             text-decoration: none;
             display: inline-block;
         }
-        
+
         .btn-primary {
             background: #FF007F;
             color: #FFFFFF;
             font-weight: 700;
         }
-        
+
         .btn-primary:hover {
             background: #cc0066;
             transform: translateY(-2px);
         }
-        
+
         .btn-secondary {
             background: #322446;
             color: #FFFFFF;
             font-weight: 700;
         }
-        
+
         .btn-secondary:hover {
             background: #4a3668;
         }
-        
+
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
-        
+
         .stat-card {
             background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             padding: 1.5rem;
             border-radius: 12px;
             border: 2px solid #322446;
         }
-        
+
         .stat-label {
             color: #FFFFFF;
             font-size: 0.9rem;
             margin-bottom: 0.5rem;
             font-weight: 600;
         }
-        
+
         .stat-value {
             color: #FF007F;
             font-size: 2rem;
             font-weight: 700;
         }
-        
+
         .files-section {
             background: #1a1a1a;
             border-radius: 12px;
@@ -105,31 +105,31 @@
             max-width: 100%;
             overflow-x: auto;
         }
-        
+
         .table-wrapper {
             overflow-x: auto;
             width: 100%;
             position: relative;
         }
-        
+
         .table-wrapper::-webkit-scrollbar {
             height: 12px;
         }
-        
+
         .table-wrapper::-webkit-scrollbar-track {
             background: #1a1a1a;
             border-radius: 6px;
         }
-        
+
         .table-wrapper::-webkit-scrollbar-thumb {
             background: #FF007F;
             border-radius: 6px;
         }
-        
+
         .table-wrapper::-webkit-scrollbar-thumb:hover {
             background: #cc0066;
         }
-        
+
         .section-title {
             color: #FF007F;
             font-size: 1.5rem;
@@ -137,7 +137,7 @@
             border-bottom: 2px solid #322446;
             padding-bottom: 0.5rem;
         }
-        
+
         table {
             width: auto;
             min-width: 100%;
@@ -146,7 +146,7 @@
             border: 2px solid #322446;
             table-layout: auto;
         }
-        
+
         th {
             background: #322446;
             color: #fff;
@@ -157,7 +157,7 @@
             white-space: nowrap;
             font-size: 0.85rem;
         }
-        
+
         td {
             padding: 10px 14px;
             border: 1px solid #333;
@@ -166,80 +166,80 @@
             text-align: center;
             font-size: 0.85rem;
         }
-        
+
         tr:hover {
             background: #2d2d2d;
         }
-        
+
         /* {{ t('_________table_thnthchild1________table_tdnth') }}child(1) {
             width: 10%;
             min-width: 100px;
         }
-        
+
         table th:nth-child(2),
         table td:nth-child(2) {
             width: 25%;
             min-width: 200px;
         }
-        
+
         table th:nth-child(3),
         table td:nth-child(3) {
             width: 10%;
             min-width: 100px;
         }
-        
+
         table th:nth-child(4),
         table td:nth-child(4) {
             width: 15%;
             min-width: 120px;
         }
-        
+
         table th:nth-child(5),
         table td:nth-child(5) {
             width: 20%;
             min-width: 180px;
         }
-        
+
         table th:nth-child(6),
         table td:nth-child(6) {
             width: 8%;
             min-width: 80px;
         }
-        
+
         table th:nth-child(7),
         table td:nth-child(7) {
             width: 12%;
             min-width: 140px;
         }
-        
+
         table th:nth-child(8),
         table td:nth-child(8) {
             width: auto;
             min-width: 250px;
         }
-        
+
         /* {{ t('_________newfilerow') }} {
             background: linear-gradient(90deg, rgba(255,0,127,0.2) 0%, rgba(50,36,70,0.1) 100%);
             animation: pulse 2s infinite;
         }
-        
+
         /* {{ t('highlight') }}） */
         .highlighted-file-row {
             background: linear-gradient(90deg, rgba(255, 0, 127, 0.3) 0%, rgba(50, 36, 70, 0.15) 100%) !important;
             border-left: 4px solid #FF007F !important;
             animation: highlight-pulse 2s ease-in-out 3;
         }
-        
+
         @keyframes pulse {
             0%, 100% { box-shadow: 0 0 5px rgba(255,0,127,0.5); }
             50% { box-shadow: 0 0 15px rgba(255,0,127,0.8); }
         }
-        
+
         @keyframes highlight-pulse {
             0%, 100% { box-shadow: 0 0 10px rgba(255, 0, 127, 0.6); }
             50% { box-shadow: 0 0 25px rgba(255, 0, 127, 0.9); }
         }
-        
+
         .file-type {
             display: inline-block;
             padding: 4px 12px;
@@ -247,19 +247,19 @@
             font-size: 0.85rem;
             font-weight: bold;
         }
-        
+
         .type-statement {
             background: #322446;
             color: #FFFFFF;
             font-weight: 700;
         }
-        
+
         .type-report {
             background: #FF007F;
             color: #FFFFFF;
             font-weight: 700;
         }
-        
+
         /* {{ t('___________statusbadge') }} {
             display: inline-block;
             padding: 4px 10px;
@@ -268,74 +268,74 @@
             font-weight: 700;
             margin: 0 4px;
         }
-        
+
         .status-active {
             background: #322446;
             color: #FFFFFF;
             font-weight: 700;
         }
-        
+
         .status-uploaded {
             background: #322446;
             color: #FFFFFF;
             font-weight: 700;
         }
-        
+
         .status-validated {
             background: #322446;
             color: #FFFFFF;
             font-weight: 700;
         }
-        
+
         .status-posted {
             background: #322446;
             color: #FFFFFF;
             font-weight: 700;
         }
-        
+
         .status-processing {
             background: #D3D3D3;
             color: #322446;
             font-weight: 700;
         }
-        
+
         .status-exception {
             background: #FF007F;
             color: #FFFFFF;
             font-weight: 700;
         }
-        
+
         .status-failed {
             background: #FF007F;
             color: #FFFFFF;
             font-weight: 700;
         }
-        
+
         .status-archived {
             background: #808080;
             color: #FFFFFF;
             font-weight: 700;
         }
-        
+
         .btn-small {
             padding: 6px 12px;
             font-size: 0.85rem;
             margin: 0 4px;
         }
-        
+
         .loading {
             text-align: center;
             padding: 3rem;
             color: #999;
         }
-        
+
         .empty {
             text-align: center;
             padding: 3rem;
             color: #666;
             font-size: 1.2rem;
         }
-        
+
         /* {{ t('_________modal') }} {
             display: none;
             position: fixed;
@@ -347,7 +347,7 @@
             background: rgba(0, 0, 0, 0.9);
             overflow: auto;
         }
-        
+
         .modal-content {
             background: #1a1a1a;
             margin: 2% auto;
@@ -359,7 +359,7 @@
             max-height: 85vh;
             overflow-y: auto;
         }
-        
+
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -368,13 +368,13 @@
             padding-bottom: 1rem;
             border-bottom: 2px solid #322446;
         }
-        
+
         .modal-title {
             color: #FF007F;
             font-size: 1.5rem;
             font-weight: bold;
         }
-        
+
         .close {
             color: #999;
             font-size: 2rem;
@@ -382,11 +382,11 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-        
+
         .close:hover {
             color: #FF007F;
         }
-        
+
         .file-viewer {
             background: #000;
             padding: 1.5rem;
@@ -398,13 +398,13 @@
             white-space: pre-wrap;
             overflow-x: auto;
         }
-        
+
         .csv-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 1rem;
         }
-        
+
         .csv-table th {
             background: #FF007F;
             color: white;
@@ -414,13 +414,13 @@
             position: sticky;
             top: 0;
         }
-        
+
         .csv-table td {
             padding: 8px;
             border-bottom: 1px solid #333;
             color: #fff;
         }
-        
+
         .csv-table tr:hover {
             background: #2d2d2d;
         }
@@ -430,10 +430,10 @@
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     </script>
-    
+
     <!-- {{ t('toast') }} -->
     <script src="/static/js/toast.js"></script>
-    
+
     <!-- 全局翻译对象 -->
     <script>
         // Phase 1-10: 7-State Machine Mapping (client-side)
@@ -446,7 +446,7 @@
             "posted": ["view_report", "download_original"],
             "archived": ["download_original"]
         };
-        
+
         // Action labels mapping
         window.ACTION_LABELS = {
             "validate": "{{ t('validate_file') }}",
@@ -459,7 +459,7 @@
             "view_other_files": "{{ t('view_other_files') }}",
             "view_report": "{{ t('view_report') }}"
         };
-        
+
         window.i18n = {
             file_name: "{{ t('file_name') }}",
             module: "{{ t('module') }}",
@@ -512,7 +512,7 @@
 <body>
     <div class="container">
         <h1>{{ t('file_management_center') }}</h1>
-        
+
         <div class="header-actions">
             <a href="/" class="btn btn-secondary">← {{ t('back_to_home') }}</a>
             <button onclick="document.getElementById('fileUpload').click()" class="btn btn-primary">{{ t('smart_upload_csv_pdf') }}</button>
@@ -522,10 +522,10 @@
                 <i class="bi bi-archive"></i> {{ t('download_evidence_bundle') }}
             </a>
         </div>
-        
+
         <!-- 隐藏的文件上传输入 -->
         <input type="file" id="fileUpload" accept=".csv,.pdf" style="display: none;" onchange="handleFileUpload(event)">
-        
+
         <div class="stats" id="stats">
             <div class="stat-card">
                 <div class="stat-label">{{ t('stat_statement_files') }}</div>
@@ -540,10 +540,10 @@
                 <div class="stat-value" id="total-size">{{ t('_mb') }}</div>
             </div>
         </div>
-        
+
         <!-- Phase 1-10: Bank Support Matrix -->
         <div id="bank-matrix-mount" class="mb-4"></div>
-        
+
         <div class="files-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid #322446; padding-bottom: 0.5rem;">
                 <h2 style="color: #FF007F; font-size: 1.5rem; margin: 0;">{{ t('stat_all_files') }}</h2>
@@ -552,7 +552,7 @@
             <div id="files-list" class="loading">{{ t('loading') }}</div>
         </div>
     </div>
-    
+
     <!-- 文件查看模态框 -->
     <div id="fileModal" class="modal">
         <div class="modal-content">
@@ -565,19 +565,23 @@
             </div>
         </div>
     </div>
-    
-    
+
+
     <script>
         // {{ t('pdfcsv') }}
         async function convertPDFToCSV(file) {
             try {
                 // {{ t('pdf________________const_arraybuffer__await_filear') }}Buffer();
-                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).{{ t('promise________________________________let_allrows') }}                let headers = null;
-                
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let allRows = [];
+                let headers = null;
+
                 // 遍历所有页面
                 for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-                    {{ t('const_page__await_pdfgetpagepagenum_______________') }} const textContent = await page.getTextContent();
-                    
+                    const page = await pdf.getPage(pageNum);
+                    const textContent = await page.getTextContent();
+
                     // 按Y坐标分组文本项（识别行）
                     const lines = {};
                     textContent.items.forEach(item => {
@@ -588,45 +592,51 @@
                             text: item.str.trim()
                         });
                     });
-                    
-                    // {{ t('____________________objectkeyslinessorta_b') }}) => b - a).forEach(y => {
+
+                    // 按Y坐标降序排序，然后处理每一行
+                    Object.keys(lines).sort((a, b) => b - a).forEach(y => {
                         const lineItems = lines[y].sort((a, b) => a.x - b.x);
                         const lineText = lineItems.map(item => item.text).join(' ');
-                        
-                        // {{ t('________________________if_linetextmatch') }}(/\d{2}[/-]\d{2}[/-]\d{4}|\d{4}[/-]\d{2}[/-]\d{2}/)) {
+
+                        if (lineText.match(/(\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}[/-]\d{1,2}[/-]\d{1,2})/)) {
                             // {{ t('____________________________const_parts__linetexts') }}lit(/\s{2,}/);
+                            const parts = lineText.split(/\s{2,}/);
                             if (parts.length >= 3) {
                                 allRows.push(parts);
                             }
                         } else if (lineText.match(/Date|Transaction|Debit|Credit|Balance/i) && !headers) {
                             // {{ t('____________________________headers__linetextsplit') }}\s{2,}/);
+                            headers = lineText.split(/\s{2,}/);
                         }
                     });
                 }
-                
-                // {{ t('________________if_headers__headerslengt') }}h === 0) {
+
+                // 如果没有找到表头，使用默认表头
+                if (!headers || headers.length === 0) {
                     headers = ['Date', 'Description', 'Debit', 'Credit', 'Balance'];
                 }
-                
+
                 // {{ t('csv100________________let_csvcontent__he') }}aders.join(',') + '\n';
+                let csvContent = headers.join(',') + '\n';
                 allRows.forEach(row => {
                     // {{ t('csv____________________const_cleanedr') }}ow = row.map(cell => {
-                        let value = (cell || '').{{ t('tostring_________________________csv') }}标准格式要求）
-                        if (value.includes(',') || value.includes('"')) {
+                        let value = (cell || '').toString().trim(); // 确保是字符串并去除空白
+                        // CSV标准格式要求：包含逗号、双引号或换行符的字段需要用双引号包围，字段内的双引号需要转义成两个双引号
+                        if (value.includes(',') || value.includes('"') || value.includes('\n')) {
                             value = '"' + value.replace(/"/g, '""') + '"';
                         }
                         return value;
                     });
                     csvContent += cleanedRow.join(',') + '\n';
                 });
-                
+
                 return {
                     success: true,
                     csvContent: csvContent,
                     rowCount: allRows.length,
                     headers: headers
                 };
-                
+
             } catch (error) {
                 console.error('{{ t('pdf_2') }}:', error);
                 return {
@@ -635,36 +645,41 @@
                 };
             }
         }
-        
+
         async function loadFiles() {
             try {
                 // {{ t('apicreated_at_desc________________const_respons') }}e = await fetch('/api/proxy/unified-files/recent?limit=50');
+                const response = await fetch('/api/proxy/unified-files/recent?limit=50');
                 const data = await response.json();
-                
+
                 if (!data.success) {
                     const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
                     throw new Error(data.message || t('load_failed', '加载失败'));
                 }
-                
-                {{ t('const_files__datafiles____________________________') }}     // 更新统计
+
+                const files = data.files || [];
+                // 更新统计
                 document.getElementById('statements-count').textContent = files.filter(f => f.module === 'bank').length;
-                document.getElementById('reports-count').textContent = files.filter(f => f.module !== 'bank').{{ t('length_________________________________') }}
+                document.getElementById('reports-count').textContent = files.filter(f => f.module !== 'bank').length;
                 const totalSizeMB = files.reduce((sum, f) => sum + (f.file_size_kb || 0), 0) / 1024;
                 document.getElementById('total-size').textContent = totalSizeMB.toFixed(2) + ' MB';
-                
+
                 // {{ t('________________const_fileslist__documentgetelemen') }}ById('files-list');
-                
+                const filesList = document.getElementById('files-list');
+
                 if (files.length === 0) {
                     filesList.innerHTML = `<div class="empty">{{ t('windowi18nno_files_yet') }}<br/><small>{{ t('windowi18nupload_first_file') }}</small></div>`;
                     return;
                 }
-                
-                // 计算"新文件"{{ t('5________________const_now__new_date______') }}          const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
-                
+
+                // 计算"新文件"（5分钟内上传）
+                const now = new Date();
+                const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+
                 // 读取URL参数highlight，用于高亮本次上传的文件
                 const urlParams = new URLSearchParams(window.location.search);
                 const highlightFileId = urlParams.get('highlight');
-                
+
                 let html = `
                     <div class="table-wrapper">
                         <table>
@@ -681,14 +696,15 @@
                             </thead>
                             <tbody>
                 `;
-                
+
                 files.forEach(file => {
-                    // {{ t('____________________const_uploadedat__new_datefil') }}e.uploaded_at);
-                    const isNew = uploadedAt > {{ t('fiveminutesago_____________________________________1') }}判断是否需要高亮（优先高亮highlight参数指定的文件）
+                    const uploadedAt = new Date(file.uploaded_at);
+                    const isNew = uploadedAt > fiveMinutesAgo;
+                    // 判断是否需要高亮（优先高亮highlight参数指定的文件）
                     const isHighlighted = highlightFileId && String(file.file_id) === String(highlightFileId);
                     const rowClass = isHighlighted ? 'highlighted-file-row' : (isNew ? 'new-file-row' : '');
-                    
-                    // {{ t('____________________const_status__filestatus') }} || 'active';
+
+                    const status = file.status || 'active';
                     const statusClass = `status-${status}`;
                     const statusText = {
                         'uploaded': window.i18n.status_uploaded,
@@ -699,13 +715,15 @@
                         'processing': window.i18n.status_processing,
                         'failed': window.i18n.status_failed,
                         'archived': window.i18n.status_archived
-                    }[{{ t('status__status____________________________________') }}// 验证状态
+                    }[status];
+                    // 验证状态
                     const validationStatus = file.validation_status || 'pending';
                     const validationBadge = {
                         'passed': window.i18n.validation_passed,
                         'failed': window.i18n.validation_failed,
                         'pending': window.i18n.validation_pending
-                    }[{{ t('validationstatus__validationstatus________________') }}                    // 模块名称（无图标）
+                    }[validationStatus];
+                    // 模块名称（无图标）
                     const moduleName = {
                         'bank': window.i18n.module_bank,
                         'credit-card': window.i18n.module_credit_card,
@@ -713,27 +731,29 @@
                         'supplier': window.i18n.module_supplier,
                         'reports': window.i18n.module_reports,
                         'management': window.i18n.module_management
-                    }[{{ t('filemodule__filemodule____________________________') }}          // 新文件标记
-                    const newBadge = isNew ? '<span style="color: #FF007F; font-weight: bold; margin-left: 8px;">{{ t('new') }}</span>{{ t('__________________________________________________') }}<span style="color: #ff6600; font-weight: bold; margin-left: 8px;">{{ t('__windowi18ncurrent_lang__zh____duplicate__') }}</span>' : '';
-                    
+                    }[file.module];
+                    // 新文件标记
+                    const newBadge = isNew ? '<span style="color: #FF007F; font-weight: bold; margin-left: 8px;">{{ t('new') }}</span>' : '';
+                    const duplicateWarning = file.duplicate_warning ? '<span style="color: #ff6600; font-weight: bold; margin-left: 8px;">{{ t('__windowi18ncurrent_lang__zh____duplicate__') }}</span>' : '';
+
                     // {{ t('____________________const_statusreason__filestatus') }}ason || '无说明';
-                    
-                    // {{ t('phase_110_7') }}）
+
+                    // Phase 11-20: Action Buttons (client-side)
                     let nextActionsHtml = '';
                     const fileStatus = file.status || 'active';
                     const nextActions = window.STATUS_NEXT_ACTIONS[fileStatus] || ["download_original"];
-                    
+
                     if (nextActions.length > 0) {
-                        // {{ t('2________________________const_topactions__next') }}Actions.slice(0, 2);
+                        const topActions = nextActions.slice(0, 2); // 只显示前两个主要操作
                         topActions.forEach((actionKey, index) => {
                             const buttonColor = index === 0 ? '#FF007F' : '#322446';
                             const label = window.ACTION_LABELS[actionKey] || actionKey;
                             nextActionsHtml += `
-                                <button 
+                                <button
                                     onclick="viewFileDetail(${file.file_id})"
                                     class="btn btn-small"
                                     style="background: ${buttonColor}; color: #FFFFFF; margin: 2px; font-size: 0.8rem; font-weight: bold;"
-                                    title="{{ t('label') }}"
+                                    title="${label}"
                                 >
                                     ${label}
                                 </button>
@@ -742,36 +762,48 @@
                     } else {
                         nextActionsHtml = '<span style="color: #666;">-</span>';
                     }
-                    
+
                     html += `
                         <tr class="${rowClass}" data-file-id="${file.file_id}" style="${file.duplicate_warning ? 'background: rgba(255, 102, 0, 0.1);' : ''}">
-                            <td style="color: #FFFFFF;">{{ t('modulename') }}</td>
-                            <td style="color: #FFFFFF;">{{ t('filefile_namenewbadgeduplicatewarning') }}</td>
+                            <td style="color: #FFFFFF;">${moduleName}</td>
+                            <td style="color: #FFFFFF;">${file_name}${newBadge}${duplicateWarning}</td>
                             <td style="color: #FFFFFF;">
-                                <span class="status-badge ${statusClass}">{{ t('statustext') }}</span>
-                                <span class="status-badge" style="background: #322446; color: #FFFFFF;">{{ t('validationbadge') }}</span>
+                                <span class="status-badge status-${status}">${statusText}</span>
+                                <span class="status-badge" style="background: #322446; color: #FFFFFF;">${validationBadge}</span>
                             </td>
-                            <td>{{ t('nextactionshtml') }}</td>
-                            <td style="color: #FFFFFF;">{{ t('filefile_size_kb__0tofixed2') }}</td>
-                            <td style="color: #FFFFFF;">{{ t('new_datefileuploaded_attolocalestringzhcn') }}</td>
+                            <td>${nextActionsHtml}</td>
+                            <td style="color: #FFFFFF;">${(file.file_size_kb / 1024).toFixed(2)} MB</td>
+                            <td style="color: #FFFFFF;">${new Date(file.uploaded_at).toLocaleString('zh-CN')}</td>
                             <td>
                                 <button onclick="viewFileDetail(${file.file_id})" class="btn btn-primary btn-small">{{ t('auto_text_76') }}</button>
                             </td>
                         </tr>
                     `;
                 });
-                
-                html += '</tbody></table></div>{{ t('________________fileslistinnerhtml__html__________') }}<div class="empty">{{ t('windowi18nload_failed_errormessage') }}</div>{{ t('____________________________________function_downl') }}<div class="loading">{{ t('auto_text_80') }}</div>{{ t('____________loadfiles_____________________________') }}<div class="loading">{{ t('auto_text_82') }}</div>';
-            
+
+                html += '</tbody></table></div>';
+                filesList.innerHTML = html;
+
+            } catch (error) {
+                const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
+                document.getElementById('files-list').innerHTML = `<div class="empty">${t('load_failed', '加载失败')}: ${error.message}</div>`;
+            }
+        }
+
+        async function viewFileDetail(fileId) {
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = '<div class="loading">{{ t('loading') }}</div>'; // 显示加载中
+            openModal();
+
             try {
                 const response = await fetch(`/api/proxy/unified-files/detail/${fileId}`);
                 const data = await response.json();
-                
+
                 if (data.status !== 'found') {
                     const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
                     throw new Error(data.message || t('file_not_exist', '文件不存在'));
                 }
-                
+
                 const file = data.file;
                 const html = `
                     <div style="color: #fff; line-height: 2;">
@@ -780,65 +812,65 @@
                         </h3>
                         <div style="display: grid; grid-template-columns: 150px 1fr; gap: 10px;">
                             <div style="color: #999;">{{ t('id_1') }}</div>
-                            <div>{{ t('filefile_id') }}</div>
-                            
+                            <div>${file.file_id}</div>
+
                             <div style="color: #999;">{{ t('auto_text_85') }}</div>
-                            <div>{{ t('filemodule') }}</div>
-                            
+                            <div>${file.module}</div>
+
                             <div style="color: #999;">{{ t('auto_text_86') }}</div>
                             <div>
-                                <span class="status-badge status-${file.file_status}">{{ t('filefile_status') }}</span>
-                                <span class="status-badge" style="background: #322446;">{{ t('filevalidation_status__pending') }}</span>
+                                <span class="status-badge status-${file.file_status}">${file.file_status}</span>
+                                <span class="status-badge" style="background: #322446;">${file.validation_status}</span>
                             </div>
-                            
+
                             <div style="color: #999;">{{ t('auto_text_87') }}</div>
-                            <div style="word-break: break-all;">{{ t('filestorage_path') }}</div>
-                            
+                            <div style="word-break: break-all;">${file.storage_path}</div>
+
                             <div style="color: #999;">{{ t('auto_text_88') }}</div>
-                            <div>{{ t('filefile_size_kb__0tofixed2_kb') }}</div>
-                            
+                            <div>${(file.file_size_kb / 1024).toFixed(2)} MB</div>
+
                             <div style="color: #999;">{{ t('auto_text_89') }}</div>
-                            <div>{{ t('fileuploaded_by') }}</div>
-                            
+                            <div>${file.uploaded_by}</div>
+
                             <div style="color: #999;">{{ t('auto_text_90') }}</div>
-                            <div>{{ t('new_datefileuploaded_attolocalestringzhcn') }}</div>
-                            
+                            <div>${new Date(file.uploaded_at).toLocaleString('zh-CN')}</div>
+
                             <div style="color: #999;">{{ t('auto_text_91') }}</div>
-                            <div>{{ t('filefrom_engine__flask__flask__fastapi') }}</div>
+                            <div>${file.from_engine}</div>
                         </div>
-                        
+
                         <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #322446;">
                             <button onclick="closeModal()" class="btn btn-primary">{{ t('auto_text_92') }}</button>
                         </div>
                     </div>
                 `;
                 modalBody.innerHTML = html;
-                
+
             } catch (error) {
                 modalBody.innerHTML = `<div class="empty">Error loading file</div>`;
             }
         }
-        
+
         async function handleFileUpload(event) {
             const uploadFile = event.target.files[0];
             if (!uploadFile) return;
-            
+
             const formData = new FormData();
             formData.append('file', uploadFile);
-            
+
             try {
                 const response = await fetch('/api/proxy/files/smart-upload?company_id={{ company_id }}', {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 const result = await response.json();
                 const fileId = result.raw_document_id || result.file_id;
                 if (fileId) {
                     window.location.href = `/files/detail/${fileId}?highlight=${fileId}`;
                     return;
                 }
-                
+
                 const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
                 const errorMessage = result.status_reason || result.message || result.error || t('upload_failed', '上传失败');
                 if (window.Toast) {
@@ -847,7 +879,7 @@
                     alert('❌ ' + errorMessage);
                 }
                 loadFiles();
-                
+
             } catch (error) {
                 const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
                 if (window.Toast) {
@@ -857,31 +889,47 @@
                 }
                 loadFiles();
             }
-            
+
             event.target.value = '';
         }
-        
+
         // {{ t('________loadfiles_________________url') }}并高亮指定文件
         setTimeout(() => {
             const params = new URLSearchParams(window.location.search);
             const highlightId = params.get('highlight');
-            
+
             if (highlightId) {
                 document.querySelectorAll('[data-file-id]').forEach(row => {
                     const id = row.getAttribute('data-file-id');
                     if (String(id) === String(highlightId)) {
                         row.classList.add('highlighted-file-row');
                         // {{ t('________________________rowscrollintoview') }}({ behavior: 'smooth', block: 'center' });
+                        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
                 });
             }
         }, 500);  // 等待列表渲染完成
+
+        function refreshFiles() {
+            loadFiles();
+        }
+
+        function openModal() {
+            document.getElementById('fileModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('fileModal').style.display = 'none';
+        }
+
+        // Initial load
+        document.addEventListener('DOMContentLoaded', loadFiles);
     </script>
-    
+
     <!-- Phase 1-10: Bank Support Matrix Module -->
     <script type="module">
         import { initBankSupportMatrix } from "/static/js/bank-support.js";
-        
+
         initBankSupportMatrix({
             mountSelector: '#bank-matrix-mount',
             selectElSelector: '#fileUpload'

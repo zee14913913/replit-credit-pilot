@@ -321,7 +321,6 @@ const API_BASE_URL = {{ api_base_url|tojson }};
 
         html += '</tbody></table></div>';
         container.innerHTML = html;
-
     } catch (error) {
         console.error('Failed to load API keys:', error);
         container.innerHTML = `

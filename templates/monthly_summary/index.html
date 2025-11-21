@@ -153,7 +153,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // {{ t('________langbtntexttextcontent__lang') }} === 'zh' ? 'English' : '中文';
     }
     
-    // {{ t('____switchlanguagecurrentlang_________') }}    langToggle.addEventListener('click', function() {
+    // {{ t('____switchlanguagecurrentlang_________') }}
+    switchLanguage(currentLang);
+    
+    langToggle.addEventListener('click', function() {
         const newLang = currentLang === 'zh' ? 'en' : 'zh';
         switchLanguage(newLang);
     });

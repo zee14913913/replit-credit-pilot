@@ -97,6 +97,103 @@ from app_ctos_routes import (
 )
 from services.dashboard_metrics import get_customer_monthly_metrics, get_all_cards_summary
 
+
+
+# ==================== API ENDPOINTS ====================
+@app.route('/api/customers', methods=['GET'])
+def api_get_customers():
+    """API: 获取客户列表"""
+    try:
+        customers = get_all_customers()
+        return jsonify({
+            'success': True,
+            'count': len(customers),
+            'customers': customers
+        }), 200
+    except Exception as e:
+        logger.error(f"API /api/customers error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/dashboard/stats', methods=['GET'])
+def api_dashboard_stats():
+    """API: 获取仪表盘统计数据"""
+    try:
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # 客户总数
+            cursor.execute('SELECT COUNT(*) FROM customers WHERE is_active = 1')
+            customer_count = cursor.fetchone()[0]
+            
+            # 账单总数
+            cursor.execute('SELECT COUNT(*) FROM statements')
+            statement_count = cursor.fetchone()[0]
+            
+            # 交易总数
+            cursor.execute('SELECT COUNT(*) FROM transactions')
+            transaction_count = cursor.fetchone()[0]
+            
+            # 活跃卡片数
+            cursor.execute('SELECT COUNT(*) FROM credit_cards WHERE is_active = 1')
+            active_cards = cursor.fetchone()[0]
+            
+            # Owner财务数据
+            cursor.execute("""
+                SELECT 
+                    SUM(CASE WHEN classification = 'Owner' AND transaction_type = 'Expense' THEN debit_amount ELSE 0 END) as owner_expenses,
+                    SUM(CASE WHEN classification = 'Owner' AND transaction_type = 'Payment' THEN credit_amount ELSE 0 END) as owner_payments
+                FROM transactions
+            """)
+            owner_row = cursor.fetchone()
+            owner_expenses = owner_row[0] or 0
+            owner_payments = owner_row[1] or 0
+            owner_balance = owner_expenses - owner_payments
+            
+            # GZ财务数据
+            cursor.execute("""
+                SELECT 
+                    SUM(CASE WHEN classification = 'GZ' AND transaction_type = 'Expense' THEN debit_amount ELSE 0 END) as gz_expenses,
+                    SUM(CASE WHEN classification = 'GZ' AND transaction_type = 'Payment' THEN credit_amount ELSE 0 END) as gz_payments
+                FROM transactions
+            """)
+            gz_row = cursor.fetchone()
+            gz_expenses = gz_row[0] or 0
+            gz_payments = gz_row[1] or 0
+            gz_balance = gz_expenses - gz_payments
+            
+            # 发票统计
+            cursor.execute('SELECT COUNT(*), COALESCE(SUM(total_amount), 0) FROM supplier_invoices')
+            invoice_row = cursor.fetchone()
+            
+            return jsonify({
+                'success': True,
+                'stats': {
+                    'customer_count': customer_count,
+                    'statement_count': statement_count,
+                    'transaction_count': transaction_count,
+                    'active_cards': active_cards,
+                    'owner_expenses': round(owner_expenses, 2),
+                    'owner_payments': round(owner_payments, 2),
+                    'owner_balance': round(owner_balance, 2),
+                    'gz_expenses': round(gz_expenses, 2),
+                    'gz_payments': round(gz_payments, 2),
+                    'gz_balance': round(gz_balance, 2),
+                    'invoices_count': invoice_row[0] or 0,
+                    'invoices_total': round(invoice_row[1] or 0, 2)
+                }
+            }), 200
+    except Exception as e:
+        logger.error(f"API /api/dashboard/stats error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+# ==================== END API ENDPOINTS ====================
+
+
 # Card Optimizer API (Fixed Version)
 from api.card_optimizer_routes_fixed import register_card_optimizer_routes
 

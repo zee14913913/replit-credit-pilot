@@ -17,7 +17,7 @@
                   transition: all 0.3s ease;">
             <i class="bi bi-arrow-left-circle"></i> {{ t('back_to_dashboard') }}
         </a>
-        
+
         <a href="{{ url_for('admin_logout') }}" 
            class="btn btn-lg" 
            style="background: linear-gradient(135deg, #FF007F 0%, #c7005f 100%); 
@@ -29,7 +29,7 @@
                   transition: all 0.3s ease;">
             <i class="bi bi-box-arrow-right"></i> {{ t('logout') }}
         </a>
-        
+
         <a href="{{ url_for('admin_evidence_archive') }}" 
            class="btn btn-lg" 
            style="background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); 
@@ -41,7 +41,7 @@
                   transition: all 0.3s ease;">
             <i class="bi bi-archive"></i> {{ t('evidence_archive') }}
         </a>
-        
+
         <a href="{{ url_for('accounting_files') }}" 
            class="btn btn-lg" 
            style="background: linear-gradient(135deg, #1a1a2e 0%, #322446 100%); 
@@ -54,7 +54,7 @@
             <i class="bi bi-folder-fill"></i> {{ t('file_management') }}
         </a>
     </div>
-    
+
     <!-- DEBUG TEST BUTTON -->
     <div class="alert" style="background: rgba(255,0,127,0.2); border: 2px solid #FF007F; margin-bottom: 20px; padding: 20px;">
         <button onclick="testEditFunction()" class="btn" style="background: #FF007F; color: white; font-weight: 700; padding: 15px 30px; font-size: 18px;">
@@ -62,7 +62,7 @@
         </button>
         <p id="test_result" style="color: white; margin-top: 10px; font-weight: 600; font-size: 16px;"></p>
     </div>
-    
+
     <div class="section-header">
         <h1 class="section-title" style="color: #FF007F; font-weight: 700;">📊 {{ t('admin_dashboard') }}</h1>
         <p class="section-description" style="color: #FF007F;">{{ t('system_overview_subtitle') }}</p>
@@ -176,7 +176,7 @@
             </h3>
             <p style="color: #999; margin: 0.5rem 0 0 0; font-size: 1rem;">{{ t('select_module_to_manage') }}</p>
         </div>
-        
+
         <!-- 1. 信用卡账单管理 -->
         <div class="col-md-6 col-lg-4 col-xl-2">
             <a href="#creditCardStatements" style="text-decoration: none;" onclick="document.getElementById('creditCardStatements').scrollIntoView({behavior: 'smooth'}); return false;">
@@ -508,7 +508,7 @@
                 </div>
                 <div class="card-body-custom" style="padding: 0;">
                     <div class="table-responsive">
-                        <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto;">
+                        <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto;" id="ccStatementsTable">
                             <thead style="background: rgba(255, 0, 127, 0.1); border-bottom: 2px solid #FF007F;">
                                 <tr>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('month_of_statement') }}</th>
@@ -533,49 +533,49 @@
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ stmt['statement_date'][:7] }}</td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; white-space: nowrap;">{{ stmt['customer_name'] }}</td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">{{ stmt['bank_abbr'] }}</td>
-                                        
+
                                         <td class="editable-cell" data-field="prev_bal" data-value="{{ stmt['prev_bal'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); white-space: nowrap;">
                                             <span class="display-value">RM {{ "{:,.2f}".format(stmt['prev_bal']) }}</span>
                                             <input type="number" step="0.01" class="edit-input" value="{{ stmt['prev_bal'] }}" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
                                         </td>
-                                        
-                                        <td class="editable-cell" data-field="closing_balance" data-value="{{ stmt['closing_balance'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); white-space: nowrap;">
+
+                                        <td class="editable-cell" data-field="closing_balance" data-value="{{ stmt['closing_balance'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFFFF; text-shadow: 0 0 10px rgba(255,255,255,0.4); white-space: nowrap;">
                                             <span class="display-value">RM {{ "{:,.2f}".format(stmt['closing_balance']) }}</span>
                                             <input type="number" step="0.01" class="edit-input" value="{{ stmt['closing_balance'] }}" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
                                         </td>
-                                        
+
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">{{ stmt['due_date'] if stmt['due_date'] else '-' }}</td>
-                                        
+
                                         <td class="editable-cell" data-field="owner_expenses" data-value="{{ stmt['owner_expenses'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25); white-space: nowrap;">
                                             <span class="display-value">RM {{ "{:,.2f}".format(stmt['owner_expenses']) }}</span>
                                             <input type="number" step="0.01" class="edit-input" value="{{ stmt['owner_expenses'] }}" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
                                         </td>
-                                        
+
                                         <td class="editable-cell" data-field="infinite_expenses" data-value="{{ stmt['infinite_expenses'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFFFF; text-shadow: 0 0 10px rgba(255,255,255,0.4); white-space: nowrap;">
                                             <span class="display-value">RM {{ "{:,.2f}".format(stmt['infinite_expenses']) }}</span>
                                             <input type="number" step="0.01" class="edit-input" value="{{ stmt['infinite_expenses'] }}" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
                                         </td>
-                                        
+
                                         <td class="editable-cell" data-field="owner_payments" data-value="{{ stmt['owner_payments'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25); white-space: nowrap;">
                                             <span class="display-value">RM {{ "{:,.2f}".format(abs(stmt['owner_payments'])) }}</span>
                                             <input type="number" step="0.01" class="edit-input" value="{{ abs(stmt['owner_payments']) }}" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
                                         </td>
-                                        
+
                                         <td class="editable-cell" data-field="infinite_payments" data-value="{{ stmt['infinite_payments'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFFFF; text-shadow: 0 0 10px rgba(255,255,255,0.4); white-space: nowrap;">
                                             <span class="display-value">RM {{ "{:,.2f}".format(abs(stmt['infinite_payments'])) }}</span>
                                             <input type="number" step="0.01" class="edit-input" value="{{ abs(stmt['infinite_payments']) }}" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
                                         </td>
-                                        
+
                                         <td class="editable-cell" data-field="owner_balance" data-value="{{ stmt['owner_os_bal'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FF007F; text-shadow: 0 0 6px rgba(255,255,255,0.25); white-space: nowrap;">
                                             <span class="display-value">RM {{ "{:,.2f}".format(stmt['owner_os_bal']) }}</span>
                                             <input type="number" step="0.01" class="edit-input" value="{{ stmt['owner_os_bal'] }}" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
                                         </td>
-                                        
+
                                         <td class="editable-cell" data-field="gz_balance" data-value="{{ stmt['infinite_os_bal'] }}" style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 700; color: #FFFFFF; text-shadow: 0 0 10px rgba(255,255,255,0.4); white-space: nowrap;">
                                             <span class="display-value">RM {{ "{:,.2f}".format(stmt['infinite_os_bal']) }}</span>
                                             <input type="number" step="0.01" class="edit-input" value="{{ stmt['infinite_os_bal'] }}" style="display: none; width: 100px; padding: 5px; background: white; color: black; border: 2px solid #FF007F;">
                                         </td>
-                                        
+
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center; white-space: nowrap;">
                                             <a href="{{ url_for('monthly_statement_detail', monthly_statement_id=stmt['statement_id']) }}" 
                                                class="btn btn-sm btn-view-details view-btn"
@@ -827,16 +827,16 @@ class SimpleDataTable {
 
     init() {
         if (!this.table) return;
-        
+
         // Get all rows except header
         const tbody = this.table.querySelector('tbody');
         if (!tbody) return;
-        
+
         this.rows = Array.from(tbody.querySelectorAll('tr'));
-        
+
         // Add controls
         this.addControls();
-        
+
         // Display first page
         this.displayPage(1);
     }
@@ -861,7 +861,7 @@ class SimpleDataTable {
             </div>
             <div id="${this.table.id}_pagination" class="datatable-pagination"></div>
         `;
-        
+
         wrapper.insertBefore(controls, this.table);
 
         // Page size change handler
@@ -875,7 +875,7 @@ class SimpleDataTable {
     displayPage(page) {
         const totalRows = this.rows.length;
         const totalPages = this.rowsPerPage === -1 ? 1 : Math.ceil(totalRows / this.rowsPerPage);
-        
+
         this.currentPage = Math.max(1, Math.min(page, totalPages));
 
         // Hide all rows first
@@ -888,7 +888,7 @@ class SimpleDataTable {
         } else {
             const start = (this.currentPage - 1) * this.rowsPerPage;
             const end = start + this.rowsPerPage;
-            
+
             for (let i = start; i < end && i < totalRows; i++) {
                 this.rows[i].style.display = '';
             }
@@ -903,22 +903,26 @@ class SimpleDataTable {
         if (!paginationDiv) return;
 
         let html = '';
-        
+
         // Previous button
         html += `<button ${this.currentPage === 1 ? 'disabled' : ''} onclick="window.${this.table.id}_dt.displayPage(${this.currentPage - 1})">{{ t('_prev') }}</button>`;
-        
+
         // Page numbers
         const maxButtons = 5;
         let startPage = Math.max(1, this.currentPage - Math.floor(maxButtons / 2));
         let endPage = Math.min(totalPages, startPage + maxButtons - 1);
-        
+
         if (endPage - startPage < maxButtons - 1) {
             startPage = Math.max(1, endPage - maxButtons + 1);
         }
 
         for (let i = startPage; i <= endPage; i++) {
-            html += `<button class="${i === this.currentPage ? 'active' : ''}" onclick="window.${this.table.id}_dt.displayPage(${i})">{{ t('i') }}</button>{{ t('_________________________next_button________html__') }}<button ${this.currentPage === totalPages ? 'disabled' : ''} onclick="window.${this.table.id}_dt.displayPage(${this.currentPage + 1})">{{ t('next_') }}</button>`;
-        
+            html += `<button class="${i === this.currentPage ? 'active' : ''}" onclick="window.${this.table.id}_dt.displayPage(${i})">${i}</button>`;
+        }
+
+        // Next button
+        html += `<button ${this.currentPage === totalPages ? 'disabled' : ''} onclick="window.${this.table.id}_dt.displayPage(${this.currentPage + 1})">{{ t('next_') }}</button>`;
+
         paginationDiv.innerHTML = html;
     }
 }
@@ -934,18 +938,20 @@ function exportTableToExcel(tableId, filename = 'export.csv') {
     rows.forEach(row => {
         const cols = row.querySelectorAll('td, th');
         const rowData = [];
-        
+
         cols.forEach(col => {
             // Clean text and handle special characters
             let text = col.innerText || col.textContent;
             text = text.replace(/"/g, '""'); // Escape quotes
-            
-            // Skip "View Details" buttons
-            if (!text.includes('View Details')) {
-                rowData.push(`"${text}"`);
+
+            // Skip "View Details" buttons and other non-data elements
+            if (!col.querySelector('button') && !col.querySelector('a')) {
+                 rowData.push(`"${text}"`);
+            } else if (col.querySelector('.display-value')) { // Handle editable cells
+                rowData.push(`"${col.querySelector('.display-value').innerText}"`);
             }
         });
-        
+
         if (rowData.length > 0) {
             csv.push(rowData.join(','));
         }
@@ -956,7 +962,7 @@ function exportTableToExcel(tableId, filename = 'export.csv') {
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
-    
+
     link.setAttribute('href', url);
     link.setAttribute('download', filename);
     link.style.visibility = 'hidden';
@@ -969,7 +975,7 @@ function exportTableToExcel(tableId, filename = 'export.csv') {
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize datatables
     window.ccStatementsTable_dt = new SimpleDataTable('ccStatementsTable', { rowsPerPage: 25 });
-    
+
     // Export button handlers
     document.getElementById('exportCCTable')?.addEventListener('click', function() {
         exportTableToExcel('ccStatementsTable', 'Credit_Card_Statements.csv');
@@ -981,7 +987,7 @@ function testEditFunction() {
     const resultDiv = document.getElementById('test_result');
     const t = (key, fallback) => window.i18n?.translate(key) || fallback;
     resultDiv.innerHTML = t('test_running', '⏳ Testing...');
-    
+
     try {
         // Test 1: Check if modal exists
         const modalElement = document.getElementById('editStatementModal');
@@ -989,20 +995,20 @@ function testEditFunction() {
             resultDiv.innerHTML = t('test_error_dialog_not_found', '❌ Error: Edit dialog element not found!');
             return;
         }
-        
+
         // Test 2: Try to open modal
         const modal = new bootstrap.Modal(modalElement);
         modal.show();
-        
+
         // Test 3: Fill test data
         setTimeout(() => {
             document.getElementById('edit_prev_bal').value = '123.45';
             document.getElementById('edit_gz_bal').value = '678.90';
-            
+
             // Test 4: Try to focus on input
             const input = document.getElementById('edit_prev_bal');
             input.focus();
-            
+
             resultDiv.innerHTML = `
                 ✅ <strong>{{ t('auto_text_218') }}</strong><br>
                 ${t('test_dialog_opened', '- Dialog opened')}<br>
@@ -1013,7 +1019,7 @@ function testEditFunction() {
                 <small>{{ t('auto_text_223') }}</small>
             `;
         }, 500);
-        
+
     } catch (error) {
         resultDiv.innerHTML = t('test_error_prefix', '❌ Error: ') + error.message;
     }
@@ -1021,14 +1027,14 @@ function testEditFunction() {
 
 function openEditModal(stmtId, customerName, bank, month, prevBal, ownerBal, gzBal, ownerExp, ownerPay, gzExp, gzPay, closingBal) {
     const debugDiv = document.getElementById('edit_debug_info');
-    
+
     try {
         // Fill modal with statement info
         document.getElementById('edit_statement_id').value = stmtId;
         document.getElementById('modal_customer_name').textContent = customerName;
         document.getElementById('modal_bank').textContent = bank;
         document.getElementById('modal_month').textContent = month;
-        
+
         // Fill editable fields
         const inputs = {
             'edit_prev_bal': prevBal.toFixed(2),
@@ -1040,7 +1046,7 @@ function openEditModal(stmtId, customerName, bank, month, prevBal, ownerBal, gzB
             'edit_gz_payments': Math.abs(gzPay).toFixed(2),
             'edit_closing_bal': closingBal.toFixed(2)
         };
-        
+
         // Fill each input and remove any blocking attributes
         for (const [id, value] of Object.entries(inputs)) {
             const input = document.getElementById(id);
@@ -1054,18 +1060,18 @@ function openEditModal(stmtId, customerName, bank, month, prevBal, ownerBal, gzB
                 input.style.cursor = 'text';
             }
         }
-        
+
         // Show modal
         var editModal = new bootstrap.Modal(document.getElementById('editStatementModal'));
         editModal.show();
-        
+
         // Debug: Try to focus first input after modal is shown
         setTimeout(() => {
             const firstInput = document.getElementById('edit_prev_bal');
             if (firstInput) {
                 firstInput.focus();
                 firstInput.select();
-                
+
                 if (debugDiv) {
                     debugDiv.style.display = 'block';
                     debugDiv.innerHTML = `✅ Modal opened! Input focused. Value: ${firstInput.value}<br>
@@ -1073,7 +1079,7 @@ function openEditModal(stmtId, customerName, bank, month, prevBal, ownerBal, gzB
                 }
             }
         }, 300);
-        
+
     } catch (error) {
         if (debugDiv) {
             const t = (key, fallback) => window.i18n?.translate(key) || fallback;
@@ -1089,30 +1095,30 @@ function openEditModal(stmtId, customerName, bank, month, prevBal, ownerBal, gzB
 function toggleRowEdit(stmtId) {
     const row = document.getElementById('row_' + stmtId);
     const isEditing = row.getAttribute('data-editing') === 'true';
-    
+
     if (isEditing) {
         return; // Already editing
     }
-    
+
     // Show input fields, hide display values
     const cells = row.querySelectorAll('.editable-cell');
     cells.forEach(cell => {
         cell.querySelector('.display-value').style.display = 'none';
         cell.querySelector('.edit-input').style.display = 'inline-block';
     });
-    
+
     // Show Save/Cancel buttons, hide Edit/View buttons
     row.querySelector('.edit-toggle-btn').style.display = 'none';
     row.querySelector('.view-btn').style.display = 'none';
     row.querySelector('.save-btn').style.display = 'inline-block';
     row.querySelector('.cancel-btn').style.display = 'inline-block';
-    
+
     row.setAttribute('data-editing', 'true');
 }
 
 function cancelRowEdit(stmtId) {
     const row = document.getElementById('row_' + stmtId);
-    
+
     // Reset input values to original
     const cells = row.querySelectorAll('.editable-cell');
     cells.forEach(cell => {
@@ -1121,34 +1127,34 @@ function cancelRowEdit(stmtId) {
         cell.querySelector('.display-value').style.display = 'inline';
         cell.querySelector('.edit-input').style.display = 'none';
     });
-    
+
     // Show Edit/View buttons, hide Save/Cancel buttons
     row.querySelector('.edit-toggle-btn').style.display = 'inline-block';
     row.querySelector('.view-btn').style.display = 'inline-block';
     row.querySelector('.save-btn').style.display = 'none';
     row.querySelector('.cancel-btn').style.display = 'none';
-    
+
     row.setAttribute('data-editing', 'false');
 }
 
 function saveRowEdit(stmtId) {
     const row = document.getElementById('row_' + stmtId);
     const cells = row.querySelectorAll('.editable-cell');
-    
+
     // Collect data
     const formData = {};
     cells.forEach(cell => {
         const field = cell.getAttribute('data-field');
         let value = parseFloat(cell.querySelector('.edit-input').value);
-        
+
         // Handle payments (need to be negative)
         if (field === 'owner_payments' || field === 'infinite_payments') {
             value = -Math.abs(value);
         }
-        
+
         formData[field] = value;
     });
-    
+
     // Rename fields to match backend
     const backendData = {
         previous_balance: formData.prev_bal,
@@ -1160,7 +1166,7 @@ function saveRowEdit(stmtId) {
         owner_balance: formData.owner_balance,
         gz_balance: formData.gz_balance
     };
-    
+
     // Send update request
     fetch('/monthly_statement/' + stmtId + '/edit', {
         method: 'POST',
@@ -1204,7 +1210,7 @@ function saveRowEdit(stmtId) {
                 </div>
                 <form id="editStatementForm">
                     <input type="hidden" id="edit_statement_id" name="statement_id">
-                    
+
                     <!-- Statement Info -->
                     <div class="mb-4 p-3" style="background: rgba(255,0,127,0.1); border: 1px solid #FF007F; border-radius: 8px;">
                         <div class="row">
