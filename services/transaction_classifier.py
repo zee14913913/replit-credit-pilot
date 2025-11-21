@@ -54,8 +54,8 @@ class TransactionClassifier:
         # 客户姓名
         self.customer_name = customer_name
         
-        # 模糊匹配阈值（80%相似度）
-        self.similarity_threshold = 0.80
+        # 模糊匹配阈值（98%相似度）
+        self.similarity_threshold = 0.98
         
         # 付款关键词
         self.payment_keywords = [
