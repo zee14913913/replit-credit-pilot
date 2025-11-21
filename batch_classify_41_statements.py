@@ -37,10 +37,10 @@ def get_all_statements():
     cursor = conn.cursor()
     
     cursor.execute("""
-        SELECT s.id, s.statement_date, c.bank_name, c.card_number_last4, cu.name as customer_name
+        SELECT s.id, s.statement_date, c.bank_name, c.card_number_last4, u.name as customer_name
         FROM statements s
         JOIN credit_cards c ON s.card_id = c.id
-        JOIN customers cu ON s.customer_id = cu.id
+        JOIN users u ON s.user_id = u.id
         WHERE s.is_confirmed = 1
         ORDER BY s.statement_date
     """)
