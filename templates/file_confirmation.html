@@ -1,0 +1,496 @@
+{% extends "base.html" %}
+
+{% block title %}文件确认 - {{ t('company_name') }}{% endblock %}
+
+{% block content %}
+<style>
+.match-card {
+    border-radius: 12px;
+    margin-bottom: 24px;
+    padding: 24px;
+    transition: all 0.3s ease;
+    border: 2px solid;
+}
+
+.match-card.excellent {
+    background: rgba(255, 0, 127, 0.15);
+    border-color: #FF007F;
+    border-width: 3px;
+}
+
+.match-card.good {
+    background: rgba(50, 36, 70, 0.4);
+    border-color: #322446;
+    border-width: 2px;
+}
+
+.match-card.warning {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: #FF007F;
+    border-width: 4px;
+    border-style: dashed;
+}
+
+.match-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-left: 12px;
+}
+
+.match-badge.excellent {
+    background: #FF007F;
+    color: #000000;
+}
+
+.match-badge.good {
+    background: #322446;
+    color: #FFFFFF;
+    border: 2px solid #FF007F;
+}
+
+.match-badge.warning {
+    background: #000000;
+    color: #FF007F;
+    border: 2px solid #FF007F;
+}
+
+.info-section {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.info-label {
+    color: #FF007F;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.info-value {
+    color: #FFFFFF;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn-confirm {
+    background: #FF007F;
+    color: #000000;
+    font-weight: 700;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-confirm:hover {
+    background: rgba(255, 0, 127, 0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 0, 127, 0.5);
+}
+
+.btn-reject {
+    background: #000000;
+    color: #FF007F;
+    font-weight: 700;
+    border: 2px solid #FF007F;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-reject:hover {
+    background: #FF007F;
+    color: #000000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 0, 127, 0.5);
+}
+
+.btn-edit {
+    background: #322446;
+    color: #FFFFFF;
+    font-weight: 700;
+    border: 2px solid #FF007F;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-edit:hover {
+    background: #FF007F;
+    color: #000000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 0, 127, 0.5);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: #FF007F;
+    margin-bottom: 20px;
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 60px;
+    color: #FF007F;
+}
+
+.loading-spinner i {
+    font-size: 3rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+</style>
+
+<div class="fade-in">
+    <!-- Page Header -->
+    <div class="section-header mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <h1 class="section-title" style="color: #FFFFFF;">
+                    <i class="bi bi-file-earmark-check"></i> 文件确认中心
+                </h1>
+                <p class="section-subtitle" style="color: #FF007F;">
+                    File Confirmation Center - 零数据混淆，100%可追溯性
+                </p>
+            </div>
+            <div>
+                <button onclick="loadPendingFiles()" class="btn" style="background: #FF007F; color: #000000; font-weight: 700;">
+                    <i class="bi bi-arrow-clockwise"></i> 刷新列表
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="loading-spinner" style="display: none;">
+        <i class="bi bi-arrow-repeat"></i>
+        <p style="margin-top: 16px; font-size: 1.1rem; font-weight: 600;">正在加载待确认文件...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+        <i class="bi bi-check-circle"></i>
+        <h3 style="color: #FF007F; margin-bottom: 12px;">太棒了！</h3>
+        <p style="font-size: 1.1rem; color: #FFFFFF;">目前没有待确认的文件</p>
+    </div>
+
+    <!-- Files Container -->
+    <div id="filesContainer">
+        <!-- Files will be dynamically loaded here -->
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background: #000000; border: 2px solid #FF007F;">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(255, 0, 127, 0.3);">
+                <h5 class="modal-title" style="color: #FF007F; font-weight: 700;">
+                    <i class="bi bi-pencil-square"></i> 编辑客户信息
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editFileId">
+                <div class="mb-3">
+                    <label class="form-label" style="color: #FF007F; font-weight: 600;">客户姓名</label>
+                    <input type="text" class="form-control" id="editCustomerName" 
+                           style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 0, 127, 0.3); color: #FFFFFF;">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" style="color: #FF007F; font-weight: 600;">身份证号码 (IC)</label>
+                    <input type="text" class="form-control" id="editCustomerIC" 
+                           style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 0, 127, 0.3); color: #FFFFFF;">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" style="color: #FF007F; font-weight: 600;">卡号后4位</label>
+                    <input type="text" class="form-control" id="editCardLast4" maxlength="4"
+                           style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 0, 127, 0.3); color: #FFFFFF;">
+                </div>
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid rgba(255, 0, 127, 0.3);">
+                <button type="button" class="btn" data-bs-dismiss="modal" 
+                        style="background: #322446; color: #FFFFFF; font-weight: 600;">取消</button>
+                <button type="button" class="btn" onclick="saveEdit()" 
+                        style="background: #FF007F; color: #000000; font-weight: 700;">
+                    <i class="bi bi-check-lg"></i> 保存修改
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Load pending files on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadPendingFiles();
+});
+
+// Load pending files from API
+async function loadPendingFiles() {
+    const container = document.getElementById('filesContainer');
+    const loadingState = document.getElementById('loadingState');
+    const emptyState = document.getElementById('emptyState');
+    
+    // Show loading
+    container.innerHTML = '';
+    loadingState.style.display = 'block';
+    emptyState.style.display = 'none';
+    
+    try {
+        const response = await fetch('/api/files/pending');
+        const data = await response.json();
+        
+        loadingState.style.display = 'none';
+        
+        if (!data.success || data.files.length === 0) {
+            emptyState.style.display = 'block';
+            return;
+        }
+        
+        // Render files
+        data.files.forEach(file => {
+            container.appendChild(createFileCard(file));
+        });
+        
+    } catch (error) {
+        loadingState.style.display = 'none';
+        window.Toast.error('加载文件失败: ' + error.message);
+    }
+}
+
+// Create file card HTML
+function createFileCard(file) {
+    const card = document.createElement('div');
+    
+    // Determine match level
+    const matchPercent = file.match_score || 0;
+    let matchClass = 'warning';
+    let matchLabel = '不匹配';
+    
+    if (matchPercent >= 95) {
+        matchClass = 'excellent';
+        matchLabel = '完全匹配';
+    } else if (matchPercent >= 70) {
+        matchClass = 'good';
+        matchLabel = '部分匹配';
+    }
+    
+    card.className = `match-card ${matchClass}`;
+    card.innerHTML = `
+        <div class="row">
+            <div class="col-12 mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 style="color: #FFFFFF; margin: 0; font-weight: 700;">
+                        <i class="bi bi-file-earmark-pdf"></i> ${file.file_name}
+                    </h4>
+                    <span class="match-badge ${matchClass}">
+                        ${matchLabel} ${matchPercent}%
+                    </span>
+                </div>
+                <p style="color: rgba(255, 255, 255, 0.6); margin-top: 8px; margin-bottom: 0;">
+                    <i class="bi bi-clock"></i> 上传时间: ${file.upload_time}
+                </p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- OCR Extracted Info -->
+            <div class="col-md-6">
+                <div class="info-section">
+                    <h5 style="color: #FF007F; font-weight: 700; margin-bottom: 16px;">
+                        <i class="bi bi-file-text"></i> OCR提取信息
+                    </h5>
+                    <div class="mb-3">
+                        <div class="info-label">客户姓名</div>
+                        <div class="info-value">${file.ocr_data?.customer_name || 'N/A'}</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="info-label">身份证号码</div>
+                        <div class="info-value">${file.ocr_data?.ic_number || 'N/A'}</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="info-label">卡号后4位</div>
+                        <div class="info-value">${file.ocr_data?.card_last4 || 'N/A'}</div>
+                    </div>
+                    <div>
+                        <div class="info-label">银行名称</div>
+                        <div class="info-value">${file.ocr_data?.bank_name || 'N/A'}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Database Matched Info -->
+            <div class="col-md-6">
+                <div class="info-section">
+                    <h5 style="color: #FF007F; font-weight: 700; margin-bottom: 16px;">
+                        <i class="bi bi-database"></i> 数据库匹配记录
+                    </h5>
+                    ${file.matched_customer ? `
+                        <div class="mb-3">
+                            <div class="info-label">客户姓名</div>
+                            <div class="info-value">${file.matched_customer.name}</div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="info-label">客户代码</div>
+                            <div class="info-value">${file.matched_customer.customer_code}</div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="info-label">注册信用卡</div>
+                            <div class="info-value">${file.matched_customer.card_count || 0} 张</div>
+                        </div>
+                        <div>
+                            <div class="info-label">匹配依据</div>
+                            <div class="info-value" style="font-size: 0.9rem;">
+                                ${file.match_reason || '系统自动匹配'}
+                            </div>
+                        </div>
+                    ` : `
+                        <div style="text-align: center; padding: 40px 20px; color: #FF007F;">
+                            <i class="bi bi-exclamation-triangle" style="font-size: 2rem; margin-bottom: 12px;"></i>
+                            <p style="font-weight: 600; color: #FFFFFF;">未找到匹配的客户记录</p>
+                            <p style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.6);">请检查OCR提取的信息是否正确</p>
+                        </div>
+                    `}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn-confirm" onclick="confirmFile(${file.id})">
+                <i class="bi bi-check-circle"></i> 确认处理
+            </button>
+            <button class="btn-reject" onclick="rejectFile(${file.id})">
+                <i class="bi bi-x-circle"></i> 拒绝
+            </button>
+            <button class="btn-edit" onclick="editFile(${file.id}, ${JSON.stringify(file.ocr_data).replace(/"/g, '&quot;')})">
+                <i class="bi bi-pencil-square"></i> 编辑信息
+            </button>
+        </div>
+    `;
+    
+    return card;
+}
+
+// Confirm file
+async function confirmFile(fileId) {
+    if (!confirm('确认处理此文件？系统将根据匹配的客户信息进行后续处理。')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/files/confirm/${fileId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            window.Toast.success('文件已确认并开始处理');
+            loadPendingFiles(); // Reload list
+        } else {
+            window.Toast.error('确认失败: ' + (data.error || '未知错误'));
+        }
+    } catch (error) {
+        window.Toast.error('确认失败: ' + error.message);
+    }
+}
+
+// Reject file
+async function rejectFile(fileId) {
+    const reason = prompt('请输入拒绝原因（可选）:');
+    
+    try {
+        const response = await fetch(`/api/files/reject/${fileId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ reason: reason })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            window.Toast.success('文件已拒绝');
+            loadPendingFiles(); // Reload list
+        } else {
+            window.Toast.error('拒绝失败: ' + (data.error || '未知错误'));
+        }
+    } catch (error) {
+        window.Toast.error('拒绝失败: ' + error.message);
+    }
+}
+
+// Edit file info
+function editFile(fileId, ocrData) {
+    document.getElementById('editFileId').value = fileId;
+    document.getElementById('editCustomerName').value = ocrData.customer_name || '';
+    document.getElementById('editCustomerIC').value = ocrData.ic_number || '';
+    document.getElementById('editCardLast4').value = ocrData.card_last4 || '';
+    
+    const modal = new bootstrap.Modal(document.getElementById('editModal'));
+    modal.show();
+}
+
+// Save edit
+async function saveEdit() {
+    const fileId = document.getElementById('editFileId').value;
+    const customerName = document.getElementById('editCustomerName').value;
+    const customerIC = document.getElementById('editCustomerIC').value;
+    const cardLast4 = document.getElementById('editCardLast4').value;
+    
+    try {
+        const response = await fetch(`/api/files/update/${fileId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                customer_name: customerName,
+                ic_number: customerIC,
+                card_last4: cardLast4
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            window.Toast.success('信息已更新');
+            bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+            loadPendingFiles(); // Reload list
+        } else {
+            window.Toast.error('更新失败: ' + (data.error || '未知错误'));
+        }
+    } catch (error) {
+        window.Toast.error('更新失败: ' + error.message);
+    }
+}
+</script>
+{% endblock %}

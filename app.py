@@ -6038,6 +6038,263 @@ def receipts_upload():
     
     return render_template('receipts/upload_results.html', results=results)
 
+@app.route('/files/confirm')
+def files_confirm():
+    """文件确认中心页面"""
+    return render_template('file_confirmation.html')
+
+@app.route('/api/files/pending', methods=['GET'])
+def api_files_pending():
+    """API: 获取待确认文件列表 - 100%数据可追溯性"""
+    try:
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # 查询待确认的账单文件 + OCR原始数据
+            cursor.execute("""
+                SELECT 
+                    s.id,
+                    s.file_path,
+                    s.created_at,
+                    s.upload_status,
+                    s.card_id,
+                    ocr.customer_name as ocr_customer_name,
+                    ocr.ic_number as ocr_ic_number,
+                    ocr.card_last4 as ocr_card_last4,
+                    ocr.bank_name as ocr_bank_name,
+                    ocr.confidence_score as ocr_confidence,
+                    cc.card_number_last4 as db_card_last4,
+                    cc.bank_name as db_bank_name,
+                    c.id as customer_id,
+                    c.name as db_customer_name,
+                    c.customer_code as db_customer_code
+                FROM statements s
+                LEFT JOIN statement_ocr_raw ocr ON s.id = ocr.statement_id
+                LEFT JOIN credit_cards cc ON s.card_id = cc.id
+                LEFT JOIN customers c ON cc.customer_id = c.id
+                WHERE s.upload_status = 'pending' OR s.upload_status IS NULL
+                ORDER BY s.created_at DESC
+                LIMIT 50
+            """)
+            
+            files = []
+            for row in cursor.fetchall():
+                row_dict = dict(row)
+                
+                # Extract filename from path
+                file_path = row_dict['file_path'] or ''
+                file_name = os.path.basename(file_path) if file_path else 'Unknown File'
+                
+                # OCR提取信息（来自真实OCR结果）
+                ocr_data = {
+                    'customer_name': row_dict['ocr_customer_name'] or 'N/A',
+                    'ic_number': row_dict['ocr_ic_number'] or 'N/A',
+                    'card_last4': row_dict['ocr_card_last4'] or 'N/A',
+                    'bank_name': row_dict['ocr_bank_name'] or 'N/A'
+                }
+                
+                # 数据库匹配信息（如果存在）
+                matched_customer = None
+                if row_dict['customer_id']:
+                    matched_customer = {
+                        'name': row_dict['db_customer_name'],
+                        'customer_code': row_dict['db_customer_code'],
+                        'ic_number': 'N/A',
+                        'card_last4': row_dict['db_card_last4'],
+                        'bank_name': row_dict['db_bank_name']
+                    }
+                    
+                    # 获取客户卡数量
+                    cursor.execute("SELECT COUNT(*) FROM credit_cards WHERE customer_id = ?", (row_dict['customer_id'],))
+                    matched_customer['card_count'] = cursor.fetchone()[0]
+                
+                # 智能匹配分数计算（基于OCR vs DB的相似度）
+                match_score = 0
+                match_reason = ''
+                
+                if matched_customer:
+                    # 计算匹配度
+                    score_components = []
+                    
+                    # 卡号后4位匹配 (40%)
+                    if ocr_data['card_last4'] == matched_customer['card_last4']:
+                        score_components.append(40)
+                    
+                    # 银行名称匹配 (30%)
+                    if ocr_data['bank_name'].upper() in matched_customer['bank_name'].upper() or \
+                       matched_customer['bank_name'].upper() in ocr_data['bank_name'].upper():
+                        score_components.append(30)
+                    
+                    # 客户名称匹配 (20%)
+                    if ocr_data['customer_name'] != 'N/A':
+                        ocr_name_clean = ocr_data['customer_name'].upper().replace(' ', '')
+                        db_name_clean = matched_customer['name'].upper().replace(' ', '')
+                        if ocr_name_clean in db_name_clean or db_name_clean in ocr_name_clean:
+                            score_components.append(20)
+                    
+                    # IC号码匹配 (10%) - 暂时跳过（customers表无ic_number字段）
+                    # if ocr_data['ic_number'] != 'N/A':
+                    #     score_components.append(10)
+                    
+                    match_score = sum(score_components)
+                    match_reason = f"匹配度基于 {len(score_components)}/4 个字段吻合"
+                else:
+                    match_score = 0
+                    match_reason = '数据库中无匹配客户记录'
+                
+                files.append({
+                    'id': row_dict['id'],
+                    'file_name': file_name,
+                    'upload_time': row_dict['created_at'],
+                    'match_score': match_score,
+                    'match_reason': match_reason,
+                    'ocr_data': ocr_data,
+                    'matched_customer': matched_customer
+                })
+            
+            return jsonify({
+                'success': True,
+                'files': files,
+                'count': len(files)
+            })
+            
+    except Exception as e:
+        logger.error(f"API /api/files/pending error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/files/confirm/<int:file_id>', methods=['POST'])
+def api_files_confirm(file_id):
+    """API: 确认文件处理"""
+    try:
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # 更新文件状态为已确认
+            cursor.execute("""
+                UPDATE statements
+                SET upload_status = 'confirmed',
+                    is_confirmed = 1
+                WHERE id = ?
+            """, (file_id,))
+            
+            conn.commit()
+            
+            # 记录审计日志
+            cursor.execute("""
+                INSERT INTO audit_logs (action, table_name, record_id, details)
+                VALUES ('file_confirmed', 'statements', ?, 'File confirmed for processing')
+            """, (file_id,))
+            
+            conn.commit()
+            
+            return jsonify({
+                'success': True,
+                'message': '文件已确认'
+            })
+            
+    except Exception as e:
+        logger.error(f"API /api/files/confirm error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/files/reject/<int:file_id>', methods=['POST'])
+def api_files_reject(file_id):
+    """API: 拒绝文件"""
+    try:
+        data = request.get_json() or {}
+        reason = data.get('reason', 'No reason provided')
+        
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # 更新文件状态为已拒绝
+            cursor.execute("""
+                UPDATE statements
+                SET upload_status = 'rejected',
+                    error_tag = ?
+                WHERE id = ?
+            """, (reason, file_id))
+            
+            conn.commit()
+            
+            # 记录审计日志
+            cursor.execute("""
+                INSERT INTO audit_logs (action, table_name, record_id, details)
+                VALUES ('file_rejected', 'statements', ?, ?)
+            """, (file_id, f'File rejected: {reason}'))
+            
+            conn.commit()
+            
+            return jsonify({
+                'success': True,
+                'message': '文件已拒绝'
+            })
+            
+    except Exception as e:
+        logger.error(f"API /api/files/reject error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/files/update/<int:file_id>', methods=['POST'])
+def api_files_update(file_id):
+    """API: 更新文件OCR信息"""
+    try:
+        data = request.get_json() or {}
+        customer_name = data.get('customer_name')
+        ic_number = data.get('ic_number')
+        card_last4 = data.get('card_last4')
+        
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # 尝试根据更新的信息重新匹配客户
+            if card_last4:
+                cursor.execute("""
+                    SELECT cc.id, cc.customer_id
+                    FROM credit_cards cc
+                    WHERE cc.card_number_last4 = ?
+                    LIMIT 1
+                """, (card_last4,))
+                
+                card_match = cursor.fetchone()
+                if card_match:
+                    # 更新statements表关联到匹配的卡
+                    cursor.execute("""
+                        UPDATE statements
+                        SET card_id = ?,
+                            card_full_number = ?
+                        WHERE id = ?
+                    """, (card_match['id'], f'****{card_last4}', file_id))
+            
+            conn.commit()
+            
+            # 记录审计日志
+            cursor.execute("""
+                INSERT INTO audit_logs (action, table_name, record_id, details)
+                VALUES ('file_info_updated', 'statements', ?, ?)
+            """, (file_id, f'Updated: name={customer_name}, card={card_last4}'))
+            
+            conn.commit()
+            
+            return jsonify({
+                'success': True,
+                'message': '信息已更新'
+            })
+            
+    except Exception as e:
+        logger.error(f"API /api/files/update error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 @app.route('/receipts/pending')
 def receipts_pending():
     """待匹配的收据列表"""
