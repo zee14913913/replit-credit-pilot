@@ -8843,6 +8843,20 @@ def api_assign_file():
         }), 500
 
 
+if __name__ == '__main__':
+    # Get environment settings
+    flask_env = os.getenv('FLASK_ENV', 'development')
+    debug_mode = flask_env != 'production'
+    port = int(os.getenv('PORT', 5000))
+    
+    # Only start scheduler in the main process (not in Werkzeug reloader child process)
+    if os.environ.get('WERKZEUG_RUN_MAIN') == 'true' or not debug_mode:
+        start_scheduler()
+    
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)
+
+
+
 @app.route('/credit-card/transaction-classifier')
 @require_admin_or_accountant
 def transaction_classifier_page():
@@ -9091,15 +9105,3 @@ def accounting_api_proxy(subpath):
             'error': f'Accounting API proxy error: {str(e)}'
         }), 503
 # Force reload Fri Nov 21 10:28:37 PM Asia 2025
-
-if __name__ == '__main__':
-    # Get environment settings
-    flask_env = os.getenv('FLASK_ENV', 'development')
-    debug_mode = flask_env != 'production'
-    port = int(os.getenv('PORT', 5000))
-    
-    # Only start scheduler in the main process (not in Werkzeug reloader child process)
-    if os.environ.get('WERKZEUG_RUN_MAIN') == 'true' or not debug_mode:
-        start_scheduler()
-    
-    app.run(host='0.0.0.0', port=port, debug=debug_mode)
