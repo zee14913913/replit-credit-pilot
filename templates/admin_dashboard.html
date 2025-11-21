@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ t('admin_dashboard') }} - {{ t('company_name') }}{% endblock %}
+{% block title %} - {% endblock %}
 
 {% block content %}
 <div class="container-fluid" style="max-width: 98%; padding: 2rem;">
@@ -15,7 +15,7 @@
                   padding: 0.75rem 1.5rem;
                   box-shadow: 0 4px 15px rgba(50, 36, 70, 0.4);
                   transition: all 0.3s ease;">
-            <i class="bi bi-arrow-left-circle"></i> {{ t('back_to_dashboard') }}
+            <i class="bi bi-arrow-left-circle"></i> 
         </a>
 
         <a href="{{ url_for('admin_logout') }}" 
@@ -27,7 +27,7 @@
                   padding: 0.75rem 1.5rem;
                   box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
                   transition: all 0.3s ease;">
-            <i class="bi bi-box-arrow-right"></i> {{ t('logout') }}
+            <i class="bi bi-box-arrow-right"></i> 
         </a>
 
         <a href="{{ url_for('admin_evidence_archive') }}" 
@@ -39,7 +39,7 @@
                   padding: 0.75rem 1.5rem;
                   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
                   transition: all 0.3s ease;">
-            <i class="bi bi-archive"></i> {{ t('evidence_archive') }}
+            <i class="bi bi-archive"></i> 
         </a>
 
         <a href="{{ url_for('accounting_files') }}" 
@@ -51,21 +51,21 @@
                   padding: 0.75rem 1.5rem;
                   box-shadow: 0 4px 15px rgba(50, 36, 70, 0.3);
                   transition: all 0.3s ease;">
-            <i class="bi bi-folder-fill"></i> {{ t('file_management') }}
+            <i class="bi bi-folder-fill"></i> 
         </a>
     </div>
 
     <!-- DEBUG TEST BUTTON -->
     <div class="alert" style="background: rgba(255,0,127,0.2); border: 2px solid #FF007F; margin-bottom: 20px; padding: 20px;">
         <button onclick="testEditFunction()" class="btn" style="background: #FF007F; color: white; font-weight: 700; padding: 15px 30px; font-size: 18px;">
-            🧪 {{ t('click_to_test_edit') }}
+            🧪 
         </button>
         <p id="test_result" style="color: white; margin-top: 10px; font-weight: 600; font-size: 16px;"></p>
     </div>
 
     <div class="section-header">
-        <h1 class="section-title" style="color: #FF007F; font-weight: 700;">📊 {{ t('admin_dashboard') }}</h1>
-        <p class="section-description" style="color: #FF007F;">{{ t('system_overview_subtitle') }}</p>
+        <h1 class="section-title" style="color: #FF007F; font-weight: 700;">📊 </h1>
+        <p class="section-description" style="color: #FF007F;"></p>
     </div>
 
     <!-- System Summary -->
@@ -73,28 +73,28 @@
         <div class="col-md-3">
             <div class="stat-card">
                 <div class="stat-value" style="font-size: 1.8rem;">{{ customers|length }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('total_customers') }}</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
                 <div class="stat-corner"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card">
                 <div class="stat-value" style="font-size: 1.8rem;">{{ statement_count }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('total_statements') }}</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
                 <div class="stat-corner"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card">
                 <div class="stat-value" style="font-size: 1.8rem;">{{ txn_count }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('total_transactions') }}</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
                 <div class="stat-corner"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card">
                 <div class="stat-value" style="font-size: 1.8rem;">{{ active_cards }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('active_cards') }}</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
                 <div class="stat-corner"></div>
             </div>
         </div>
@@ -105,21 +105,21 @@
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
                 <div class="stat-value" style="color: #FF007F; font-size: 1.8rem;">RM {{ "{:,.0f}".format(total_owner_expenses) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('_owns_expenses') }}</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
                 <div class="stat-corner" style="background: #FF007F;"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
                 <div class="stat-value" style="color: #FF007F; font-size: 1.8rem;">RM {{ "{:,.0f}".format(abs(total_owner_payments)) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('_owns_payment') }}</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
                 <div class="stat-corner" style="background: #FF007F;"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
                 <div class="stat-value" style="color: #FF007F; font-size: 1.8rem;">RM {{ "{:,.0f}".format(total_owner_balance) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('_owns_os_bal') }}</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
                 <div class="stat-corner" style="background: #FF007F;"></div>
             </div>
         </div>
@@ -127,7 +127,7 @@
             <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
                 <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(255,0,127,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                     <div class="stat-value" style="color: #FF007F; font-size: 1.8rem;">{{ invoices_count }}</div>
-                    <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('_supplier_invoices') }}</div>
+                    <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
                     <div class="stat-corner" style="background: #FF007F;"></div>
                 </div>
             </a>
@@ -139,21 +139,21 @@
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
                 <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.0f}".format(total_gz_expenses) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">{{ t('_gzs_expenses') }}</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;"></div>
                 <div class="stat-corner" style="background: #322446;"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
                 <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.0f}".format(abs(total_gz_payments)) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">{{ t('_gzs_payment') }}</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;"></div>
                 <div class="stat-corner" style="background: #322446;"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
                 <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.0f}".format(total_gz_balance) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">{{ t('_gzs_os_bal') }}</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;"></div>
                 <div class="stat-corner" style="background: #322446;"></div>
             </div>
         </div>
@@ -161,20 +161,20 @@
             <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
                 <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(50,36,70,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                     <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.2f}".format(invoices_total) }}</div>
-                    <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">{{ t('_total_invoices_amount') }}</div>
+                    <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;"></div>
                     <div class="stat-corner" style="background: #322446;"></div>
                 </div>
             </a>
         </div>
     </div>
 
-    <!-- {{ t('quick_actions__') }} -->
+    <!--  -->
     <div class="row g-5 mb-5 justify-content-center">
         <div class="col-12 mb-4">
             <h3 style="color: #FF007F; text-shadow: 0 0 15px rgba(255,0,127,0.5); font-weight: 700; font-size: 2rem; margin: 0;">
-                <i class="bi bi-grid-3x3-gap-fill"></i> {{ t('management_center') }}
+                <i class="bi bi-grid-3x3-gap-fill"></i> 
             </h3>
-            <p style="color: #999; margin: 0.5rem 0 0 0; font-size: 1rem;">{{ t('select_module_to_manage') }}</p>
+            <p style="color: #999; margin: 0.5rem 0 0 0; font-size: 1rem;"></p>
         </div>
 
         <!-- 1. 信用卡账单管理 -->
@@ -198,13 +198,13 @@
                         <i class="bi bi-credit-card" style="font-size: 4.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
                     </div>
                     <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.4;">
-                        {{ t('credit_card_statements_management') }}
+                        
                     </h4>
                     <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
                         <div style="color: #FF007F; font-size: 1.8rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
                             {{ cc_statements|length }}
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;">{{ t('statement_count') }}</div>
+                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;"></div>
                     </div>
                 </div>
             </a>
@@ -231,13 +231,13 @@
                         <i class="bi bi-bank" style="font-size: 4.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
                     </div>
                     <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.4;">
-                        {{ t('savings_account_statements_management') }}
+                        
                     </h4>
                     <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
                         <div style="color: #FF007F; font-size: 1.8rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
                             {{ sa_statements|length }}
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;">{{ t('statement_count') }}</div>
+                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;"></div>
                     </div>
                 </div>
             </a>
@@ -264,19 +264,19 @@
                         <i class="bi bi-receipt" style="font-size: 4.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
                     </div>
                     <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.4;">
-                        {{ t('receipts_management') }}
+                        
                     </h4>
                     <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
                         <div style="color: #FF007F; font-size: 1.8rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
                             {{ receipts_count }}
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;">{{ t('receipt_total') }}</div>
+                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;"></div>
                     </div>
                 </div>
             </a>
         </div>
 
-        <!-- 4. {{ t('supplier_invoices_') }} -->
+        <!-- 4.  -->
         <div class="col-md-6 col-lg-4 col-xl-2">
             <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
                 <div class="quick-action-card" style="
@@ -297,13 +297,13 @@
                         <i class="bi bi-file-earmark-text-fill" style="font-size: 4.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
                     </div>
                     <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.4;">
-                        {{ t('supplier_invoices_management') }}
+                        
                     </h4>
                     <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
                         <div style="color: #FF007F; font-size: 1.8rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
                             {{ invoices_count }}
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;">{{ t('invoice_total') }}</div>
+                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;"></div>
                     </div>
                 </div>
             </a>
@@ -330,11 +330,11 @@
                         <i class="bi bi-file-earmark-bar-graph-fill" style="font-size: 4.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
                     </div>
                     <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.4;">
-                        {{ t('monthly_summary_reports') }}
+                        
                     </h4>
                     <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
-                        <div style="color: #FF007F; font-size: 1.4rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">{{ t('guide_view_reports') }}</div>
-                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;">{{ t('supplier_expenses_&_payments') }}</div>
+                        <div style="color: #FF007F; font-size: 1.4rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);"></div>
+                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;"></div>
                     </div>
                 </div>
             </a>
@@ -348,7 +348,7 @@
                 <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #FF007F;">
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
                         <h3 class="card-title-custom" style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; margin: 0;">
-                            <i class="bi bi-credit-card"></i>{{ t('credit_card_customers') }}</h3>
+                            <i class="bi bi-credit-card"></i></h3>
                         <span style="background: rgba(255,0,127,0.2); padding: 0.5rem 1rem; border-radius: 8px; color: #FF007F; font-weight: 700;">
                             {{ credit_card_customers|length }} Customers
                         </span>
@@ -359,13 +359,13 @@
                         <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%;">
                             <thead style="background: rgba(255, 0, 127, 0.1); border-bottom: 2px solid #FF007F;">
                                 <tr>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('customer_name') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('admindashboard_email') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('admindashboard_phone') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('monthly_income') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">{{ t('total_cards') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">{{ t('total_statements') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center;">{{ t('actions') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center;"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -398,13 +398,13 @@
                                                       color: #FFFFFF;
                                                       font-weight: 600;
                                                       padding: 0.25rem 0.75rem;
-                                                      font-size: 0.75rem;">{{ t('view_ledger') }}</a>
+                                                      font-size: 0.75rem;"></a>
                                         </td>
                                     </tr>
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td colspan="7" style="text-align: center; padding: 3rem; color: #999;">{{ t('no_credit_card_customers_found') }}</td>
+                                        <td colspan="7" style="text-align: center; padding: 3rem; color: #999;"></td>
                                     </tr>
                                 {% endif %}
                             </tbody>
@@ -422,7 +422,7 @@
                 <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #7B68EE;">
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
                         <h3 class="card-title-custom" style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; margin: 0;">
-                            <i class="bi bi-bank"></i>{{ t('savings_account_customers') }}</h3>
+                            <i class="bi bi-bank"></i></h3>
                         <span style="background: rgba(123,104,238,0.3); padding: 0.5rem 1rem; border-radius: 8px; color: #9370DB; font-weight: 700;">
                             {{ savings_customers|length }} Customers
                         </span>
@@ -433,13 +433,13 @@
                         <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%;">
                             <thead style="background: rgba(50, 36, 70, 0.3); border-bottom: 2px solid #7B68EE;">
                                 <tr>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('customer_name') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('admindashboard_email') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('admindashboard_phone') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('monthly_income') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">{{ t('total_accounts') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">{{ t('total_statements') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center;">{{ t('actions') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center;"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -500,10 +500,10 @@
                 <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #FF007F;">
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
                         <h3 class="card-title-custom" style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; margin: 0;">
-                            <i class="bi bi-credit-card"></i> {{ t('credit_card_statements') }}
+                            <i class="bi bi-credit-card"></i> 
                         </h3>
                         <button id="exportCCTable" class="btn btn-sm" style="background: #FF007F; color: white; border: none;">
-                            <i class="bi bi-download"></i>{{ t('export_excel') }}</button>
+                            <i class="bi bi-download"></i></button>
                     </div>
                 </div>
                 <div class="card-body-custom" style="padding: 0;">
@@ -511,19 +511,19 @@
                         <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto;" id="ccStatementsTable">
                             <thead style="background: rgba(255, 0, 127, 0.1); border-bottom: 2px solid #FF007F;">
                                 <tr>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('month_of_statement') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('name') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('bank') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('pre_bal') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('statement_os') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('due_date') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('owner_expenses') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('gz_expenses') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('owner_payments') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('gz_payments') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('owner_os_bal') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('gz_balance') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ t('actions') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -587,7 +587,7 @@
                                                       padding: 0.25rem 0.75rem;
                                                       font-size: 0.75rem;
                                                       margin-right: 0.5rem;">
-                                                {{ t('view_details') }}
+                                                
                                             </a>
                                             <button class="btn btn-sm edit-toggle-btn"
                                                onclick="toggleRowEdit({{ stmt['statement_id'] }})"
@@ -598,18 +598,18 @@
                                                       font-weight: 600;
                                                       padding: 0.25rem 0.75rem;
                                                       font-size: 0.75rem;">
-                                                <i class="bi bi-pencil-square"></i>{{ t('edit') }}</button>
+                                                <i class="bi bi-pencil-square"></i></button>
                                             <button class="btn btn-sm save-btn" onclick="saveRowEdit({{ stmt['statement_id'] }})" style="display: none; background: #0f0; color: #000; border: none; padding: 0.25rem 0.75rem; font-size: 0.75rem; margin-right: 0.5rem; font-weight: 700;">
-                                                <i class="bi bi-check-circle"></i>{{ t('save') }}</button>
+                                                <i class="bi bi-check-circle"></i></button>
                                             <button class="btn btn-sm cancel-btn" onclick="cancelRowEdit({{ stmt['statement_id'] }})" style="display: none; background: #f00; color: #fff; border: none; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 700;">
-                                                <i class="bi bi-x-circle"></i>{{ t('cancel') }}</button>
+                                                <i class="bi bi-x-circle"></i></button>
                                         </td>
                                     </tr>
                                     {% endfor %}
                                 {% else %}
                                     <tr>
                                         <td colspan="13" style="text-align: center; padding: 3rem; color: #999;">
-                                            {{ t('no_cc_statements_found') }}
+                                            
                                         </td>
                                     </tr>
                                 {% endif %}
@@ -627,7 +627,7 @@
             <div class="statement-card" style="border: 2px solid #322446;">
                 <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #322446;">
                     <h3 class="card-title-custom" style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; margin: 0; padding: 1.5rem;">
-                        <i class="bi bi-bank"></i> {{ t('bank_account_statements') }}
+                        <i class="bi bi-bank"></i> 
                     </h3>
                 </div>
                 <div class="card-body-custom" style="padding: 0;">
@@ -635,15 +635,15 @@
                         <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto;">
                             <thead style="background: rgba(50, 36, 70, 0.3); border-bottom: 2px solid #322446;">
                                 <tr>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('month_of_statement') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('name') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('bank') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('monthly_credit') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('monthly_debit') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('closing_bal') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('cc_sum_payment') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('total_transfer') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('actions') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -668,7 +668,7 @@
                                                       font-weight: 600;
                                                       padding: 0.25rem 0.75rem;
                                                       font-size: 0.75rem;">
-                                                {{ t('view_details') }}
+                                                
                                             </a>
                                         </td>
                                     </tr>
@@ -676,7 +676,7 @@
                                 {% else %}
                                     <tr>
                                         <td colspan="9" style="text-align: center; padding: 3rem; color: #999;">
-                                            {{ t('no_sa_statements_found') }}
+                                            
                                         </td>
                                     </tr>
                                 {% endif %}
@@ -849,15 +849,15 @@ class SimpleDataTable {
         controls.className = 'datatable-controls';
         controls.innerHTML = `
             <div>
-                <span style="color: #999;">{{ t('show') }}</span>
+                <span style="color: #999;"></span>
                 <select id="${this.table.id}_pageSize" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.25rem 0.5rem; border-radius: 4px;">
                     <option value="10">10</option>
                     <option value="25" selected>25</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
-                    <option value="-1">{{ t('all') }}</option>
+                    <option value="-1"></option>
                 </select>
-                <span style="color: #999; margin-left: 1rem;">{{ t('entries') }}</span>
+                <span style="color: #999; margin-left: 1rem;"></span>
             </div>
             <div id="${this.table.id}_pagination" class="datatable-pagination"></div>
         `;
@@ -1010,13 +1010,13 @@ function testEditFunction() {
             input.focus();
 
             resultDiv.innerHTML = `
-                ✅ <strong>{{ t('auto_text_218') }}</strong><br>
+                ✅ <strong></strong><br>
                 ${t('test_dialog_opened', '- Dialog opened')}<br>
                 ${t('test_input_filled', '- Input filled with test data')}<br>
                 ${t('test_input_focused', '- Input focused')}<br>
                 <br>
-                <strong style="color: #FF007F;">{{ t('__8') }}</strong><br>
-                <small>{{ t('auto_text_223') }}</small>
+                <strong style="color: #FF007F;"></strong><br>
+                <small></small>
             `;
         }, 500);
 
@@ -1075,7 +1075,7 @@ function openEditModal(stmtId, customerName, bank, month, prevBal, ownerBal, gzB
                 if (debugDiv) {
                     debugDiv.style.display = 'block';
                     debugDiv.innerHTML = `✅ Modal opened! Input focused. Value: ${firstInput.value}<br>
-                                          {{ t('f') }}12打开浏览器控制台查看错误。`;
+                                          12打开浏览器控制台查看错误。`;
                 }
             }
         }, 300);
@@ -1178,7 +1178,7 @@ function saveRowEdit(stmtId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('✅ {{ t('n_saved_successfully_page_will_refresh') }}.');
+            alert('✅ .');
             location.reload();
         } else {
             alert('❌ 保存失败：' + data.message + '\n❌ Save failed: ' + data.message);
@@ -1186,7 +1186,7 @@ function saveRowEdit(stmtId) {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('❌ {{ t('n_update_failed_please_try_again_later') }}.');
+        alert('❌ .');
     });
 }
 </script>
@@ -1197,16 +1197,16 @@ function saveRowEdit(stmtId) {
         <div class="modal-content" style="background: #1a1a1a; border: 2px solid #FF007F;">
             <div class="modal-header" style="border-bottom: 2px solid #FF007F;">
                 <h5 class="modal-title" style="color: #FF007F; font-weight: 700;">
-                    <i class="bi bi-pencil-square"></i> {{ t('__edit_monthly_statement') }}
+                    <i class="bi bi-pencil-square"></i> 
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" style="color: #FFFEF0;">
                 <div class="alert alert-info" style="background: rgba(255,0,127,0.15); border: 1px solid #FF007F; color: #FFFFFF;">
-                    <strong>{{ t('__9') }}</strong> 点击白色输入框即可修改数值。所有输入框都是白色背景，黑色文字。
+                    <strong></strong> 点击白色输入框即可修改数值。所有输入框都是白色背景，黑色文字。
                 </div>
                 <div id="edit_debug_info" style="background: rgba(255,255,0,0.1); padding: 10px; margin-bottom: 10px; color: yellow; font-size: 12px; display: none;">
-                    {{ t('debug__1') }}...
+                    ...
                 </div>
                 <form id="editStatementForm">
                     <input type="hidden" id="edit_statement_id" name="statement_id">
@@ -1215,15 +1215,15 @@ function saveRowEdit(stmtId) {
                     <div class="mb-4 p-3" style="background: rgba(255,0,127,0.1); border: 1px solid #FF007F; border-radius: 8px;">
                         <div class="row">
                             <div class="col-md-4">
-                                <strong style="color: #FF007F;">{{ t('__customer') }}</strong><br>
+                                <strong style="color: #FF007F;"></strong><br>
                                 <span id="modal_customer_name"></span>
                             </div>
                             <div class="col-md-4">
-                                <strong style="color: #FF007F;">{{ t('__bank') }}</strong><br>
+                                <strong style="color: #FF007F;"></strong><br>
                                 <span id="modal_bank"></span>
                             </div>
                             <div class="col-md-4">
-                                <strong style="color: #FF007F;">{{ t('__month') }}</strong><br>
+                                <strong style="color: #FF007F;"></strong><br>
                                 <span id="modal_month"></span>
                             </div>
                         </div>
@@ -1233,10 +1233,10 @@ function saveRowEdit(stmtId) {
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label" style="color: #FFFEF0; font-weight: 600;">
-                                <i class="bi bi-arrow-left-circle"></i> {{ t('previous_balance__') }}
+                                <i class="bi bi-arrow-left-circle"></i> 
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background: #322446; color: #FFFEF0; border-color: #FF007F;">{{ t('rm') }}</span>
+                                <span class="input-group-text" style="background: #322446; color: #FFFEF0; border-color: #FF007F;"></span>
                                 <input type="text" 
                                        class="form-control" 
                                        id="edit_prev_bal" 
@@ -1248,16 +1248,16 @@ function saveRowEdit(stmtId) {
                                               padding: 10px !important;
                                               pointer-events: auto !important;
                                               user-select: text !important;" 
-                                       placeholder="{{ t('__enter_number') }}">
+                                       placeholder="">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label" style="color: #FFFEF0; font-weight: 600;">
-                                <i class="bi bi-check-circle"></i> {{ t('closing_balance__') }}
+                                <i class="bi bi-check-circle"></i> 
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background: #322446; color: #FFFEF0; border-color: #FF007F;">{{ t('rm') }}</span>
+                                <span class="input-group-text" style="background: #322446; color: #FFFEF0; border-color: #FF007F;"></span>
                                 <input type="text" 
                                        class="form-control" 
                                        id="edit_closing_bal" 
@@ -1269,7 +1269,7 @@ function saveRowEdit(stmtId) {
                                               padding: 10px !important;
                                               pointer-events: auto !important;
                                               user-select: text !important;" 
-                                       placeholder="{{ t('__enter_number') }}">
+                                       placeholder="">
                             </div>
                         </div>
 
@@ -1277,10 +1277,10 @@ function saveRowEdit(stmtId) {
 
                         <div class="col-md-6">
                             <label class="form-label" style="color: #FF007F; font-weight: 600;">
-                                💳 {{ t('owner_expenses__owner') }}
+                                💳 
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background: #322446; color: #FF007F; border-color: #FF007F;">{{ t('rm') }}</span>
+                                <span class="input-group-text" style="background: #322446; color: #FF007F; border-color: #FF007F;"></span>
                                 <input type="text" 
                                        class="form-control" 
                                        id="edit_owner_expenses" 
@@ -1292,16 +1292,16 @@ function saveRowEdit(stmtId) {
                                               padding: 10px !important;
                                               pointer-events: auto !important;
                                               user-select: text !important;" 
-                                       placeholder="{{ t('__enter_number') }}">
+                                       placeholder="">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label" style="color: #FF007F; font-weight: 600;">
-                                💰 {{ t('owner_payments__owner') }}
+                                💰 
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background: #322446; color: #FF007F; border-color: #FF007F;">{{ t('rm') }}</span>
+                                <span class="input-group-text" style="background: #322446; color: #FF007F; border-color: #FF007F;"></span>
                                 <input type="text" 
                                        class="form-control" 
                                        id="edit_owner_payments" 
@@ -1313,16 +1313,16 @@ function saveRowEdit(stmtId) {
                                               padding: 10px !important;
                                               pointer-events: auto !important;
                                               user-select: text !important;" 
-                                       placeholder="{{ t('__enter_number') }}">
+                                       placeholder="">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label" style="color: #FFFEF0; font-weight: 600;">
-                                🏢 {{ t('infinite_expenses__infinite') }}
+                                🏢 
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background: #322446; color: #FFFFFF; border-color: #322446;">{{ t('rm') }}</span>
+                                <span class="input-group-text" style="background: #322446; color: #FFFFFF; border-color: #322446;"></span>
                                 <input type="text" 
                                        class="form-control" 
                                        id="edit_gz_expenses" 
@@ -1334,16 +1334,16 @@ function saveRowEdit(stmtId) {
                                               padding: 10px !important;
                                               pointer-events: auto !important;
                                               user-select: text !important;" 
-                                       placeholder="{{ t('__enter_number') }}">
+                                       placeholder="">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label" style="color: #FFFEF0; font-weight: 600;">
-                                💵 {{ t('infinite_payments__infinite') }}
+                                💵 
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background: #322446; color: #FFFFFF; border-color: #322446;">{{ t('rm') }}</span>
+                                <span class="input-group-text" style="background: #322446; color: #FFFFFF; border-color: #322446;"></span>
                                 <input type="text" 
                                        class="form-control" 
                                        id="edit_gz_payments" 
@@ -1355,7 +1355,7 @@ function saveRowEdit(stmtId) {
                                               padding: 10px !important;
                                               pointer-events: auto !important;
                                               user-select: text !important;" 
-                                       placeholder="{{ t('__enter_number') }}">
+                                       placeholder="">
                             </div>
                         </div>
 
@@ -1363,10 +1363,10 @@ function saveRowEdit(stmtId) {
 
                         <div class="col-md-6">
                             <label class="form-label" style="color: #FF007F; font-weight: 600;">
-                                📊 {{ t('owner_balance__owner') }}
+                                📊 
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background: #322446; color: #FF007F; border-color: #FF007F;">{{ t('rm') }}</span>
+                                <span class="input-group-text" style="background: #322446; color: #FF007F; border-color: #FF007F;"></span>
                                 <input type="text" 
                                        class="form-control" 
                                        id="edit_owner_bal" 
@@ -1378,16 +1378,16 @@ function saveRowEdit(stmtId) {
                                               padding: 10px !important;
                                               pointer-events: auto !important;
                                               user-select: text !important;" 
-                                       placeholder="{{ t('__enter_number') }}">
+                                       placeholder="">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label" style="color: #FFFEF0; font-weight: 600;">
-                                📈 {{ t('infinite_balance__infinite') }}
+                                📈 
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text" style="background: #322446; color: #FFFFFF; border-color: #322446;">{{ t('rm') }}</span>
+                                <span class="input-group-text" style="background: #322446; color: #FFFFFF; border-color: #322446;"></span>
                                 <input type="text" 
                                        class="form-control" 
                                        id="edit_gz_bal" 
@@ -1399,7 +1399,7 @@ function saveRowEdit(stmtId) {
                                               padding: 10px !important;
                                               pointer-events: auto !important;
                                               user-select: text !important;" 
-                                       placeholder="{{ t('__enter_number') }}">
+                                       placeholder="">
                             </div>
                         </div>
                     </div>
@@ -1407,10 +1407,10 @@ function saveRowEdit(stmtId) {
             </div>
             <div class="modal-footer" style="border-top: 2px solid #FF007F;">
                 <button type="button" class="btn" style="background: #322446; color: #FFFEF0; border: 1px solid #999;" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle"></i> {{ t('__cancel') }}
+                    <i class="bi bi-x-circle"></i> 
                 </button>
                 <button type="button" class="btn" style="background: linear-gradient(135deg, #FF007F 0%, #c9005f 100%); color: #FFFFFF; border: none;" onclick="saveStatementEdit()">
-                    <i class="bi bi-save"></i> {{ t('__save_changes') }}
+                    <i class="bi bi-save"></i> 
                 </button>
             </div>
         </div>
