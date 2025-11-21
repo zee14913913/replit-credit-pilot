@@ -36,7 +36,7 @@ class AIPredictManager {
 
             const noDataText = t('no_data_available', '暂无数据');
             if (data.error || !data.score) {
-                scoreBox.innerHTML = `<div style="color:#ff4444;">❌ ${data.error || noDataText}</div>`;
+                scoreBox.innerHTML = `<div style="color:#ff4444;">[ERROR] ${data.error || noDataText}</div>`;
                 return;
             }
 

@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file, send_from_directory, session
+from flask_cors import CORS
 import os
 from datetime import datetime, timedelta
 import json
@@ -137,6 +138,16 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 200MB limit for batch uploads
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable static file caching
 
+# CORS Configuration
+CORS(app, resources={
+    r"/*": {
+        "origins": ["https://ynqoo4ipbuar.space.minimax.io", "http://localhost:3000", "http://localhost:5000"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    }
+})
+
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Register abs() function for Jinja2 templates
@@ -181,6 +192,19 @@ def translate(key, lang='en', **kwargs):
         except:
             pass
     return text
+
+# ==================== API Health Check ====================
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    """Health check endpoint for monitoring and deployment verification"""
+    return jsonify({
+        'status': 'healthy',
+        'service': 'CreditPilot Backend',
+        'timestamp': datetime.utcnow().isoformat(),
+        'version': '2.0',
+        'cors_enabled': True
+    }), 200
+# ==================== END API HEALTH CHECK ====================
 
 def get_current_language():
     """
