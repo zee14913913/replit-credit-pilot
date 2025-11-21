@@ -27,8 +27,8 @@ class ParserPriority:
 # 全局配置
 # ============================================================
 
-# 当前强制执行的解析策略
-PARSER_MODE = 'FALLBACK_ONLY'  # 永久禁用 Google Document AI，仅使用 Fallback Parser
+# 解析策略：仅使用 Fallback Parser
+PARSER_MODE = 'FALLBACK_ONLY'
 
 # 允许的上传方式
 ALLOWED_UPLOAD_METHODS = {
@@ -39,12 +39,10 @@ ALLOWED_UPLOAD_METHODS = {
     'ocr_manual': True,         # ✅ 允许管理员手动触发OCR（备用）
 }
 
-# DocParser配置
-DOCPARSER_CONFIG = {
-    'enabled': True,                    # DocParser启用状态
-    'sync_mode': True,                  # 同步模式（等待解析完成）
-    'max_wait_seconds': 60,             # 最大等待时间（秒）
-    'auto_delete_after_parse': False,   # 解析后是否删除云端文档
+# 解析配置：仅使用本地 Fallback Parser
+PARSER_CONFIG = {
+    'parser_type': 'fallback',          # 解析器类型：fallback
+    'enabled': True,                     # 解析器启用状态
 }
 
 # VBA API端点
@@ -55,26 +53,20 @@ VBA_ENDPOINTS = {
 
 # PDF处理工作流程
 PDF_WORKFLOW = """
-标准PDF处理流程（DocParser云端解析）:
-====================================
+标准PDF处理流程（Fallback Parser本地解析）:
+==========================================
 
-方案A：DocParser自动解析（推荐⭐）
+方案A：Fallback Parser自动解析（默认⭐）
 1. 客户上传PDF文件
 2. Replit保存PDF到正确位置
-3. Replit自动调用DocParser API上传PDF
-4. DocParser云端解析并返回JSON
-5. Replit接收JSON并入库
+3. Replit自动调用 Fallback Parser 解析PDF
+4. 解析结果直接入库
 
 方案B：VBA客户端解析（备用）
 1. 客户端（Windows Excel + VBA）解析PDF
 2. 标准化为JSON格式
 3. 调用VBA API端点上传JSON
 4. Replit接收JSON并入库
-
-方案C：OCR手动解析（紧急备用）
-1. 管理员手动触发
-2. 使用pytesseract OCR识别
-3. 人工验证后入库
 """
 
 
@@ -83,17 +75,16 @@ PDF_WORKFLOW = """
 # ============================================================
 
 FORBIDDEN_OPERATIONS = [
-    "使用Python本地OCR自动解析（低准确度）",
-    "跳过DocParser直接本地解析",
+    "使用外部API解析服务",
     "不保存PDF原件直接删除",
+    "跳过验证直接入库",
 ]
 
 ALLOWED_OPERATIONS = [
-    "上传PDF → DocParser云端解析 → 自动入库（推荐⭐）",
+    "上传PDF → Fallback Parser本地解析 → 自动入库（默认⭐）",
     "上传PDF文件并保存到INFINITE GZ标准位置",
-    "使用DocParser API自动解析PDF",
+    "使用Fallback Parser本地解析PDF",
     "VBA客户端解析JSON上传（备用方案）",
-    "管理员手动OCR（紧急备用）",
 ]
 
 
@@ -148,19 +139,16 @@ def get_upload_guidance(lang='zh') -> str:
 📋 PDF账单处理指引
 ==================
 
-✅ 推荐方式（VBA）:
+✅ 默认方式（Fallback Parser）:
+  1. 直接上传PDF文件
+  2. 系统自动使用Fallback Parser解析
+  3. 解析结果自动入库
+
+✅ 备用方式（VBA）:
   1. 使用Windows Excel + VBA解析PDF
   2. 生成标准JSON格式
   3. 上传到: {VBA_ENDPOINTS['single']}
   4. 批量上传: {VBA_ENDPOINTS['batch']}
-
-❌ 禁止方式:
-  - 直接上传PDF自动解析
-  - 跳过VBA客户端
-
-🔄 备用方式（仅管理员）:
-  - 手动触发OCR识别
-  - 仅在VBA不可用时使用
 
 当前模式: {PARSER_MODE}
 """
@@ -169,19 +157,16 @@ def get_upload_guidance(lang='zh') -> str:
 📋 PDF Statement Processing Guide
 ==================================
 
-✅ Recommended (VBA):
+✅ Default (Fallback Parser):
+  1. Upload PDF file directly
+  2. System automatically parses with Fallback Parser
+  3. Results saved to database
+
+✅ Alternative (VBA):
   1. Use Windows Excel + VBA to parse PDF
   2. Generate standard JSON format
   3. Upload to: {VBA_ENDPOINTS['single']}
   4. Batch upload: {VBA_ENDPOINTS['batch']}
-
-❌ Forbidden:
-  - Direct PDF upload with auto-parsing
-  - Skip VBA client
-
-🔄 Backup (Admin only):
-  - Manual OCR trigger
-  - Only when VBA unavailable
 
 Current mode: {PARSER_MODE}
 """

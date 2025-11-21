@@ -8,6 +8,7 @@ from pdf2image import convert_from_path
 import pytesseract
 from PIL import Image
 import logging
+from services.fallback_parser import parse_statement_fallback
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -1275,16 +1276,7 @@ def parse_bank_muamalat_statement(file_path):
 def parse_statement_auto(file_path):
     """
     自动解析银行账单（PDF/Excel）
-    使用 Fallback Parser（已禁用 Google Document AI）
+    直接使用 Fallback Parser
     """
-    try:
-        # 检测银行
-        bank = detect_bank(file_path)
-        # 强制使用 Fallback Parser（已禁用 Google Document AI）
-        logger.info(f"使用 Fallback Parser 解析 {bank} 账单")
-        from services.fallback_parser import parse_statement_fallback
-        return parse_statement_fallback(file_path)
-    except Exception as e:
-        logger.error(f"❌ Fallback Parser解析失败: {e}")
-        logger.error(f"❌ PDF文件: {file_path}")
-        raise RuntimeError(f"Fallback parser failed for {file_path}. Error: {e}")
+    logger.info(f"使用 Fallback Parser 解析账单: {file_path}")
+    return parse_statement_fallback(file_path)
