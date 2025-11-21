@@ -921,3 +921,63 @@ class SFTPUploadJob(Base):
         Index('idx_sftp_status_retry', 'status', 'next_retry_at'),
         Index('idx_sftp_company_type', 'company_id', 'payload_type'),
     )
+
+
+class PendingFile(Base):
+    """
+    Phase 1-11: 文件上传确认队列
+    防止客户文件混乱，所有上传先进入待确认状态
+    """
+    __tablename__ = "pending_files"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # 文件基本信息
+    original_filename = Column(String(255), nullable=False)
+    uploaded_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    file_path = Column(Text, nullable=False)
+    file_size = Column(BigInteger)
+    file_hash = Column(String(64))
+    
+    # OCR提取的信息
+    extracted_customer_name = Column(String(200))
+    extracted_ic_number = Column(String(50))
+    extracted_bank = Column(String(100))
+    extracted_period = Column(String(7))  # YYYY-MM
+    extracted_card_last4 = Column(String(4))
+    extracted_account_number = Column(String(100))
+    
+    # 匹配结果
+    matched_customer_id = Column(Integer, ForeignKey('users.id'))
+    matched_company_id = Column(Integer, ForeignKey('companies.id'))
+    match_confidence = Column(Numeric(5,2))  # 0-100
+    match_reason = Column(Text)
+    
+    # 验证状态
+    verification_status = Column(String(20), nullable=False, default='pending', index=True)
+    
+    # 确认信息
+    confirmed_by = Column(String(100))
+    confirmed_at = Column(DateTime(timezone=True))
+    rejected_reason = Column(Text)
+    notes = Column(Text)
+    
+    # 处理状态
+    is_processed = Column(Boolean, default=False, index=True)
+    processed_at = Column(DateTime(timezone=True))
+    processing_error = Column(Text)
+    
+    # 关联信息
+    raw_document_id = Column(Integer, ForeignKey('raw_documents.id'))
+    file_index_id = Column(Integer, ForeignKey('file_index.id'))
+    
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
+    
+    __table_args__ = (
+        CheckConstraint("verification_status IN ('pending', 'matched', 'mismatch', 'confirmed', 'rejected')"),
+        Index('idx_pending_files_status', 'verification_status'),
+        Index('idx_pending_files_customer', 'matched_customer_id'),
+        Index('idx_pending_files_uploaded', 'uploaded_at'),
+        Index('idx_pending_files_processed', 'is_processed'),
+    )
