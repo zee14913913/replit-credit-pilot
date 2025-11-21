@@ -849,15 +849,15 @@ class SimpleDataTable {
         controls.className = 'datatable-controls';
         controls.innerHTML = `
             <div>
-                <span style="color: #999;"></span>
+                <span style="color: #999;">Show</span>
                 <select id="${this.table.id}_pageSize" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.25rem 0.5rem; border-radius: 4px;">
                     <option value="10">10</option>
                     <option value="25" selected>25</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
-                    <option value="-1"></option>
+                    <option value="-1">All</option>
                 </select>
-                <span style="color: #999; margin-left: 1rem;"></span>
+                <span style="color: #999; margin-left: 1rem;">entries</span>
             </div>
             <div id="${this.table.id}_pagination" class="datatable-pagination"></div>
         `;
