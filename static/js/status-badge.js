@@ -52,7 +52,7 @@ const StatusBadge = {
             label: '待处理',
             labelEn: 'Pending',
             color: '#FF007F',  // Hot Pink
-            icon: '⏳',
+            icon: '[LOADING]',
             bgColor: 'rgba(255, 0, 127, 0.15)',
             borderColor: 'rgba(255, 0, 127, 0.4)'
         }

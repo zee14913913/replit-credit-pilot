@@ -43,10 +43,10 @@ class ToastManager {
         
         // 图标映射
         const icons = {
-            'success': '✅',
-            'error': '❌',
-            'warning': '⚠️',
-            'info': 'ℹ️'
+            'success': '[OK]',
+            'error': '[ERROR]',
+            'warning': '[WARNING]',
+            'info': '[INFO]'
         };
         
         // 颜色映射
