@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file, send_from_directory, session
-from flask_cors import CORS
 import os
 from datetime import datetime, timedelta
 import json
@@ -97,7 +96,8 @@ from app_ctos_routes import (
 )
 from services.dashboard_metrics import get_customer_monthly_metrics, get_all_cards_summary
 
-
+# CORS Configuration
+from cors_config import configure_cors
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SESSION_SECRET', 'dev-secret-key-change-in-production')
@@ -105,15 +105,8 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 200MB limit for batch uploads
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable static file caching
 
-# CORS Configuration
-CORS(app, resources={
-    r"/*": {
-        "origins": ["https://ynqoo4ipbuar.space.minimax.io", "http://localhost:3000", "http://localhost:5000"],
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"],
-        "supports_credentials": True
-    }
-})
+# Apply CORS configuration
+app = configure_cors(app)
 
 # ==================== API ENDPOINTS ====================
 @app.route('/api/customers', methods=['GET'])
