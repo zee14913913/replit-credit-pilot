@@ -65,7 +65,7 @@ class AIPredictManager {
                 </div>
                 
                 <div style="background:#0a0a0a; padding:16px; border-radius:8px; margin-bottom:16px;">
-                    <div style="color:#ccc; margin-bottom:12px; font-weight:600;">📊 ${scoreBreakdownText}：</div>
+                    <div style="color:#ccc; margin-bottom:12px; font-weight:600;">[CHART] ${scoreBreakdownText}：</div>
                     ${Object.entries(score.breakdown).map(([key, item]) => `
                         <div style="margin-bottom:10px;">
                             <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
@@ -80,13 +80,13 @@ class AIPredictManager {
                 </div>
                 
                 <div style="background:#1a1228; padding:14px; border-radius:8px; border-left:4px solid #FF007F;">
-                    <div style="color:#FF007F; font-weight:700; margin-bottom:8px;">🤖 ${aiAdvisorText}</div>
+                    <div style="color:#FF007F; font-weight:700; margin-bottom:8px;">[AI] ${aiAdvisorText}</div>
                     <div style="color:#ddd; line-height:1.6;">${explanation}</div>
                 </div>
             `;
         } catch (error) {
             const loadingFailedText = t('loading_failed_error', '加载失败');
-            scoreBox.innerHTML = `<div style="color:#ff4444;">❌ ${loadingFailedText}: ${error.message}</div>`;
+            scoreBox.innerHTML = `<div style="color:#ff4444;">[ERROR] ${loadingFailedText}: ${error.message}</div>`;
         }
     }
 
@@ -113,7 +113,7 @@ class AIPredictManager {
             this.renderTrendChart(chartBox, data);
         } catch (error) {
             const loadingFailedText = t('loading_failed_error', '加载失败');
-            chartBox.innerHTML = `<div style="color:#ff4444;">❌ ${loadingFailedText}: ${error.message}</div>`;
+            chartBox.innerHTML = `<div style="color:#ff4444;">[ERROR] ${loadingFailedText}: ${error.message}</div>`;
         }
     }
 
@@ -197,7 +197,7 @@ class AIPredictManager {
         if (!predBox) return;
 
         const t = (key, fallback) => window.i18n ? window.i18n.translate(key) : fallback;
-        predBox.innerHTML = `<div style="text-align:center; color:#888;">⏳ ${t('loading_text', '加载中...')}</div>`;
+        predBox.innerHTML = `<div style="text-align:center; color:#888;">[LOADING] ${t('loading_text', '加载中...')}</div>`;
 
         try {
             const res = await fetch('/api/ai-assistant/predict', {
@@ -209,7 +209,7 @@ class AIPredictManager {
             const data = await res.json();
 
             if (data.prediction.error) {
-                predBox.innerHTML = `<div style="color:#ff4444;">❌ ${data.prediction.error}</div>`;
+                predBox.innerHTML = `<div style="color:#ff4444;">[ERROR] ${data.prediction.error}</div>`;
                 return;
             }
 
@@ -218,7 +218,7 @@ class AIPredictManager {
 
             predBox.innerHTML = `
                 <div style="margin-bottom:20px;">
-                    <div style="color:#FF007F; font-weight:700; margin-bottom:12px;">📈 ${t('future_3_months_prediction', '未来 3 个月预测')}</div>
+                    <div style="color:#FF007F; font-weight:700; margin-bottom:12px;">[FORECAST] ${t('future_3_months_prediction', '未来 3 个月预测')}</div>
                     ${pred.predictions.map(p => `
                         <div style="background:#0a0a0a; padding:12px; border-radius:8px; margin-bottom:10px; border-left:3px solid #FF007F;">
                             <div style="color:#ddd; font-weight:600; margin-bottom:8px;">${p.statement_month}</div>
@@ -242,12 +242,12 @@ class AIPredictManager {
                 </div>
                 
                 <div style="background:#1a1228; padding:14px; border-radius:8px; border-left:4px solid #FF007F;">
-                    <div style="color:#FF007F; font-weight:700; margin-bottom:8px;">🤖 ${t('ai_insights', 'AI洞察')}</div>
+                    <div style="color:#FF007F; font-weight:700; margin-bottom:8px;">[AI] ${t('ai_insights', 'AI洞察')}</div>
                     <div style="color:#ddd; line-height:1.6;">${insights}</div>
                 </div>
             `;
         } catch (error) {
-            predBox.innerHTML = `<div style="color:#ff4444;">❌ ${t('loading_failed_error', '加载失败')}: ${error.message}</div>`;
+            predBox.innerHTML = `<div style="color:#ff4444;">[ERROR] ${t('loading_failed_error', '加载失败')}: ${error.message}</div>`;
         }
     }
 }
