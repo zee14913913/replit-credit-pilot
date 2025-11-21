@@ -506,21 +506,25 @@
     <!-- 用户指南自动弹出脚本 -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // {{ t('________const_dontshowagain__localstoragegetite') }}m('userGuideDontShow');
+        const dontShowAgain = localStorage.getItem('userGuideDontShow');
 
-        if (!dontShowAgain) {
-            // {{ t('1____________settimeoutfunction') }}() {
+        if (!dontShowAgain && document.getElementById('userGuideModal')) {
+            setTimeout(function() {
                 const guideModal = new bootstrap.Modal(document.getElementById('userGuideModal'));
                 guideModal.show();
             }, 1000);
         }
 
-        // 处理"不再显示"{{ t('________documentgetelementbyid') }}('userGuideModal').addEventListener('hidden.bs.modal', function() {
-            const checkbox = document.getElementById('dontShowAgain');
-            if (checkbox.checked) {
-                localStorage.setItem('userGuideDontShow', 'true');
-            }
-        });
+        // 处理"不再显示"
+        const modal = document.getElementById('userGuideModal');
+        if (modal) {
+            modal.addEventListener('hidden.bs.modal', function() {
+                const checkbox = document.getElementById('dontShowAgain');
+                if (checkbox && checkbox.checked) {
+                    localStorage.setItem('userGuideDontShow', 'true');
+                }
+            });
+        }
     });
     </script>
 
