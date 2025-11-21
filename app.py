@@ -141,7 +141,7 @@ def api_dashboard_stats():
             cursor = conn.cursor()
             
             # 客户总数
-            cursor.execute('SELECT COUNT(*) FROM customers WHERE is_active = 1')
+            cursor.execute('SELECT COUNT(*) FROM customers')
             customer_count = cursor.fetchone()[0]
             
             # 账单总数
@@ -153,7 +153,7 @@ def api_dashboard_stats():
             transaction_count = cursor.fetchone()[0]
             
             # 活跃卡片数
-            cursor.execute('SELECT COUNT(*) FROM credit_cards WHERE is_active = 1')
+            cursor.execute('SELECT COUNT(*) FROM credit_cards')
             active_cards = cursor.fetchone()[0]
             
             # Owner财务数据
@@ -181,8 +181,14 @@ def api_dashboard_stats():
             gz_balance = gz_expenses - gz_payments
             
             # 发票统计
-            cursor.execute('SELECT COUNT(*), COALESCE(SUM(total_amount), 0) FROM supplier_invoices')
-            invoice_row = cursor.fetchone()
+            try:
+                cursor.execute('SELECT COUNT(*), COALESCE(SUM(total_amount), 0) FROM supplier_invoices')
+                invoice_row = cursor.fetchone()
+                invoices_count = invoice_row[0] or 0
+                invoices_total = invoice_row[1] or 0
+            except:
+                invoices_count = 0
+                invoices_total = 0
             
             return jsonify({
                 'success': True,
@@ -197,8 +203,8 @@ def api_dashboard_stats():
                     'gz_expenses': round(gz_expenses, 2),
                     'gz_payments': round(gz_payments, 2),
                     'gz_balance': round(gz_balance, 2),
-                    'invoices_count': invoice_row[0] or 0,
-                    'invoices_total': round(invoice_row[1] or 0, 2)
+                    'invoices_count': invoices_count,
+                    'invoices_total': round(invoices_total, 2)
                 }
             }), 200
     except Exception as e:

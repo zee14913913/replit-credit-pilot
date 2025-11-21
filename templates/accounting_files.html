@@ -568,10 +568,10 @@
 
 
     <script>
-        // {{ t('pdfcsv') }}
+        
         async function convertPDFToCSV(file) {
             try {
-                // {{ t('pdf________________const_arraybuffer__await_filear') }}Buffer();
+                Buffer();
                 const arrayBuffer = await file.arrayBuffer();
                 const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
                 let allRows = [];
@@ -599,13 +599,13 @@
                         const lineText = lineItems.map(item => item.text).join(' ');
 
                         if (lineText.match(/(\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}[/-]\d{1,2}[/-]\d{1,2})/)) {
-                            // {{ t('____________________________const_parts__linetexts') }}lit(/\s{2,}/);
+                            lit(/\s{2,}/);
                             const parts = lineText.split(/\s{2,}/);
                             if (parts.length >= 3) {
                                 allRows.push(parts);
                             }
                         } else if (lineText.match(/Date|Transaction|Debit|Credit|Balance/i) && !headers) {
-                            // {{ t('____________________________headers__linetextsplit') }}\s{2,}/);
+                            \s{2,}/);
                             headers = lineText.split(/\s{2,}/);
                         }
                     });
@@ -616,10 +616,10 @@
                     headers = ['Date', 'Description', 'Debit', 'Credit', 'Balance'];
                 }
 
-                // {{ t('csv100________________let_csvcontent__he') }}aders.join(',') + '\n';
+                aders.join(',') + '\n';
                 let csvContent = headers.join(',') + '\n';
                 allRows.forEach(row => {
-                    // {{ t('csv____________________const_cleanedr') }}ow = row.map(cell => {
+                    ow = row.map(cell => {
                         let value = (cell || '').toString().trim(); // 确保是字符串并去除空白
                         // CSV标准格式要求：包含逗号、双引号或换行符的字段需要用双引号包围，字段内的双引号需要转义成两个双引号
                         if (value.includes(',') || value.includes('"') || value.includes('\n')) {
@@ -648,7 +648,7 @@
 
         async function loadFiles() {
             try {
-                // {{ t('apicreated_at_desc________________const_respons') }}e = await fetch('/api/proxy/unified-files/recent?limit=50');
+                e = await fetch('/api/proxy/unified-files/recent?limit=50');
                 const response = await fetch('/api/proxy/unified-files/recent?limit=50');
                 const data = await response.json();
 
@@ -664,7 +664,7 @@
                 const totalSizeMB = files.reduce((sum, f) => sum + (f.file_size_kb || 0), 0) / 1024;
                 document.getElementById('total-size').textContent = totalSizeMB.toFixed(2) + ' MB';
 
-                // {{ t('________________const_fileslist__documentgetelemen') }}ById('files-list');
+                ById('files-list');
                 const filesList = document.getElementById('files-list');
 
                 if (files.length === 0) {
@@ -736,7 +736,7 @@
                     const newBadge = isNew ? '<span style="color: #FF007F; font-weight: bold; margin-left: 8px;">{{ t('new') }}</span>' : '';
                     const duplicateWarning = file.duplicate_warning ? '<span style="color: #ff6600; font-weight: bold; margin-left: 8px;">{{ t('__windowi18ncurrent_lang__zh____duplicate__') }}</span>' : '';
 
-                    // {{ t('____________________const_statusreason__filestatus') }}ason || '无说明';
+                    ason || '无说明';
 
                     // Phase 11-20: Action Buttons (client-side)
                     let nextActionsHtml = '';
@@ -893,7 +893,7 @@
             event.target.value = '';
         }
 
-        // {{ t('________loadfiles_________________url') }}并高亮指定文件
+        // Load files and highlight specified file
         setTimeout(() => {
             const params = new URLSearchParams(window.location.search);
             const highlightId = params.get('highlight');
@@ -903,12 +903,12 @@
                     const id = row.getAttribute('data-file-id');
                     if (String(id) === String(highlightId)) {
                         row.classList.add('highlighted-file-row');
-                        // {{ t('________________________rowscrollintoview') }}({ behavior: 'smooth', block: 'center' });
+                        // Scroll into view with smooth behavior
                         row.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
                 });
             }
-        }, 500);  // 等待列表渲染完成
+        }, 500);  // Wait for list to render
 
         function refreshFiles() {
             loadFiles();

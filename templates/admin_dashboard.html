@@ -905,7 +905,7 @@ class SimpleDataTable {
         let html = '';
 
         // Previous button
-        html += `<button ${this.currentPage === 1 ? 'disabled' : ''} onclick="window.${this.table.id}_dt.displayPage(${this.currentPage - 1})">{{ t('_prev') }}</button>`;
+        html += `<button ${this.currentPage === 1 ? 'disabled' : ''} onclick="window.${this.table.id}_dt.displayPage(${this.currentPage - 1})">Prev</button>`;
 
         // Page numbers
         const maxButtons = 5;
@@ -921,7 +921,7 @@ class SimpleDataTable {
         }
 
         // Next button
-        html += `<button ${this.currentPage === totalPages ? 'disabled' : ''} onclick="window.${this.table.id}_dt.displayPage(${this.currentPage + 1})">{{ t('next_') }}</button>`;
+        html += `<button ${this.currentPage === totalPages ? 'disabled' : ''} onclick="window.${this.table.id}_dt.displayPage(${this.currentPage + 1})">Next</button>`;
 
         paginationDiv.innerHTML = html;
     }
