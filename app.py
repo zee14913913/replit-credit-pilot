@@ -318,12 +318,17 @@ def api_customer_create():
 def api_bill_ocr_status():
     """API: 获取账单OCR处理状态"""
     try:
-        file_id = request.args.get('file_id') or (request.get_json() or {}).get('file_id')
+        # Handle both GET (query params) and POST (JSON body)
+        if request.method == 'GET':
+            file_id = request.args.get('file_id')
+        else:
+            data = request.get_json(silent=True) or {}
+            file_id = data.get('file_id') or request.args.get('file_id')
         
         if not file_id:
             return jsonify({
                 'success': True,
-                'message': 'OCR status endpoint',
+                'message': 'OCR status endpoint ready',
                 'status': 'ready',
                 'processing': 0,
                 'completed': 0
