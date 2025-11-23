@@ -11,8 +11,6 @@ def configure_cors(app):
     allowed_origins = [
         # MiniMax前端（客户入口）
         "https://dhxoe0hkx4lc.space.minimax.io",  # 当前Dashboard (2025-11-23)
-        "https://ynqoo4ipbuar.space.minimax.io",  # Dashboard v2
-        "https://iz6ki2qe01mh.space.minimax.io",  # Dashboard v1
         
         # Replit前端（内部入口）
         "https://finance-pilot-businessgz.replit.app",
