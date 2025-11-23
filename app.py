@@ -819,7 +819,6 @@ def ai_assistant_proxy(subpath):
         return {"error": f"代理错误: {str(e)}"}, 500
 
 @app.route('/view_statement_file/<int:statement_id>')
-@require_admin_or_accountant
 def view_statement_file(statement_id):
     """查看账单原始文件（支持新组织结构 + 向后兼容旧路径）"""
     from flask import send_file, make_response
@@ -3042,14 +3041,26 @@ def statement_comparison(statement_id):
         statement = dict(cursor.fetchone())
         customer_id = statement['customer_id']
         
-        # Get transactions
+        # Get transactions - 按照日期顺序（从上到下）和card分组
         cursor.execute('''
             SELECT * FROM transactions
             WHERE statement_id = ?
-            ORDER BY transaction_date DESC
+            ORDER BY 
+                CASE WHEN card_last4 IS NULL THEN 1 ELSE 0 END,
+                card_last4 ASC,
+                transaction_date ASC,
+                id ASC
         ''', (statement_id,))
         
         transactions = [dict(row) for row in cursor.fetchall()]
+        
+        # 按卡号分组（用于分开显示不同信用卡的交易）
+        cards_data = {}
+        for t in transactions:
+            card_key = t.get('card_last4') or 'unknown'
+            if card_key not in cards_data:
+                cards_data[card_key] = []
+            cards_data[card_key].append(t)
         
         # Calculate summary按Owner/GZ细分
         # DR分类：GZ Expenses vs Owner Expenses
@@ -3086,6 +3097,7 @@ def statement_comparison(statement_id):
     return render_template('statement_comparison.html',
                          statement=statement,
                          transactions=transactions,
+                         cards_data=cards_data,
                          summary=summary,
                          customer_id=customer_id)
 
