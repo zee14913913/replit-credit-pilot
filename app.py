@@ -3052,14 +3052,14 @@ def statement_comparison(statement_id):
         transactions = [dict(row) for row in cursor.fetchall()]
         
         # Calculate summary
-        total_debit = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'purchase')
-        total_credit = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'payment')
+        total_debit = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'DR')
+        total_credit = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'CR')
         supplier_fees = sum(t.get('supplier_fee', 0) for t in transactions if t.get('supplier_fee'))
         
         # Category breakdown
         categories = {}
         for t in transactions:
-            if t['transaction_type'] == 'purchase':
+            if t['transaction_type'] == 'DR':
                 cat = t.get('category', 'Uncategorized')
                 categories[cat] = categories.get(cat, 0) + abs(t['amount'])
         

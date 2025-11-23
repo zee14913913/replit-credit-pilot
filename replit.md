@@ -1,27 +1,7 @@
 # Smart Credit & Loan Manager
 
 ## Overview
-The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. Its primary purpose is to provide comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation for 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations, financial optimization (debt consolidation, balance transfers, loan refinancing). The long-term vision includes expanding into exclusive mortgage interest discounts and SME financing.
-
-## Recent Changes
-
-### November 19, 2025 - Complete 13-Bank 16-Field Parser Configuration System (Production-Ready)
-- ✅ **Universal Bank Coverage**: Created production-ready configurations for all 13 Malaysian banks (AMBANK, AMBANK_ISLAMIC, UOB, OCBC, HONG_LEONG, HSBC, STANDARD_CHARTERED, MAYBANK, AFFIN_BANK, CIMB, ALLIANCE_BANK, PUBLIC_BANK, RHB_BANK).
-- ✅ **100% Field Extraction**: Each bank configured with complete 16-field extraction capability (bank_name + 15 regex patterns): customer_name, ic_no, card_type, card_no, credit_limit, statement_date, payment_due_date, full_due_amount, minimum_payment, previous_balance, transaction_date, description, amount_CR, amount_DR, earned_point.
-- ✅ **Dual Source Configuration**: 7 banks use PDF-sample-based patterns (high-fidelity), 6 banks use industry-standard patterns (validated structure, ready for production tuning).
-- ✅ **Classification Rules Integration**: Restored global classification_rules with 7 GZ suppliers (7SL, Dinas, Raub Syc Hainan, Ai Smart Tech, HUAWEI, PasarRaya, Puchong Herbs) and payment keywords for automated transaction categorization.
-- ✅ **Validation Framework**: Created comprehensive validation script (scripts/validate_13banks_16fields.py) confirming 208/208 field configurations (13 banks × 16 fields = 100% coverage).
-- ✅ **Configuration Management**: Production config saved to config/bank_parser_templates.json (1292 lines) with automated backup system (config/bank_parser_templates.json.backup_FINAL_13BANKS_16FIELDS).
-- ✅ **Architect Approval**: Final review confirmed structural completeness, classification metadata restoration, and production readiness for deployment with iterative regex optimization.
-
-### November 23, 2025 - Fallback Parser Only Configuration (Current)
-- ✅ **PDF Parsing Strategy**: System configured to use **Fallback Parser ONLY** (pdfplumber-based, local processing, zero external API costs).
-- ✅ **Parser Mode**: `PARSER_MODE = 'FALLBACK_ONLY'` - Google Document AI disabled per client requirements.
-- ✅ **13 Bank Support**: Dedicated pdfplumber parsers for all 13 Malaysian banks (AMBANK, AMBANK_ISLAMIC, UOB, OCBC, HONG_LEONG, HSBC, STANDARD_CHARTERED, MAYBANK, AFFIN_BANK, CIMB, ALLIANCE_BANK, PUBLIC_BANK, RHB_BANK).
-- ✅ **Multi-Column Layout Detection**: Supports 3/4/5-column Malaysian bank statement layouts with independent DR/CR column parsing.
-- ✅ **DR/CR Validation Gate**: Enforces dual presence verification (dr_count > 0 AND cr_count > 0) before accepting results, ensuring 100% transaction extraction guarantee.
-- ✅ **VBA Backup Option**: Supports VBA client-side parsing with JSON upload as alternative method.
-- ✅ **Zero External Costs**: All PDF processing done locally, no cloud API usage or recurring fees.
+The Smart Credit & Loan Manager is an Enterprise-Grade SaaS Platform built with Flask for Malaysian banking customers. It offers comprehensive financial management, including credit card statement processing, advanced analytics, and intelligent automation for 100% data accuracy. The platform generates revenue through AI-powered advisory services, offering credit card recommendations and financial optimization (debt consolidation, balance transfers, loan refinancing). The long-term vision includes expanding into exclusive mortgage interest discounts and SME financing.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -69,33 +49,23 @@ The main navigation features 8 core modules: DASHBOARD, CUSTOMERS, CREDIT CARDS,
 **Customer Management**:
 Customer pages are reorganized with strict access control: `/admin/customers` for admin/accountant roles and `/customers` for individual customer profiles. Access control is session-based, implemented via context processors and template guards.
 
-**Department Separation**:
-- **CREDIT CARDS Department**: Manages credit card customers.
-- **ACCOUNTING Department**: Reserved for Acc & Audit professional clients (future).
-
 ### Technical Implementations
 The backend uses Flask with SQLite and a context manager for database interactions. Jinja2 handles server-side rendering, complemented by Bootstrap 5 and Bootstrap Icons for the UI. Plotly.js provides client-side data visualization, and PDF.js is used for client-side PDF-to-CSV conversion. A robust notification system provides real-time updates. The AI system uses a unified client architecture supporting multiple providers (Perplexity primary, OpenAI backup) with automatic failover and environment-based configuration.
 
 **Credit Card Calculation System**:
-A 2-round calculation engine (services/credit_card_core.py) implements 9 metrics, supporting negative balances and an independent 1% miscellaneous fee system (services/miscellaneous_fee.py). A 4-layer validation system (services/credit_card_validation.py) ensures data integrity. An automated pipeline (services/auto_processor.py) handles upload to fee generation. All calculations use Decimal types for precision.
+A 2-round calculation engine implements 9 metrics, supporting negative balances and an independent 1% miscellaneous fee system. A 4-layer validation system ensures data integrity. An automated pipeline handles upload to fee generation. All calculations use Decimal types for precision.
 
-**PDF Parsing Architecture (Current Configuration)**:
-Fallback Parser system guaranteeing 100% transaction extraction with zero external API costs:
-- **Parser Mode**: `FALLBACK_ONLY` - Local processing only, Google Document AI disabled.
-- **Primary Engine**: Bank-specific pdfplumber parsers for 13 Malaysian banks with intelligent multi-column layout detection (3/4/5 columns), independent DR/CR column parsing, and polarity preservation for negative amounts.
-- **Validation Gate**: Enforces dual DR/CR presence verification (dr_count > 0 AND cr_count > 0) before accepting results, preventing incomplete data from entering downstream systems.
-- **Backup Method**: VBA client-side parsing with standardized JSON upload endpoints.
-- **Cost**: Zero external API costs - all processing done locally on Replit infrastructure.
-- **Logging**: Comprehensive logging for production monitoring and debugging.
+**PDF Parsing Architecture**:
+A local Fallback Parser system guarantees 100% transaction extraction with zero external API costs. It uses bank-specific `pdfplumber` parsers for 13 Malaysian banks, featuring intelligent multi-column layout detection and independent DR/CR column parsing. A validation gate enforces dual DR/CR presence verification. VBA client-side parsing with JSON upload is available as a backup.
 
 **PDF Batch Processing System**:
-Automated system for processing credit card statement PDFs, including Document AI extraction, 5-category transaction classification, automated outstanding balance calculation, and dual Excel/JSON reporting.
+Automated system for processing credit card statement PDFs, including OCR extraction, 5-category transaction classification, automated outstanding balance calculation, and dual Excel/JSON reporting.
 
 **Professional Excel Formatting Engine**:
-Enterprise-grade Excel formatting system using 13 professional standards and a CreditPilot official color scheme (Main Pink #FFB6C1 + Deep Brown #3E2723), providing consistent and visually appealing reports.
+Enterprise-grade Excel formatting using 13 professional standards and a CreditPilot official color scheme (Main Pink #FFB6C1 + Deep Brown #3E2723).
 
 **Unified Color Management System**:
-Centralized color configuration via `config/colors.json` and a Python module (`config/colors.py`), generating CSS variables (`static/css/colors.css`). All components adhere to a strict 3-color palette (Black, Hot Pink, Dark Purple) enforced by automated compliance checks.
+Centralized color configuration via `config/colors.json` and a Python module, generating CSS variables (`static/css/colors.css`). All components adhere to a strict 3-color palette (Black, Hot Pink, Dark Purple) enforced by automated compliance checks.
 
 ### Feature Specifications
 **Core Features:**
@@ -108,7 +78,7 @@ Centralized color configuration via `config/colors.json` and a Python module (`c
 - **Workflow Automation:** Batch operations, rule engine for transaction matching.
 - **Security & Compliance:** Multi-role authentication & authorization (RBAC), audit logging, data integrity validation.
 - **User Experience:** Unified navigation, context-aware buttons, bilingual i18n, responsive design.
-- **Specialized Systems:** Intelligent Loan Matcher (CTOS parsing, DSR calculation), Receipt Management (OCR), Credit Card Ledger, Exception Center.
+- **Specialized Systems:** Intelligent Loan Matcher, Receipt Management, Credit Card Ledger, Exception Center.
 - **Multi-Channel Notifications:** In-app, email, and SMS.
 - **Admin System:** User registration, secure login, evidence archiving with RBAC.
 - **CTOS Consent System**: Integrates personal and company CTOS consent, generating professional PDF reports.
@@ -123,7 +93,7 @@ Centralized color configuration via `config/colors.json` and a Python module (`c
 - **Dual-Engine Loan Architecture:** Preserves legacy DSR/DSCR engines alongside modern risk_engine, with an API layer for mode-based routing and product matching. Exclusively uses CTOS commitment data.
 
 ### Security & Access Control
-A production-ready Unified RBAC Implementation protects 32+ functions using `@require_admin_or_accountant` decorator supporting Flask session-based RBAC and FastAPI token verification. Access levels include Admin, Accountant, Customer, and Unauthenticated roles. Route-level access control is implemented for specific endpoints.
+A production-ready Unified RBAC Implementation protects 32+ functions using `@require_admin_or_accountant` decorator supporting Flask session-based RBAC and FastAPI token verification. Access levels include Admin, Accountant, Customer, and Unauthenticated roles.
 
 ## External Dependencies
 
