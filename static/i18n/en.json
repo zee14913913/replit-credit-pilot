@@ -2552,5 +2552,6 @@
   "assign_error": "Assignment error",
   "delete_function_coming_soon": "Delete function coming soon",
   "delete_error": "Delete error",
-  "nav_file_management": "FILE MANAGEMENT"
+  "nav_file_management": "FILE MANAGEMENT",
+  "pending": "Pending"
 }

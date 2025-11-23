@@ -2552,5 +2552,6 @@
   "assign_error": "分配错误",
   "delete_function_coming_soon": "删除功能即将推出",
   "delete_error": "删除错误",
-  "nav_file_management": "文件管理"
+  "nav_file_management": "文件管理",
+  "pending": "待处理"
 }
