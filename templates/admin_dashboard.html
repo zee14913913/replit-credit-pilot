@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %} - {% endblock %}
+{% block title %}{{ t('admin_dashboard') }} - {{ t('company_name') }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid" style="max-width: 98%; padding: 2rem;">
     <!-- Navigation Buttons Bar -->
     <div class="mb-4" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
-        <a href="" 
+        <a href="{{ url_for('index') }}" 
            class="btn btn-lg" 
            style="background: linear-gradient(135deg, #322446 0%, #1a1a2e 100%); 
                   color: #FFFFFF; 
@@ -15,10 +15,10 @@
                   padding: 0.75rem 1.5rem;
                   box-shadow: 0 4px 15px rgba(50, 36, 70, 0.4);
                   transition: all 0.3s ease;">
-            <i class="bi bi-arrow-left-circle"></i> 
+            <i class="bi bi-arrow-left-circle"></i> {{ t('back_to_dashboard') }}
         </a>
 
-        <a href="" 
+        <a href="{{ url_for('admin_logout') }}" 
            class="btn btn-lg" 
            style="background: linear-gradient(135deg, #FF007F 0%, #c7005f 100%); 
                   color: #FFFFFF; 
@@ -27,10 +27,10 @@
                   padding: 0.75rem 1.5rem;
                   box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
                   transition: all 0.3s ease;">
-            <i class="bi bi-box-arrow-right"></i> 
+            <i class="bi bi-box-arrow-right"></i> {{ t('logout') }}
         </a>
 
-        <a href="" 
+        <a href="{{ url_for('evidence_archive') }}" 
            class="btn btn-lg" 
            style="background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); 
                   color: #FF007F; 
@@ -39,10 +39,10 @@
                   padding: 0.75rem 1.5rem;
                   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
                   transition: all 0.3s ease;">
-            <i class="bi bi-archive"></i> 
+            <i class="bi bi-archive"></i> {{ t('evidence_archive') }}
         </a>
 
-        <a href="" 
+        <a href="{{ url_for('accounting_files') }}" 
            class="btn btn-lg" 
            style="background: linear-gradient(135deg, #1a1a2e 0%, #322446 100%); 
                   color: #FFFFFF; 
@@ -51,50 +51,50 @@
                   padding: 0.75rem 1.5rem;
                   box-shadow: 0 4px 15px rgba(50, 36, 70, 0.3);
                   transition: all 0.3s ease;">
-            <i class="bi bi-folder-fill"></i> 
+            <i class="bi bi-folder-fill"></i> {{ t('file_management') }}
         </a>
     </div>
 
     <!-- DEBUG TEST BUTTON -->
     <div class="alert" style="background: rgba(255,0,127,0.2); border: 2px solid #FF007F; margin-bottom: 20px; padding: 20px;">
         <button onclick="testEditFunction()" class="btn" style="background: #FF007F; color: white; font-weight: 700; padding: 15px 30px; font-size: 18px;">
-            🧪 
+            🧪 {{ t('test_edit_function') }}
         </button>
-        <p></p>
+        <p style="color: #FFFEF0; margin-top: 10px;">{{ t('test_function_description') }}</p>
     </div>
 
     <div class="section-header">
-        <h1 class="section-title" style="color: #FF007F; font-weight: 700;">📊 </h1>
-        <p></p>
+        <h1 class="section-title" style="color: #FF007F; font-weight: 700;">📊 {{ t('admin_dashboard') }}</h1>
+        <p class="section-subtitle" style="color: #FFFEF0;">{{ t('system_overview_and_management') }}</p>
     </div>
 
     <!-- System Summary -->
     <div class="row g-4 mb-4">
         <div class="col-md-3">
             <div class="stat-card">
-                <div class="stat-value" style="font-size: 1.8rem;"></div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
+                <div class="stat-value" style="font-size: 1.8rem; color: #FF007F;">{{ customers|length }}</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('total_customers') }}</div>
                 <div class="stat-corner"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card">
-                <div class="stat-value" style="font-size: 1.8rem;"></div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
+                <div class="stat-value" style="font-size: 1.8rem; color: #FF007F;">{{ statement_count }}</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('total_statements') }}</div>
                 <div class="stat-corner"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card">
-                <div class="stat-value" style="font-size: 1.8rem;"></div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
+                <div class="stat-value" style="font-size: 1.8rem; color: #FF007F;">{{ transaction_count }}</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('total_transactions') }}</div>
                 <div class="stat-corner"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card">
-                <div class="stat-value" style="font-size: 1.8rem;"></div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
+                <div class="stat-value" style="font-size: 1.8rem; color: #FF007F;">{{ credit_card_count }}</div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('total_credit_cards') }}</div>
                 <div class="stat-corner"></div>
             </div>
         </div>
@@ -105,29 +105,29 @@
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
                 <div class="stat-value" style="color: #FF007F; font-size: 1.8rem;">RM {{ "{:,.0f}".format(total_owner_expenses) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('owner_total_expenses') }}</div>
                 <div class="stat-corner" style="background: #FF007F;"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
                 <div class="stat-value" style="color: #FF007F; font-size: 1.8rem;">RM {{ "{:,.0f}".format(abs(total_owner_payments)) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('owner_total_payments') }}</div>
                 <div class="stat-corner" style="background: #FF007F;"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F;">
                 <div class="stat-value" style="color: #FF007F; font-size: 1.8rem;">RM {{ "{:,.0f}".format(total_owner_balance) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('owner_net_balance') }}</div>
                 <div class="stat-corner" style="background: #FF007F;"></div>
             </div>
         </div>
         <div class="col-md-3">
-            <a href="" style="text-decoration: none;">
+            <a href="{{ url_for('receipts_home') }}" style="text-decoration: none;">
                 <div class="stat-card" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #FF007F; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(255,0,127,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                    <div class="stat-value" style="color: #FF007F; font-size: 1.8rem;"></div>
-                    <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></div>
+                    <div class="stat-value" style="color: #FF007F; font-size: 1.8rem;">{{ total_supplier_invoices }}</div>
+                    <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('supplier_invoices') }}</div>
                     <div class="stat-corner" style="background: #FF007F;"></div>
                 </div>
             </a>
@@ -139,42 +139,42 @@
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
                 <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.0f}".format(total_gz_expenses) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;"></div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">{{ t('gz_total_expenses') }}</div>
                 <div class="stat-corner" style="background: #322446;"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
                 <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.0f}".format(abs(total_gz_payments)) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;"></div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">{{ t('gz_total_payments') }}</div>
                 <div class="stat-corner" style="background: #322446;"></div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446;">
                 <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.0f}".format(total_gz_balance) }}</div>
-                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;"></div>
+                <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">{{ t('gz_net_balance') }}</div>
                 <div class="stat-corner" style="background: #322446;"></div>
             </div>
         </div>
         <div class="col-md-3">
-            <a href="" style="text-decoration: none;">
+            <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
                 <div class="stat-card" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border: 1px solid #322446; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(50,36,70,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                     <div class="stat-value" style="color: #FFFEF0; font-size: 1.8rem;">RM {{ "{:,.2f}".format(invoices_total) }}</div>
-                    <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;"></div>
+                    <div class="stat-label" style="color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3); font-size: 0.9rem;">{{ t('total_invoice_amount') }}</div>
                     <div class="stat-corner" style="background: #322446;"></div>
                 </div>
             </a>
         </div>
     </div>
 
-    <!--  -->
+    <!-- Quick Actions -->
     <div class="row g-5 mb-5 justify-content-center">
         <div class="col-12 mb-4">
             <h3 style="color: #FF007F; text-shadow: 0 0 15px rgba(255,0,127,0.5); font-weight: 700; font-size: 2rem; margin: 0;">
-                <i class="bi bi-grid-3x3-gap-fill"></i> 
+                {{ t('quick_actions') }}
             </h3>
-            <p></p>
+            <p class="section-subtitle" style="color: #FFFEF0; margin-top: 0.5rem;">{{ t('manage_credit_cards_savings_and_customers') }}</p>
         </div>
 
         <!-- 1. 信用卡账单管理 -->
@@ -198,13 +198,13 @@
                         <i class="bi bi-credit-card" style="font-size: 4.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
                     </div>
                     <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.4;">
-                        
+                        {{ t('credit_card_statements') }}
                     </h4>
                     <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
                         <div style="color: #FF007F; font-size: 1.8rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
-                            
+                            {{ credit_card_count }}
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;"></div>
+                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;">{{ t('total_cards') }}</div>
                     </div>
                 </div>
             </a>
@@ -231,13 +231,13 @@
                         <i class="bi bi-bank" style="font-size: 4.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
                     </div>
                     <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.4;">
-                        
+                        {{ t('savings_statements') }}
                     </h4>
                     <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
                         <div style="color: #FF007F; font-size: 1.8rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
-                            
+                            {{ savings_count }}
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;"></div>
+                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;">{{ t('total_accounts') }}</div>
                     </div>
                 </div>
             </a>
@@ -245,7 +245,7 @@
 
         <!-- 3. 付款收据管理 -->
         <div class="col-md-6 col-lg-4 col-xl-2">
-            <a href="" style="text-decoration: none;">
+            <a href="{{ url_for('receipts_home') }}" style="text-decoration: none;">
                 <div class="quick-action-card" style="
                     background: #000000;
                     border: 3px solid #FF007F;
@@ -264,21 +264,21 @@
                         <i class="bi bi-receipt" style="font-size: 4.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
                     </div>
                     <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.4;">
-                        
+                        {{ t('payment_receipts') }}
                     </h4>
                     <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
                         <div style="color: #FF007F; font-size: 1.8rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
-                            
+                            {{ total_supplier_invoices }}
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;"></div>
+                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;">{{ t('total_receipts') }}</div>
                     </div>
                 </div>
             </a>
         </div>
 
-        <!-- 4.  -->
+        <!-- 4. 客户发票管理 -->
         <div class="col-md-6 col-lg-4 col-xl-2">
-            <a href="" style="text-decoration: none;">
+            <a href="{{ url_for('invoices_home') }}" style="text-decoration: none;">
                 <div class="quick-action-card" style="
                     background: #000000;
                     border: 3px solid #FF007F;
@@ -297,13 +297,13 @@
                         <i class="bi bi-file-earmark-text-fill" style="font-size: 4.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
                     </div>
                     <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.4;">
-                        
+                        {{ t('customer_invoices') }}
                     </h4>
                     <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
                         <div style="color: #FF007F; font-size: 1.8rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">
-                            
+                            {{ invoices_count }}
                         </div>
-                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;"></div>
+                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;">{{ t('total_invoices') }}</div>
                     </div>
                 </div>
             </a>
@@ -311,7 +311,7 @@
 
         <!-- 5. Monthly Summary Reports -->
         <div class="col-md-6 col-lg-4 col-xl-2">
-            <a href="" style="text-decoration: none;">
+            <a href="{{ url_for('monthly_summary') }}" style="text-decoration: none;">
                 <div class="quick-action-card" style="
                     background: #000000;
                     border: 3px solid #FF007F;
@@ -330,11 +330,11 @@
                         <i class="bi bi-file-earmark-bar-graph-fill" style="font-size: 4.5rem; color: #FF007F; text-shadow: 0 0 20px rgba(255,0,127,0.6);"></i>
                     </div>
                     <h4 style="color: #FFFFFF; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); font-weight: 900; text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.4;">
-                        
+                        {{ t('monthly_summary') }}
                     </h4>
                     <div style="background: rgba(255,0,127,0.1); border-radius: 10px; padding: 1rem 1.5rem; text-align: center; width: 100%;">
-                        <div style="color: #FF007F; font-size: 1.4rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);"></div>
-                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;"></div>
+                        <div style="color: #FF007F; font-size: 1.4rem; font-weight: 700; text-shadow: 0 0 10px rgba(255,0,127,0.4);">{{ t('view_reports') }}</div>
+                        <div style="color: #FFFEF0; font-size: 0.85rem; margin-top: 0.5rem;">{{ t('monthly_financial_summaries') }}</div>
                     </div>
                 </div>
             </a>
@@ -348,9 +348,9 @@
                 <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #FF007F;">
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
                         <h3 class="card-title-custom" style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; margin: 0;">
-                            <i class="bi bi-credit-card"></i></h3>
+                            <i class="bi bi-credit-card"></i> {{ t('credit_card_customers') }}</h3>
                         <span style="background: rgba(255,0,127,0.2); padding: 0.5rem 1rem; border-radius: 8px; color: #FF007F; font-weight: 700;">
-                             Customers
+                            {{ credit_card_customers|length }} {{ t('customers') }}
                         </span>
                     </div>
                 </div>
@@ -359,13 +359,13 @@
                         <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%;">
                             <thead style="background: rgba(255, 0, 127, 0.1); border-bottom: 2px solid #FF007F;">
                                 <tr>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center;"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('customer_name') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('customer_code') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('nric') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('monthly_income') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">{{ t('credit_cards') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">{{ t('statements') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center;">{{ t('action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -373,38 +373,38 @@
                                     {% for customer in credit_card_customers %}
                                     <tr class="hover-glow-row">
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">
-                                            
+                                            {{ customer['customer_name'] }}
                                         </td>
                                         <td style="font-size: 0.75rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #999;">
-                                            
+                                            {{ customer['customer_code'] }}
                                         </td>
                                         <td style="font-size: 0.75rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #999;">
-                                            
+                                            {{ customer['nric'] if customer['nric'] else '-' }}
                                         </td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FF007F;">
                                             RM {{ "{:,.0f}".format(customer['monthly_income']) if customer['monthly_income'] else '-' }}
                                         </td>
                                         <td style="font-size: 0.85rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); text-align: center; font-weight: 700; color: #FF007F;">
-                                            
+                                            {{ customer['credit_card_count'] }}
                                         </td>
                                         <td style="font-size: 0.85rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); text-align: center; font-weight: 700; color: #FFF;">
-                                            
+                                            {{ customer['statement_count'] }}
                                         </td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center;">
-                                            <a href="" 
+                                            <a href="{{ url_for('customer_details', customer_code=customer['customer_code']) }}" 
                                                class="btn btn-sm btn-view-details"
                                                style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
                                                       border: 2px solid #FF007F; 
                                                       color: #FFFFFF;
                                                       font-weight: 600;
                                                       padding: 0.25rem 0.75rem;
-                                                      font-size: 0.75rem;"></a>
+                                                      font-size: 0.75rem;">{{ t('view_cards') }}</a>
                                         </td>
                                     </tr>
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td colspan="7" style="text-align: center; padding: 3rem; color: #999;"></td>
+                                        <td colspan="7" style="text-align: center; padding: 3rem; color: #999;">{{ t('no_credit_card_customers_found') }}</td>
                                     </tr>
                                 {% endif %}
                             </tbody>
@@ -422,9 +422,9 @@
                 <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #7B68EE;">
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
                         <h3 class="card-title-custom" style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; margin: 0;">
-                            <i class="bi bi-bank"></i></h3>
+                            <i class="bi bi-bank"></i> {{ t('savings_account_customers') }}</h3>
                         <span style="background: rgba(123,104,238,0.3); padding: 0.5rem 1rem; border-radius: 8px; color: #9370DB; font-weight: 700;">
-                             Customers
+                            {{ savings_customers|length }} {{ t('customers') }}
                         </span>
                     </div>
                 </div>
@@ -433,13 +433,13 @@
                         <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%;">
                             <thead style="background: rgba(50, 36, 70, 0.3); border-bottom: 2px solid #7B68EE;">
                                 <tr>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center;"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('customer_name') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('customer_code') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('nric') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('monthly_income') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">{{ t('bank_accounts') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">{{ t('statements') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center;">{{ t('action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -447,25 +447,25 @@
                                     {% for customer in savings_customers %}
                                     <tr class="hover-glow-row">
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">
-                                            
+                                            {{ customer['customer_name'] }}
                                         </td>
                                         <td style="font-size: 0.75rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #999;">
-                                            
+                                            {{ customer['customer_code'] }}
                                         </td>
                                         <td style="font-size: 0.75rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #999;">
-                                            
+                                            {{ customer['nric'] if customer['nric'] else '-' }}
                                         </td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #9370DB;">
                                             RM {{ "{:,.0f}".format(customer['monthly_income']) if customer['monthly_income'] else '-' }}
                                         </td>
                                         <td style="font-size: 0.85rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); text-align: center; font-weight: 700; color: #9370DB;">
-                                            
+                                            {{ customer['bank_account_count'] }}
                                         </td>
                                         <td style="font-size: 0.85rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); text-align: center; font-weight: 700; color: #FFF;">
-                                            
+                                            {{ customer['statement_count'] }}
                                         </td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; text-align: center;">
-                                            <a href="" 
+                                            <a href="{{ url_for('customer_details', customer_code=customer['customer_code']) }}" 
                                                class="btn btn-sm btn-view-details"
                                                style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
                                                       border: 2px solid #7B68EE; 
@@ -473,7 +473,7 @@
                                                       font-weight: 600;
                                                       padding: 0.25rem 0.75rem;
                                                       font-size: 0.75rem;">
-                                                View Accounts
+                                                {{ t('view_accounts') }}
                                             </a>
                                         </td>
                                     </tr>
@@ -481,7 +481,7 @@
                                 {% else %}
                                     <tr>
                                         <td colspan="7" style="text-align: center; padding: 3rem; color: #999;">
-                                            No savings account customers found
+                                            {{ t('no_savings_account_customers_found') }}
                                         </td>
                                     </tr>
                                 {% endif %}
@@ -500,10 +500,10 @@
                 <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(255, 0, 127, 0.1) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #FF007F;">
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
                         <h3 class="card-title-custom" style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; margin: 0;">
-                            <i class="bi bi-credit-card"></i> 
+                            <i class="bi bi-credit-card"></i> {{ t('credit_card_statements') }}
                         </h3>
                         <button id="exportCCTable" class="btn btn-sm" style="background: #FF007F; color: white; border: none;">
-                            <i class="bi bi-download"></i></button>
+                            <i class="bi bi-download"></i> {{ t('export_excel') }}</button>
                     </div>
                 </div>
                 <div class="card-body-custom" style="padding: 0;">
@@ -511,19 +511,19 @@
                         <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto;" id="ccStatementsTable">
                             <thead style="background: rgba(255, 0, 127, 0.1); border-bottom: 2px solid #FF007F;">
                                 <tr>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('customer') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('bank') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('month') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('prev_balance') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('closing_balance') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('total_expenses') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('owner_expenses') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('gz_expenses') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('owner_payments') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('gz_payments') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('owner_balance') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('gz_balance') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; color: #FFFFFF; text-shadow: 0 0 8px rgba(255,255,255,0.3);">{{ t('action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -609,7 +609,7 @@
                                 {% else %}
                                     <tr>
                                         <td colspan="13" style="text-align: center; padding: 3rem; color: #999;">
-                                            
+                                            {{ t('no_credit_card_statements_found') }}
                                         </td>
                                     </tr>
                                 {% endif %}
@@ -627,7 +627,7 @@
             <div class="statement-card" style="border: 2px solid #322446;">
                 <div class="card-header-custom" style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%); border-bottom: 2px solid #322446;">
                     <h3 class="card-title-custom" style="color: #FFFEF0; text-shadow: 0 0 10px rgba(255,254,240,0.4); font-weight: 700; margin: 0; padding: 1.5rem;">
-                        <i class="bi bi-bank"></i> 
+                        <i class="bi bi-bank"></i> {{ t('bank_account_statements') }}
                     </h3>
                 </div>
                 <div class="card-body-custom" style="padding: 0;">
@@ -635,15 +635,15 @@
                         <table class="table table-dark table-hover elegant-table" style="margin: 0; width: 100%; table-layout: auto;">
                             <thead style="background: rgba(50, 36, 70, 0.3); border-bottom: 2px solid #322446;">
                                 <tr>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);"></th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('customer') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('bank') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('month') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('monthly_credit') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('monthly_debit') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('closing_balance') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('cc_payment_sum') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('total_transfers') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; text-align: center; color: #FFFEF0; text-shadow: 0 0 8px rgba(255,254,240,0.3);">{{ t('action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -676,7 +676,7 @@
                                 {% else %}
                                     <tr>
                                         <td colspan="9" style="text-align: center; padding: 3rem; color: #999;">
-                                            
+                                            {{ t('no_bank_statements_found') }}
                                         </td>
                                     </tr>
                                 {% endif %}
