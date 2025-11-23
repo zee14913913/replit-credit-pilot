@@ -3057,9 +3057,9 @@ def statement_comparison(statement_id):
         owner_expenses = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'DR' and not t.get('is_supplier'))
         total_debit = gz_expenses + owner_expenses
         
-        # CR分类：Owner Payment vs GZ Payment（简化版：暂时全部归Owner Payment）
-        owner_payment = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'CR')
-        gz_payment = 0  # TODO: 实现GZ Payment识别逻辑
+        # CR分类：Owner Payment vs GZ Payment（使用category字段）
+        owner_payment = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'CR' and t.get('category') == 'owner_payment')
+        gz_payment = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'CR' and t.get('category') == 'infinite_payment')
         total_credit = owner_payment + gz_payment
         
         # Supplier手续费（GZ Expenses的1%）

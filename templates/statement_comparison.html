@@ -80,7 +80,7 @@
                         </h4>
                         
                         <!-- Owner's Payment (客户付款) -->
-                        {% set owner_payments = transactions|selectattr('transaction_type', 'equalto', 'CR')|list %}
+                        {% set owner_payments = transactions|selectattr('transaction_type', 'equalto', 'CR')|selectattr('category', 'equalto', 'owner_payment')|list %}
                         {% if owner_payments %}
                         <div class="mb-3">
                             <div style="background: rgba(255, 0, 127, 0.1); padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem; border-left: 4px solid #FF007F;">
@@ -122,8 +122,9 @@
                         </div>
                         {% endif %}
                         
-                        <!-- GZ's Payment1 (GZ代付款) - 暂时隐藏，等待实现 -->
-                        {% if summary.gz_payment > 0 %}
+                        <!-- GZ's Payment1 (GZ代付款) -->
+                        {% set gz_payments = transactions|selectattr('transaction_type', 'equalto', 'CR')|selectattr('category', 'equalto', 'infinite_payment')|list %}
+                        {% if gz_payments %}
                         <div class="mb-3">
                             <div style="background: rgba(50, 36, 70, 0.2); padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem; border-left: 4px solid #322446;">
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -134,7 +135,37 @@
                                         RM {{ "{:,.2f}".format(summary.gz_payment) }}
                                     </div>
                                 </div>
+                                <small style="color: var(--text-secondary);">{{ gz_payments|length }} {{ t('transactions__') }} | Payer: {% if gz_payments[0].payer_name %}{{ gz_payments[0].payer_name }}{% else %}GZ{% endif %}</small>
                             </div>
+                            
+                            <table class="table-professional" style="font-size: 0.9rem;">
+                                <thead style="background: rgba(50, 36, 70, 0.2);">
+                                    <tr>
+                                        <th>{{ t('date') }}</th>
+                                        <th>{{ t('description') }}</th>
+                                        <th>Payer</th>
+                                        <th class="text-end">{{ t('amount') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for trans in gz_payments %}
+                                    <tr style="background: rgba(46, 204, 113, 0.03);">
+                                        <td style="color: var(--text-secondary); font-size: 0.85rem; white-space: nowrap;">
+                                            {{ trans.transaction_date }}
+                                        </td>
+                                        <td style="color: var(--text-primary);">
+                                            {{ trans.description[:35] }}{% if trans.description|length > 35 %}...{% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge-professional badge-warning-pro">{{ trans.payer_name or 'GZ' }}</span>
+                                        </td>
+                                        <td class="text-end" style="font-weight: 600; color: #2ecc71; white-space: nowrap;">
+                                            <span style="color: #FFFEF0; font-size: 0.85rem;">CR</span> RM {{ "{:,.2f}".format(trans.amount) }}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                         {% endif %}
                     </div>

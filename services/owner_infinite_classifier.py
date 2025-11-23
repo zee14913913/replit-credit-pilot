@@ -423,20 +423,21 @@ class OwnerInfiniteClassifier:
         """尝试从描述中提取付款人名称"""
         import re
         
-        # 常见格式: "PAYMENT FROM XXX", "PAYMENT BY YYY", etc.
+        # 常见格式: "PAYMENT FROM XXX", "PAYMENT BY YYY", "THANK YOU, XXX", etc.
         # 如果无法提取有效付款人名称，返回 None（视为付款人为空）
         
         # 需要过滤的无效关键词（这些不是真正的付款人）
         INVALID_PAYER_KEYWORDS = [
-            'thank', 'you', 'ib', 'online', 'atm', 'bank', 'received',
+            'ib', 'online', 'atm', 'bank', 'received',
             'auto', 'autopay', 'giro', 'fpx', 'duitnow', 'transfer',
-            'payment', 'bayaran', 'terima', 'cash', 'cheque'
+            'payment', 'bayaran', 'terima', 'cash', 'cheque', 'pay'
         ]
         
         patterns = [
-            r'FROM\s+([A-Z][A-Z\s]+)',
-            r'BY\s+([A-Z][A-Z\s]+)',
-            r'PAY(?:MENT)?\s+BY\s+([A-Z][A-Z\s]+)',
+            r'THANK\s+YOU,?\s*([A-Z][A-Z\s\.]+?)(?:,|$)',  # 新增：THANK YOU, INFINITE GZ SDN. BH
+            r'FROM\s+([A-Z][A-Z\s\.]+)',
+            r'BY\s+([A-Z][A-Z\s\.]+)',
+            r'PAY(?:MENT)?\s+BY\s+([A-Z][A-Z\s\.]+)',
         ]
         
         for pattern in patterns:
