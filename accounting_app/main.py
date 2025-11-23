@@ -3,13 +3,14 @@ FastAPI Main Application
 银行贷款合规会计系统 - 主入口
 """
 import os
-from fastapi import FastAPI, Depends, Request, HTTPException, status
+from fastapi import FastAPI, Depends, Request, HTTPException, status, File, Form, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 from .db import get_db, init_database, execute_sql_file
 from . import models
@@ -275,7 +276,7 @@ async def root():
 async def health_check(db: Session = Depends(get_db)):
     try:
         # 测试数据库连接
-        db.execute("SELECT 1")
+        db.execute(text("SELECT 1"))
         return {
             "status": "healthy",
             "database": "connected",
@@ -566,3 +567,480 @@ async def accounting_dashboard(request: Request):
     财务管理后台界面
     """
     return templates.TemplateResponse("dashboard.html", {"request": request})
+
+
+# ========================================
+# 🆕 新增API端点（用于MiniMax前端集成）
+# ========================================
+
+# SQLite数据库连接辅助函数（用于访问Flask的客户数据）
+def get_sqlite_connection():
+    """获取SQLite数据库连接"""
+    import sqlite3
+    db_path = "db/smart_loan_manager.db"
+    return sqlite3.connect(db_path)
+
+
+@app.get("/api/companies")
+async def get_companies_list(
+    skip: int = 0,
+    limit: int = 100
+):
+    """
+    GET /api/companies - 返回公司客户列表
+    
+    查询参数:
+    - skip: 分页偏移量（默认0）
+    - limit: 每页数量（默认100）
+    
+    返回格式:
+    {
+        "success": true,
+        "data": [
+            {
+                "id": 1,
+                "name": "客户姓名",
+                "email": "email@example.com",
+                "phone": "0123456789",
+                "customer_code": "Be_rich_CJY",
+                "monthly_income": 15000.0,
+                "created_at": "2025-11-01T00:00:00"
+            }
+        ],
+        "total": 8,
+        "skip": 0,
+        "limit": 100
+    }
+    """
+    try:
+        # 使用SQLite数据库（Flask应用的数据库）
+        conn = get_sqlite_connection()
+        cursor = conn.cursor()
+        
+        # 查询总数
+        cursor.execute("SELECT COUNT(*) FROM customers")
+        total = cursor.fetchone()[0]
+        
+        # 查询客户列表
+        query = """
+            SELECT 
+                id,
+                name,
+                email,
+                phone,
+                customer_code,
+                monthly_income,
+                created_at,
+                personal_account_name,
+                personal_account_number,
+                company_account_name,
+                company_account_number,
+                tag_desc
+            FROM customers
+            ORDER BY created_at DESC
+            LIMIT ? OFFSET ?
+        """
+        
+        cursor.execute(query, (limit, skip))
+        customers = []
+        
+        for row in cursor.fetchall():
+            customers.append({
+                "id": row[0],
+                "name": row[1],
+                "email": row[2],
+                "phone": row[3],
+                "customer_code": row[4],
+                "monthly_income": row[5],
+                "created_at": row[6],
+                "personal_account_name": row[7],
+                "personal_account_number": row[8],
+                "company_account_name": row[9],
+                "company_account_number": row[10],
+                "tag_desc": row[11]
+            })
+        
+        conn.close()
+        
+        return {
+            "success": True,
+            "data": customers,
+            "total": total,
+            "skip": skip,
+            "limit": limit
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to fetch companies: {str(e)}"
+        )
+
+
+@app.get("/api/bank-statements")
+async def get_bank_statements(
+    customer_id: int = None,
+    bank_name: str = None,
+    statement_month: str = None,
+    skip: int = 0,
+    limit: int = 100
+):
+    """
+    GET /api/bank-statements - 返回银行对账单列表
+    
+    查询参数:
+    - customer_id: 客户ID（可选）
+    - bank_name: 银行名称（可选）
+    - statement_month: 账单月份，格式 YYYY-MM（可选）
+    - skip: 分页偏移量（默认0）
+    - limit: 每页数量（默认100）
+    
+    返回格式:
+    {
+        "success": true,
+        "data": [
+            {
+                "id": 1,
+                "customer_id": 1,
+                "bank_name": "AMBANK",
+                "statement_month": "2025-05",
+                "period_start_date": "2025-05-01",
+                "period_end_date": "2025-05-31",
+                "previous_balance_total": 15000.50,
+                "closing_balance_total": 18500.75,
+                "owner_balance": 12000.00,
+                "gz_balance": 6500.75,
+                "card_count": 3,
+                "transaction_count": 45,
+                "validation_score": 0.98,
+                "is_confirmed": 1,
+                "created_at": "2025-11-01T00:00:00"
+            }
+        ],
+        "total": 281,
+        "filters": {
+            "customer_id": 1,
+            "bank_name": "AMBANK",
+            "statement_month": "2025-05"
+        }
+    }
+    """
+    try:
+        # 使用SQLite数据库（Flask应用的数据库）
+        conn = get_sqlite_connection()
+        cursor = conn.cursor()
+        
+        # 构建查询条件
+        where_clauses = []
+        params = []
+        
+        if customer_id is not None:
+            where_clauses.append("customer_id = ?")
+            params.append(customer_id)
+        
+        if bank_name:
+            where_clauses.append("bank_name = ?")
+            params.append(bank_name)
+        
+        if statement_month:
+            where_clauses.append("statement_month = ?")
+            params.append(statement_month)
+        
+        where_sql = " AND ".join(where_clauses) if where_clauses else "1=1"
+        
+        # 查询总数
+        count_query = f"SELECT COUNT(*) FROM monthly_statements WHERE {where_sql}"
+        cursor.execute(count_query, params)
+        total = cursor.fetchone()[0]
+        
+        # 查询账单列表
+        query = f"""
+            SELECT 
+                id,
+                customer_id,
+                bank_name,
+                statement_month,
+                period_start_date,
+                period_end_date,
+                previous_balance_total,
+                closing_balance_total,
+                owner_balance,
+                gz_balance,
+                owner_expenses,
+                owner_payments,
+                gz_expenses,
+                gz_payments,
+                file_paths,
+                card_count,
+                transaction_count,
+                validation_score,
+                is_confirmed,
+                inconsistencies,
+                created_at,
+                updated_at
+            FROM monthly_statements
+            WHERE {where_sql}
+            ORDER BY statement_month DESC, bank_name ASC
+            LIMIT ? OFFSET ?
+        """
+        
+        params.extend([limit, skip])
+        cursor.execute(query, params)
+        statements = []
+        
+        for row in cursor.fetchall():
+            statements.append({
+                "id": row[0],
+                "customer_id": row[1],
+                "bank_name": row[2],
+                "statement_month": row[3],
+                "period_start_date": row[4],
+                "period_end_date": row[5],
+                "previous_balance_total": row[6],
+                "closing_balance_total": row[7],
+                "owner_balance": row[8],
+                "gz_balance": row[9],
+                "owner_expenses": row[10],
+                "owner_payments": row[11],
+                "gz_expenses": row[12],
+                "gz_payments": row[13],
+                "file_paths": row[14],
+                "card_count": row[15],
+                "transaction_count": row[16],
+                "validation_score": row[17],
+                "is_confirmed": bool(row[18]),
+                "inconsistencies": row[19],
+                "created_at": row[20],
+                "updated_at": row[21]
+            })
+        
+        conn.close()
+        
+        return {
+            "success": True,
+            "data": statements,
+            "total": total,
+            "filters": {
+                "customer_id": customer_id,
+                "bank_name": bank_name,
+                "statement_month": statement_month
+            },
+            "skip": skip,
+            "limit": limit
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to fetch bank statements: {str(e)}"
+        )
+
+
+@app.post("/api/bill/upload")
+async def upload_bill(
+    file: UploadFile = File(...),
+    customer_id: int = Form(...)
+):
+    """
+    POST /api/bill/upload - 上传账单文件
+    
+    请求参数（Form Data）:
+    - file: 账单文件（PDF、Excel、CSV）
+    - customer_id: 客户ID
+    
+    返回格式:
+    {
+        "success": true,
+        "message": "Bill uploaded successfully",
+        "file_path": "/uploads/20251123_123456_statement.pdf",
+        "filename": "20251123_123456_statement.pdf",
+        "customer_id": 1,
+        "file_size": 245678
+    }
+    """
+    from datetime import datetime
+    import os
+    
+    try:
+        if not file:
+            raise HTTPException(
+                status_code=400,
+                detail="No file provided"
+            )
+        
+        if not customer_id:
+            raise HTTPException(
+                status_code=400,
+                detail="Customer ID is required"
+            )
+        
+        # 验证客户是否存在（使用SQLite）
+        conn = get_sqlite_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM customers WHERE id = ?", (customer_id,))
+        customer_check = cursor.fetchone()
+        conn.close()
+        
+        if not customer_check:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Customer with ID {customer_id} not found"
+            )
+        
+        # 生成文件名和保存路径
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        safe_filename = f"{timestamp}_{file.filename}"
+        
+        # 创建上传目录
+        upload_dir = os.path.join("static", "uploads", f"customer_{customer_id}")
+        os.makedirs(upload_dir, exist_ok=True)
+        
+        file_path = os.path.join(upload_dir, safe_filename)
+        
+        # 保存文件
+        content = await file.read()
+        with open(file_path, "wb") as f:
+            f.write(content)
+        
+        file_size = len(content)
+        
+        return {
+            "success": True,
+            "message": "Bill uploaded successfully",
+            "file_path": f"/{file_path}",
+            "filename": safe_filename,
+            "customer_id": customer_id,
+            "file_size": file_size,
+            "upload_time": datetime.now().isoformat()
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to upload bill: {str(e)}"
+        )
+
+
+@app.get("/api/bill/ocr-status")
+async def get_bill_ocr_status(
+    file_id: str = None
+):
+    """
+    GET /api/bill/ocr-status - 获取账单OCR处理状态
+    
+    查询参数:
+    - file_id: 文件ID（可选）
+    
+    返回格式（无file_id时）:
+    {
+        "success": true,
+        "message": "OCR status endpoint ready",
+        "status": "ready",
+        "supported_formats": ["PDF", "JPG", "PNG", "Excel", "CSV"],
+        "ocr_engines": ["Google Document AI", "Tesseract OCR"]
+    }
+    
+    返回格式（有file_id时）:
+    {
+        "success": true,
+        "file_id": "20251123_123456_statement.pdf",
+        "status": "completed",
+        "progress": 100,
+        "extracted_fields": {
+            "bank_name": "AMBANK",
+            "statement_date": "2025-05-31",
+            "total_amount": 15000.50,
+            "transaction_count": 45
+        },
+        "processing_time": "2.5s",
+        "ocr_engine": "Google Document AI",
+        "accuracy_score": 0.98
+    }
+    """
+    try:
+        if not file_id:
+            # 返回OCR系统状态信息
+            return {
+                "success": True,
+                "message": "OCR status endpoint ready",
+                "status": "ready",
+                "supported_formats": ["PDF", "JPG", "PNG", "Excel", "CSV"],
+                "ocr_engines": [
+                    "Google Document AI (Primary)",
+                    "Tesseract OCR (Fallback)",
+                    "pdfplumber (Bank-Specific)"
+                ],
+                "supported_banks": [
+                    "AMBANK", "AMBANK_ISLAMIC", "UOB", "HONG_LEONG",
+                    "OCBC", "HSBC", "STANDARD_CHARTERED", "MAYBANK",
+                    "AFFIN_BANK", "CIMB", "ALLIANCE_BANK", "PUBLIC_BANK",
+                    "RHB_BANK"
+                ],
+                "extracted_fields": [
+                    "bank_name", "customer_name", "ic_no", "card_type",
+                    "card_no", "credit_limit", "statement_date",
+                    "payment_due_date", "full_due_amount", "minimum_payment",
+                    "previous_balance", "transaction_date", "description",
+                    "amount_CR", "amount_DR", "earned_point"
+                ]
+            }
+        
+        # 如果提供了file_id，查询具体文件的OCR状态（使用SQLite）
+        conn = get_sqlite_connection()
+        cursor = conn.cursor()
+        
+        query = """
+            SELECT 
+                id,
+                file_path,
+                upload_status,
+                validation_score,
+                created_at
+            FROM statements
+            WHERE file_path LIKE ?
+            LIMIT 1
+        """
+        
+        cursor.execute(query, (f"%{file_id}%",))
+        result = cursor.fetchone()
+        conn.close()
+        
+        if not result:
+            return {
+                "success": False,
+                "message": f"File '{file_id}' not found in processing queue",
+                "file_id": file_id,
+                "status": "not_found"
+            }
+        
+        # 解析处理状态
+        upload_status = result[2] or "pending"
+        validation_score = result[3] or 0.0
+        
+        status_mapping = {
+            "pending": ("processing", 25),
+            "processing": ("processing", 50),
+            "completed": ("completed", 100),
+            "error": ("failed", 0)
+        }
+        
+        status, progress = status_mapping.get(upload_status, ("unknown", 0))
+        
+        return {
+            "success": True,
+            "file_id": file_id,
+            "status": status,
+            "progress": progress,
+            "accuracy_score": validation_score,
+            "ocr_engine": "Google Document AI",
+            "created_at": result[4],
+            "message": f"OCR processing {status}"
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to get OCR status: {str(e)}"
+        )

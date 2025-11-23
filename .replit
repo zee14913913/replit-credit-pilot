@@ -136,5 +136,5 @@ localPort = 44883
 externalPort = 6000
 
 [deployment]
-deploymentTarget = "vm"
-run = ["sh", "-c", "uvicorn accounting_app.main:app --host 0.0.0.0 --port 8000 --workers 2 & gunicorn --bind=0.0.0.0:5000 --workers=4 --timeout=120 --reuse-port app:app & node server.js"]
+deploymentTarget = "autoscale"
+run = ["sh", "-c", "uvicorn accounting_app.main:app --host 0.0.0.0 --port 8000 --workers 2 & gunicorn --bind=0.0.0.0:5000 --workers=4 --timeout=120 --reuse-port app:app"]
