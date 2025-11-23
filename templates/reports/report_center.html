@@ -161,11 +161,13 @@
             <table class="table table-dark table-hover">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                        <th style="width: 50px;"><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
                         <th>{{ t('customer') }}</th>
-                        <th>{{ t('account') }}</th>
-                        <th>{{ t('date_range') }}</th>
-                        <th>{{ t('amount') }}</th>
+                        <th>{{ t('bank') }} / {{ t('card') }}</th>
+                        <th>{{ t('statement_month') }}</th>
+                        <th>{{ t('statement_total') }}</th>
+                        <th>{{ t('minimum_payment') }}</th>
+                        <th>{{ t('due_date') }}</th>
                         <th>{{ t('status') }}</th>
                     </tr>
                 </thead>
@@ -173,10 +175,15 @@
                     {% for record in records %}
                     <tr>
                         <td><input type="checkbox" class="record-checkbox" value="{{ record.id }}"></td>
-                        <td>{{ record.customer_name }}</td>
-                        <td>{{ record.account_name }}</td>
-                        <td>{{ record.date_from }} ~ {{ record.date_to }}</td>
+                        <td style="font-weight: 600;">{{ record.customer_name }}</td>
+                        <td>
+                            <div style="font-weight: 600; color: var(--primary-pink);">{{ record.bank_name }}</div>
+                            <small style="color: rgba(255,255,255,0.6);">****{{ record.card_last4 }}</small>
+                        </td>
+                        <td style="font-weight: 600;">{{ record.statement_month }}</td>
                         <td style="color: var(--primary-pink); font-weight: 600;">RM {{ "{:,.2f}".format(record.amount) }}</td>
+                        <td style="color: #FFD700; font-weight: 600;">RM {{ "{:,.2f}".format(record.minimum_payment) }}</td>
+                        <td>{{ record.date_to }}</td>
                         <td>
                             {% if record.status == 'confirmed' %}
                                 <span class="badge-success-pro">{{ t('confirmed') }}</span>

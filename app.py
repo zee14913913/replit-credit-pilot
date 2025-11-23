@@ -9176,37 +9176,53 @@ def report_center():
             where_clauses.append("s.statement_date <= ?")
             params.append(date_to)
         
-        # 获取记录数据（示例：从statements表）
+        # 获取记录数据（从statements表 - 显示详细信息）
         query = f"""
         SELECT 
             s.id,
             c.name as customer_name,
-            'Credit Card' as account_name,
-            s.statement_date as date_from,
-            s.statement_date as date_to,
+            cc.bank_name,
+            cc.card_number_last4,
+            s.statement_date,
             s.statement_total as amount,
-            s.is_confirmed as status
+            s.is_confirmed as status,
+            s.due_date,
+            s.minimum_payment
         FROM statements s
         INNER JOIN credit_cards cc ON s.card_id = cc.id
         INNER JOIN customers c ON cc.customer_id = c.id
         WHERE {' AND '.join(where_clauses)}
-        ORDER BY s.statement_date DESC
+        ORDER BY c.name ASC, cc.bank_name ASC, s.statement_date DESC
         LIMIT 100
         """
         
         cursor.execute(query, params)
         records_raw = cursor.fetchall()
         
-        # 转换为字典列表
+        # 转换为字典列表（添加详细信息）
         records = []
         for rec in records_raw:
+            stmt_date = rec[4]
+            # 解析年月
+            try:
+                from datetime import datetime
+                date_obj = datetime.strptime(stmt_date, '%Y-%m-%d')
+                month_display = date_obj.strftime('%Y-%m')  # 格式：2025-11
+            except:
+                month_display = stmt_date
+            
             records.append({
                 'id': rec[0],
                 'customer_name': rec[1],
-                'account_name': rec[2],
-                'date_from': rec[3],
-                'date_to': rec[4],
+                'bank_name': rec[2],
+                'card_last4': rec[3],
+                'account_name': f"{rec[2]} ****{rec[3]}",  # 例如：Maybank ****1234
+                'statement_month': month_display,
+                'statement_date': stmt_date,
+                'date_from': stmt_date,
+                'date_to': rec[7] if rec[7] else stmt_date,  # due_date
                 'amount': rec[5] or 0.0,
+                'minimum_payment': rec[8] or 0.0,
                 'status': 'confirmed' if rec[6] else 'pending'
             })
         
