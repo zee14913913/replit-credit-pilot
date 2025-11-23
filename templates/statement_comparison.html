@@ -6,7 +6,7 @@
 <div class="fade-in">
     <div class="section-header">
         <h1 class="section-title">
-            <i class="bi bi-layout-split"></i> {{ t('statement_comparison__') }}
+            {{ t('statement_comparison__') }}
         </h1>
         <p class="section-subtitle">{{ t('_vs_2') }} 分类报告 - {{ statement.bank_name }} ****{{ statement.card_number_last4 }}</p>
     </div>
@@ -39,7 +39,7 @@
         <div class="col-lg-4">
             <div class="professional-card" style="height: 800px; display: flex; flex-direction: column;">
                 <h3 style="color: var(--text-primary); margin-bottom: 1rem; flex-shrink: 0; font-size: 1.1rem;">
-                    <i class="bi bi-file-pdf"></i> {{ t('original_statement__') }}
+                    {{ t('original_statement__') }}
                 </h3>
                 <div class="divider-professional" style="flex-shrink: 0;"></div>
                 <div style="flex: 1; overflow: auto; margin-top: 1rem; scrollbar-gutter: stable;">
@@ -64,7 +64,7 @@
         <div class="col-lg-8">
             <div class="professional-card" style="height: 800px; display: flex; flex-direction: column;">
                 <h3 style="color: var(--text-primary); margin-bottom: 1rem; flex-shrink: 0;">
-                    <i class="bi bi-table"></i> {{ t('classified_report__') }}
+                    {{ t('classified_report__') }}
                 </h3>
                 <div class="divider-professional" style="flex-shrink: 0;"></div>
                 
@@ -79,7 +79,6 @@
                     <div style="background: linear-gradient(135deg, rgba(50, 36, 70, 0.3), rgba(0, 0, 0, 0.4)); padding: 1rem; border-radius: 16px; margin-bottom: 2rem; border: 3px solid #322446; box-shadow: 0 8px 32px rgba(50, 36, 70, 0.5); overflow: hidden;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 2px solid rgba(255, 255, 255, 0.1);">
                             <h3 style="color: #FFFEF0; margin: 0; font-weight: 800; font-size: 1.4rem;">
-                                <i class="bi bi-credit-card-2-front" style="color: #FF007F;"></i> 
                                 CARD No. *{{ card_last4 }}
                             </h3>
                             <div style="background: rgba(255, 0, 127, 0.15); padding: 0.4rem 1rem; border-radius: 8px; border: 1px solid #FF007F;">
@@ -91,7 +90,7 @@
                         {% if card_data.cr_transactions %}
                         <div style="background: rgba(0, 0, 0, 0.3); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; border: 2px solid rgba(255, 255, 255, 0.1);">
                             <h4 style="color: #FFFEF0; margin-bottom: 1rem; font-weight: 700;">
-                                <i class="bi bi-arrow-up-circle"></i> CREDIT (CR) - Total: RM {{ "{:,.2f}".format(card_data.totals.cr_total) }}
+                                CREDIT (CR) - Total: RM {{ "{:,.2f}".format(card_data.totals.cr_total) }}
                             </h4>
                             
                             <!-- Owner's Payment -->
@@ -188,7 +187,7 @@
                         {% if card_data.dr_transactions %}
                         <div style="background: rgba(0, 0, 0, 0.3); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; border: 2px solid rgba(255, 255, 255, 0.1);">
                             <h4 style="color: #FFFEF0; margin-bottom: 1rem; font-weight: 700;">
-                                <i class="bi bi-arrow-down-circle"></i> DEBIT (DR) - Total: RM {{ "{:,.2f}".format(card_data.totals.dr_total) }}
+                                DEBIT (DR) - Total: RM {{ "{:,.2f}".format(card_data.totals.dr_total) }}
                             </h4>
                             
                             <!-- GZ's Expenses -->
