@@ -292,6 +292,10 @@ def main():
     processor.save_to_csv(result, 'output/processed_statement.csv')
 
 
+# ============================================
+# 新增的API端点 - 用于前端对接
+# ============================================
+
 if __name__ == "__main__":
     # 创建输出目录
     Path('output').mkdir(exist_ok=True)
