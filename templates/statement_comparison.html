@@ -68,114 +68,183 @@
                 </h3>
                 <div class="divider-professional" style="flex-shrink: 0;"></div>
                 
-                <!-- Scrollable Container for CR/DR Sections -->
+                <!-- Scrollable Container for CR/DR Sections按Owner/GZ细分 -->
                 <div style="flex: 1; overflow-y: auto;">
                     
-                    <!-- CREDIT (CR) Section -->
-                    {% set credits = transactions|selectattr('transaction_type', 'equalto', 'CR')|list %}
-                    {% if credits %}
-                    <div class="mb-4">
-                        <div style="background: rgba(46, 204, 113, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <h5 style="color: #2ecc71; margin: 0;">
-                                    <i class="bi bi-arrow-up-circle"></i> {{ t('total_credit__') }}
-                                </h5>
-                                <div style="color: #2ecc71; font-weight: 700; font-size: 1.2rem;">
-                                    RM {{ "{:,.2f}".format(summary.total_credit) }}
+                    <!-- ═══════════════════════════════════════════════════ -->
+                    <!-- CREDIT (CR) Section - 分成Owner Payment和GZ Payment -->
+                    <!-- ═══════════════════════════════════════════════════ -->
+                    <div style="background: rgba(46, 204, 113, 0.05); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; border: 2px solid rgba(46, 204, 113, 0.3);">
+                        <h4 style="color: #2ecc71; margin-bottom: 1rem; font-weight: 700;">
+                            <i class="bi bi-arrow-up-circle"></i> CREDIT (CR) - Total: RM {{ "{:,.2f}".format(summary.total_credit) }}
+                        </h4>
+                        
+                        <!-- Owner's Payment (客户付款) -->
+                        {% set owner_payments = transactions|selectattr('transaction_type', 'equalto', 'CR')|list %}
+                        {% if owner_payments %}
+                        <div class="mb-3">
+                            <div style="background: rgba(255, 0, 127, 0.1); padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem; border-left: 4px solid #FF007F;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <h6 style="color: #FF007F; margin: 0; font-weight: 700;">
+                                        💰 Owner's Payment（客户付款）
+                                    </h6>
+                                    <div style="color: #FF007F; font-weight: 700; font-size: 1.1rem;">
+                                        RM {{ "{:,.2f}".format(summary.owner_payment) }}
+                                    </div>
+                                </div>
+                                <small style="color: var(--text-secondary);">{{ owner_payments|length }} {{ t('transactions__') }}</small>
+                            </div>
+                            
+                            <table class="table-professional" style="font-size: 0.9rem;">
+                                <thead style="background: rgba(255, 0, 127, 0.1);">
+                                    <tr>
+                                        <th>{{ t('date') }}</th>
+                                        <th>{{ t('description') }}</th>
+                                        <th class="text-end">{{ t('amount') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for trans in owner_payments %}
+                                    <tr style="background: rgba(46, 204, 113, 0.03);">
+                                        <td style="color: var(--text-secondary); font-size: 0.85rem; white-space: nowrap;">
+                                            {{ trans.transaction_date }}
+                                        </td>
+                                        <td style="color: var(--text-primary);">
+                                            {{ trans.description[:45] }}{% if trans.description|length > 45 %}...{% endif %}
+                                        </td>
+                                        <td class="text-end" style="font-weight: 600; color: #2ecc71; white-space: nowrap;">
+                                            <span style="color: #FF007F; font-size: 0.85rem;">CR</span> RM {{ "{:,.2f}".format(trans.amount) }}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- GZ's Payment1 (GZ代付款) - 暂时隐藏，等待实现 -->
+                        {% if summary.gz_payment > 0 %}
+                        <div class="mb-3">
+                            <div style="background: rgba(50, 36, 70, 0.2); padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem; border-left: 4px solid #322446;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <h6 style="color: #FFFEF0; margin: 0; font-weight: 700;">
+                                        🏢 GZ's Payment1（GZ代付款）
+                                    </h6>
+                                    <div style="color: #FFFEF0; font-weight: 700; font-size: 1.1rem;">
+                                        RM {{ "{:,.2f}".format(summary.gz_payment) }}
+                                    </div>
                                 </div>
                             </div>
-                            <small style="color: var(--text-secondary);">{{ credits|length }} {{ t('transactions__') }}</small>
                         </div>
-                        
-                        <table class="table-professional">
-                            <thead style="background: var(--bg-secondary);">
-                                <tr>
-                                    <th>{{ t('date') }}</th>
-                                    <th>{{ t('description') }}</th>
-                                    <th>{{ t('category') }}</th>
-                                    <th class="text-end">{{ t('amount') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for trans in credits %}
-                                <tr style="background: rgba(46, 204, 113, 0.05);">
-                                    <td style="color: var(--text-secondary); font-size: 0.9rem; white-space: nowrap;">
-                                        {{ trans.transaction_date }}
-                                    </td>
-                                    <td style="color: var(--text-primary);">
-                                        {{ trans.description[:50] }}{% if trans.description|length > 50 %}...{% endif %}
-                                    </td>
-                                    <td style="white-space: nowrap;">
-                                        <span class="badge-professional badge-success-pro">{{ trans.category or 'Uncategorized' }}</span>
-                                    </td>
-                                    <td class="text-end" style="font-weight: 600; color: #2ecc71; white-space: nowrap;">
-                                        <span style="color: #FF007F;">CR</span> RM {{ "{:,.2f}".format(trans.amount) }}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                        {% endif %}
                     </div>
-                    {% endif %}
                     
-                    <!-- DEBIT (DR) Section -->
-                    {% set debits = transactions|selectattr('transaction_type', 'equalto', 'DR')|list %}
-                    {% if debits %}
-                    <div class="mb-4">
-                        <div style="background: rgba(231, 76, 60, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <h5 style="color: #e74c3c; margin: 0;">
-                                    <i class="bi bi-arrow-down-circle"></i> {{ t('total_debit__') }}
-                                </h5>
-                                <div style="color: #e74c3c; font-weight: 700; font-size: 1.2rem;">
-                                    RM {{ "{:,.2f}".format(summary.total_debit) }}
-                                </div>
-                            </div>
-                            <small style="color: var(--text-secondary);">{{ debits|length }} {{ t('transactions__') }}</small>
-                            {% if summary.supplier_fees > 0 %}
-                            <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(46, 204, 113, 0.1); border-radius: 4px;">
-                                <i class="bi bi-cash-coin" style="color: #2ecc71;"></i>
-                                <small style="color: #2ecc71; font-weight: 600;">{{ t('supplier_merchant_fee_1') }}: RM {{ "{:,.2f}".format(summary.supplier_fees) }}</small>
-                            </div>
-                            {% endif %}
-                        </div>
+                    <!-- ═══════════════════════════════════════════════════ -->
+                    <!-- DEBIT (DR) Section - 分成GZ Expenses和Owner Expenses -->
+                    <!-- ═══════════════════════════════════════════════════ -->
+                    <div style="background: rgba(231, 76, 60, 0.05); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; border: 2px solid rgba(231, 76, 60, 0.3);">
+                        <h4 style="color: #e74c3c; margin-bottom: 1rem; font-weight: 700;">
+                            <i class="bi bi-arrow-down-circle"></i> DEBIT (DR) - Total: RM {{ "{:,.2f}".format(summary.total_debit) }}
+                        </h4>
                         
-                        <table class="table-professional">
-                            <thead style="background: var(--bg-secondary);">
-                                <tr>
-                                    <th>{{ t('date') }}</th>
-                                    <th>{{ t('description') }}</th>
-                                    <th>{{ t('category') }}</th>
-                                    <th class="text-end">{{ t('amount') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for trans in debits %}
-                                <tr>
-                                    <td style="color: var(--text-secondary); font-size: 0.9rem; white-space: nowrap;">
-                                        {{ trans.transaction_date }}
-                                    </td>
-                                    <td style="color: var(--text-primary);">
-                                        {{ trans.description[:50] }}{% if trans.description|length > 50 %}...{% endif %}
-                                        {% if trans.transaction_subtype == 'supplier_debit' %}
-                                        <span class="badge-professional badge-success-pro ms-2">{{ t('supplier') }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td style="white-space: nowrap;">
-                                        <span class="badge-professional badge-primary-pro">{{ trans.category or 'Uncategorized' }}</span>
-                                    </td>
-                                    <td class="text-end" style="font-weight: 600; color: #e74c3c; white-space: nowrap;">
-                                        <span style="color: #FFFEF0;">DR</span> RM {{ "{:,.2f}".format(trans.amount) }}
-                                        {% if trans.supplier_fee and trans.supplier_fee > 0 %}
-                                        <br><small style="color: #2ecc71;">(Fee: RM {{ "{:.2f}".format(trans.supplier_fee) }})</small>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                        <!-- GZ's Expenses (GZ供应商消费) -->
+                        {% set gz_debits = transactions|selectattr('transaction_type', 'equalto', 'DR')|selectattr('is_supplier')|list %}
+                        {% if gz_debits %}
+                        <div class="mb-3">
+                            <div style="background: rgba(50, 36, 70, 0.2); padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem; border-left: 4px solid #322446;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <h6 style="color: #FFFEF0; margin: 0; font-weight: 700;">
+                                        🏢 GZ's Expenses（GZ供应商消费）
+                                    </h6>
+                                    <div style="color: #FFFEF0; font-weight: 700; font-size: 1.1rem;">
+                                        RM {{ "{:,.2f}".format(summary.gz_expenses) }}
+                                    </div>
+                                </div>
+                                <small style="color: var(--text-secondary);">{{ gz_debits|length }} {{ t('transactions__') }} | Merchant Fee 1%: RM {{ "{:,.2f}".format(summary.supplier_fees) }}</small>
+                            </div>
+                            
+                            <table class="table-professional" style="font-size: 0.9rem;">
+                                <thead style="background: rgba(50, 36, 70, 0.2);">
+                                    <tr>
+                                        <th>{{ t('date') }}</th>
+                                        <th>{{ t('description') }}</th>
+                                        <th>Supplier</th>
+                                        <th class="text-end">{{ t('amount') }}</th>
+                                        <th class="text-end">Fee 1%</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for trans in gz_debits %}
+                                    <tr style="background: rgba(50, 36, 70, 0.1);">
+                                        <td style="color: var(--text-secondary); font-size: 0.85rem; white-space: nowrap;">
+                                            {{ trans.transaction_date }}
+                                        </td>
+                                        <td style="color: var(--text-primary);">
+                                            {{ trans.description[:40] }}{% if trans.description|length > 40 %}...{% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge-professional badge-success-pro" style="text-transform: capitalize;">{{ trans.supplier_name or 'GZ' }}</span>
+                                        </td>
+                                        <td class="text-end" style="font-weight: 600; color: #e74c3c; white-space: nowrap;">
+                                            <span style="color: #FFFEF0; font-size: 0.85rem;">DR</span> RM {{ "{:,.2f}".format(trans.amount) }}
+                                        </td>
+                                        <td class="text-end" style="color: #2ecc71; font-weight: 600; font-size: 0.85rem;">
+                                            {% if trans.supplier_fee %}RM {{ "{:.2f}".format(trans.supplier_fee) }}{% else %}-{% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Owner's Expenses (客户个人消费) -->
+                        {% set owner_debits = transactions|selectattr('transaction_type', 'equalto', 'DR')|rejectattr('is_supplier')|list %}
+                        {% if owner_debits %}
+                        <div class="mb-3">
+                            <div style="background: rgba(255, 0, 127, 0.1); padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem; border-left: 4px solid #FF007F;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <h6 style="color: #FF007F; margin: 0; font-weight: 700;">
+                                        👤 Owner's Expenses（客户个人消费）
+                                    </h6>
+                                    <div style="color: #FF007F; font-weight: 700; font-size: 1.1rem;">
+                                        RM {{ "{:,.2f}".format(summary.owner_expenses) }}
+                                    </div>
+                                </div>
+                                <small style="color: var(--text-secondary);">{{ owner_debits|length }} {{ t('transactions__') }}</small>
+                            </div>
+                            
+                            <table class="table-professional" style="font-size: 0.9rem;">
+                                <thead style="background: rgba(255, 0, 127, 0.1);">
+                                    <tr>
+                                        <th>{{ t('date') }}</th>
+                                        <th>{{ t('description') }}</th>
+                                        <th>{{ t('category') }}</th>
+                                        <th class="text-end">{{ t('amount') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for trans in owner_debits %}
+                                    <tr style="background: rgba(231, 76, 60, 0.03);">
+                                        <td style="color: var(--text-secondary); font-size: 0.85rem; white-space: nowrap;">
+                                            {{ trans.transaction_date }}
+                                        </td>
+                                        <td style="color: var(--text-primary);">
+                                            {{ trans.description[:40] }}{% if trans.description|length > 40 %}...{% endif %}
+                                        </td>
+                                        <td style="white-space: nowrap;">
+                                            <span class="badge-professional badge-primary-pro" style="font-size: 0.8rem;">{{ trans.category or 'Uncategorized' }}</span>
+                                        </td>
+                                        <td class="text-end" style="font-weight: 600; color: #e74c3c; white-space: nowrap;">
+                                            <span style="color: #FFFEF0; font-size: 0.85rem;">DR</span> RM {{ "{:,.2f}".format(trans.amount) }}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
                     
                 </div>
 

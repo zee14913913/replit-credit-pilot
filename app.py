@@ -3051,9 +3051,18 @@ def statement_comparison(statement_id):
         
         transactions = [dict(row) for row in cursor.fetchall()]
         
-        # Calculate summary
-        total_debit = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'DR')
-        total_credit = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'CR')
+        # Calculate summary按Owner/GZ细分
+        # DR分类：GZ Expenses vs Owner Expenses
+        gz_expenses = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'DR' and t.get('is_supplier'))
+        owner_expenses = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'DR' and not t.get('is_supplier'))
+        total_debit = gz_expenses + owner_expenses
+        
+        # CR分类：Owner Payment vs GZ Payment（简化版：暂时全部归Owner Payment）
+        owner_payment = sum(abs(t['amount']) for t in transactions if t['transaction_type'] == 'CR')
+        gz_payment = 0  # TODO: 实现GZ Payment识别逻辑
+        total_credit = owner_payment + gz_payment
+        
+        # Supplier手续费（GZ Expenses的1%）
         supplier_fees = sum(t.get('supplier_fee', 0) for t in transactions if t.get('supplier_fee'))
         
         # Category breakdown
@@ -3066,6 +3075,10 @@ def statement_comparison(statement_id):
         summary = {
             'total_debit': total_debit,
             'total_credit': total_credit,
+            'gz_expenses': gz_expenses,
+            'owner_expenses': owner_expenses,
+            'owner_payment': owner_payment,
+            'gz_payment': gz_payment,
             'supplier_fees': supplier_fees,
             'categories': categories
         }
