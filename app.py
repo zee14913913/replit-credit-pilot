@@ -9227,13 +9227,27 @@ def report_center():
             # 银行缩写
             bank_abbr = bank_abbr_map.get(bank_name, bank_name[:3].upper())
             
-            # 格式化日期为 DD/MM/YYYY
-            try:
+            # 智能格式化日期为 DD/MM/YYYY（支持多种输入格式）
+            date_formatted = stmt_date
+            if stmt_date:
                 from datetime import datetime
-                date_obj = datetime.strptime(stmt_date, '%Y-%m-%d')
-                date_formatted = date_obj.strftime('%d/%m/%Y')  # 例如：13/05/2025
-            except:
-                date_formatted = stmt_date
+                # 尝试多种日期格式
+                date_formats = [
+                    '%Y-%m-%d',      # 2025-11-30
+                    '%d %b %y',      # 28 SEP 25
+                    '%d %B %y',      # 28 September 25
+                    '%d-%b-%y',      # 28-SEP-25
+                    '%d/%m/%Y',      # 28/09/2025
+                    '%Y/%m/%d',      # 2025/09/28
+                ]
+                
+                for fmt in date_formats:
+                    try:
+                        date_obj = datetime.strptime(stmt_date, fmt)
+                        date_formatted = date_obj.strftime('%d/%m/%Y')  # 统一格式：13/05/2025
+                        break
+                    except:
+                        continue
             
             records.append({
                 'id': rec[0],
