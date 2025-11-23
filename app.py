@@ -9187,8 +9187,8 @@ def report_center():
             s.statement_total as amount,
             s.is_confirmed as status
         FROM statements s
-        LEFT JOIN credit_cards cc ON s.card_id = cc.id
-        LEFT JOIN customers c ON cc.customer_id = c.id
+        INNER JOIN credit_cards cc ON s.card_id = cc.id
+        INNER JOIN customers c ON cc.customer_id = c.id
         WHERE {' AND '.join(where_clauses)}
         ORDER BY s.statement_date DESC
         LIMIT 100
@@ -9202,7 +9202,7 @@ def report_center():
         for rec in records_raw:
             records.append({
                 'id': rec[0],
-                'customer_name': rec[1] or 'Unknown',
+                'customer_name': rec[1],
                 'account_name': rec[2],
                 'date_from': rec[3],
                 'date_to': rec[4],
