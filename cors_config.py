@@ -16,15 +16,11 @@ def configure_cors(app):
         
         # Replit前端（内部入口）
         "https://finance-pilot-businessgz.replit.app",
-        "https://creditpilot.digital",
         
         # 本地开发
         "http://localhost:3000",
         "http://localhost:5000",
-        "http://localhost:5678",
         "http://localhost:8000",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:5000",
     ]
     
     # 配置CORS
