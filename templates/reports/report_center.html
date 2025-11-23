@@ -180,14 +180,14 @@
                         </td>
                         <td style="color: var(--primary-pink); font-weight: 600;">RM {{ "{:,.2f}".format(record.amount) }}</td>
                         <td style="color: #FFD700; font-weight: 600;">
-                            {% if record.minimum_payment %}
+                            {% if record.minimum_payment is not none %}
                                 RM {{ "{:,.2f}".format(record.minimum_payment) }}
                             {% else %}
                                 <span style="color: rgba(255,255,255,0.4);">-</span>
                             {% endif %}
                         </td>
                         <td>
-                            {% if record.date_to %}
+                            {% if record.date_to is not none %}
                                 {{ record.date_to }}
                             {% else %}
                                 <span style="color: rgba(255,255,255,0.4);">-</span>
