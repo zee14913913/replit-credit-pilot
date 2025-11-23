@@ -9199,26 +9199,50 @@ def report_center():
         cursor.execute(query, params)
         records_raw = cursor.fetchall()
         
+        # 银行缩写映射
+        bank_abbr_map = {
+            'Maybank': 'MBB',
+            'CIMB': 'CIMB',
+            'Public Bank': 'PBB',
+            'Hong Leong': 'HLB',
+            'RHB': 'RHB',
+            'AmBank': 'AMB',
+            'HSBC': 'HSBC',
+            'Standard Chartered': 'SCB',
+            'Citibank': 'CITI',
+            'OCBC': 'OCBC',
+            'UOB': 'UOB',
+            'Bank Islam': 'BIMB',
+            'Affin Bank': 'AFFIN',
+            'Alliance Bank': 'ABB',
+            'Bank Rakyat': 'BR'
+        }
+        
         # 转换为字典列表（添加详细信息）
         records = []
         for rec in records_raw:
             stmt_date = rec[4]
-            # 解析年月
+            bank_name = rec[2]
+            
+            # 银行缩写
+            bank_abbr = bank_abbr_map.get(bank_name, bank_name[:3].upper())
+            
+            # 格式化日期为 DD/MM/YYYY
             try:
                 from datetime import datetime
                 date_obj = datetime.strptime(stmt_date, '%Y-%m-%d')
-                month_display = date_obj.strftime('%Y-%m')  # 格式：2025-11
+                date_formatted = date_obj.strftime('%d/%m/%Y')  # 例如：13/05/2025
             except:
-                month_display = stmt_date
+                date_formatted = stmt_date
             
             records.append({
                 'id': rec[0],
                 'customer_name': rec[1],
-                'bank_name': rec[2],
+                'bank_name': bank_name,
+                'bank_abbr': bank_abbr,
                 'card_last4': rec[3],
-                'account_name': f"{rec[2]} ****{rec[3]}",  # 例如：Maybank ****1234
-                'statement_month': month_display,
                 'statement_date': stmt_date,
+                'statement_date_formatted': date_formatted,
                 'date_from': stmt_date,
                 'date_to': rec[7] if rec[7] else stmt_date,  # due_date
                 'amount': rec[5] or 0.0,
