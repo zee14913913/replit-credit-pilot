@@ -201,9 +201,8 @@ def api_dashboard_stats():
             'error': str(e)
         }), 500
 @app.route('/api/bill/upload', methods=['POST'])
-@require_admin_or_accountant
 def api_bill_upload():
-    """API: 账单上传 - 支持PDF、Excel、CSV"""
+    """API: 账单上传 - 支持PDF、Excel、CSV（MiniMax前端可直接访问）"""
     try:
         if 'file' not in request.files:
             return jsonify({
@@ -217,13 +216,24 @@ def api_bill_upload():
         if not file or not customer_id:
             return jsonify({
                 'success': False,
-                'error': 'Missing required fields'
+                'error': 'Missing required fields (file and customer_id required)'
             }), 400
+        
+        # 验证客户存在
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM customers WHERE id = ?", (customer_id,))
+            if not cursor.fetchone():
+                return jsonify({
+                    'success': False,
+                    'error': f'Customer with ID {customer_id} not found'
+                }), 404
         
         # Save file
         filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        customer_folder = os.path.join(app.config['UPLOAD_FOLDER'], f'customer_{customer_id}')
+        os.makedirs(customer_folder, exist_ok=True)
+        file_path = os.path.join(customer_folder, filename)
         file.save(file_path)
         
         return jsonify({
@@ -231,7 +241,8 @@ def api_bill_upload():
             'message': 'Bill uploaded successfully',
             'file_path': file_path,
             'filename': filename,
-            'customer_id': customer_id
+            'customer_id': customer_id,
+            'upload_time': datetime.now().isoformat()
         }), 200
     except Exception as e:
         logger.error(f"API /api/bill/upload error: {e}")
