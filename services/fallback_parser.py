@@ -189,9 +189,9 @@ class FallbackParser:
         lines = text.split('\n')
         
         # 通用交易匹配模式
-        # 格式: 日期 + 日期 + 描述 + 金额
-        # 修复：支持CR标记无空格（如 "17,283.40CR"）
-        trans_pattern = r'(\d{2}\s+[A-Z]{3}(?:\s+\d{2,4})?)\s+(\d{2}\s+[A-Z]{3}(?:\s+\d{2,4})?)\s+(.{10,80}?)\s+([\d,]+\.\d{2}(?:\s*CR)?)'
+        # 格式: 日期 + 日期 + 描述 + 金额 + 可选CR标记
+        # 修复：直接捕获紧贴或空格分隔的CR标记
+        trans_pattern = r'(\d{2}\s+[A-Z]{3}(?:\s+\d{2,4})?)\s+(\d{2}\s+[A-Z]{3}(?:\s+\d{2,4})?)\s+(.{10,80}?)\s+([\d,]+\.\d{2})\s*(CR)?'
         
         for line in lines:
             match = re.search(trans_pattern, line)
@@ -199,11 +199,12 @@ class FallbackParser:
                 trans_date = match.group(1)
                 post_date = match.group(2)
                 description = match.group(3).strip()
-                amount_str = match.group(4)
+                amount_str = match.group(4)  # 纯数字金额
+                cr_marker = match.group(5)    # CR标记（如果存在）
                 
-                # 判断 CR/DR（支持无空格的CR）
-                is_credit = 'CR' in amount_str
-                amount = self._parse_amount(amount_str.replace('CR', '').replace(' ', ''))
+                # 判断 CR/DR（仅依赖cr_marker组）
+                is_credit = cr_marker is not None
+                amount = self._parse_amount(amount_str)
                 
                 transactions.append({
                     'transaction_date': trans_date,
@@ -215,17 +216,18 @@ class FallbackParser:
         
         # 如果没有提取到交易，尝试简化模式
         if len(transactions) == 0:
-            simple_pattern = r'(\d{2}\s+[A-Z]{3})\s+(.{15,60}?)\s+([\d,]+\.\d{2}(?:\s*CR)?)'
+            simple_pattern = r'(\d{2}\s+[A-Z]{3})\s+(.{15,60}?)\s+([\d,]+\.\d{2})\s*(CR)?'
             for line in lines:
                 match = re.search(simple_pattern, line)
                 if match:
                     date = match.group(1)
                     description = match.group(2).strip()
                     amount_str = match.group(3)
-                    amount = self._parse_amount(amount_str.replace('CR', '').replace(' ', ''))
+                    cr_marker = match.group(4)
+                    amount = self._parse_amount(amount_str)
                     
-                    # 判断类型
-                    is_credit = 'CR' in amount_str or 'PAYMENT' in description.upper() or 'BAYARAN' in description.upper()
+                    # 判断类型（仅依赖cr_marker组）
+                    is_credit = cr_marker is not None
                     
                     transactions.append({
                         'transaction_date': date,
