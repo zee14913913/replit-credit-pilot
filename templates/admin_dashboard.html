@@ -361,7 +361,7 @@
                                 <tr>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('customer_name') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('customer_code') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('nric') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('email') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('monthly_income') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">{{ t('credit_cards') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">{{ t('statements') }}</th>
@@ -379,7 +379,7 @@
                                             {{ customer['customer_code'] }}
                                         </td>
                                         <td style="font-size: 0.75rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #999;">
-                                            {{ customer['nric'] if customer['nric'] else '-' }}
+                                            {{ customer['email'] if customer['email'] else '-' }}
                                         </td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #FF007F;">
                                             RM {{ "{:,.0f}".format(customer['monthly_income']) if customer['monthly_income'] else '-' }}
@@ -435,7 +435,7 @@
                                 <tr>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('customer_name') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('customer_code') }}</th>
-                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('nric') }}</th>
+                                    <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('email') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1);">{{ t('monthly_income') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">{{ t('bank_accounts') }}</th>
                                     <th style="font-size: 0.85rem; padding: 1rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.1); text-align: center;">{{ t('statements') }}</th>
@@ -453,7 +453,7 @@
                                             {{ customer['customer_code'] }}
                                         </td>
                                         <td style="font-size: 0.75rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); color: #999;">
-                                            {{ customer['nric'] if customer['nric'] else '-' }}
+                                            {{ customer['email'] if customer['email'] else '-' }}
                                         </td>
                                         <td style="font-size: 0.80rem; padding: 0.9rem 1.2rem; border-right: 1px solid rgba(255,255,255,0.05); font-weight: 600; color: #9370DB;">
                                             RM {{ "{:,.0f}".format(customer['monthly_income']) if customer['monthly_income'] else '-' }}

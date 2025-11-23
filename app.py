@@ -2231,7 +2231,6 @@ def admin_dashboard():
                 c.id,
                 c.name as customer_name,
                 c.customer_code,
-                c.nric,
                 c.email,
                 c.phone,
                 c.monthly_income,
@@ -2240,7 +2239,7 @@ def admin_dashboard():
             FROM customers c
             INNER JOIN credit_cards cc ON c.id = cc.customer_id
             LEFT JOIN monthly_statements ms ON c.id = ms.customer_id
-            GROUP BY c.id, c.name, c.customer_code, c.nric, c.email, c.phone, c.monthly_income
+            GROUP BY c.id, c.name, c.customer_code, c.email, c.phone, c.monthly_income
             ORDER BY c.name ASC
         """)
         credit_card_customers = [dict(row) for row in cursor.fetchall()]
@@ -2251,7 +2250,6 @@ def admin_dashboard():
                 c.id,
                 c.name as customer_name,
                 c.customer_code,
-                c.nric,
                 c.email,
                 c.phone,
                 c.monthly_income,
@@ -2260,7 +2258,7 @@ def admin_dashboard():
             FROM customers c
             INNER JOIN savings_accounts sa ON c.id = sa.customer_id
             LEFT JOIN savings_statements ss ON sa.id = ss.savings_account_id
-            GROUP BY c.id, c.name, c.customer_code, c.nric, c.email, c.phone, c.monthly_income
+            GROUP BY c.id, c.name, c.customer_code, c.email, c.phone, c.monthly_income
             ORDER BY c.name ASC
         """)
         savings_customers = [dict(row) for row in cursor.fetchall()]
