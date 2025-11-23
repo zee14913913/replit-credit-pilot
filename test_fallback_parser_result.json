@@ -1,0 +1,134 @@
+{
+  "info": {
+    "bank_name": "AMBANK_ISLAMIC",
+    "customer_name": null,
+    "card_last4": null,
+    "statement_date": null,
+    "payment_due_date": null,
+    "current_balance": 0.0,
+    "minimum_payment": 0.0,
+    "previous_balance": 0.0,
+    "credit_limit": 0.0
+  },
+  "transactions": [
+    {
+      "transaction_date": "29 SEP 25",
+      "posting_date": "01 OCT 25",
+      "description": "AI SMART TECH SHAH ALAM MY",
+      "amount": 599.0,
+      "type": "DR"
+    },
+    {
+      "transaction_date": "29 SEP 25",
+      "posting_date": "01 OCT 25",
+      "description": "AI SMART TECH SHAH ALAM MY",
+      "amount": 11999.0,
+      "type": "DR"
+    },
+    {
+      "transaction_date": "29 SEP 25",
+      "posting_date": "29 SEP 25",
+      "description": "Credit Card Service Tax",
+      "amount": 25.0,
+      "type": "DR"
+    },
+    {
+      "transaction_date": "03 SEP 25",
+      "posting_date": "05 SEP 25",
+      "description": "MR D.I.Y (M)-STI SHAH ALAM MYS",
+      "amount": 12.3,
+      "type": "DR"
+    },
+    {
+      "transaction_date": "03 SEP 25",
+      "posting_date": "05 SEP 25",
+      "description": "GREATEASTERN1039459530 KUALA LUMPUR MYS",
+      "amount": 500.0,
+      "type": "DR"
+    },
+    {
+      "transaction_date": "06 SEP 25",
+      "posting_date": "08 SEP 25",
+      "description": "TFM-BUKIT JALIL KUALA LUMPUR MYS",
+      "amount": 191.55,
+      "type": "DR"
+    },
+    {
+      "transaction_date": "08 SEP 25",
+      "posting_date": "10 SEP 25",
+      "description": "JAYA GROCER-ECO ARDENC SHAH ALAM MYS",
+      "amount": 57.05,
+      "type": "DR"
+    },
+    {
+      "transaction_date": "08 SEP 25",
+      "posting_date": "10 SEP 25",
+      "description": "HESHMAEL'S CLINIC PETALING JAYA MYS",
+      "amount": 65.0,
+      "type": "DR"
+    },
+    {
+      "transaction_date": "10 SEP 25",
+      "posting_date": "12 SEP 25",
+      "description": "DIGI - RPS 10000033322 SHAH ALAM MYS",
+      "amount": 71.5,
+      "type": "DR"
+    },
+    {
+      "transaction_date": "12 SEP 25",
+      "posting_date": "14 SEP 25",
+      "description": "GUARDIAN LEVEL 5 TERMI SELANGOR MYS",
+      "amount": 8.0,
+      "type": "DR"
+    },
+    {
+      "transaction_date": "16 SEP 25",
+      "posting_date": "18 SEP 25",
+      "description": "GREATEASTERN1052652598 KUALA LUMPUR MYS",
+      "amount": 350.0,
+      "type": "DR"
+    },
+    {
+      "transaction_date": "23 SEP 25",
+      "posting_date": "23 SEP 25",
+      "description": "PAYMENT VIA RPP RECEIVED - THANK YOU,INFINITE GZ SDN. BH,Pay",
+      "amount": 17283.4,
+      "type": "DR"
+    },
+    {
+      "transaction_date": "26 SEP 25",
+      "posting_date": "29 SEP 25",
+      "description": "MCDONALDS-JALAN K00 AP GOMBAK MYS",
+      "amount": 21.95,
+      "type": "DR"
+    },
+    {
+      "transaction_date": "27 SEP 25",
+      "posting_date": "29 SEP 25",
+      "description": "GREATEASTERN1068013862 KUALA LUMPUR MYS",
+      "amount": 1000.0,
+      "type": "DR"
+    },
+    {
+      "transaction_date": "27 SEP 25",
+      "posting_date": "29 SEP 25",
+      "description": "GREATEASTERN1081950414 KUALA LUMPUR MYS",
+      "amount": 300.0,
+      "type": "DR"
+    },
+    {
+      "transaction_date": "29 SEP 25",
+      "posting_date": "01 OCT 25",
+      "description": "AA PHARMACY- SETIA SHAH ALAM MYS",
+      "amount": 34.9,
+      "type": "DR"
+    },
+    {
+      "transaction_date": "29 SEP 25",
+      "posting_date": "01 OCT 25",
+      "description": "GREATEASTERN1037338417 KUALA LUMPUR MYS",
+      "amount": 250.0,
+      "type": "DR"
+    }
+  ]
+}
