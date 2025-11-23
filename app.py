@@ -3247,7 +3247,7 @@ def export_statement_transactions(statement_id, format):
             
             # Get statement info
             cursor.execute('''
-                SELECT s.*, cc.bank_name, cc.card_number, c.full_name as customer_name
+                SELECT s.*, cc.bank_name, cc.card_number_last4, c.full_name as customer_name
                 FROM statements s
                 JOIN credit_cards cc ON s.card_id = cc.id
                 JOIN customers c ON cc.customer_id = c.id
@@ -3302,7 +3302,7 @@ def export_statement_transactions(statement_id, format):
                 user_agent=request_info['user_agent']
             )
             
-            filename = f"{statement['bank_name'].replace(' ', '_')}_*{statement['card_number'][-4:]}_" \
+            filename = f"{statement['bank_name'].replace(' ', '_')}_*{statement['card_number_last4']}_" \
                       f"{statement['statement_date']}_Owner_GZ_Report.xlsx"
             
             return send_file(output, 
@@ -3372,7 +3372,7 @@ def _create_cover_sheet(ws, statement, cards_data):
     ws['A3'] = 'Bank:'
     ws['B3'] = statement.get('bank_name', '')
     ws['A4'] = 'Card Number:'
-    ws['B4'] = f"**** **** **** {statement.get('card_number', '')[-4:]}"
+    ws['B4'] = f"**** **** **** {statement.get('card_number_last4', '')}"
     ws['A5'] = 'Statement Date:'
     ws['B5'] = statement.get('statement_date', '')
     ws['A6'] = 'Customer:'
