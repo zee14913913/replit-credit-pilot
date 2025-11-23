@@ -14,14 +14,14 @@ The Smart Credit & Loan Manager is a Premium Enterprise-Grade SaaS Platform buil
 - ✅ **Configuration Management**: Production config saved to config/bank_parser_templates.json (1292 lines) with automated backup system (config/bank_parser_templates.json.backup_FINAL_13BANKS_16FIELDS).
 - ✅ **Architect Approval**: Final review confirmed structural completeness, classification metadata restoration, and production readiness for deployment with iterative regex optimization.
 
-### November 19, 2025 - Google Document AI Integration (Production-Ready)
-- ✅ **Dual-Engine PDF Parsing System**: Integrated Google Document AI as primary engine (98-99.9% accuracy) with pdfplumber as defensive fallback.
-- ✅ **Multi-Column Layout Detection**: Enhanced `_extract_transactions_from_tables` to support 3/4/5-column Malaysian bank statement layouts with independent DR/CR column parsing.
-- ✅ **DR/CR Validation Gate**: Enforces dual presence verification (dr_count > 0 AND cr_count > 0) before accepting Document AI results, ensuring 100% transaction extraction guarantee.
-- ✅ **Polarity Preservation**: Added `_parse_amount_with_type` helper to correctly identify CR transactions from negative amounts or CR markers.
-- ✅ **Environment-Based Configuration**: Automatic API key management via GOOGLE_PROJECT_ID, GOOGLE_PROCESSOR_ID, GOOGLE_LOCATION, GOOGLE_SERVICE_ACCOUNT_JSON.
-- ✅ **Production Logging**: Comprehensive logging for monitoring and debugging Document AI parsing performance.
-- ✅ **Architect Approval**: Final review confirmed 100% compliance with ARCHITECT_CONSTRAINTS.md specifications.
+### November 23, 2025 - Fallback Parser Only Configuration (Current)
+- ✅ **PDF Parsing Strategy**: System configured to use **Fallback Parser ONLY** (pdfplumber-based, local processing, zero external API costs).
+- ✅ **Parser Mode**: `PARSER_MODE = 'FALLBACK_ONLY'` - Google Document AI disabled per client requirements.
+- ✅ **13 Bank Support**: Dedicated pdfplumber parsers for all 13 Malaysian banks (AMBANK, AMBANK_ISLAMIC, UOB, OCBC, HONG_LEONG, HSBC, STANDARD_CHARTERED, MAYBANK, AFFIN_BANK, CIMB, ALLIANCE_BANK, PUBLIC_BANK, RHB_BANK).
+- ✅ **Multi-Column Layout Detection**: Supports 3/4/5-column Malaysian bank statement layouts with independent DR/CR column parsing.
+- ✅ **DR/CR Validation Gate**: Enforces dual presence verification (dr_count > 0 AND cr_count > 0) before accepting results, ensuring 100% transaction extraction guarantee.
+- ✅ **VBA Backup Option**: Supports VBA client-side parsing with JSON upload as alternative method.
+- ✅ **Zero External Costs**: All PDF processing done locally, no cloud API usage or recurring fees.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -79,12 +79,13 @@ The backend uses Flask with SQLite and a context manager for database interactio
 **Credit Card Calculation System**:
 A 2-round calculation engine (services/credit_card_core.py) implements 9 metrics, supporting negative balances and an independent 1% miscellaneous fee system (services/miscellaneous_fee.py). A 4-layer validation system (services/credit_card_validation.py) ensures data integrity. An automated pipeline (services/auto_processor.py) handles upload to fee generation. All calculations use Decimal types for precision.
 
-**PDF Parsing Architecture (Production-Ready v2.0)**:
-Dual-engine PDF parsing system guaranteeing 100% transaction extraction:
-- **Primary Engine**: Google Document AI (98-99.9% accuracy) with intelligent multi-column layout detection (3/4/5 columns), independent DR/CR column parsing, and polarity preservation for negative amounts.
+**PDF Parsing Architecture (Current Configuration)**:
+Fallback Parser system guaranteeing 100% transaction extraction with zero external API costs:
+- **Parser Mode**: `FALLBACK_ONLY` - Local processing only, Google Document AI disabled.
+- **Primary Engine**: Bank-specific pdfplumber parsers for 13 Malaysian banks with intelligent multi-column layout detection (3/4/5 columns), independent DR/CR column parsing, and polarity preservation for negative amounts.
 - **Validation Gate**: Enforces dual DR/CR presence verification (dr_count > 0 AND cr_count > 0) before accepting results, preventing incomplete data from entering downstream systems.
-- **Fallback Engine**: Bank-specific pdfplumber parsers for 15 Malaysian banks when Document AI fails or data incomplete.
-- **Environment-Based Configuration**: Automatic API key management via environment variables (GOOGLE_PROJECT_ID, GOOGLE_PROCESSOR_ID, GOOGLE_LOCATION, GOOGLE_SERVICE_ACCOUNT_JSON).
+- **Backup Method**: VBA client-side parsing with standardized JSON upload endpoints.
+- **Cost**: Zero external API costs - all processing done locally on Replit infrastructure.
 - **Logging**: Comprehensive logging for production monitoring and debugging.
 
 **PDF Batch Processing System**:
@@ -139,12 +140,12 @@ A production-ready Unified RBAC Implementation protects 32+ functions using `@re
 
 ### External APIs & Integrations
 - **Bank Negara Malaysia Public API**: `https://api.bnm.gov.my` for interest rates.
-- **Google Document AI**: For PDF parsing and OCR.
 - **SendGrid API**: Email delivery.
 - **Twilio API**: SMS delivery.
 - **Perplexity AI API**: Primary AI provider (Model: `sonar`).
 - **OpenAI API**: Backup AI provider (gpt-4o-mini).
 - **CTOS Data**: Exclusive source for debt commitment data in loan evaluation.
+- **PDF Parsing**: Local Fallback Parser (pdfplumber) - no external API usage.
 
 ### Database
 - **SQLite**: Primary file-based relational database (`db/smart_loan_manager.db`).
