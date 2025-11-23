@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file, send_from_directory, session
+from flask_cors import CORS
 import os
 from datetime import datetime, timedelta
 import json
@@ -313,6 +314,193 @@ def api_customer_create():
             'success': False,
             'error': str(e)
         }), 500
+
+# ==================== 新增4个MiniMax前端集成API端点 ====================
+
+@app.route('/api/companies', methods=['GET'])
+def api_get_companies_list():
+    """API: 获取公司客户列表（支持分页和统计）"""
+    try:
+        skip = int(request.args.get('skip', 0))
+        limit = int(request.args.get('limit', 100))
+        
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # 查询总数
+            cursor.execute("SELECT COUNT(*) FROM customers")
+            total = cursor.fetchone()[0]
+            
+            # 查询客户列表
+            cursor.execute("""
+                SELECT 
+                    id,
+                    name,
+                    email,
+                    phone,
+                    customer_code,
+                    monthly_income,
+                    created_at,
+                    personal_account_name,
+                    personal_account_number,
+                    company_account_name,
+                    company_account_number,
+                    tag_desc
+                FROM customers
+                ORDER BY created_at DESC
+                LIMIT ? OFFSET ?
+            """, (limit, skip))
+            
+            customers = []
+            for row in cursor.fetchall():
+                customers.append({
+                    "id": row[0],
+                    "name": row[1],
+                    "email": row[2],
+                    "phone": row[3],
+                    "customer_code": row[4],
+                    "monthly_income": row[5],
+                    "created_at": row[6],
+                    "personal_account_name": row[7],
+                    "personal_account_number": row[8],
+                    "company_account_name": row[9],
+                    "company_account_number": row[10],
+                    "tag_desc": row[11]
+                })
+            
+            return jsonify({
+                "success": True,
+                "data": customers,
+                "total": total,
+                "skip": skip,
+                "limit": limit
+            }), 200
+            
+    except Exception as e:
+        logger.error(f"API /api/companies error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/bank-statements', methods=['GET'])
+def api_get_bank_statements_list():
+    """API: 获取银行对账单列表（支持过滤和分页）"""
+    try:
+        customer_id = request.args.get('customer_id')
+        bank_name = request.args.get('bank_name')
+        statement_month = request.args.get('statement_month')
+        skip = int(request.args.get('skip', 0))
+        limit = int(request.args.get('limit', 100))
+        
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # 构建查询条件
+            where_clauses = []
+            params = []
+            
+            if customer_id:
+                where_clauses.append("customer_id = ?")
+                params.append(customer_id)
+            
+            if bank_name:
+                where_clauses.append("bank_name = ?")
+                params.append(bank_name)
+            
+            if statement_month:
+                where_clauses.append("statement_month = ?")
+                params.append(statement_month)
+            
+            where_sql = " AND ".join(where_clauses) if where_clauses else "1=1"
+            
+            # 查询总数
+            count_query = f"SELECT COUNT(*) FROM monthly_statements WHERE {where_sql}"
+            cursor.execute(count_query, params)
+            total = cursor.fetchone()[0]
+            
+            # 查询账单列表
+            params.extend([limit, skip])
+            query = f"""
+                SELECT 
+                    id,
+                    customer_id,
+                    bank_name,
+                    statement_month,
+                    period_start_date,
+                    period_end_date,
+                    previous_balance_total,
+                    closing_balance_total,
+                    owner_balance,
+                    gz_balance,
+                    owner_expenses,
+                    owner_payments,
+                    gz_expenses,
+                    gz_payments,
+                    file_paths,
+                    card_count,
+                    transaction_count,
+                    validation_score,
+                    is_confirmed,
+                    inconsistencies,
+                    created_at,
+                    updated_at
+                FROM monthly_statements
+                WHERE {where_sql}
+                ORDER BY statement_month DESC, bank_name ASC
+                LIMIT ? OFFSET ?
+            """
+            
+            cursor.execute(query, params)
+            statements = []
+            
+            for row in cursor.fetchall():
+                statements.append({
+                    "id": row[0],
+                    "customer_id": row[1],
+                    "bank_name": row[2],
+                    "statement_month": row[3],
+                    "period_start_date": row[4],
+                    "period_end_date": row[5],
+                    "previous_balance_total": row[6],
+                    "closing_balance_total": row[7],
+                    "owner_balance": row[8],
+                    "gz_balance": row[9],
+                    "owner_expenses": row[10],
+                    "owner_payments": row[11],
+                    "gz_expenses": row[12],
+                    "gz_payments": row[13],
+                    "file_paths": row[14],
+                    "card_count": row[15],
+                    "transaction_count": row[16],
+                    "validation_score": row[17],
+                    "is_confirmed": bool(row[18]),
+                    "inconsistencies": row[19],
+                    "created_at": row[20],
+                    "updated_at": row[21]
+                })
+            
+            return jsonify({
+                "success": True,
+                "data": statements,
+                "total": total,
+                "filters": {
+                    "customer_id": customer_id,
+                    "bank_name": bank_name,
+                    "statement_month": statement_month
+                },
+                "skip": skip,
+                "limit": limit
+            }), 200
+            
+    except Exception as e:
+        logger.error(f"API /api/bank-statements error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+# ==================== END 新增API端点 ====================
 
 @app.route('/api/bill/ocr-status', methods=['GET', 'POST'])
 def api_bill_ocr_status():
