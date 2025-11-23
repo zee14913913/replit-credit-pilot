@@ -179,8 +179,20 @@
                             {{ record.bank_abbr }} - {{ record.statement_date_formatted }}
                         </td>
                         <td style="color: var(--primary-pink); font-weight: 600;">RM {{ "{:,.2f}".format(record.amount) }}</td>
-                        <td style="color: #FFD700; font-weight: 600;">RM {{ "{:,.2f}".format(record.minimum_payment) }}</td>
-                        <td>{{ record.date_to }}</td>
+                        <td style="color: #FFD700; font-weight: 600;">
+                            {% if record.minimum_payment %}
+                                RM {{ "{:,.2f}".format(record.minimum_payment) }}
+                            {% else %}
+                                <span style="color: rgba(255,255,255,0.4);">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if record.date_to %}
+                                {{ record.date_to }}
+                            {% else %}
+                                <span style="color: rgba(255,255,255,0.4);">-</span>
+                            {% endif %}
+                        </td>
                         <td>
                             {% if record.status == 'confirmed' %}
                                 <span class="badge-success-pro">{{ t('confirmed') }}</span>

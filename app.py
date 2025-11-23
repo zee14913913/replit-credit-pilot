@@ -9249,6 +9249,17 @@ def report_center():
                     except:
                         continue
             
+            # 格式化 due_date（如果存在）
+            due_date_formatted = None
+            if rec[7]:  # due_date存在
+                for fmt in date_formats:
+                    try:
+                        due_date_obj = datetime.strptime(rec[7], fmt)
+                        due_date_formatted = due_date_obj.strftime('%d/%m/%Y')
+                        break
+                    except:
+                        continue
+            
             records.append({
                 'id': rec[0],
                 'customer_name': rec[1],
@@ -9258,9 +9269,9 @@ def report_center():
                 'statement_date': stmt_date,
                 'statement_date_formatted': date_formatted,
                 'date_from': stmt_date,
-                'date_to': rec[7] if rec[7] else stmt_date,  # due_date
+                'date_to': due_date_formatted,  # 如果为NULL则显示None
                 'amount': rec[5] or 0.0,
-                'minimum_payment': rec[8] or 0.0,
+                'minimum_payment': rec[8],  # 保留原始值（可能是NULL）
                 'status': 'confirmed' if rec[6] else 'pending'
             })
         
