@@ -3054,13 +3054,60 @@ def statement_comparison(statement_id):
         
         transactions = [dict(row) for row in cursor.fetchall()]
         
-        # 按卡号分组（用于分开显示不同信用卡的交易）
+        # 按卡号分组并计算enriched数据（用于分开显示不同信用卡的交易）
         cards_data = {}
         for t in transactions:
-            card_key = t.get('card_last4') or 'unknown'
+            card_key = t.get('card_last4') or 'Unassigned'
             if card_key not in cards_data:
-                cards_data[card_key] = []
-            cards_data[card_key].append(t)
+                cards_data[card_key] = {
+                    'card_last4': card_key,
+                    'transactions': [],
+                    'cr_transactions': [],
+                    'dr_transactions': [],
+                    'owner_payments': [],
+                    'gz_payments': [],
+                    'owner_expenses': [],
+                    'gz_expenses': [],
+                    'totals': {
+                        'cr_total': 0,
+                        'dr_total': 0,
+                        'owner_payment_total': 0,
+                        'gz_payment_total': 0,
+                        'owner_expense_total': 0,
+                        'gz_expense_total': 0,
+                        'supplier_fees_total': 0
+                    }
+                }
+            
+            # 添加到总交易列表
+            cards_data[card_key]['transactions'].append(t)
+            
+            # 按CR/DR分类
+            if t['transaction_type'] == 'CR':
+                cards_data[card_key]['cr_transactions'].append(t)
+                cards_data[card_key]['totals']['cr_total'] += abs(t['amount'])
+                
+                # 按Owner/GZ Payment分类
+                if t.get('category') == 'owner_payment':
+                    cards_data[card_key]['owner_payments'].append(t)
+                    cards_data[card_key]['totals']['owner_payment_total'] += abs(t['amount'])
+                elif t.get('category') == 'infinite_payment':
+                    cards_data[card_key]['gz_payments'].append(t)
+                    cards_data[card_key]['totals']['gz_payment_total'] += abs(t['amount'])
+                    
+            elif t['transaction_type'] == 'DR':
+                cards_data[card_key]['dr_transactions'].append(t)
+                cards_data[card_key]['totals']['dr_total'] += abs(t['amount'])
+                
+                # 按Owner/GZ Expense分类
+                if t.get('is_supplier'):
+                    cards_data[card_key]['gz_expenses'].append(t)
+                    cards_data[card_key]['totals']['gz_expense_total'] += abs(t['amount'])
+                    if t.get('supplier_fee'):
+                        cards_data[card_key]['totals']['supplier_fees_total'] += t['supplier_fee']
+                else:
+                    cards_data[card_key]['owner_expenses'].append(t)
+                    cards_data[card_key]['totals']['owner_expense_total'] += abs(t['amount'])
         
         # Calculate summary按Owner/GZ细分
         # DR分类：GZ Expenses vs Owner Expenses
