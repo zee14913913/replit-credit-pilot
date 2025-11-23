@@ -2229,16 +2229,18 @@ def admin_dashboard():
         cursor.execute("""
             SELECT DISTINCT
                 c.id,
-                c.name,
+                c.name as customer_name,
+                c.customer_code,
+                c.nric,
                 c.email,
                 c.phone,
                 c.monthly_income,
-                COUNT(DISTINCT cc.id) as total_cards,
-                COUNT(DISTINCT ms.id) as total_statements
+                COUNT(DISTINCT cc.id) as credit_card_count,
+                COUNT(DISTINCT ms.id) as statement_count
             FROM customers c
             INNER JOIN credit_cards cc ON c.id = cc.customer_id
             LEFT JOIN monthly_statements ms ON c.id = ms.customer_id
-            GROUP BY c.id, c.name, c.email, c.phone, c.monthly_income
+            GROUP BY c.id, c.name, c.customer_code, c.nric, c.email, c.phone, c.monthly_income
             ORDER BY c.name ASC
         """)
         credit_card_customers = [dict(row) for row in cursor.fetchall()]
@@ -2247,16 +2249,18 @@ def admin_dashboard():
         cursor.execute("""
             SELECT DISTINCT
                 c.id,
-                c.name,
+                c.name as customer_name,
+                c.customer_code,
+                c.nric,
                 c.email,
                 c.phone,
                 c.monthly_income,
-                COUNT(DISTINCT sa.id) as total_accounts,
-                COUNT(DISTINCT ss.id) as total_statements
+                COUNT(DISTINCT sa.id) as bank_account_count,
+                COUNT(DISTINCT ss.id) as statement_count
             FROM customers c
             INNER JOIN savings_accounts sa ON c.id = sa.customer_id
             LEFT JOIN savings_statements ss ON sa.id = ss.savings_account_id
-            GROUP BY c.id, c.name, c.email, c.phone, c.monthly_income
+            GROUP BY c.id, c.name, c.customer_code, c.nric, c.email, c.phone, c.monthly_income
             ORDER BY c.name ASC
         """)
         savings_customers = [dict(row) for row in cursor.fetchall()]
@@ -2264,8 +2268,8 @@ def admin_dashboard():
     return render_template('admin_dashboard.html', 
                          customers=customers,
                          statement_count=statement_count,
-                         txn_count=txn_count,
-                         active_cards=active_cards,
+                         transaction_count=txn_count,
+                         credit_card_count=active_cards,
                          cc_statements=cc_statements,
                          sa_statements=sa_statements,
                          credit_card_customers=credit_card_customers,

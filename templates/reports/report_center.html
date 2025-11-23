@@ -40,14 +40,14 @@
                     {% endfor %}
                 </select>
                 <small class="text-muted d-block mt-2" style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">
-                    选择特定客户以查看其报表记录
+                    {{ t('select_customer_to_view_reports') }}
                 </small>
             </div>
             
             <!-- 账户类型筛选 -->
             <div class="col-md-4" style="padding: 0 15px;">
                 <label class="form-label" style="font-weight: 700; color: #FF007F; font-size: 1.1rem; margin-bottom: 12px; display: block;">
-                    <i class="bi bi-wallet2 me-2"></i>账户类型
+                    <i class="bi bi-wallet2 me-2"></i>{{ t('account_type') }}
                 </label>
                 <select class="form-select" id="filterAccount" name="account_type" 
                         style="background: rgba(255,255,255,0.05) !important; 
@@ -64,14 +64,14 @@
                     <option value="loan">🏠 {{ t('loan_account') }}</option>
                 </select>
                 <small class="text-muted d-block mt-2" style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">
-                    按账户类型筛选报表数据
+                    {{ t('filter_reports_by_account_type') }}
                 </small>
             </div>
             
             <!-- 日期范围筛选 -->
             <div class="col-md-4" style="padding: 0 15px;">
                 <label class="form-label" style="font-weight: 700; color: #FF007F; font-size: 1.1rem; margin-bottom: 12px; display: block;">
-                    <i class="bi bi-calendar-range me-2"></i>日期范围
+                    <i class="bi bi-calendar-range me-2"></i>{{ t('date_range') }}
                 </label>
                 <div class="row g-2">
                     <div class="col-6">
@@ -98,7 +98,7 @@
                     </div>
                 </div>
                 <small class="text-muted d-block mt-2" style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">
-                    选择报表数据的起止日期
+                    {{ t('select_report_date_range') }}
                 </small>
             </div>
             
@@ -110,7 +110,7 @@
                                    font-size: 1.05rem !important; 
                                    border-radius: 12px !important;
                                    min-width: 140px;">
-                        <i class="bi bi-arrow-clockwise me-2"></i>重置筛选
+                        <i class="bi bi-arrow-clockwise me-2"></i>{{ t('reset_filter') }}
                     </button>
                     <button type="submit" class="btn-professional" 
                             style="padding: 16px 44px !important; 
@@ -220,7 +220,7 @@ function toggleSelectAll() {
 function exportSelected(format) {
     const checkboxes = document.querySelectorAll('.record-checkbox:checked');
     if (checkboxes.length === 0) {
-        alert('{{ t("please_select_records") }}');
+        alert('{{ t('please_select_records') }}');
         return;
     }
     
@@ -237,10 +237,10 @@ function exportSelected(format) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('{{ t("export_started") }}: ' + format);
+            alert('{{ t('export_started') }}: ' + format);
             location.reload();
         } else {
-            alert('{{ t("export_failed") }}: ' + data.message);
+            alert('{{ t('export_failed') }}: ' + data.message);
         }
     });
 }
