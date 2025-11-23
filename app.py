@@ -3232,9 +3232,12 @@ def monthly_statement_detail(monthly_statement_id):
 @app.route('/export_statement_transactions/<int:statement_id>/<format>')
 @require_flask_permission('export:bank_statements', 'read')
 def export_statement_transactions(statement_id, format):
-    """导出单个statement的交易记录（RBAC protected）"""
-    import pandas as pd
+    """导出单个statement的Owner/GZ分类交易记录（Professional Excel with per-card sheets）"""
     from io import BytesIO
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+    from openpyxl.utils import get_column_letter
+    from decimal import Decimal
     
     user = session.get('flask_rbac_user', {})
     
@@ -3242,25 +3245,49 @@ def export_statement_transactions(statement_id, format):
         with get_db() as conn:
             cursor = conn.cursor()
             
+            # Get statement info
             cursor.execute('''
-                SELECT t.*, s.statement_date, cc.bank_name
-                FROM transactions t
-                JOIN statements s ON t.statement_id = s.id
+                SELECT s.*, cc.bank_name, cc.card_number, c.full_name as customer_name
+                FROM statements s
                 JOIN credit_cards cc ON s.card_id = cc.id
-                WHERE t.statement_id = ?
+                JOIN customers c ON cc.customer_id = c.id
+                WHERE s.id = ?
             ''', (statement_id,))
+            statement = dict(cursor.fetchone())
             
+            # Get all transactions with enriched data
+            cursor.execute('''
+                SELECT t.*, 
+                       SUBSTR(t.card_number, -4, 4) as card_last4
+                FROM transactions t
+                WHERE t.statement_id = ?
+                ORDER BY card_last4, t.transaction_date ASC
+            ''', (statement_id,))
             transactions = [dict(row) for row in cursor.fetchall()]
         
-        # Create DataFrame
-        df = pd.DataFrame(transactions)
+        # Build per-card data structure (same as statement_comparison route)
+        cards_data = build_card_groupings(transactions)
         
         if format == 'excel':
+            wb = Workbook()
+            wb.remove(wb.active)
+            
+            # ═══ Sheet 1: Cover Sheet ═══
+            cover_ws = wb.create_sheet("Statement Overview")
+            _create_cover_sheet(cover_ws, statement, cards_data)
+            
+            # ═══ Per-Card Worksheets ═══
+            for card_last4 in sorted(cards_data.keys()):
+                card_data = cards_data[card_last4]
+                ws = wb.create_sheet(f"Card *{card_last4}")
+                _create_card_worksheet(ws, card_last4, card_data, statement)
+            
+            # Save to BytesIO
             output = BytesIO()
-            df.to_excel(output, index=False, engine='openpyxl')  # type: ignore
+            wb.save(output)
             output.seek(0)
             
-            # 写入审计日志（防御性）
+            # Audit log
             request_info = extract_flask_request_info()
             write_flask_audit_log(
                 user_id=user.get('id', 0),
@@ -3268,23 +3295,28 @@ def export_statement_transactions(statement_id, format):
                 company_id=user.get('company_id', 1),
                 action_type='export',
                 entity_type='statement',
-                description=f"导出月结单交易记录: statement_id={statement_id}, format=excel",
+                description=f"Export Owner/GZ Classified Report: statement_id={statement_id}",
                 success=True,
-                new_value={'statement_id': statement_id, 'format': 'excel', 'count': len(transactions)},
+                new_value={'statement_id': statement_id, 'format': 'excel', 'cards': len(cards_data)},
                 ip_address=request_info['ip_address'],
                 user_agent=request_info['user_agent']
             )
             
+            filename = f"{statement['bank_name'].replace(' ', '_')}_*{statement['card_number'][-4:]}_" \
+                      f"{statement['statement_date']}_Owner_GZ_Report.xlsx"
+            
             return send_file(output, 
                             mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                             as_attachment=True,
-                            download_name=f'Statement_{statement_id}_Transactions.xlsx')
+                            download_name=filename)
         else:
+            # CSV export (simple flat export)
+            import pandas as pd
+            df = pd.DataFrame(transactions)
             output = BytesIO()
             df.to_csv(output, index=False)
             output.seek(0)
             
-            # 写入审计日志（防御性）
             request_info = extract_flask_request_info()
             write_flask_audit_log(
                 user_id=user.get('id', 0),
@@ -3292,9 +3324,9 @@ def export_statement_transactions(statement_id, format):
                 company_id=user.get('company_id', 1),
                 action_type='export',
                 entity_type='statement',
-                description=f"导出月结单交易记录: statement_id={statement_id}, format=csv",
+                description=f"Export CSV: statement_id={statement_id}",
                 success=True,
-                new_value={'statement_id': statement_id, 'format': 'csv', 'count': len(transactions)},
+                new_value={'statement_id': statement_id, 'format': 'csv'},
                 ip_address=request_info['ip_address'],
                 user_agent=request_info['user_agent']
             )
@@ -3302,10 +3334,9 @@ def export_statement_transactions(statement_id, format):
             return send_file(output, 
                             mimetype='text/csv',
                             as_attachment=True,
-                            download_name=f'Statement_{statement_id}_Transactions.csv')
+                            download_name=f'Statement_{statement_id}.csv')
     
     except Exception as e:
-        # 写入审计日志（失败）
         request_info = extract_flask_request_info()
         write_flask_audit_log(
             user_id=user.get('id', 0),
@@ -3313,7 +3344,7 @@ def export_statement_transactions(statement_id, format):
             company_id=user.get('company_id', 1),
             action_type='export',
             entity_type='statement',
-            description=f"导出月结单交易记录失败: statement_id={statement_id}",
+            description=f"Export failed: statement_id={statement_id}",
             success=False,
             new_value={'statement_id': statement_id, 'format': format, 'error': str(e)},
             ip_address=request_info['ip_address'],
@@ -3322,6 +3353,229 @@ def export_statement_transactions(statement_id, format):
         
         flash(f'Export failed: {str(e)}', 'error')
         return redirect(request.referrer or url_for('index'))
+
+
+def _create_cover_sheet(ws, statement, cards_data):
+    """Create professional cover sheet for statement export"""
+    from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+    
+    # Title
+    ws.merge_cells('A1:F1')
+    title_cell = ws['A1']
+    title_cell.value = f"Credit Card Statement - Owner/GZ Classified Report"
+    title_cell.font = Font(name='Calibri', size=16, bold=True, color='FFFFFF')
+    title_cell.fill = PatternFill(start_color='FF007F', end_color='FF007F', fill_type='solid')
+    title_cell.alignment = Alignment(horizontal='center', vertical='center')
+    ws.row_dimensions[1].height = 35
+    
+    # Statement Info
+    ws['A3'] = 'Bank:'
+    ws['B3'] = statement.get('bank_name', '')
+    ws['A4'] = 'Card Number:'
+    ws['B4'] = f"**** **** **** {statement.get('card_number', '')[-4:]}"
+    ws['A5'] = 'Statement Date:'
+    ws['B5'] = statement.get('statement_date', '')
+    ws['A6'] = 'Customer:'
+    ws['B6'] = statement.get('customer_name', '')
+    
+    # Summary Header
+    ws['A9'] = 'Card Last 4'
+    ws['B9'] = 'Transactions'
+    ws['C9'] = 'CR Total'
+    ws['D9'] = 'DR Total'
+    ws['E9'] = 'Owner Portion'
+    ws['F9'] = 'GZ Portion'
+    
+    for cell in ws[9]:
+        cell.font = Font(name='Calibri', size=11, bold=True, color='FFFFFF')
+        cell.fill = PatternFill(start_color='322446', end_color='322446', fill_type='solid')
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+    
+    # Summary Data
+    row_num = 10
+    for card_last4 in sorted(cards_data.keys()):
+        card_data = cards_data[card_last4]
+        ws[f'A{row_num}'] = f"*{card_last4}"
+        ws[f'B{row_num}'] = len(card_data['transactions'])
+        ws[f'C{row_num}'] = float(card_data['totals']['cr_total'])
+        ws[f'D{row_num}'] = float(card_data['totals']['dr_total'])
+        ws[f'E{row_num}'] = float(card_data['totals']['owner_payment_total'] + card_data['totals']['owner_expense_total'])
+        ws[f'F{row_num}'] = float(card_data['totals']['gz_payment_total'] + card_data['totals']['gz_expense_total'])
+        
+        # Format amounts
+        for col in ['C', 'D', 'E', 'F']:
+            ws[f'{col}{row_num}'].number_format = '"RM "#,##0.00'
+        
+        row_num += 1
+    
+    # Column widths
+    ws.column_dimensions['A'].width = 20
+    ws.column_dimensions['B'].width = 15
+    ws.column_dimensions['C'].width = 18
+    ws.column_dimensions['D'].width = 18
+    ws.column_dimensions['E'].width = 18
+    ws.column_dimensions['F'].width = 18
+
+
+def _create_card_worksheet(ws, card_last4, card_data, statement):
+    """Create per-card worksheet with Owner/GZ classification"""
+    from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+    from decimal import Decimal
+    
+    # Colors (CreditPilot palette)
+    HOT_PINK = 'FF007F'
+    DEEP_PURPLE = '322446'
+    IVORY = 'FFFEF0'
+    BLACK = '000000'
+    
+    # Card Header
+    ws.merge_cells('A1:G1')
+    header_cell = ws['A1']
+    header_cell.value = f"CREDIT CARD *{card_last4} - {statement.get('bank_name', '')}"
+    header_cell.font = Font(name='Calibri', size=14, bold=True, color='FFFFFF')
+    header_cell.fill = PatternFill(start_color=DEEP_PURPLE, end_color=DEEP_PURPLE, fill_type='solid')
+    header_cell.alignment = Alignment(horizontal='center', vertical='center')
+    ws.row_dimensions[1].height = 30
+    
+    current_row = 3
+    
+    # ═══ CREDIT SECTION ═══
+    if card_data['cr_transactions']:
+        ws.merge_cells(f'A{current_row}:G{current_row}')
+        cr_header = ws[f'A{current_row}']
+        cr_header.value = f"CREDIT (CR) - Total: RM {card_data['totals']['cr_total']:,.2f}"
+        cr_header.font = Font(name='Calibri', size=12, bold=True, color='FFFFFF')
+        cr_header.fill = PatternFill(start_color=BLACK, end_color=BLACK, fill_type='solid')
+        ws.row_dimensions[current_row].height = 25
+        current_row += 1
+        
+        # Owner's Payments
+        if card_data['owner_payments']:
+            current_row = _write_transaction_section(
+                ws, current_row, "Owner's Payment", card_data['owner_payments'],
+                card_data['totals']['owner_payment_total'], HOT_PINK, include_payer=False
+            )
+        
+        # GZ's Payments
+        if card_data['gz_payments']:
+            current_row = _write_transaction_section(
+                ws, current_row, "GZ's Payment", card_data['gz_payments'],
+                card_data['totals']['gz_payment_total'], DEEP_PURPLE, include_payer=True
+            )
+        
+        current_row += 1
+    
+    # ═══ DEBIT SECTION ═══
+    if card_data['dr_transactions']:
+        ws.merge_cells(f'A{current_row}:G{current_row}')
+        dr_header = ws[f'A{current_row}']
+        dr_header.value = f"DEBIT (DR) - Total: RM {card_data['totals']['dr_total']:,.2f}"
+        dr_header.font = Font(name='Calibri', size=12, bold=True, color='FFFFFF')
+        dr_header.fill = PatternFill(start_color=BLACK, end_color=BLACK, fill_type='solid')
+        ws.row_dimensions[current_row].height = 25
+        current_row += 1
+        
+        # GZ's Expenses (with supplier fees)
+        if card_data['gz_expenses']:
+            current_row = _write_transaction_section(
+                ws, current_row, "GZ's Expenses", card_data['gz_expenses'],
+                card_data['totals']['gz_expense_total'], DEEP_PURPLE, include_payer=False,
+                include_supplier_fee=True, total_fees=card_data['totals']['supplier_fees_total']
+            )
+        
+        # Owner's Expenses
+        if card_data['owner_expenses']:
+            current_row = _write_transaction_section(
+                ws, current_row, "Owner's Expenses", card_data['owner_expenses'],
+                card_data['totals']['owner_expense_total'], HOT_PINK, include_payer=False
+            )
+    
+    # Column widths
+    ws.column_dimensions['A'].width = 15
+    ws.column_dimensions['B'].width = 35
+    ws.column_dimensions['C'].width = 20
+    ws.column_dimensions['D'].width = 18
+    ws.column_dimensions['E'].width = 18
+    ws.column_dimensions['F'].width = 12
+    ws.column_dimensions['G'].width = 15
+
+
+def _write_transaction_section(ws, start_row, section_title, transactions, total_amount, 
+                               color_hex, include_payer=False, include_supplier_fee=False, 
+                               total_fees=0):
+    """Helper to write a transaction section (Owner/GZ Payment or Expense)"""
+    from openpyxl.styles import Font, PatternFill, Alignment
+    
+    # Section Title Row
+    ws.merge_cells(f'A{start_row}:G{start_row}')
+    title_cell = ws[f'A{start_row}']
+    title_cell.value = f"{section_title} - RM {total_amount:,.2f}"
+    if include_supplier_fee and total_fees > 0:
+        title_cell.value += f" | Merchant Fee 1%: RM {total_fees:,.2f}"
+    title_cell.font = Font(name='Calibri', size=11, bold=True, color='FFFFFF')
+    title_cell.fill = PatternFill(start_color=color_hex, end_color=color_hex, fill_type='solid')
+    title_cell.alignment = Alignment(horizontal='left', vertical='center')
+    ws.row_dimensions[start_row].height = 22
+    start_row += 1
+    
+    # Column Headers
+    headers = ['Date', 'Description', 'Category']
+    if include_payer:
+        headers.append('Payer')
+    if include_supplier_fee:
+        headers.extend(['Amount', 'Fee 1%', 'Type'])
+    else:
+        headers.extend(['Amount', 'Type'])
+    
+    for col_idx, header in enumerate(headers, start=1):
+        cell = ws.cell(row=start_row, column=col_idx)
+        cell.value = header
+        cell.font = Font(name='Calibri', size=10, bold=True, color='000000')
+        cell.fill = PatternFill(start_color='E0E0E0', end_color='E0E0E0', fill_type='solid')
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+    ws.row_dimensions[start_row].height = 20
+    start_row += 1
+    
+    # Transaction Rows
+    for txn in transactions:
+        col_idx = 1
+        ws.cell(row=start_row, column=col_idx).value = txn.get('transaction_date', '')
+        col_idx += 1
+        
+        desc_cell = ws.cell(row=start_row, column=col_idx)
+        desc_cell.value = txn.get('description', '')[:50]
+        desc_cell.alignment = Alignment(horizontal='left', vertical='center', wrap_text=False)
+        col_idx += 1
+        
+        ws.cell(row=start_row, column=col_idx).value = txn.get('category', 'Uncategorized')
+        col_idx += 1
+        
+        if include_payer:
+            ws.cell(row=start_row, column=col_idx).value = txn.get('payer_name', 'GZ')
+            col_idx += 1
+        
+        amount_cell = ws.cell(row=start_row, column=col_idx)
+        amount_cell.value = float(txn.get('amount', 0))
+        amount_cell.number_format = '"RM "#,##0.00'
+        amount_cell.alignment = Alignment(horizontal='right', vertical='center')
+        col_idx += 1
+        
+        if include_supplier_fee:
+            fee_cell = ws.cell(row=start_row, column=col_idx)
+            fee_value = txn.get('supplier_fee', 0)
+            fee_cell.value = float(fee_value) if fee_value else 0
+            fee_cell.number_format = '"RM "#,##0.00'
+            fee_cell.alignment = Alignment(horizontal='right', vertical='center')
+            col_idx += 1
+        
+        ws.cell(row=start_row, column=col_idx).value = txn.get('transaction_type', 'DR')
+        
+        ws.row_dimensions[start_row].height = 18
+        start_row += 1
+    
+    start_row += 1  # Spacing
+    return start_row
+
 
 # Edit Monthly Statement Route (for Admin corrections)
 @app.route('/monthly_statement/<int:monthly_statement_id>/edit', methods=['POST'])
