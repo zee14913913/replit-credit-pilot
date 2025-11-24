@@ -1,0 +1,78 @@
+{
+  "customer": "Cheok Jun Yoon",
+  "period": "2025-05 to 2025-10",
+  "total_statements": 41,
+  "total_parsed": 41,
+  "completion_rate": 100.0,
+  "total_transactions": 136,
+  "total_cr": 57,
+  "total_dr": 79,
+  "total_gz": 52,
+  "gz_percentage": 38.23529411764706,
+  "banks": [
+    {
+      "bank": "AMBANK",
+      "statements": 6,
+      "transactions": 13,
+      "cr": 6,
+      "dr": 7,
+      "gz": 6
+    },
+    {
+      "bank": "AMBANK_ISLAMIC",
+      "statements": 6,
+      "transactions": 10,
+      "cr": 6,
+      "dr": 4,
+      "gz": 6
+    },
+    {
+      "bank": "HONG_LEONG",
+      "statements": 5,
+      "transactions": 6,
+      "cr": 0,
+      "dr": 6,
+      "gz": 0
+    },
+    {
+      "bank": "HSBC",
+      "statements": 6,
+      "transactions": 25,
+      "cr": 14,
+      "dr": 11,
+      "gz": 7
+    },
+    {
+      "bank": "OCBC",
+      "statements": 6,
+      "transactions": 54,
+      "cr": 27,
+      "dr": 27,
+      "gz": 27
+    },
+    {
+      "bank": "STANDARD_CHARTERED",
+      "statements": 6,
+      "transactions": 22,
+      "cr": 4,
+      "dr": 18,
+      "gz": 6
+    },
+    {
+      "bank": "UOB",
+      "statements": 6,
+      "transactions": 6,
+      "cr": 0,
+      "dr": 6,
+      "gz": 0
+    }
+  ],
+  "generated_at": "2025-11-19T09:51:57.340781",
+  "fixes_applied": [
+    "Fixed STANDARD_CHARTERED 5-line format parser with amount extraction",
+    "Added multi-format header detection for SC statements",
+    "Implemented OCBC 6-line format parser",
+    "Implemented HSBC multi-column format parser",
+    "Added zero-amount transaction filtering"
+  ]
+}

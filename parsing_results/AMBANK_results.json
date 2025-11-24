@@ -1,0 +1,162 @@
+{
+  "bank": "AMBANK",
+  "total_statements": 6,
+  "total_transactions": 13,
+  "total_cr": 6,
+  "total_dr": 7,
+  "total_gz": 6,
+  "results": [
+    {
+      "file": "AMBANK_9902_2025-05-28.pdf",
+      "transactions": [
+        {
+          "date": "17 JUN 25",
+          "description": "Total Credit Limit / Jumlah Had Kredit",
+          "dr_amount": 0.0,
+          "cr_amount": 15000.0,
+          "type": "CR",
+          "classification": "GZ"
+        }
+      ],
+      "cr": 1,
+      "dr": 0,
+      "gz": 1
+    },
+    {
+      "file": "AMBANK_9902_2025-06-28.pdf",
+      "transactions": [
+        {
+          "date": "18 JUL 25",
+          "description": "Total Credit Limit / Jumlah Had Kredit",
+          "dr_amount": 0.0,
+          "cr_amount": 15000.0,
+          "type": "CR",
+          "classification": "GZ"
+        },
+        {
+          "date": "25 JUN 25",
+          "description": "25 JUN 25",
+          "dr_amount": 1500.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        },
+        {
+          "date": "28 JUN 25",
+          "description": "28 JUN 25",
+          "dr_amount": 174.68,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        }
+      ],
+      "cr": 1,
+      "dr": 2,
+      "gz": 1
+    },
+    {
+      "file": "AMBANK_9902_2025-07-28.pdf",
+      "transactions": [
+        {
+          "date": "17 AUG 25",
+          "description": "Total Credit Limit / Jumlah Had Kredit",
+          "dr_amount": 0.0,
+          "cr_amount": 15000.0,
+          "type": "CR",
+          "classification": "GZ"
+        }
+      ],
+      "cr": 1,
+      "dr": 0,
+      "gz": 1
+    },
+    {
+      "file": "AMBANK_9902_2025-08-28.pdf",
+      "transactions": [
+        {
+          "date": "17 SEP 25",
+          "description": "Total Credit Limit / Jumlah Had Kredit",
+          "dr_amount": 0.0,
+          "cr_amount": 15000.0,
+          "type": "CR",
+          "classification": "GZ"
+        },
+        {
+          "date": "16 AUG 25",
+          "description": "17 AUG 25",
+          "dr_amount": 10674.24,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        },
+        {
+          "date": "21 AUG 25",
+          "description": "21 AUG 25",
+          "dr_amount": 2000.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        },
+        {
+          "date": "21 AUG 25",
+          "description": "21 AUG 25",
+          "dr_amount": 3000.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        },
+        {
+          "date": "28 AUG 25",
+          "description": "28 AUG 25",
+          "dr_amount": 7999.0,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        }
+      ],
+      "cr": 1,
+      "dr": 4,
+      "gz": 1
+    },
+    {
+      "file": "AMBANK_9902_2025-09-28.pdf",
+      "transactions": [
+        {
+          "date": "18 OCT 25",
+          "description": "Total Credit Limit / Jumlah Had Kredit",
+          "dr_amount": 0.0,
+          "cr_amount": 15000.0,
+          "type": "CR",
+          "classification": "GZ"
+        },
+        {
+          "date": "28 SEP 25",
+          "description": "28 SEP 25",
+          "dr_amount": 219.62,
+          "cr_amount": 0.0,
+          "type": "DR",
+          "classification": "Owner"
+        }
+      ],
+      "cr": 1,
+      "dr": 1,
+      "gz": 1
+    },
+    {
+      "file": "AMBANK_9902_2025-10-28.pdf",
+      "transactions": [
+        {
+          "date": "17 NOV 25",
+          "description": "Total Credit Limit / Jumlah Had Kredit",
+          "dr_amount": 0.0,
+          "cr_amount": 15000.0,
+          "type": "CR",
+          "classification": "GZ"
+        }
+      ],
+      "cr": 1,
+      "dr": 0,
+      "gz": 1
+    }
+  ]
+}

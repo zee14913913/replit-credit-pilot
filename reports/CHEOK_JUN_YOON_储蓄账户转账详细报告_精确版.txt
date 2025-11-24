@@ -1,0 +1,286 @@
+======================================================================================================================================================
+CHEOK JUN YOON 转账记录详细报告（精确匹配版）
+搜索条件: 只匹配 'CHEOK JUN YOON' 或 'CHEOK JUN' (已排除 LEE CHEOK WEI)
+生成时间: 2025-10-30 18:26:21
+======================================================================================================================================================
+
+【记录 1】
+  交易日期:     2025-06-03
+  交易类型:     credit
+  交易金额:     RM 9,000.00
+  付款银行:     Hong Leong Bank
+  付款账户:     INFINITE GZ SDN. BHD. (*4645)
+  账户类型:     Current Account
+  收款至:       INFINITE GZ SDN. BHD.
+  交易后余额:   RM 20,000.00
+  月结单日期:   05-06-2025
+  参考编号:     N/A
+  完整描述:     CIB Instant Transfer at DIO Payment service CHEOK JUN YOON 20250603HLBBMYKL010OCB82466022
+
+【记录 2】
+  交易日期:     2025-06-04
+  交易类型:     debit
+  交易金额:     RM 19,900.00
+  付款银行:     Alliance Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*5540)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 14.30
+  月结单日期:   2025-06-30
+  参考编号:     N/A
+  完整描述:     Instant Transfer AOBIFT04062025531234 CHEOK JUN YOON
+
+【记录 3】
+  交易日期:     2025-06-04
+  交易类型:     debit
+  交易金额:     RM 31,258.27
+  付款银行:     Public Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*9009)
+  账户类型:     RM Cm Current Account-i
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 16,209.55
+  月结单日期:   2025-06-30
+  参考编号:     N/A
+  完整描述:     DUITNOW TRSF DR 704994 CHEOK JUN YOON PAYMENT SERVICE 20250604PBBEMYKL010OCB23083491
+
+【记录 4】
+  交易日期:     2025-06-10
+  交易类型:     debit
+  交易金额:     RM 3,750.00
+  付款银行:     Alliance Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*5540)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 8,092.91
+  月结单日期:   2025-06-30
+  参考编号:     N/A
+  完整描述:     Instant Transfer AOBIFT09062025639019 CHEOK JUN YOON
+
+【记录 5】
+  交易日期:     2025-06-25
+  交易类型:     debit
+  交易金额:     RM 1,500.00
+  付款银行:     Public Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*9009)
+  账户类型:     RM Cm Current Account-i
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 3,084.79
+  月结单日期:   2025-06-30
+  参考编号:     N/A
+  完整描述:     DUITNOW TRSF DR 233801 CHEOK JUN YOON PAYMENT SERVICE 20250625PBBEMYKL010OCB22489489
+
+【记录 6】
+  交易日期:     2025-07-09
+  交易类型:     debit
+  交易金额:     RM 7,900.00
+  付款银行:     Alliance Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*5540)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 58,620.62
+  月结单日期:   2025-07-31
+  参考编号:     N/A
+  完整描述:     Instant Transfer AOBIFT09072025303032 pay on behalf CHEOK JUN YOON
+
+【记录 7】
+  交易日期:     2025-08-02
+  交易类型:     N/A
+  交易金额:     RM 1,159.50
+  付款银行:     GX Bank
+  付款账户:     YEO CHEE WANG (*8373)
+  账户类型:     Savings
+  交易后余额:   RM 1,844.38
+  月结单日期:   2025-08-31
+  参考编号:     N/A
+  完整描述:     CHEOK JUN YOON 10:24 PM Duitnow - Account number
+
+【记录 8】
+  交易日期:     2025-08-07
+  交易类型:     debit
+  交易金额:     RM 1,508.25
+  付款银行:     Hong Leong Bank
+  付款账户:     INFINITE GZ SDN. BHD. (*4645)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 22,139.92
+  月结单日期:   05-09-2025
+  参考编号:     N/A
+  完整描述:     CIB Instant Transfer at DIO Pay On Behalf CHEOK JUN YOON 20250807HLBBMYKL010OCB03182528
+
+【记录 9】
+  交易日期:     2025-08-17
+  交易类型:     debit
+  交易金额:     RM 1,377.80
+  付款银行:     Hong Leong Bank
+  付款账户:     INFINITE GZ SDN. BHD. (*4645)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 700.00
+  月结单日期:   05-09-2025
+  参考编号:     N/A
+  完整描述:     CIB Instant Transfer at DIO pay on behalf CHEOK JUN YOON 20250817HLBBMYKL010OCB13275125
+
+【记录 10】
+  交易日期:     2025-08-21
+  交易类型:     credit
+  交易金额:     RM 9,910.59
+  付款银行:     Hong Leong Bank
+  付款账户:     INFINITE GZ SDN. BHD. (*4645)
+  账户类型:     Current Account
+  收款至:       INFINITE GZ SDN. BHD.
+  交易后余额:   RM 10,000.00
+  月结单日期:   05-09-2025
+  参考编号:     N/A
+  完整描述:     CIB Instant Transfer at DIO Commission CHEOK JUN YOON 20250821HLBBMYKL010OCB17130068
+
+【记录 11】
+  交易日期:     2025-08-21
+  交易类型:     credit
+  交易金额:     RM 2,215.59
+  付款银行:     Hong Leong Bank
+  付款账户:     INFINITE GZ SDN. BHD. (*4645)
+  账户类型:     Current Account
+  收款至:       INFINITE GZ SDN. BHD.
+  交易后余额:   RM 12,215.59
+  月结单日期:   05-09-2025
+  参考编号:     N/A
+  完整描述:     CIB Instant Transfer at DIO Comm CHEOK JUN YOON 20250821HLBBMYKL010OCB17135100
+
+【记录 12】
+  交易日期:     2025-08-23
+  交易类型:     credit
+  交易金额:     RM 1,209.49
+  付款银行:     Hong Leong Bank
+  付款账户:     INFINITE GZ SDN. BHD. (*4645)
+  账户类型:     Current Account
+  收款至:       INFINITE GZ SDN. BHD.
+  交易后余额:   RM 2,534.23
+  月结单日期:   05-09-2025
+  参考编号:     N/A
+  完整描述:     CIB Instant Transfer at DIO Bonus CHEOK JUN YOON 20250823HLBBMYKL010OCB18989792 Hong Leong Bank Berhad(97141-X) CURRENT ACCOUNT STATEMENT
+
+【记录 13】
+  交易日期:     2025-09-03
+  交易类型:     debit
+  交易金额:     RM 3,464.42
+  付款银行:     Public Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*9009)
+  账户类型:     RM Cm Current Account-i
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 781.55
+  月结单日期:   2025-09-30
+  参考编号:     N/A
+  完整描述:     TSFR FUND DR-ATM/EFT 778023 5013XXXXXX CHEOK JUN YOON FUND TRANSFER
+
+【记录 14】
+  交易日期:     2025-09-04
+  交易类型:     debit
+  交易金额:     RM 9,000.00
+  付款银行:     Alliance Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*5540)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 128.82
+  月结单日期:   2025-09-30
+  参考编号:     N/A
+  完整描述:     Instant Transfer AOBIFT04092025533132 CHEOK JUN YOON
+
+【记录 15】
+  交易日期:     2025-09-09
+  交易类型:     debit
+  交易金额:     RM 1,000.00
+  付款银行:     Alliance Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*5540)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 7,896.50
+  月结单日期:   2025-09-30
+  参考编号:     N/A
+  完整描述:     Instant Transfer AOBIFT09092025633417 CHEOK JUN YOON
+
+【记录 16】
+  交易日期:     2025-09-09
+  交易类型:     debit
+  交易金额:     RM 1,500.00
+  付款银行:     Alliance Bank
+  付款账户:     AI SMART TECH SDN. BHD. (*5540)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 6,396.50
+  月结单日期:   2025-09-30
+  参考编号:     N/A
+  完整描述:     Instant Transfer AOBIFT09092025633426 CHEOK JUN YOON
+
+【记录 17】
+  交易日期:     2025-09-17
+  交易类型:     credit
+  交易金额:     RM 1,869.80
+  付款银行:     Hong Leong Bank
+  付款账户:     INFINITE GZ SDN. BHD. (*4645)
+  账户类型:     Current Account
+  收款至:       INFINITE GZ SDN. BHD.
+  交易后余额:   RM 1,918.45
+  月结单日期:   05-10-2025
+  参考编号:     N/A
+  完整描述:     CIB Instant Transfer at DIO Pay On Behalf CHEOK JUN YOON 20250917HLBBMYKL010OCB44995138
+
+【记录 18】
+  交易日期:     2025-09-17
+  交易类型:     debit
+  交易金额:     RM 625.75
+  付款银行:     Hong Leong Bank
+  付款账户:     INFINITE GZ SDN. BHD. (*4645)
+  账户类型:     Current Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 735.99
+  月结单日期:   05-10-2025
+  参考编号:     N/A
+  完整描述:     CIB Instant Transfer at DIO Pay On Behalf CHEOK JUN YOON 20250917HLBBMYKL010OCB44983157
+
+【记录 19】
+  交易日期:     26-06-2025
+  交易类型:     debit
+  交易金额:     RM 1,500.00
+  付款银行:     OCBC
+  付款账户:     YEO CHEE WANG (*1484)
+  账户类型:     EASI-SAVE Savings Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 572.30
+  月结单日期:   2025-06-30
+  参考编号:     N/A
+  完整描述:     INSTANT TRANSFER /IB CHEOK JUN YOON DESC: REF: Credit card payment
+
+【记录 20】
+  交易日期:     7 Jul 2025
+  交易类型:     DEBIT
+  交易金额:     RM 6,750.00
+  付款银行:     GX Bank
+  付款账户:     YEO CHEE WANG (*8373)
+  账户类型:     Savings Account
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 0.00
+  月结单日期:   2025-07-01
+  参考编号:     N/A
+  完整描述:     CHEOK JUN YOON 10:22 PM Duitnow - Account number Transfer
+
+【记录 21】
+  交易日期:     7 Jul 2025
+  交易类型:     debit
+  交易金额:     RM 6,750.00
+  付款银行:     GX Bank
+  付款账户:     YEO CHEE WANG (*8373)
+  账户类型:     Savings
+  付款至:       CHEOK JUN YOON
+  交易后余额:   RM 25.56
+  月结单日期:   Jul 2025
+  参考编号:     N/A
+  完整描述:     CHEOK JUN YOON 10:22 PM Duitnow - Account number
+
+======================================================================================================================================================
+汇总统计
+======================================================================================================================================================
+总转出金额 (Debit):  RM 97,784.49
+总收入金额 (Credit): RM 24,205.47
+净转出:             RM 73,579.02
+总交易笔数:         21 笔
+======================================================================================================================================================

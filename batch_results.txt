@@ -1,0 +1,463 @@
+====================================================================================================
+批量上传 Cheok Jun Yoon 的 41 份信用卡账单
+====================================================================================================
+使用系统现有解析器：Google Document AI + 银行专用模板
+目标：解析率 90% 以上
+
+
+[1/41] AmBank/AmBank_6354_2025-05-28.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ⚠️ 只有CR交易（1笔）- 可能该月无消费，继续处理
+✅ Detected Bank: AMBANK
+✅ 成功
+     银行: AMBANK
+     账单日期: 28 MAY 25
+     上期余额: RM7.00
+     本期余额: RM0.00
+     交易数量: 1
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[2/41] AmBank/AmBank_6354_2025-06-28.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ⚠️ 只有CR交易（1笔）- 可能该月无消费，继续处理
+✅ Detected Bank: AMBANK
+✅ 成功
+     银行: AMBANK
+     账单日期: 28 JUN 25
+     上期余额: RM7.00
+     本期余额: RM0.00
+     交易数量: 1
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[3/41] AmBank/AmBank_6354_2025-07-28.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ⚠️ 只有CR交易（1笔）- 可能该月无消费，继续处理
+✅ Detected Bank: AMBANK
+✅ 成功
+     银行: AMBANK
+     账单日期: 28 JUL 25
+     上期余额: RM7.00
+     本期余额: RM0.00
+     交易数量: 1
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[4/41] AmBank/AmBank_6354_2025-08-28.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ✅ Detected Bank: AMBANK
+✅ 成功
+     银行: AMBANK
+     账单日期: 28 AUG 25
+     上期余额: RM7.00
+     本期余额: RM0.00
+     交易数量: 4
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[5/41] AmBank/AmBank_6354_2025-09-28.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ✅ Detected Bank: AMBANK
+✅ 成功
+     银行: AMBANK
+     账单日期: 28 SEP 25
+     上期余额: RM7.00
+     本期余额: RM0.00
+     交易数量: 2
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[6/41] AmBank/AmBank_6354_2025-10-28.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ⚠️ 只有CR交易（1笔）- 可能该月无消费，继续处理
+✅ Detected Bank: AMBANK
+✅ 成功
+     银行: AMBANK
+     账单日期: 28 OCT 25
+     上期余额: RM7.00
+     本期余额: RM0.00
+     交易数量: 1
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[7/41] AMBANK/AMBANK_9902_2025-05-28.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: AMBANK - 9902
+
+[8/41] AMBANK/AMBANK_9902_2025-06-28.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: AMBANK - 9902
+
+[9/41] AMBANK/AMBANK_9902_2025-07-28.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: AMBANK - 9902
+
+[10/41] AMBANK/AMBANK_9902_2025-08-28.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: AMBANK - 9902
+
+[11/41] AMBANK/AMBANK_9902_2025-09-28.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: AMBANK - 9902
+
+[12/41] AMBANK/AMBANK_9902_2025-10-28.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: AMBANK - 9902
+
+[13/41] UOB/UOB_3530_2025-05-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ⚠️ 只有CR交易（2笔）- 可能该月无消费，继续处理
+✅ Detected Bank: UOB
+✅ 成功
+     银行: UOB
+     账单日期: 13 MAY 25
+     上期余额: RM16000.00
+     本期余额: RM0.00
+     交易数量: 2
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[14/41] UOB/UOB_3530_2025-06-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ✅ Detected Bank: UOB
+✅ 成功
+     银行: UOB
+     账单日期: 13 JUN 25
+     上期余额: RM16000.00
+     本期余额: RM0.00
+     交易数量: 8
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[15/41] UOB/UOB_3530_2025-07-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ⚠️ 只有DR交易（3笔）- 可能该月无还款，继续处理
+✅ Detected Bank: UOB
+✅ 成功
+     银行: UOB
+     账单日期: 13 JUL 25
+     上期余额: RM22000.00
+     本期余额: RM0.00
+     交易数量: 3
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[16/41] UOB/UOB_3530_2025-08-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ✅ Detected Bank: UOB
+✅ 成功
+     银行: UOB
+     账单日期: 13 AUG 25
+     上期余额: RM22000.00
+     本期余额: RM0.00
+     交易数量: 20
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[17/41] UOB/UOB_3530_2025-09-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ✅ Detected Bank: UOB
+✅ 成功
+     银行: UOB
+     账单日期: 13 SEP 25
+     上期余额: RM16000.00
+     本期余额: RM0.00
+     交易数量: 9
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[18/41] UOB/UOB_8387_2025-10-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ✅ Detected Bank: UOB
+✅ 成功
+     银行: UOB
+     账单日期: 13 OCT 25
+     上期余额: RM16000.00
+     本期余额: RM0.00
+     交易数量: 3
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[19/41] HONG_LEONG/HONG_LEONG_3964_2025-06-16.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: HONG_LEONG - 3964
+
+[20/41] HONG_LEONG/HONG_LEONG_3964_2025-07-16.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: HONG_LEONG - 3964
+
+[21/41] HONG_LEONG/HONG_LEONG_3964_2025-08-16.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: HONG_LEONG - 3964
+
+[22/41] HONG_LEONG/HONG_LEONG_3964_2025-09-16.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: HONG_LEONG - 3964
+
+[23/41] HONG_LEONG/HONG_LEONG_3964_2025-10-16.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: HONG_LEONG - 3964
+
+[24/41] OCBC/OCBC_3506_2025-05-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ✅ Detected Bank: OCBC
+✅ 成功
+     银行: OCBC
+     账单日期: 00
+IPP
+27
+     上期余额: RM487.81
+     本期余额: RM0.00
+     交易数量: 10
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[25/41] OCBC/OCBC_3506_2025-06-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ✅ Detected Bank: OCBC
+✅ 成功
+     银行: OCBC
+     账单日期: 00
+IPP
+27
+     上期余额: RM1190.69
+     本期余额: RM0.00
+     交易数量: 11
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[26/41] OCBC/OCBC_3506_2025-07-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ✅ Detected Bank: OCBC
+✅ 成功
+     银行: OCBC
+     账单日期: 00
+IPP
+27
+     上期余额: RM24188.71
+     本期余额: RM0.00
+     交易数量: 9
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[27/41] OCBC/OCBC_3506_2025-08-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ✅ Detected Bank: OCBC
+✅ 成功
+     银行: OCBC
+     账单日期: 00
+IPP
+16
+     上期余额: RM34540.33
+     本期余额: RM0.00
+     交易数量: 9
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[28/41] OCBC/OCBC_3506_2025-09-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ✅ Detected Bank: OCBC
+✅ 成功
+     银行: OCBC
+     账单日期: 00
+IPP
+16
+     上期余额: RM38295.30
+     本期余额: RM0.00
+     交易数量: 8
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[29/41] OCBC/OCBC_3506_2025-10-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ✅ Detected Bank: OCBC
+✅ 成功
+     银行: OCBC
+     账单日期: 00
+IPP
+16
+     上期余额: RM29937.93
+     本期余额: RM0.00
+     交易数量: 7
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[30/41] HSBC/HSBC_0034_2025-05-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ✅ Detected HSBC from filename
+✅ 成功
+     银行: HSBC
+     账单日期: 13 May 20
+     上期余额: RM50.00
+     本期余额: RM0.00
+     交易数量: 11
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[31/41] HSBC/HSBC_0034_2025-06-14.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ✅ Detected HSBC from filename
+✅ 成功
+     银行: HSBC
+     账单日期: 14 Jun 20
+     上期余额: RM24007.94
+     本期余额: RM0.00
+     交易数量: 6
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[32/41] HSBC/HSBC_0034_2025-07-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ⚠️ 只有CR交易（3笔）- 可能该月无消费，继续处理
+✅ Detected HSBC from filename
+✅ 成功
+     银行: HSBC
+     账单日期: 13 Jul 20
+     上期余额: RM23305.18
+     本期余额: RM0.00
+     交易数量: 3
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[33/41] HSBC/HSBC_0034_2025-08-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ⚠️ 只有CR交易（2笔）- 可能该月无消费，继续处理
+✅ Detected HSBC from filename
+✅ 成功
+     银行: HSBC
+     账单日期: 13 Aug 20
+     上期余额: RM23931.95
+     本期余额: RM0.00
+     交易数量: 2
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[34/41] HSBC/HSBC_0034_2025-09-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ⚠️ 只有CR交易（2笔）- 可能该月无消费，继续处理
+✅ Detected HSBC from filename
+✅ 成功
+     银行: HSBC
+     账单日期: 13 Sep 20
+     上期余额: RM23034.19
+     本期余额: RM0.00
+     交易数量: 2
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[35/41] HSBC/HSBC_0034_2025-10-13.pdf
+--------------------------------------------------------------------------------
+  📄 解析中 (Google Document AI + 银行模板)... ⚠️ 只有CR交易（1笔）- 可能该月无消费，继续处理
+✅ Detected HSBC from filename
+✅ 成功
+     银行: HSBC
+     账单日期: 13 Oct 20
+     上期余额: RM22218.14
+     本期余额: RM0.00
+     交易数量: 1
+  💾 保存到数据库... ❌ 失败 - Error binding parameter 3: type 'decimal.Decimal' is not supported
+
+[36/41] STANDARD_CHARTERED/STANDARD_CHARTERED_1237_2025-05-14.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: STANDARD_CHARTERED - 1237
+
+[37/41] STANDARD_CHARTERED/STANDARD_CHARTERED_1237_2025-06-15.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: STANDARD_CHARTERED - 1237
+
+[38/41] STANDARD_CHARTERED/STANDARD_CHARTERED_1237_2025-07-14.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: STANDARD_CHARTERED - 1237
+
+[39/41] STANDARD_CHARTERED/STANDARD_CHARTERED_1237_2025-08-14.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: STANDARD_CHARTERED - 1237
+
+[40/41] STANDARD_CHARTERED/STANDARD_CHARTERED_1237_2025-09-14.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: STANDARD_CHARTERED - 1237
+
+[41/41] STANDARD_CHARTERED/STANDARD_CHARTERED_1237_2025-10-14.pdf
+--------------------------------------------------------------------------------
+  ❌ 找不到信用卡记录: STANDARD_CHARTERED - 1237
+
+====================================================================================================
+批量处理完成 - 最终报告
+====================================================================================================
+
+银行名称                      总账单        成功         失败         跳过         解析率         
+----------------------------------------------------------------------------------------------------
+AmBank                    6          0          6          0                0.00%
+AMBANK                    6          0          6          0                0.00%
+UOB                       6          0          6          0                0.00%
+HONG_LEONG                5          0          5          0                0.00%
+OCBC                      6          0          6          0                0.00%
+HSBC                      6          0          6          0                0.00%
+STANDARD_CHARTERED        6          0          6          0                0.00%
+====================================================================================================
+总计                        41         0          41         0                0.00%
+====================================================================================================
+
+❌ 解析率 0.00% - 未达到目标，需要进一步优化
+
+失败的文件：
+  - static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-05/AmBank_6354_2025-05-28.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-06/AmBank_6354_2025-06-28.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-07/AmBank_6354_2025-07-28.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-08/AmBank_6354_2025-08-28.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-09/AmBank_6354_2025-09-28.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-10/AmBank_6354_2025-10-28.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-05/AMBANK_9902_2025-05-28.pdf
+    错误: No card found: AMBANK - 9902
+  - static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-06/AMBANK_9902_2025-06-28.pdf
+    错误: No card found: AMBANK - 9902
+  - static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-07/AMBANK_9902_2025-07-28.pdf
+    错误: No card found: AMBANK - 9902
+  - static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-08/AMBANK_9902_2025-08-28.pdf
+    错误: No card found: AMBANK - 9902
+  - static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-09/AMBANK_9902_2025-09-28.pdf
+    错误: No card found: AMBANK - 9902
+  - static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-10/AMBANK_9902_2025-10-28.pdf
+    错误: No card found: AMBANK - 9902
+  - static/uploads/customers/Be_rich_CJY/credit_cards/UOB/2025-05/UOB_3530_2025-05-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/UOB/2025-06/UOB_3530_2025-06-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/UOB/2025-07/UOB_3530_2025-07-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/UOB/2025-08/UOB_3530_2025-08-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/UOB/2025-09/UOB_3530_2025-09-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/UOB/2025-10/UOB_8387_2025-10-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/HONG_LEONG/2025-06/HONG_LEONG_3964_2025-06-16.pdf
+    错误: No card found: HONG_LEONG - 3964
+  - static/uploads/customers/Be_rich_CJY/credit_cards/HONG_LEONG/2025-07/HONG_LEONG_3964_2025-07-16.pdf
+    错误: No card found: HONG_LEONG - 3964
+  - static/uploads/customers/Be_rich_CJY/credit_cards/HONG_LEONG/2025-08/HONG_LEONG_3964_2025-08-16.pdf
+    错误: No card found: HONG_LEONG - 3964
+  - static/uploads/customers/Be_rich_CJY/credit_cards/HONG_LEONG/2025-09/HONG_LEONG_3964_2025-09-16.pdf
+    错误: No card found: HONG_LEONG - 3964
+  - static/uploads/customers/Be_rich_CJY/credit_cards/HONG_LEONG/2025-10/HONG_LEONG_3964_2025-10-16.pdf
+    错误: No card found: HONG_LEONG - 3964
+  - static/uploads/customers/Be_rich_CJY/credit_cards/OCBC/2025-05/OCBC_3506_2025-05-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/OCBC/2025-06/OCBC_3506_2025-06-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/OCBC/2025-07/OCBC_3506_2025-07-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/OCBC/2025-08/OCBC_3506_2025-08-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/OCBC/2025-09/OCBC_3506_2025-09-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/OCBC/2025-10/OCBC_3506_2025-10-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/HSBC/2025-05/HSBC_0034_2025-05-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/HSBC/2025-06/HSBC_0034_2025-06-14.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/HSBC/2025-07/HSBC_0034_2025-07-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/HSBC/2025-08/HSBC_0034_2025-08-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/HSBC/2025-09/HSBC_0034_2025-09-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/HSBC/2025-10/HSBC_0034_2025-10-13.pdf
+    错误: Error binding parameter 3: type 'decimal.Decimal' is not supported
+  - static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED/2025-05/STANDARD_CHARTERED_1237_2025-05-14.pdf
+    错误: No card found: STANDARD_CHARTERED - 1237
+  - static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED/2025-06/STANDARD_CHARTERED_1237_2025-06-15.pdf
+    错误: No card found: STANDARD_CHARTERED - 1237
+  - static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED/2025-07/STANDARD_CHARTERED_1237_2025-07-14.pdf
+    错误: No card found: STANDARD_CHARTERED - 1237
+  - static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED/2025-08/STANDARD_CHARTERED_1237_2025-08-14.pdf
+    错误: No card found: STANDARD_CHARTERED - 1237
+  - static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED/2025-09/STANDARD_CHARTERED_1237_2025-09-14.pdf
+    错误: No card found: STANDARD_CHARTERED - 1237
+  - static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED/2025-10/STANDARD_CHARTERED_1237_2025-10-14.pdf
+    错误: No card found: STANDARD_CHARTERED - 1237

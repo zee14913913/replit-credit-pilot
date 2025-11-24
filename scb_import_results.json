@@ -1,0 +1,62 @@
+[
+  {
+    "date": "2025-05-14",
+    "status": "SUCCESS",
+    "txn_count": 5,
+    "statement_id": 285,
+    "info": {
+      "statement_date": "2025-05-14",
+      "total": 3049.36,
+      "card_last4": "1237",
+      "previous_balance": 0.0
+    }
+  },
+  {
+    "date": "2025-06-15",
+    "status": "SUCCESS",
+    "txn_count": 9,
+    "statement_id": 286,
+    "info": {
+      "statement_date": "2025-06-15",
+      "total": 67775.0,
+      "card_last4": "1237",
+      "previous_balance": 549.36
+    }
+  },
+  {
+    "date": "2025-07-14",
+    "status": "SUCCESS",
+    "txn_count": 11,
+    "statement_id": 287,
+    "info": {
+      "statement_date": "2025-07-14",
+      "total": 60738.83,
+      "card_last4": "1237",
+      "previous_balance": 69025.0
+    }
+  },
+  {
+    "date": "2025-08-14",
+    "status": "SUCCESS",
+    "txn_count": 6,
+    "statement_id": 288,
+    "info": {
+      "statement_date": "2025-08-14",
+      "total": 68813.39,
+      "card_last4": "1237",
+      "previous_balance": 60783.83
+    }
+  },
+  {
+    "date": "2025-09-14",
+    "status": "SUCCESS",
+    "txn_count": 12,
+    "statement_id": 289,
+    "info": {
+      "statement_date": "2025-09-14",
+      "total": 72718.54,
+      "card_last4": "1237",
+      "previous_balance": 68859.08
+    }
+  }
+]

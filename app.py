@@ -3,7 +3,6 @@ from flask_cors import CORS
 import os
 from datetime import datetime, timedelta
 import json
-import sqlite3
 import threading
 import time
 import schedule
@@ -42,7 +41,7 @@ from validate.transaction_validator import validate_transactions, generate_valid
 from validate.reminder_service import check_and_send_reminders, create_reminder, get_pending_reminders, mark_as_paid
 from loan.dsr_calculator import calculate_dsr, calculate_max_loan_amount, simulate_loan_scenarios
 # Removed: News management feature deleted
-# from report.pdf_generator import generate_monthly_report  # REMOVED - use accounting_app instead
+from report.pdf_generator import generate_monthly_report
 import pdfplumber
 
 # New services for advanced features
@@ -2817,59 +2816,6 @@ def api_portfolio_revenue():
     portfolio_mgr = PortfolioManager()
     revenue = portfolio_mgr.get_revenue_breakdown()
     return jsonify(revenue)
-
-@app.route('/admin/data-quality')
-@require_admin_or_accountant
-def admin_data_quality():
-    """管理员数据质量监控仪表板 - 仅管理员和会计可见"""
-    with get_db() as conn:
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        
-        cursor.execute('SELECT COUNT(*) FROM statements')
-        total_statements = cursor.fetchone()[0]
-        
-        cursor.execute('SELECT COUNT(*) FROM statements WHERE due_date IS NULL OR due_date = ""')
-        missing_due_dates = cursor.fetchone()[0]
-        
-        cursor.execute('''
-            SELECT COUNT(*) FROM statements 
-            WHERE statement_total > 0 AND minimum_payment > 0
-            AND (CAST(minimum_payment AS FLOAT) / statement_total < 0.02 OR CAST(minimum_payment AS FLOAT) / statement_total > 0.12)
-        ''')
-        ratio_anomalies = cursor.fetchone()[0]
-        
-        cursor.execute('''
-            SELECT cc.bank_name, COUNT(*) as total,
-                   SUM(CASE WHEN s.due_date IS NULL OR s.due_date = '' THEN 1 ELSE 0 END) as missing,
-                   ROUND(CAST(SUM(CASE WHEN s.due_date IS NULL OR s.due_date = '' THEN 1 ELSE 0 END) AS FLOAT) / COUNT(*) * 100, 1) as missing_pct
-            FROM statements s JOIN credit_cards cc ON s.card_id = cc.id GROUP BY cc.bank_name
-            HAVING SUM(CASE WHEN s.due_date IS NULL OR s.due_date = '' THEN 1 ELSE 0 END) > 0 ORDER BY missing DESC
-        ''')
-        due_date_by_bank = [dict(row) for row in cursor.fetchall()]
-        
-        cursor.execute('''
-            SELECT c.name as customer_name, cc.bank_name, s.minimum_payment, COUNT(*) as count,
-                   MIN(s.statement_total) as min_total, MAX(s.statement_total) as max_total
-            FROM statements s JOIN credit_cards cc ON s.card_id = cc.id JOIN customers c ON cc.customer_id = c.id
-            WHERE s.minimum_payment IS NOT NULL GROUP BY c.id, cc.id, s.minimum_payment
-            HAVING COUNT(*) > 2 ORDER BY count DESC LIMIT 20
-        ''')
-        duplicate_payments = [dict(row) for row in cursor.fetchall()]
-        
-        cursor.execute('''
-            SELECT c.name as customer, cc.bank_name as bank, s.id, s.statement_date, s.statement_total as total, s.minimum_payment as min_pay,
-                   ROUND(CAST(s.minimum_payment AS FLOAT) / NULLIF(s.statement_total, 0) * 100, 2) as ratio_pct
-            FROM statements s JOIN credit_cards cc ON s.card_id = cc.id JOIN customers c ON cc.customer_id = c.id
-            WHERE s.statement_total > 0 AND s.minimum_payment > 0
-              AND (CAST(s.minimum_payment AS FLOAT) / s.statement_total < 0.02 OR CAST(s.minimum_payment AS FLOAT) / s.statement_total > 0.12)
-            ORDER BY ratio_pct ASC LIMIT 30
-        ''')
-        ratio_anomaly_details = [dict(row) for row in cursor.fetchall()]
-    
-    return render_template('admin/data_quality.html',
-                         total_statements=total_statements, missing_due_dates=missing_due_dates, ratio_anomalies=ratio_anomalies,
-                         due_date_by_bank=due_date_by_bank, duplicate_payments=duplicate_payments, ratio_anomaly_details=ratio_anomaly_details)
 
 # ==================== END ADMIN PORTFOLIO ====================
 
