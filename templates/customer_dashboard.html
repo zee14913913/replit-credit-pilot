@@ -365,7 +365,7 @@
                         </td>
                         <td style="white-space: nowrap;">
                             <div class="d-flex gap-2">
-                                <a href="{{ url_for('validate', statement_id=stmt.id) }}" class="btn-professional-outline" style="padding: 0.4rem 1rem; font-size: 0.85rem;">{{ t('view') }}</a>
+                                <a href="{{ url_for('validate_statement_view', statement_id=stmt.id) }}" class="btn-professional-outline" style="padding: 0.4rem 1rem; font-size: 0.85rem;">{{ t('view') }}</a>
                                 {% if stmt.is_confirmed %}
                                 <a href="{{ url_for('statement_comparison', statement_id=stmt.id) }}" class="btn-professional" style="padding: 0.4rem 1rem; font-size: 0.85rem;">
                                     <i class="bi bi-layout-split"></i> {{ t('comparison__') }}
