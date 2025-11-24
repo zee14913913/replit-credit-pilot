@@ -31,14 +31,15 @@ def batch_reparse():
     print("批量重新解析UOB/HSBC/Standard Chartered PDF文件")
     print("=" * 100)
     
-    # 查询所有需要重新解析的记录
+    # 查询所有需要重新解析的记录（JOIN credit_cards表获取bank_name）
     for bank in TARGET_BANKS:
         cursor.execute("""
-            SELECT id, bank_name, pdf_filename, statement_date, due_date, 
-                   statement_total, minimum_payment
-            FROM credit_card_statements
-            WHERE bank_name = ?
-            ORDER BY statement_date DESC
+            SELECT s.id, c.bank_name, s.file_path, s.statement_date, s.due_date, 
+                   s.statement_total, s.minimum_payment
+            FROM statements s
+            INNER JOIN credit_cards c ON s.card_id = c.id
+            WHERE c.bank_name = ?
+            ORDER BY s.statement_date DESC
         """, (bank,))
         
         records = cursor.fetchall()
@@ -75,7 +76,7 @@ def batch_reparse():
                 
                 # 更新数据库
                 cursor.execute("""
-                    UPDATE credit_card_statements
+                    UPDATE statements
                     SET statement_date = ?,
                         due_date = ?,
                         statement_total = ?,

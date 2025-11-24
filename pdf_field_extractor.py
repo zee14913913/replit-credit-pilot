@@ -490,18 +490,26 @@ class HSBCBankParser(BankParser):
                 text = pdf.pages[0].extract_text()
                 
                 # Statement Date 和 Due Date 在同一行： "Statement Date 13 May 2025 Payment Due Date 03 June 2025"
+                # 或缩写格式："Statement Date 13 Oct 2025 Payment Due Date 02 November 2025"
                 date_line_match = re.search(r'Statement Date[:\s]+(\d{1,2}\s+[A-Z][a-z]{2,8}\s+\d{4})\s+Payment Due Date[:\s]+(\d{1,2}\s+[A-Z][a-z]{2,8}\s+\d{4})', text, re.IGNORECASE)
                 if date_line_match:
                     try:
                         stmt_date_str = date_line_match.group(1)
-                        dt = datetime.strptime(stmt_date_str, '%d %B %Y')
+                        # 尝试两种格式：完整月份名(%B: May, June)和缩写月份名(%b: Oct, Nov)
+                        try:
+                            dt = datetime.strptime(stmt_date_str, '%d %B %Y')
+                        except:
+                            dt = datetime.strptime(stmt_date_str, '%d %b %Y')
                         result['statement_date'] = dt.strftime('%Y-%m-%d')
                         
                         due_date_str = date_line_match.group(2)
-                        dt = datetime.strptime(due_date_str, '%d %B %Y')
+                        try:
+                            dt = datetime.strptime(due_date_str, '%d %B %Y')
+                        except:
+                            dt = datetime.strptime(due_date_str, '%d %b %Y')
                         result['due_date'] = dt.strftime('%Y-%m-%d')
-                    except:
-                        result['extraction_errors'].append(f"日期格式错误: {date_line_match.group(0)}")
+                    except Exception as e:
+                        result['extraction_errors'].append(f"日期格式错误: {date_line_match.group(0)} - {str(e)}")
                 
                 # 如果上面的combined pattern没找到，尝试单独查找
                 if result['statement_date'] is None:
@@ -509,10 +517,13 @@ class HSBCBankParser(BankParser):
                     if date_match:
                         try:
                             date_str = date_match.group(1)
-                            dt = datetime.strptime(date_str, '%d %B %Y')
+                            try:
+                                dt = datetime.strptime(date_str, '%d %B %Y')
+                            except:
+                                dt = datetime.strptime(date_str, '%d %b %Y')
                             result['statement_date'] = dt.strftime('%Y-%m-%d')
-                        except:
-                            result['extraction_errors'].append(f"Statement Date格式错误: {date_match.group(1)}")
+                        except Exception as e:
+                            result['extraction_errors'].append(f"Statement Date格式错误: {date_match.group(1)} - {str(e)}")
                 
                 if result['due_date'] is None:
                     due_match = re.search(r'Payment Due Date[:\s]+(\d{1,2}\s+[A-Z][a-z]{2,8}\s+\d{4})', text, re.IGNORECASE)

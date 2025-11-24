@@ -1,0 +1,46 @@
+分类,ID,银行,对账单日期,卡号后4位,原PDF路径,原因,缺失字段/错误详情
+PDF缺失,294,STANDARD CHARTERED,2025-09-14,1237,static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED_1237_2025-09-14.pdf,PDF文件不存在,
+PDF缺失,293,STANDARD CHARTERED,2025-08-14,1237,static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED_1237_2025-08-14.pdf,PDF文件不存在,
+PDF缺失,292,STANDARD CHARTERED,2025-07-14,1237,static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED_1237_2025-07-14.pdf,PDF文件不存在,
+PDF缺失,291,STANDARD CHARTERED,2025-06-15,1237,static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED_1237_2025-06-15.pdf,PDF文件不存在,
+PDF缺失,290,STANDARD CHARTERED,2025-05-14,1237,static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED_1237_2025-05-14.pdf,PDF文件不存在,
+PDF缺失,300,UOB,2025-10-13,8387,static/uploads/customers/Be_rich_CJY/credit_cards/UOB_8387_2025-10-13.pdf,PDF文件不存在,
+PDF缺失,299,UOB,2025-09-13,3530,static/uploads/customers/Be_rich_CJY/credit_cards/UOB_3530_2025-09-13.pdf,PDF文件不存在,
+PDF缺失,298,UOB,2025-08-13,3530,static/uploads/customers/Be_rich_CJY/credit_cards/UOB_3530_2025-08-13.pdf,PDF文件不存在,
+PDF缺失,297,UOB,2025-07-13,3530,static/uploads/customers/Be_rich_CJY/credit_cards/UOB_3530_2025-07-13.pdf,PDF文件不存在,
+PDF缺失,296,UOB,2025-06-13,3530,static/uploads/customers/Be_rich_CJY/credit_cards/UOB_3530_2025-06-13.pdf,PDF文件不存在,
+PDF缺失,295,UOB,2025-05-13,3530,static/uploads/customers/Be_rich_CJY/credit_cards/UOB_3530_2025-05-13.pdf,PDF文件不存在,
+解析错误,264,Alliance Bank,2024-12-12,3836,static/uploads/customers/Be_rich_CCC/credit_cards/Alliance_Bank/2024-12/Alliance_Bank_3836_2024-12-12.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Date;未找到Due Date;未找到Statement Total;未找到Minimum Payment
+解析错误,317,AmBank,2025-11-30,6354,tests/uat_test_statement_202511.xlsx,字段为NULL,minimum_payment
+解析错误,318,AmBank,2025-11-30,6354,tests/uat_test_statement_202511.xlsx,字段为NULL,minimum_payment
+解析错误,319,AmBank,2025-11-30,6354,tests/uat_test_statement_202511.xlsx,字段为NULL,minimum_payment
+解析错误,259,AmBank,2025-10-28,6354,attached_assets/AMB 28:10:2025_1761838711519.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,502,AmBank,2025-10-28,6354,static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-10/AmBank_6354_2025-10-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,119,AmBank,2025-09-28,6354,static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-09/AmBank_6354_2025-09-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,501,AmBank,2025-09-28,6354,static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-09/AmBank_6354_2025-09-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,118,AmBank,2025-08-28,6354,static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-08/AmBank_6354_2025-08-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,496,AmBank,2025-08-28,6354,static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-08/AmBank_6354_2025-08-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,500,AmBank,2025-08-28,6354,static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-08/AmBank_6354_2025-08-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,117,AmBank,2025-07-28,6354,static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-07/AmBank_6354_2025-07-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,499,AmBank,2025-07-28,6354,static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-07/AmBank_6354_2025-07-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,116,AmBank,2025-06-28,6354,static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-06/AmBank_6354_2025-06-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,495,AmBank,2025-06-28,6354,static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-06/AmBank_6354_2025-06-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,498,AmBank,2025-06-28,6354,static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-06/AmBank_6354_2025-06-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,115,AmBank,2025-05-28,6354,static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-05/AmBank_6354_2025-05-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,494,AmBank,2025-05-28,6354,static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-05/AmBank_6354_2025-05-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,497,AmBank,2025-05-28,6354,static/uploads/customers/Be_rich_CJY/credit_cards/AmBank/2025-05/AmBank_6354_2025-05-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,260,AmBank Islamic,2025-10-28,9902,attached_assets/AMB IS 28:10:2025_1761838756926.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,508,AmBank Islamic,2025-10-28,9902,static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-10/AMBANK_9902_2025-10-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,537,AmBank Islamic,2025-10-03,9791,attached_assets/AmBank_E-Statement_332f3e70-67ae-11f0-b193-525400fb8c0a_Oct_2025_8d80fc43-1bdd-4662-ae11-f777c78040ca_1763905697417.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,129,AmBank Islamic,2025-09-28,9902,static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-09/AMBANK_9902_2025-09-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,507,AmBank Islamic,2025-09-28,9902,static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-09/AMBANK_9902_2025-09-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,128,AmBank Islamic,2025-08-28,9902,static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-08/AMBANK_9902_2025-08-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,506,AmBank Islamic,2025-08-28,9902,static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-08/AMBANK_9902_2025-08-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,127,AmBank Islamic,2025-07-28,9902,static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-07/AMBANK_9902_2025-07-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,505,AmBank Islamic,2025-07-28,9902,static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-07/AMBANK_9902_2025-07-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,126,AmBank Islamic,2025-06-28,9902,static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-06/AMBANK_9902_2025-06-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,504,AmBank Islamic,2025-06-28,9902,static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-06/AMBANK_9902_2025-06-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,125,AmBank Islamic,2025-05-28,9902,static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-05/AMBANK_9902_2025-05-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,503,AmBank Islamic,2025-05-28,9902,static/uploads/customers/Be_rich_CJY/credit_cards/AMBANK/2025-05/AMBANK_9902_2025-05-28.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Total;未找到Minimum Payment
+解析错误,522,HSBC,13 Oct 20,0034,static/uploads/customers/Be_rich_CJY/credit_cards/HSBC/2025-10/HSBC_0034_2025-10-13.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Date;未找到Due Date;未找到Statement Total;未找到Minimum Payment
+解析错误,276,Hong Leong Bank,2024-12-07,2033,static/uploads/customers/Be_rich_CCC/credit_cards/Hong_Leong_Bank/2024-12/Hong_Leong_Bank_2033_2024-12-07.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Date;未找到Payment Due Date;未找到Statement Total;未找到Minimum Payment
