@@ -1,0 +1,171 @@
+/*
+CreditPilot Galaxy Theme
+主题色板：Black + Hot Pink + Dark Purple
+*/
+
+/* 全局变量 */
+:root {
+    --color-black: #000000;
+    --color-hot-pink: #FF007F;
+    --color-dark-purple: #322446;
+    --color-white: #FFFFFF;
+    --color-gray: #888888;
+}
+
+/* 基础样式 */
+body {
+    background: var(--color-black);
+    color: var(--color-white);
+    font-family: 'Inter', sans-serif;
+}
+
+/* 导航栏 */
+.professional-nav {
+    background: var(--color-black);
+    border-bottom: 2px solid var(--color-hot-pink);
+}
+
+/* 卡片样式 */
+.card {
+    background: rgba(50, 36, 70, 0.3);
+    border: 1px solid var(--color-dark-purple);
+    border-radius: 12px;
+}
+
+/* 按钮样式 */
+.btn-primary {
+    background: var(--color-hot-pink);
+    border: none;
+    color: var(--color-white);
+}
+
+.btn-primary:hover {
+    background: #E6006E;
+}
+
+/* 表格样式 */
+.table {
+    color: var(--color-white);
+}
+
+.table thead {
+    border-bottom: 2px solid var(--color-hot-pink);
+}
+
+/* 输入框样式 */
+.form-control {
+    background: rgba(50, 36, 70, 0.2);
+    border: 1px solid var(--color-dark-purple);
+    color: var(--color-white);
+}
+
+.form-control:focus {
+    background: rgba(50, 36, 70, 0.3);
+    border-color: var(--color-hot-pink);
+    box-shadow: 0 0 0 0.2rem rgba(255, 0, 127, 0.25);
+    color: var(--color-white);
+}
+
+/* 链接样式 */
+a {
+    color: var(--color-hot-pink);
+    text-decoration: none;
+}
+
+a:hover {
+    color: #E6006E;
+}
+
+/* 提示信息 */
+.alert-info {
+    background: rgba(50, 36, 70, 0.3);
+    border: 1px solid var(--color-hot-pink);
+    color: var(--color-white);
+}
+
+.alert-success {
+    background: rgba(50, 36, 70, 0.3);
+    border: 1px solid #00FF7F;
+    color: #00FF7F;
+}
+
+.alert-warning {
+    background: rgba(50, 36, 70, 0.3);
+    border: 1px solid #FFD700;
+    color: #FFD700;
+}
+
+.alert-danger {
+    background: rgba(50, 36, 70, 0.3);
+    border: 1px solid #FF4444;
+    color: #FF4444;
+}
+
+/* 徽章样式 */
+.badge {
+    background: var(--color-hot-pink);
+    color: var(--color-white);
+}
+
+/* 下拉菜单 */
+.dropdown-menu {
+    background: #1a1a1a;
+    border: 2px solid var(--color-hot-pink);
+}
+
+.dropdown-item {
+    color: var(--color-white);
+}
+
+.dropdown-item:hover {
+    background: var(--color-dark-purple);
+    color: var(--color-hot-pink);
+}
+
+/* 模态框 */
+.modal-content {
+    background: #1a1a1a;
+    border: 2px solid var(--color-hot-pink);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--color-dark-purple);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--color-dark-purple);
+}
+
+/* 进度条 */
+.progress {
+    background: rgba(50, 36, 70, 0.3);
+}
+
+.progress-bar {
+    background: var(--color-hot-pink);
+}
+
+/* 分页 */
+.pagination .page-link {
+    background: rgba(50, 36, 70, 0.3);
+    border: 1px solid var(--color-dark-purple);
+    color: var(--color-white);
+}
+
+.pagination .page-link:hover {
+    background: var(--color-dark-purple);
+    border-color: var(--color-hot-pink);
+    color: var(--color-hot-pink);
+}
+
+.pagination .page-item.active .page-link {
+    background: var(--color-hot-pink);
+    border-color: var(--color-hot-pink);
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .professional-nav {
+        padding: 0.5rem 1rem;
+    }
+}
