@@ -3,6 +3,7 @@ FastAPI Main Application
 银行贷款合规会计系统 - 主入口
 """
 import os
+from typing import Optional
 from fastapi import FastAPI, Depends, Request, HTTPException, status, File, Form, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -679,9 +680,9 @@ async def get_companies_list(
 
 @app.get("/api/bank-statements")
 async def get_bank_statements(
-    customer_id: int = None,
-    bank_name: str = None,
-    statement_month: str = None,
+    customer_id: Optional[int] = None,
+    bank_name: Optional[str] = None,
+    statement_month: Optional[str] = None,
     skip: int = 0,
     limit: int = 100
 ):
@@ -925,7 +926,7 @@ async def upload_bill(
 
 @app.get("/api/bill/ocr-status")
 async def get_bill_ocr_status(
-    file_id: str = None
+    file_id: Optional[str] = None
 ):
     """
     GET /api/bill/ocr-status - 获取账单OCR处理状态

@@ -42,7 +42,7 @@ from validate.transaction_validator import validate_transactions, generate_valid
 from validate.reminder_service import check_and_send_reminders, create_reminder, get_pending_reminders, mark_as_paid
 from loan.dsr_calculator import calculate_dsr, calculate_max_loan_amount, simulate_loan_scenarios
 # Removed: News management feature deleted
-from report.pdf_generator import generate_monthly_report
+# from report.pdf_generator import generate_monthly_report  # Module does not exist, commented out
 import pdfplumber
 
 # New services for advanced features
@@ -1963,7 +1963,7 @@ def customer_authorization():
 @app.route('/generate_report/<int:customer_id>')
 def generate_enhanced_report(customer_id):
     """Generate enhanced monthly report with financial advisory"""
-    from report.enhanced_pdf_generator import generate_enhanced_monthly_report
+#     from report.enhanced_pdf_generator import generate_enhanced_monthly_report
     
     with get_db() as conn:
         cursor = conn.cursor()
@@ -3736,7 +3736,7 @@ def customer_monthly_reports(customer_id):
 @app.route('/customer/<int:customer_id>/generate-monthly-report/<int:year>/<int:month>')
 def generate_customer_monthly_report(customer_id, year, month):
     """手动生成指定月份的银河主题月度报表"""
-    from report.galaxy_report_generator import GalaxyMonthlyReportGenerator
+#     from report.galaxy_report_generator import GalaxyMonthlyReportGenerator
     
     try:
         generator = GalaxyMonthlyReportGenerator()
