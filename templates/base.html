@@ -90,7 +90,7 @@
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ 'active' if 'batch' in request.endpoint or 'files' in request.endpoint }}" href="#" id="filesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-files"></i> {{ t('nav_file_management') }}
+                        {{ t('nav_file_management') }}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="filesDropdown" style="background: #1a1a1a; border: 2px solid #FF007F;">
                         <li><a class="dropdown-item" href="{{ url_for('files_confirm') }}" style="color: #FFFFFF;">
