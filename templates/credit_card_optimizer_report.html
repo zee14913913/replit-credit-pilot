@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+
+{% block title %}<span data-i18n="credit_card_optimization_report">{{ t('credit_card_optimization_report') }}</span> - {{ report.customer.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-11">
+            <!-- 报告标题 -->
+            <div class="text-center mb-4">
+                <h1 class="galaxy-gradient-text mb-2">
+                    <i class="bi bi-stars me-2"></i><span data-i18n="credit_card_optimization_report">{{ t('credit_card_optimization_report') }}</span>
+                </h1>
+                <p class="text-silver-pearl">
+                    <span data-i18n="customer">{{ t('customer') }}</span>：{{ report.customer.name }} | <span data-i18n="report_number">{{ t('report_number') }}</span>：{{ report.report_id }}
+                </p>
+                <p class="text-silver-pearl small"><span data-i18n="generated_time_colon">{{ t('generated_time_colon') }}</span> {{ report.generated_at }}</p>
+            </div>
+
+            <!-- 消费概览 -->
+            <div class="galaxy-card mb-4">
+                <div class="card-body">
+                    <h5 class="galaxy-gradient-text mb-3">
+                        <i class="bi bi-bar-chart-fill me-2"></i><span data-i18n="spending_overview">{{ t('spending_overview') }}</span>（<span data-i18n="recent">{{ t('recent') }}</span>6<span data-i18n="months">{{ t('months') }}</span>）
+                    </h5>
+                    <div class="row g-3 text-center">
+                        <div class="col-md-4">
+                            <div class="metric-box">
+                                <div class="metric-label">{{ t('auto_text_572') }}</div>
+                                <div class="metric-value">RM {{ "{:,.2f}".format(report.spending_summary.total_spending) }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="metric-box">
+                                <div class="metric-label">{{ t('auto_text_573') }}</div>
+                                <div class="metric-value">RM {{ "{:,.2f}".format(report.spending_summary.monthly_average) }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="metric-box">
+                                <div class="metric-label">{{ t('auto_text_574') }}</div>
+                                <div class="metric-value">RM {{ "{:,.2f}".format(report.customer.monthly_income or 0) }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- {{ t('_vs') }} 优化方案 对比 -->
+            <div class="row g-4 mb-4">
+                <!-- 当前状态 -->
+                <div class="col-lg-6">
+                    <div class="galaxy-card h-100">
+                        <div class="card-body">
+                            <h5 class="text-white mb-4">
+                                <i class="bi bi-archive-fill me-2"></i>📊 <span data-i18n="current_status">{{ t('current_status') }}</span>
+                            </h5>
+                            
+                            {% if report.current_state.cards %}
+                                {% for card in report.current_state.cards %}
+                                <div class="card-info-box mb-3">
+                                    <div class="text-silver-pearl">{{ card.bank }}</div>
+                                    <div class="text-white">**** {{ card.last4 }}</div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="alert alert-info">{{ t('auto_text_576') }}</div>
+                            {% endif %}
+                            
+                            <div class="metric-card mt-4">
+                                <div class="metric-row">
+                                    <span>{{ t('auto_text_577') }}</span>
+                                    <span class="text-success">RM {{ "{:,.2f}".format(report.current_state.total_annual_cashback) }}</span>
+                                </div>
+                                <div class="metric-row">
+                                    <span>{{ t('auto_text_578') }}</span>
+                                    <span class="text-danger">RM {{ "{:,.2f}".format(report.current_state.total_annual_fees) }}</span>
+                                </div>
+                                <hr class="border-golden border-opacity-25">
+                                <div class="metric-row fw-bold">
+                                    <span class="text-golden">{{ t('auto_text_579') }}</span>
+                                    <span class="text-golden fs-5">RM {{ "{:,.2f}".format(report.current_state.net_annual_benefit) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 优化方案 -->
+                <div class="col-lg-6">
+                    <div class="galaxy-card h-100" style="border: 2px solid rgba(76, 175, 80, 0.5);">
+                        <div class="card-body">
+                            <h5 class="text-success mb-4">
+                                <i class="bi bi-rocket-takeoff-fill me-2"></i>🚀 <span data-i18n="optimization_solutions">{{ t('optimization_solutions') }}</span>
+                            </h5>
+                            
+                            {% if report.optimized_solution.recommended_cards %}
+                                {% for card in report.optimized_solution.recommended_cards %}
+                                <div class="card-info-box recommended mb-3">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <div class="text-golden fw-bold">{{ card.bank }}</div>
+                                            <div class="text-white">{{ card.card_name[:60] }}</div>
+                                        </div>
+                                        <div class="badge bg-success"><span data-i18n="score_colon">{{ t('score_colon') }}</span> {{ card.score }}/100</div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="alert alert-warning">{{ t('auto_text_581') }}</div>
+                            {% endif %}
+                            
+                            <div class="metric-card mt-4" style="background: rgba(76, 175, 80, 0.1);">
+                                <div class="metric-row">
+                                    <span>{{ t('auto_text_577') }}</span>
+                                    <span class="text-success">RM {{ "{:,.2f}".format(report.optimized_solution.total_annual_cashback) }}</span>
+                                </div>
+                                <div class="metric-row">
+                                    <span>{{ t('auto_text_578') }}</span>
+                                    <span class="text-danger">RM {{ "{:,.2f}".format(report.optimized_solution.total_annual_fees) }}</span>
+                                </div>
+                                <hr class="border-success border-opacity-25">
+                                <div class="metric-row fw-bold">
+                                    <span class="text-success">{{ t('auto_text_579') }}</span>
+                                    <span class="text-success fs-5">RM {{ "{:,.2f}".format(report.optimized_solution.net_annual_benefit) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 年度节省 -->
+            <div class="galaxy-card mb-4" style="background: linear-gradient(135deg, rgba(45, 80, 22, 0.3) 0%, rgba(26, 58, 15, 0.3) 100%); border: 2px solid rgba(76, 175, 80, 0.5);">
+                <div class="card-body text-center py-5">
+                    <h3 class="text-success mb-3">
+                        <i class="bi bi-piggy-bank-fill me-2"></i><span data-i18n="annual_savings">{{ t('annual_savings') }}</span>
+                    </h3>
+                    <div class="display-2 text-success fw-bold mb-3">
+                        RM {{ "{:,.2f}".format(report.comparison.annual_savings) }}
+                    </div>
+                    <div class="fs-4 text-silver-pearl mb-3">
+                        ({{ report.comparison.savings_percentage }}% <span data-i18n="improvement">{{ t('improvement') }}</span>)
+                    </div>
+                    <div class="recommendation-level">
+                        <h5 class="text-golden">{{ report.comparison.recommendation_level }}</h5>
+                        <p class="text-silver-pearl mb-0"><span data-i18n="improvement_score_colon">{{ t('improvement_score_colon') }}</span> {{ report.comparison.improvement_score }}/100</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 行动建议 -->
+            <div class="galaxy-card mb-4">
+                <div class="card-body">
+                    <h5 class="galaxy-gradient-text mb-3">
+                        <i class="bi bi-list-check me-2"></i><span data-i18n="action_recommendations">{{ t('action_recommendations') }}</span>
+                    </h5>
+                    <ul class="action-list">
+                        {% for item in report.comparison.action_items %}
+                        <li class="action-item">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 详细推荐 -->
+            {% if report.detailed_recommendations %}
+            <div class="galaxy-card mb-4">
+                <div class="card-body">
+                    <h5 class="galaxy-gradient-text mb-4">
+                        <i class="bi bi-card-list me-2"></i>{{ t('top_3_') }}
+                    </h5>
+                    {% for rec in report.detailed_recommendations %}
+                    <div class="recommendation-card mb-3">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h6 class="text-golden mb-1">{{ loop.index }}. {{ rec.bank }}</h6>
+                                <div class="text-white">{{ rec.card_name }}</div>
+                            </div>
+                            <div class="score-badge">
+                                {{ rec.score }}/100
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-6 col-md-3">
+                                <div class="score-detail">
+                                    <div class="score-label">{{ t('auto_text_585') }}</div>
+                                    <div class="score-value">{{ rec.score_breakdown.cashback_match }}</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="score-detail">
+                                    <div class="score-label">{{ t('auto_text_586') }}</div>
+                                    <div class="score-value">{{ rec.score_breakdown.annual_fee }}</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="score-detail">
+                                    <div class="score-label">{{ t('auto_text_587') }}</div>
+                                    <div class="score-value">{{ rec.score_breakdown.benefits }}</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="score-detail">
+                                    <div class="score-label">{{ t('auto_text_588') }}</div>
+                                    <div class="score-value">{{ rec.score_breakdown.eligibility }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if rec.benefits %}
+                        <div class="mt-3">
+                            <small class="text-silver-pearl">
+                                <i class="bi bi-info-circle me-1"></i>
+                                {{ rec.benefits[:200] }}...
+                            </small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- 操作按钮 -->
+            <div class="text-center mb-4">
+                <a href="{{ url_for('download_credit_card_report', customer_id=report.customer.id) }}" class="btn btn-golden btn-lg me-3">
+                    <i class="bi bi-download me-2"></i><span data-i18n="download_full_report">{{ t('download_full_report') }}</span>
+                </a>
+                <a href="{{ url_for('credit_card_optimizer') }}" class="btn btn-outline-golden btn-lg">
+                    <i class="bi bi-arrow-left me-2"></i><span data-i18n="return">{{ t('return') }}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.metric-box {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.metric-label {
+    color: #C0C0C0;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.metric-value {
+    color: #FFFEF0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.card-info-box {
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.card-info-box.recommended {
+    background: rgba(76, 175, 80, 0.1);
+    border-color: rgba(76, 175, 80, 0.3);
+}
+
+.metric-card {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.metric-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0;
+    color: #C0C0C0;
+}
+
+.recommendation-level {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(212, 175, 55, 0.1);
+    border-radius: 10px;
+}
+
+.action-list {
+    list-style: none;
+    padding: 0;
+}
+
+.action-item {
+    padding: 15px;
+    margin: 10px 0;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid #322446;
+    border-radius: 5px;
+    color: #C0C0C0;
+}
+
+.recommendation-card {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.score-badge {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(192, 192, 192, 0.2) 100%);
+    border-radius: 20px;
+    color: #FFFEF0;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.score-detail {
+    text-align: center;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+}
+
+.score-label {
+    color: #999;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.score-value {
+    color: #FFFEF0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.btn-golden {
+    background: linear-gradient(135deg, #322446 0%, #322446 100%);
+    border: none;
+    color: #000;
+    font-weight: bold;
+}
+
+.btn-golden:hover {
+    background: linear-gradient(135deg, #322446 0%, #322446 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+}
+
+.btn-outline-golden {
+    border: 2px solid #322446;
+    color: #FFFEF0;
+    background: transparent;
+    font-weight: bold;
+}
+
+.btn-outline-golden:hover {
+    background: rgba(255, 215, 0, 0.1);
+    border-color: #FFFEF0;
+    color: #FFFEF0;
+}
+</style>
+{% endblock %}
