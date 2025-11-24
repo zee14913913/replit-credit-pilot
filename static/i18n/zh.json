@@ -1,7 +1,7 @@
 {
   "nav_dashboard": "仪表板",
   "nav_upload": "上传",
-  "nav_cc_ledger": "信用卡",
+  "nav_cc_ledger": "CC",
   "nav_savings": "储蓄账户",
   "nav_loan_matcher": "贷款",
   "nav_loan_matcher_smart": "智能贷款匹配器",
@@ -2176,7 +2176,7 @@
   "waiting": "等待中",
   "monthly_growth": "本月增长",
   "needs_attention": "需要处理",
-  "report_center": "报表中心",
+  "report_center": "中心",
   "batch_export_and_download": "批量导出与下载管理",
   "filter_conditions": "筛选条件",
   "export_tasks": "导出任务",
@@ -2552,6 +2552,6 @@
   "assign_error": "分配错误",
   "delete_function_coming_soon": "删除功能即将推出",
   "delete_error": "删除错误",
-  "nav_file_management": "文件管理",
+  "nav_file_management": "文件",
   "pending": "待处理"
 }

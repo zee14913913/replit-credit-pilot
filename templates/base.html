@@ -53,7 +53,7 @@
                 {% if is_admin_or_accountant %}
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if request.endpoint == 'admin_customers_list' }}" href="{{ url_for('admin_customers_list') }}">
-                        <i class="bi bi-people"></i> CUSTOMERS
+                        CUSTOMERS
                     </a>
                 </li>
                 {% endif %}

@@ -1,7 +1,7 @@
 {
   "nav_dashboard": "DASHBOARD",
   "nav_upload": "UPLOAD",
-  "nav_cc_ledger": "CREDIT CARDS",
+  "nav_cc_ledger": "CC",
   "nav_savings": "SAVINGS",
   "nav_loan_matcher": "LOANS",
   "nav_loan_matcher_smart": "Smart Loan Matcher",
@@ -2176,7 +2176,7 @@
   "waiting": "Waiting",
   "monthly_growth": "Monthly Growth",
   "needs_attention": "Needs Attention",
-  "report_center": "Report Center",
+  "report_center": "CENTER",
   "batch_export_and_download": "Batch Export and Download Management",
   "filter_conditions": "Filter Conditions",
   "export_tasks": "Export Tasks",
@@ -2552,6 +2552,6 @@
   "assign_error": "Assignment error",
   "delete_function_coming_soon": "Delete function coming soon",
   "delete_error": "Delete error",
-  "nav_file_management": "FILE MANAGEMENT",
+  "nav_file_management": "FILE",
   "pending": "Pending"
 }
