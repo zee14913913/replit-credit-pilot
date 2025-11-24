@@ -1,15 +1,4 @@
 分类,ID,银行,对账单日期,卡号后4位,原PDF路径,原因,缺失字段/错误详情
-PDF缺失,294,STANDARD CHARTERED,2025-09-14,1237,static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED_1237_2025-09-14.pdf,PDF文件不存在,
-PDF缺失,293,STANDARD CHARTERED,2025-08-14,1237,static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED_1237_2025-08-14.pdf,PDF文件不存在,
-PDF缺失,292,STANDARD CHARTERED,2025-07-14,1237,static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED_1237_2025-07-14.pdf,PDF文件不存在,
-PDF缺失,291,STANDARD CHARTERED,2025-06-15,1237,static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED_1237_2025-06-15.pdf,PDF文件不存在,
-PDF缺失,290,STANDARD CHARTERED,2025-05-14,1237,static/uploads/customers/Be_rich_CJY/credit_cards/STANDARD_CHARTERED_1237_2025-05-14.pdf,PDF文件不存在,
-PDF缺失,300,UOB,2025-10-13,8387,static/uploads/customers/Be_rich_CJY/credit_cards/UOB_8387_2025-10-13.pdf,PDF文件不存在,
-PDF缺失,299,UOB,2025-09-13,3530,static/uploads/customers/Be_rich_CJY/credit_cards/UOB_3530_2025-09-13.pdf,PDF文件不存在,
-PDF缺失,298,UOB,2025-08-13,3530,static/uploads/customers/Be_rich_CJY/credit_cards/UOB_3530_2025-08-13.pdf,PDF文件不存在,
-PDF缺失,297,UOB,2025-07-13,3530,static/uploads/customers/Be_rich_CJY/credit_cards/UOB_3530_2025-07-13.pdf,PDF文件不存在,
-PDF缺失,296,UOB,2025-06-13,3530,static/uploads/customers/Be_rich_CJY/credit_cards/UOB_3530_2025-06-13.pdf,PDF文件不存在,
-PDF缺失,295,UOB,2025-05-13,3530,static/uploads/customers/Be_rich_CJY/credit_cards/UOB_3530_2025-05-13.pdf,PDF文件不存在,
 解析错误,264,Alliance Bank,2024-12-12,3836,static/uploads/customers/Be_rich_CCC/credit_cards/Alliance_Bank/2024-12/Alliance_Bank_3836_2024-12-12.pdf,PDF无法解析（数据库有旧数据）,未找到Statement Date;未找到Due Date;未找到Statement Total;未找到Minimum Payment
 解析错误,317,AmBank,2025-11-30,6354,tests/uat_test_statement_202511.xlsx,字段为NULL,minimum_payment
 解析错误,318,AmBank,2025-11-30,6354,tests/uat_test_statement_202511.xlsx,字段为NULL,minimum_payment
