@@ -125,7 +125,7 @@
             <!-- Right side utilities -->
             <div class="nav-utilities">
                 <div class="notification-bell-container" style="position: relative; display: inline-block;">
-                    <button class="theme-toggle-btn" id="notificationBell" onclick="toggleNotifications()" title="{{ t('notification_center') }}">
+                    <button class="nav-utility-btn" id="notificationBell" onclick="toggleNotifications()" title="{{ t('notification_center') }}">
                         <i class="bi bi-bell-fill"></i>
                         <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
                     </button>
@@ -142,10 +142,6 @@
                         </div>
                     </div>
                 </div>
-                <button class="theme-toggle-btn" onclick="toggleTheme()" title="{{ t('toggle_theme') }}">
-                    <i id="theme-icon-sun" class="bi bi-sun-fill" style="display: inline-block;"></i>
-                    <i id="theme-icon-moon" class="bi bi-moon-fill" style="display: none;"></i>
-                </button>
                 <div class="language-switcher">
                     <button class="lang-btn {{ 'active' if current_lang == 'en' }}" 
                             onclick="window.location.href='{{ url_for('set_language', lang='en') }}'">

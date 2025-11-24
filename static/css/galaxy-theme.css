@@ -502,38 +502,64 @@ p {
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
+/* Navigation Utility Button - 通知按钮 */
+.nav-utility-btn {
+    background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%);
+    color: #FFFFFF;
+    border: 2px solid #FF007F;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 15px rgba(255, 0, 127, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
+}
+
+.nav-utility-btn:hover {
+    background: linear-gradient(135deg, #FF1A8C 0%, #F0008A 100%);
+    border-color: #FFFFFF;
+    box-shadow: 0 0 25px rgba(255, 0, 127, 0.6), 0 4px 12px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+}
+
 /* Language Switcher */
 .language-switcher {
     display: flex;
     gap: 0.3rem;
-    background: rgba(26, 26, 26, 0.6);
-    padding: 0.3rem;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--glass-border);
 }
 
 .lang-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-silver);
-    padding: 0.55rem 0.85rem;
-    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, #FF007F 0%, #E6007A 100%);
+    color: #FFFFFF;
+    border: 2px solid #FF007F;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
     cursor: pointer;
-    font-weight: 600;
-    font-size: 0.95rem;
+    font-weight: 700;
+    font-size: 0.8rem;
     transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 15px rgba(255, 0, 127, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
 }
 
 .lang-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-white);
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, #FF1A8C 0%, #F0008A 100%);
+    border-color: #FFFFFF;
+    box-shadow: 0 0 25px rgba(255, 0, 127, 0.6), 0 4px 12px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
 }
 
 .lang-btn.active {
-    background: rgba(255, 255, 255, 0.15);
-    color: var(--text-white);
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
+    background: linear-gradient(135deg, #FF3399 0%, #FF007F 100%);
+    border-color: #FFFFFF;
+    box-shadow: 0 0 30px rgba(255, 0, 127, 0.7), 0 4px 12px rgba(0, 0, 0, 0.4);
+    font-weight: 800;
 }
 
 /* Theme Toggle - 月亮和太阳有区别 */
