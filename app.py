@@ -1689,8 +1689,11 @@ def batch_upload(customer_id):
                     if data_dict and isinstance(data_dict, dict):
                         bank_name = data_dict.get('bank', 'Unknown')
                         card_last4 = data_dict.get('card_last4', None)
-                        statement_date = str(data_dict.get('statement_date', ''))
-                        total = float(data_dict.get('total', 0))
+                        # ⚠️ 严格规则：保留None，绝对禁止转换为字符串"None"或默认值0
+                        statement_date = data_dict.get('statement_date')  # None if not found
+                        due_date = data_dict.get('due_date')  # None if not found
+                        total = data_dict.get('total')  # None if not found - DO NOT use float(..., 0)
+                        minimum_payment = data_dict.get('minimum_payment')  # None if not found
                         
                         if not card_last4 or not card_last4.isdigit() or len(card_last4) != 4:
                             print(f"❌ Skipped {file.filename}: Cannot extract valid 4-digit card number (got: {card_last4})")
@@ -1721,12 +1724,16 @@ def batch_upload(customer_id):
                                     created_cards.append(f"{bank_name} ****{card_last4}")
                                     print(f"✅ Auto-created card: {bank_name} ****{card_last4}")
                                 
+                                # ✅ 修改：现在包含所有4个字段（statement_date, due_date, statement_total, minimum_payment）
                                 cursor.execute('''
-                                    INSERT INTO statements (card_id, statement_date, statement_total, file_path, batch_job_id)
-                                    VALUES (?, ?, ?, ?, ?)
-                                ''', (card_id, statement_date, total, file_path, batch_id))
+                                    INSERT INTO statements (card_id, statement_date, due_date, statement_total, minimum_payment, file_path, batch_job_id)
+                                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                                ''', (card_id, statement_date, due_date, total, minimum_payment, file_path, batch_id))
                                 statement_id = cursor.lastrowid
                                 conn.commit()
+                                
+                                # 记录提取质量日志
+                                logger.info(f"✅ Statement {statement_id} 字段提取: Date={statement_date}, Due={due_date}, Total=RM{total}, MinPay=RM{minimum_payment}")
                             
                             # 🚀 自动触发计算系统（100%自动化）
                             try:
@@ -9142,6 +9149,219 @@ def reject_all_batch_uploads():
 # Created: 2025-11-16
 # Description: 批量导出与报表自助中心路由（无图标设计）
 # ============================================================
+
+@app.route('/api/reports/validate-data', methods=['GET'])
+@require_admin_or_accountant
+def validate_report_data():
+    """
+    API: 验证报告数据质量
+    检测异常：重复的minimum_payment、缺失的due_date等
+    """
+    try:
+        warnings = []
+        
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # 检测1：同一客户、同一卡片的重复minimum_payment值（改进：检测任何重复>2次）
+            cursor.execute('''
+                SELECT 
+                    c.name,
+                    cc.bank_name,
+                    s.minimum_payment,
+                    COUNT(*) as count
+                FROM statements s
+                JOIN credit_cards cc ON s.card_id = cc.id
+                JOIN customers c ON cc.customer_id = c.id
+                WHERE s.minimum_payment IS NOT NULL
+                GROUP BY c.id, cc.id, s.minimum_payment
+                HAVING COUNT(*) > 2
+                ORDER BY count DESC
+                LIMIT 20
+            ''')
+            
+            duplicate_payments = cursor.fetchall()
+            if duplicate_payments:
+                for row in duplicate_payments:
+                    warnings.append({
+                        'type': 'duplicate_minimum_payment',
+                        'severity': 'warning',
+                        'message': f'{row[0]} - {row[1]}: {row[3]}条记录使用相同的Minimum Payment (RM {row[2]})',
+                        'recommendation': '检查PDF原件，可能使用了计算值而非真实值'
+                    })
+            
+            # 检测2：缺失due_date的记录
+            cursor.execute('''
+                SELECT COUNT(*) as count
+                FROM statements s
+                WHERE s.due_date IS NULL OR s.due_date = ''
+            ''')
+            
+            missing_due_dates = cursor.fetchone()[0]
+            if missing_due_dates > 0:
+                warnings.append({
+                    'type': 'missing_due_date',
+                    'severity': 'error',
+                    'message': f'{missing_due_dates}条记录缺失Due Date',
+                    'recommendation': '请从PDF重新提取Due Date字段'
+                })
+            
+            # 检测3：minimum_payment为NULL的记录
+            cursor.execute('''
+                SELECT COUNT(*) as count
+                FROM statements s
+                WHERE s.minimum_payment IS NULL
+            ''')
+            
+            missing_min_payment = cursor.fetchone()[0]
+            if missing_min_payment > 0:
+                warnings.append({
+                    'type': 'missing_minimum_payment',
+                    'severity': 'error',
+                    'message': f'{missing_min_payment}条记录缺失Minimum Payment',
+                    'recommendation': '请从PDF重新提取Minimum Payment字段'
+                })
+            
+            # 检测4：statement_total为NULL的记录
+            cursor.execute('''
+                SELECT COUNT(*) as count
+                FROM statements s
+                WHERE s.statement_total IS NULL OR s.statement_total = 0
+            ''')
+            
+            missing_statement_total = cursor.fetchone()[0]
+            if missing_statement_total > 0:
+                warnings.append({
+                    'type': 'missing_statement_total',
+                    'severity': 'error',
+                    'message': f'{missing_statement_total}条记录缺失或为0的Statement Total',
+                    'recommendation': '请从PDF重新提取Statement Total字段'
+                })
+            
+            # 检测5：同一卡片的所有due_date完全相同（可疑）
+            cursor.execute('''
+                SELECT 
+                    c.name,
+                    cc.bank_name,
+                    s.due_date,
+                    COUNT(*) as count
+                FROM statements s
+                JOIN credit_cards cc ON s.card_id = cc.id
+                JOIN customers c ON cc.customer_id = c.id
+                WHERE s.due_date IS NOT NULL
+                GROUP BY c.id, cc.id, s.due_date
+                HAVING COUNT(*) > 2
+                ORDER BY count DESC
+                LIMIT 10
+            ''')
+            
+            duplicate_due_dates = cursor.fetchall()
+            if duplicate_due_dates:
+                for row in duplicate_due_dates:
+                    warnings.append({
+                        'type': 'duplicate_due_date',
+                        'severity': 'warning',
+                        'message': f'{row[0]} - {row[1]}: {row[3]}条记录使用相同的Due Date ({row[2]})',
+                        'recommendation': '检查PDF原件，不同月份账单的到期日不应完全相同'
+                    })
+        
+        return jsonify({
+            'success': True,
+            'warnings': warnings,
+            'total_warnings': len(warnings)
+        })
+    
+    except Exception as e:
+        logger.error(f"数据验证失败: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/statements/<int:statement_id>/pdf-comparison', methods=['GET'])
+@require_admin_or_accountant
+def get_pdf_comparison(statement_id):
+    """
+    API: 获取单个账单的PDF vs 数据库字段对比
+    用于前端显示PDF字段—解析字段对比
+    """
+    try:
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # 获取数据库中的记录
+            cursor.execute('''
+                SELECT 
+                    s.id,
+                    s.statement_date,
+                    s.due_date,
+                    s.statement_total,
+                    s.minimum_payment,
+                    s.file_path,
+                    cc.bank_name,
+                    c.name as customer_name
+                FROM statements s
+                JOIN credit_cards cc ON s.card_id = cc.id
+                JOIN customers c ON cc.customer_id = c.id
+                WHERE s.id = ?
+            ''', (statement_id,))
+            
+            record = cursor.fetchone()
+            if not record:
+                return jsonify({'success': False, 'error': 'Statement not found'}), 404
+            
+            # 从PDF重新提取字段进行对比
+            pdf_path = record['file_path']
+            bank_name = record['bank_name']
+            
+            if os.path.exists(pdf_path):
+                from pdf_field_extractor import PDFFieldExtractor
+                extractor = PDFFieldExtractor()
+                pdf_data = extractor.extract_fields(pdf_path, bank_name)
+                
+                comparison = {
+                    'statement_id': record['id'],
+                    'customer_name': record['customer_name'],
+                    'bank_name': record['bank_name'],
+                    'fields': [
+                        {
+                            'name': 'Statement Date',
+                            'pdf_value': pdf_data.get('statement_date'),
+                            'db_value': record['statement_date'],
+                            'match': pdf_data.get('statement_date') == record['statement_date']
+                        },
+                        {
+                            'name': 'Due Date',
+                            'pdf_value': pdf_data.get('due_date'),
+                            'db_value': record['due_date'],
+                            'match': pdf_data.get('due_date') == record['due_date']
+                        },
+                        {
+                            'name': 'Statement Total',
+                            'pdf_value': pdf_data.get('statement_total'),
+                            'db_value': record['statement_total'],
+                            'match': abs(float(pdf_data.get('statement_total') or 0) - float(record['statement_total'] or 0)) < 0.01 if pdf_data.get('statement_total') and record['statement_total'] else False
+                        },
+                        {
+                            'name': 'Minimum Payment',
+                            'pdf_value': pdf_data.get('minimum_payment'),
+                            'db_value': record['minimum_payment'],
+                            'match': abs(float(pdf_data.get('minimum_payment') or 0) - float(record['minimum_payment'] or 0)) < 0.01 if pdf_data.get('minimum_payment') and record['minimum_payment'] else False
+                        }
+                    ],
+                    'extraction_errors': pdf_data.get('extraction_errors', [])
+                }
+                
+                return jsonify({
+                    'success': True,
+                    'comparison': comparison
+                })
+            else:
+                return jsonify({'success': False, 'error': 'PDF file not found'}), 404
+    
+    except Exception as e:
+        logger.error(f"PDF对比失败: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/reports/center')
 @require_admin_or_accountant

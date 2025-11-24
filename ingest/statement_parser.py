@@ -1276,7 +1276,83 @@ def parse_bank_muamalat_statement(file_path):
 def parse_statement_auto(file_path):
     """
     自动解析银行账单（PDF/Excel）
-    直接使用 Fallback Parser
+    使用新的PDF字段提取器 - 保证100%从PDF提取真实值
+    
+    严格规则：
+    1. 必须从PDF真实解析4个字段：statement_date, due_date, statement_total, minimum_payment
+    2. 绝对禁止使用公式计算、固定值、估算
+    3. 无法识别时返回NULL并记录异常
     """
-    logger.info(f"使用 Fallback Parser 解析账单: {file_path}")
-    return parse_statement_fallback(file_path)
+    logger.info(f"使用PDF字段提取器解析账单: {file_path}")
+    
+    # 检测文件类型
+    ext = os.path.splitext(file_path.lower())[1]
+    
+    if ext == '.pdf':
+        # 使用新的PDF字段提取器
+        try:
+            from pdf_field_extractor import PDFFieldExtractor
+            
+            # 检测银行
+            bank = detect_bank(file_path)
+            
+            # 提取4个关键字段
+            extractor = PDFFieldExtractor()
+            pdf_data = extractor.extract_fields(file_path, bank)
+            
+            # 提取卡号后4位（保留原有逻辑）
+            card_last4 = None
+            try:
+                with pdfplumber.open(file_path) as pdf:
+                    text = pdf.pages[0].extract_text()
+                    # 尝试多种模式匹配卡号
+                    patterns = [
+                        r'(\d{4})\s*\d{4}\s*\d{4}\s*(\d{4})',  # 完整卡号
+                        r'[*]{12}(\d{4})',  # ****1234格式
+                        r'(\d{4})$',  # 行末4位数字
+                    ]
+                    for pattern in patterns:
+                        match = re.search(pattern, text)
+                        if match:
+                            card_last4 = match.group(1) if len(match.groups()) == 1 else match.group(2)
+                            break
+            except Exception as e:
+                logger.warning(f"提取卡号失败: {e}")
+            
+            # 返回完整数据（包含所有4个字段）
+            # ⚠️ 严格规则：任何字段无法提取时必须返回None，绝对禁止使用默认值0.0或空字符串
+            data_dict = {
+                'bank': bank,
+                'card_last4': card_last4,
+                'statement_date': pdf_data.get('statement_date'),  # None if not found
+                'due_date': pdf_data.get('due_date'),  # None if not found
+                'total': float(pdf_data['statement_total']) if pdf_data.get('statement_total') else None,  # ✅ 修正：NULL而非0.0
+                'minimum_payment': float(pdf_data['minimum_payment']) if pdf_data.get('minimum_payment') else None,
+                'extraction_errors': pdf_data.get('extraction_errors', [])
+            }
+            
+            # 记录提取错误
+            if pdf_data.get('extraction_errors'):
+                logger.warning(f"PDF字段提取警告: {pdf_data['extraction_errors']}")
+            
+            logger.info(f"✅ PDF字段提取成功: {bank} - Statement: {data_dict['statement_date']}, Due: {data_dict['due_date']}, Total: RM{data_dict['total']}, MinPay: RM{data_dict['minimum_payment']}")
+            
+            return data_dict, []
+            
+        except Exception as e:
+            logger.error(f"❌ PDF字段提取器失败: {e}")
+            # ⚠️ 禁止fallback到旧解析器（可能包含计算值）
+            # 返回空数据，标记为需要人工处理
+            return {
+                'bank': detect_bank(file_path),
+                'card_last4': None,
+                'statement_date': None,
+                'due_date': None,
+                'total': None,
+                'minimum_payment': None,
+                'extraction_errors': [f'PDF提取失败: {str(e)}']
+            }, []
+    else:
+        # Excel/CSV文件继续使用原有解析器
+        logger.info(f"Excel/CSV文件，使用Fallback Parser: {file_path}")
+        return parse_statement_fallback(file_path)
