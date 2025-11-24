@@ -1171,8 +1171,10 @@ def customer_dashboard(customer_id):
     
     total_spending = 0
     all_transactions = []
+    all_statements = []
     for card in cards:
         statements = get_card_statements(card['id'])
+        all_statements.extend(statements)
         for statement in statements:
             if statement['is_confirmed']:
                 transactions = get_statement_transactions(statement['id'])
@@ -1262,7 +1264,9 @@ def customer_dashboard(customer_id):
                          cards=cards_with_timeline,
                          spending_summary=spending_summary,
                          total_spending=total_spending,
-                         monthly_ledgers=monthly_ledgers)
+                         monthly_ledgers=monthly_ledgers,
+                         statements=all_statements,
+                         transactions=all_transactions)
 
 
 @app.route('/customer/<int:customer_id>/add-card', methods=['GET', 'POST'])

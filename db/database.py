@@ -48,7 +48,13 @@ def get_customer_cards(customer_id):
 def get_card_statements(card_id):
     with get_db() as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM statements WHERE card_id = ? ORDER BY statement_date DESC', (card_id,))
+        cursor.execute('''
+            SELECT s.*, cc.bank_name 
+            FROM statements s
+            JOIN credit_cards cc ON s.card_id = cc.id
+            WHERE s.card_id = ? 
+            ORDER BY s.statement_date DESC
+        ''', (card_id,))
         return [dict(row) for row in cursor.fetchall()]
 
 def get_statement_transactions(statement_id):
