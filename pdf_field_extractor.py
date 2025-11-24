@@ -345,6 +345,160 @@ class GenericBankParser(BankParser):
         
         return result
 
+class OCBCBankParser(BankParser):
+    """OCBC Bank 专用解析器"""
+    
+    def parse(self, pdf_path: str) -> Dict:
+        result = {
+            'statement_date': None,
+            'due_date': None,
+            'statement_total': None,
+            'minimum_payment': None,
+            'extraction_errors': []
+        }
+        
+        try:
+            with pdfplumber.open(pdf_path) as pdf:
+                text = pdf.pages[0].extract_text()
+                
+                # OCBC格式: Statement Date: 13 MAY 2025
+                date_match = re.search(r'Statement Date[:\s]+(\d{1,2}\s+[A-Z]{3}\s+\d{4})', text, re.IGNORECASE)
+                if date_match:
+                    date_str = date_match.group(1)
+                    dt = datetime.strptime(date_str, '%d %b %Y')
+                    result['statement_date'] = dt.strftime('%Y-%m-%d')
+                
+                # Due Date: Payment Due Date 02 JUN 2025
+                due_match = re.search(r'Payment Due Date[:\s]+(\d{1,2}\s+[A-Z]{3}\s+\d{4})', text, re.IGNORECASE)
+                if due_match:
+                    date_str = due_match.group(1)
+                    dt = datetime.strptime(date_str, '%d %b %Y')
+                    result['due_date'] = dt.strftime('%Y-%m-%d')
+                
+                # Current Balance and Minimum Payment from table row
+                # 格式: CARD_NAME CARD_NUMBER BALANCE MIN_PAYMENT
+                # 例: GE MASTERCARD PLATINUM 5401-6200-0093-3506 1,190.69 446.00
+                table_match = re.search(r'(\d{4}-\d{4}-\d{4}-\d{4})\s+([\d,]+\.\d{2})\s+([\d,]+\.\d{2})', text)
+                if table_match:
+                    result['statement_total'] = table_match.group(2).replace(',', '')
+                    result['minimum_payment'] = table_match.group(3).replace(',', '')
+                
+                # 记录缺失字段
+                if result['statement_date'] is None:
+                    result['extraction_errors'].append("未找到Statement Date")
+                if result['due_date'] is None:
+                    result['extraction_errors'].append("未找到Due Date")
+                if result['statement_total'] is None:
+                    result['extraction_errors'].append("未找到Statement Total")
+                if result['minimum_payment'] is None:
+                    result['extraction_errors'].append("未找到Minimum Payment")
+                    
+        except Exception as e:
+            result['extraction_errors'].append(f"PDF读取失败: {str(e)}")
+        
+        return result
+
+class UOBBankParser(BankParser):
+    """UOB Bank 专用解析器"""
+    
+    def parse(self, pdf_path: str) -> Dict:
+        result = {
+            'statement_date': None,
+            'due_date': None,
+            'statement_total': None,
+            'minimum_payment': None,
+            'extraction_errors': []
+        }
+        
+        try:
+            with pdfplumber.open(pdf_path) as pdf:
+                text = pdf.pages[0].extract_text()
+                
+                # UOB格式
+                date_match = re.search(r'Statement Date[:\s]+(\d{1,2}\s+[A-Z][a-z]{2}\s+\d{4})', text, re.IGNORECASE)
+                if date_match:
+                    date_str = date_match.group(1)
+                    dt = datetime.strptime(date_str, '%d %b %Y')
+                    result['statement_date'] = dt.strftime('%Y-%m-%d')
+                
+                due_match = re.search(r'Payment Due Date[:\s]+(\d{1,2}\s+[A-Z][a-z]{2}\s+\d{4})', text, re.IGNORECASE)
+                if due_match:
+                    date_str = due_match.group(1)
+                    dt = datetime.strptime(date_str, '%d %b %Y')
+                    result['due_date'] = dt.strftime('%Y-%m-%d')
+                
+                total_match = re.search(r'(?:Total\s+Amount\s+Due|New\s+Balance)[:\s]+(?:RM\s*|SGD\s*)?([\d,]+\.\d{2})', text, re.IGNORECASE)
+                if total_match:
+                    result['statement_total'] = total_match.group(1).replace(',', '')
+                
+                min_match = re.search(r'Minimum\s+Payment(?:\s+Due)?[:\s]+(?:RM\s*|SGD\s*)?([\d,]+\.\d{2})', text, re.IGNORECASE)
+                if min_match:
+                    result['minimum_payment'] = min_match.group(1).replace(',', '')
+                
+                if result['statement_date'] is None:
+                    result['extraction_errors'].append("未找到Statement Date")
+                if result['due_date'] is None:
+                    result['extraction_errors'].append("未找到Due Date")
+                if result['statement_total'] is None:
+                    result['extraction_errors'].append("未找到Statement Total")
+                if result['minimum_payment'] is None:
+                    result['extraction_errors'].append("未找到Minimum Payment")
+                    
+        except Exception as e:
+            result['extraction_errors'].append(f"PDF读取失败: {str(e)}")
+        
+        return result
+
+class HSBCBankParser(BankParser):
+    """HSBC Bank 专用解析器"""
+    
+    def parse(self, pdf_path: str) -> Dict:
+        result = {
+            'statement_date': None,
+            'due_date': None,
+            'statement_total': None,
+            'minimum_payment': None,
+            'extraction_errors': []
+        }
+        
+        try:
+            with pdfplumber.open(pdf_path) as pdf:
+                text = pdf.pages[0].extract_text()
+                
+                date_match = re.search(r'Statement Date[:\s]+(\d{1,2}\s+[A-Z][a-z]{2,8}\s+\d{4})', text, re.IGNORECASE)
+                if date_match:
+                    date_str = date_match.group(1)
+                    dt = datetime.strptime(date_str, '%d %B %Y')
+                    result['statement_date'] = dt.strftime('%Y-%m-%d')
+                
+                due_match = re.search(r'Payment Due Date[:\s]+(\d{1,2}\s+[A-Z][a-z]{2,8}\s+\d{4})', text, re.IGNORECASE)
+                if due_match:
+                    date_str = due_match.group(1)
+                    dt = datetime.strptime(date_str, '%d %B %Y')
+                    result['due_date'] = dt.strftime('%Y-%m-%d')
+                
+                total_match = re.search(r'(?:Total\s+Balance|New\s+Balance)[:\s]+(?:RM\s*|MYR\s*)?([\d,]+\.\d{2})', text, re.IGNORECASE)
+                if total_match:
+                    result['statement_total'] = total_match.group(1).replace(',', '')
+                
+                min_match = re.search(r'Minimum\s+Payment[:\s]+(?:RM\s*|MYR\s*)?([\d,]+\.\d{2})', text, re.IGNORECASE)
+                if min_match:
+                    result['minimum_payment'] = min_match.group(1).replace(',', '')
+                
+                if result['statement_date'] is None:
+                    result['extraction_errors'].append("未找到Statement Date")
+                if result['due_date'] is None:
+                    result['extraction_errors'].append("未找到Due Date")
+                if result['statement_total'] is None:
+                    result['extraction_errors'].append("未找到Statement Total")
+                if result['minimum_payment'] is None:
+                    result['extraction_errors'].append("未找到Minimum Payment")
+                    
+        except Exception as e:
+            result['extraction_errors'].append(f"PDF读取失败: {str(e)}")
+        
+        return result
+
 class PDFFieldExtractor:
     """PDF字段提取协调器"""
     
@@ -359,6 +513,9 @@ class PDFFieldExtractor:
             'AmBank': AmBankParser('AmBank'),
             'AMBANK': AmBankParser('AMBANK'),
             'AmBank Islamic': AmBankParser('AmBank Islamic'),
+            'OCBC': OCBCBankParser('OCBC'),
+            'UOB': UOBBankParser('UOB'),
+            'HSBC': HSBCBankParser('HSBC'),
         }
     
     def get_parser(self, bank_name: str) -> BankParser:
