@@ -42,7 +42,7 @@ from validate.transaction_validator import validate_transactions, generate_valid
 from validate.reminder_service import check_and_send_reminders, create_reminder, get_pending_reminders, mark_as_paid
 from loan.dsr_calculator import calculate_dsr, calculate_max_loan_amount, simulate_loan_scenarios
 # Removed: News management feature deleted
-from report.pdf_generator import generate_monthly_report
+# from report.pdf_generator import generate_monthly_report  # REMOVED - use accounting_app instead
 import pdfplumber
 
 # New services for advanced features
