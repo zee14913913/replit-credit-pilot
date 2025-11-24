@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}数据质量监控 - CreditPilot Admin{% endblock %}
+{% block content %}
+<div class="fade-in">
+    <div class="section-header">
+        <h1 class="section-title" style="color: var(--primary-pink); font-weight: 700;">
+            <i class="bi bi-clipboard-data me-2"></i>数据质量监控
+        </h1>
+        <p class="section-subtitle">Data Quality Monitoring - Admin Only</p>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="professional-card text-center">
+                <h3 style="color: var(--primary-pink);">{{ total_statements }}</h3>
+                <p class="text-muted">总账单记录数</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="professional-card text-center" style="border-left: 4px solid #FFD700;">
+                <h3 style="color: #FFD700;">{{ missing_due_dates }}</h3>
+                <p class="text-muted">缺失Due Date（{{ "%.1f"|format((missing_due_dates/total_statements*100) if total_statements > 0 else 0) }}%）</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="professional-card text-center" style="border-left: 4px solid var(--primary-pink);">
+                <h3 style="color: var(--primary-pink);">{{ ratio_anomalies }}</h3>
+                <p class="text-muted">Min Payment比例异常</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="professional-card mb-4">
+        <h4 style="color: var(--primary-pink); margin-bottom: 20px;">
+            <i class="bi bi-calendar-x me-2"></i>按银行统计缺失Due Date
+        </h4>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr style="background: rgba(255,0,127,0.1);">
+                        <th>银行</th>
+                        <th>总记录数</th>
+                        <th>缺失数量</th>
+                        <th>缺失比例</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in due_date_by_bank %}
+                    <tr>
+                        <td><strong>{{ row.bank_name }}</strong></td>
+                        <td>{{ row.total }}</td>
+                        <td style="color: #FFD700;"><strong>{{ row.missing }}</strong></td>
+                        <td>
+                            <span class="badge" style="background: {% if row.missing_pct > 50 %}#dc3545{% elif row.missing_pct > 20 %}#ffc107{% else %}#28a745{% endif %};">
+                                {{ row.missing_pct }}%
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="professional-card mb-4">
+        <h4 style="color: var(--primary-pink); margin-bottom: 20px;">
+            <i class="bi bi-exclamation-triangle me-2"></i>固定Minimum Payment异常（重复值>2次）
+        </h4>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr style="background: rgba(255,0,127,0.1);">
+                        <th>客户</th>
+                        <th>银行</th>
+                        <th>固定值 (RM)</th>
+                        <th>重复次数</th>
+                        <th>Total范围 (RM)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in duplicate_payments %}
+                    <tr>
+                        <td>{{ row.customer_name[:20] }}</td>
+                        <td><strong>{{ row.bank_name }}</strong></td>
+                        <td style="color: #FFD700;"><strong>{{ "%.2f"|format(row.minimum_payment) }}</strong></td>
+                        <td>
+                            <span class="badge bg-warning">{{ row.count }}次</span>
+                        </td>
+                        <td class="small text-muted">{{ "%.2f"|format(row.min_total) }} - {{ "%.2f"|format(row.max_total) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="professional-card">
+        <h4 style="color: var(--primary-pink); margin-bottom: 20px;">
+            <i class="bi bi-percent me-2"></i>Minimum Payment比例异常（<2% 或 >12%）
+        </h4>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr style="background: rgba(255,0,127,0.1);">
+                        <th>ID</th>
+                        <th>客户</th>
+                        <th>银行</th>
+                        <th>日期</th>
+                        <th>Total (RM)</th>
+                        <th>Min Pay (RM)</th>
+                        <th>比例</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in ratio_anomaly_details %}
+                    <tr>
+                        <td class="small text-muted">{{ row.id }}</td>
+                        <td>{{ row.customer[:15] }}</td>
+                        <td>{{ row.bank }}</td>
+                        <td class="small">{{ row.statement_date }}</td>
+                        <td>{{ "%.2f"|format(row.total) }}</td>
+                        <td>{{ "%.2f"|format(row.min_pay) }}</td>
+                        <td>
+                            <span class="badge" style="background: {% if row.ratio_pct < 2 %}#dc3545{% elif row.ratio_pct > 12 %}#ffc107{% else %}#28a745{% endif %};">
+                                {{ "%.2f"|format(row.ratio_pct) }}%
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
