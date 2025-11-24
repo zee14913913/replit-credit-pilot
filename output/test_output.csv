@@ -1,2 +1,0 @@
-bank_name,customer_name,ic_no,card_type,card_no,credit_limit,statement_date,payment_due_date,previous_balance,current_balance,minimum_payment,transaction_date,transaction_description,amount_CR,amount_DR,earned_point
-AMBANK,CHEOK JUN YOON,,,4031 4899 9530 6354,0.0,2025-10-28,,0.0,1000.0,0.0,2025-10-01,Shopee Malaysia,0.0,50.0,
