@@ -43,7 +43,7 @@ app.add_middleware(
 # 导入路由模块
 from .routes import (
     bank_import,
-    # bank_import_v2,  # Phase 1-5: 新版上传接口 - 文件不存在，已注释
+    bank_import_v2,  # Phase 1-5: 新版上传接口
     bank_statements,  # 银行月结单操作：验证、入账、设为主对账单
     reports,
     invoices,
@@ -86,7 +86,7 @@ from .routes import (
 # 注册路由
 app.include_router(companies.router, prefix="/api/companies", tags=["Companies"])
 app.include_router(bank_import.router, prefix="/api/import", tags=["Bank Import"])
-# app.include_router(bank_import_v2.router, tags=["Bank Import V2"])  # Phase 1-5: 文件不存在，已注释
+app.include_router(bank_import_v2.router, tags=["Bank Import V2"])  # Phase 1-5: 集成raw_documents保护
 app.include_router(bank_statements.router, tags=["Bank Statements"])  # 银行月结单操作
 app.include_router(smart_import.router, prefix="/api/smart-import", tags=["Smart Import"])
 app.include_router(reports.router, prefix="/api/reports", tags=["Reports"])

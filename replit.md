@@ -61,12 +61,6 @@ A local Fallback Parser system guarantees 100% transaction extraction with zero 
 **PDF Batch Processing System**:
 Automated system for processing credit card statement PDFs, including OCR extraction, 5-category transaction classification, automated outstanding balance calculation, and dual Excel/JSON reporting.
 
-**Mandatory Upload Orchestration System**:
-Production-ready 8-stage state machine enforcing complete file processing pipeline with zero data loss: PendingChecksum (MD5 duplicate detection) → PendingParse (7 mandatory field extraction) → PendingAttribution (customer matching, confidence ≥0.98) → PendingClassification (business type auto-detection) → ApprovedForStorage → StorageComplete (dual-write: primary + backup). All state changes audit-logged to upload_state_changes. Quarantine-first approach prevents premature file persistence. Architect-enforced constraints prevent pipeline bypass.
-
-**Owner/GZ Classification System**:
-Intelligent transaction categorization for mixed personal/business expenses (e.g., LEE E KAI's AmBank Islamic statements containing both personal purchases and INFINITE GZ SDN BHD business expenses). Auto-classifies transactions using merchant pattern matching (GZ suppliers: 7SL, Dinas Raub, Ai Smart Tech, etc. vs Owner keywords: restaurants, shopping, entertainment). Generates comparison tables validating calculated totals (Owner Total + GZ Total) against original PDF statement total with RM 0.01 tolerance. Automatic human review queue for low-confidence classifications.
-
 **Professional Excel Formatting Engine**:
 Enterprise-grade Excel formatting using 13 professional standards and a CreditPilot official color scheme (Main Pink #FFB6C1 + Deep Brown #3E2723).
 
@@ -90,14 +84,13 @@ Centralized color configuration via `config/colors.json` and a Python module, ge
 - **CTOS Consent System**: Integrates personal and company CTOS consent, generating professional PDF reports.
 
 ### System Design Choices
-- **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, advisory, and upload_transactions (state machine tracking).
-- **Design Patterns:** Repository Pattern, Template Inheritance, Context Manager, Service Layer, Strategy Pattern (multi-provider AI), State Machine Pattern (upload orchestration).
-- **Security:** Session secret key, file upload limits, SQL injection prevention, audit logging, API key management, MD5-based duplicate detection.
-- **Data Accuracy:** Robust monthly ledger engine ensuring 100% accuracy. Upload orchestrator enforces 7 mandatory parse fields (owner_name, customer_code, bank_name, statement_date, due_date, statement_total, minimum_payment) with zero tolerance for missing data.
+- **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, and advisory.
+- **Design Patterns:** Repository Pattern, Template Inheritance, Context Manager, Service Layer, Strategy Pattern (multi-provider AI).
+- **Security:** Session secret key, file upload limits, SQL injection prevention, audit logging, API key management.
+- **Data Accuracy:** Robust monthly ledger engine ensuring 100% accuracy.
 - **Monthly Statement Architecture:** One monthly statement record per bank + month.
 - **AI Architecture:** Unified client interface with automatic provider switching, graceful degradation, and environment-based configuration.
 - **Dual-Engine Loan Architecture:** Preserves legacy DSR/DSCR engines alongside modern risk_engine, with an API layer for mode-based routing and product matching. Exclusively uses CTOS commitment data.
-- **File Integrity Architecture:** Dual-storage system (primary: static/uploads/, backup: static/uploads_backup/) with daily reconciliation jobs, file_registry tracking (file_uuid, file_hash, upload_date, customer linkage), and quarantine-first upload flow preventing premature persistence.
 
 ### Security & Access Control
 A production-ready Unified RBAC Implementation protects 32+ functions using `@require_admin_or_accountant` decorator supporting Flask session-based RBAC and FastAPI token verification. Access levels include Admin, Accountant, Customer, and Unauthenticated roles.
