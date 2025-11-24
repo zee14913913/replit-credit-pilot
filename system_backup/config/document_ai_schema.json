@@ -1,0 +1,144 @@
+{
+  "displayName": "Malaysian Credit Card Statement",
+  "description": "13家马来西亚银行信用卡账单解析模版",
+  "entityTypes": [
+    {
+      "name": "bank_name",
+      "displayName": "银行名字",
+      "baseTypes": [
+        "string"
+      ],
+      "occurrenceType": "REQUIRED_ONCE"
+    },
+    {
+      "name": "customer_name",
+      "displayName": "客户名字",
+      "baseTypes": [
+        "string"
+      ],
+      "occurrenceType": "REQUIRED_ONCE"
+    },
+    {
+      "name": "ic_no",
+      "displayName": "身份证号码",
+      "baseTypes": [
+        "string"
+      ],
+      "occurrenceType": "OPTIONAL_ONCE"
+    },
+    {
+      "name": "card_type",
+      "displayName": "信用卡类型",
+      "baseTypes": [
+        "string"
+      ],
+      "occurrenceType": "REQUIRED_ONCE"
+    },
+    {
+      "name": "card_no",
+      "displayName": "信用卡号码",
+      "baseTypes": [
+        "string"
+      ],
+      "occurrenceType": "REQUIRED_ONCE"
+    },
+    {
+      "name": "credit_limit",
+      "displayName": "信用卡额度",
+      "baseTypes": [
+        "money"
+      ],
+      "occurrenceType": "REQUIRED_ONCE"
+    },
+    {
+      "name": "statement_date",
+      "displayName": "账单日期",
+      "baseTypes": [
+        "date"
+      ],
+      "occurrenceType": "REQUIRED_ONCE"
+    },
+    {
+      "name": "payment_due_date",
+      "displayName": "付款到期日期",
+      "baseTypes": [
+        "date"
+      ],
+      "occurrenceType": "REQUIRED_ONCE"
+    },
+    {
+      "name": "full_due_amount",
+      "displayName": "全部即将到期数目",
+      "baseTypes": [
+        "money"
+      ],
+      "occurrenceType": "REQUIRED_ONCE"
+    },
+    {
+      "name": "minimum_payment",
+      "displayName": "最少需付款数目",
+      "baseTypes": [
+        "money"
+      ],
+      "occurrenceType": "REQUIRED_ONCE"
+    },
+    {
+      "name": "previous_balance",
+      "displayName": "上个月累计余额",
+      "baseTypes": [
+        "money"
+      ],
+      "occurrenceType": "OPTIONAL_ONCE"
+    },
+    {
+      "name": "transactions",
+      "displayName": "交易记录",
+      "baseTypes": [
+        "table"
+      ],
+      "occurrenceType": "OPTIONAL_MULTIPLE",
+      "properties": [
+        {
+          "name": "transaction_date",
+          "displayName": "交易日期",
+          "baseTypes": [
+            "date"
+          ],
+          "occurrenceType": "REQUIRED_ONCE"
+        },
+        {
+          "name": "description",
+          "displayName": "交易描述",
+          "baseTypes": [
+            "string"
+          ],
+          "occurrenceType": "REQUIRED_ONCE"
+        },
+        {
+          "name": "amount_CR",
+          "displayName": "贷记金额",
+          "baseTypes": [
+            "money"
+          ],
+          "occurrenceType": "OPTIONAL_ONCE"
+        },
+        {
+          "name": "amount_DR",
+          "displayName": "借记金额",
+          "baseTypes": [
+            "money"
+          ],
+          "occurrenceType": "OPTIONAL_ONCE"
+        },
+        {
+          "name": "points",
+          "displayName": "积分",
+          "baseTypes": [
+            "number"
+          ],
+          "occurrenceType": "OPTIONAL_ONCE"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "backup_date": "20251124_042747",
+  "customer": {
+    "id": 18,
+    "name": "LEE E KAI",
+    "customer_code": "LEE_EK_009",
+    "email": "leeekai0608.gz@gmail.com"
+  },
+  "credit_cards": [
+    {
+      "id": 59,
+      "bank": "AmBank Islamic",
+      "last4": "9791"
+    }
+  ],
+  "statements": [
+    {
+      "id": 537,
+      "date": "2025-10-03",
+      "bank": "AmBank Islamic",
+      "file": "attached_assets/AmBank_E-Statement_332f3e70-67ae-11f0-b193-525400fb8c0a_Oct_2025_8d80fc43-1bdd-4662-ae11-f777c78040ca_1763905697417.pdf"
+    }
+  ]
+}

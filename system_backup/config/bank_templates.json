@@ -1,0 +1,547 @@
+{
+  "description": "马来西亚12家银行信用卡账单专用配置",
+  "last_updated": "2025-11-18",
+  "banks": {
+    "Maybank": {
+      "display_name": "Maybank (Malayan Banking Berhad)",
+      "code": "MBB",
+      "statement_format": "PDF",
+      "date_format": "dd/MM/yyyy",
+      "field_mapping": {
+        "statement_date": [
+          "Statement Date",
+          "Tarikh Penyata"
+        ],
+        "due_date": [
+          "Payment Due Date",
+          "Tarikh Akhir Bayaran"
+        ],
+        "card_number": [
+          "Card Number",
+          "Nombor Kad"
+        ],
+        "total_amount": [
+          "Total Amount Due",
+          "Jumlah Perlu Dibayar"
+        ],
+        "minimum_payment": [
+          "Minimum Payment",
+          "Bayaran Minimum"
+        ],
+        "previous_balance": [
+          "Previous Balance",
+          "Baki Terdahulu"
+        ]
+      },
+      "transaction_headers": [
+        "Date",
+        "Description",
+        "Amount",
+        "DR/CR"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
+      "enabled": true
+    },
+    "CIMB": {
+      "display_name": "CIMB Bank Berhad",
+      "code": "CIMB",
+      "statement_format": "PDF",
+      "date_format": "dd MMM yyyy",
+      "field_mapping": {
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due Date"
+        ],
+        "card_number": [
+          "Card No."
+        ],
+        "total_amount": [
+          "Total Amount Due"
+        ],
+        "minimum_payment": [
+          "Minimum Payment"
+        ],
+        "previous_balance": [
+          "Previous Balance"
+        ]
+      },
+      "transaction_headers": [
+        "Date",
+        "Transaction Details",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
+      "enabled": true
+    },
+    "Hong Leong Bank": {
+      "display_name": "Hong Leong Bank Berhad",
+      "code": "HLB",
+      "statement_format": "PDF",
+      "date_format": "dd/MM/yyyy",
+      "field_mapping": {
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due"
+        ],
+        "card_number": [
+          "Card Number"
+        ],
+        "total_amount": [
+          "Total Amount Payable"
+        ],
+        "minimum_payment": [
+          "Minimum Payment Due"
+        ],
+        "previous_balance": [
+          "Balance B/F"
+        ]
+      },
+      "transaction_headers": [
+        "Trans Date",
+        "Posting Date",
+        "Description",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
+      "enabled": true
+    },
+    "Public Bank": {
+      "display_name": "Public Bank Berhad",
+      "code": "PBB",
+      "statement_format": "PDF",
+      "date_format": "dd-MM-yyyy",
+      "field_mapping": {
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due Date"
+        ],
+        "card_number": [
+          "Card Number"
+        ],
+        "total_amount": [
+          "Total Outstanding Balance"
+        ],
+        "minimum_payment": [
+          "Minimum Payment"
+        ],
+        "previous_balance": [
+          "Previous Balance"
+        ]
+      },
+      "transaction_headers": [
+        "Date",
+        "Description",
+        "Amount",
+        "Dr/Cr"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
+      "enabled": true
+    },
+    "RHB": {
+      "display_name": "RHB Bank Berhad",
+      "code": "RHB",
+      "statement_format": "PDF",
+      "date_format": "dd/MM/yyyy",
+      "field_mapping": {
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due Date"
+        ],
+        "card_number": [
+          "Card No"
+        ],
+        "total_amount": [
+          "Total Outstanding"
+        ],
+        "minimum_payment": [
+          "Minimum Payment"
+        ],
+        "previous_balance": [
+          "Previous Balance"
+        ]
+      },
+      "transaction_headers": [
+        "Date",
+        "Particulars",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
+      "enabled": true
+    },
+    "AmBank": {
+      "display_name": "AmBank (M) Berhad",
+      "code": "AMB",
+      "statement_format": "PDF",
+      "date_format": "dd MMM yyyy",
+      "field_mapping": {
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due Date"
+        ],
+        "card_number": [
+          "Credit Card No."
+        ],
+        "total_amount": [
+          "Total Amount Due"
+        ],
+        "minimum_payment": [
+          "Minimum Payment Due"
+        ],
+        "previous_balance": [
+          "Balance from Previous Statement"
+        ]
+      },
+      "transaction_headers": [
+        "Trans Date",
+        "Post Date",
+        "Description",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
+      "enabled": true
+    },
+    "UOB": {
+      "display_name": "United Overseas Bank (Malaysia) Bhd",
+      "code": "UOB",
+      "statement_format": "PDF",
+      "date_format": "dd MMM yyyy",
+      "field_mapping": {
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due Date"
+        ],
+        "card_number": [
+          "Card Number"
+        ],
+        "total_amount": [
+          "Total Amount Due"
+        ],
+        "minimum_payment": [
+          "Minimum Payment"
+        ],
+        "previous_balance": [
+          "Previous Balance"
+        ]
+      },
+      "transaction_headers": [
+        "Trans Date",
+        "Description",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
+      "enabled": true
+    },
+    "OCBC": {
+      "display_name": "OCBC Bank (Malaysia) Berhad",
+      "code": "OCBC",
+      "statement_format": "PDF",
+      "date_format": "dd MMM yyyy",
+      "field_mapping": {
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due Date"
+        ],
+        "card_number": [
+          "Card Number"
+        ],
+        "total_amount": [
+          "Total Amount Due"
+        ],
+        "minimum_payment": [
+          "Minimum Payment"
+        ],
+        "previous_balance": [
+          "Balance from Previous Statement"
+        ]
+      },
+      "transaction_headers": [
+        "Date",
+        "Description",
+        "Debit",
+        "Credit"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
+      "enabled": true
+    },
+    "Alliance Bank": {
+      "display_name": "Alliance Bank Malaysia Berhad",
+      "code": "ABB",
+      "statement_format": "PDF",
+      "date_format": "dd/MM/yyyy",
+      "field_mapping": {
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due Date"
+        ],
+        "card_number": [
+          "Card No"
+        ],
+        "total_amount": [
+          "Total Outstanding Balance"
+        ],
+        "minimum_payment": [
+          "Minimum Payment Due"
+        ],
+        "previous_balance": [
+          "Previous Balance"
+        ]
+      },
+      "transaction_headers": [
+        "Date",
+        "Transaction Description",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
+      "enabled": true
+    },
+    "GXBank": {
+      "display_name": "GXBank (Grab-Singtel Digital Bank)",
+      "code": "GXB",
+      "statement_format": "PDF",
+      "date_format": "dd MMM yyyy",
+      "field_mapping": {
+        "statement_date": [
+          "Statement Date"
+        ],
+        "due_date": [
+          "Payment Due"
+        ],
+        "card_number": [
+          "Card Number"
+        ],
+        "total_amount": [
+          "Amount Due"
+        ],
+        "minimum_payment": [
+          "Minimum Payment"
+        ],
+        "previous_balance": [
+          "Opening Balance"
+        ]
+      },
+      "transaction_headers": [
+        "Date",
+        "Description",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
+      "enabled": true
+    },
+    "Bank Islam": {
+      "display_name": "Bank Islam Malaysia Berhad",
+      "code": "BIMB",
+      "statement_format": "PDF",
+      "date_format": "dd/MM/yyyy",
+      "field_mapping": {
+        "statement_date": [
+          "Tarikh Penyata",
+          "Statement Date"
+        ],
+        "due_date": [
+          "Tarikh Akhir Bayaran",
+          "Payment Due Date"
+        ],
+        "card_number": [
+          "Nombor Kad",
+          "Card Number"
+        ],
+        "total_amount": [
+          "Jumlah Perlu Dibayar",
+          "Total Amount Due"
+        ],
+        "minimum_payment": [
+          "Bayaran Minimum",
+          "Minimum Payment"
+        ],
+        "previous_balance": [
+          "Baki Terdahulu",
+          "Previous Balance"
+        ]
+      },
+      "transaction_headers": [
+        "Tarikh",
+        "Butiran",
+        "Amaun",
+        "Date",
+        "Description",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
+      "enabled": true
+    },
+    "HSBC": {
+      "display_name": "HSBC Bank Malaysia Berhad",
+      "code": "HSBC",
+      "statement_format": "PDF",
+      "date_format": "dd MMM yyyy",
+      "field_mapping": {
+        "statement_date": [
+          "Statement date"
+        ],
+        "due_date": [
+          "Payment due date"
+        ],
+        "card_number": [
+          "Card number"
+        ],
+        "total_amount": [
+          "Total amount due"
+        ],
+        "minimum_payment": [
+          "Minimum payment"
+        ],
+        "previous_balance": [
+          "Balance from last statement"
+        ]
+      },
+      "transaction_headers": [
+        "Transaction date",
+        "Posting date",
+        "Description",
+        "Amount"
+      ],
+      "supplier_keywords": [
+        "7SL",
+        "Dinas Raub",
+        "SYC Hainan",
+        "Ai Smart Tech",
+        "HUAWEI",
+        "Pasar Raya",
+        "Puchong Herbs"
+      ],
+      "enabled": true
+    }
+  },
+  "global_settings": {
+    "default_currency": "MYR",
+    "timezone": "Asia/Kuala_Lumpur",
+    "suppliers": [
+      "7SL",
+      "Dinas Raub",
+      "SYC Hainan",
+      "Ai Smart Tech",
+      "HUAWEI",
+      "Pasar Raya",
+      "Puchong Herbs"
+    ],
+    "owners_categories": [
+      "Owners",
+      "OWNER-还款",
+      "OWNER-分期付款",
+      "OWNER-费用/利息",
+      "OWNER-保险",
+      "owner_expense",
+      "owner_payment"
+    ],
+    "gz_categories": [
+      "Infinite GZ",
+      "GZ",
+      "GZs Expenses",
+      "GZs Payment"
+    ]
+  }
+}
