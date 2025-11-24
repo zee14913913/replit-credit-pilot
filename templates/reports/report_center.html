@@ -11,11 +11,6 @@
         </h1>
         <p class="section-subtitle">{{ t('batch_export_and_download') }}</p>
     </div>
-    
-    <!-- ✅ 数据质量警告区域 -->
-    <div id="dataQualityWarnings" class="mb-4" style="display: none;">
-        <!-- 警告卡片将由JavaScript动态生成 -->
-    </div>
 
     <!-- 筛选器卡片 - 直接嵌入版本（解决缓存问题）-->
     <div class="professional-card mb-4" style="padding: 35px !important;">
@@ -269,52 +264,6 @@ function exportSelected(format) {
 // 刷新历史记录
 function refreshHistory() {
     location.reload();
-}
-
-// ✅ 数据质量验证 - 页面加载时自动检查
-document.addEventListener('DOMContentLoaded', function() {
-    // 调用API检查数据质量
-    fetch('/api/reports/validate-data')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success && data.warnings && data.warnings.length > 0) {
-                displayDataQualityWarnings(data.warnings);
-            }
-        })
-        .catch(error => {
-            console.error('数据质量检查失败:', error);
-        });
-});
-
-// 显示数据质量警告
-function displayDataQualityWarnings(warnings) {
-    const container = document.getElementById('dataQualityWarnings');
-    if (!container || warnings.length === 0) return;
-    
-    let html = '<div class="professional-card" style="border-left: 4px solid #FFD700; background: rgba(255, 215, 0, 0.1);">';
-    html += '<h4 style="color: #FFD700; font-weight: 700; margin-bottom: 20px;">';
-    html += '<i class="bi bi-exclamation-triangle-fill me-2"></i>数据质量警告 (' + warnings.length + '条)';
-    html += '</h4>';
-    
-    warnings.forEach(warning => {
-        const severityColor = warning.severity === 'error' ? '#FF007F' : '#FFD700';
-        const severityIcon = warning.severity === 'error' ? 'bi-x-circle-fill' : 'bi-exclamation-circle-fill';
-        
-        html += '<div class="alert" style="background: rgba(0,0,0,0.3); border-left: 3px solid ' + severityColor + '; margin-bottom: 15px; padding: 15px;">';
-        html += '<div style="display: flex; align-items: start;">';
-        html += '<i class="bi ' + severityIcon + ' me-3" style="color: ' + severityColor + '; font-size: 1.5rem;"></i>';
-        html += '<div style="flex: 1;">';
-        html += '<strong style="color: ' + severityColor + ';">' + warning.message + '</strong>';
-        html += '<p style="margin: 8px 0 0 0; color: rgba(255,255,255,0.8);">建议：' + warning.recommendation + '</p>';
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
-    });
-    
-    html += '</div>';
-    
-    container.innerHTML = html;
-    container.style.display = 'block';
 }
 </script>
 {% endblock %}
