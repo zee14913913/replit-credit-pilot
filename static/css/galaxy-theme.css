@@ -2176,3 +2176,431 @@ footer p {
 
 /* Force reload timestamp */
 /* Updated: 2025-10-30 Reports Layout Optimization v2 */
+
+/* ========================================
+   ENHANCED MOBILE RESPONSIVE DESIGN
+   增强移动端响应式设计
+   ======================================== */
+
+/* Table Responsive Wrapper - 表格响应式容器 */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    /* 表格横向滚动 */
+    .table-responsive {
+        border: 1px solid rgba(255, 0, 127, 0.2);
+        border-radius: 12px;
+    }
+    
+    /* 表格移动端优化 */
+    .table-professional {
+        font-size: 0.85rem;
+        min-width: 600px; /* 防止表格过度压缩 */
+    }
+    
+    .table-professional td,
+    .table-professional th {
+        padding: 0.75rem 0.5rem;
+        white-space: nowrap;
+    }
+    
+    /* 卡片式表格布局（可选） */
+    .table-card-mobile {
+        min-width: 100% !important;
+    }
+    
+    .table-card-mobile thead {
+        display: none;
+    }
+    
+    .table-card-mobile tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+        background: rgba(50, 36, 70, 0.6);
+        border: 2px solid rgba(255, 0, 127, 0.3);
+        border-radius: 12px;
+        padding: 1rem;
+    }
+    
+    .table-card-mobile tbody td {
+        display: block;
+        text-align: right;
+        padding: 0.5rem;
+        border: none;
+    }
+    
+    .table-card-mobile tbody td::before {
+        content: attr(data-label);
+        float: left;
+        font-weight: 600;
+        color: #FF007F;
+    }
+}
+
+/* Button Touch Optimization - 按钮触控优化 */
+@media (max-width: 768px) {
+    .btn,
+    .btn-primary,
+    .btn-secondary,
+    .btn-outline {
+        min-height: 44px; /* Apple Human Interface Guidelines */
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .btn-sm {
+        min-height: 36px;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    /* 增加按钮间距 */
+    .btn + .btn {
+        margin-left: 0.5rem;
+    }
+    
+    /* 全宽按钮选项 */
+    .btn-block-mobile {
+        width: 100%;
+        display: block;
+        margin-bottom: 0.75rem;
+    }
+}
+
+/* Form Touch Optimization - 表单触控优化 */
+@media (max-width: 768px) {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="date"],
+    select,
+    textarea {
+        min-height: 44px;
+        font-size: 16px; /* 防止iOS自动缩放 */
+        padding: 0.75rem 1rem;
+    }
+    
+    .form-control,
+    .form-select {
+        min-height: 44px;
+        font-size: 16px;
+    }
+    
+    /* 增加表单标签清晰度 */
+    label {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+}
+
+/* Card Layout Mobile Optimization - 卡片布局移动端优化 */
+@media (max-width: 768px) {
+    /* 自动堆叠卡片 */
+    .row > [class*="col-"] {
+        margin-bottom: 1rem;
+    }
+    
+    /* 卡片内边距优化 */
+    .professional-card,
+    .glass-card,
+    .galaxy-card {
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    /* 卡片标题优化 */
+    .card-title {
+        font-size: 1.25rem;
+    }
+    
+    .card-subtitle {
+        font-size: 0.95rem;
+    }
+}
+
+/* Image & Media Responsive - 图片和媒体响应式 */
+@media (max-width: 768px) {
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    /* Logo 优化 */
+    .nav-logo {
+        height: 100px;
+    }
+    
+    /* 图表容器 */
+    .chart-container,
+    .plotly-graph-div {
+        width: 100% !important;
+        overflow-x: auto;
+    }
+}
+
+/* Modal Mobile Optimization - 模态框移动端优化 */
+@media (max-width: 768px) {
+    .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+    }
+    
+    .modal-content {
+        border-radius: 16px;
+    }
+    
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 1.25rem;
+    }
+}
+
+/* Dropdown Mobile Optimization - 下拉菜单移动端优化 */
+@media (max-width: 768px) {
+    .dropdown-menu {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 12px;
+    }
+    
+    .dropdown-item {
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem;
+    }
+}
+
+/* Typography Mobile Optimization - 字体移动端优化 */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+    
+    h1 {
+        font-size: 1.75rem;
+        line-height: 1.3;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+        line-height: 1.3;
+    }
+    
+    h3 {
+        font-size: 1.25rem;
+        line-height: 1.4;
+    }
+    
+    h4 {
+        font-size: 1.1rem;
+        line-height: 1.4;
+    }
+    
+    p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+}
+
+/* Container & Spacing Mobile - 容器和间距移动端优化 */
+@media (max-width: 768px) {
+    .container,
+    .container-fluid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    /* 减少垂直间距 */
+    .mb-4, .my-4 {
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .mt-4, .my-4 {
+        margin-top: 1.5rem !important;
+    }
+    
+    .mb-5, .my-5 {
+        margin-bottom: 2rem !important;
+    }
+    
+    .mt-5, .my-5 {
+        margin-top: 2rem !important;
+    }
+}
+
+/* Badge & Tag Mobile - 徽章和标签移动端优化 */
+@media (max-width: 768px) {
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.75rem;
+    }
+    
+    .status-badge {
+        font-size: 0.8rem;
+        padding: 0.35rem 0.7rem;
+    }
+}
+
+/* Progress Bar Mobile - 进度条移动端优化 */
+@media (max-width: 768px) {
+    .progress {
+        height: 1.25rem;
+        border-radius: 8px;
+    }
+    
+    .progress-bar {
+        font-size: 0.85rem;
+    }
+}
+
+/* Alert Mobile - 警告框移动端优化 */
+@media (max-width: 768px) {
+    .alert {
+        padding: 1rem;
+        font-size: 0.95rem;
+        border-radius: 12px;
+    }
+    
+    .alert-dismissible .btn-close {
+        padding: 1rem;
+    }
+}
+
+/* Tab Navigation Mobile - 标签页导航移动端优化 */
+@media (max-width: 768px) {
+    .nav-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .nav-tabs .nav-link {
+        white-space: nowrap;
+        padding: 0.75rem 1.25rem;
+        font-size: 0.95rem;
+    }
+}
+
+/* Breadcrumb Mobile - 面包屑导航移动端优化 */
+@media (max-width: 768px) {
+    .breadcrumb {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .breadcrumb-item {
+        white-space: nowrap;
+        font-size: 0.85rem;
+    }
+}
+
+/* Extra Small Devices - 超小屏幕设备优化 */
+@media (max-width: 480px) {
+    body {
+        font-size: 13px;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    h2 {
+        font-size: 1.35rem;
+    }
+    
+    .professional-card,
+    .glass-card,
+    .galaxy-card {
+        padding: 1rem;
+    }
+    
+    .btn,
+    .btn-primary,
+    .btn-secondary {
+        padding: 0.65rem 1.25rem;
+        font-size: 0.95rem;
+    }
+    
+    .nav-logo {
+        height: 80px;
+    }
+}
+
+/* Tablet Portrait - 平板竖屏优化 */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        max-width: 720px;
+    }
+    
+    .professional-card {
+        padding: 2rem;
+    }
+}
+
+/* Touch-Friendly Interactions - 触控友好交互 */
+@media (hover: none) and (pointer: coarse) {
+    /* 移除悬停效果，添加点击效果 */
+    .btn:active,
+    .nav-link:active,
+    .dropdown-item:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
+    
+    /* 增加可点击区域 */
+    a,
+    button,
+    .clickable {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+/* Print Styles - 打印样式 */
+@media print {
+    .nav-container,
+    .footer,
+    .btn,
+    .mobile-menu-toggle,
+    .dropdown-toggle {
+        display: none !important;
+    }
+    
+    .professional-card,
+    .glass-card,
+    .galaxy-card {
+        border: 1px solid #000;
+        box-shadow: none;
+        page-break-inside: avoid;
+    }
+    
+    body {
+        background: white;
+        color: black;
+    }
+}
+
+/* Landscape Mobile - 横屏手机优化 */
+@media (max-width: 896px) and (orientation: landscape) {
+    .nav-container {
+        padding: 0.5rem 1rem;
+    }
+    
+    .nav-logo {
+        height: 60px;
+    }
+    
+    .modal-dialog {
+        max-width: 80%;
+    }
+}
