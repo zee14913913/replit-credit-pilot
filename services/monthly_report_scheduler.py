@@ -7,7 +7,7 @@
 import os
 from datetime import datetime, timedelta
 from db.database import get_db, log_audit
-# from report.galaxy_report_generator import GalaxyMonthlyReportGenerator  # Module does not exist, commented out
+from report.galaxy_report_generator import GalaxyMonthlyReportGenerator
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -21,8 +21,7 @@ class MonthlyReportScheduler:
     """自动化月结报表调度器"""
     
     def __init__(self):
-        # self.report_generator = GalaxyMonthlyReportGenerator()  # Module does not exist, commented out
-        self.report_generator = None  # Placeholder
+        self.report_generator = GalaxyMonthlyReportGenerator()
         self.admin_email = os.environ.get('ADMIN_EMAIL', '')
         self.admin_password = os.environ.get('ADMIN_PASSWORD', '')
     
