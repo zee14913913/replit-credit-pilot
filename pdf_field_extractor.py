@@ -393,7 +393,88 @@ class OCBCBankParser(BankParser):
         return result
 
 class UOBBankParser(BankParser):
-    """UOB Bank 专用解析器"""
+    """UOB Bank 专用解析器 - 从真实PDF提取数据（无估算）"""
+    
+    def parse(self, pdf_path: str) -> Dict:
+        result = {
+            'statement_date': None,
+            'due_date': None,
+            'statement_total': None,
+            'minimum_payment': None,
+            'extraction_errors': []
+        }
+        
+        try:
+            with pdfplumber.open(pdf_path) as pdf:
+                page1_text = pdf.pages[0].extract_text()
+                
+                # Page 1: Statement Date (支持短格式 "13 MAY 25" 和长格式 "13 May 2025")
+                date_match = re.search(r'Statement Date[:\s]+(\d{1,2}\s+[A-Z]{3}\s+\d{2,4})', page1_text, re.IGNORECASE)
+                if date_match:
+                    date_str = date_match.group(1)
+                    try:
+                        if len(date_str.split()[-1]) == 2:
+                            dt = datetime.strptime(date_str, '%d %b %y')
+                        else:
+                            dt = datetime.strptime(date_str, '%d %b %Y')
+                        result['statement_date'] = dt.strftime('%Y-%m-%d')
+                    except:
+                        result['extraction_errors'].append(f"Statement Date格式错误: {date_str}")
+                
+                # Page 1: Payment Due Date (支持短格式 "02 JUN 25" 和长格式 "02 June 2025")
+                due_match = re.search(r'Payment Due Date[:\s]+(\d{1,2}\s+[A-Z]{3}\s+\d{2,4})', page1_text, re.IGNORECASE)
+                if due_match:
+                    date_str = due_match.group(1)
+                    try:
+                        if len(date_str.split()[-1]) == 2:
+                            dt = datetime.strptime(date_str, '%d %b %y')
+                        else:
+                            dt = datetime.strptime(date_str, '%d %b %Y')
+                        result['due_date'] = dt.strftime('%Y-%m-%d')
+                    except:
+                        result['extraction_errors'].append(f"Due Date格式错误: {date_str}")
+                
+                # 遍历所有页面查找 Minimum Payment Due 和 Total Balance Due（真实打印值）
+                for page in pdf.pages:
+                    text = page.extract_text()
+                    lines = text.split('\n')
+                    
+                    # 查找 "Minimum Payment Due 10.38" 格式（PDF真实打印的值）
+                    if result['minimum_payment'] is None:
+                        min_match = re.search(r'Minimum Payment Due[:\s]+([\d,]+\.\d{2})', text, re.IGNORECASE)
+                        if min_match:
+                            result['minimum_payment'] = min_match.group(1).replace(',', '')
+                    
+                    # 查找 Total Balance Due（跨行格式：标题在一行，数值在后续行）
+                    if result['statement_total'] is None:
+                        for i, line in enumerate(lines):
+                            if 'Total Balance Due' in line and i + 3 < len(lines):
+                                # 查找标题行后3行内的数字行（通常是表格数据行）
+                                for j in range(i+1, min(i+4, len(lines))):
+                                    # 匹配包含多个数字的行，取最后一个数字（Total Balance Due列）
+                                    number_match = re.findall(r'([\d,]+\.\d{2})', lines[j])
+                                    if number_match:
+                                        result['statement_total'] = number_match[-1].replace(',', '')
+                                        break
+                                if result['statement_total']:
+                                    break
+                
+                if result['statement_date'] is None:
+                    result['extraction_errors'].append("未找到Statement Date")
+                if result['due_date'] is None:
+                    result['extraction_errors'].append("未找到Due Date")
+                if result['statement_total'] is None:
+                    result['extraction_errors'].append("未找到Statement Total")
+                if result['minimum_payment'] is None:
+                    result['extraction_errors'].append("未找到Minimum Payment Due（已检查所有页面）")
+                    
+        except Exception as e:
+            result['extraction_errors'].append(f"PDF读取失败: {str(e)}")
+        
+        return result
+
+class HSBCBankParser(BankParser):
+    """HSBC Bank 专用解析器 - 从真实PDF提取数据（无估算）"""
     
     def parse(self, pdf_path: str) -> Dict:
         result = {
@@ -408,26 +489,59 @@ class UOBBankParser(BankParser):
             with pdfplumber.open(pdf_path) as pdf:
                 text = pdf.pages[0].extract_text()
                 
-                # UOB格式
-                date_match = re.search(r'Statement Date[:\s]+(\d{1,2}\s+[A-Z][a-z]{2}\s+\d{4})', text, re.IGNORECASE)
-                if date_match:
-                    date_str = date_match.group(1)
-                    dt = datetime.strptime(date_str, '%d %b %Y')
-                    result['statement_date'] = dt.strftime('%Y-%m-%d')
+                # Statement Date 和 Due Date 在同一行： "Statement Date 13 May 2025 Payment Due Date 03 June 2025"
+                date_line_match = re.search(r'Statement Date[:\s]+(\d{1,2}\s+[A-Z][a-z]{2,8}\s+\d{4})\s+Payment Due Date[:\s]+(\d{1,2}\s+[A-Z][a-z]{2,8}\s+\d{4})', text, re.IGNORECASE)
+                if date_line_match:
+                    try:
+                        stmt_date_str = date_line_match.group(1)
+                        dt = datetime.strptime(stmt_date_str, '%d %B %Y')
+                        result['statement_date'] = dt.strftime('%Y-%m-%d')
+                        
+                        due_date_str = date_line_match.group(2)
+                        dt = datetime.strptime(due_date_str, '%d %B %Y')
+                        result['due_date'] = dt.strftime('%Y-%m-%d')
+                    except:
+                        result['extraction_errors'].append(f"日期格式错误: {date_line_match.group(0)}")
                 
-                due_match = re.search(r'Payment Due Date[:\s]+(\d{1,2}\s+[A-Z][a-z]{2}\s+\d{4})', text, re.IGNORECASE)
-                if due_match:
-                    date_str = due_match.group(1)
-                    dt = datetime.strptime(date_str, '%d %b %Y')
-                    result['due_date'] = dt.strftime('%Y-%m-%d')
+                # 如果上面的combined pattern没找到，尝试单独查找
+                if result['statement_date'] is None:
+                    date_match = re.search(r'Statement Date[:\s]+(\d{1,2}\s+[A-Z][a-z]{2,8}\s+\d{4})', text, re.IGNORECASE)
+                    if date_match:
+                        try:
+                            date_str = date_match.group(1)
+                            dt = datetime.strptime(date_str, '%d %B %Y')
+                            result['statement_date'] = dt.strftime('%Y-%m-%d')
+                        except:
+                            result['extraction_errors'].append(f"Statement Date格式错误: {date_match.group(1)}")
                 
-                total_match = re.search(r'(?:Total\s+Amount\s+Due|New\s+Balance)[:\s]+(?:RM\s*|SGD\s*)?([\d,]+\.\d{2})', text, re.IGNORECASE)
-                if total_match:
-                    result['statement_total'] = total_match.group(1).replace(',', '')
+                if result['due_date'] is None:
+                    due_match = re.search(r'Payment Due Date[:\s]+(\d{1,2}\s+[A-Z][a-z]{2,8}\s+\d{4})', text, re.IGNORECASE)
+                    if due_match:
+                        try:
+                            date_str = due_match.group(1)
+                            dt = datetime.strptime(date_str, '%d %B %Y')
+                            result['due_date'] = dt.strftime('%Y-%m-%d')
+                        except:
+                            result['extraction_errors'].append(f"Due Date格式错误: {due_match.group(1)}")
                 
-                min_match = re.search(r'Minimum\s+Payment(?:\s+Due)?[:\s]+(?:RM\s*|SGD\s*)?([\d,]+\.\d{2})', text, re.IGNORECASE)
-                if min_match:
-                    result['minimum_payment'] = min_match.group(1).replace(',', '')
+                # 查找表格行： 卡号 余额 最低还款 超限额 应付金额
+                # 例: 4364800001380034 50.00 50.00 0.00 50.00
+                # 格式：16位卡号 + 4个数字（Balance, Minimum Payment, Overlimit, Payment Due）
+                table_match = re.search(r'(\d{16})\s+([\d,]+\.\d{2})\s+([\d,]+\.\d{2})\s+([\d,]+\.\d{2})\s+([\d,]+\.\d{2})', text)
+                if table_match:
+                    result['statement_total'] = table_match.group(2).replace(',', '')  # Balance
+                    result['minimum_payment'] = table_match.group(3).replace(',', '')  # Minimum Monthly Payment
+                else:
+                    # 回退方案：尝试传统的单独匹配
+                    if result['statement_total'] is None:
+                        total_match = re.search(r'(?:Balance|New\s+Balance)[:\s]+(?:RM\s*|MYR\s*)?([\d,]+\.\d{2})', text, re.IGNORECASE)
+                        if total_match:
+                            result['statement_total'] = total_match.group(1).replace(',', '')
+                    
+                    if result['minimum_payment'] is None:
+                        min_match = re.search(r'Minimum\s+(?:Monthly\s+)?Payment[:\s]+(?:RM\s*|MYR\s*)?([\d,]+\.\d{2})', text, re.IGNORECASE)
+                        if min_match:
+                            result['minimum_payment'] = min_match.group(1).replace(',', '')
                 
                 if result['statement_date'] is None:
                     result['extraction_errors'].append("未找到Statement Date")
@@ -443,8 +557,8 @@ class UOBBankParser(BankParser):
         
         return result
 
-class HSBCBankParser(BankParser):
-    """HSBC Bank 专用解析器"""
+class StandardCharteredBankParser(BankParser):
+    """Standard Chartered Bank 专用解析器 - 从真实PDF提取数据（无估算）"""
     
     def parse(self, pdf_path: str) -> Dict:
         result = {
@@ -458,31 +572,50 @@ class HSBCBankParser(BankParser):
         try:
             with pdfplumber.open(pdf_path) as pdf:
                 text = pdf.pages[0].extract_text()
+                lines = text.split('\n')
                 
-                date_match = re.search(r'Statement Date[:\s]+(\d{1,2}\s+[A-Z][a-z]{2,8}\s+\d{4})', text, re.IGNORECASE)
-                if date_match:
-                    date_str = date_match.group(1)
-                    dt = datetime.strptime(date_str, '%d %B %Y')
-                    result['statement_date'] = dt.strftime('%Y-%m-%d')
+                # Statement Date: "Statement Date / Tarikh Penyata : 14 Oct 2025"
+                stmt_date_match = re.search(r'Statement Date[:/\s]+.*?:\s*(\d{1,2}\s+[A-Z][a-z]{2,8}\s+\d{4})', text, re.IGNORECASE)
+                if stmt_date_match:
+                    try:
+                        date_str = stmt_date_match.group(1)
+                        dt = datetime.strptime(date_str, '%d %b %Y')
+                        result['statement_date'] = dt.strftime('%Y-%m-%d')
+                    except:
+                        result['extraction_errors'].append(f"Statement Date格式错误: {stmt_date_match.group(1)}")
                 
-                due_match = re.search(r'Payment Due Date[:\s]+(\d{1,2}\s+[A-Z][a-z]{2,8}\s+\d{4})', text, re.IGNORECASE)
-                if due_match:
-                    date_str = due_match.group(1)
-                    dt = datetime.strptime(date_str, '%d %B %Y')
-                    result['due_date'] = dt.strftime('%Y-%m-%d')
+                # Due Date: "Payment Due Date / Tarikh Akhir : IMMEDIATE" 或 "Payment Due Date / Tarikh Akhir : 15 Nov 2025"
+                # 注意：IMMEDIATE不是日期，将其留空（NULL）
+                due_date_match = re.search(r'Payment Due Date[:/\s]+.*?:\s*(.+)', text, re.IGNORECASE)
+                if due_date_match:
+                    due_value = due_date_match.group(1).strip()
+                    if 'IMMEDIATE' not in due_value.upper():
+                        # 尝试解析为日期
+                        try:
+                            date_match = re.search(r'(\d{1,2}\s+[A-Z][a-z]{2,8}\s+\d{4})', due_value, re.IGNORECASE)
+                            if date_match:
+                                dt = datetime.strptime(date_match.group(1), '%d %b %Y')
+                                result['due_date'] = dt.strftime('%Y-%m-%d')
+                        except:
+                            result['extraction_errors'].append(f"Due Date格式错误: {due_value}")
+                    # 如果是IMMEDIATE，due_date保持None
                 
-                total_match = re.search(r'(?:Total\s+Balance|New\s+Balance)[:\s]+(?:RM\s*|MYR\s*)?([\d,]+\.\d{2})', text, re.IGNORECASE)
-                if total_match:
-                    result['statement_total'] = total_match.group(1).replace(',', '')
+                # Minimum Payment和Balance：查找卡片名称行后的数字
+                # 格式: "SIMPLY CASH CREDIT CARD 73,889.93 9,220.36"
+                # 或: "CARD_NAME NEW_BALANCE MIN_PAYMENT"
+                for i, line in enumerate(lines):
+                    if any(card_type in line.upper() for card_type in ['CREDIT CARD', 'VISA', 'MASTERCARD', 'AMEX']):
+                        # 提取该行的所有数字
+                        numbers = re.findall(r'([\d,]+\.\d{2})', line)
+                        if len(numbers) >= 2:
+                            result['statement_total'] = numbers[-2].replace(',', '')  # 倒数第二个数字是balance
+                            result['minimum_payment'] = numbers[-1].replace(',', '')  # 最后一个数字是minimum payment
+                            break
                 
-                min_match = re.search(r'Minimum\s+Payment[:\s]+(?:RM\s*|MYR\s*)?([\d,]+\.\d{2})', text, re.IGNORECASE)
-                if min_match:
-                    result['minimum_payment'] = min_match.group(1).replace(',', '')
-                
+                # 验证必填字段
                 if result['statement_date'] is None:
                     result['extraction_errors'].append("未找到Statement Date")
-                if result['due_date'] is None:
-                    result['extraction_errors'].append("未找到Due Date")
+                # due_date可以为空（IMMEDIATE情况）
                 if result['statement_total'] is None:
                     result['extraction_errors'].append("未找到Statement Total")
                 if result['minimum_payment'] is None:
@@ -510,6 +643,9 @@ class PDFFieldExtractor:
             'OCBC': OCBCBankParser('OCBC'),
             'UOB': UOBBankParser('UOB'),
             'HSBC': HSBCBankParser('HSBC'),
+            'STANDARD CHARTERED': StandardCharteredBankParser('STANDARD CHARTERED'),
+            'Standard Chartered': StandardCharteredBankParser('Standard Chartered'),
+            'SC': StandardCharteredBankParser('SC'),
         }
     
     def get_parser(self, bank_name: str) -> BankParser:
