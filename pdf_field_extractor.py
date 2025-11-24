@@ -93,7 +93,7 @@ class HongLeongBankParser(BankParser):
         return result
 
 class AllianceBankParser(BankParser):
-    """Alliance Bank 专用解析器"""
+    """Alliance Bank 专用解析器 - 修复版本"""
     
     def parse(self, pdf_path: str) -> Dict:
         result = {
@@ -108,58 +108,52 @@ class AllianceBankParser(BankParser):
             with pdfplumber.open(pdf_path) as pdf:
                 text = pdf.pages[0].extract_text()
                 
-                # Alliance Bank格式示例（需要根据实际PDF调整）
-                # Statement Date
+                # Statement Date - "Tarikh Penyata 12/08/25" or "Statement Date 12/08/25"
                 date_patterns = [
-                    r'Statement\s+Date[:\s]+(\d{2}[/-]\d{2}[/-]\d{4})',
-                    r'Tarikh\s+Penyata[:\s]+(\d{2}[/-]\d{2}[/-]\d{4})',
+                    r'Tarikh\s+Penyata\s+(\d{2}/\d{2}/\d{2,4})',
+                    r'Statement\s+Date\s+(\d{2}/\d{2}/\d{2,4})',
                 ]
                 for pattern in date_patterns:
                     match = re.search(pattern, text, re.IGNORECASE)
                     if match:
-                        date_str = match.group(1).replace('/', '-')
+                        date_str = match.group(1)
                         try:
-                            result['statement_date'] = datetime.strptime(date_str, '%d-%m-%Y').strftime('%Y-%m-%d')
+                            # 处理 DD/MM/YY 格式
+                            parts = date_str.split('/')
+                            if len(parts[2]) == 2:
+                                date_str = f"{parts[0]}/{parts[1]}/20{parts[2]}"
+                            result['statement_date'] = datetime.strptime(date_str, '%d/%m/%Y').strftime('%Y-%m-%d')
                             break
-                        except:
+                        except Exception as e:
+                            result['extraction_errors'].append(f"Statement Date解析失败: {date_str} - {e}")
                             continue
                 
-                # Due Date
+                # Due Date - "Tarikh Bayaran Perlu Dibuat 01/09/25" or "Payment Due Date 01/09/25"
                 due_patterns = [
-                    r'Payment\s+Due\s+Date[:\s]+(\d{2}[/-]\d{2}[/-]\d{4})',
-                    r'Minimum\s+Payment\s+Due[:\s]+(\d{2}[/-]\d{2}[/-]\d{4})',
+                    r'Tarikh\s+Bayaran\s+Perlu\s+Dibuat\s+(\d{2}/\d{2}/\d{2,4})',
+                    r'Payment\s+Due\s+Date\s+(\d{2}/\d{2}/\d{2,4})',
                 ]
                 for pattern in due_patterns:
                     match = re.search(pattern, text, re.IGNORECASE)
                     if match:
-                        due_str = match.group(1).replace('/', '-')
+                        due_str = match.group(1)
                         try:
-                            result['due_date'] = datetime.strptime(due_str, '%d-%m-%Y').strftime('%Y-%m-%d')
+                            parts = due_str.split('/')
+                            if len(parts[2]) == 2:
+                                due_str = f"{parts[0]}/{parts[1]}/20{parts[2]}"
+                            result['due_date'] = datetime.strptime(due_str, '%d/%m/%Y').strftime('%Y-%m-%d')
                             break
-                        except:
+                        except Exception as e:
+                            result['extraction_errors'].append(f"Due Date解析失败: {due_str} - {e}")
                             continue
                 
-                # Statement Total
-                total_patterns = [
-                    r'(?:Total\s+Amount\s+Due|New\s+Balance)[:\s]+RM\s*(\d{1,3}(?:,\d{3})*\.?\d{0,2})',
-                    r'(?:Outstanding\s+Balance)[:\s]+RM\s*(\d{1,3}(?:,\d{3})*\.?\d{0,2})',
-                ]
-                for pattern in total_patterns:
-                    match = re.search(pattern, text, re.IGNORECASE)
-                    if match:
-                        result['statement_total'] = Decimal(match.group(1).replace(',', ''))
-                        break
-                
-                # Minimum Payment
-                min_patterns = [
-                    r'(?:Minimum\s+Payment)[:\s]+RM\s*(\d{1,3}(?:,\d{3})*\.?\d{0,2})',
-                    r'(?:Bayaran\s+Minimum)[:\s]+RM\s*(\d{1,3}(?:,\d{3})*\.?\d{0,2})',
-                ]
-                for pattern in min_patterns:
-                    match = re.search(pattern, text, re.IGNORECASE)
-                    if match:
-                        result['minimum_payment'] = Decimal(match.group(1).replace(',', ''))
-                        break
+                # Current Balance (Statement Total) and Minimum Payment from table row
+                # 格式: "CARD_NAME CARD_NUMBER CURRENT_BALANCE MINIMUM_PAYMENT"
+                # 例: "YOU:NIQUE MASTERCARD 5465 9464 0768 4514 10,004.46 1,022.72"
+                table_match = re.search(r'(\d{4}\s+\d{4}\s+\d{4}\s+\d{4})\s+([\d,]+\.\d{2})\s+([\d,]+\.\d{2})', text)
+                if table_match:
+                    result['statement_total'] = Decimal(table_match.group(2).replace(',', ''))
+                    result['minimum_payment'] = Decimal(table_match.group(3).replace(',', ''))
                 
                 # 记录缺失字段
                 if result['statement_date'] is None:
