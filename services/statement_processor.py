@@ -223,7 +223,7 @@ class ComprehensiveStatementProcessor:
                 'issues': issues,
                 'stats': {
                     'original_count': original_count,
-                    'consumption_count': consumption_count,
+                    'consumption_count': expense_count,
                     'payment_count': payment_count,
                     'original_total': original_total,
                     'consumption_total': consumption_total,

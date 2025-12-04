@@ -209,11 +209,15 @@ def process_stage2_classification(stage1_results):
         current_balance = result['info'].get('current_balance', 0)
         has_prepayment = current_balance < 0
         
+        owners_expenses = "Owner's Expenses"
+        gzs_expenses = "GZ's Expenses"
+        owners_payment = "Owner's Payment"
+        gzs_payment = "GZ's Payment"
         print(f"  ✅ 分类完成: {len(classified_txns)} 笔交易")
-        print(f"     Owner's Expenses: {sum(1 for t in classified_txns if t['category'] == 'Owner\\'s Expenses')}")
-        print(f"     GZ's Expenses: {sum(1 for t in classified_txns if t['category'] == 'GZ\\'s Expenses')}")
-        print(f"     Owner's Payment: {sum(1 for t in classified_txns if t['category'] == 'Owner\\'s Payment')}")
-        print(f"     GZ's Payment: {sum(1 for t in classified_txns if t['category'] == 'GZ\\'s Payment')}")
+        print(f"     Owner's Expenses: {sum(1 for t in classified_txns if t['category'] == owners_expenses)}")
+        print(f"     GZ's Expenses: {sum(1 for t in classified_txns if t['category'] == gzs_expenses)}")
+        print(f"     Owner's Payment: {sum(1 for t in classified_txns if t['category'] == owners_payment)}")
+        print(f"     GZ's Payment: {sum(1 for t in classified_txns if t['category'] == gzs_payment)}")
         if has_prepayment:
             print(f"     ⚠️  检测到预付款: RM {abs(current_balance):,.2f}")
         

@@ -251,7 +251,8 @@ async def get_bank_info(bank_code: str):
     ### 返回：
     银行信息对象或404错误
     """
-    bank = next((b for b in SUPPORTED_BANKS if b["bank_code"] == bank_code), None)
+    banks = get_supported_banks()
+    bank = next((b for b in banks if b["bank_code"] == bank_code), None)
     if not bank:
         from fastapi import HTTPException
         raise HTTPException(

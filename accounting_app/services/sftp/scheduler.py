@@ -203,6 +203,6 @@ def stop_global_scheduler():
     """停止全局调度器（在FastAPI shutdown事件中调用）"""
     global _global_scheduler
     
-    if _global_scheduler and _global_scheduler.is_running:
+    if _global_scheduler is not None and _global_scheduler.is_running:
         _global_scheduler.stop()
         logger.info("🛑 Global SFTP scheduler stopped")
