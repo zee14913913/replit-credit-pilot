@@ -80,7 +80,8 @@ from .routes import (
     loans_ai,  # PHASE 8.2: AI & Product Matching（Product Recommendations + AI Advisor）
     loans_full_auto,  # PHASE 8.3: Full Automated Mode（File Upload + Auto Enrichment）
     loan_products_catalog,  # PHASE 9: Loan Products Catalog（产品目录统一API）
-    pending_files  # Phase 1-11: 文件上传确认系统
+    pending_files,  # Phase 1-11: 文件上传确认系统
+    cognee  # Cognee API: 客户记忆管理
 )
 
 # 注册路由
@@ -123,6 +124,7 @@ app.include_router(loans_ai.router, tags=["Loans AI"])  # PHASE 8.2: AI & Produc
 app.include_router(loans_full_auto.router, tags=["Loans Full Auto"])  # PHASE 8.3: Full Automated Mode（File Upload + Auto Enrichment）
 app.include_router(loan_products_catalog.router, tags=["Loan Products Catalog"])  # PHASE 9: Loan Products Catalog（产品目录统一API）
 app.include_router(pending_files.router, tags=["Pending Files"])  # Phase 1-11: 文件上传确认系统
+app.include_router(cognee.router, prefix="/cognee", tags=["Cognee Memory"])  # Cognee API: 客户记忆管理
 
 
 # 启动事件：初始化数据库

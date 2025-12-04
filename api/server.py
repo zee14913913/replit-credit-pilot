@@ -22,6 +22,7 @@ import sys
 sys.path.append(str(Path(__file__).parent.parent))
 
 from main import StatementProcessor
+from services.cognee_client import add_memory, search_memory, cognify_memory, get_memory_status
 
 
 # FastAPI 应用初始化
@@ -98,6 +99,37 @@ class ParseResponse(BaseModel):
     metadata: Optional[Dict[str, Any]] = None
 
 
+class CogneeAddRequest(BaseModel):
+    """Cognee 添加记忆请求"""
+    customer_id: str = Field(..., description="客户唯一标识符")
+    data: Dict[str, Any] = Field(..., description="记忆数据")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "customer_id": "CUST001",
+                "data": {
+                    "content": "客户偏好高收益信用卡",
+                    "metadata": {"category": "preference"}
+                }
+            }
+        }
+
+
+class CogneeSearchRequest(BaseModel):
+    """Cognee 搜索记忆请求"""
+    customer_id: str = Field(..., description="客户唯一标识符")
+    query: str = Field(..., description="搜索查询文本")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "customer_id": "CUST001",
+                "query": "信用卡偏好"
+            }
+        }
+
+
 # ============================================================================
 # API Endpoints
 # ============================================================================
@@ -111,7 +143,11 @@ async def root():
         "endpoints": {
             "parse": "POST /parse",
             "batch_parse": "POST /parse/batch",
-            "health": "GET /health"
+            "health": "GET /health",
+            "cognee_add": "POST /cognee/add",
+            "cognee_search": "POST /cognee/search",
+            "cognee_cognify": "POST /cognee/cognify",
+            "cognee_status": "GET /cognee/status"
         }
     }
 
@@ -282,6 +318,106 @@ async def validate_balance(
     )
     
     return validation
+
+
+# ============================================================================
+# Cognee API Endpoints (客户记忆管理)
+# ============================================================================
+
+@app.post("/cognee/add")
+async def cognee_add_memory(request: CogneeAddRequest):
+    """
+    添加客户记忆到 Cognee
+    
+    Args:
+        request: CogneeAddRequest
+            - customer_id: 客户唯一标识符
+            - data: 记忆数据（包含 content 和可选 metadata）
+    
+    Returns:
+        {
+            "success": true,
+            "memory_id": "...",
+            "message": "记忆添加成功"
+        }
+    """
+    result = await add_memory(request.customer_id, request.data)
+    
+    if not result.get("success"):
+        raise HTTPException(
+            status_code=500,
+            detail=result.get("error", "添加记忆失败")
+        )
+    
+    return result
+
+
+@app.post("/cognee/search")
+async def cognee_search_memory(request: CogneeSearchRequest):
+    """
+    搜索客户记忆
+    
+    Args:
+        request: CogneeSearchRequest
+            - customer_id: 客户唯一标识符
+            - query: 搜索查询文本
+    
+    Returns:
+        {
+            "success": true,
+            "results": [...],
+            "total_count": 5,
+            "query": "..."
+        }
+    """
+    result = await search_memory(request.customer_id, request.query)
+    
+    if not result.get("success"):
+        raise HTTPException(
+            status_code=500,
+            detail=result.get("error", "搜索记忆失败")
+        )
+    
+    return result
+
+
+@app.post("/cognee/cognify")
+async def cognee_process_memory():
+    """
+    处理并优化所有记忆
+    
+    触发 Cognee 的记忆处理流程，包括向量化和知识图谱构建
+    
+    Returns:
+        {
+            "success": true,
+            "message": "记忆处理完成",
+            "processed_count": 10
+        }
+    """
+    result = await cognify_memory()
+    
+    if not result.get("success"):
+        raise HTTPException(
+            status_code=500,
+            detail=result.get("error", "记忆处理失败")
+        )
+    
+    return result
+
+
+@app.get("/cognee/status")
+async def cognee_get_status():
+    """
+    获取 Cognee 服务状态
+    
+    Returns:
+        {
+            "success": true,
+            "status": "healthy"
+        }
+    """
+    return await get_memory_status()
 
 
 # ============================================================================
