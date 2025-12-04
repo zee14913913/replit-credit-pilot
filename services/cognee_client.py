@@ -1,6 +1,6 @@
 """
 Cognee API 客户端
-用于与 CogneePilot 服务集成，提供客户记忆管理功能
+用于与 CogneePilot 服务集成，提供记忆管理功能
 """
 
 import httpx
@@ -12,45 +12,39 @@ logger = logging.getLogger(__name__)
 COGNEE_BASE_URL = "https://cognee-pilot--business183.replit.app"
 
 
-async def add_memory(customer_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
+async def add_memory(content: str, dataset_name: str = "credit_pilot") -> Dict[str, Any]:
     """
-    添加客户记忆
+    添加记忆到 Cognee
     
     Args:
-        customer_id: 客户唯一标识符
-        data: 要存储的记忆数据
-            - content: 记忆内容（文本）
-            - metadata: 可选的元数据
+        content: 记忆内容（文本）
+        dataset_name: 数据集名称（默认 "credit_pilot"）
     
     Returns:
         Dict containing:
             - success: 是否成功
-            - memory_id: 新创建的记忆ID
             - message: 操作结果消息
     
     Example:
-        result = await add_memory("CUST001", {
-            "content": "客户偏好高收益信用卡",
-            "metadata": {"category": "preference", "date": "2025-01-01"}
-        })
+        result = await add_memory("客户偏好高收益信用卡", "credit_pilot")
     """
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
             response = await client.post(
-                f"{COGNEE_BASE_URL}/add",
+                f"{COGNEE_BASE_URL}/memory/add",
                 json={
-                    "customer_id": customer_id,
-                    "data": data
+                    "content": content,
+                    "dataset_name": dataset_name
                 }
             )
             
             if response.status_code == 200:
                 result = response.json()
-                logger.info(f"成功添加客户 {customer_id} 的记忆")
+                logger.info(f"成功添加记忆到数据集 {dataset_name}")
                 return {
                     "success": True,
-                    "memory_id": result.get("memory_id"),
-                    "message": "记忆添加成功"
+                    "message": "记忆添加成功",
+                    "details": result
                 }
             else:
                 error_msg = f"添加记忆失败: HTTP {response.status_code}"
@@ -77,42 +71,40 @@ async def add_memory(customer_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
         return {"success": False, "error": error_msg}
 
 
-async def search_memory(customer_id: str, query: str) -> Dict[str, Any]:
+async def search_memory(query: str, search_type: str = "INSIGHTS") -> Dict[str, Any]:
     """
-    搜索客户记忆
+    搜索记忆
     
     Args:
-        customer_id: 客户唯一标识符
         query: 搜索查询文本
+        search_type: 搜索类型（如 "INSIGHTS", "SUMMARIES" 等）
     
     Returns:
         Dict containing:
             - success: 是否成功
             - results: 搜索结果列表
-            - total_count: 结果总数
     
     Example:
-        result = await search_memory("CUST001", "信用卡偏好")
+        result = await search_memory("信用卡偏好", "INSIGHTS")
     """
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
             response = await client.post(
-                f"{COGNEE_BASE_URL}/search",
+                f"{COGNEE_BASE_URL}/memory/search",
                 json={
-                    "customer_id": customer_id,
-                    "query": query
+                    "query": query,
+                    "search_type": search_type
                 }
             )
             
             if response.status_code == 200:
                 result = response.json()
-                results = result.get("results", [])
-                logger.info(f"搜索客户 {customer_id} 的记忆，找到 {len(results)} 条结果")
+                logger.info(f"搜索记忆成功，查询: {query}")
                 return {
                     "success": True,
-                    "results": results,
-                    "total_count": len(results),
-                    "query": query
+                    "results": result.get("results", result),
+                    "query": query,
+                    "search_type": search_type
                 }
             else:
                 error_msg = f"搜索记忆失败: HTTP {response.status_code}"
@@ -141,7 +133,7 @@ async def search_memory(customer_id: str, query: str) -> Dict[str, Any]:
 
 async def cognify_memory() -> Dict[str, Any]:
     """
-    处理并优化所有记忆
+    认知化处理记忆（生成知识图谱）
     
     触发 Cognee 的记忆处理流程，包括：
     - 记忆向量化
@@ -152,24 +144,20 @@ async def cognify_memory() -> Dict[str, Any]:
         Dict containing:
             - success: 是否成功
             - message: 处理结果消息
-            - processed_count: 处理的记忆数量
     
     Example:
         result = await cognify_memory()
     """
     try:
-        async with httpx.AsyncClient(timeout=60.0) as client:
-            response = await client.post(
-                f"{COGNEE_BASE_URL}/cognify"
-            )
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            response = await client.post(f"{COGNEE_BASE_URL}/memory/cognify")
             
             if response.status_code == 200:
                 result = response.json()
-                logger.info("记忆处理完成")
+                logger.info("记忆认知化处理完成")
                 return {
                     "success": True,
-                    "message": "记忆处理完成",
-                    "processed_count": result.get("processed_count", 0),
+                    "message": "记忆认知化处理完成",
                     "details": result
                 }
             else:
@@ -197,15 +185,81 @@ async def cognify_memory() -> Dict[str, Any]:
         return {"success": False, "error": error_msg}
 
 
-async def get_memory_status() -> Dict[str, Any]:
+async def reset_memory() -> Dict[str, Any]:
     """
-    获取 Cognee 服务状态
+    重置所有记忆
+    
+    警告：此操作会删除所有存储的记忆数据！
+    
+    Returns:
+        Dict containing:
+            - success: 是否成功
+            - message: 操作结果消息
+    """
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(f"{COGNEE_BASE_URL}/memory/reset")
+            
+            if response.status_code == 200:
+                result = response.json()
+                logger.warning("所有记忆已重置")
+                return {
+                    "success": True,
+                    "message": "所有记忆已重置",
+                    "details": result
+                }
+            else:
+                error_msg = f"重置记忆失败: HTTP {response.status_code}"
+                logger.error(error_msg)
+                return {
+                    "success": False,
+                    "error": error_msg,
+                    "details": response.text
+                }
+                
+    except Exception as e:
+        error_msg = f"重置记忆时发生错误: {str(e)}"
+        logger.error(error_msg)
+        return {"success": False, "error": error_msg}
+
+
+async def get_service_info() -> Dict[str, Any]:
+    """
+    获取 Cognee 服务信息
+    
+    Returns:
+        Dict containing service information
+    """
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{COGNEE_BASE_URL}/")
+            
+            if response.status_code == 200:
+                return {
+                    "success": True,
+                    "info": response.json()
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": f"HTTP {response.status_code}"
+                }
+                
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
+
+async def get_health_status() -> Dict[str, Any]:
+    """
+    获取 Cognee 服务健康状态
     
     Returns:
         Dict containing:
             - success: 是否成功
             - status: 服务状态
-            - version: API 版本
     """
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
