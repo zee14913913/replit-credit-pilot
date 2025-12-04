@@ -1,0 +1,370 @@
+{% extends "base.html" %}
+{% block title %}Cognee 智能记忆管理 - CreditPilot{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-white mb-3">
+                <i class="bi bi-brain me-2" style="color: #FF007F;"></i>
+                Cognee 智能记忆管理
+            </h1>
+            <p class="text-white-50">AI驱动的客户记忆管理系统，支持知识图谱生成和智能搜索</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #FF007F; border-radius: 16px;">
+                <div class="card-body text-center py-4">
+                    <div id="statusIndicator" style="width: 60px; height: 60px; margin: 0 auto 1rem; border-radius: 50%; background: #2d2d4a; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-circle-fill" style="color: #888; font-size: 1.5rem;" id="statusIcon"></i>
+                    </div>
+                    <h5 class="text-white mb-2">服务状态</h5>
+                    <p class="mb-0" id="statusText" style="color: #888;">检查中...</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #322446; border-radius: 16px;">
+                <div class="card-body text-center py-4">
+                    <div style="width: 60px; height: 60px; margin: 0 auto 1rem; border-radius: 50%; background: #2d2d4a; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-database" style="color: #FF007F; font-size: 1.5rem;"></i>
+                    </div>
+                    <h5 class="text-white mb-2">记忆条目</h5>
+                    <p class="mb-0" id="memoryCount" style="color: #FF007F; font-size: 1.5rem; font-weight: 700;">-</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #322446; border-radius: 16px;">
+                <div class="card-body text-center py-4">
+                    <div style="width: 60px; height: 60px; margin: 0 auto 1rem; border-radius: 50%; background: #2d2d4a; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-diagram-3" style="color: #FF007F; font-size: 1.5rem;"></i>
+                    </div>
+                    <h5 class="text-white mb-2">知识图谱</h5>
+                    <p class="mb-0" style="color: #00FF7F;">就绪</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #FF007F; border-radius: 16px;">
+                <div class="card-header" style="background: transparent; border-bottom: 1px solid rgba(255, 0, 127, 0.3);">
+                    <h5 class="text-white mb-0">
+                        <i class="bi bi-plus-circle me-2" style="color: #FF007F;"></i>
+                        添加记忆
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="addMemoryForm">
+                        <div class="mb-3">
+                            <label class="form-label text-white">数据集名称</label>
+                            <input type="text" class="form-control" id="datasetName" value="creditpilot_customers" 
+                                   style="background: #2d2d4a; border: 1px solid #322446; color: #fff;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-white">记忆内容</label>
+                            <textarea class="form-control" id="memoryContent" rows="4" 
+                                      placeholder="输入客户信息、偏好或重要备注..."
+                                      style="background: #2d2d4a; border: 1px solid #322446; color: #fff;"></textarea>
+                        </div>
+                        <button type="submit" class="btn w-100" style="background: linear-gradient(135deg, #FF007F 0%, #FF1493 100%); color: #fff; border: none; font-weight: 600;">
+                            <i class="bi bi-plus-lg me-2"></i>添加记忆
+                        </button>
+                    </form>
+                    <div id="addResult" class="mt-3" style="display: none;"></div>
+                </div>
+            </div>
+
+            <div class="card mt-4" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #322446; border-radius: 16px;">
+                <div class="card-header" style="background: transparent; border-bottom: 1px solid rgba(50, 36, 70, 0.5);">
+                    <h5 class="text-white mb-0">
+                        <i class="bi bi-gear me-2" style="color: #FF007F;"></i>
+                        系统操作
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <button class="btn w-100" id="cognifyBtn" style="background: #2d2d4a; border: 1px solid #FF007F; color: #fff;">
+                                <i class="bi bi-lightning-charge me-2" style="color: #FF007F;"></i>生成知识图谱
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn w-100" id="resetBtn" style="background: #2d2d4a; border: 1px solid #dc3545; color: #dc3545;">
+                                <i class="bi bi-arrow-counterclockwise me-2"></i>重置记忆
+                            </button>
+                        </div>
+                    </div>
+                    <div id="operationResult" class="mt-3" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #FF007F; border-radius: 16px;">
+                <div class="card-header" style="background: transparent; border-bottom: 1px solid rgba(255, 0, 127, 0.3);">
+                    <h5 class="text-white mb-0">
+                        <i class="bi bi-search me-2" style="color: #FF007F;"></i>
+                        搜索记忆
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="searchForm">
+                        <div class="mb-3">
+                            <label class="form-label text-white">搜索查询</label>
+                            <input type="text" class="form-control" id="searchQuery" 
+                                   placeholder="输入搜索关键词..."
+                                   style="background: #2d2d4a; border: 1px solid #322446; color: #fff;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-white">搜索类型</label>
+                            <select class="form-select" id="searchType" 
+                                    style="background: #2d2d4a; border: 1px solid #322446; color: #fff;">
+                                <option value="INSIGHTS">INSIGHTS - 洞察分析</option>
+                                <option value="SUMMARIES">SUMMARIES - 摘要总结</option>
+                                <option value="CHUNKS">CHUNKS - 原始片段</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn w-100" style="background: linear-gradient(135deg, #322446 0%, #4a3668 100%); color: #fff; border: none; font-weight: 600;">
+                            <i class="bi bi-search me-2"></i>搜索
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-4" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #322446; border-radius: 16px;">
+                <div class="card-header" style="background: transparent; border-bottom: 1px solid rgba(50, 36, 70, 0.5);">
+                    <h5 class="text-white mb-0">
+                        <i class="bi bi-chat-dots me-2" style="color: #FF007F;"></i>
+                        搜索结果
+                    </h5>
+                </div>
+                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                    <div id="searchResults">
+                        <p class="text-white-50 text-center mb-0">输入关键词开始搜索...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #322446; border-radius: 16px;">
+                <div class="card-header" style="background: transparent; border-bottom: 1px solid rgba(50, 36, 70, 0.5);">
+                    <h5 class="text-white mb-0">
+                        <i class="bi bi-info-circle me-2" style="color: #FF007F;"></i>
+                        API 端点信息
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0" style="background: transparent;">
+                            <thead>
+                                <tr style="border-color: rgba(255, 0, 127, 0.3);">
+                                    <th style="color: #FF007F;">端点</th>
+                                    <th style="color: #FF007F;">方法</th>
+                                    <th style="color: #FF007F;">说明</th>
+                                </tr>
+                            </thead>
+                            <tbody id="endpointsTable">
+                                <tr><td colspan="3" class="text-center text-white-50">加载中...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const COGNEE_API_BASE = '/accounting/cognee';
+
+async function checkStatus() {
+    try {
+        const response = await fetch(`${COGNEE_API_BASE}/status`);
+        const data = await response.json();
+        
+        const statusIcon = document.getElementById('statusIcon');
+        const statusText = document.getElementById('statusText');
+        
+        if (data.success && data.status === 'healthy') {
+            statusIcon.style.color = '#00FF7F';
+            statusText.textContent = '服务正常';
+            statusText.style.color = '#00FF7F';
+        } else {
+            statusIcon.style.color = '#dc3545';
+            statusText.textContent = '服务异常';
+            statusText.style.color = '#dc3545';
+        }
+    } catch (error) {
+        document.getElementById('statusIcon').style.color = '#dc3545';
+        document.getElementById('statusText').textContent = '连接失败';
+        document.getElementById('statusText').style.color = '#dc3545';
+    }
+}
+
+async function loadInfo() {
+    try {
+        const response = await fetch(`${COGNEE_API_BASE}/info`);
+        const data = await response.json();
+        
+        if (data.success && data.info) {
+            const endpoints = data.info.endpoints || {};
+            let html = '';
+            for (const [name, desc] of Object.entries(endpoints)) {
+                const method = desc.split(' ')[0];
+                const path = desc.split(' ')[1];
+                html += `<tr style="border-color: rgba(50, 36, 70, 0.5);">
+                    <td class="text-white"><code style="color: #FF007F;">${path}</code></td>
+                    <td><span class="badge" style="background: #322446;">${method}</span></td>
+                    <td class="text-white-50">${name}</td>
+                </tr>`;
+            }
+            document.getElementById('endpointsTable').innerHTML = html || '<tr><td colspan="3" class="text-center text-white-50">无端点信息</td></tr>';
+        }
+    } catch (error) {
+        console.error('Load info error:', error);
+    }
+}
+
+document.getElementById('addMemoryForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const content = document.getElementById('memoryContent').value.trim();
+    const datasetName = document.getElementById('datasetName').value.trim();
+    
+    if (!content) {
+        showResult('addResult', '请输入记忆内容', 'danger');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${COGNEE_API_BASE}/add`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content, dataset_name: datasetName })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showResult('addResult', '记忆添加成功！', 'success');
+            document.getElementById('memoryContent').value = '';
+        } else {
+            showResult('addResult', `添加失败: ${data.detail || '未知错误'}`, 'danger');
+        }
+    } catch (error) {
+        showResult('addResult', `请求失败: ${error.message}`, 'danger');
+    }
+});
+
+document.getElementById('searchForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const query = document.getElementById('searchQuery').value.trim();
+    const searchType = document.getElementById('searchType').value;
+    
+    if (!query) {
+        document.getElementById('searchResults').innerHTML = '<p class="text-warning text-center mb-0">请输入搜索关键词</p>';
+        return;
+    }
+    
+    document.getElementById('searchResults').innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div><p class="text-white-50 mt-2">搜索中...</p></div>';
+    
+    try {
+        const response = await fetch(`${COGNEE_API_BASE}/search`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, search_type: searchType })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success && data.results && data.results.length > 0) {
+            let html = '';
+            data.results.forEach((result, index) => {
+                html += `<div class="p-3 mb-2" style="background: #2d2d4a; border-radius: 12px; border-left: 3px solid #FF007F;">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="badge me-2" style="background: #FF007F;">#${index + 1}</span>
+                        <small class="text-white-50">${searchType}</small>
+                    </div>
+                    <p class="text-white mb-0" style="white-space: pre-wrap;">${result}</p>
+                </div>`;
+            });
+            document.getElementById('searchResults').innerHTML = html;
+        } else {
+            document.getElementById('searchResults').innerHTML = '<p class="text-white-50 text-center mb-0">未找到匹配结果</p>';
+        }
+    } catch (error) {
+        document.getElementById('searchResults').innerHTML = `<p class="text-danger text-center mb-0">搜索失败: ${error.message}</p>`;
+    }
+});
+
+document.getElementById('cognifyBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('cognifyBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>处理中...';
+    
+    try {
+        const response = await fetch(`${COGNEE_API_BASE}/cognify`, { method: 'POST' });
+        const data = await response.json();
+        
+        if (data.success) {
+            showResult('operationResult', '知识图谱生成成功！', 'success');
+        } else {
+            showResult('operationResult', `生成失败: ${data.detail || '未知错误'}`, 'danger');
+        }
+    } catch (error) {
+        showResult('operationResult', `请求失败: ${error.message}`, 'danger');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-lightning-charge me-2" style="color: #FF007F;"></i>生成知识图谱';
+    }
+});
+
+document.getElementById('resetBtn').addEventListener('click', async () => {
+    if (!confirm('确定要重置所有记忆吗？此操作不可撤销！')) return;
+    
+    const btn = document.getElementById('resetBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>重置中...';
+    
+    try {
+        const response = await fetch(`${COGNEE_API_BASE}/reset`, { method: 'POST' });
+        const data = await response.json();
+        
+        if (data.success) {
+            showResult('operationResult', '记忆已重置！', 'success');
+        } else {
+            showResult('operationResult', `重置失败: ${data.detail || '未知错误'}`, 'danger');
+        }
+    } catch (error) {
+        showResult('operationResult', `请求失败: ${error.message}`, 'danger');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-arrow-counterclockwise me-2"></i>重置记忆';
+    }
+});
+
+function showResult(elementId, message, type) {
+    const element = document.getElementById(elementId);
+    element.style.display = 'block';
+    element.className = `alert alert-${type} mt-3`;
+    element.textContent = message;
+    
+    setTimeout(() => {
+        element.style.display = 'none';
+    }, 5000);
+}
+
+checkStatus();
+loadInfo();
+setInterval(checkStatus, 30000);
+</script>
+{% endblock %}

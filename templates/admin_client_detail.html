@@ -295,5 +295,128 @@
         </div>
     </div>
 
+    <!-- Cognee AI Memory Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm" style="border: 2px solid #FF007F;">
+                <div class="card-header" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+                    <h5 class="text-white mb-0">
+                        <i class="bi bi-brain" style="color: #FF007F;"></i> Cognee AI 客户记忆
+                    </h5>
+                </div>
+                <div class="card-body" style="background: #0d0d1a;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-white mb-3"><i class="bi bi-plus-circle me-2" style="color: #FF007F;"></i>添加客户备注</h6>
+                            <div class="mb-3">
+                                <textarea id="customerMemory" class="form-control" rows="3" 
+                                          placeholder="记录客户偏好、重要备注或沟通记录..."
+                                          style="background: #1a1a2e; border: 1px solid #322446; color: #fff;"></textarea>
+                            </div>
+                            <button type="button" class="btn" id="addMemoryBtn" 
+                                    style="background: linear-gradient(135deg, #FF007F 0%, #FF1493 100%); color: #fff; border: none;">
+                                <i class="bi bi-plus-lg me-2"></i>添加记忆
+                            </button>
+                            <div id="memoryAddResult" class="mt-2" style="display: none;"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-white mb-3"><i class="bi bi-search me-2" style="color: #FF007F;"></i>查询客户记忆</h6>
+                            <div class="input-group mb-3">
+                                <input type="text" id="memorySearch" class="form-control" 
+                                       placeholder="搜索关键词..."
+                                       style="background: #1a1a2e; border: 1px solid #322446; color: #fff;">
+                                <button class="btn" type="button" id="searchMemoryBtn"
+                                        style="background: #322446; border: 1px solid #FF007F; color: #fff;">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                            <div id="memorySearchResults" style="max-height: 200px; overflow-y: auto;">
+                                <p class="text-white-50 text-center mb-0"><small>输入关键词搜索客户相关记忆</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+<script>
+const COGNEE_API = '/accounting/cognee';
+const customerName = "{{ client.customer.name }}";
+const customerId = "{{ client.customer.id }}";
+
+document.getElementById('addMemoryBtn').addEventListener('click', async () => {
+    const content = document.getElementById('customerMemory').value.trim();
+    if (!content) {
+        showResult('memoryAddResult', '请输入备注内容', 'warning');
+        return;
+    }
+    
+    const fullContent = `客户: ${customerName} (ID: ${customerId})\n${content}`;
+    
+    try {
+        const response = await fetch(`${COGNEE_API}/add`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content: fullContent, dataset_name: 'creditpilot_customers' })
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+            showResult('memoryAddResult', '记忆添加成功！', 'success');
+            document.getElementById('customerMemory').value = '';
+        } else {
+            showResult('memoryAddResult', '添加失败: ' + (data.detail || '未知错误'), 'danger');
+        }
+    } catch (error) {
+        showResult('memoryAddResult', '请求失败: ' + error.message, 'danger');
+    }
+});
+
+document.getElementById('searchMemoryBtn').addEventListener('click', searchMemory);
+document.getElementById('memorySearch').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') searchMemory();
+});
+
+async function searchMemory() {
+    const query = document.getElementById('memorySearch').value.trim();
+    if (!query) return;
+    
+    const searchQuery = `${customerName} ${query}`;
+    document.getElementById('memorySearchResults').innerHTML = '<div class="text-center text-white-50"><div class="spinner-border spinner-border-sm"></div> 搜索中...</div>';
+    
+    try {
+        const response = await fetch(`${COGNEE_API}/search`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: searchQuery, search_type: 'INSIGHTS' })
+        });
+        const data = await response.json();
+        
+        if (data.success && data.results && data.results.length > 0) {
+            let html = '';
+            data.results.forEach((result, i) => {
+                html += `<div class="p-2 mb-2" style="background: #1a1a2e; border-radius: 8px; border-left: 3px solid #FF007F;">
+                    <small class="text-white" style="white-space: pre-wrap;">${result}</small>
+                </div>`;
+            });
+            document.getElementById('memorySearchResults').innerHTML = html;
+        } else {
+            document.getElementById('memorySearchResults').innerHTML = '<p class="text-white-50 text-center mb-0"><small>未找到相关记忆</small></p>';
+        }
+    } catch (error) {
+        document.getElementById('memorySearchResults').innerHTML = `<p class="text-danger text-center mb-0"><small>搜索失败: ${error.message}</small></p>`;
+    }
+}
+
+function showResult(elementId, message, type) {
+    const element = document.getElementById(elementId);
+    element.style.display = 'block';
+    element.className = `alert alert-${type} py-2`;
+    element.innerHTML = `<small>${message}</small>`;
+    setTimeout(() => { element.style.display = 'none'; }, 4000);
+}
+</script>
 {% endblock %}

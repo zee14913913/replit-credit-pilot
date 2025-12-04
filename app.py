@@ -2771,6 +2771,16 @@ def notify_admin_consultation_request(customer_name, service_type):
 
 # ==================== END NOTIFICATION SERVICES ====================
 
+# ==================== COGNEE INTELLIGENT MEMORY MANAGEMENT ====================
+
+@app.route('/cognee-memory')
+@require_admin_or_accountant
+def cognee_memory():
+    """Cognee 智能记忆管理页面 - AI驱动的客户记忆管理"""
+    return render_template('cognee_memory.html')
+
+# ==================== END COGNEE MEMORY ====================
+
 # ==================== ADMIN PORTFOLIO MANAGEMENT ====================
 
 @app.route('/admin/portfolio')
