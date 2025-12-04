@@ -325,54 +325,44 @@ async def preview_report_structure(
 ):
     """
     预览报表数据结构（JSON格式）
-    
-    用于调试和验证报表数据
-    
-    ## 参数
-    - report_type: 报表类型（balance_sheet / profit_loss / full）
-    - company_id: 公司ID
-    - period: 报表期间
-    
-    ## 返回
-    - JSON数据结构
+    - 兼容 period 为 YYYY-MM 或 YYYY-MM-DD 两种格式（会统一为 YYYY-MM）
+    - 返回结构调整为测试期望的字段名（company_info, period, balance_sheet_summary / pnl_summary / full_report）
     """
     try:
-        # 获取公司信息
         company = db.query(Company).filter(Company.id == company_id).first()
         if not company:
             raise HTTPException(status_code=404, detail="公司不存在")
         
-        # 生成报表数据
+        if period is None:
+            period_str = ""
+        else:
+            period_str = str(period)[:7]
+
         report_generator = ManagementReportGenerator(db, company_id)
-        report_data = report_generator.generate_monthly_report(period, include_details=True)
+        report_data = report_generator.generate_monthly_report(period_str, include_details=True)
         
-        # 根据类型返回
+        company_info = {
+            "company_name": company.company_name,
+            "company_code": company.company_code
+        }
+        
         if report_type == "balance_sheet":
             return {
-                "company": {
-                    "name": company.company_name,
-                    "code": company.company_code
-                },
-                "period": period,
-                "data": report_data['balance_sheet_summary']
+                "company_info": company_info,
+                "period": period_str,
+                "balance_sheet_summary": report_data.get('balance_sheet_summary', {})
             }
         elif report_type == "profit_loss":
             return {
-                "company": {
-                    "name": company.company_name,
-                    "code": company.company_code
-                },
-                "period": period,
-                "data": report_data['pnl_summary']
+                "company_info": company_info,
+                "period": period_str,
+                "pnl_summary": report_data.get('pnl_summary', {})
             }
         elif report_type == "full":
             return {
-                "company": {
-                    "name": company.company_name,
-                    "code": company.company_code
-                },
-                "period": period,
-                "data": report_data
+                "company_info": company_info,
+                "period": period_str,
+                "full_report": report_data
             }
         else:
             raise HTTPException(

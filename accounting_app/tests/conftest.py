@@ -8,11 +8,12 @@ from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
 from datetime import datetime, date
 from decimal import Decimal
+from types import SimpleNamespace
+import logging
 
 from accounting_app.main import app
 from accounting_app.db import get_db, Base
 from accounting_app.models import Company, BankStatement, JournalEntry, JournalEntryLine, ChartOfAccounts
-
 
 TEST_DATABASE_URL = "sqlite:///./test_accounting.db"
 
@@ -47,7 +48,7 @@ def test_db():
 def client(test_db):
     """
     FastAPI测试客户端
-    自动注入测试数据库依赖
+    自动注入测试数据库依赖，并注入一个模拟的已登录用户以避免 401/权限问题。
     """
     def override_get_db():
         try:
@@ -56,10 +57,18 @@ def client(test_db):
             pass
     
     app.dependency_overrides[get_db] = override_get_db
-    
+
+    fake_user = SimpleNamespace(id=1, username="testuser", role="admin", is_active=True)
+
+    try:
+        from accounting_app.middleware.rbac_fixed import get_current_user as _get_current_user_dep
+        app.dependency_overrides[_get_current_user_dep] = lambda: fake_user
+    except Exception:
+        logging.getLogger(__name__).warning("无法覆盖 get_current_user 依赖（可能文件路径不同）")
+
     with TestClient(app) as test_client:
         yield test_client
-    
+
     app.dependency_overrides.clear()
 
 
