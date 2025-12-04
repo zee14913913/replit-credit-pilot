@@ -32,30 +32,19 @@ async def get_balance_sheet_pdf(
 ):
     """
     生成资产负债表PDF
-    
-    ## 参数
-    - company_id: 公司ID
-    - period: 报表截止日期（例如：2025-11-30）
-    
-    ## 返回
-    - PDF文件（application/pdf）
     """
     try:
         logger.info(f"生成Balance Sheet PDF: company_id={company_id}, period={period}")
         
-        # 获取公司信息
         company = db.query(Company).filter(Company.id == company_id).first()
         if not company:
             raise HTTPException(status_code=404, detail="公司不存在")
         
-        # 生成报表数据
         report_generator = ManagementReportGenerator(db, company_id)
         
-        # 将YYYY-MM-DD转换为YYYY-MM
-        period_str = period[:7]  # 取前7位
+        period_str = period[:7]
         report_data = report_generator.generate_monthly_report(period_str, include_details=False)
         
-        # 生成PDF
         pdf_generator = create_pdf_generator(
             company_name=company.company_name,
             company_code=company.company_code
@@ -66,7 +55,6 @@ async def get_balance_sheet_pdf(
             period=period
         )
         
-        # 自动保存PDF到FileStorageManager（归档）
         as_of_date = datetime.strptime(period, '%Y-%m-%d').date()
         pdf_path = AccountingFileStorageManager.generate_balance_sheet_path(
             company_id=company_id,
@@ -76,9 +64,7 @@ async def get_balance_sheet_pdf(
         AccountingFileStorageManager.save_file_content(pdf_path, pdf_bytes)
         logger.info(f"Balance Sheet PDF已保存到: {pdf_path}")
         
-        # 写入审计日志（防御性）
         try:
-            # 提取Request信息（IP + User-Agent）
             request_info = extract_request_info(request)
             
             audit_log = AuditLog(
@@ -99,7 +85,6 @@ async def get_balance_sheet_pdf(
             logger.error(f"审计日志写入失败（导出资产负债表）：{e}")
             db.rollback()
         
-        # 返回PDF
         return Response(
             content=pdf_bytes,
             media_type="application/pdf",
@@ -125,27 +110,17 @@ async def get_profit_loss_pdf(
 ):
     """
     生成损益表PDF
-    
-    ## 参数
-    - company_id: 公司ID
-    - period: 报表期间（例如：2025-11）
-    
-    ## 返回
-    - PDF文件（application/pdf）
     """
     try:
         logger.info(f"生成P&L PDF: company_id={company_id}, period={period}")
         
-        # 获取公司信息
         company = db.query(Company).filter(Company.id == company_id).first()
         if not company:
             raise HTTPException(status_code=404, detail="公司不存在")
         
-        # 生成报表数据
         report_generator = ManagementReportGenerator(db, company_id)
         report_data = report_generator.generate_monthly_report(period, include_details=False)
         
-        # 生成PDF
         pdf_generator = create_pdf_generator(
             company_name=company.company_name,
             company_code=company.company_code
@@ -156,11 +131,9 @@ async def get_profit_loss_pdf(
             period=period
         )
         
-        # 自动保存PDF到FileStorageManager（归档）
         from datetime import date as date_class
         year, month = period.split('-')
         period_start = date_class(int(year), int(month), 1)
-        # 使用月末作为period_end
         import calendar
         last_day = calendar.monthrange(int(year), int(month))[1]
         period_end = date_class(int(year), int(month), last_day)
@@ -174,9 +147,7 @@ async def get_profit_loss_pdf(
         AccountingFileStorageManager.save_file_content(pdf_path, pdf_bytes)
         logger.info(f"P&L PDF已保存到: {pdf_path}")
         
-        # 写入审计日志（防御性）
         try:
-            # 提取Request信息（IP + User-Agent）
             request_info = extract_request_info(request)
             
             audit_log = AuditLog(
@@ -197,7 +168,6 @@ async def get_profit_loss_pdf(
             logger.error(f"审计日志写入失败（导出损益表）：{e}")
             db.rollback()
         
-        # 返回PDF
         return Response(
             content=pdf_bytes,
             media_type="application/pdf",
@@ -223,35 +193,17 @@ async def get_bank_package_pdf(
 ):
     """
     生成完整银行贷款包PDF
-    
-    包含：
-    1. 封面
-    2. Balance Sheet
-    3. P&L Statement
-    4. Aging Report Summary
-    5. Bank Account Balances
-    6. Data Quality Metrics
-    
-    ## 参数
-    - company_id: 公司ID
-    - period: 报表期间（例如：2025-11）
-    
-    ## 返回
-    - PDF文件（application/pdf）
     """
     try:
         logger.info(f"生成Bank Package PDF: company_id={company_id}, period={period}")
         
-        # 获取公司信息
         company = db.query(Company).filter(Company.id == company_id).first()
         if not company:
             raise HTTPException(status_code=404, detail="公司不存在")
         
-        # 生成完整报表数据
         report_generator = ManagementReportGenerator(db, company_id)
         report_data = report_generator.generate_monthly_report(period, include_details=True)
         
-        # 生成PDF
         pdf_generator = create_pdf_generator(
             company_name=company.company_name,
             company_code=company.company_code
@@ -262,7 +214,6 @@ async def get_bank_package_pdf(
             period=period
         )
         
-        # 自动保存PDF到FileStorageManager（归档）
         from datetime import date as date_class
         year, month = period.split('-')
         import calendar
@@ -277,9 +228,7 @@ async def get_bank_package_pdf(
         AccountingFileStorageManager.save_file_content(pdf_path, pdf_bytes)
         logger.info(f"Bank Package PDF已保存到: {pdf_path}")
         
-        # 写入审计日志（防御性）
         try:
-            # 提取Request信息（IP + User-Agent）
             request_info = extract_request_info(request)
             
             audit_log = AuditLog(
@@ -300,7 +249,6 @@ async def get_bank_package_pdf(
             logger.error(f"审计日志写入失败（导出银行贷款包）：{e}")
             db.rollback()
         
-        # 返回PDF
         return Response(
             content=pdf_bytes,
             media_type="application/pdf",

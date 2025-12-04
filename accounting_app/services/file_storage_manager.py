@@ -8,10 +8,13 @@ Provides multi-tenant isolation, standardized path generation, typed storage
 import os
 import re
 import shutil
+import logging
 from datetime import datetime, date
 from pathlib import Path
 from typing import Optional, Dict, List
 from decimal import Decimal
+
+logger = logging.getLogger(__name__)
 
 
 class AccountingFileStorageManager:
@@ -27,6 +30,7 @@ class AccountingFileStorageManager:
     """
     
     BASE_DIR = "/home/runner/workspace/accounting_data/companies"
+    BASE_STORAGE_ROOT = os.getenv("ACCOUNTING_FILE_STORAGE_ROOT", "./storage")
     
     FILE_TYPES = {
         'bank_statement': 'bank_statements',
@@ -558,39 +562,39 @@ class AccountingFileStorageManager:
         return stats
     
     @staticmethod
-    def validate_path_security(file_path: str, company_id: int) -> bool:
+    def validate_path_security(company_id: int, candidate_path: str) -> bool:
         """
-        验证路径安全性（防止路径遍历攻击和跨租户访问）
-        
-        使用os.path.commonpath确保文件严格在公司目录内，
-        避免prefix-matching导致的company_id=1访问company_id=10文件的问题
+        检查 candidate_path 是否位于 company 的存储目录之内，避免路径穿越或跨 tenant 访问。
+        实现思路：
+        - 计算公司根目录的绝对路径 company_root_abs
+        - 将 candidate_path 规范化并转换为绝对路径 candidate_abs（如果是相对路径，则相对于 company_root）
+        - 使用 os.path.commonpath([company_root_abs, candidate_abs]) 判断 candidate 是否在 company_root 内
         
         Args:
-            file_path: 待验证的文件路径
             company_id: 公司ID
+            candidate_path: 待验证的文件路径
             
         Returns:
             安全返回True，否则返回False
         """
         try:
-            abs_path = os.path.abspath(file_path)
-            expected_base = os.path.abspath(
-                os.path.join(AccountingFileStorageManager.BASE_DIR, str(company_id))
-            )
-            
-            # 使用commonpath确保两个路径的公共父路径就是expected_base
-            common = os.path.commonpath([abs_path, expected_base])
-            
-            # 公共路径必须严格等于expected_base（公司目录）
-            if common != expected_base:
-                return False
-            
-            # abs_path必须在expected_base内部或等于expected_base
-            # 添加os.sep确保"/companies/1"不匹配"/companies/10/file"
-            return (abs_path == expected_base or 
-                    abs_path.startswith(expected_base + os.sep))
-        except (ValueError, TypeError):
-            # commonpath在路径不兼容时会抛出ValueError（如不同驱动器）
+            company_root = os.path.join(AccountingFileStorageManager.BASE_STORAGE_ROOT, str(company_id))
+            company_root_abs = os.path.abspath(company_root)
+
+            if os.path.isabs(candidate_path):
+                candidate_abs = os.path.abspath(os.path.normpath(candidate_path))
+            else:
+                candidate_abs = os.path.abspath(os.path.normpath(os.path.join(company_root_abs, candidate_path)))
+
+            common = os.path.commonpath([company_root_abs, candidate_abs])
+            is_within = (common == company_root_abs)
+
+            if not is_within:
+                logger.warning(f"validate_path_security: path escape detected. company_root={company_root_abs}, candidate={candidate_abs}")
+            return is_within
+
+        except Exception as e:
+            logger.error(f"validate_path_security error: {e}")
             return False
 
 
