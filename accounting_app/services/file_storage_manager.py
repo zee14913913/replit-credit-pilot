@@ -26,7 +26,10 @@ class AccountingFileStorageManager:
     5. 安全路径验证
     """
     
-    BASE_DIR = os.environ.get('ACCOUNTING_FILE_STORAGE_ROOT', './accounting_data/companies')
+    # Use environment variable for storage root, with absolute path resolution
+    # to ensure consistent behavior regardless of current working directory
+    _base_dir_env = os.environ.get('ACCOUNTING_FILE_STORAGE_ROOT', './accounting_data/companies')
+    BASE_DIR = os.path.abspath(_base_dir_env)
     
     FILE_TYPES = {
         'bank_statement': 'bank_statements',
@@ -573,12 +576,14 @@ class AccountingFileStorageManager:
             安全返回True，否则返回False
         """
         try:
-            # Normalize and get absolute paths to handle .. and . components
-            abs_path = os.path.normpath(os.path.abspath(file_path))
+            # Normalize path components first (resolve .. and . components)
+            # Then convert to absolute path to ensure consistent comparison
+            normalized_path = os.path.normpath(file_path)
+            abs_path = os.path.abspath(normalized_path)
             
             # Get the base directory for this company
             company_base = os.path.join(AccountingFileStorageManager.BASE_DIR, str(company_id))
-            expected_base = os.path.normpath(os.path.abspath(company_base))
+            expected_base = os.path.abspath(os.path.normpath(company_base))
             
             # Use commonpath to find the common ancestor
             # If the common path is not the expected base, the file is outside the allowed directory
