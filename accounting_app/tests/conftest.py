@@ -154,9 +154,12 @@ def sample_journal_entry(test_db, sample_company, sample_chart_of_accounts):
     """
     entry = JournalEntry(
         company_id=sample_company.id,
+        entry_number="JE-2025-11-0001",
         entry_date=date(2025, 11, 1),
         description="Test Transaction",
         reference_number="JE-001",
+        entry_type="manual",
+        status="posted",
         created_at=datetime.now()
     )
     test_db.add(entry)
@@ -171,14 +174,16 @@ def sample_journal_entry(test_db, sample_company, sample_chart_of_accounts):
             account_id=bank_account.id,
             description="Payment received",
             debit_amount=Decimal("5000.00"),
-            credit_amount=Decimal("0.00")
+            credit_amount=Decimal("0.00"),
+            line_number=1
         ),
         JournalEntryLine(
             journal_entry_id=entry.id,
             account_id=revenue_account.id,
             description="Sales income",
             debit_amount=Decimal("0.00"),
-            credit_amount=Decimal("5000.00")
+            credit_amount=Decimal("5000.00"),
+            line_number=2
         ),
     ]
     
