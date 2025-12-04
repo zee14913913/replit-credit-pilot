@@ -26,7 +26,7 @@ class AccountingFileStorageManager:
     5. 安全路径验证
     """
     
-    BASE_DIR = "/home/runner/workspace/accounting_data/companies"
+    BASE_DIR = os.environ.get('ACCOUNTING_FILE_STORAGE_ROOT', './accounting_data/companies')
     
     FILE_TYPES = {
         'bank_statement': 'bank_statements',
@@ -562,8 +562,8 @@ class AccountingFileStorageManager:
         """
         验证路径安全性（防止路径遍历攻击和跨租户访问）
         
-        使用os.path.commonpath确保文件严格在公司目录内，
-        避免prefix-matching导致的company_id=1访问company_id=10文件的问题
+        使用os.path.abspath、os.path.normpath和os.path.commonpath确保文件严格在公司目录内，
+        避免路径遍历攻击和prefix-matching导致的company_id=1访问company_id=10文件的问题
         
         Args:
             file_path: 待验证的文件路径
@@ -573,24 +573,28 @@ class AccountingFileStorageManager:
             安全返回True，否则返回False
         """
         try:
-            abs_path = os.path.abspath(file_path)
-            expected_base = os.path.abspath(
-                os.path.join(AccountingFileStorageManager.BASE_DIR, str(company_id))
-            )
+            # Normalize and get absolute paths to handle .. and . components
+            abs_path = os.path.normpath(os.path.abspath(file_path))
             
-            # 使用commonpath确保两个路径的公共父路径就是expected_base
+            # Get the base directory for this company
+            company_base = os.path.join(AccountingFileStorageManager.BASE_DIR, str(company_id))
+            expected_base = os.path.normpath(os.path.abspath(company_base))
+            
+            # Use commonpath to find the common ancestor
+            # If the common path is not the expected base, the file is outside the allowed directory
             common = os.path.commonpath([abs_path, expected_base])
             
-            # 公共路径必须严格等于expected_base（公司目录）
+            # The common path must be exactly the expected base (company directory)
             if common != expected_base:
                 return False
             
-            # abs_path必须在expected_base内部或等于expected_base
-            # 添加os.sep确保"/companies/1"不匹配"/companies/10/file"
+            # Ensure abs_path is within expected_base or is the expected_base itself
+            # Add os.sep to prevent "/companies/1" from matching "/companies/10/file"
             return (abs_path == expected_base or 
                     abs_path.startswith(expected_base + os.sep))
         except (ValueError, TypeError):
-            # commonpath在路径不兼容时会抛出ValueError（如不同驱动器）
+            # commonpath raises ValueError when paths are on different drives (Windows)
+            # or when paths cannot be compared
             return False
 
 

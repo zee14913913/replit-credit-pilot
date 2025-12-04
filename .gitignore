@@ -76,3 +76,4 @@ current_packages.txt
 !.replit
 !replit.nix
 !replit.md
+test.db
