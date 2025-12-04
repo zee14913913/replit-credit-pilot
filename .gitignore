@@ -77,3 +77,4 @@ current_packages.txt
 !replit.nix
 !replit.md
 test.db
+accounting_data/companies/
