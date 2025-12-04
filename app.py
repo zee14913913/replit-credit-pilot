@@ -2779,6 +2779,23 @@ def cognee_memory():
     """Cognee 智能记忆管理页面 - AI驱动的客户记忆管理"""
     return render_template('cognee_memory.html')
 
+@app.route('/accounting/cognee/<path:subpath>', methods=['GET', 'POST'])
+def cognee_proxy(subpath):
+    """代理 Cognee API 请求到 FastAPI 后端"""
+    import requests
+    
+    fastapi_url = f'http://localhost:8000/cognee/{subpath}'
+    
+    try:
+        if request.method == 'GET':
+            resp = requests.get(fastapi_url, params=request.args, timeout=30)
+        else:
+            resp = requests.post(fastapi_url, json=request.json, timeout=30)
+        
+        return jsonify(resp.json()), resp.status_code
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
 # ==================== END COGNEE MEMORY ====================
 
 # ==================== ADMIN PORTFOLIO MANAGEMENT ====================

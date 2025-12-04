@@ -82,6 +82,7 @@ Centralized color configuration via `config/colors.json` and a Python module, ge
 - **Multi-Channel Notifications:** In-app, email, and SMS.
 - **Admin System:** User registration, secure login, evidence archiving with RBAC.
 - **CTOS Consent System**: Integrates personal and company CTOS consent, generating professional PDF reports.
+- **Cognee AI Memory System**: AI-powered customer memory management with knowledge graph generation, integrated with CogneePilot external service for intelligent customer insights and preference tracking.
 
 ### System Design Choices
 - **Data Models:** Comprehensive models for customers, credit cards, statements, transactions, BNM rates, audit logs, and advisory.
@@ -115,6 +116,7 @@ A production-ready Unified RBAC Implementation protects 32+ functions using `@re
 - **Perplexity AI API**: Primary AI provider (Model: `sonar`).
 - **OpenAI API**: Backup AI provider (gpt-4o-mini).
 - **CTOS Data**: Exclusive source for debt commitment data in loan evaluation.
+- **CogneePilot API**: `https://cognee-pilot--business183.replit.app` for AI-powered customer memory management and knowledge graph generation.
 - **PDF Parsing**: Local Fallback Parser (pdfplumber) - no external API usage.
 
 ### Database

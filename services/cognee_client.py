@@ -12,13 +12,13 @@ logger = logging.getLogger(__name__)
 COGNEE_BASE_URL = "https://cognee-pilot--business183.replit.app"
 
 
-async def add_memory(content: str, dataset_name: str = "credit_pilot") -> Dict[str, Any]:
+async def add_memory(content: str, dataset_name: str = "creditpilot_customers") -> Dict[str, Any]:
     """
     添加记忆到 Cognee
     
     Args:
         content: 记忆内容（文本）
-        dataset_name: 数据集名称（默认 "credit_pilot"）
+        dataset_name: 数据集名称（默认 "creditpilot_customers"）
     
     Returns:
         Dict containing:
@@ -26,7 +26,7 @@ async def add_memory(content: str, dataset_name: str = "credit_pilot") -> Dict[s
             - message: 操作结果消息
     
     Example:
-        result = await add_memory("客户偏好高收益信用卡", "credit_pilot")
+        result = await add_memory("客户偏好高收益信用卡", "creditpilot_customers")
     """
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
