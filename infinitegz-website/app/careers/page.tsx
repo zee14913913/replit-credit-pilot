@@ -108,10 +108,10 @@ export default function CareersPage() {
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl">
             <div className="border border-border rounded-2xl p-8 sm:p-16 text-center space-y-8 bg-gradient-to-b from-secondary/5 to-transparent">
               <h2 className="text-3xl sm:text-5xl text-primary max-w-3xl mx-auto">
-                Don't See Your Role?
+                {t.careers.cta.title}
               </h2>
               <p className="text-secondary text-lg max-w-2xl mx-auto">
-                We're always looking for talented individuals. Send us your CV and tell us how you can contribute.
+                {t.careers.cta.description}
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
                 <Link 

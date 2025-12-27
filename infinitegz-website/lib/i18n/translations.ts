@@ -348,6 +348,10 @@ export interface Translations {
         type: string;
       }>;
     };
+    cta: {
+      title: string;
+      description: string;
+    };
   };
 }
 
@@ -999,6 +1003,10 @@ export const translations: Record<Language, Translations> = {
           { title: 'Customer Success Manager', department: 'Operations', location: 'Kuala Lumpur', type: 'Full-time' },
         ],
       },
+      cta: {
+        title: "Don't See Your Role?",
+        description: "We're always looking for talented individuals. Send us your CV and tell us how you can contribute.",
+      },
     },
   },
   zh: {
@@ -1649,6 +1657,10 @@ export const translations: Record<Language, Translations> = {
           { title: '客户成功经理', department: '运营', location: '吉隆坡', type: '全职' },
         ],
       },
+      cta: {
+        title: '找不到适合的职位？',
+        description: '我们一直在寻找有才华的人才。发送您的简历，告诉我们您能如何贡献。',
+      },
     },
   },
   ms: {
@@ -2295,6 +2307,10 @@ export const translations: Record<Language, Translations> = {
           { title: 'Akauntan', department: 'Kewangan', location: 'Kuala Lumpur', type: 'Sepenuh Masa' },
           { title: 'Pengurus Kejayaan Pelanggan', department: 'Operasi', location: 'Kuala Lumpur', type: 'Sepenuh Masa' },
         ],
+      },
+      cta: {
+        title: 'Tidak Jumpa Peranan Anda?',
+        description: 'Kami sentiasa mencari individu berbakat. Hantar CV anda dan beritahu kami bagaimana anda boleh menyumbang.',
       },
     },
   },
