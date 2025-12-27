@@ -1,0 +1,118 @@
+{
+  "items": [
+    {
+      "id": "news-001",
+      "date": "2024-12",
+      "title": {
+        "en": "INFINITE GZ Secures RM 500M+ in Financing",
+        "zh": "INFINITE GZ 获得超过 RM 5亿融资",
+        "ms": "INFINITE GZ Memperoleh RM 500 Juta+ Pembiayaan"
+      },
+      "category": {
+        "en": "Milestone",
+        "zh": "里程碑",
+        "ms": "Pencapaian"
+      },
+      "description": {
+        "en": "Major achievement in total financing facilitated for Malaysian businesses",
+        "zh": "为马来西亚企业促成的总融资额达到重大里程碑",
+        "ms": "Pencapaian besar dalam jumlah pembiayaan yang difasilitasi untuk perniagaan Malaysia"
+      }
+    },
+    {
+      "id": "news-002",
+      "date": "2024-12",
+      "title": {
+        "en": "New AI Features in CreditPilot",
+        "zh": "CreditPilot 新增 AI 功能",
+        "ms": "Ciri AI Baharu dalam CreditPilot"
+      },
+      "category": {
+        "en": "Product",
+        "zh": "产品",
+        "ms": "Produk"
+      },
+      "description": {
+        "en": "Enhanced loan matching accuracy with advanced AI algorithms",
+        "zh": "通过先进的AI算法提高贷款匹配准确性",
+        "ms": "Ketepatan padanan pinjaman dipertingkatkan dengan algoritma AI canggih"
+      }
+    },
+    {
+      "id": "news-003",
+      "date": "2024-11",
+      "title": {
+        "en": "Success Story: Manufacturing SME Growth",
+        "zh": "成功案例：制造业中小企业增长",
+        "ms": "Kisah Kejayaan: Pertumbuhan PKS Pembuatan"
+      },
+      "category": {
+        "en": "Case Study",
+        "zh": "案例研究",
+        "ms": "Kajian Kes"
+      },
+      "description": {
+        "en": "How we helped a traditional manufacturer expand operations",
+        "zh": "我们如何帮助传统制造商扩大业务",
+        "ms": "Bagaimana kami membantu pengilang tradisional mengembangkan operasi"
+      }
+    },
+    {
+      "id": "news-004",
+      "date": "2024-11",
+      "title": {
+        "en": "Partnership with Major Banks Announced",
+        "zh": "宣布与主要银行建立合作伙伴关系",
+        "ms": "Perkongsian dengan Bank Utama Diumumkan"
+      },
+      "category": {
+        "en": "Partnership",
+        "zh": "合作",
+        "ms": "Perkongsian"
+      },
+      "description": {
+        "en": "Expanding our network of financial institution partners",
+        "zh": "扩大我们的金融机构合作伙伴网络",
+        "ms": "Mengembangkan rangkaian rakan kongsi institusi kewangan kami"
+      }
+    },
+    {
+      "id": "news-005",
+      "date": "2024-10",
+      "title": {
+        "en": "INFINITE GZ Wins Fintech Award",
+        "zh": "INFINITE GZ 荣获金融科技奖",
+        "ms": "INFINITE GZ Memenangi Anugerah Fintech"
+      },
+      "category": {
+        "en": "Recognition",
+        "zh": "荣誉",
+        "ms": "Pengiktirafan"
+      },
+      "description": {
+        "en": "Recognized for innovation in financial technology solutions",
+        "zh": "因金融科技解决方案创新而获得认可",
+        "ms": "Diiktiraf atas inovasi dalam penyelesaian teknologi kewangan"
+      }
+    },
+    {
+      "id": "news-006",
+      "date": "2024-10",
+      "title": {
+        "en": "Expanding to 50+ Financial Institutions",
+        "zh": "扩展至 50+ 金融机构",
+        "ms": "Mengembang ke 50+ Institusi Kewangan"
+      },
+      "category": {
+        "en": "Growth",
+        "zh": "增长",
+        "ms": "Pertumbuhan"
+      },
+      "description": {
+        "en": "Comprehensive coverage across Malaysian banking landscape",
+        "zh": "全面覆盖马来西亚银行业",
+        "ms": "Liputan menyeluruh merentas landskap perbankan Malaysia"
+      }
+    }
+  ]
+}

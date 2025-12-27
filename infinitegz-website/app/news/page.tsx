@@ -5,9 +5,14 @@ import Footer from '@/components/Footer'
 import ScrollProgress from '@/components/ScrollProgress'
 import Link from 'next/link'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { getNews } from '@/lib/newsLoader'
+import { useMemo } from 'react'
 
 export default function NewsPage() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
+  
+  // Dynamically load news based on current language
+  const newsItems = useMemo(() => getNews(language), [language])
   
   return (
     <>
@@ -40,9 +45,9 @@ export default function NewsPage() {
         <section className="py-16 sm:py-32">
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {t.news.items.map((news, index) => (
+              {newsItems.map((news) => (
                 <Link
-                  key={index}
+                  key={news.id}
                   href="#"
                   className="group p-6 border border-border rounded-lg hover:border-primary/30 hover:bg-secondary/5 transition-all space-y-4"
                 >
