@@ -1,228 +1,78 @@
+'use client'
+
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ScrollProgress from '@/components/ScrollProgress'
 import Link from 'next/link'
-
-export const metadata = {
-  title: 'Resources | INFINITE GZ',
-  description: 'We go further, faster. Unprecedented scale and capabilities to transform Malaysian business financing.',
-}
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function ResourcesPage() {
+  const { t } = useLanguage()
+  
   return (
     <>
       <ScrollProgress />
-      <main className="min-h-screen bg-background">
+      <main className="min-h-screen bg-[rgb(10,10,10)]">
         <Header />
         
         {/* Hero Section */}
-        <section className="min-h-screen flex items-center justify-center border-b border-primary/10 pt-[78px]">
-          <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl py-16 sm:py-32">
-            <div className="max-w-5xl mx-auto text-center space-y-12">
-              <h1 className="text-4xl md:text-6xl lg:text-7xl tracking-tight text-primary leading-tight">
-                We Go Further, Faster
-              </h1>
-              
-              <p className="text-xl md:text-2xl text-secondary max-w-4xl mx-auto leading-relaxed">
-                We Were Told It Would Take 24 Months To Build. So We Took The Project Into Our Own Hands, Questioned Everything, Removed Whatever Was Unnecessary, And Accomplished Our Goal In Four Months.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Unprecedented Scale */}
-        <section className="py-16 sm:py-32 border-b border-primary/10">
-          <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16">
-            <div className="max-w-4xl">
-              <h2 className="text-3xl md:text-5xl lg:text-6xl tracking-tight text-primary">
-                Unprecedented Scale
-              </h2>
-              <p className="text-xl md:text-2xl text-secondary mt-8">
-                We Doubled Our Capacity At An Unprecedented Rate, With A Roadmap To Serve 1M Businesses. Progress In Fintech Is Driven By Scale And No One Has Come Close To Building At This Magnitude And Speed.
-              </p>
-            </div>
-
-            {/* Statistics Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <div className="space-y-4 p-8 border border-primary/10">
+        <section className="border-border relative min-h-screen w-full overflow-hidden border-b pb-px">
+          <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl flex min-h-screen flex-col justify-center">
+            <div className="relative z-20 py-20 text-center">
+              <div className="space-y-8">
                 <div className="mono-tag text-secondary text-sm">
-                  Partner Institutions
+                  [ {t.resources.hero.tag} ]
                 </div>
-                <div className="text-4xl md:text-5xl font-normal text-primary">
-                  50+
-                </div>
-                <div className="text-sm text-secondary">
-                  Financial Institutions
-                </div>
-              </div>
-
-              <div className="space-y-4 p-8 border border-primary/10">
-                <div className="mono-tag text-secondary text-sm">
-                  Total Loans Facilitated
-                </div>
-                <div className="text-4xl md:text-5xl font-normal text-primary">
-                  RM 500M+
-                </div>
-                <div className="text-sm text-secondary">
-                  Loans Disbursed
-                </div>
-              </div>
-
-              <div className="space-y-4 p-8 border border-primary/10">
-                <div className="mono-tag text-secondary text-sm">
-                  Analysis Speed
-                </div>
-                <div className="text-4xl md:text-5xl font-normal text-primary">
-                  2 Min
-                </div>
-                <div className="text-sm text-secondary">
-                  Average Processing Time
-                </div>
-              </div>
-
-              <div className="space-y-4 p-8 border border-primary/10">
-                <div className="mono-tag text-secondary text-sm">
-                  Client Satisfaction
-                </div>
-                <div className="text-4xl md:text-5xl font-normal text-primary">
-                  98%
-                </div>
-                <div className="text-sm text-secondary">
-                  Success Rate
-                </div>
+                
+                <h1 className="text-primary mx-auto max-w-4xl text-balance text-5xl leading-tight tracking-tight md:text-7xl md:leading-tight lg:text-8xl lg:leading-tight">
+                  {t.resources.hero.title}
+                </h1>
+                
+                <p className="text-secondary mx-auto max-w-3xl text-lg md:text-xl leading-relaxed">
+                  {t.resources.hero.description}
+                </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Our Path of Progress */}
-        <section className="py-16 sm:py-32 border-b border-primary/10">
-          <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16">
-            <div className="max-w-4xl">
-              <h2 className="text-3xl md:text-5xl lg:text-6xl tracking-tight text-primary">
-                Our Path Of Progress
-              </h2>
-              <p className="text-xl md:text-2xl text-secondary mt-8">
-                We're Moving Toward A Future Where We Will Harness Our Platform's Full Power To Solve Intractable Financial Problems. What's One Seemingly Impossible Question You'd Answer For Malaysian Businesses?
-              </p>
-            </div>
-
-            {/* Timeline */}
-            <div className="space-y-8">
-              {[
-                {
-                  year: '2020',
-                  title: 'Company Founded',
-                  description: 'Started with a mission to democratize access to financial services in Malaysia.',
-                },
-                {
-                  year: '2021',
-                  title: 'CreditPilot Launch',
-                  description: 'Launched AI-powered loan matching platform, serving first 500 businesses.',
-                },
-                {
-                  year: '2022',
-                  title: 'Service Expansion',
-                  description: 'Expanded to digital transformation, accounting, and advisory services.',
-                },
-                {
-                  year: '2023',
-                  title: 'RM 500M Milestone',
-                  description: 'Facilitated over RM 500 million in loans with 50+ partner institutions.',
-                },
-                {
-                  year: '2024',
-                  title: 'Innovation & Scale',
-                  description: 'Serving 5,000+ businesses nationwide with advanced AI capabilities.',
-                },
-              ].map((item, index) => (
-                <div key={index} className="grid md:grid-cols-[200px,1fr] gap-8 border-l border-primary/20 pl-8 pb-8">
-                  <div className="mono-tag text-2xl md:text-3xl text-primary">
-                    {item.year}
-                  </div>
-                  <div className="space-y-4">
-                    <h3 className="text-2xl md:text-3xl tracking-tight text-primary">
-                      {item.title}
-                    </h3>
-                    <p className="text-lg text-secondary">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Latest News Section */}
-        <section className="py-16 sm:py-32 border-b border-primary/10">
-          <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16">
-            <h2 className="text-3xl md:text-5xl lg:text-6xl tracking-tight text-primary">
-              Latest News
-            </h2>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  date: 'December 20, 2024',
-                  title: 'CreditPilot 4.1 Release',
-                  category: 'Product Update',
-                },
-                {
-                  date: 'December 15, 2024',
-                  title: 'RM 500M Milestone',
-                  category: 'Company News',
-                },
-                {
-                  date: 'December 10, 2024',
-                  title: 'OPR Rate Changes',
-                  category: 'Market Update',
-                },
-              ].map((news, index) => (
-                <Link
-                  key={index}
-                  href="/news"
-                  className="group space-y-4 p-6 border border-primary/10 hover:border-primary/30 transition-colors duration-200"
-                >
-                  <div className="mono-tag text-xs text-secondary">
-                    {news.date}
-                  </div>
-                  <h3 className="text-xl md:text-2xl tracking-tight text-primary group-hover:text-secondary transition-colors">
-                    {news.title}
-                  </h3>
-                  <div className="mono-tag text-xs text-secondary">
-                    {news.category}
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            <div className="text-center">
-              <Link href="/news" className="btn-xai">
-                View All News
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Final CTA */}
-        <section className="py-16 sm:py-32">
+        {/* Stats Section */}
+        <section className="py-16 sm:py-32 border-b border-border">
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl">
-            <div className="max-w-4xl mx-auto text-center space-y-8">
-              <h2 className="text-3xl md:text-5xl lg:text-6xl tracking-tight text-primary">
-                Ready To Experience Unprecedented Scale?
-              </h2>
-              <p className="text-xl md:text-2xl text-secondary max-w-3xl mx-auto">
-                Join 5,000+ Malaysian Businesses Transforming Their Financial Future With INFINITE GZ.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
-                <Link href="https://portal.infinitegz.com" className="btn-xai btn-xai-primary">
-                  Get Started Now
-                </Link>
-                <Link href="/solutions" className="btn-xai">
-                  Explore Solutions
-                </Link>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {t.resources.stats.map((stat, index) => (
+                <div key={index} className="p-8 border border-border rounded-lg text-center space-y-4">
+                  <div className="text-5xl font-light text-primary">{stat.number}</div>
+                  <h3 className="text-xl text-primary">{stat.title}</h3>
+                  <p className="text-secondary text-sm">{stat.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Timeline Section */}
+        <section className="py-16 sm:py-32 border-b border-border">
+          <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16">
+            <div className="space-y-8 text-center">
+              <div className="mono-tag inline-flex items-center gap-2 text-sm text-secondary">
+                <span>[</span> <span>{t.resources.timeline.tag}</span> <span>]</span>
               </div>
+              <h2 className="text-balance text-3xl tracking-tight md:text-5xl text-primary mx-auto max-w-3xl">
+                {t.resources.timeline.title}
+              </h2>
+            </div>
+
+            <div className="space-y-8">
+              {t.resources.timeline.milestones.map((milestone, index) => (
+                <div key={index} className="flex gap-8 items-start">
+                  <div className="mono-tag text-primary w-20 flex-shrink-0">{milestone.year}</div>
+                  <div className="flex-grow">
+                    <h3 className="text-2xl text-primary mb-2">{milestone.title}</h3>
+                    <p className="text-secondary">{milestone.description}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>

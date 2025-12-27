@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-background text-primary antialiased font-mono overflow-x-hidden;
+  }
+  
+  /* 全屏滚动snap效果 */
+  .snap-container {
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+    height: 100vh;
+  }
+  
+  .snap-section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* X.AI 按钮样式 */
+  .btn-xai {
+    @apply relative inline-flex shrink-0 items-center justify-center border font-mono text-xai-sm uppercase tracking-widest;
+    @apply px-4 py-2 rounded-full;
+    @apply border-border-color bg-transparent text-primary;
+    @apply hover:bg-hover-bg transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+  
+  .btn-xai-primary {
+    @apply bg-primary text-background border-primary;
+    @apply hover:bg-primary/80 hover:border-primary/80;
+  }
+  
+  /* X.AI 单行标签 */
+  .mono-tag {
+    @apply font-mono text-xai-sm uppercase tracking-widest;
+  }
+  
+  /* 滚动动画 - Ethnocare风格 */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .animate-on-scroll {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+  }
+  
+  .animate-fade-in {
+    opacity: 0;
+    animation: fadeIn 1s ease-out forwards;
+  }
+  
+  .animate-slide-left {
+    opacity: 0;
+    animation: slideInLeft 0.8s ease-out forwards;
+  }
+  
+  .animate-slide-right {
+    opacity: 0;
+    animation: slideInRight 0.8s ease-out forwards;
+  }
+  
+  /* 延迟动画 */
+  .delay-100 { animation-delay: 0.1s; }
+  .delay-200 { animation-delay: 0.2s; }
+  .delay-300 { animation-delay: 0.3s; }
+  .delay-400 { animation-delay: 0.4s; }
+  .delay-500 { animation-delay: 0.5s; }
+  .delay-600 { animation-delay: 0.6s; }
+  
+  /* 3D卡片效果 */
+  .card-3d {
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  
+  .card-3d:hover {
+    transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+  }
+  
+  /* 视差效果 */
+  .parallax {
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  
+  /* 滚动进度指示器 */
+  .scroll-progress {
+    position: fixed;
+    top: 78px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, rgb(125, 129, 135), rgb(255, 255, 255));
+    transform-origin: left;
+    z-index: 50;
+  }
+}
