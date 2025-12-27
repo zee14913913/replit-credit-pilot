@@ -1558,12 +1558,12 @@ export const translations: Record<Language, Translations> = {
       },
     
       items: [
-        { title: 'INFINITE GZ Secures RM 500M+ in Financing', date: '2024-12', category: 'Milestone' },
-        { title: 'New AI Features in CreditPilot', date: '2024-12', category: 'Product' },
-        { title: 'Success Story: Manufacturing SME Growth', date: '2024-11', category: 'Case Study' },
-        { title: 'Partnership with Major Banks Announced', date: '2024-11', category: 'Partnership' },
-        { title: 'INFINITE GZ Wins Fintech Award', date: '2024-10', category: 'Recognition' },
-        { title: 'Expanding to 50+ Financial Institutions', date: '2024-10', category: 'Growth' },
+        { title: 'INFINITE GZ 获得超过 RM 5亿融资', date: '2024-12', category: '里程碑' },
+        { title: 'CreditPilot 新增 AI 功能', date: '2024-12', category: '产品' },
+        { title: '成功案例：制造业中小企业增长', date: '2024-11', category: '案例研究' },
+        { title: '宣布与主要银行建立合作伙伴关系', date: '2024-11', category: '合作' },
+        { title: 'INFINITE GZ 荣获金融科技奖', date: '2024-10', category: '荣誉' },
+        { title: '扩展至 50+ 金融机构', date: '2024-10', category: '增长' },
       ],
     },
 
@@ -2212,12 +2212,12 @@ export const translations: Record<Language, Translations> = {
       },
     
       items: [
-        { title: 'INFINITE GZ Secures RM 500M+ in Financing', date: '2024-12', category: 'Milestone' },
-        { title: 'New AI Features in CreditPilot', date: '2024-12', category: 'Product' },
-        { title: 'Success Story: Manufacturing SME Growth', date: '2024-11', category: 'Case Study' },
-        { title: 'Partnership with Major Banks Announced', date: '2024-11', category: 'Partnership' },
-        { title: 'INFINITE GZ Wins Fintech Award', date: '2024-10', category: 'Recognition' },
-        { title: 'Expanding to 50+ Financial Institutions', date: '2024-10', category: 'Growth' },
+        { title: 'INFINITE GZ Memperoleh RM 500 Juta+ Pembiayaan', date: '2024-12', category: 'Pencapaian' },
+        { title: 'Ciri AI Baharu dalam CreditPilot', date: '2024-12', category: 'Produk' },
+        { title: 'Kisah Kejayaan: Pertumbuhan PKS Pembuatan', date: '2024-11', category: 'Kajian Kes' },
+        { title: 'Perkongsian dengan Bank Utama Diumumkan', date: '2024-11', category: 'Perkongsian' },
+        { title: 'INFINITE GZ Memenangi Anugerah Fintech', date: '2024-10', category: 'Pengiktirafan' },
+        { title: 'Mengembang ke 50+ Institusi Kewangan', date: '2024-10', category: 'Pertumbuhan' },
       ],
     },
     resources: {
