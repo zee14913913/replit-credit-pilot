@@ -7,8 +7,19 @@ import { useLanguage } from '@/contexts/LanguageContext'
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [scrollY, setScrollY] = useState(0)
+  const [hasVideo, setHasVideo] = useState(false)
   const { t } = useLanguage()
-  const heroRef = useRef<HTMLElement>(null)
+  const heroRef = useRef<HTMLSection>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  // 视频 URL（可以在这里配置你的视频）
+  const videoUrl = '' // 留空表示不显示视频，填入 URL 则显示视频
+
+  useEffect(() => {
+    if (videoUrl) {
+      setHasVideo(true)
+    }
+  }, [])
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -37,8 +48,30 @@ export default function Hero() {
       ref={heroRef}
       className="relative h-screen flex items-center justify-center snap-section overflow-hidden"
     >
-      {/* 纯墨黑背景 */}
-      <div className="absolute inset-0 bg-background"></div>
+      {/* 视频背景层 */}
+      {hasVideo && videoUrl ? (
+        <div className="absolute inset-0 z-0">
+          {/* 超大屏视频播放器 */}
+          <video
+            ref={videoRef}
+            className="absolute inset-0 w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster="/video-poster.jpg" // 可选：视频封面图
+          >
+            <source src={videoUrl} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          
+          {/* 视频遮罩层 - 确保文字可读 */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
+        </div>
+      ) : (
+        /* 纯墨黑背景（无视频时） */
+        <div className="absolute inset-0 bg-background z-0"></div>
+      )}
 
       {/* 内容容器 */}
       <div className="relative z-10 mx-auto w-full px-4 lg:px-6 xl:max-w-7xl flex flex-col" style={{ minHeight: 'calc(100vh - 78px)', paddingTop: '78px' }}>
@@ -112,6 +145,27 @@ export default function Hero() {
           </div>
         </div>
       </div>
+      
+      {/* 视频控制按钮（可选） */}
+      {hasVideo && videoUrl && (
+        <button
+          onClick={() => {
+            if (videoRef.current) {
+              if (videoRef.current.paused) {
+                videoRef.current.play()
+              } else {
+                videoRef.current.pause()
+              }
+            }
+          }}
+          className="absolute bottom-24 right-8 z-20 w-12 h-12 rounded-full bg-background/80 backdrop-blur-md border border-primary/20 flex items-center justify-center hover:bg-background/90 transition-all"
+          aria-label="Play/Pause video"
+        >
+          <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </button>
+      )}
       
       {/* 底部激光分隔线 */}
       <div className="absolute bottom-0 left-0 right-0 z-20">
