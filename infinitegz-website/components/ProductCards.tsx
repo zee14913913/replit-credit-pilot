@@ -35,18 +35,12 @@ export default function ProductCards() {
           {t.home.products.items.map((product, index) => (
             <div
               key={index}
-              className={`card-3d group relative flex h-full flex-col space-y-4 px-0 py-10 lg:p-8 border-t border-primary/10 lg:border-l lg:border-t-0 hover:bg-gradient-to-b from-secondary/10 via-transparent to-transparent transition-all duration-700 ${
+              className={`card-3d group relative flex h-full flex-col space-y-4 px-0 py-10 lg:p-8 hover:bg-gradient-to-b from-secondary/5 via-transparent to-transparent transition-all duration-700 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
-              {/* 悬停边框效果 */}
-              <div className="border-primary/10 pointer-events-none absolute inset-0 isolate z-10 border opacity-0 group-hover:opacity-100 hidden lg:block transition-opacity duration-200" />
-              
-              {/* 左上角装饰点 */}
-              <div className="bg-primary absolute -left-1 -top-1 z-10 size-2 -translate-x-px -translate-y-px opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden lg:block" />
-
-              {/* 内容 */}
+{/* 内容 */}
               <div className="relative z-20 space-y-6">
                 {/* 标签 */}
                 <div className="mono-tag text-secondary">

@@ -36,7 +36,7 @@ export default function Hero() {
   return (
     <section 
       ref={heroRef}
-      className="relative h-screen flex items-center justify-center border-b border-primary/10 snap-section overflow-hidden"
+      className="relative h-screen flex items-center justify-center snap-section overflow-hidden"
     >
       {/* 纯墨黑背景 - 无渐变 */}
       <div className="absolute inset-0 bg-background"></div>

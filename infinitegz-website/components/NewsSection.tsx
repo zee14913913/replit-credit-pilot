@@ -11,7 +11,7 @@ export default function NewsSection() {
     <section 
       id="resources" 
       ref={sectionRef as any}
-      className="min-h-screen flex items-center py-16 sm:py-32 bg-background border-t border-primary/10 snap-section"
+      className="min-h-screen flex items-center py-16 sm:py-32 bg-background snap-section"
     >
       <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16">
         {/* Section 标题 */}
