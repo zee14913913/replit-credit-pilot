@@ -6,6 +6,9 @@
   html {
     @apply scroll-smooth antialiased;
     scroll-behavior: smooth;
+    /* Ethnocare 风格的平滑滚动 */
+    overflow-y: scroll;
+    overflow-x: hidden;
   }
   
   html.is-loaded {
@@ -16,6 +19,8 @@
     @apply bg-background text-primary antialiased font-mono overflow-x-hidden;
     /* Ethnocare 风格的平滑过渡 */
     transition: background-color 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    /* 确保内容始终可见 */
+    min-height: 100vh;
   }
   
   /* 全屏滚动snap效果 */
@@ -30,9 +35,15 @@
     scroll-snap-stop: always;
   }
   
-  /* 优化所有元素的过渡 */
+  /* 优化所有元素的过渡 - Ethnocare 风格 */
   * {
     transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+  
+  /* 确保所有内容默认可见 */
+  main > section {
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 }
 
@@ -94,7 +105,7 @@
     transform: translateX(-50%) scaleX(1);
   }
   
-  /* 滚动动画 - Ethnocare风格 */
+  /* 滚动动画 - Ethnocare风格 - 简单可靠版本 */
   @keyframes fadeInUp {
     from {
       opacity: 0;
@@ -137,23 +148,20 @@
     }
   }
   
-  .animate-on-scroll {
-    opacity: 0;
+  /* 简化的动画类 - 不会导致内容隐藏 */
+  .animate-fadeIn {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+  
+  .animate-fadeInUp {
     animation: fadeInUp 0.8s ease-out forwards;
   }
   
-  .animate-fade-in {
-    opacity: 0;
-    animation: fadeIn 1s ease-out forwards;
-  }
-  
   .animate-slide-left {
-    opacity: 0;
     animation: slideInLeft 0.8s ease-out forwards;
   }
   
   .animate-slide-right {
-    opacity: 0;
     animation: slideInRight 0.8s ease-out forwards;
   }
   

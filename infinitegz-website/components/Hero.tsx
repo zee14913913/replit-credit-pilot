@@ -22,7 +22,7 @@ export default function Hero() {
     const handleScroll = () => {
       if (heroRef.current) {
         const rect = heroRef.current.getBoundingClientRect()
-        const scrollProgress = -rect.top / window.innerHeight
+        const scrollProgress = Math.max(0, -rect.top / window.innerHeight)
         setScrollY(scrollProgress)
       }
     }
@@ -40,10 +40,10 @@ export default function Hero() {
     >
       {/* 背景渐变 - 视差效果 */}
       <div 
-        className="absolute inset-0 bg-background"
+        className="absolute inset-0 bg-background will-change-transform"
         style={{
-          transform: `translateY(${scrollY * 50}px) scale(${1 + scrollY * 0.1})`,
-          transition: 'transform 0.1s linear'
+          transform: `translateY(${scrollY * 30}%) scale(${1 + scrollY * 0.05})`,
+          transformOrigin: 'center center'
         }}
       >
         <div className="relative w-full h-full">
@@ -59,12 +59,12 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* 内容容器 */}
+      {/* 内容容器 - 固定定位不受视差影响 */}
       <div className="relative z-10 mx-auto w-full px-4 lg:px-6 xl:max-w-7xl flex flex-col" style={{ minHeight: 'calc(100vh - 78px)', paddingTop: '78px' }}>
         <div className="flex-grow flex items-center justify-center py-16 sm:py-32">
           <div className="w-full max-w-3xl space-y-8">
             {/* 顶部标签按钮 */}
-            <div className="flex justify-center">
+            <div className="flex justify-center animate-fadeIn">
               <Link 
                 href="https://portal.infinitegz.com" 
                 className="btn-xai mono-tag"
@@ -74,7 +74,7 @@ export default function Hero() {
             </div>
 
             {/* 主标题 - 渐变文字效果 */}
-            <div className="text-center space-y-4">
+            <div className="text-center space-y-4 animate-fadeIn delay-100">
               <h1 className="text-4xl leading-[2.25rem] tracking-tight md:text-[5rem] md:leading-[5rem]">
                 <span className="inline-block bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent py-2">
                   {t.home.hero.title}
@@ -83,12 +83,12 @@ export default function Hero() {
             </div>
 
             {/* 副标题 */}
-            <p className="text-center text-secondary text-base md:text-xl max-w-2xl mx-auto leading-relaxed">
+            <p className="text-center text-secondary text-base md:text-xl max-w-2xl mx-auto leading-relaxed animate-fadeIn delay-200">
               {t.home.hero.description}
             </p>
 
             {/* 轮播指示器 */}
-            <div className="flex justify-center gap-2 pt-4">
+            <div className="flex justify-center gap-2 pt-4 animate-fadeIn delay-300">
               {[0, 1, 2].map((index) => (
                 <button
                   key={index}
@@ -106,15 +106,15 @@ export default function Hero() {
         </div>
 
         {/* 底部 CTA 区域 */}
-        <div className="relative z-10 flex items-end justify-between gap-6 pb-4 pt-4 lg:min-h-[160px] lg:py-10">
+        <div className="relative z-10 flex items-end justify-between gap-6 pb-4 pt-4 lg:min-h-[160px] lg:py-10 animate-fadeIn delay-400">
           <div className="flex flex-col items-end gap-6 sm:gap-8 md:flex-row lg:gap-12 w-full">
-            <div className="max-w-2xl">
+            <div className="max-w-2xl flex-shrink-0">
               <p className="text-secondary text-sm md:text-base leading-relaxed">
                 {t.home.hero.bottomDescription}
               </p>
             </div>
             
-            <div className="flex flex-col items-end gap-3 sm:flex-row ml-auto">
+            <div className="flex flex-col items-end gap-3 sm:flex-row ml-auto flex-shrink-0">
               <Link 
                 href="https://portal.infinitegz.com" 
                 className="btn-xai hidden lg:inline-flex whitespace-nowrap"

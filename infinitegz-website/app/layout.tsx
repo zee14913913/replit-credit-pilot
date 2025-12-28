@@ -5,6 +5,7 @@ import ScrollProgress from '../components/ScrollProgress'
 import PageIndicator from '../components/PageIndicator'
 import Preloader from '../components/Preloader'
 import ParticleBackground from '../components/ParticleBackground'
+import ParallaxBackground from '../components/ParallaxBackground'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -24,6 +25,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <LanguageProvider>
           <Preloader />
+          <ParallaxBackground />
           <ParticleBackground />
           <ScrollProgress />
           <PageIndicator />

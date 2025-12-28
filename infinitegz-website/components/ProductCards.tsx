@@ -16,7 +16,7 @@ export default function ProductCards() {
     >
       <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16 sm:space-y-32">
         {/* Section 标题 */}
-        <div className={`space-y-12 ${isVisible ? 'animate-on-scroll' : 'opacity-0'}`}>
+        <div className={`space-y-12 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="mono-tag flex items-center gap-2">
             <span className="text-secondary">{t.home.products.tag}</span>
           </div>
@@ -35,9 +35,10 @@ export default function ProductCards() {
           {t.home.products.items.map((product, index) => (
             <div
               key={index}
-              className={`card-3d group relative flex h-full flex-col space-y-4 px-0 py-10 lg:p-8 border-t border-primary/10 lg:border-l lg:border-t-0 hover:bg-gradient-to-b from-secondary/10 via-transparent to-transparent transition-all duration-200 ${
-                isVisible ? 'animate-on-scroll' : 'opacity-0'
-              } delay-${(index + 1) * 100}`}
+              className={`card-3d group relative flex h-full flex-col space-y-4 px-0 py-10 lg:p-8 border-t border-primary/10 lg:border-l lg:border-t-0 hover:bg-gradient-to-b from-secondary/10 via-transparent to-transparent transition-all duration-700 ${
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+              }`}
+              style={{ transitionDelay: `${index * 100}ms` }}
             >
               {/* 悬停边框效果 */}
               <div className="border-primary/10 pointer-events-none absolute inset-0 isolate z-10 border opacity-0 group-hover:opacity-100 hidden lg:block transition-opacity duration-200" />

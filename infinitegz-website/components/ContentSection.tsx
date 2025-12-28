@@ -15,7 +15,7 @@ export default function ContentSection() {
     >
       <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16 sm:space-y-32">
         {/* 主标题区 */}
-        <div className={`max-w-3xl mx-auto text-center space-y-8 ${isVisible ? 'animate-on-scroll' : 'opacity-0'}`}>
+        <div className={`max-w-3xl mx-auto text-center space-y-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="mono-tag text-secondary">
             {t.home.content.tag}
           </div>
@@ -34,7 +34,8 @@ export default function ContentSection() {
           {t.home.content.features.map((feature, index) => (
             <div 
               key={index} 
-              className={`space-y-4 ${isVisible ? 'animate-on-scroll' : 'opacity-0'} delay-${(index + 2) * 100}`}
+              className={`space-y-4 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+              style={{ transitionDelay: `${(index + 2) * 100}ms` }}
             >
               <h3 className="text-xl font-normal text-primary mono-tag">
                 {feature.title}
