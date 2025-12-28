@@ -4,8 +4,7 @@ import './globals.css'
 import ScrollProgress from '../components/ScrollProgress'
 import PageIndicator from '../components/PageIndicator'
 import Preloader from '../components/Preloader'
-import ParticleBackground from '../components/ParticleBackground'
-import ParallaxBackground from '../components/ParallaxBackground'
+import GalaxyBackground from '../components/GalaxyBackground'
 import ForceVisible from '../components/ForceVisible'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 
@@ -27,8 +26,7 @@ export default function RootLayout({
         <LanguageProvider>
           <ForceVisible />
           <Preloader />
-          <ParallaxBackground />
-          <ParticleBackground />
+          <GalaxyBackground />
           <ScrollProgress />
           <PageIndicator />
           {children}
