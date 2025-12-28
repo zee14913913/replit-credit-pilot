@@ -7,7 +7,11 @@ export default function Footer() {
   const { t } = useLanguage()
   
   return (
-    <footer id="contact" className="border-border/50 relative w-full overflow-hidden border-t min-h-screen flex items-center">
+    <footer id="contact" className="relative w-full overflow-hidden min-h-screen flex items-center">
+      {/* 顶部激光分隔线 */}
+      <div className="absolute top-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
       {/* 背景图片占位 */}
       <div className="absolute inset-0">
         <div 

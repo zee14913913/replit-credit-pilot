@@ -1,4 +1,3 @@
-import dynamic from 'next/dynamic'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
 import ProductCards from '@/components/ProductCards'
@@ -7,10 +6,6 @@ import NewsSection from '@/components/NewsSection'
 import Footer from '@/components/Footer'
 import ScrollProgress from '@/components/ScrollProgress'
 import ScrollIndicator from '@/components/ScrollIndicator'
-
-// 动态导入 3D 组件（客户端组件）
-const FeatureShowcase = dynamic(() => import('@/components/FeatureShowcase'), { ssr: false })
-const PhoneShowcase = dynamic(() => import('@/components/PhoneShowcase'), { ssr: false })
 
 export default function Home() {
   return (
@@ -28,16 +23,6 @@ export default function Home() {
         {/* Products Section - Full Screen */}
         <section id="products" className="snap-section">
           <ProductCards />
-        </section>
-        
-        {/* 3D Card Showcase - Robinhood Style */}
-        <section id="showcase" className="snap-section">
-          <FeatureShowcase />
-        </section>
-        
-        {/* 3D Phone Showcase - Mobile Experience */}
-        <section id="phone-showcase" className="snap-section">
-          <PhoneShowcase />
         </section>
         
         {/* Features Section - Full Screen */}
