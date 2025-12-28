@@ -75,8 +75,8 @@ export default function Hero() {
 
             {/* 主标题 - 渐变文字效果 */}
             <div className="text-center space-y-4 animate-fadeIn delay-100">
-              <h1 className="text-4xl leading-tight tracking-tight md:text-5xl md:leading-tight lg:text-6xl lg:leading-tight xl:text-[5rem] xl:leading-tight min-h-[6rem] md:min-h-[8rem] lg:min-h-[10rem] flex items-center justify-center">
-                <span className="inline-block bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent py-2">
+              <h1 className="text-4xl leading-tight tracking-tight md:text-5xl md:leading-tight lg:text-6xl lg:leading-tight xl:text-[5rem] xl:leading-tight min-h-[8rem] md:min-h-[10rem] lg:min-h-[12rem] flex items-center justify-center">
+                <span className="inline-block bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent py-2 whitespace-pre-line">
                   {t.home.hero.title}
                 </span>
               </h1>
