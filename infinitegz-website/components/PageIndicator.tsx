@@ -134,50 +134,7 @@ export default function PageIndicator() {
             {config.name.charAt(0)}
           </div>
         </div>
-
-        {/* 页面名称标签 - 悬停显示 */}
-        <div
-          className="
-            absolute top-1/2 right-full -translate-y-1/2 mr-4
-            opacity-0 group-hover:opacity-100
-            transition-all duration-300
-            pointer-events-none
-          "
-        >
-          <div
-            className="
-              px-4 py-2 rounded-lg
-              bg-background/90 backdrop-blur-md
-              border
-              whitespace-nowrap
-              text-sm font-mono
-              shadow-lg
-            "
-            style={{
-              borderColor: config.color,
-              color: config.color,
-              boxShadow: `0 0 15px ${config.color}30`
-            }}
-          >
-            {config.name}
-          </div>
-          {/* 箭头 */}
-          <div
-            className="
-              absolute top-1/2 -right-1 -translate-y-1/2
-              w-2 h-2 rotate-45
-              border-r border-b
-              bg-background/90
-            "
-            style={{
-              borderColor: config.color
-            }}
-          />
-        </div>
       </div>
-
-      {/* 悬停区域 */}
-      <div className="absolute inset-0 -m-8 group" />
     </div>
   )
 }
