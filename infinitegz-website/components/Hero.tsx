@@ -75,7 +75,7 @@ export default function Hero() {
 
             {/* 主标题 - 渐变文字效果 */}
             <div className="text-center space-y-4 animate-fadeIn delay-100">
-              <h1 className="text-4xl leading-[2.25rem] tracking-tight md:text-[5rem] md:leading-[5rem]">
+              <h1 className="text-4xl leading-tight tracking-tight md:text-5xl md:leading-tight lg:text-6xl lg:leading-tight xl:text-[5rem] xl:leading-tight min-h-[6rem] md:min-h-[8rem] lg:min-h-[10rem] flex items-center justify-center">
                 <span className="inline-block bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent py-2">
                   {t.home.hero.title}
                 </span>
@@ -106,24 +106,26 @@ export default function Hero() {
         </div>
 
         {/* 底部 CTA 区域 */}
-        <div className="relative z-10 flex items-end justify-between gap-6 pb-4 pt-4 lg:min-h-[160px] lg:py-10 animate-fadeIn delay-400">
-          <div className="flex flex-col items-end gap-6 sm:gap-8 md:flex-row lg:gap-12 w-full">
-            <div className="max-w-2xl flex-shrink-0">
+        <div className="relative z-10 pb-4 pt-4 lg:min-h-[160px] lg:py-10 animate-fadeIn delay-400">
+          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 w-full">
+            {/* 描述文本 - 固定宽度容器 */}
+            <div className="w-full md:max-w-2xl flex-shrink-0">
               <p className="text-secondary text-sm md:text-base leading-relaxed">
                 {t.home.hero.bottomDescription}
               </p>
             </div>
             
-            <div className="flex flex-col items-end gap-3 sm:flex-row ml-auto flex-shrink-0">
+            {/* 按钮组 - 固定宽度容器 */}
+            <div className="w-full md:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-shrink-0">
               <Link 
                 href="https://portal.infinitegz.com" 
-                className="btn-xai hidden lg:inline-flex whitespace-nowrap"
+                className="btn-xai hidden lg:inline-flex whitespace-nowrap min-w-[140px] justify-center"
               >
                 {t.common.getStarted}
               </Link>
               <Link 
                 href="#products" 
-                className="btn-xai whitespace-nowrap"
+                className="btn-xai whitespace-nowrap min-w-[140px] justify-center"
               >
                 {t.common.learnMore}
               </Link>

@@ -40,10 +40,17 @@
     transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
   }
   
-  /* 确保所有内容默认可见 */
-  main > section {
+  /* ✅ 强制确保所有内容可见 - 即使没有 JavaScript */
+  main,
+  main > section,
+  section > div {
     opacity: 1 !important;
     visibility: visible !important;
+  }
+  
+  /* 允许动画效果，但不影响基础可见性 */
+  .transition-all {
+    /* 动画仅影响 transform，不影响 display/visibility */
   }
 }
 

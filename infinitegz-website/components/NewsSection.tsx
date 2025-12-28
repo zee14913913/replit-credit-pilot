@@ -15,7 +15,7 @@ export default function NewsSection() {
     >
       <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16">
         {/* Section 标题 */}
-        <div className={`space-y-4 ${isVisible ? 'animate-on-scroll' : 'opacity-0'}`}>
+        <div className={`space-y-4 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="mono-tag text-secondary">
             {t.home.news.tag}
           </div>
@@ -32,7 +32,8 @@ export default function NewsSection() {
           {t.home.news.items.map((item, index) => (
             <article
               key={index}
-              className={`group space-y-4 cursor-pointer ${isVisible ? 'animate-on-scroll' : 'opacity-0'} delay-${(index + 1) * 100}`}
+              className={`group space-y-4 cursor-pointer transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+              style={{ transitionDelay: `${(index + 1) * 100}ms` }}
             >
               {/* 日期和分类 */}
               <div className="flex items-center justify-between">
