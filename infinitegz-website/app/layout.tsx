@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import ScrollProgress from '../components/ScrollProgress'
 import PageIndicator from '../components/PageIndicator'
+import Preloader from '../components/Preloader'
+import ParticleBackground from '../components/ParticleBackground'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -21,6 +23,8 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className={inter.className}>
         <LanguageProvider>
+          <Preloader />
+          <ParticleBackground />
           <ScrollProgress />
           <PageIndicator />
           {children}

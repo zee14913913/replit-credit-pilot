@@ -6,13 +6,14 @@ import NewsSection from '@/components/NewsSection'
 import Footer from '@/components/Footer'
 import ScrollProgress from '@/components/ScrollProgress'
 import ScrollIndicator from '@/components/ScrollIndicator'
+import AnimatedSection from '@/components/AnimatedSection'
 
 export default function Home() {
   return (
     <>
       <ScrollProgress />
       <ScrollIndicator />
-      <main className="min-h-screen">
+      <main className="min-h-screen relative z-10">
         <Header />
         
         {/* Hero Section - Full Screen */}
@@ -20,25 +21,25 @@ export default function Home() {
           <Hero />
         </section>
         
-        {/* Products Section - Full Screen */}
-        <section id="products" className="snap-section">
+        {/* Products Section - Full Screen with Animation */}
+        <AnimatedSection className="snap-section" id="products" direction="up" threshold={0.2}>
           <ProductCards />
-        </section>
+        </AnimatedSection>
         
-        {/* Features Section - Full Screen */}
-        <section id="features" className="snap-section">
+        {/* Features Section - Full Screen with Animation */}
+        <AnimatedSection className="snap-section" id="features" direction="up" threshold={0.2} delay={0.1}>
           <ContentSection />
-        </section>
+        </AnimatedSection>
         
-        {/* News Section - Full Screen */}
-        <section id="news" className="snap-section">
+        {/* News Section - Full Screen with Animation */}
+        <AnimatedSection className="snap-section" id="news" direction="up" threshold={0.2} delay={0.2}>
           <NewsSection />
-        </section>
+        </AnimatedSection>
         
-        {/* Footer Section */}
-        <section id="contact" className="snap-section">
+        {/* Footer Section with Animation */}
+        <AnimatedSection className="snap-section" id="contact" direction="fade" threshold={0.1}>
           <Footer />
-        </section>
+        </AnimatedSection>
       </main>
     </>
   )
