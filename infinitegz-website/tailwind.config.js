@@ -9,9 +9,9 @@ module.exports = {
     extend: {
       colors: {
         // 高级墨黑色系统
-        background: 'rgb(5, 5, 8)', // 主背景 - 深邃墨黑带微蓝
-        primary: 'rgb(255, 255, 255)', // 主文字颜色
-        secondary: 'rgb(180, 185, 195)', // 次要文字颜色 - 银灰色
+        background: '#050508', // 主背景 - 深邃墨黑带微蓝 rgb(5, 5, 8)
+        primary: '#FFFFFF', // 主文字颜色 rgb(255, 255, 255)
+        secondary: '#B4B9C3', // 次要文字颜色 - 银灰色 rgb(180, 185, 195)
         'border-color': 'rgba(192, 192, 192, 0.2)', // 边框颜色 - 银色
         'hover-bg': 'rgba(192, 192, 192, 0.1)', // Hover 背景 - 银色光泽
       },
