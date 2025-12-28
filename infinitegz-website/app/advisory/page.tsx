@@ -16,7 +16,7 @@ export default function AdvisoryPage() {
         <Header />
         
         {/* Hero Section */}
-        <section className="border-border relative h-screen w-full overflow-hidden border-b pb-px">
+        <section className="relative pb-px">
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl flex h-full flex-col justify-center">
             <div className="relative z-20 text-center space-y-8">
               <div className="mono-tag text-secondary text-sm">
@@ -46,11 +46,16 @@ export default function AdvisoryPage() {
                 </Link>
               </div>
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 
         {/* 8 Services Section */}
-        <section className="py-16 sm:py-32 border-b border-border">
+        <section className="py-16 sm:py-32 relative">
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16 sm:space-y-32">
             <div className="space-y-12">
               <div className="mono-tag flex items-center gap-2 text-sm text-secondary">
@@ -88,11 +93,16 @@ export default function AdvisoryPage() {
                 </div>
               ))}
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 
         {/* Key Benefits */}
-        <section className="py-16 sm:py-32 border-b border-border">
+        <section className="py-16 sm:py-32 relative">
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16">
             <div className="space-y-8 text-center">
               <div className="mono-tag inline-flex items-center gap-2 text-sm text-secondary">
@@ -112,6 +122,11 @@ export default function AdvisoryPage() {
                 </div>
               ))}
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 
@@ -140,6 +155,11 @@ export default function AdvisoryPage() {
                 </Link>
               </div>
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 

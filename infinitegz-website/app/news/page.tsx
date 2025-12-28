@@ -21,7 +21,7 @@ export default function NewsPage() {
         <Header />
         
         {/* Hero Section */}
-        <section className="border-border relative min-h-screen w-full overflow-hidden border-b pb-px">
+        <section className="relative pb-px">
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl flex min-h-screen flex-col justify-center">
             <div className="relative z-20 py-20 text-center">
               <div className="space-y-8">
@@ -38,6 +38,11 @@ export default function NewsPage() {
                 </p>
               </div>
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 
@@ -67,6 +72,11 @@ export default function NewsPage() {
                 </Link>
               ))}
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 

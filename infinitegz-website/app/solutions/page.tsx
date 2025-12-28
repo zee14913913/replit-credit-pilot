@@ -16,7 +16,7 @@ export default function SolutionsPage() {
         <Header />
         
         {/* Hero Section */}
-        <section className="border-border relative min-h-screen w-full overflow-hidden border-b pb-px">
+        <section className="relative pb-px">
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl flex min-h-screen flex-col justify-center">
             <div className="relative z-20 py-20 text-center">
               <hgroup className="space-y-8">
@@ -48,11 +48,16 @@ export default function SolutionsPage() {
                 </div>
               </hgroup>
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 
         {/* Product Cards Section */}
-        <section className="py-16 sm:py-24 border-b border-border">
+        <section className="py-16 sm:py-24 relative">
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl">
             <div className="grid lg:grid-cols-3 gap-px bg-border">
               
@@ -81,11 +86,16 @@ export default function SolutionsPage() {
               ))}
 
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 
         {/* Core Business Details */}
-        <section className="py-16 sm:py-32 border-b border-border">
+        <section className="py-16 sm:py-32 relative">
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16 sm:space-y-24">
             <div className="space-y-8">
               <div className="mono-tag flex items-center gap-2 text-sm text-secondary">
@@ -110,11 +120,16 @@ export default function SolutionsPage() {
                 </div>
               ))}
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 
         {/* 8 Complementary Services */}
-        <section className="py-16 sm:py-32 border-b border-border">
+        <section className="py-16 sm:py-32 relative">
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16 sm:space-y-24">
             <div className="space-y-8">
               <div className="mono-tag flex items-center gap-2 text-sm text-secondary">
@@ -147,11 +162,16 @@ export default function SolutionsPage() {
                 </div>
               ))}
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 
         {/* Pricing Model */}
-        <section className="py-16 sm:py-32 border-b border-border">
+        <section className="py-16 sm:py-32 relative">
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16 sm:space-y-24">
             <div className="space-y-8">
               <div className="mono-tag flex items-center gap-2 text-sm text-secondary">
@@ -182,11 +202,16 @@ export default function SolutionsPage() {
                 </div>
               ))}
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 
         {/* Target Customers */}
-        <section className="py-16 sm:py-32 border-b border-border">
+        <section className="py-16 sm:py-32 relative">
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16 sm:space-y-24">
             <div className="space-y-8">
               <div className="mono-tag flex items-center gap-2 text-sm text-secondary">
@@ -208,6 +233,11 @@ export default function SolutionsPage() {
                 </div>
               ))}
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 
@@ -236,6 +266,11 @@ export default function SolutionsPage() {
                 </Link>
               </div>
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 

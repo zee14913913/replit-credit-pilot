@@ -16,7 +16,7 @@ export default function CreditPilotPage() {
         <Header />
         
         {/* Hero Section */}
-        <section className="border-border relative h-screen w-full overflow-hidden border-b pb-px">
+        <section className="relative pb-px">
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl flex h-full flex-col">
             <div className="relative z-20 mt-20 flex h-full w-full items-center">
               <hgroup className="space-y-8">
@@ -63,11 +63,16 @@ export default function CreditPilotPage() {
                 </div>
               </div>
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 
         {/* Capabilities Section */}
-        <section id="features" className="py-16 sm:py-32 border-b border-border">
+        <section id="features" className="py-16 sm:py-32 relative">
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16 sm:space-y-32">
             <div className="space-y-12">
               <div className="mono-tag flex items-center gap-2 text-sm text-secondary">
@@ -104,11 +109,16 @@ export default function CreditPilotPage() {
                 </div>
               ))}
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 
         {/* How It Works */}
-        <section className="py-16 sm:py-32 border-b border-border">
+        <section className="py-16 sm:py-32 relative">
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16">
             <div className="space-y-8 text-center">
               <div className="mono-tag inline-flex items-center gap-2 text-sm text-secondary">
@@ -128,6 +138,11 @@ export default function CreditPilotPage() {
                 </div>
               ))}
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 
@@ -150,6 +165,11 @@ export default function CreditPilotPage() {
                 </Link>
               </div>
             </div>
+          
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
           </div>
         </section>
 
