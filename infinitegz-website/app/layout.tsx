@@ -5,6 +5,7 @@ import ScrollProgress from '../components/ScrollProgress'
 import PageIndicator from '../components/PageIndicator'
 import Preloader from '../components/Preloader'
 import GalaxyBackground from '../components/GalaxyBackground'
+import NaturalLighting from '../components/NaturalLighting'
 import ForceVisible from '../components/ForceVisible'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 
@@ -27,6 +28,7 @@ export default function RootLayout({
           <ForceVisible />
           <Preloader />
           <GalaxyBackground />
+          <NaturalLighting />
           <ScrollProgress />
           <PageIndicator />
           {children}
