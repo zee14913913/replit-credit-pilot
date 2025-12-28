@@ -181,7 +181,7 @@ export const bankStandardsReal2025: BankStandardReal[] = [
       {
         identity: 'malaysian_citizen',
         accepted: true,
-        notes: '优先，最容易'
+        specialNotes: '优先，最容易'
       },
       {
         identity: 'permanent_resident',
@@ -953,7 +953,7 @@ export const bankStandardsReal2025: BankStandardReal[] = [
         accepted: true,
         specialNotes: '困难（70%打折）'
       }
-    },
+    ],
     
     loanLimits: {
       personalLoanMax: 150000,

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Language Switch Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/playwright@1.40.0/lib/driver.js"></script>
+</head>
+<body>
+    <h1>Testing language switch...</h1>
+    <script>
+    async function test() {
+        const browser = await playwright.chromium.launch();
+        const page = await browser.newPage();
+        
+        // Test News page
+        await page.goto('http://localhost:3000/news');
+        await page.waitForSelector('.language-switcher');
+        
+        // Get EN content
+        const enContent = await page.textContent('h1');
+        console.log('EN News Title:', enContent);
+        
+        // Switch to Chinese
+        await page.click('button[aria-label="Switch to 中文"]');
+        await page.waitForTimeout(1000);
+        const zhContent = await page.textContent('h1');
+        console.log('CN News Title:', zhContent);
+        
+        // Switch to Malay
+        await page.click('button[aria-label="Switch to BM"]');
+        await page.waitForTimeout(1000);
+        const msContent = await page.textContent('h1');
+        console.log('BM News Title:', msContent);
+        
+        await browser.close();
+    }
+    test();
+    </script>
+</body>
+</html>

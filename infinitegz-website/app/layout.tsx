@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import ScrollProgress from '../components/ScrollProgress'
+import PageIndicator from '../components/PageIndicator'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -21,6 +22,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <LanguageProvider>
           <ScrollProgress />
+          <PageIndicator />
           {children}
         </LanguageProvider>
       </body>

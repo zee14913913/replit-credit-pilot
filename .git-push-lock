@@ -1,0 +1,15 @@
+===========================================
+🚫 GIT PUSH LOCKED 🚫
+===========================================
+
+DO NOT PUSH TO GITHUB UNTIL USER EXPLICITLY REQUESTS IT!
+
+This lock file is a reminder:
+- NO git push
+- NO creating remote branches
+- NO pull requests
+- NO remote operations
+
+User must explicitly say "push now" or similar.
+===========================================
+Created: $(date)
