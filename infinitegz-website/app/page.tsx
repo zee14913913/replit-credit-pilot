@@ -1,13 +1,16 @@
+import dynamic from 'next/dynamic'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
 import ProductCards from '@/components/ProductCards'
-import FeatureShowcase from '@/components/FeatureShowcase'
-import PhoneShowcase from '@/components/PhoneShowcase'
 import ContentSection from '@/components/ContentSection'
 import NewsSection from '@/components/NewsSection'
 import Footer from '@/components/Footer'
 import ScrollProgress from '@/components/ScrollProgress'
 import ScrollIndicator from '@/components/ScrollIndicator'
+
+// 动态导入 3D 组件（客户端组件）
+const FeatureShowcase = dynamic(() => import('@/components/FeatureShowcase'), { ssr: false })
+const PhoneShowcase = dynamic(() => import('@/components/PhoneShowcase'), { ssr: false })
 
 export default function Home() {
   return (
