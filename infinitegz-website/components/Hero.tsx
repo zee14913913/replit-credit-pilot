@@ -38,26 +38,8 @@ export default function Hero() {
       ref={heroRef}
       className="relative h-screen flex items-center justify-center border-b border-primary/10 snap-section overflow-hidden"
     >
-      {/* 背景渐变 - 视差效果 */}
-      <div 
-        className="absolute inset-0 bg-background will-change-transform"
-        style={{
-          transform: `translateY(${scrollY * 30}%) scale(${1 + scrollY * 0.05})`,
-          transformOrigin: 'center center'
-        }}
-      >
-        <div className="relative w-full h-full">
-          <div className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 0 ? 'opacity-20' : 'opacity-0'}`}>
-            <div className="w-full h-full bg-gradient-to-br from-blue-900/30 to-purple-900/30"></div>
-          </div>
-          <div className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 1 ? 'opacity-20' : 'opacity-0'}`}>
-            <div className="w-full h-full bg-gradient-to-br from-purple-900/30 to-pink-900/30"></div>
-          </div>
-          <div className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 2 ? 'opacity-20' : 'opacity-0'}`}>
-            <div className="w-full h-full bg-gradient-to-br from-green-900/30 to-blue-900/30"></div>
-          </div>
-        </div>
-      </div>
+      {/* 纯墨黑背景 - 无渐变 */}
+      <div className="absolute inset-0 bg-background"></div>
 
       {/* 内容容器 - 固定定位不受视差影响 */}
       <div className="relative z-10 mx-auto w-full px-4 lg:px-6 xl:max-w-7xl flex flex-col" style={{ minHeight: 'calc(100vh - 78px)', paddingTop: '78px' }}>

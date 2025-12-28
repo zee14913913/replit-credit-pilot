@@ -60,78 +60,12 @@ export default function GalaxyBackground() {
       })
     }
 
-    // 银河流动路径
-    interface GalaxyPath {
-      points: Array<{ x: number; y: number }>
-      offset: number
-      speed: number
-      opacity: number
-    }
-
-    const galaxyPaths: GalaxyPath[] = []
-    
-    // 创建3条银河流动路径
-    for (let i = 0; i < 3; i++) {
-      const points: Array<{ x: number; y: number }> = []
-      const startY = (canvas.height / 4) * (i + 1)
-      
-      for (let x = 0; x < canvas.width + 200; x += 50) {
-        points.push({
-          x: x,
-          y: startY + Math.sin(x / 100) * 150
-        })
-      }
-      
-      galaxyPaths.push({
-        points,
-        offset: Math.random() * 100,
-        speed: 0.2 + Math.random() * 0.3,
-        opacity: 0.03 + Math.random() * 0.02
-      })
-    }
-
     let animationFrame: number
     let time = 0
 
     const animate = () => {
       time += 0.01
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      // 绘制银河流动路径
-      galaxyPaths.forEach((path) => {
-        path.offset += path.speed
-
-        ctx.save()
-        ctx.beginPath()
-        
-        // 创建银河流动的渐变
-        const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0)
-        gradient.addColorStop(0, `rgba(192, 192, 192, 0)`)
-        gradient.addColorStop(0.3, `rgba(192, 192, 192, ${path.opacity})`)
-        gradient.addColorStop(0.5, `rgba(220, 220, 230, ${path.opacity * 1.5})`)
-        gradient.addColorStop(0.7, `rgba(192, 192, 192, ${path.opacity})`)
-        gradient.addColorStop(1, `rgba(192, 192, 192, 0)`)
-
-        // 绘制流动的银河带
-        for (let i = 0; i < path.points.length - 1; i++) {
-          const p1 = path.points[i]
-          const p2 = path.points[i + 1]
-          
-          const offsetY = Math.sin(p1.x / 100 + path.offset / 10) * 20
-          
-          if (i === 0) {
-            ctx.moveTo(p1.x, p1.y + offsetY)
-          } else {
-            ctx.lineTo(p1.x, p1.y + offsetY)
-          }
-        }
-
-        ctx.strokeStyle = gradient
-        ctx.lineWidth = 60
-        ctx.lineCap = 'round'
-        ctx.stroke()
-        ctx.restore()
-      })
 
       // 绘制银色星星
       stars.forEach((star) => {
