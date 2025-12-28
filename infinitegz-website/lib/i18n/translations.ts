@@ -1035,9 +1035,9 @@ export const translations: Record<Language, Translations> = {
     },
         home: {
       hero: {
-        title: '贷款与财务优化为您的企业',
+        title: '世界的财富，\n为您所有。',
         subtitle: '您的一站式解决方案',
-        description: '马来西亚贷款、财务优化和数字咨询服务',
+        description: '为您的企业提供贷款、财务优化和数字咨询服务。',
         bottomDescription: 'INFINITE GZ 提供全面的财务分析，从马来西亚所有银行和金融科技公司匹配贷款，以及8项互补服务 - 全部零前期费用。',
       },
       products: {
@@ -1689,9 +1689,9 @@ export const translations: Record<Language, Translations> = {
     },
         home: {
       hero: {
-        title: 'Pinjaman & Pengoptimuman Kewangan Untuk Perniagaan Anda',
+        title: 'Wang Dunia,\nMilik Anda.',
         subtitle: 'Penyelesaian Sehenti Anda',
-        description: 'Untuk Pinjaman, Pengoptimuman Kewangan, Dan Perkhidmatan Nasihat Digital Di Malaysia',
+        description: 'Untuk Pinjaman, Pengoptimuman Kewangan, Dan Perkhidmatan Nasihat Digital Untuk Perniagaan Anda.',
         bottomDescription: 'INFINITE GZ Menyediakan Analisis Kewangan Menyeluruh, Padanan Pinjaman Dari Semua Bank Dan Syarikat Fintech Malaysia, Serta 8 Perkhidmatan Pelengkap - Semua Tanpa Yuran Pendahuluan.',
       },
       products: {
