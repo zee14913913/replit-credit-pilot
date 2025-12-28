@@ -1,12 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [scrollY, setScrollY] = useState(0)
   const { t } = useLanguage()
+  const heroRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -15,10 +17,35 @@ export default function Hero() {
     return () => clearInterval(timer)
   }, [])
 
+  // Ethnocare 风格的视差滚动效果
+  useEffect(() => {
+    const handleScroll = () => {
+      if (heroRef.current) {
+        const rect = heroRef.current.getBoundingClientRect()
+        const scrollProgress = -rect.top / window.innerHeight
+        setScrollY(scrollProgress)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+    
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
-    <section className="relative h-screen flex items-center justify-center border-b border-primary/10 snap-section">
-      {/* 背景渐变占位符 - 轮播区域 */}
-      <div className="absolute inset-0 overflow-hidden bg-background">
+    <section 
+      ref={heroRef}
+      className="relative h-screen flex items-center justify-center border-b border-primary/10 snap-section overflow-hidden"
+    >
+      {/* 背景渐变 - 视差效果 */}
+      <div 
+        className="absolute inset-0 bg-background"
+        style={{
+          transform: `translateY(${scrollY * 50}px) scale(${1 + scrollY * 0.1})`,
+          transition: 'transform 0.1s linear'
+        }}
+      >
         <div className="relative w-full h-full">
           <div className={`absolute inset-0 transition-opacity duration-1000 ${currentSlide === 0 ? 'opacity-20' : 'opacity-0'}`}>
             <div className="w-full h-full bg-gradient-to-br from-blue-900/30 to-purple-900/30"></div>

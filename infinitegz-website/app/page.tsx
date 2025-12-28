@@ -6,7 +6,6 @@ import NewsSection from '@/components/NewsSection'
 import Footer from '@/components/Footer'
 import ScrollProgress from '@/components/ScrollProgress'
 import ScrollIndicator from '@/components/ScrollIndicator'
-import AnimatedSection from '@/components/AnimatedSection'
 
 export default function Home() {
   return (
@@ -21,25 +20,25 @@ export default function Home() {
           <Hero />
         </section>
         
-        {/* Products Section - Full Screen with Animation */}
-        <AnimatedSection className="snap-section" id="products" direction="up" threshold={0.2}>
+        {/* Products Section - Full Screen */}
+        <section id="products" className="snap-section">
           <ProductCards />
-        </AnimatedSection>
+        </section>
         
-        {/* Features Section - Full Screen with Animation */}
-        <AnimatedSection className="snap-section" id="features" direction="up" threshold={0.2} delay={0.1}>
+        {/* Features Section - Full Screen */}
+        <section id="features" className="snap-section">
           <ContentSection />
-        </AnimatedSection>
+        </section>
         
-        {/* News Section - Full Screen with Animation */}
-        <AnimatedSection className="snap-section" id="news" direction="up" threshold={0.2} delay={0.2}>
+        {/* News Section - Full Screen */}
+        <section id="news" className="snap-section">
           <NewsSection />
-        </AnimatedSection>
+        </section>
         
-        {/* Footer Section with Animation */}
-        <AnimatedSection className="snap-section" id="contact" direction="fade" threshold={0.1}>
+        {/* Footer Section */}
+        <section id="contact" className="snap-section">
           <Footer />
-        </AnimatedSection>
+        </section>
       </main>
     </>
   )
