@@ -13,7 +13,7 @@ export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null)
 
   // 视频 URL（可以在这里配置你的视频）
-  const videoUrl = '' // 留空表示不显示视频，填入 URL 则显示视频
+  const videoUrl = '/videos/hero-bg.mp4' // 留空表示不显示视频，填入 URL 则显示视频
 
   useEffect(() => {
     if (videoUrl) {
