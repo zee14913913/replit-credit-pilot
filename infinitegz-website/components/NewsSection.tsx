@@ -11,8 +11,12 @@ export default function NewsSection() {
     <section 
       id="resources" 
       ref={sectionRef as any}
-      className="min-h-screen flex items-center py-16 sm:py-32 bg-background snap-section"
+      className="min-h-screen flex items-center py-16 sm:py-32 bg-background snap-section relative"
     >
+      {/* 顶部激光分隔线 */}
+      <div className="absolute top-0 left-0 right-0">
+        <div className="laser-divider"></div>
+      </div>
       <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16">
         {/* Section 标题 */}
         <div className={`space-y-4 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
@@ -74,6 +78,11 @@ export default function NewsSection() {
             {t.common.viewAll}
           </button>
         </div>
+      </div>
+      
+      {/* 底部激光分隔线 */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <div className="laser-divider"></div>
       </div>
     </section>
   )
