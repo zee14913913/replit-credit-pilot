@@ -1,6 +1,8 @@
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
 import ProductCards from '@/components/ProductCards'
+import FeatureShowcase from '@/components/FeatureShowcase'
+import PhoneShowcase from '@/components/PhoneShowcase'
 import ContentSection from '@/components/ContentSection'
 import NewsSection from '@/components/NewsSection'
 import Footer from '@/components/Footer'
@@ -23,6 +25,16 @@ export default function Home() {
         {/* Products Section - Full Screen */}
         <section id="products" className="snap-section">
           <ProductCards />
+        </section>
+        
+        {/* 3D Card Showcase - Robinhood Style */}
+        <section id="showcase" className="snap-section">
+          <FeatureShowcase />
+        </section>
+        
+        {/* 3D Phone Showcase - Mobile Experience */}
+        <section id="phone-showcase" className="snap-section">
+          <PhoneShowcase />
         </section>
         
         {/* Features Section - Full Screen */}
