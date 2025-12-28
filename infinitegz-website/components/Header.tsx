@@ -45,28 +45,84 @@ export default function Header() {
 
             {/* 导航菜单 - 桌面版 */}
             <div className="hidden lg:flex flex-grow gap-1 ml-3">
-              <Link href="/" className="text-primary/50 font-mono text-sm hover:text-primary px-3 py-1.5 transition-colors duration-150 whitespace-nowrap">
+              <Link 
+                href="/" 
+                className="nav-link-glow"
+                style={{
+                  color: 'rgb(245, 245, 245)',
+                  textShadow: '0 0 8px rgba(255, 255, 255, 0.3)'
+                }}
+              >
                 {t.nav.home}
               </Link>
-              <Link href="/creditpilot" className="text-primary/50 font-mono text-sm hover:text-primary px-3 py-1.5 transition-colors duration-150 whitespace-nowrap">
+              <Link 
+                href="/creditpilot" 
+                className="nav-link-glow"
+                style={{
+                  color: 'rgb(245, 245, 245)',
+                  textShadow: '0 0 8px rgba(255, 255, 255, 0.3)'
+                }}
+              >
                 {t.nav.creditpilot}
               </Link>
-              <Link href="/solutions" className="text-primary/50 font-mono text-sm hover:text-primary px-3 py-1.5 transition-colors duration-150 whitespace-nowrap">
+              <Link 
+                href="/solutions" 
+                className="nav-link-glow"
+                style={{
+                  color: 'rgb(245, 245, 245)',
+                  textShadow: '0 0 8px rgba(255, 255, 255, 0.3)'
+                }}
+              >
                 {t.nav.solutions}
               </Link>
-              <Link href="/advisory" className="text-primary/50 font-mono text-sm hover:text-primary px-3 py-1.5 transition-colors duration-150 whitespace-nowrap">
+              <Link 
+                href="/advisory" 
+                className="nav-link-glow"
+                style={{
+                  color: 'rgb(245, 245, 245)',
+                  textShadow: '0 0 8px rgba(255, 255, 255, 0.3)'
+                }}
+              >
                 {t.nav.advisory}
               </Link>
-              <Link href="/company" className="text-primary/50 font-mono text-sm hover:text-primary px-3 py-1.5 transition-colors duration-150 whitespace-nowrap">
+              <Link 
+                href="/company" 
+                className="nav-link-glow"
+                style={{
+                  color: 'rgb(245, 245, 245)',
+                  textShadow: '0 0 8px rgba(255, 255, 255, 0.3)'
+                }}
+              >
                 {t.nav.company}
               </Link>
-              <Link href="/news" className="text-primary/50 font-mono text-sm hover:text-primary px-3 py-1.5 transition-colors duration-150 whitespace-nowrap">
+              <Link 
+                href="/news" 
+                className="nav-link-glow"
+                style={{
+                  color: 'rgb(245, 245, 245)',
+                  textShadow: '0 0 8px rgba(255, 255, 255, 0.3)'
+                }}
+              >
                 {t.nav.news}
               </Link>
-              <Link href="/resources" className="text-primary/50 font-mono text-sm hover:text-primary px-3 py-1.5 transition-colors duration-150 whitespace-nowrap">
+              <Link 
+                href="/resources" 
+                className="nav-link-glow"
+                style={{
+                  color: 'rgb(245, 245, 245)',
+                  textShadow: '0 0 8px rgba(255, 255, 255, 0.3)'
+                }}
+              >
                 {t.nav.resources}
               </Link>
-              <Link href="/careers" className="text-primary/50 font-mono text-sm hover:text-primary px-3 py-1.5 transition-colors duration-150 whitespace-nowrap">
+              <Link 
+                href="/careers" 
+                className="nav-link-glow"
+                style={{
+                  color: 'rgb(245, 245, 245)',
+                  textShadow: '0 0 8px rgba(255, 255, 255, 0.3)'
+                }}
+              >
                 {t.nav.careers}
               </Link>
             </div>

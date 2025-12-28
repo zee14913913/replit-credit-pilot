@@ -49,6 +49,40 @@
     @apply font-mono text-xai-sm uppercase tracking-widest;
   }
   
+  /* 导航链接发光效果 */
+  .nav-link-glow {
+    @apply font-mono text-sm px-3 py-1.5 whitespace-nowrap;
+    @apply transition-all duration-300;
+    position: relative;
+  }
+  
+  .nav-link-glow:hover {
+    color: rgb(255, 255, 255) !important;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.5), 
+                 0 0 20px rgba(255, 255, 255, 0.3) !important;
+    transform: translateY(-1px);
+  }
+  
+  .nav-link-glow::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.6), 
+      transparent
+    );
+    transition: transform 0.3s ease;
+  }
+  
+  .nav-link-glow:hover::after {
+    transform: translateX(-50%) scaleX(1);
+  }
+  
   /* 滚动动画 - Ethnocare风格 */
   @keyframes fadeInUp {
     from {
