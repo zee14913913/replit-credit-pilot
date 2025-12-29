@@ -353,6 +353,140 @@ export interface Translations {
       description: string;
     };
   };
+  
+  // Credit Card Management Page
+  cardManagement: {
+    hero: {
+      tag: string;
+      title: string;
+      subtitle: string;
+      benefits: Array<{
+        icon: string;
+        value: string;
+        label: string;
+      }>;
+      cta1: string;
+      cta2: string;
+      socialProof: string;
+    };
+    painPoints: {
+      tag: string;
+      title: string;
+      subtitle: string;
+      points: Array<{
+        icon: string;
+        title: string;
+        description: string;
+        impact: string;
+      }>;
+      stats: Array<{
+        value: string;
+        label: string;
+      }>;
+    };
+    solutions: {
+      tag: string;
+      title: string;
+      subtitle: string;
+      services: Array<{
+        icon: string;
+        title: string;
+        description: string;
+        benefits: string[];
+      }>;
+    };
+    caseStudies: {
+      tag: string;
+      title: string;
+      subtitle: string;
+      before: string;
+      after: string;
+      cases: Array<{
+        client: string;
+        type: string;
+        before: string;
+        after: string;
+        savings: string;
+        period: string;
+      }>;
+    };
+    pricing: {
+      tag: string;
+      title: string;
+      subtitle: string;
+      recommended: string;
+      plans: {
+        individual: {
+          label: string;
+          options: Array<{
+            name: string;
+            price: string;
+            period: string;
+            features: string[];
+            recommended?: boolean;
+            cta: {
+              text: string;
+              link: string;
+            };
+          }>;
+        };
+        corporate: {
+          label: string;
+          options: Array<{
+            name: string;
+            price: string;
+            period: string;
+            features: string[];
+            recommended?: boolean;
+            cta: {
+              text: string;
+              link: string;
+            };
+          }>;
+        };
+        loan: {
+          label: string;
+          options: Array<{
+            name: string;
+            price: string;
+            period: string;
+            features: string[];
+            recommended?: boolean;
+            cta: {
+              text: string;
+              link: string;
+            };
+          }>;
+        };
+      };
+    };
+    socialProof: {
+      stats: Array<{
+        value: string;
+        label: string;
+      }>;
+      badges: string[];
+    };
+    faq: {
+      title: string;
+      subtitle: string;
+      questions: Array<{
+        question: string;
+        answer: string;
+      }>;
+    };
+    finalCta: {
+      title: string;
+      subtitle: string;
+      cta1: string;
+      cta2: string;
+      relatedTitle: string;
+      relatedServices: Array<{
+        name: string;
+        link: string;
+      }>;
+    };
+  };
 }
 
 export const translations: Record<Language, Translations> = {
@@ -1006,6 +1140,329 @@ export const translations: Record<Language, Translations> = {
       cta: {
         title: "Don't See Your Role?",
         description: "We're always looking for talented individuals. Send us your CV and tell us how you can contribute.",
+      },
+    },
+    cardManagement: {
+      hero: {
+        tag: 'Professional Credit Card Management',
+        title: 'Save RM 1,200-5,000 Annually',
+        subtitle: 'Through Professional Credit Card Management Services',
+        benefits: [
+          { icon: '💰', value: 'RM 500-2,000/year', label: 'Avoid Late Payment Penalties' },
+          { icon: '🎁', value: 'RM 800-3,000/year', label: 'Additional Rewards & Cashback' },
+          { icon: '📈', value: '50-100 Points', label: 'Credit Score Improvement' },
+        ],
+        cta1: 'Free WhatsApp Consultation',
+        cta2: 'View Pricing',
+        socialProof: 'Over 500 clients | Managing 1,000+ cards | Total savings RM 600,000+',
+      },
+      painPoints: {
+        tag: 'Common Problems',
+        title: 'Are You Facing These Credit Card Challenges?',
+        subtitle: 'Malaysian credit card debt: RM 50.7B | Overdue debt: RM 551.8M (1.1%)',
+        points: [
+          {
+            icon: '😰',
+            title: 'Forgot to Pay',
+            description: 'Multiple cards, different due dates, easily miss payments',
+            impact: 'Late fee RM 150-300/time + Credit score damage',
+          },
+          {
+            icon: '💸',
+            title: 'Don\'t Know How to Optimize',
+            description: 'Don\'t understand card rewards, wasted points, high annual fees',
+            impact: 'Lost RM 800-3,000/year in benefits',
+          },
+          {
+            icon: '🔢',
+            title: 'Multiple Card Chaos',
+            description: 'Manage 2-3 cards, confused statements, stress',
+            impact: 'Minimum payment trap, 18% annual interest',
+          },
+        ],
+        stats: [
+          { value: 'RM 50.7B', label: 'Total Card Debt' },
+          { value: '18% p.a.', label: 'Maximum Interest' },
+          { value: 'RM 551.8M', label: 'Overdue Amount' },
+          { value: '50,000+', label: 'Youths in Debt' },
+        ],
+      },
+      solutions: {
+        tag: 'Our Solutions',
+        title: 'Professional 5-in-1 Service',
+        subtitle: 'Comprehensive credit card management to maximize your benefits',
+        services: [
+          {
+            icon: '⏰',
+            title: 'Payment Reminder Service',
+            description: '3-tier reminder system ensures you never miss a payment',
+            benefits: [
+              'WhatsApp + SMS + Email triple notification',
+              'Reminder 7/3/1 days before due date',
+              'Monthly statement review',
+              'Overdue alert system',
+            ],
+          },
+          {
+            icon: '💳',
+            title: 'Payment-On-Behalf Service',
+            description: 'We pay on your behalf to ensure timely payments',
+            benefits: [
+              '100% on-time payment guarantee',
+              'Processed within 2 business days',
+              'Automatic deduction from designated account',
+              'Monthly reconciliation report',
+            ],
+          },
+          {
+            icon: '🛍️',
+            title: 'Purchase-On-Behalf Service',
+            description: 'Use the optimal card to maximize rewards',
+            benefits: [
+              'Intelligent card selection system',
+              'Maximize cashback and points',
+              '50/50 revenue share model',
+              'Transparent transaction records',
+            ],
+          },
+          {
+            icon: '📊',
+            title: 'Card Optimization',
+            description: 'Spending pattern analysis and strategy recommendations',
+            benefits: [
+              'Monthly spending analysis',
+              'Optimal card usage recommendations',
+              'Annual fee waiver negotiation',
+              'Rewards redemption reminders',
+            ],
+          },
+          {
+            icon: '💼',
+            title: 'Debt Management Consultation',
+            description: 'DSR analysis and debt consolidation recommendations',
+            benefits: [
+              'Free DSR calculation',
+              'Debt consolidation plan',
+              'Credit score improvement strategy',
+              'Lower interest rate solutions',
+            ],
+          },
+        ],
+      },
+      caseStudies: {
+        tag: 'Success Stories',
+        title: 'Real Client Results',
+        subtitle: 'See how our clients save thousands annually',
+        before: 'Before',
+        after: 'After',
+        cases: [
+          {
+            client: 'Mr. Wang',
+            type: 'Individual | 4 Cards',
+            before: 'Monthly payment RM 2,500 | Confused management | Frequent late fees',
+            after: 'Consolidated loan + Smart management | Automated payments | Optimized rewards',
+            savings: 'Saved RM 3,200',
+            period: 'Within 12 months',
+          },
+          {
+            client: 'Ms. Li',
+            type: 'Professional | High Spending',
+            before: 'Monthly RM 8,000 spending | Using wrong cards | Points wasted',
+            after: 'Optimized card strategy | Maximized rewards | Annual fee waived',
+            savings: 'Extra RM 5,000/year',
+            period: 'Ongoing',
+          },
+          {
+            client: 'ABC Company',
+            type: 'SME | 10 Corporate Cards',
+            before: 'Employee reimbursement chaos | High admin costs | Overspending',
+            after: 'Centralized management | Automated reconciliation | Spending control',
+            savings: 'Saved RM 12,000/year',
+            period: 'First year',
+          },
+        ],
+      },
+      pricing: {
+        tag: 'Transparent Pricing',
+        title: 'Flexible Plans for Every Need',
+        subtitle: 'Choose the plan that works best for you',
+        recommended: 'Most Popular',
+        plans: {
+          individual: {
+            label: 'Individual',
+            options: [
+              {
+                name: 'Success-Based',
+                price: '50/50 Split',
+                period: 'Pay only when you save',
+                features: [
+                  'No upfront fees',
+                  '50% of all savings/benefits',
+                  'Annual fee waivers',
+                  'Cashback & rewards optimization',
+                  'Interest savings',
+                  'Late fee avoidance',
+                  'Quarterly billing',
+                ],
+                recommended: true,
+                cta: { text: 'Get Started', link: 'https://wa.me/60123456789' },
+              },
+              {
+                name: 'Monthly Subscription',
+                price: 'RM 99/month',
+                period: 'Up to 3 cards',
+                features: [
+                  'Additional RM 30/card',
+                  'Payment reminder service',
+                  'Card optimization',
+                  'Monthly spending analysis',
+                  'Annual fee negotiation',
+                  'Payment-on-behalf: +RM 50/month',
+                ],
+                cta: { text: 'Subscribe Now', link: 'https://portal.infinitegz.com/card-management' },
+              },
+              {
+                name: 'FREE for Loan Clients',
+                price: 'RM 0',
+                period: 'First 12 months',
+                features: [
+                  'All standard services included',
+                  'Must have active loan with us',
+                  '50% discount after 12 months',
+                  'Full payment reminder service',
+                  'Basic card optimization',
+                ],
+                cta: { text: 'Check Eligibility', link: '/creditpilot' },
+              },
+            ],
+          },
+          corporate: {
+            label: 'Corporate',
+            options: [
+              {
+                name: 'Tier 1',
+                price: 'RM 299/month',
+                period: 'RM 0-20K monthly spending',
+                features: [
+                  'Up to 10 corporate cards',
+                  'Centralized management',
+                  'Monthly reconciliation',
+                  'Basic spending analytics',
+                  'Employee card tracking',
+                ],
+                cta: { text: 'Contact Sales', link: 'https://wa.me/60123456789' },
+              },
+              {
+                name: 'Tier 2',
+                price: 'RM 599/month',
+                period: 'RM 20-50K monthly spending',
+                features: [
+                  'Up to 25 corporate cards',
+                  'Advanced analytics',
+                  'Dedicated account manager',
+                  'Custom spending limits',
+                  'Automated approvals',
+                  'Quarterly business review',
+                ],
+                recommended: true,
+                cta: { text: 'Contact Sales', link: 'https://wa.me/60123456789' },
+              },
+              {
+                name: 'Tier 3',
+                price: 'RM 999/month',
+                period: 'RM 50-100K monthly spending',
+                features: [
+                  'Unlimited corporate cards',
+                  'Premium support',
+                  'Custom integrations',
+                  'Advanced fraud detection',
+                  'Multi-entity management',
+                  'White-label reporting',
+                ],
+                cta: { text: 'Contact Sales', link: 'https://wa.me/60123456789' },
+              },
+            ],
+          },
+          loan: {
+            label: 'Loan Clients',
+            options: [
+              {
+                name: 'Complimentary',
+                price: 'FREE',
+                period: 'First 12 months',
+                features: [
+                  'All individual services included',
+                  'Priority support',
+                  'Free debt consultation',
+                  '50% discount after 12 months',
+                  'Exclusive loan client benefits',
+                ],
+                recommended: true,
+                cta: { text: 'Learn More', link: '/advisory' },
+              },
+            ],
+          },
+        },
+      },
+      socialProof: {
+        stats: [
+          { value: '500+', label: 'Happy Clients' },
+          { value: '1,000+', label: 'Cards Managed' },
+          { value: 'RM 600K+', label: 'Total Savings' },
+          { value: '98%', label: 'Satisfaction Rate' },
+        ],
+        badges: [
+          'PDPA 2010 Compliant',
+          'Licensed Financial Advisor',
+          'Bank Negara Approved',
+          'ISO 27001 Certified',
+        ],
+      },
+      faq: {
+        title: 'Frequently Asked Questions',
+        subtitle: 'Everything you need to know',
+        questions: [
+          {
+            question: 'How do you charge?',
+            answer: 'We offer 3 pricing models: (1) Success-based: 50% of savings generated, no upfront fees. (2) Monthly subscription: RM 99/month for up to 3 cards. (3) FREE for loan clients for first 12 months. Choose what works best for you.',
+          },
+          {
+            question: 'Is payment-on-behalf service safe?',
+            answer: 'Absolutely. We only debit from your designated account with your authorization. All transactions are recorded and you receive monthly reconciliation reports. We maintain RM 1M professional indemnity insurance.',
+          },
+          {
+            question: 'How do I cancel the service?',
+            answer: 'You can cancel anytime with 30 days written notice. For subscription plans, you get a prorated refund. For success-based plans within commitment period, early termination fee applies (50% of remaining fees or RM 500, whichever is lower).',
+          },
+          {
+            question: 'Do you support all banks in Malaysia?',
+            answer: 'Yes, we support all major banks including Maybank, CIMB, Public Bank, Hong Leong, RHB, Am Bank, and digital banks. We can manage cards from any licensed financial institution in Malaysia.',
+          },
+          {
+            question: 'Will you see my credit card number?',
+            answer: 'No. We only need your card statements (which show last 4 digits). For payment-on-behalf service, payments are made directly from your bank account to the credit card issuer. We never store full card numbers.',
+          },
+          {
+            question: 'What if I miss a payment even with your service?',
+            answer: 'We provide 3-tier reminders and best-effort service. However, if you don\'t maintain sufficient funds in your account, we cannot be held liable. Our liability is capped at RM 10,000 or 12 months\' fees, whichever is lower.',
+          },
+          {
+            question: 'Can I use this for my company cards?',
+            answer: 'Yes! We have dedicated corporate plans starting from RM 299/month. Perfect for SMEs managing multiple employee cards. Includes centralized management, reconciliation, and spending analytics.',
+          },
+        ],
+      },
+      finalCta: {
+        title: 'Ready to Start Saving?',
+        subtitle: 'Join 500+ satisfied clients and start maximizing your credit card benefits today',
+        cta1: 'WhatsApp Free Consultation',
+        cta2: 'Book Appointment',
+        relatedTitle: 'Related Services',
+        relatedServices: [
+          { name: 'CreditPilot (Smart Loan Matching)', link: '/creditpilot' },
+          { name: 'Loan Advisory', link: '/advisory' },
+          { name: 'Financial Optimization', link: '/solutions' },
+        ],
       },
     },
   },
@@ -1662,6 +2119,329 @@ export const translations: Record<Language, Translations> = {
         description: '我们一直在寻找有才华的人才。发送您的简历，告诉我们您能如何贡献。',
       },
     },
+    cardManagement: {
+      hero: {
+        tag: '专业信用卡管理',
+        title: '每年节省 RM 1,200-5,000',
+        subtitle: '通过专业信用卡管理服务',
+        benefits: [
+          { icon: '💰', value: 'RM 500-2,000/年', label: '避免逾期罚款' },
+          { icon: '🎁', value: 'RM 800-3,000/年', label: '额外奖励与现金返还' },
+          { icon: '📈', value: '50-100分', label: '信用评分提升' },
+        ],
+        cta1: '免费WhatsApp咨询',
+        cta2: '查看定价',
+        socialProof: '超过500位客户 | 管理1,000+张卡 | 累计节省RM 600,000+',
+      },
+      painPoints: {
+        tag: '常见问题',
+        title: '您是否也遇到这些信用卡困扰？',
+        subtitle: '马来西亚信用卡债务：RM 50.7B | 逾期债务：RM 551.8M (1.1%)',
+        points: [
+          {
+            icon: '😰',
+            title: '忘记还款',
+            description: '多张卡片，不同到期日，容易错过还款',
+            impact: '逾期费RM 150-300/次 + 信用评分损害',
+          },
+          {
+            icon: '💸',
+            title: '不懂优化',
+            description: '不了解卡片奖励，积分浪费，年费高昂',
+            impact: '每年损失RM 800-3,000收益',
+          },
+          {
+            icon: '🔢',
+            title: '多卡混乱',
+            description: '管理2-3张卡，账单混乱，压力大',
+            impact: '最低还款陷阱，18%年利率',
+          },
+        ],
+        stats: [
+          { value: 'RM 50.7B', label: '信用卡总债务' },
+          { value: '18% p.a.', label: '最高利率' },
+          { value: 'RM 551.8M', label: '逾期金额' },
+          { value: '50,000+', label: '负债年轻人' },
+        ],
+      },
+      solutions: {
+        tag: '我们的解决方案',
+        title: '专业5合1服务',
+        subtitle: '全方位信用卡管理，最大化您的收益',
+        services: [
+          {
+            icon: '⏰',
+            title: '支付提醒服务',
+            description: '三重提醒系统，确保您永不错过还款',
+            benefits: [
+              'WhatsApp + 短信 + 邮件三重通知',
+              '到期前7/3/1天提醒',
+              '月度账单审查',
+              '逾期警报系统',
+            ],
+          },
+          {
+            icon: '💳',
+            title: '代付服务',
+            description: '我们代您支付，确保按时还款',
+            benefits: [
+              '100%按时还款保证',
+              '2个工作日内处理',
+              '从指定账户自动扣款',
+              '月度对账报告',
+            ],
+          },
+          {
+            icon: '🛍️',
+            title: '代购服务',
+            description: '使用最优信用卡，最大化奖励',
+            benefits: [
+              '智能选卡系统',
+              '最大化现金返还和积分',
+              '50/50收益分成模式',
+              '透明交易记录',
+            ],
+          },
+          {
+            icon: '📊',
+            title: '信用卡优化',
+            description: '消费模式分析与策略建议',
+            benefits: [
+              '月度消费分析',
+              '最优信用卡使用建议',
+              '年费豁免谈判',
+              '奖励兑换提醒',
+            ],
+          },
+          {
+            icon: '💼',
+            title: '债务管理咨询',
+            description: 'DSR分析与债务整合建议',
+            benefits: [
+              '免费DSR计算',
+              '债务整合方案',
+              '信用评分改善策略',
+              '降低利率解决方案',
+            ],
+          },
+        ],
+      },
+      caseStudies: {
+        tag: '成功案例',
+        title: '真实客户成果',
+        subtitle: '看看我们的客户如何每年节省数千令吉',
+        before: '使用前',
+        after: '使用后',
+        cases: [
+          {
+            client: '王先生',
+            type: '个人 | 4张卡',
+            before: '月还RM 2,500 | 管理混乱 | 经常逾期',
+            after: '整合贷款 + 智能管理 | 自动还款 | 优化奖励',
+            savings: '节省RM 3,200',
+            period: '12个月内',
+          },
+          {
+            client: '李女士',
+            type: '专业人士 | 高消费',
+            before: '月消费RM 8,000 | 用错卡 | 积分浪费',
+            after: '优化用卡策略 | 最大化奖励 | 年费豁免',
+            savings: '额外RM 5,000/年',
+            period: '持续收益',
+          },
+          {
+            client: 'ABC公司',
+            type: '中小企业 | 10张企业卡',
+            before: '员工报销混乱 | 管理成本高 | 超支',
+            after: '集中管理 | 自动对账 | 支出控制',
+            savings: '节省RM 12,000/年',
+            period: '第一年',
+          },
+        ],
+      },
+      pricing: {
+        tag: '透明定价',
+        title: '灵活方案满足各种需求',
+        subtitle: '选择最适合您的方案',
+        recommended: '最受欢迎',
+        plans: {
+          individual: {
+            label: '个人客户',
+            options: [
+              {
+                name: '成功费用',
+                price: '50/50分成',
+                period: '只在您节省时付费',
+                features: [
+                  '无预付费用',
+                  '所有节省/收益的50%',
+                  '年费豁免',
+                  '现金返还与奖励优化',
+                  '利息节省',
+                  '避免逾期费',
+                  '每季度结算',
+                ],
+                recommended: true,
+                cta: { text: '立即开始', link: 'https://wa.me/60123456789' },
+              },
+              {
+                name: '月度订阅',
+                price: 'RM 99/月',
+                period: '最多3张卡',
+                features: [
+                  '额外RM 30/卡',
+                  '支付提醒服务',
+                  '信用卡优化',
+                  '月度消费分析',
+                  '年费谈判',
+                  '代付服务：+RM 50/月',
+                ],
+                cta: { text: '立即订阅', link: 'https://portal.infinitegz.com/card-management' },
+              },
+              {
+                name: '贷款客户免费',
+                price: 'RM 0',
+                period: '前12个月',
+                features: [
+                  '包含所有标准服务',
+                  '须有我们的有效贷款',
+                  '12个月后50%折扣',
+                  '完整支付提醒服务',
+                  '基础信用卡优化',
+                ],
+                cta: { text: '检查资格', link: '/creditpilot' },
+              },
+            ],
+          },
+          corporate: {
+            label: '企业客户',
+            options: [
+              {
+                name: '级别1',
+                price: 'RM 299/月',
+                period: 'RM 0-20K月消费',
+                features: [
+                  '最多10张企业卡',
+                  '集中管理',
+                  '月度对账',
+                  '基础消费分析',
+                  '员工卡追踪',
+                ],
+                cta: { text: '联系销售', link: 'https://wa.me/60123456789' },
+              },
+              {
+                name: '级别2',
+                price: 'RM 599/月',
+                period: 'RM 20-50K月消费',
+                features: [
+                  '最多25张企业卡',
+                  '高级分析',
+                  '专属客户经理',
+                  '自定义支出限额',
+                  '自动审批',
+                  '季度业务审查',
+                ],
+                recommended: true,
+                cta: { text: '联系销售', link: 'https://wa.me/60123456789' },
+              },
+              {
+                name: '级别3',
+                price: 'RM 999/月',
+                period: 'RM 50-100K月消费',
+                features: [
+                  '无限企业卡',
+                  '高级支持',
+                  '自定义集成',
+                  '高级欺诈检测',
+                  '多实体管理',
+                  '白标报告',
+                ],
+                cta: { text: '联系销售', link: 'https://wa.me/60123456789' },
+              },
+            ],
+          },
+          loan: {
+            label: '贷款客户',
+            options: [
+              {
+                name: '免费服务',
+                price: '免费',
+                period: '前12个月',
+                features: [
+                  '包含所有个人服务',
+                  '优先支持',
+                  '免费债务咨询',
+                  '12个月后50%折扣',
+                  '专属贷款客户福利',
+                ],
+                recommended: true,
+                cta: { text: '了解更多', link: '/advisory' },
+              },
+            ],
+          },
+        },
+      },
+      socialProof: {
+        stats: [
+          { value: '500+', label: '满意客户' },
+          { value: '1,000+', label: '管理卡片' },
+          { value: 'RM 600K+', label: '累计节省' },
+          { value: '98%', label: '满意度' },
+        ],
+        badges: [
+          'PDPA 2010合规',
+          '持牌财务顾问',
+          'Bank Negara认可',
+          'ISO 27001认证',
+        ],
+      },
+      faq: {
+        title: '常见问题',
+        subtitle: '您需要了解的一切',
+        questions: [
+          {
+            question: '如何收费？',
+            answer: '我们提供3种定价模式：(1) 成功费用：节省金额的50%，无预付费。(2) 月度订阅：最多3张卡每月RM 99。(3) 贷款客户前12个月免费。选择最适合您的方式。',
+          },
+          {
+            question: '代付服务安全吗？',
+            answer: '绝对安全。我们仅在您授权下从指定账户扣款。所有交易都有记录，您会收到月度对账报告。我们维持RM 100万专业责任保险。',
+          },
+          {
+            question: '如何取消服务？',
+            answer: '您可以提前30天书面通知随时取消。订阅计划可获得按比例退款。成功费用计划在承诺期内取消，需支付提前终止费（剩余费用的50%或RM 500，取较低者）。',
+          },
+          {
+            question: '支持马来西亚所有银行吗？',
+            answer: '是的，我们支持所有主要银行，包括Maybank、CIMB、Public Bank、Hong Leong、RHB、AmBank和数字银行。我们可以管理马来西亚任何持牌金融机构的信用卡。',
+          },
+          {
+            question: '您会看到我的信用卡号吗？',
+            answer: '不会。我们只需要您的信用卡账单（显示最后4位数字）。对于代付服务，款项直接从您的银行账户支付给信用卡发卡机构。我们从不存储完整的卡号。',
+          },
+          {
+            question: '如果使用您的服务还是错过付款怎么办？',
+            answer: '我们提供三重提醒和尽最大努力的服务。但是，如果您账户资金不足，我们不承担责任。我们的责任上限为RM 10,000或12个月费用，取较低者。',
+          },
+          {
+            question: '可以用于公司卡吗？',
+            answer: '可以！我们有专门的企业计划，起价RM 299/月。非常适合管理多张员工卡的中小企业。包括集中管理、对账和支出分析。',
+          },
+        ],
+      },
+      finalCta: {
+        title: '准备开始节省了吗？',
+        subtitle: '加入500+满意客户，今天开始最大化您的信用卡收益',
+        cta1: 'WhatsApp免费咨询',
+        cta2: '预约咨询',
+        relatedTitle: '相关服务',
+        relatedServices: [
+          { name: 'CreditPilot（智能贷款匹配）', link: '/creditpilot' },
+          { name: '贷款咨询', link: '/advisory' },
+          { name: '财务优化', link: '/solutions' },
+        ],
+      },
+    },
   },
   ms: {
     nav: {
@@ -2311,6 +3091,329 @@ export const translations: Record<Language, Translations> = {
       cta: {
         title: 'Tidak Jumpa Peranan Anda?',
         description: 'Kami sentiasa mencari individu berbakat. Hantar CV anda dan beritahu kami bagaimana anda boleh menyumbang.',
+      },
+    },
+    cardManagement: {
+      hero: {
+        tag: 'Pengurusan Kad Kredit Profesional',
+        title: 'Jimat RM 1,200-5,000 Setahun',
+        subtitle: 'Melalui Perkhidmatan Pengurusan Kad Kredit Profesional',
+        benefits: [
+          { icon: '💰', value: 'RM 500-2,000/tahun', label: 'Elak Penalti Lewat Bayar' },
+          { icon: '🎁', value: 'RM 800-3,000/tahun', label: 'Ganjaran & Pulangan Tunai Tambahan' },
+          { icon: '📈', value: '50-100 Mata', label: 'Peningkatan Skor Kredit' },
+        ],
+        cta1: 'Perundingan WhatsApp Percuma',
+        cta2: 'Lihat Harga',
+        socialProof: 'Lebih 500 pelanggan | Menguruskan 1,000+ kad | Jumlah penjimatan RM 600,000+',
+      },
+      painPoints: {
+        tag: 'Masalah Biasa',
+        title: 'Adakah Anda Menghadapi Cabaran Kad Kredit Ini?',
+        subtitle: 'Hutang kad kredit Malaysia: RM 50.7B | Hutang tertunggak: RM 551.8M (1.1%)',
+        points: [
+          {
+            icon: '😰',
+            title: 'Terlupa Bayar',
+            description: 'Pelbagai kad, tarikh tamat berbeza, mudah terlepas bayaran',
+            impact: 'Yuran lewat RM 150-300/kali + Kerosakan skor kredit',
+          },
+          {
+            icon: '💸',
+            title: 'Tidak Tahu Cara Optimalkan',
+            description: 'Tidak faham ganjaran kad, mata terbuang, yuran tahunan tinggi',
+            impact: 'Kehilangan RM 800-3,000/tahun faedah',
+          },
+          {
+            icon: '🔢',
+            title: 'Kekacauan Pelbagai Kad',
+            description: 'Urus 2-3 kad, penyata keliru, tekanan',
+            impact: 'Perangkap bayaran minimum, faedah 18% setahun',
+          },
+        ],
+        stats: [
+          { value: 'RM 50.7B', label: 'Jumlah Hutang Kad' },
+          { value: '18% p.a.', label: 'Kadar Faedah Maksimum' },
+          { value: 'RM 551.8M', label: 'Jumlah Tertunggak' },
+          { value: '50,000+', label: 'Belia Berhutang' },
+        ],
+      },
+      solutions: {
+        tag: 'Penyelesaian Kami',
+        title: 'Perkhidmatan Profesional 5-dalam-1',
+        subtitle: 'Pengurusan kad kredit menyeluruh untuk memaksimumkan faedah anda',
+        services: [
+          {
+            icon: '⏰',
+            title: 'Perkhidmatan Peringatan Bayaran',
+            description: 'Sistem peringatan 3 peringkat memastikan anda tidak terlepas bayaran',
+            benefits: [
+              'WhatsApp + SMS + E-mel tiga kali notifikasi',
+              'Peringatan 7/3/1 hari sebelum tarikh tamat',
+              'Semakan penyata bulanan',
+              'Sistem amaran tertunggak',
+            ],
+          },
+          {
+            icon: '💳',
+            title: 'Perkhidmatan Bayaran Wakil',
+            description: 'Kami bayar bagi pihak anda untuk memastikan bayaran tepat masa',
+            benefits: [
+              'Jaminan bayaran tepat masa 100%',
+              'Diproses dalam 2 hari bekerja',
+              'Potongan automatik dari akaun yang ditetapkan',
+              'Laporan penyesuaian bulanan',
+            ],
+          },
+          {
+            icon: '🛍️',
+            title: 'Perkhidmatan Pembelian Wakil',
+            description: 'Gunakan kad yang paling optimum untuk memaksimumkan ganjaran',
+            benefits: [
+              'Sistem pemilihan kad pintar',
+              'Maksimumkan pulangan tunai dan mata',
+              'Model perkongsian hasil 50/50',
+              'Rekod transaksi telus',
+            ],
+          },
+          {
+            icon: '📊',
+            title: 'Pengoptimuman Kad',
+            description: 'Analisis corak perbelanjaan dan cadangan strategi',
+            benefits: [
+              'Analisis perbelanjaan bulanan',
+              'Cadangan penggunaan kad optimum',
+              'Rundingan pengecualian yuran tahunan',
+              'Peringatan penebusan ganjaran',
+            ],
+          },
+          {
+            icon: '💼',
+            title: 'Perundingan Pengurusan Hutang',
+            description: 'Analisis DSR dan cadangan penyatuan hutang',
+            benefits: [
+              'Pengiraan DSR percuma',
+              'Pelan penyatuan hutang',
+              'Strategi peningkatan skor kredit',
+              'Penyelesaian kadar faedah lebih rendah',
+            ],
+          },
+        ],
+      },
+      caseStudies: {
+        tag: 'Kisah Kejayaan',
+        title: 'Hasil Pelanggan Sebenar',
+        subtitle: 'Lihat bagaimana pelanggan kami menjimatkan ribuan setiap tahun',
+        before: 'Sebelum',
+        after: 'Selepas',
+        cases: [
+          {
+            client: 'Encik Wang',
+            type: 'Individu | 4 Kad',
+            before: 'Bayaran bulanan RM 2,500 | Pengurusan keliru | Sering lewat bayar',
+            after: 'Pinjaman disatukan + Pengurusan pintar | Bayaran automatik | Ganjaran optimum',
+            savings: 'Jimat RM 3,200',
+            period: 'Dalam 12 bulan',
+          },
+          {
+            client: 'Puan Li',
+            type: 'Profesional | Perbelanjaan Tinggi',
+            before: 'Perbelanjaan bulanan RM 8,000 | Guna kad yang salah | Mata terbuang',
+            after: 'Strategi kad optimum | Ganjaran maksimum | Yuran tahunan dikecualikan',
+            savings: 'Tambahan RM 5,000/tahun',
+            period: 'Berterusan',
+          },
+          {
+            client: 'Syarikat ABC',
+            type: 'PKS | 10 Kad Korporat',
+            before: 'Kekacauan tuntutan pekerja | Kos pentadbiran tinggi | Berbelanja lebih',
+            after: 'Pengurusan berpusat | Penyesuaian automatik | Kawalan perbelanjaan',
+            savings: 'Jimat RM 12,000/tahun',
+            period: 'Tahun pertama',
+          },
+        ],
+      },
+      pricing: {
+        tag: 'Harga Telus',
+        title: 'Pelan Fleksibel untuk Setiap Keperluan',
+        subtitle: 'Pilih pelan yang paling sesuai untuk anda',
+        recommended: 'Paling Popular',
+        plans: {
+          individual: {
+            label: 'Individu',
+            options: [
+              {
+                name: 'Yuran Berjaya',
+                price: 'Perkongsian 50/50',
+                period: 'Bayar hanya apabila anda jimat',
+                features: [
+                  'Tiada yuran pendahuluan',
+                  '50% daripada semua penjimatan/faedah',
+                  'Pengecualian yuran tahunan',
+                  'Pengoptimuman pulangan tunai & ganjaran',
+                  'Penjimatan faedah',
+                  'Elakkan yuran lewat',
+                  'Bil suku tahunan',
+                ],
+                recommended: true,
+                cta: { text: 'Mulakan Sekarang', link: 'https://wa.me/60123456789' },
+              },
+              {
+                name: 'Langganan Bulanan',
+                price: 'RM 99/bulan',
+                period: 'Sehingga 3 kad',
+                features: [
+                  'Tambahan RM 30/kad',
+                  'Perkhidmatan peringatan bayaran',
+                  'Pengoptimuman kad',
+                  'Analisis perbelanjaan bulanan',
+                  'Rundingan yuran tahunan',
+                  'Bayaran wakil: +RM 50/bulan',
+                ],
+                cta: { text: 'Langgan Sekarang', link: 'https://portal.infinitegz.com/card-management' },
+              },
+              {
+                name: 'PERCUMA untuk Pelanggan Pinjaman',
+                price: 'RM 0',
+                period: '12 bulan pertama',
+                features: [
+                  'Semua perkhidmatan standard termasuk',
+                  'Mesti ada pinjaman aktif dengan kami',
+                  'Diskaun 50% selepas 12 bulan',
+                  'Perkhidmatan peringatan bayaran penuh',
+                  'Pengoptimuman kad asas',
+                ],
+                cta: { text: 'Semak Kelayakan', link: '/creditpilot' },
+              },
+            ],
+          },
+          corporate: {
+            label: 'Korporat',
+            options: [
+              {
+                name: 'Tahap 1',
+                price: 'RM 299/bulan',
+                period: 'RM 0-20K perbelanjaan bulanan',
+                features: [
+                  'Sehingga 10 kad korporat',
+                  'Pengurusan berpusat',
+                  'Penyesuaian bulanan',
+                  'Analitik perbelanjaan asas',
+                  'Penjejakan kad pekerja',
+                ],
+                cta: { text: 'Hubungi Jualan', link: 'https://wa.me/60123456789' },
+              },
+              {
+                name: 'Tahap 2',
+                price: 'RM 599/bulan',
+                period: 'RM 20-50K perbelanjaan bulanan',
+                features: [
+                  'Sehingga 25 kad korporat',
+                  'Analitik lanjutan',
+                  'Pengurus akaun khusus',
+                  'Had perbelanjaan tersuai',
+                  'Kelulusan automatik',
+                  'Semakan perniagaan suku tahunan',
+                ],
+                recommended: true,
+                cta: { text: 'Hubungi Jualan', link: 'https://wa.me/60123456789' },
+              },
+              {
+                name: 'Tahap 3',
+                price: 'RM 999/bulan',
+                period: 'RM 50-100K perbelanjaan bulanan',
+                features: [
+                  'Kad korporat tanpa had',
+                  'Sokongan premium',
+                  'Integrasi tersuai',
+                  'Pengesanan penipuan lanjutan',
+                  'Pengurusan pelbagai entiti',
+                  'Pelaporan label putih',
+                ],
+                cta: { text: 'Hubungi Jualan', link: 'https://wa.me/60123456789' },
+              },
+            ],
+          },
+          loan: {
+            label: 'Pelanggan Pinjaman',
+            options: [
+              {
+                name: 'Percuma',
+                price: 'PERCUMA',
+                period: '12 bulan pertama',
+                features: [
+                  'Semua perkhidmatan individu termasuk',
+                  'Sokongan keutamaan',
+                  'Perundingan hutang percuma',
+                  'Diskaun 50% selepas 12 bulan',
+                  'Faedah eksklusif pelanggan pinjaman',
+                ],
+                recommended: true,
+                cta: { text: 'Ketahui Lebih Lanjut', link: '/advisory' },
+              },
+            ],
+          },
+        },
+      },
+      socialProof: {
+        stats: [
+          { value: '500+', label: 'Pelanggan Gembira' },
+          { value: '1,000+', label: 'Kad Diuruskan' },
+          { value: 'RM 600K+', label: 'Jumlah Penjimatan' },
+          { value: '98%', label: 'Kadar Kepuasan' },
+        ],
+        badges: [
+          'Patuh PDPA 2010',
+          'Penasihat Kewangan Berlesen',
+          'Diluluskan Bank Negara',
+          'Diperakui ISO 27001',
+        ],
+      },
+      faq: {
+        title: 'Soalan Lazim',
+        subtitle: 'Segala yang anda perlu tahu',
+        questions: [
+          {
+            question: 'Bagaimana anda mengenakan bayaran?',
+            answer: 'Kami menawarkan 3 model harga: (1) Yuran berjaya: 50% daripada penjimatan yang dijana, tiada yuran pendahuluan. (2) Langganan bulanan: RM 99/bulan untuk sehingga 3 kad. (3) PERCUMA untuk pelanggan pinjaman untuk 12 bulan pertama. Pilih yang paling sesuai untuk anda.',
+          },
+          {
+            question: 'Adakah perkhidmatan bayaran wakil selamat?',
+            answer: 'Sudah tentu. Kami hanya mendebit dari akaun yang anda tetapkan dengan kebenaran anda. Semua transaksi direkodkan dan anda menerima laporan penyesuaian bulanan. Kami mengekalkan insurans indemniti profesional RM 1M.',
+          },
+          {
+            question: 'Bagaimana cara membatalkan perkhidmatan?',
+            answer: 'Anda boleh membatalkan pada bila-bila masa dengan notis bertulis 30 hari. Untuk pelan langganan, anda mendapat bayaran balik pro-rata. Untuk pelan yuran berjaya dalam tempoh komitmen, yuran penamatan awal dikenakan (50% yuran baki atau RM 500, mana yang lebih rendah).',
+          },
+          {
+            question: 'Adakah anda menyokong semua bank di Malaysia?',
+            answer: 'Ya, kami menyokong semua bank utama termasuk Maybank, CIMB, Public Bank, Hong Leong, RHB, AmBank, dan bank digital. Kami boleh menguruskan kad daripada mana-mana institusi kewangan berlesen di Malaysia.',
+          },
+          {
+            question: 'Adakah anda akan melihat nombor kad kredit saya?',
+            answer: 'Tidak. Kami hanya memerlukan penyata kad kredit anda (yang menunjukkan 4 digit terakhir). Untuk perkhidmatan bayaran wakil, bayaran dibuat terus dari akaun bank anda kepada pengeluar kad kredit. Kami tidak pernah menyimpan nombor kad penuh.',
+          },
+          {
+            question: 'Bagaimana jika saya terlepas bayaran walaupun dengan perkhidmatan anda?',
+            answer: 'Kami menyediakan peringatan 3 peringkat dan perkhidmatan terbaik. Walau bagaimanapun, jika anda tidak mengekalkan dana yang mencukupi dalam akaun anda, kami tidak boleh bertanggungjawab. Liabiliti kami dihadkan kepada RM 10,000 atau yuran 12 bulan, mana yang lebih rendah.',
+          },
+          {
+            question: 'Bolehkah saya gunakan ini untuk kad syarikat?',
+            answer: 'Boleh! Kami mempunyai pelan korporat khusus bermula dari RM 299/bulan. Sempurna untuk PKS yang menguruskan pelbagai kad pekerja. Termasuk pengurusan berpusat, penyesuaian, dan analitik perbelanjaan.',
+          },
+        ],
+      },
+      finalCta: {
+        title: 'Bersedia untuk Mula Menjimat?',
+        subtitle: 'Sertai 500+ pelanggan yang berpuas hati dan mula memaksimumkan faedah kad kredit anda hari ini',
+        cta1: 'Perundingan Percuma WhatsApp',
+        cta2: 'Tempah Temu Janji',
+        relatedTitle: 'Perkhidmatan Berkaitan',
+        relatedServices: [
+          { name: 'CreditPilot (Padanan Pinjaman Pintar)', link: '/creditpilot' },
+          { name: 'Nasihat Pinjaman', link: '/advisory' },
+          { name: 'Pengoptimuman Kewangan', link: '/solutions' },
+        ],
       },
     },
   },
