@@ -307,7 +307,7 @@ export default function FinancialOptimizationPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8 md:auto-rows-fr">
             {[
               {
                 name: 'Mr. Zhang',
@@ -345,7 +345,7 @@ export default function FinancialOptimizationPage() {
             ].map((caseStudy, index) => (
               <div
                 key={index}
-                className="group flex flex-col p-8 rounded-2xl bg-gradient-to-br from-background to-muted border-2 border-border hover:border-primary transition-all duration-300 hover:-translate-y-2"
+                className="group h-full flex flex-col p-8 rounded-2xl bg-gradient-to-br from-background to-muted border-2 border-border hover:border-primary transition-all duration-300 hover:-translate-y-2"
               >
                 {/* Professional Avatar Icon */}
                 <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-primary/30 mb-6 mx-auto">
@@ -376,27 +376,27 @@ export default function FinancialOptimizationPage() {
                   {caseStudy.age} | {caseStudy.income}
                 </p>
 
-                {/* Before - Fixed Height */}
-                <div className="mb-3 p-4 rounded-lg bg-red-500/10 border border-red-500/20 flex-shrink-0 overflow-hidden" style={{height: '100px'}}>
+                {/* Before */}
+                <div className="mb-3 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
                   <div className="text-xs font-bold text-red-500 mb-2 uppercase tracking-wide">BEFORE:</div>
-                  <p className="text-sm leading-relaxed line-clamp-3">{caseStudy.before}</p>
+                  <p className="text-sm leading-relaxed">{caseStudy.before}</p>
                 </div>
 
-                {/* After - Fixed Height */}
-                <div className="mb-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20 flex-shrink-0 overflow-hidden" style={{height: '100px'}}>
+                {/* After */}
+                <div className="mb-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20">
                   <div className="text-xs font-bold text-green-500 mb-2 uppercase tracking-wide">AFTER:</div>
-                  <p className="text-sm leading-relaxed line-clamp-3">{caseStudy.after}</p>
+                  <p className="text-sm leading-relaxed">{caseStudy.after}</p>
                 </div>
 
-                {/* Result - Fixed Height */}
-                <div className="mb-4 p-4 rounded-lg bg-primary/10 border border-primary/20 flex-shrink-0 overflow-hidden" style={{height: '85px'}}>
+                {/* Result */}
+                <div className="mb-4 p-4 rounded-lg bg-primary/10 border border-primary/20">
                   <div className="text-xs font-bold text-primary mb-2 uppercase tracking-wide">RESULT:</div>
-                  <p className="text-sm font-bold leading-relaxed line-clamp-2">{caseStudy.result}</p>
+                  <p className="text-sm font-bold leading-relaxed">{caseStudy.result}</p>
                 </div>
 
-                {/* Savings - Fixed Height */}
-                <div className="mt-auto text-center p-4 rounded-lg bg-gradient-to-r from-primary/20 to-accent/20 border border-primary flex-shrink-0" style={{height: '85px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                  <div className="text-base font-bold text-primary leading-tight px-2">{caseStudy.savings}</div>
+                {/* Savings */}
+                <div className="mt-auto text-center p-4 rounded-lg bg-gradient-to-r from-primary/20 to-accent/20 border border-primary">
+                  <div className="text-base font-bold text-primary leading-tight">{caseStudy.savings}</div>
                 </div>
               </div>
             ))}
