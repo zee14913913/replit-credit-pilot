@@ -42,6 +42,10 @@ export default function CreditCardManagementPage() {
                   {t.creditCard.hero.subtitle}
                 </p>
                 
+                <p className="text-primary/80 max-w-xl text-base mono-tag">
+                  [ {t.creditCard.hero.description} ]
+                </p>
+                
                 <div className="flex flex-wrap items-center gap-4 pt-4">
                   <Link 
                     href="https://wa.me/60123456789" 
@@ -51,10 +55,10 @@ export default function CreditCardManagementPage() {
                     <span>{t.creditCard.hero.cta1}</span>
                   </Link>
                   <Link 
-                    href="#services" 
+                    href="#calculator" 
                     className="relative isolate inline-flex shrink-0 items-center justify-center border font-mono text-base/6 uppercase tracking-widest gap-x-3 px-4 py-2 sm:text-sm border-[--btn-border] bg-[--btn-bg] text-[--btn-text] hover:bg-[--btn-hover] rounded-full [--btn-bg:transparent] [--btn-border:theme(colors.primary/25%)] [--btn-hover:theme(colors.secondary/20%)] [--btn-text:theme(colors.primary)]"
                   >
-                    <span>{t.common.learnMore}</span>
+                    <span>{t.creditCard.hero.cta2}</span>
                   </Link>
                 </div>
               </hgroup>
@@ -71,13 +75,90 @@ export default function CreditCardManagementPage() {
                 <div className="flex flex-wrap items-center justify-end gap-4 text-sm">
                   <span className="text-primary font-semibold">500+ {t.creditCard.hero.clients}</span>
                   <span className="text-secondary">|</span>
-                  <span className="text-primary font-semibold">1,000+ {t.creditCard.hero.cards}</span>
+                  <span className="text-primary font-semibold">RM 50M+ {t.creditCard.hero.totalLimit}</span>
                   <span className="text-secondary">|</span>
-                  <span className="text-primary font-semibold">RM 600K+ {t.creditCard.hero.saved}</span>
+                  <span className="text-primary font-semibold">RM 10M+ {t.creditCard.hero.saved}</span>
                 </div>
               </div>
             </div>
           
+            {/* 底部激光分隔线 */}
+            <div className="absolute bottom-0 left-0 right-0">
+              <div className="laser-divider"></div>
+            </div>
+          </div>
+        </section>
+
+        {/* Value Highlights Section - NEW */}
+        <section className="py-16 sm:py-24 relative bg-gradient-to-b from-transparent via-secondary/5 to-transparent">
+          <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl">
+            <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+              {/* Value 1: Credit Limit */}
+              <div className="group p-6 rounded-xl border border-primary/10 hover:border-primary/30 transition-all bg-background/50 backdrop-blur-sm">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                    <CreditCard size={24} className="text-primary" strokeWidth={1.5} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-primary font-semibold text-sm mb-1">信用额度提升</h3>
+                    <p className="text-secondary text-xs leading-relaxed">RM 30K → RM 300K</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Value 2: 0% Interest */}
+              <div className="group p-6 rounded-xl border border-primary/10 hover:border-primary/30 transition-all bg-background/50 backdrop-blur-sm">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                    <TrendingUp size={24} className="text-primary" strokeWidth={1.5} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-primary font-semibold text-sm mb-1">0% 利息期</h3>
+                    <p className="text-secondary text-xs leading-relaxed">最长 12 个月免息</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Value 3: Emergency Fund */}
+              <div className="group p-6 rounded-xl border border-primary/10 hover:border-primary/30 transition-all bg-background/50 backdrop-blur-sm">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                    <LifeBuoy size={24} className="text-primary" strokeWidth={1.5} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-primary font-semibold text-sm mb-1">应急资金</h3>
+                    <p className="text-secondary text-xs leading-relaxed">24小时内可用</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Value 4: Credit Score */}
+              <div className="group p-6 rounded-xl border border-primary/10 hover:border-primary/30 transition-all bg-background/50 backdrop-blur-sm">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                    <TrendingUp size={24} className="text-primary" strokeWidth={1.5} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-primary font-semibold text-sm mb-1">信用评分</h3>
+                    <p className="text-secondary text-xs leading-relaxed">影响所有贷款利率</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Value 5: Extra Income */}
+              <div className="group p-6 rounded-xl border border-primary/10 hover:border-primary/30 transition-all bg-background/50 backdrop-blur-sm">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                    <ShoppingCart size={24} className="text-primary" strokeWidth={1.5} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-primary font-semibold text-sm mb-1">额外收益</h3>
+                    <p className="text-secondary text-xs leading-relaxed">积分返现 + 税务抵扣</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
             {/* 底部激光分隔线 */}
             <div className="absolute bottom-0 left-0 right-0">
               <div className="laser-divider"></div>

@@ -264,10 +264,12 @@ export interface Translations {
       tag: string;
       title: string;
       subtitle: string;
+      description: string;
       cta1: string;
+      cta2: string;
       stats: string;
       clients: string;
-      cards: string;
+      totalLimit: string;
       saved: string;
     };
     painPoints: {
@@ -1089,13 +1091,15 @@ export const translations: Record<Language, Translations> = {
       },
       hero: {
         tag: 'Professional Credit Card Management',
-        title: 'Save RM 1,200-5,000 Annually',
-        subtitle: 'Through intelligent credit card management, avoid late fees, maximize rewards points, and improve your credit score',
+        title: 'Unlock RM 100,000-300,000 Credit Limit',
+        subtitle: 'Build Your 0% Interest Emergency Fund | No Collateral | No Guarantor | Available 24/7',
+        description: '100x faster than bank loans, save 18% compared to cash loans',
         cta1: 'Free Consultation',
+        cta2: 'Calculate My Potential',
         stats: 'Trusted by',
         clients: 'Clients',
-        cards: 'Cards Managed',
-        saved: 'Total Savings',
+        totalLimit: 'Total Credit Managed',
+        saved: 'Total Value Created',
       },
       painPoints: {
         tag: 'Common Challenges',
@@ -2270,13 +2274,15 @@ export const translations: Record<Language, Translations> = {
       },
       hero: {
         tag: '专业信用卡管理',
-        title: '每年节省 RM 1,200-5,000',
-        subtitle: '通过智能信用卡管理，避免逾期、最大化积分、提升信用评分',
+        title: '解锁 RM 100,000-300,000 信用卡额度',
+        subtitle: '建立您的 0% 利息备用资金库 | 无需抵押 | 无需担保 | 24/7 随时可用',
+        description: '比银行贷款快 100 倍，比现金贷款省 18% 利息',
         cta1: '免费咨询',
+        cta2: '计算我的潜力',
         stats: '信赖于',
         clients: '客户',
-        cards: '管理卡片',
-        saved: '累计节省',
+        totalLimit: '管理信用总额',
+        saved: '创造总价值',
       },
       painPoints: {
         tag: '常见困境',
@@ -3452,13 +3458,15 @@ export const translations: Record<Language, Translations> = {
       },
       hero: {
         tag: 'Pengurusan Kad Kredit Profesional',
-        title: 'Jimat RM 1,200-5,000 Setahun',
-        subtitle: 'Melalui pengurusan kad kredit yang bijak, elakkan bayaran lewat, maksimumkan mata ganjaran, dan tingkatkan skor kredit anda',
+        title: 'Buka Kunci Had Kredit RM 100,000-300,000',
+        subtitle: 'Bina Dana Kecemasan 0% Faedah Anda | Tanpa Cagaran | Tanpa Penjamin | Tersedia 24/7',
+        description: '100x lebih pantas daripada pinjaman bank, jimat 18% berbanding pinjaman tunai',
         cta1: 'Perundingan Percuma',
+        cta2: 'Kira Potensi Saya',
         stats: 'Dipercayai oleh',
         clients: 'Pelanggan',
-        cards: 'Kad Diuruskan',
-        saved: 'Jumlah Penjimatan',
+        totalLimit: 'Jumlah Kredit Diuruskan',
+        saved: 'Jumlah Nilai Dicipta',
       },
       painPoints: {
         tag: 'Cabaran Biasa',
