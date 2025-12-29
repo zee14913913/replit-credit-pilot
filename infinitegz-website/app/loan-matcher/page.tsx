@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
-import { ScrollProgress } from '@/components/ScrollProgress';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import ScrollProgress from '@/components/ScrollProgress';
 import { matchProducts, calculateAffordabilityScore, ProductMatchResult, CustomerProfile } from '@/lib/productMatcher';
 
 export default function LoanMatcherPage() {

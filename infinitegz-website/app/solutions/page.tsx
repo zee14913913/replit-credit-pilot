@@ -155,8 +155,29 @@ export default function SolutionsPage() {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-px bg-border">
               {t.solutions.complementaryServices.items.map((service, index) => {
-                // 第8项（信用卡管理）使用链接
+                // 第1项（财务优化）和第8项（信用卡管理）使用链接
+                const isFinancialOptimization = service.num === '01';
                 const isCreditCard = service.num === '08';
+                
+                if (isFinancialOptimization) {
+                  return (
+                    <Link 
+                      key={index}
+                      href="/financial-optimization"
+                      className="bg-background p-6 sm:p-8 space-y-4 hover:bg-secondary/5 transition-colors group cursor-pointer"
+                    >
+                      <div className="mono-tag text-xs text-secondary">{service.num}</div>
+                      <h3 className="text-lg text-primary group-hover:text-accent transition-colors">{service.title}</h3>
+                      <p className="text-sm text-secondary leading-relaxed">{service.description}</p>
+                      <div className="flex items-center gap-2 text-xs text-primary pt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span>{t.common.viewDetails}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                        </svg>
+                      </div>
+                    </Link>
+                  );
+                }
                 
                 if (isCreditCard) {
                   return (
