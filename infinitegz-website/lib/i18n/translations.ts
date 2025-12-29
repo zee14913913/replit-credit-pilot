@@ -242,6 +242,93 @@ export interface Translations {
     };
   };
   
+  // Credit Card Management Page
+  creditCard: {
+    meta: {
+      title: string;
+      description: string;
+    };
+    hero: {
+      tag: string;
+      title: string;
+      subtitle: string;
+      cta1: string;
+      stats: string;
+      clients: string;
+      cards: string;
+      saved: string;
+    };
+    painPoints: {
+      tag: string;
+      title: string;
+      description: string;
+      items: Array<{
+        icon: string;
+        title: string;
+        description: string;
+        data: string;
+      }>;
+    };
+    services: {
+      tag: string;
+      title: string;
+      items: Array<{
+        icon: string;
+        title: string;
+        description: string;
+      }>;
+    };
+    cases: {
+      tag: string;
+      title: string;
+      before: string;
+      after: string;
+      result: string;
+      items: Array<{
+        num: string;
+        name: string;
+        before: string;
+        after: string;
+        savings: string;
+      }>;
+    };
+    pricing: {
+      tag: string;
+      title: string;
+      plans: Array<{
+        name: string;
+        description: string;
+        price: string;
+        period: string;
+        features: string[];
+        cta: string;
+        link: string;
+        featured: boolean;
+      }>;
+    };
+    social: {
+      stats: Array<{
+        value: string;
+        label: string;
+      }>;
+      compliance: string;
+      insurance: string;
+    };
+    faq: {
+      tag: string;
+      title: string;
+      items: Array<{
+        question: string;
+        answer: string;
+      }>;
+    };
+    cta: {
+      title: string;
+      description: string;
+      relatedServices: string;
+    };
+  };
+  
   // Company Page
   company: {
     meta: {
@@ -979,6 +1066,203 @@ export const translations: Record<Language, Translations> = {
       cta: {
         title: 'Ready to Transform Your Business?',
         description: 'Join 5,000+ businesses that have secured better financing through INFINITE GZ',
+      },
+    },
+    creditCard: {
+      meta: {
+        title: 'Credit Card Management | INFINITE GZ',
+        description: 'Professional credit card management services. Save RM 1,200-5,000 annually through smart payment reminders, optimization, and debt management.',
+      },
+      hero: {
+        tag: 'Professional Credit Card Management',
+        title: 'Save RM 1,200-5,000 Annually',
+        subtitle: 'Through intelligent credit card management, avoid late fees, maximize rewards points, and improve your credit score',
+        cta1: 'Free Consultation',
+        stats: 'Trusted by',
+        clients: 'Clients',
+        cards: 'Cards Managed',
+        saved: 'Total Savings',
+      },
+      painPoints: {
+        tag: 'Common Challenges',
+        title: '3 Major Struggles of Malaysian Credit Card Users',
+        description: 'Malaysia\'s credit card debt stands at RM 50.7B, with RM 551.8M overdue (1.1%). Are you facing these challenges?',
+        items: [
+          {
+            icon: '😰',
+            title: 'Forgot Payment',
+            description: 'Late payment penalties + credit score damage. Each late payment incurs RM 150-300 penalty and affects CCRIS/CTOS records.',
+            data: 'RM 551.8M Overdue Debt',
+          },
+          {
+            icon: '💸',
+            title: 'Poor Optimization',
+            description: 'Wasted reward points + high annual fees. Not understanding card benefits leads to missing cashback and paying unnecessary annual fees.',
+            data: '18% Annual Interest Trap',
+          },
+          {
+            icon: '🔢',
+            title: 'Multiple Cards Chaos',
+            description: 'Different billing dates, hard to manage. Holding 2-3 cards with different payment dates makes it easy to miss payments.',
+            data: 'Average 2-3 Cards Per Person',
+          },
+        ],
+      },
+      services: {
+        tag: 'Our Services',
+        title: '5 Professional Services, Comprehensive Credit Card Management',
+        items: [
+          {
+            icon: '💬',
+            title: 'Payment Reminders',
+            description: 'Triple reminder system via WhatsApp, SMS, and Email to ensure on-time payments and avoid late fees',
+          },
+          {
+            icon: '💳',
+            title: 'Payment-On-Behalf',
+            description: 'Automatic payment within 2 business days to avoid late payment penalties and protect your credit score',
+          },
+          {
+            icon: '🛍️',
+            title: 'Purchase-On-Behalf',
+            description: 'Automatically select the best credit card to maximize reward points and cashback returns',
+          },
+          {
+            icon: '📊',
+            title: 'Card Optimization',
+            description: 'Spending pattern analysis, annual fee waiver assistance, reward points maximization strategies',
+          },
+          {
+            icon: '📉',
+            title: 'Debt Management',
+            description: 'DSR analysis, debt consolidation recommendations, credit score improvement strategies',
+          },
+        ],
+      },
+      cases: {
+        tag: 'Client Case Studies',
+        title: 'Real Clients, Real Savings',
+        before: 'Before',
+        after: 'After',
+        result: 'Annual Savings',
+        items: [
+          {
+            num: '01',
+            name: 'Mr. Wang',
+            before: '4 cards in chaos, monthly payment RM 2,500, frequent late payments',
+            after: 'Consolidated loan + smart management, on-time payments',
+            savings: 'RM 3,200',
+          },
+          {
+            num: '02',
+            name: 'Ms. Li',
+            before: 'Credit score 650, home loan rejected, high interest rates',
+            after: 'Credit optimization, score improved to 780, loan approved',
+            savings: 'RM 45,000',
+          },
+          {
+            num: '03',
+            name: 'Boss Chen',
+            before: 'Corporate card not optimized, monthly spend RM 30K, wasted points',
+            after: 'Smart purchasing, points maximized, annual fee waived',
+            savings: 'RM 5,000+',
+          },
+        ],
+      },
+      pricing: {
+        tag: 'Transparent Pricing',
+        title: 'Choose Your Plan',
+        plans: [
+          {
+            name: 'Individual',
+            description: 'For personal credit card users',
+            price: '50/50 Split',
+            period: 'or RM 99/month',
+            features: [
+              'Up to 3 credit cards',
+              'Payment reminders',
+              'Card optimization',
+              'Monthly benefit reports',
+              'Payment-on-behalf +RM 50/mo',
+            ],
+            cta: 'Get Started',
+            link: 'https://wa.me/60123456789',
+            featured: false,
+          },
+          {
+            name: 'Corporate',
+            description: 'For businesses and SMEs',
+            price: 'RM 299-999',
+            period: 'per month',
+            features: [
+              '4-tier pricing',
+              'Dedicated account manager',
+              'Employee card management',
+              'Quarterly strategy review',
+              'Priority support',
+            ],
+            cta: 'Contact Sales',
+            link: 'https://wa.me/60123456789',
+            featured: true,
+          },
+          {
+            name: 'Loan Clients',
+            description: 'Exclusive for our loan clients',
+            price: 'FREE',
+            period: 'first 12 months',
+            features: [
+              'All standard features',
+              '50% discount after 12 months',
+              'Complimentary service',
+              'No upfront fees',
+              'Cancel anytime',
+            ],
+            cta: 'Apply for Loan',
+            link: '/creditpilot',
+            featured: false,
+          },
+        ],
+      },
+      social: {
+        stats: [
+          { value: '500+', label: 'Clients' },
+          { value: '1,000+', label: 'Cards Managed' },
+          { value: 'RM 600K+', label: 'Total Savings' },
+          { value: '98%', label: 'Satisfaction' },
+        ],
+        compliance: 'PDPA 2010 Compliant',
+        insurance: 'Professional Indemnity RM 1M',
+      },
+      faq: {
+        tag: 'Frequently Asked Questions',
+        title: 'Common Questions',
+        items: [
+          {
+            question: 'How do you charge?',
+            answer: 'We offer two pricing models: 1) Success-based 50/50 revenue share with no upfront fees, or 2) Monthly subscription starting at RM 99. Loan clients enjoy 12 months free service.',
+          },
+          {
+            question: 'Is it safe and compliant?',
+            answer: 'Yes. We fully comply with Personal Data Protection Act 2010 (PDPA), maintain RM 1M professional indemnity insurance, and use bank-grade encryption to protect your data. We never sell your data to third parties.',
+          },
+          {
+            question: 'What information do I need to provide?',
+            answer: 'You need to provide: 1) Credit card details (last 4 digits, bank, credit limit), 2) Monthly statement dates, 3) Bank account for payment-on-behalf service (optional). All information is encrypted and securely stored.',
+          },
+          {
+            question: 'How soon will I see results?',
+            answer: 'Payment reminders start immediately. Card optimization shows results within 1-2 months. Credit score improvement typically takes 3-6 months of consistent on-time payments. Annual fee waivers can be negotiated within 1 month.',
+          },
+          {
+            question: 'Can I cancel anytime?',
+            answer: 'Yes. Subscription plans can be cancelled anytime with 30 days notice. Success-based plans require 6-month minimum commitment. All outstanding fees must be settled within 14 days of termination.',
+          },
+        ],
+      },
+      cta: {
+        title: 'Start Saving Today',
+        description: 'Contact us for a free consultation on your credit card management strategy',
+        relatedServices: 'Related Services',
       },
     },
     company: {
@@ -1957,6 +2241,203 @@ export const translations: Record<Language, Translations> = {
         description: '加入5,000+通过INFINITE GZ获得更好融资的企业',
       },
     },
+    creditCard: {
+      meta: {
+        title: '信用卡管理 | INFINITE GZ',
+        description: '专业信用卡管理服务。通过智能支付提醒、优化和债务管理，每年节省RM 1,200-5,000。',
+      },
+      hero: {
+        tag: '专业信用卡管理',
+        title: '每年节省 RM 1,200-5,000',
+        subtitle: '通过智能信用卡管理，避免逾期、最大化积分、提升信用评分',
+        cta1: '免费咨询',
+        stats: '信赖于',
+        clients: '客户',
+        cards: '管理卡片',
+        saved: '累计节省',
+      },
+      painPoints: {
+        tag: '常见困境',
+        title: '马来西亚信用卡用户的3大困境',
+        description: '马来西亚信用卡债务达RM 50.7B，其中RM 551.8M逾期（1.1%）。你是否也面临这些挑战？',
+        items: [
+          {
+            icon: '😰',
+            title: '忘记还款',
+            description: '逾期罚款 + 信用评分损失。每次逾期罚款RM 150-300，并影响CCRIS/CTOS记录。',
+            data: 'RM 551.8M 逾期债务',
+          },
+          {
+            icon: '💸',
+            title: '不懂优化',
+            description: '浪费奖励积分 + 高额年费。不了解信用卡优惠导致错失现金返还，支付不必要的年费。',
+            data: '18% 年利率陷阱',
+          },
+          {
+            icon: '🔢',
+            title: '多卡混乱',
+            description: '账单日期不同，难以管理。持有2-3张卡，不同的还款日期容易遗漏。',
+            data: '平均每人2-3张卡',
+          },
+        ],
+      },
+      services: {
+        tag: '我们的服务',
+        title: '5大专业服务，全方位信用卡管理',
+        items: [
+          {
+            icon: '💬',
+            title: '支付提醒',
+            description: '通过WhatsApp、短信和电邮的三重提醒系统，确保按时还款，避免逾期费用',
+          },
+          {
+            icon: '💳',
+            title: '代付服务',
+            description: '2个工作日内自动付款，避免逾期罚款，保护您的信用评分',
+          },
+          {
+            icon: '🛍️',
+            title: '代购服务',
+            description: '自动选择最优信用卡，最大化奖励积分和现金返还收益',
+          },
+          {
+            icon: '📊',
+            title: '卡片优化',
+            description: '消费模式分析，年费豁免协助，奖励积分最大化策略',
+          },
+          {
+            icon: '📉',
+            title: '债务管理',
+            description: 'DSR分析，债务整合建议，信用评分改善策略',
+          },
+        ],
+      },
+      cases: {
+        tag: '客户案例',
+        title: '真实客户，真实收益',
+        before: '使用前',
+        after: '使用后',
+        result: '年度节省',
+        items: [
+          {
+            num: '01',
+            name: '王先生',
+            before: '4张卡混乱，月还RM 2,500，经常逾期',
+            after: '整合贷款 + 智能管理，按时还款',
+            savings: 'RM 3,200',
+          },
+          {
+            num: '02',
+            name: '李女士',
+            before: '信用分650，房贷被拒，利率高',
+            after: '信用优化，分数提升至780，贷款批准',
+            savings: 'RM 45,000',
+          },
+          {
+            num: '03',
+            name: '陈老板',
+            before: '企业卡无优化，月消费RM 30K，浪费积分',
+            after: '智能代购，积分最大化，年费豁免',
+            savings: 'RM 5,000+',
+          },
+        ],
+      },
+      pricing: {
+        tag: '透明定价',
+        title: '选择您的方案',
+        plans: [
+          {
+            name: '个人客户',
+            description: '适合个人信用卡用户',
+            price: '50/50 分成',
+            period: '或 RM 99/月',
+            features: [
+              '最多3张信用卡',
+              '支付提醒',
+              '卡片优化',
+              '月度收益报告',
+              '代付服务 +RM 50/月',
+            ],
+            cta: '立即开始',
+            link: 'https://wa.me/60123456789',
+            featured: false,
+          },
+          {
+            name: '企业客户',
+            description: '适合企业和中小企业',
+            price: 'RM 299-999',
+            period: '每月',
+            features: [
+              '4级定价',
+              '专属客户经理',
+              '员工卡管理',
+              '季度策略审查',
+              '优先支持',
+            ],
+            cta: '联系销售',
+            link: 'https://wa.me/60123456789',
+            featured: true,
+          },
+          {
+            name: '贷款客户',
+            description: '贷款客户专享',
+            price: '免费',
+            period: '前12个月',
+            features: [
+              '所有标准功能',
+              '12个月后50%折扣',
+              '免费服务',
+              '无预付费用',
+              '随时取消',
+            ],
+            cta: '申请贷款',
+            link: '/creditpilot',
+            featured: false,
+          },
+        ],
+      },
+      social: {
+        stats: [
+          { value: '500+', label: '客户' },
+          { value: '1,000+', label: '管理卡片' },
+          { value: 'RM 600K+', label: '累计节省' },
+          { value: '98%', label: '满意度' },
+        ],
+        compliance: 'PDPA 2010 合规',
+        insurance: '专业责任保险 RM 1M',
+      },
+      faq: {
+        tag: '常见问题',
+        title: '常见问题解答',
+        items: [
+          {
+            question: '如何收费？',
+            answer: '我们提供两种定价模式：1) 基于成功的50/50收益分成，无预付费用，或 2) 月度订阅，从RM 99起。贷款客户享受12个月免费服务。',
+          },
+          {
+            question: '是否安全合规？',
+            answer: '是的。我们完全遵守2010年个人数据保护法案（PDPA），维持RM 1M专业责任保险，并使用银行级加密保护您的数据。我们绝不向第三方出售您的数据。',
+          },
+          {
+            question: '需要提供哪些信息？',
+            answer: '您需要提供：1) 信用卡详情（后4位数字、银行、信用额度），2) 月度账单日期，3) 代付服务的银行账户（可选）。所有信息都经过加密并安全存储。',
+          },
+          {
+            question: '多久能看到效果？',
+            answer: '支付提醒立即开始。卡片优化在1-2个月内显示效果。信用评分改善通常需要3-6个月的持续按时还款。年费豁免可在1个月内协商。',
+          },
+          {
+            question: '可以随时取消吗？',
+            answer: '可以。订阅计划可随时取消，需提前30天通知。基于成功的计划需要6个月最低承诺。所有未付费用必须在终止后14天内结清。',
+          },
+        ],
+      },
+      cta: {
+        title: '立即开始节省',
+        description: '联系我们，获取您的信用卡管理策略免费咨询',
+        relatedServices: '相关服务',
+      },
+    },
     company: {
       meta: {
         title: '公司介绍 | INFINITE GZ',
@@ -2932,6 +3413,203 @@ export const translations: Record<Language, Translations> = {
       cta: {
         title: 'Bersedia Untuk Mengubah Perniagaan Anda?',
         description: 'Sertai 5,000+ perniagaan yang telah mendapat pembiayaan yang lebih baik melalui INFINITE GZ',
+      },
+    },
+    creditCard: {
+      meta: {
+        title: 'Pengurusan Kad Kredit | INFINITE GZ',
+        description: 'Perkhidmatan pengurusan kad kredit profesional. Jimat RM 1,200-5,000 setahun melalui peringatan pembayaran pintar, pengoptimuman, dan pengurusan hutang.',
+      },
+      hero: {
+        tag: 'Pengurusan Kad Kredit Profesional',
+        title: 'Jimat RM 1,200-5,000 Setahun',
+        subtitle: 'Melalui pengurusan kad kredit yang bijak, elakkan bayaran lewat, maksimumkan mata ganjaran, dan tingkatkan skor kredit anda',
+        cta1: 'Perundingan Percuma',
+        stats: 'Dipercayai oleh',
+        clients: 'Pelanggan',
+        cards: 'Kad Diuruskan',
+        saved: 'Jumlah Penjimatan',
+      },
+      painPoints: {
+        tag: 'Cabaran Biasa',
+        title: '3 Masalah Utama Pengguna Kad Kredit Malaysia',
+        description: 'Hutang kad kredit Malaysia mencapai RM 50.7B, dengan RM 551.8M tertunggak (1.1%). Adakah anda menghadapi cabaran ini?',
+        items: [
+          {
+            icon: '😰',
+            title: 'Terlupa Bayaran',
+            description: 'Penalti bayaran lewat + kerosakan skor kredit. Setiap bayaran lewat dikenakan penalti RM 150-300 dan menjejaskan rekod CCRIS/CTOS.',
+            data: 'RM 551.8M Hutang Tertunggak',
+          },
+          {
+            icon: '💸',
+            title: 'Pengoptimuman Lemah',
+            description: 'Mata ganjaran terbuang + yuran tahunan tinggi. Tidak memahami faedah kad menyebabkan kehilangan pulangan tunai dan membayar yuran tahunan yang tidak perlu.',
+            data: 'Perangkap Faedah 18% Setahun',
+          },
+          {
+            icon: '🔢',
+            title: 'Kad Pelbagai Keliru',
+            description: 'Tarikh pengebilan berbeza, susah diuruskan. Memegang 2-3 kad dengan tarikh bayaran berbeza memudahkan terlepas bayaran.',
+            data: 'Purata 2-3 Kad Per Orang',
+          },
+        ],
+      },
+      services: {
+        tag: 'Perkhidmatan Kami',
+        title: '5 Perkhidmatan Profesional, Pengurusan Kad Kredit Komprehensif',
+        items: [
+          {
+            icon: '💬',
+            title: 'Peringatan Pembayaran',
+            description: 'Sistem peringatan tiga peringkat melalui WhatsApp, SMS, dan Email untuk memastikan pembayaran tepat masa dan elakkan bayaran lewat',
+          },
+          {
+            icon: '💳',
+            title: 'Bayaran Bagi Pihak',
+            description: 'Pembayaran automatik dalam 2 hari bekerja untuk elakkan penalti bayaran lewat dan melindungi skor kredit anda',
+          },
+          {
+            icon: '🛍️',
+            title: 'Pembelian Bagi Pihak',
+            description: 'Pilih kad kredit terbaik secara automatik untuk maksimumkan mata ganjaran dan pulangan tunai',
+          },
+          {
+            icon: '📊',
+            title: 'Pengoptimuman Kad',
+            description: 'Analisis corak perbelanjaan, bantuan pengecualian yuran tahunan, strategi maksimumkan mata ganjaran',
+          },
+          {
+            icon: '📉',
+            title: 'Pengurusan Hutang',
+            description: 'Analisis DSR, cadangan penyatuan hutang, strategi peningkatan skor kredit',
+          },
+        ],
+      },
+      cases: {
+        tag: 'Kajian Kes Pelanggan',
+        title: 'Pelanggan Sebenar, Penjimatan Sebenar',
+        before: 'Sebelum',
+        after: 'Selepas',
+        result: 'Penjimatan Tahunan',
+        items: [
+          {
+            num: '01',
+            name: 'Encik Wang',
+            before: '4 kad keliru, bayaran bulanan RM 2,500, selalu lewat',
+            after: 'Pinjaman disatukan + pengurusan pintar, bayaran tepat masa',
+            savings: 'RM 3,200',
+          },
+          {
+            num: '02',
+            name: 'Cik Li',
+            before: 'Skor kredit 650, pinjaman rumah ditolak, kadar faedah tinggi',
+            after: 'Pengoptimuman kredit, skor meningkat ke 780, pinjaman diluluskan',
+            savings: 'RM 45,000',
+          },
+          {
+            num: '03',
+            name: 'Boss Chen',
+            before: 'Kad korporat tidak dioptimumkan, perbelanjaan bulanan RM 30K, mata terbuang',
+            after: 'Pembelian pintar, mata maksimum, yuran tahunan dikecualikan',
+            savings: 'RM 5,000+',
+          },
+        ],
+      },
+      pricing: {
+        tag: 'Harga Telus',
+        title: 'Pilih Pelan Anda',
+        plans: [
+          {
+            name: 'Individu',
+            description: 'Untuk pengguna kad kredit peribadi',
+            price: '50/50 Kongsi',
+            period: 'atau RM 99/bulan',
+            features: [
+              'Sehingga 3 kad kredit',
+              'Peringatan pembayaran',
+              'Pengoptimuman kad',
+              'Laporan faedah bulanan',
+              'Bayaran-bagi-pihak +RM 50/bln',
+            ],
+            cta: 'Mulakan',
+            link: 'https://wa.me/60123456789',
+            featured: false,
+          },
+          {
+            name: 'Korporat',
+            description: 'Untuk perniagaan dan PKS',
+            price: 'RM 299-999',
+            period: 'sebulan',
+            features: [
+              'Harga 4 peringkat',
+              'Pengurus akaun khusus',
+              'Pengurusan kad pekerja',
+              'Kajian strategi suku tahun',
+              'Sokongan keutamaan',
+            ],
+            cta: 'Hubungi Jualan',
+            link: 'https://wa.me/60123456789',
+            featured: true,
+          },
+          {
+            name: 'Pelanggan Pinjaman',
+            description: 'Eksklusif untuk pelanggan pinjaman kami',
+            price: 'PERCUMA',
+            period: '12 bulan pertama',
+            features: [
+              'Semua ciri standard',
+              'Diskaun 50% selepas 12 bulan',
+              'Perkhidmatan percuma',
+              'Tiada bayaran pendahuluan',
+              'Batal bila-bila masa',
+            ],
+            cta: 'Mohon Pinjaman',
+            link: '/creditpilot',
+            featured: false,
+          },
+        ],
+      },
+      social: {
+        stats: [
+          { value: '500+', label: 'Pelanggan' },
+          { value: '1,000+', label: 'Kad Diuruskan' },
+          { value: 'RM 600K+', label: 'Jumlah Penjimatan' },
+          { value: '98%', label: 'Kepuasan' },
+        ],
+        compliance: 'Mematuhi PDPA 2010',
+        insurance: 'Insurans Indemniti Profesional RM 1M',
+      },
+      faq: {
+        tag: 'Soalan Lazim',
+        title: 'Soalan Lazim',
+        items: [
+          {
+            question: 'Bagaimana anda mengenakan bayaran?',
+            answer: 'Kami menawarkan dua model harga: 1) Perkongsian hasil 50/50 berasaskan kejayaan tanpa bayaran pendahuluan, atau 2) Langganan bulanan bermula dari RM 99. Pelanggan pinjaman menikmati 12 bulan perkhidmatan percuma.',
+          },
+          {
+            question: 'Adakah ia selamat dan mematuhi?',
+            answer: 'Ya. Kami mematuhi sepenuhnya Akta Perlindungan Data Peribadi 2010 (PDPA), mengekalkan insurans indemniti profesional RM 1M, dan menggunakan penyulitan gred bank untuk melindungi data anda. Kami tidak sekali-kali menjual data anda kepada pihak ketiga.',
+          },
+          {
+            question: 'Maklumat apa yang perlu saya berikan?',
+            answer: 'Anda perlu memberikan: 1) Butiran kad kredit (4 digit terakhir, bank, had kredit), 2) Tarikh penyata bulanan, 3) Akaun bank untuk perkhidmatan bayaran-bagi-pihak (pilihan). Semua maklumat disulitkan dan disimpan dengan selamat.',
+          },
+          {
+            question: 'Berapa lama saya akan melihat hasil?',
+            answer: 'Peringatan pembayaran bermula serta-merta. Pengoptimuman kad menunjukkan hasil dalam 1-2 bulan. Peningkatan skor kredit biasanya mengambil masa 3-6 bulan pembayaran tepat masa yang konsisten. Pengecualian yuran tahunan boleh dirundingkan dalam 1 bulan.',
+          },
+          {
+            question: 'Bolehkah saya membatal bila-bila masa?',
+            answer: 'Boleh. Pelan langganan boleh dibatalkan bila-bila masa dengan notis 30 hari. Pelan berasaskan kejayaan memerlukan komitmen minimum 6 bulan. Semua yuran tertunggak mesti diselesaikan dalam 14 hari selepas penamatan.',
+          },
+        ],
+      },
+      cta: {
+        title: 'Mula Jimat Hari Ini',
+        description: 'Hubungi kami untuk perundingan percuma mengenai strategi pengurusan kad kredit anda',
+        relatedServices: 'Perkhidmatan Berkaitan',
       },
     },
     company: {
