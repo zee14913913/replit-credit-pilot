@@ -310,68 +310,93 @@ export default function FinancialOptimizationPage() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                name: 'Mr. Zhang - Manufacturing',
+                name: 'Mr. Zhang',
+                industry: 'Manufacturing',
                 age: '45 years old',
                 income: 'RM 2,744/month',
                 before: 'DSR 72%, rejected by 3 banks',
                 after: 'Clear credit card, DSR → 58%',
                 result: 'CIMB approved RM 30K',
                 savings: 'Save RM 10K/year interest',
-                avatar: '👨‍💼'
+                icon: 'factory'
               },
               {
-                name: 'Ms. Lee - E-commerce Owner',
+                name: 'Ms. Lee',
+                industry: 'E-commerce Owner',
                 age: '35 years old',
                 income: 'RM 13,000/month',
                 before: 'RHB only recognizes RM 6,600 (60%)',
                 after: 'Switch to Hong Leong, recognizes RM 11,700 (90%)',
                 result: 'Loan capacity diff RM 496K',
                 savings: '10 years save RM 200K+ interest',
-                avatar: '👩‍💼'
+                icon: 'shopping'
               },
               {
-                name: 'Mr. Wang - Joint Housing Loan',
+                name: 'Mr. Wang',
+                industry: 'Joint Housing Loan',
                 age: '40 years old',
                 income: 'Couple combined RM 5,700',
                 before: 'Single application DSR 110%, rejected',
                 after: 'Hong Leong 50% split rule',
                 result: 'DSR → 78%, approved RM 400K',
                 savings: 'Avoid guarantor cost RM 20K-50K',
-                avatar: '👨‍👩‍👧'
+                icon: 'home'
               },
             ].map((caseStudy, index) => (
               <div
                 key={index}
-                className="group p-8 rounded-2xl bg-gradient-to-br from-background to-muted border-2 border-border hover:border-primary transition-all duration-300 hover:-translate-y-2"
+                className="group flex flex-col p-8 rounded-2xl bg-gradient-to-br from-background to-muted border-2 border-border hover:border-primary transition-all duration-300 hover:-translate-y-2"
               >
-                {/* Avatar */}
-                <div className="text-6xl mb-4 text-center">{caseStudy.avatar}</div>
-
-                {/* Name & Info */}
-                <h3 className="text-2xl font-bold mb-2 text-center">{caseStudy.name}</h3>
-                <p className="text-muted-foreground text-center mb-6">{caseStudy.age} | {caseStudy.income}</p>
-
-                {/* Before */}
-                <div className="mb-4 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
-                  <div className="text-sm font-bold text-red-500 mb-2">BEFORE:</div>
-                  <p className="text-sm">{caseStudy.before}</p>
+                {/* Professional Avatar Icon */}
+                <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-primary/30 mb-6 mx-auto">
+                  {caseStudy.icon === 'factory' && (
+                    <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  )}
+                  {caseStudy.icon === 'shopping' && (
+                    <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                  )}
+                  {caseStudy.icon === 'home' && (
+                    <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                  )}
                 </div>
 
-                {/* After */}
-                <div className="mb-4 p-4 rounded-lg bg-green-500/10 border border-green-500/20">
-                  <div className="text-sm font-bold text-green-500 mb-2">AFTER:</div>
-                  <p className="text-sm">{caseStudy.after}</p>
+                {/* Name & Industry - Same Line */}
+                <h3 className="text-xl font-bold text-center mb-2 whitespace-nowrap">
+                  {caseStudy.name} - {caseStudy.industry}
+                </h3>
+                
+                {/* Age & Income - Same Line */}
+                <p className="text-sm text-muted-foreground text-center mb-6 whitespace-nowrap">
+                  {caseStudy.age} | {caseStudy.income}
+                </p>
+
+                {/* Before - Fixed Height */}
+                <div className="mb-3 p-4 rounded-lg bg-red-500/10 border border-red-500/20 flex-shrink-0" style={{minHeight: '90px'}}>
+                  <div className="text-xs font-bold text-red-500 mb-2 uppercase tracking-wide">BEFORE:</div>
+                  <p className="text-sm leading-relaxed">{caseStudy.before}</p>
                 </div>
 
-                {/* Result */}
-                <div className="mb-4 p-4 rounded-lg bg-primary/10 border border-primary/20">
-                  <div className="text-sm font-bold text-primary mb-2">RESULT:</div>
-                  <p className="text-sm font-bold">{caseStudy.result}</p>
+                {/* After - Fixed Height */}
+                <div className="mb-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20 flex-shrink-0" style={{minHeight: '90px'}}>
+                  <div className="text-xs font-bold text-green-500 mb-2 uppercase tracking-wide">AFTER:</div>
+                  <p className="text-sm leading-relaxed">{caseStudy.after}</p>
                 </div>
 
-                {/* Savings */}
-                <div className="text-center p-4 rounded-lg bg-gradient-to-r from-primary/20 to-accent/20 border border-primary">
-                  <div className="text-2xl font-bold text-primary">{caseStudy.savings}</div>
+                {/* Result - Fixed Height */}
+                <div className="mb-4 p-4 rounded-lg bg-primary/10 border border-primary/20 flex-shrink-0" style={{minHeight: '80px'}}>
+                  <div className="text-xs font-bold text-primary mb-2 uppercase tracking-wide">RESULT:</div>
+                  <p className="text-sm font-bold leading-relaxed">{caseStudy.result}</p>
+                </div>
+
+                {/* Savings - Fixed Height */}
+                <div className="mt-auto text-center p-4 rounded-lg bg-gradient-to-r from-primary/20 to-accent/20 border border-primary flex-shrink-0" style={{minHeight: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <div className="text-lg font-bold text-primary leading-tight">{caseStudy.savings}</div>
                 </div>
               </div>
             ))}
