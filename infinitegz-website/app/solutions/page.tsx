@@ -16,25 +16,27 @@ export default function SolutionsPage() {
         <Header />
         
         {/* Hero Section */}
-        <section className="relative pb-px">
-          {/* Video Background */}
-          <div className="absolute inset-0 overflow-hidden">
+        <section className="relative pb-px min-h-screen">
+          {/* Video Background - z-0 */}
+          <div className="absolute inset-0 z-0 overflow-hidden">
             <video
               autoPlay
               loop
               muted
               playsInline
-              className="absolute inset-0 w-full h-full object-cover opacity-60"
-              style={{ filter: 'brightness(0.8)' }}
+              className="w-full h-full object-cover"
+              style={{ opacity: 0.7, filter: 'brightness(0.9)' }}
             >
               <source src="/videos/solutions-hero-bg.mp4" type="video/mp4" />
             </video>
-            {/* Gradient Overlay - 轻微遮罩 */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40"></div>
           </div>
+          
+          {/* Gradient Overlay - z-10 轻微底部渐变 */}
+          <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-transparent to-black/30"></div>
 
-          <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl flex min-h-screen flex-col justify-center">
-            <div className="relative z-20 py-20 text-center">
+          {/* Content - z-20 */}
+          <div className="relative z-20 mx-auto w-full px-4 lg:px-6 xl:max-w-7xl flex min-h-screen flex-col justify-center">
+            <div className="py-20 text-center">
               <hgroup className="space-y-8">
                 <div className="mono-tag text-secondary text-sm">
                   [ {t.solutions.hero.tag} ]
@@ -64,11 +66,11 @@ export default function SolutionsPage() {
                 </div>
               </hgroup>
             </div>
+          </div>
           
-      {/* 底部激光分隔线 */}
-      <div className="absolute bottom-0 left-0 right-0">
-        <div className="laser-divider"></div>
-      </div>
+          {/* 底部激光分隔线 - z-30 */}
+          <div className="absolute bottom-0 left-0 right-0 z-30">
+            <div className="laser-divider"></div>
           </div>
         </section>
 
