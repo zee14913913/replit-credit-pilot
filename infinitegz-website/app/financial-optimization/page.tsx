@@ -377,26 +377,26 @@ export default function FinancialOptimizationPage() {
                 </p>
 
                 {/* Before */}
-                <div className="mb-3 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
+                <div className="mb-3 p-4 rounded-lg bg-red-500/10 border border-red-500/20" style={{minHeight: '95px'}}>
                   <div className="text-xs font-bold text-red-500 mb-2 uppercase tracking-wide">BEFORE:</div>
                   <p className="text-sm leading-relaxed">{caseStudy.before}</p>
                 </div>
 
                 {/* After */}
-                <div className="mb-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20">
+                <div className="mb-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20" style={{minHeight: '110px'}}>
                   <div className="text-xs font-bold text-green-500 mb-2 uppercase tracking-wide">AFTER:</div>
                   <p className="text-sm leading-relaxed">{caseStudy.after}</p>
                 </div>
 
                 {/* Result */}
-                <div className="mb-4 p-4 rounded-lg bg-primary/10 border border-primary/20">
+                <div className="mb-4 p-4 rounded-lg bg-primary/10 border border-primary/20" style={{minHeight: '85px'}}>
                   <div className="text-xs font-bold text-primary mb-2 uppercase tracking-wide">RESULT:</div>
                   <p className="text-sm font-bold leading-relaxed">{caseStudy.result}</p>
                 </div>
 
                 {/* Savings */}
-                <div className="mt-auto text-center p-4 rounded-lg bg-gradient-to-r from-primary/20 to-accent/20 border border-primary">
-                  <div className="text-base font-bold text-primary leading-tight">{caseStudy.savings}</div>
+                <div className="mt-auto text-center p-4 rounded-lg bg-gradient-to-r from-primary/20 to-accent/20 border border-primary" style={{minHeight: '90px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <div className="text-base font-bold text-primary leading-snug">{caseStudy.savings}</div>
                 </div>
               </div>
             ))}
