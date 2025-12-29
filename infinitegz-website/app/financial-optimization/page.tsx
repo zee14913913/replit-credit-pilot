@@ -45,35 +45,25 @@ export default function FinancialOptimizationPage() {
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
             <Database className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium text-primary uppercase tracking-wider">
-              Professional Financial Optimization
+              {t.financialOptimization.hero.tag}
             </span>
           </div>
 
           {/* Main Title */}
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
             <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient">
-              Optimize DSR, Unlock
-            </span>
-            <br />
-            <span className="text-white">
-              RM 100K-500K Extra Loan Capacity
+              {t.financialOptimization.hero.title}
             </span>
           </h1>
 
           {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-4xl mx-auto">
-            Through professional DSR analysis and intelligent bank matching,
-          </p>
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-4xl mx-auto">
-            increase loan approval rate by <span className="text-primary font-bold">80%+</span>
+            {t.financialOptimization.hero.subtitle}
           </p>
 
           {/* Description */}
           <p className="text-lg text-muted-foreground mb-12 max-w-3xl mx-auto">
-            Based on real standards from 8 major Malaysian banks
-            <br />
-            <span className="text-primary font-bold">100x faster than bank loans</span>, 
-            <span className="text-accent font-bold"> save 18% interest vs cash loans</span>
+            {t.financialOptimization.hero.description}
           </p>
 
           {/* CTAs */}
@@ -82,7 +72,7 @@ export default function FinancialOptimizationPage() {
               href="#calculator"
               className="px-8 py-4 rounded-full bg-primary text-black font-bold hover:bg-primary/90 transition-all duration-300 hover:scale-105 shadow-lg shadow-primary/20"
             >
-              Free DSR Assessment
+              {t.financialOptimization.hero.cta1}
             </a>
             <a
               href="https://wa.me/60123456789"
@@ -90,19 +80,14 @@ export default function FinancialOptimizationPage() {
               rel="noopener noreferrer"
               className="px-8 py-4 rounded-full bg-muted text-foreground font-bold hover:bg-muted/80 transition-all duration-300 hover:scale-105 flex items-center gap-2"
             >
-              WhatsApp Consultation
+              {t.financialOptimization.hero.cta2}
               <ArrowRight className="w-5 h-5" />
             </a>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            {[
-              { value: '500+', label: 'Success Cases' },
-              { value: '8', label: 'Bank Standards' },
-              { value: 'RM 150K', label: 'Avg. Increase' },
-              { value: '60-80%', label: 'Approval Boost' },
-            ].map((stat) => (
+            {t.financialOptimization.hero.stats.map((stat) => (
               <div
                 key={stat.label}
                 className="p-6 rounded-lg bg-gradient-to-br from-muted/50 to-background border border-border hover:border-primary transition-colors"

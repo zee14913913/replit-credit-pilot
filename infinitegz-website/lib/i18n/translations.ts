@@ -590,6 +590,79 @@ export interface Translations {
       }>;
     };
   };
+  
+  // Financial Optimization Page
+  financialOptimization: {
+    meta: {
+      title: string;
+      description: string;
+    };
+    hero: {
+      tag: string;
+      title: string;
+      subtitle: string;
+      description: string;
+      cta1: string;
+      cta2: string;
+      stats: Array<{
+        value: string;
+        label: string;
+      }>;
+    };
+    coreValues: {
+      tag: string;
+      title: string;
+      description: string;
+      items: Array<{
+        title: string;
+        description: string;
+        data: string;
+      }>;
+    };
+    painPoints: {
+      tag: string;
+      title: string;
+      description: string;
+      items: Array<{
+        title: string;
+        description: string;
+        data: string;
+      }>;
+    };
+    calculator: {
+      tag: string;
+      title: string;
+      description: string;
+    };
+    cases: {
+      tag: string;
+      title: string;
+      description: string;
+      items: Array<{
+        name: string;
+        age: string;
+        income: string;
+        before: string;
+        after: string;
+        result: string;
+        savings: string;
+        avatar: string;
+      }>;
+    };
+    faq: {
+      title: string;
+      items: Array<{
+        question: string;
+        answer: string;
+      }>;
+    };
+    finalCta: {
+      title: string;
+      description: string;
+      cta1: string;
+      cta2: string;
+    };
+  };
 }
 
 export const translations: Record<Language, Translations> = {
@@ -1289,6 +1362,153 @@ export const translations: Record<Language, Translations> = {
         title: 'Start Saving Today',
         description: 'Contact us for a free consultation on your credit card management strategy',
         relatedServices: 'Related Services',
+      },
+    },
+    financialOptimization: {
+      meta: {
+        title: 'Financial Optimization | INFINITE GZ',
+        description: 'Professional DSR optimization services. Through intelligent bank matching and expert analysis, increase loan approval rate by 80%+. Based on real standards from 8 major Malaysian banks.',
+      },
+      hero: {
+        tag: 'Professional Financial Optimization',
+        title: 'Optimize DSR, Unlock RM 100K-500K Extra Loan Capacity',
+        subtitle: 'Through professional DSR analysis and intelligent bank matching',
+        description: 'Based on real standards from 8 major Malaysian banks. 100x faster than bank loans, save 18% interest vs cash loans',
+        cta1: 'Free DSR Assessment',
+        cta2: 'WhatsApp Consultation',
+        stats: [
+          { value: '500+', label: 'Success Cases' },
+          { value: '8', label: 'Bank Standards' },
+          { value: 'RM 150K', label: 'Avg. Increase' },
+          { value: '60-80%', label: 'Approval Boost' },
+        ],
+      },
+      coreValues: {
+        tag: 'Core Advantages',
+        title: '5 Professional Services',
+        description: 'Comprehensive DSR optimization, maximizing your loan capacity',
+        items: [
+          {
+            title: '8 Banks DSR Standard Comparison',
+            description: 'Maybank: 40-70% | CIMB: 65-75% | Hong Leong: 60-80%. Find the most lenient bank, avoid rejection.',
+            data: 'Success rate +80%',
+          },
+          {
+            title: 'Intelligent Bank Recommendation System',
+            description: 'AI analyzes your identity, income, employment type. Recommends the 3 most suitable banks.',
+            data: 'AI-Powered',
+          },
+          {
+            title: 'Self-Employed Income Maximization',
+            description: 'RHB only recognizes 60%, Hong Leong recognizes 90%. Monthly income RM10K, recognition diff RM3K!',
+            data: 'Recognition diff up to RM5K/month',
+          },
+          {
+            title: 'Debt Restructuring Plan',
+            description: 'Consolidate high-interest debts, reduce monthly payment pressure.',
+            data: 'Monthly payment -RM 500-2,000',
+          },
+          {
+            title: '3-Year Financial Growth Roadmap',
+            description: 'Not just solving current loans, planning future financing strategies.',
+            data: 'Save RM 50K-200K interest',
+          },
+        ],
+      },
+      painPoints: {
+        tag: 'Common Challenges',
+        title: '3 Major Financing Obstacles',
+        description: 'These problems prevent thousands of businesses from obtaining financing',
+        items: [
+          {
+            title: 'DSR Exceeds, Loan Rejected',
+            description: '60% of loan applications rejected due to DSR exceeding limit. Different banks have vastly different standards (40%-80%).',
+            data: 'RM 10B+ unmet loan demand',
+          },
+          {
+            title: "Don't Know Which Bank Easiest to Approve",
+            description: '8 banks have huge standard differences. Choosing wrong bank = wasting time + affecting credit record.',
+            data: 'Wrong bank = 3 months wasted',
+          },
+          {
+            title: 'Self-Employed Income Too Discounted',
+            description: 'Bank recognition rate 60%-90%. Monthly income RM10K, might only recognize RM6K-9K.',
+            data: 'Recognition diff up to RM5K/month',
+          },
+        ],
+      },
+      calculator: {
+        tag: 'Professional Tool',
+        title: 'Free DSR Assessment',
+        description: 'Based on real 2025 standards from 8 Malaysian banks, get professional DSR analysis instantly',
+      },
+      cases: {
+        tag: 'Success Stories',
+        title: 'Real Clients, Real Results',
+        description: 'Helping 500+ clients optimize DSR and successfully obtain financing',
+        items: [
+          {
+            name: 'Mr. Zhang - Manufacturing',
+            age: '45 years old',
+            income: 'RM 2,744/month',
+            before: 'DSR 72%, rejected by 3 banks',
+            after: 'Clear credit card, DSR → 58%',
+            result: 'CIMB approved RM 30K',
+            savings: 'Save RM 10K/year interest',
+            avatar: '👨‍💼',
+          },
+          {
+            name: 'Ms. Lee - E-commerce Owner',
+            age: '35 years old',
+            income: 'RM 13,000/month',
+            before: 'RHB only recognizes RM 6,600 (60%)',
+            after: 'Switch to Hong Leong, recognizes RM 11,700 (90%)',
+            result: 'Loan capacity diff RM 496K',
+            savings: '10 years save RM 200K+ interest',
+            avatar: '👩‍💼',
+          },
+          {
+            name: 'Mr. Wang - Joint Housing Loan',
+            age: '40 years old',
+            income: 'Couple combined RM 5,700',
+            before: 'Single application DSR 110%, rejected',
+            after: 'Hong Leong 50% split rule',
+            result: 'DSR → 78%, approved RM 400K',
+            savings: 'Avoid guarantor cost RM 20K-50K',
+            avatar: '👨‍👩‍👧',
+          },
+        ],
+      },
+      faq: {
+        title: 'Frequently Asked Questions',
+        items: [
+          {
+            question: 'What is DSR?',
+            answer: 'Debt Service Ratio = Monthly Debt ÷ Monthly Net Income × 100%. It is the key indicator banks use to assess your repayment ability.',
+          },
+          {
+            question: 'Why do different banks have different DSR limits?',
+            answer: 'Each bank has different risk policies. Maybank limits low-income customers to 40%, while Hong Leong allows high-income customers up to 80%.',
+          },
+          {
+            question: 'Why is self-employed income discounted?',
+            answer: 'Banks consider self-employed income unstable, so they discount it. RHB only recognizes 60%, Hong Leong recognizes 90%.',
+          },
+          {
+            question: 'Do you charge for your services?',
+            answer: '✅ Completely FREE for loan clients. Our income comes from bank partnership commissions.',
+          },
+          {
+            question: 'How long to get assessment results?',
+            answer: 'Free DSR assessment is instant. Complete bank recommendations and optimization plan delivered within 24 hours.',
+          },
+        ],
+      },
+      finalCta: {
+        title: 'Ready to Optimize Your Financing?',
+        description: 'Join 500+ businesses that have obtained better financing through INFINITE GZ',
+        cta1: 'Start Free Assessment',
+        cta2: 'WhatsApp Consultation',
       },
     },
     company: {
@@ -2474,6 +2694,153 @@ export const translations: Record<Language, Translations> = {
         relatedServices: '相关服务',
       },
     },
+    financialOptimization: {
+      meta: {
+        title: '财务优化 | INFINITE GZ',
+        description: '专业DSR优化服务。通过智能银行匹配和专家分析，提升贷款批准率80%+。基于8家马来西亚主流银行的真实标准。',
+      },
+      hero: {
+        tag: '专业财务优化',
+        title: '优化DSR，解锁 RM 100K-500K 额外贷款额度',
+        subtitle: '通过专业DSR分析和智能银行匹配',
+        description: '基于8家马来西亚主流银行的真实标准。比银行贷款快100倍，比现金贷款省18%利息',
+        cta1: '免费DSR评估',
+        cta2: 'WhatsApp咨询',
+        stats: [
+          { value: '500+', label: '成功案例' },
+          { value: '8家', label: '银行标准' },
+          { value: 'RM 150K', label: '平均提升' },
+          { value: '60-80%', label: '批准率提升' },
+        ],
+      },
+      coreValues: {
+        tag: '核心优势',
+        title: '5大专业服务',
+        description: '全方位DSR优化，最大化您的贷款能力',
+        items: [
+          {
+            title: '8家银行DSR标准对比',
+            description: 'Maybank: 40-70% | CIMB: 65-75% | Hong Leong: 60-80%。找到最宽松的银行，避免被拒。',
+            data: '成功率 +80%',
+          },
+          {
+            title: '智能银行推荐系统',
+            description: 'AI分析您的身份、收入、就业类型。推荐最适合的3家银行。',
+            data: 'AI驱动',
+          },
+          {
+            title: '自雇收入最大化认定',
+            description: 'RHB仅认定60%，Hong Leong认定90%。月收入RM10K，认定差RM3K！',
+            data: '认定差异达RM5K/月',
+          },
+          {
+            title: '债务重组优化方案',
+            description: '整合高利率债务，降低月供压力。',
+            data: '月供 -RM 500-2,000',
+          },
+          {
+            title: '3年财务成长路线图',
+            description: '不仅解决当前贷款，更规划未来融资策略。',
+            data: '节省RM 50K-200K利息',
+          },
+        ],
+      },
+      painPoints: {
+        tag: '常见挑战',
+        title: '3大融资障碍',
+        description: '这些问题阻止了数千家企业获得融资',
+        items: [
+          {
+            title: 'DSR超标，贷款被拒',
+            description: '60%的贷款申请因DSR超标被拒。不同银行标准差异巨大（40%-80%）。',
+            data: 'RM 10B+ 未满足贷款需求',
+          },
+          {
+            title: '不知道哪家银行最容易批',
+            description: '8家银行标准差异巨大。选错银行 = 浪费时间 + 影响信用记录。',
+            data: '错误银行=浪费3个月',
+          },
+          {
+            title: '自雇收入被银行打折太多',
+            description: '银行认定率60%-90%。月收入RM10K，可能只认RM6K-9K。',
+            data: '认定差异达RM5K/月',
+          },
+        ],
+      },
+      calculator: {
+        tag: '专业工具',
+        title: '免费DSR评估',
+        description: '基于8家马来西亚银行2025年真实标准，立即获得专业DSR分析',
+      },
+      cases: {
+        tag: '成功案例',
+        title: '真实客户，真实收益',
+        description: '帮助500+客户优化DSR并成功获得融资',
+        items: [
+          {
+            name: '张先生 - 制造业',
+            age: '45岁',
+            income: '月净收入 RM 2,744',
+            before: 'DSR 72%，被3家银行拒绝',
+            after: '清付信用卡，DSR → 58%',
+            result: 'CIMB批准 RM 30K',
+            savings: '每年省RM 10K利息',
+            avatar: '👨‍💼',
+          },
+          {
+            name: '李女士 - 电商老板',
+            age: '35岁',
+            income: '月收入 RM 13,000',
+            before: 'RHB仅认定 RM 6,600 (60%)',
+            after: '换Hong Leong，认定 RM 11,700 (90%)',
+            result: '可贷额度差 RM 496K',
+            savings: '10年省RM 200K+利息',
+            avatar: '👩‍💼',
+          },
+          {
+            name: '王先生 - 联名房贷',
+            age: '40岁',
+            income: '夫妻合计 RM 5,700',
+            before: '单独申请DSR 110%，被拒',
+            after: 'Hong Leong 50%拆分规则',
+            result: 'DSR → 78%，批准 RM 400K',
+            savings: '避免担保人成本 RM 20K-50K',
+            avatar: '👨‍👩‍👧',
+          },
+        ],
+      },
+      faq: {
+        title: '常见问题',
+        items: [
+          {
+            question: '什么是DSR？',
+            answer: 'DSR（债务偿还比率）= 月度债务 ÷ 月净收入 × 100%。这是银行评估您还款能力的关键指标。',
+          },
+          {
+            question: '为什么不同银行的DSR限制不同？',
+            answer: '每家银行的风险政策不同。Maybank对低收入客户限制40%，而Hong Leong对高收入客户可达80%。',
+          },
+          {
+            question: '为什么自雇收入会被打折？',
+            answer: '银行认为自雇收入不稳定，会打折认定。RHB仅认60%，Hong Leong认90%。',
+          },
+          {
+            question: '你们的服务收费吗？',
+            answer: '✅ 对贷款客户完全免费。我们的收入来自银行的合作佣金。',
+          },
+          {
+            question: '需要多久能拿到评估结果？',
+            answer: '免费DSR评估即时完成。完整的银行推荐和优化方案24小时内交付。',
+          },
+        ],
+      },
+      finalCta: {
+        title: '准备好优化您的融资了吗？',
+        description: '加入500+通过INFINITE GZ获得更好融资的企业',
+        cta1: '开始免费评估',
+        cta2: 'WhatsApp咨询',
+      },
+    },
     company: {
       meta: {
         title: '公司介绍 | INFINITE GZ',
@@ -3656,6 +4023,153 @@ export const translations: Record<Language, Translations> = {
         title: 'Mula Jimat Hari Ini',
         description: 'Hubungi kami untuk perundingan percuma mengenai strategi pengurusan kad kredit anda',
         relatedServices: 'Perkhidmatan Berkaitan',
+      },
+    },
+    financialOptimization: {
+      meta: {
+        title: 'Pengoptimuman Kewangan | INFINITE GZ',
+        description: 'Perkhidmatan pengoptimuman DSR profesional. Melalui padanan bank pintar dan analisis pakar, tingkatkan kadar kelulusan pinjaman 80%+. Berdasarkan piawaian sebenar dari 8 bank utama Malaysia.',
+      },
+      hero: {
+        tag: 'Pengoptimuman Kewangan Profesional',
+        title: 'Optimumkan DSR, Buka Kapasiti Pinjaman Tambahan RM 100K-500K',
+        subtitle: 'Melalui analisis DSR profesional dan padanan bank pintar',
+        description: 'Berdasarkan piawaian sebenar dari 8 bank utama Malaysia. 100x lebih pantas daripada pinjaman bank, jimat 18% faedah berbanding pinjaman tunai',
+        cta1: 'Penilaian DSR Percuma',
+        cta2: 'Perundingan WhatsApp',
+        stats: [
+          { value: '500+', label: 'Kes Kejayaan' },
+          { value: '8', label: 'Piawaian Bank' },
+          { value: 'RM 150K', label: 'Purata Peningkatan' },
+          { value: '60-80%', label: 'Rangsangan Kelulusan' },
+        ],
+      },
+      coreValues: {
+        tag: 'Kelebihan Utama',
+        title: '5 Perkhidmatan Profesional',
+        description: 'Pengoptimuman DSR menyeluruh, maksimumkan kapasiti pinjaman anda',
+        items: [
+          {
+            title: 'Perbandingan Piawaian DSR 8 Bank',
+            description: 'Maybank: 40-70% | CIMB: 65-75% | Hong Leong: 60-80%. Cari bank paling lembut, elakkan penolakan.',
+            data: 'Kadar kejayaan +80%',
+          },
+          {
+            title: 'Sistem Cadangan Bank Pintar',
+            description: 'AI menganalisis identiti, pendapatan, jenis pekerjaan anda. Cadangkan 3 bank paling sesuai.',
+            data: 'Dikuasakan AI',
+          },
+          {
+            title: 'Maksimumkan Pengiktirafan Pendapatan Bekerja Sendiri',
+            description: 'RHB hanya mengiktiraf 60%, Hong Leong mengiktiraf 90%. Pendapatan bulanan RM10K, perbezaan pengiktirafan RM3K!',
+            data: 'Perbezaan pengiktirafan sehingga RM5K/bulan',
+          },
+          {
+            title: 'Pelan Penstrukturan Semula Hutang',
+            description: 'Satukan hutang faedah tinggi, kurangkan tekanan bayaran bulanan.',
+            data: 'Bayaran bulanan -RM 500-2,000',
+          },
+          {
+            title: 'Peta Jalan Pertumbuhan Kewangan 3 Tahun',
+            description: 'Bukan hanya menyelesaikan pinjaman semasa, merancang strategi pembiayaan masa hadapan.',
+            data: 'Jimat RM 50K-200K faedah',
+          },
+        ],
+      },
+      painPoints: {
+        tag: 'Cabaran Biasa',
+        title: '3 Halangan Pembiayaan Utama',
+        description: 'Masalah ini menghalang beribu-ribu perniagaan daripada mendapatkan pembiayaan',
+        items: [
+          {
+            title: 'DSR Melebihi, Pinjaman Ditolak',
+            description: '60% permohonan pinjaman ditolak kerana DSR melebihi had. Bank berbeza mempunyai piawaian yang sangat berbeza (40%-80%).',
+            data: 'RM 10B+ permintaan pinjaman tidak dipenuhi',
+          },
+          {
+            title: 'Tidak Tahu Bank Mana Paling Mudah Lulus',
+            description: '8 bank mempunyai perbezaan piawaian yang besar. Memilih bank yang salah = membuang masa + menjejaskan rekod kredit.',
+            data: 'Bank salah = 3 bulan terbuang',
+          },
+          {
+            title: 'Pendapatan Bekerja Sendiri Terlalu Didiskaun',
+            description: 'Kadar pengiktirafan bank 60%-90%. Pendapatan bulanan RM10K, mungkin hanya diiktiraf RM6K-9K.',
+            data: 'Perbezaan pengiktirafan sehingga RM5K/bulan',
+          },
+        ],
+      },
+      calculator: {
+        tag: 'Alat Profesional',
+        title: 'Penilaian DSR Percuma',
+        description: 'Berdasarkan piawaian sebenar 2025 dari 8 bank Malaysia, dapatkan analisis DSR profesional dengan serta-merta',
+      },
+      cases: {
+        tag: 'Kisah Kejayaan',
+        title: 'Pelanggan Sebenar, Hasil Sebenar',
+        description: 'Membantu 500+ pelanggan mengoptimumkan DSR dan berjaya mendapatkan pembiayaan',
+        items: [
+          {
+            name: 'Encik Zhang - Pembuatan',
+            age: '45 tahun',
+            income: 'RM 2,744/bulan',
+            before: 'DSR 72%, ditolak oleh 3 bank',
+            after: 'Bayar kad kredit, DSR → 58%',
+            result: 'CIMB luluskan RM 30K',
+            savings: 'Jimat RM 10K/tahun faedah',
+            avatar: '👨‍💼',
+          },
+          {
+            name: 'Puan Lee - Pemilik E-dagang',
+            age: '35 tahun',
+            income: 'RM 13,000/bulan',
+            before: 'RHB hanya mengiktiraf RM 6,600 (60%)',
+            after: 'Tukar ke Hong Leong, mengiktiraf RM 11,700 (90%)',
+            result: 'Perbezaan kapasiti pinjaman RM 496K',
+            savings: '10 tahun jimat RM 200K+ faedah',
+            avatar: '👩‍💼',
+          },
+          {
+            name: 'Encik Wang - Pinjaman Perumahan Bersama',
+            age: '40 tahun',
+            income: 'Pasangan gabungan RM 5,700',
+            before: 'Permohonan tunggal DSR 110%, ditolak',
+            after: 'Peraturan pecahan 50% Hong Leong',
+            result: 'DSR → 78%, diluluskan RM 400K',
+            savings: 'Elak kos penjamin RM 20K-50K',
+            avatar: '👨‍👩‍👧',
+          },
+        ],
+      },
+      faq: {
+        title: 'Soalan Lazim',
+        items: [
+          {
+            question: 'Apakah DSR?',
+            answer: 'Debt Service Ratio = Hutang Bulanan ÷ Pendapatan Bersih Bulanan × 100%. Ia adalah penunjuk utama yang digunakan bank untuk menilai keupayaan pembayaran balik anda.',
+          },
+          {
+            question: 'Mengapa bank berbeza mempunyai had DSR yang berbeza?',
+            answer: 'Setiap bank mempunyai dasar risiko yang berbeza. Maybank mengehadkan pelanggan berpendapatan rendah kepada 40%, manakala Hong Leong membenarkan pelanggan berpendapatan tinggi sehingga 80%.',
+          },
+          {
+            question: 'Mengapa pendapatan bekerja sendiri didiskaun?',
+            answer: 'Bank menganggap pendapatan bekerja sendiri tidak stabil, jadi mereka mendiskaunkannya. RHB hanya mengiktiraf 60%, Hong Leong mengiktiraf 90%.',
+          },
+          {
+            question: 'Adakah anda mengenakan bayaran untuk perkhidmatan anda?',
+            answer: '✅ Percuma sepenuhnya untuk pelanggan pinjaman. Pendapatan kami datang dari komisen perkongsian bank.',
+          },
+          {
+            question: 'Berapa lama untuk mendapatkan keputusan penilaian?',
+            answer: 'Penilaian DSR percuma adalah segera. Cadangan bank lengkap dan pelan pengoptimuman dihantar dalam masa 24 jam.',
+          },
+        ],
+      },
+      finalCta: {
+        title: 'Bersedia untuk Mengoptimumkan Pembiayaan Anda?',
+        description: 'Sertai 500+ perniagaan yang telah mendapat pembiayaan yang lebih baik melalui INFINITE GZ',
+        cta1: 'Mulakan Penilaian Percuma',
+        cta2: 'Perundingan WhatsApp',
       },
     },
     company: {
