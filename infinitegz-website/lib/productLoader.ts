@@ -25,7 +25,7 @@ export interface ProductMatchResult extends FinancialProduct {
   matchScore: number;
   eligible: boolean;
   reason: string;
-  bank Standard?: BankStandard;
+  bankStandard?: BankStandard;
   estimatedLoanAmount?: number;
   estimatedMonthlyPayment?: number;
 }

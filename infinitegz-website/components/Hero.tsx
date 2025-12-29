@@ -9,7 +9,7 @@ export default function Hero() {
   const [scrollY, setScrollY] = useState(0)
   const [hasVideo, setHasVideo] = useState(false)
   const { t } = useLanguage()
-  const heroRef = useRef<HTMLSection>(null)
+  const heroRef = useRef<HTMLElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
 
   // 视频 URL（可以在这里配置你的视频）

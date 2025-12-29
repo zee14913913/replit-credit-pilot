@@ -5,7 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function NewsSection() {
   const { t } = useLanguage()
-  const { ref: sectionRef, isVisible } = useScrollAnimation(0.1)
+  const { elementRef: sectionRef, isVisible } = useScrollAnimation({ threshold: 0.1, triggerOnce: true })
   
   return (
     <section 

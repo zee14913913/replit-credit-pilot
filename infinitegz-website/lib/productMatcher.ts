@@ -13,6 +13,9 @@ import {
 } from './bankStandards';
 import { FinancialProduct, ProductMatchResult } from './productLoader';
 
+// Re-export for convenience
+export type { ProductMatchResult } from './productLoader';
+
 export interface CustomerProfile {
   monthlyIncome: number;
   monthlyCommitment: number;

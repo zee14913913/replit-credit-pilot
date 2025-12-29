@@ -37,7 +37,7 @@ export default function AnimatedSection({
       transition: {
         duration: 0.8,
         delay,
-        ease: [0.165, 0.84, 0.44, 1] // Ethnocare 的缓动曲线
+        ease: [0.165, 0.84, 0.44, 1] as any // Ethnocare 的缓动曲线
       }
     }
   }
