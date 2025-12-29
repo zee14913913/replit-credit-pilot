@@ -377,26 +377,26 @@ export default function FinancialOptimizationPage() {
                 </p>
 
                 {/* Before - Fixed Height */}
-                <div className="mb-3 p-4 rounded-lg bg-red-500/10 border border-red-500/20 flex-shrink-0" style={{minHeight: '90px'}}>
+                <div className="mb-3 p-4 rounded-lg bg-red-500/10 border border-red-500/20 flex-shrink-0 overflow-hidden" style={{height: '100px'}}>
                   <div className="text-xs font-bold text-red-500 mb-2 uppercase tracking-wide">BEFORE:</div>
-                  <p className="text-sm leading-relaxed">{caseStudy.before}</p>
+                  <p className="text-sm leading-relaxed line-clamp-3">{caseStudy.before}</p>
                 </div>
 
                 {/* After - Fixed Height */}
-                <div className="mb-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20 flex-shrink-0" style={{minHeight: '90px'}}>
+                <div className="mb-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20 flex-shrink-0 overflow-hidden" style={{height: '100px'}}>
                   <div className="text-xs font-bold text-green-500 mb-2 uppercase tracking-wide">AFTER:</div>
-                  <p className="text-sm leading-relaxed">{caseStudy.after}</p>
+                  <p className="text-sm leading-relaxed line-clamp-3">{caseStudy.after}</p>
                 </div>
 
                 {/* Result - Fixed Height */}
-                <div className="mb-4 p-4 rounded-lg bg-primary/10 border border-primary/20 flex-shrink-0" style={{minHeight: '80px'}}>
+                <div className="mb-4 p-4 rounded-lg bg-primary/10 border border-primary/20 flex-shrink-0 overflow-hidden" style={{height: '85px'}}>
                   <div className="text-xs font-bold text-primary mb-2 uppercase tracking-wide">RESULT:</div>
-                  <p className="text-sm font-bold leading-relaxed">{caseStudy.result}</p>
+                  <p className="text-sm font-bold leading-relaxed line-clamp-2">{caseStudy.result}</p>
                 </div>
 
                 {/* Savings - Fixed Height */}
-                <div className="mt-auto text-center p-4 rounded-lg bg-gradient-to-r from-primary/20 to-accent/20 border border-primary flex-shrink-0" style={{minHeight: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                  <div className="text-lg font-bold text-primary leading-tight">{caseStudy.savings}</div>
+                <div className="mt-auto text-center p-4 rounded-lg bg-gradient-to-r from-primary/20 to-accent/20 border border-primary flex-shrink-0" style={{height: '85px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <div className="text-base font-bold text-primary leading-tight px-2">{caseStudy.savings}</div>
                 </div>
               </div>
             ))}
