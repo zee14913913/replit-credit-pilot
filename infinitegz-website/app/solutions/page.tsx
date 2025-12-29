@@ -17,6 +17,22 @@ export default function SolutionsPage() {
         
         {/* Hero Section */}
         <section className="relative pb-px">
+          {/* Video Background */}
+          <div className="absolute inset-0 overflow-hidden">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover opacity-30"
+              style={{ filter: 'brightness(0.4)' }}
+            >
+              <source src="/videos/solutions-hero-bg.mp4" type="video/mp4" />
+            </video>
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black"></div>
+          </div>
+
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl flex min-h-screen flex-col justify-center">
             <div className="relative z-20 py-20 text-center">
               <hgroup className="space-y-8">
