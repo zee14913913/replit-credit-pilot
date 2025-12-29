@@ -18,21 +18,22 @@ export default function SolutionsPage() {
         {/* Hero Section */}
         <section className="relative pb-px min-h-screen">
           {/* Video Background - z-0 */}
-          <div className="absolute inset-0 z-0 overflow-hidden">
+          <div className="absolute inset-0 z-0 overflow-hidden bg-black">
             <video
               autoPlay
               loop
               muted
               playsInline
-              className="w-full h-full object-cover"
-              style={{ opacity: 0.7, filter: 'brightness(0.9)' }}
+              preload="auto"
+              className="w-full h-full object-cover opacity-50"
             >
               <source src="/videos/solutions-hero-bg.mp4" type="video/mp4" />
+              您的浏览器不支持视频播放
             </video>
           </div>
           
           {/* Gradient Overlay - z-10 轻微底部渐变 */}
-          <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-transparent to-black/30"></div>
+          <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/10 via-transparent to-black/50"></div>
 
           {/* Content - z-20 */}
           <div className="relative z-20 mx-auto w-full px-4 lg:px-6 xl:max-w-7xl flex min-h-screen flex-col justify-center">
