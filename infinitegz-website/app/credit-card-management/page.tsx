@@ -5,6 +5,16 @@ import Footer from '@/components/Footer'
 import ScrollProgress from '@/components/ScrollProgress'
 import Link from 'next/link'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { 
+  CreditCard, 
+  Bell, 
+  ShoppingCart, 
+  TrendingUp, 
+  LifeBuoy,
+  AlertTriangle,
+  Clock,
+  Layers
+} from 'lucide-react'
 
 export default function CreditCardManagementPage() {
   const { t } = useLanguage()
@@ -100,8 +110,12 @@ export default function CreditCardManagementPage() {
                     <div className="bg-primary absolute -bottom-1 -right-1 z-10 size-2 translate-x-px translate-y-px"></div>
                   </div>
                   
-                  <div className="text-5xl mb-10 relative z-20">
-                    {pain.icon}
+                  <div className="mb-10 relative z-20">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 backdrop-blur-sm border border-primary/20 group-hover:border-primary/50 transition-all duration-300 group-hover:scale-110">
+                      <div className="text-primary">
+                        {pain.iconComponent}
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="group max-w-sm grow relative z-20">
@@ -146,8 +160,12 @@ export default function CreditCardManagementPage() {
                     <div className="bg-primary absolute -bottom-1 -right-1 z-10 size-2 translate-x-px translate-y-px"></div>
                   </div>
                   
-                  <div className="text-primary mb-10 size-10 sm:mb-16 relative z-20">
-                    <div className="text-4xl">{service.icon}</div>
+                  <div className="mb-10 sm:mb-16 relative z-20">
+                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/5 backdrop-blur-sm border border-primary/20 group-hover:border-primary/60 transition-all duration-300 group-hover:scale-105 group-hover:rotate-3">
+                      <div className="text-primary group-hover:text-accent transition-colors duration-300">
+                        {service.iconComponent}
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="group max-w-sm grow relative z-20">

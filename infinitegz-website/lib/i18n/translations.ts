@@ -1,3 +1,15 @@
+import React from 'react';
+import { 
+  CreditCard, 
+  Bell, 
+  ShoppingCart, 
+  TrendingUp, 
+  LifeBuoy,
+  AlertTriangle,
+  Clock,
+  Layers
+} from 'lucide-react';
+
 export type Language = 'en' | 'zh' | 'ms';
 
 export interface Translations {
@@ -264,6 +276,7 @@ export interface Translations {
       description: string;
       items: Array<{
         icon: string;
+        iconComponent: React.ReactNode;
         title: string;
         description: string;
         data: string;
@@ -274,6 +287,7 @@ export interface Translations {
       title: string;
       items: Array<{
         icon: string;
+        iconComponent: React.ReactNode;
         title: string;
         description: string;
       }>;
@@ -1090,18 +1104,21 @@ export const translations: Record<Language, Translations> = {
         items: [
           {
             icon: '😰',
+            iconComponent: React.createElement(AlertTriangle, { size: 32, strokeWidth: 1.5 }),
             title: 'Forgot Payment',
             description: 'Late payment penalties + credit score damage. Each late payment incurs RM 150-300 penalty and affects CCRIS/CTOS records.',
             data: 'RM 551.8M Overdue Debt',
           },
           {
             icon: '💸',
+            iconComponent: React.createElement(TrendingUp, { size: 32, strokeWidth: 1.5 }),
             title: 'Poor Optimization',
             description: 'Wasted reward points + high annual fees. Not understanding card benefits leads to missing cashback and paying unnecessary annual fees.',
             data: '18% Annual Interest Trap',
           },
           {
             icon: '🔢',
+            iconComponent: React.createElement(Layers, { size: 32, strokeWidth: 1.5 }),
             title: 'Multiple Cards Chaos',
             description: 'Different billing dates, hard to manage. Holding 2-3 cards with different payment dates makes it easy to miss payments.',
             data: 'Average 2-3 Cards Per Person',
@@ -1114,26 +1131,31 @@ export const translations: Record<Language, Translations> = {
         items: [
           {
             icon: '💬',
+            iconComponent: React.createElement(Bell, { size: 28, strokeWidth: 1.5 }),
             title: 'Payment Reminders',
             description: 'Triple reminder system via WhatsApp, SMS, and Email to ensure on-time payments and avoid late fees',
           },
           {
             icon: '💳',
+            iconComponent: React.createElement(CreditCard, { size: 28, strokeWidth: 1.5 }),
             title: 'Payment-On-Behalf',
             description: 'Automatic payment within 2 business days to avoid late payment penalties and protect your credit score',
           },
           {
             icon: '🛍️',
+            iconComponent: React.createElement(ShoppingCart, { size: 28, strokeWidth: 1.5 }),
             title: 'Purchase-On-Behalf',
             description: 'Automatically select the best credit card to maximize reward points and cashback returns',
           },
           {
             icon: '📊',
+            iconComponent: React.createElement(TrendingUp, { size: 28, strokeWidth: 1.5 }),
             title: 'Card Optimization',
             description: 'Spending pattern analysis, annual fee waiver assistance, reward points maximization strategies',
           },
           {
             icon: '📉',
+            iconComponent: React.createElement(LifeBuoy, { size: 28, strokeWidth: 1.5 }),
             title: 'Debt Management',
             description: 'DSR analysis, debt consolidation recommendations, credit score improvement strategies',
           },
@@ -2263,18 +2285,21 @@ export const translations: Record<Language, Translations> = {
         items: [
           {
             icon: '😰',
+            iconComponent: React.createElement(AlertTriangle, { size: 32, strokeWidth: 1.5 }),
             title: '忘记还款',
             description: '逾期罚款 + 信用评分损失。每次逾期罚款RM 150-300，并影响CCRIS/CTOS记录。',
             data: 'RM 551.8M 逾期债务',
           },
           {
             icon: '💸',
+            iconComponent: React.createElement(TrendingUp, { size: 32, strokeWidth: 1.5 }),
             title: '不懂优化',
             description: '浪费奖励积分 + 高额年费。不了解信用卡优惠导致错失现金返还，支付不必要的年费。',
             data: '18% 年利率陷阱',
           },
           {
             icon: '🔢',
+            iconComponent: React.createElement(Layers, { size: 32, strokeWidth: 1.5 }),
             title: '多卡混乱',
             description: '账单日期不同，难以管理。持有2-3张卡，不同的还款日期容易遗漏。',
             data: '平均每人2-3张卡',
@@ -2287,26 +2312,31 @@ export const translations: Record<Language, Translations> = {
         items: [
           {
             icon: '💬',
+            iconComponent: React.createElement(Bell, { size: 28, strokeWidth: 1.5 }),
             title: '支付提醒',
             description: '通过WhatsApp、短信和电邮的三重提醒系统，确保按时还款，避免逾期费用',
           },
           {
             icon: '💳',
+            iconComponent: React.createElement(CreditCard, { size: 28, strokeWidth: 1.5 }),
             title: '代付服务',
             description: '2个工作日内自动付款，避免逾期罚款，保护您的信用评分',
           },
           {
             icon: '🛍️',
+            iconComponent: React.createElement(ShoppingCart, { size: 28, strokeWidth: 1.5 }),
             title: '代购服务',
             description: '自动选择最优信用卡，最大化奖励积分和现金返还收益',
           },
           {
             icon: '📊',
+            iconComponent: React.createElement(TrendingUp, { size: 28, strokeWidth: 1.5 }),
             title: '卡片优化',
             description: '消费模式分析，年费豁免协助，奖励积分最大化策略',
           },
           {
             icon: '📉',
+            iconComponent: React.createElement(LifeBuoy, { size: 28, strokeWidth: 1.5 }),
             title: '债务管理',
             description: 'DSR分析，债务整合建议，信用评分改善策略',
           },
@@ -3437,18 +3467,21 @@ export const translations: Record<Language, Translations> = {
         items: [
           {
             icon: '😰',
+            iconComponent: React.createElement(AlertTriangle, { size: 32, strokeWidth: 1.5 }),
             title: 'Terlupa Bayaran',
             description: 'Penalti bayaran lewat + kerosakan skor kredit. Setiap bayaran lewat dikenakan penalti RM 150-300 dan menjejaskan rekod CCRIS/CTOS.',
             data: 'RM 551.8M Hutang Tertunggak',
           },
           {
             icon: '💸',
+            iconComponent: React.createElement(TrendingUp, { size: 32, strokeWidth: 1.5 }),
             title: 'Pengoptimuman Lemah',
             description: 'Mata ganjaran terbuang + yuran tahunan tinggi. Tidak memahami faedah kad menyebabkan kehilangan pulangan tunai dan membayar yuran tahunan yang tidak perlu.',
             data: 'Perangkap Faedah 18% Setahun',
           },
           {
             icon: '🔢',
+            iconComponent: React.createElement(Layers, { size: 32, strokeWidth: 1.5 }),
             title: 'Kad Pelbagai Keliru',
             description: 'Tarikh pengebilan berbeza, susah diuruskan. Memegang 2-3 kad dengan tarikh bayaran berbeza memudahkan terlepas bayaran.',
             data: 'Purata 2-3 Kad Per Orang',
@@ -3461,26 +3494,31 @@ export const translations: Record<Language, Translations> = {
         items: [
           {
             icon: '💬',
+            iconComponent: React.createElement(Bell, { size: 28, strokeWidth: 1.5 }),
             title: 'Peringatan Pembayaran',
             description: 'Sistem peringatan tiga peringkat melalui WhatsApp, SMS, dan Email untuk memastikan pembayaran tepat masa dan elakkan bayaran lewat',
           },
           {
             icon: '💳',
+            iconComponent: React.createElement(CreditCard, { size: 28, strokeWidth: 1.5 }),
             title: 'Bayaran Bagi Pihak',
             description: 'Pembayaran automatik dalam 2 hari bekerja untuk elakkan penalti bayaran lewat dan melindungi skor kredit anda',
           },
           {
             icon: '🛍️',
+            iconComponent: React.createElement(ShoppingCart, { size: 28, strokeWidth: 1.5 }),
             title: 'Pembelian Bagi Pihak',
             description: 'Pilih kad kredit terbaik secara automatik untuk maksimumkan mata ganjaran dan pulangan tunai',
           },
           {
             icon: '📊',
+            iconComponent: React.createElement(TrendingUp, { size: 28, strokeWidth: 1.5 }),
             title: 'Pengoptimuman Kad',
             description: 'Analisis corak perbelanjaan, bantuan pengecualian yuran tahunan, strategi maksimumkan mata ganjaran',
           },
           {
             icon: '📉',
+            iconComponent: React.createElement(LifeBuoy, { size: 28, strokeWidth: 1.5 }),
             title: 'Pengurusan Hutang',
             description: 'Analisis DSR, cadangan penyatuan hutang, strategi peningkatan skor kredit',
           },
