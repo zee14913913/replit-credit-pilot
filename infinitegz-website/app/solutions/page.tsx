@@ -24,13 +24,13 @@ export default function SolutionsPage() {
               loop
               muted
               playsInline
-              className="absolute inset-0 w-full h-full object-cover opacity-30"
-              style={{ filter: 'brightness(0.4)' }}
+              className="absolute inset-0 w-full h-full object-cover opacity-60"
+              style={{ filter: 'brightness(0.8)' }}
             >
               <source src="/videos/solutions-hero-bg.mp4" type="video/mp4" />
             </video>
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black"></div>
+            {/* Gradient Overlay - 轻微遮罩 */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40"></div>
           </div>
 
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl flex min-h-screen flex-col justify-center">
