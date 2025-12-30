@@ -24,11 +24,11 @@ export default function FinancialOptimizationPage() {
 
   // Icon mapping for core values
   const coreValueIcons = [Database, Sparkles, TrendingUp, RefreshCw, Target];
-  const coreValueColors = ["primary", "accent", "primary", "accent", "primary"];
+  const coreValueColors = ['primary', 'accent', 'primary', 'accent', 'primary'];
 
   // Icon mapping for pain points
   const painPointIcons = [AlertTriangle, Clock, Layers];
-  const painPointColors = ["red", "yellow", "orange"];
+  const painPointColors = ['red', 'yellow', 'orange'];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -132,50 +132,17 @@ export default function FinancialOptimizationPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              {
-                icon: Database,
-                title: '8 Banks DSR Standard Comparison',
-                description: 'Maybank: 40-70% | CIMB: 65-75% | Hong Leong: 60-80%. Find the most lenient bank, avoid rejection.',
-                data: 'Success rate +80%',
-                color: 'primary'
-              },
-              {
-                icon: Sparkles,
-                title: 'Intelligent Bank Recommendation System',
-                description: 'AI analyzes your identity, income, employment type. Recommends the 3 most suitable banks.',
-                data: 'AI-Powered',
-                color: 'accent'
-              },
-              {
-                icon: TrendingUp,
-                title: 'Self-Employed Income Maximization',
-                description: 'RHB only recognizes 60%, Hong Leong recognizes 90%. Monthly income RM10K, recognition diff RM3K!',
-                data: 'Recognition diff up to RM5K/month',
-                color: 'primary'
-              },
-              {
-                icon: RefreshCw,
-                title: 'Debt Restructuring Plan',
-                description: 'Consolidate high-interest debts, reduce monthly payment pressure.',
-                data: 'Monthly payment -RM 500-2,000',
-                color: 'accent'
-              },
-              {
-                icon: Target,
-                title: '3-Year Financial Growth Roadmap',
-                description: 'Not just solving current loans, planning future financing strategies.',
-                data: 'Save RM 50K-200K interest',
-                color: 'primary'
-              },
-            ].map((value, index) => (
-              <div
-                key={index}
-                className="group relative p-8 rounded-2xl bg-gradient-to-br from-muted/30 to-background border border-border hover:border-primary transition-all duration-300 hover:-translate-y-2"
-              >
+            {t.financialOptimization.coreValues.items.map((value, index) => {
+              const Icon = coreValueIcons[index];
+              const color = coreValueColors[index];
+              return (
+                <div
+                  key={index}
+                  className="group relative p-8 rounded-2xl bg-gradient-to-br from-muted/30 to-background border border-border hover:border-primary transition-all duration-300 hover:-translate-y-2"
+                >
                 {/* Icon */}
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br from-${value.color} to-${value.color}/50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                  <value.icon className="w-7 h-7 text-black" strokeWidth={1.5} />
+                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br from-${color} to-${color}/50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                  <Icon className="w-7 h-7 text-black" strokeWidth={1.5} />
                 </div>
 
                 {/* Title */}
@@ -196,7 +163,7 @@ export default function FinancialOptimizationPage() {
                 {/* Hover Effect */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/0 to-accent/0 group-hover:from-primary/5 group-hover:to-accent/5 transition-all duration-300 pointer-events-none" />
               </div>
-            ))}
+            );})}
           </div>
         </div>
       </section>
@@ -220,36 +187,17 @@ export default function FinancialOptimizationPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: AlertTriangle,
-                title: 'DSR Exceeds, Loan Rejected',
-                description: '60% of loan applications rejected due to DSR exceeding limit. Different banks have vastly different standards (40%-80%).',
-                data: 'RM 10B+ unmet loan demand',
-                color: 'red'
-              },
-              {
-                icon: Clock,
-                title: "Don't Know Which Bank Easiest to Approve",
-                description: '8 banks have huge standard differences. Choosing wrong bank = wasting time + affecting credit record.',
-                data: 'Wrong bank = 3 months wasted',
-                color: 'yellow'
-              },
-              {
-                icon: Layers,
-                title: 'Self-Employed Income Too Discounted',
-                description: 'Bank recognition rate 60%-90%. Monthly income RM10K, might only recognize RM6K-9K.',
-                data: 'Recognition diff up to RM5K/month',
-                color: 'orange'
-              },
-            ].map((pain, index) => (
-              <div
-                key={index}
-                className="group relative p-8 rounded-2xl bg-gradient-to-br from-background to-muted border-2 border-border hover:border-red-500/50 transition-all duration-300"
-              >
+            {t.financialOptimization.painPoints.items.map((pain, index) => {
+              const Icon = painPointIcons[index];
+              const color = painPointColors[index];
+              return (
+                <div
+                  key={index}
+                  className="group relative p-8 rounded-2xl bg-gradient-to-br from-background to-muted border-2 border-border hover:border-red-500/50 transition-all duration-300"
+                >
                 {/* Icon */}
-                <div className={`w-16 h-16 rounded-xl bg-${pain.color}-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                  <pain.icon className={`w-8 h-8 text-${pain.color}-500`} strokeWidth={1.5} />
+                <div className={`w-16 h-16 rounded-xl bg-${color}-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                  <Icon className={`w-8 h-8 text-${color}-500`} strokeWidth={1.5} />
                 </div>
 
                 {/* Title */}
@@ -316,67 +264,42 @@ export default function FinancialOptimizationPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 md:auto-rows-fr">
-            {[
-              {
-                name: 'Mr. Zhang',
-                industry: 'Manufacturing',
-                age: '45 years old',
-                income: 'RM 2,744/month',
-                before: 'DSR 72%, rejected by 3 banks',
-                after: 'Clear credit card, DSR → 58%',
-                result: 'CIMB approved RM 30K',
-                savings: 'Save RM 10K/year interest',
-                icon: 'factory'
-              },
-              {
-                name: 'Ms. Lee',
-                industry: 'E-commerce Owner',
-                age: '35 years old',
-                income: 'RM 13,000/month',
-                before: 'RHB only recognizes RM 6,600 (60%)',
-                after: 'Switch to Hong Leong, recognizes RM 11,700 (90%)',
-                result: 'Loan capacity diff RM 496K',
-                savings: '10 years save RM 200K+ interest',
-                icon: 'shopping'
-              },
-              {
-                name: 'Mr. Wang',
-                industry: 'Joint Housing Loan',
-                age: '40 years old',
-                income: 'Couple combined RM 5,700',
-                before: 'Single application DSR 110%, rejected',
-                after: 'Hong Leong 50% split rule',
-                result: 'DSR → 78%, approved RM 400K',
-                savings: 'Avoid guarantor cost RM 20K-50K',
-                icon: 'home'
-              },
-            ].map((caseStudy, index) => (
+            {t.financialOptimization.cases.items.map((caseStudy, index) => {
+              // Determine icon based on name/industry
+              let icon = 'factory';
+              if (caseStudy.name.includes('E-commerce') || caseStudy.name.includes('电商')) {
+                icon = 'shopping';
+              } else if (caseStudy.name.includes('Housing') || caseStudy.name.includes('房贷') || caseStudy.name.includes('Rumah')) {
+                icon = 'home';
+              }
+
+              return (
               <div
                 key={index}
                 className="group h-full flex flex-col p-8 rounded-2xl bg-gradient-to-br from-background to-muted border-2 border-border hover:border-primary transition-all duration-300 hover:-translate-y-2"
               >
                 {/* Professional Avatar Icon */}
                 <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-primary/30 mb-6 mx-auto">
-                  {caseStudy.icon === 'factory' && (
+                  {icon === 'factory' && (
                     <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                   )}
-                  {caseStudy.icon === 'shopping' && (
+                  {icon === 'shopping' && (
                     <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
                   )}
-                  {caseStudy.icon === 'home' && (
+                  {icon === 'home' && (
                     <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
                   )}
                 </div>
 
-                {/* Name & Industry - Same Line */}
+                {/* Name - Already includes industry in translation */}
                 <h3 className="text-xl font-bold text-center mb-2 whitespace-nowrap">
-                  {caseStudy.name} - {caseStudy.industry}
+                  {caseStudy.name}
                 </h3>
                 
                 {/* Age & Income - Same Line */}
@@ -407,7 +330,7 @@ export default function FinancialOptimizationPage() {
                   <div className="text-base font-bold text-primary leading-snug">{caseStudy.savings}</div>
                 </div>
               </div>
-            ))}
+            );})}
           </div>
         </div>
       </section>
@@ -422,38 +345,17 @@ export default function FinancialOptimizationPage() {
           </div>
 
           <div className="space-y-6 mb-16">
-            {[
-              {
-                q: 'What is DSR?',
-                a: 'Debt Service Ratio = Monthly Debt ÷ Monthly Net Income × 100%. It is the key indicator banks use to assess your repayment ability.'
-              },
-              {
-                q: 'Why do different banks have different DSR limits?',
-                a: 'Each bank has different risk policies. Maybank limits low-income customers to 40%, while Hong Leong allows high-income customers up to 80%.'
-              },
-              {
-                q: 'Why is self-employed income discounted?',
-                a: 'Banks consider self-employed income unstable, so they discount it. RHB only recognizes 60%, Hong Leong recognizes 90%.'
-              },
-              {
-                q: 'Do you charge for your services?',
-                a: '✅ Completely FREE for loan clients. Our income comes from bank partnership commissions.'
-              },
-              {
-                q: 'How long to get assessment results?',
-                a: 'Free DSR assessment is instant. Complete bank recommendations and optimization plan delivered within 24 hours.'
-              },
-            ].map((faq, index) => (
+            {t.financialOptimization.faq.items.map((faq, index) => (
               <div
                 key={index}
                 className="p-6 rounded-lg bg-muted border border-border hover:border-primary transition-colors"
               >
                 <h3 className="font-bold text-lg mb-2 flex items-start gap-2">
                   <span className="text-primary">Q:</span>
-                  {faq.q}
+                  {faq.question}
                 </h3>
                 <p className="text-muted-foreground pl-6">
-                  <span className="text-primary font-bold">A:</span> {faq.a}
+                  <span className="text-primary font-bold">A:</span> {faq.answer}
                 </p>
               </div>
             ))}
