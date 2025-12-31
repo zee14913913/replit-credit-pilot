@@ -964,17 +964,17 @@ export const translations: Record<Language, Translations> = {
         title: 'Expert Financial Guidance',
         items: [
           {
-            icon: '🎯',
+            icon: '',
             title: 'Personalized Solutions',
             description: 'Tailored financial strategies designed specifically for your business needs and goals.',
           },
           {
-            icon: '💼',
+            icon: '',
             title: 'Industry Expertise',
             description: 'Deep understanding of Malaysian financial landscape and regulatory requirements.',
           },
           {
-            icon: '🤝',
+            icon: '',
             title: 'Ongoing Support',
             description: 'Continuous guidance and support throughout your financial journey with us.',
           },
@@ -1021,32 +1021,32 @@ export const translations: Record<Language, Translations> = {
         description: 'We collect loan product information from all licensed institutions in Malaysia (banks, digital banks, fintech companies), create better financial conditions for clients, and help them secure the best low-interest loans. We do not provide any illegal loans.',
         features: [
           {
-            icon: '📊',
+            icon: '',
             title: 'Comprehensive Database',
             description: '50+ licensed financial institutions including banks, digital banks, and fintech companies',
           },
           {
-            icon: '💰',
+            icon: '',
             title: 'Best Rates',
             description: 'Compare and secure the lowest interest rates available in the market',
           },
           {
-            icon: '✅',
+            icon: '',
             title: '100% Legal',
             description: 'Only work with licensed and regulated financial institutions',
           },
           {
-            icon: '🎯',
+            icon: '',
             title: 'DSR Optimization',
             description: 'Enhance debt service ratio to improve loan approval probability',
           },
           {
-            icon: '🔄',
+            icon: '',
             title: 'Debt Consolidation',
             description: 'Consolidate multiple debts to reduce monthly payment pressure',
           },
           {
-            icon: '⭐',
+            icon: '',
             title: 'Credit Enhancement',
             description: 'Optimize credit scores and improve CTOS/CCRIS reports',
           },
@@ -1131,22 +1131,22 @@ export const translations: Record<Language, Translations> = {
         title: 'Who We Serve',
         customers: [
           {
-            icon: '👔',
+            icon: '',
             title: 'Traditional Business Owners',
             description: '40-50 year old traditional business owners who need loans for business expansion or digital transformation',
           },
           {
-            icon: '🏢',
+            icon: '',
             title: 'SME Companies',
             description: 'Small and medium enterprises needing loans, including manufacturing, retail, F&B, etc.',
           },
           {
-            icon: '💳',
+            icon: '',
             title: 'High Credit Card Debt',
             description: 'Clients with high credit card debt who need debt consolidation and financial optimization',
           },
           {
-            icon: '🤝',
+            icon: '',
             title: 'Business Partners',
             description: 'Suppliers, member customers who need comprehensive business support',
           },
@@ -1180,21 +1180,21 @@ export const translations: Record<Language, Translations> = {
         description: 'Malaysia\'s credit card debt stands at RM 50.7B, with RM 551.8M overdue (1.1%). Are you facing these challenges?',
         items: [
           {
-            icon: '😰',
+            icon: '',
             iconComponent: React.createElement(AlertTriangle, { size: 32, strokeWidth: 1.5 }),
             title: 'Forgot Payment',
             description: 'Late payment penalties + credit score damage. Each late payment incurs RM 150-300 penalty and affects CCRIS/CTOS records.',
             data: 'RM 551.8M Overdue Debt',
           },
           {
-            icon: '💸',
+            icon: '',
             iconComponent: React.createElement(TrendingUp, { size: 32, strokeWidth: 1.5 }),
             title: 'Poor Optimization',
             description: 'Wasted reward points + high annual fees. Not understanding card benefits leads to missing cashback and paying unnecessary annual fees.',
             data: '18% Annual Interest Trap',
           },
           {
-            icon: '🔢',
+            icon: '',
             iconComponent: React.createElement(Layers, { size: 32, strokeWidth: 1.5 }),
             title: 'Multiple Cards Chaos',
             description: 'Different billing dates, hard to manage. Holding 2-3 cards with different payment dates makes it easy to miss payments.',
@@ -1207,31 +1207,31 @@ export const translations: Record<Language, Translations> = {
         title: '5 Professional Services, Comprehensive Credit Card Management',
         items: [
           {
-            icon: '💬',
+            icon: '',
             iconComponent: React.createElement(Bell, { size: 28, strokeWidth: 1.5 }),
             title: 'Payment Reminders',
             description: 'Triple reminder system via WhatsApp, SMS, and Email to ensure on-time payments and avoid late fees',
           },
           {
-            icon: '💳',
+            icon: '',
             iconComponent: React.createElement(CreditCard, { size: 28, strokeWidth: 1.5 }),
             title: 'Payment-On-Behalf',
             description: 'Automatic payment within 2 business days to avoid late payment penalties and protect your credit score',
           },
           {
-            icon: '🛍️',
+            icon: '',
             iconComponent: React.createElement(ShoppingCart, { size: 28, strokeWidth: 1.5 }),
             title: 'Purchase-On-Behalf',
             description: 'Automatically select the best credit card to maximize reward points and cashback returns',
           },
           {
-            icon: '📊',
+            icon: '',
             iconComponent: React.createElement(TrendingUp, { size: 28, strokeWidth: 1.5 }),
             title: 'Card Optimization',
             description: 'Spending pattern analysis, annual fee waiver assistance, reward points maximization strategies',
           },
           {
-            icon: '📉',
+            icon: '',
             iconComponent: React.createElement(LifeBuoy, { size: 28, strokeWidth: 1.5 }),
             title: 'Debt Management',
             description: 'DSR analysis, debt consolidation recommendations, credit score improvement strategies',
@@ -1531,22 +1531,22 @@ export const translations: Record<Language, Translations> = {
         title: 'What Drives Us',
         items: [
           {
-            icon: '🎯',
+            icon: '',
             title: 'Customer First',
             description: 'We prioritize our clients\' success above all else.'
           },
           {
-            icon: '💡',
+            icon: '',
             title: 'Innovation',
             description: 'Using AI and technology to transform financial services.'
           },
           {
-            icon: '🤝',
+            icon: '',
             title: 'Integrity',
             description: 'Transparent, honest, and ethical in all our dealings.'
           },
           {
-            icon: '🚀',
+            icon: '',
             title: 'Excellence',
             description: 'Committed to delivering exceptional results every time.'
           }
@@ -1623,32 +1623,32 @@ export const translations: Record<Language, Translations> = {
         title: 'Why Work With Us',
         items: [
           {
-            icon: '💰',
+            icon: '',
             title: 'Competitive Salary',
             description: 'Above market rate compensation with performance bonuses',
           },
           {
-            icon: '🏥',
+            icon: '',
             title: 'Health Benefits',
             description: 'Comprehensive medical and dental insurance',
           },
           {
-            icon: '📚',
+            icon: '',
             title: 'Learning & Development',
             description: 'Continuous training and career development opportunities',
           },
           {
-            icon: '🏠',
+            icon: '',
             title: 'Flexible Work',
             description: 'Hybrid work arrangement with flexible hours',
           },
           {
-            icon: '🎉',
+            icon: '',
             title: 'Team Events',
             description: 'Regular team building activities and company events',
           },
           {
-            icon: '🚀',
+            icon: '',
             title: 'Career Growth',
             description: 'Clear career progression path in a growing company',
           },
@@ -1678,9 +1678,9 @@ export const translations: Record<Language, Translations> = {
         title: 'Save RM 1,200-5,000 Annually',
         subtitle: 'Through Professional Credit Card Management Services',
         benefits: [
-          { icon: '💰', value: 'RM 500-2,000/year', label: 'Avoid Late Payment Penalties' },
-          { icon: '🎁', value: 'RM 800-3,000/year', label: 'Additional Rewards & Cashback' },
-          { icon: '📈', value: '50-100 Points', label: 'Credit Score Improvement' },
+          { icon: '', value: 'RM 500-2,000/year', label: 'Avoid Late Payment Penalties' },
+          { icon: '', value: 'RM 800-3,000/year', label: 'Additional Rewards & Cashback' },
+          { icon: '', value: '50-100 Points', label: 'Credit Score Improvement' },
         ],
         cta1: 'Free WhatsApp Consultation',
         cta2: 'View Pricing',
@@ -1692,19 +1692,19 @@ export const translations: Record<Language, Translations> = {
         subtitle: 'Malaysian credit card debt: RM 50.7B | Overdue debt: RM 551.8M (1.1%)',
         points: [
           {
-            icon: '😰',
+            icon: '',
             title: 'Forgot to Pay',
             description: 'Multiple cards, different due dates, easily miss payments',
             impact: 'Late fee RM 150-300/time + Credit score damage',
           },
           {
-            icon: '💸',
+            icon: '',
             title: 'Don\'t Know How to Optimize',
             description: 'Don\'t understand card rewards, wasted points, high annual fees',
             impact: 'Lost RM 800-3,000/year in benefits',
           },
           {
-            icon: '🔢',
+            icon: '',
             title: 'Multiple Card Chaos',
             description: 'Manage 2-3 cards, confused statements, stress',
             impact: 'Minimum payment trap, 18% annual interest',
@@ -1723,7 +1723,7 @@ export const translations: Record<Language, Translations> = {
         subtitle: 'Comprehensive credit card management to maximize your benefits',
         services: [
           {
-            icon: '⏰',
+            icon: '',
             title: 'Payment Reminder Service',
             description: '3-tier reminder system ensures you never miss a payment',
             benefits: [
@@ -1734,7 +1734,7 @@ export const translations: Record<Language, Translations> = {
             ],
           },
           {
-            icon: '💳',
+            icon: '',
             title: 'Payment-On-Behalf Service',
             description: 'We pay on your behalf to ensure timely payments',
             benefits: [
@@ -1745,7 +1745,7 @@ export const translations: Record<Language, Translations> = {
             ],
           },
           {
-            icon: '🛍️',
+            icon: '',
             title: 'Purchase-On-Behalf Service',
             description: 'Use the optimal card to maximize rewards',
             benefits: [
@@ -1756,7 +1756,7 @@ export const translations: Record<Language, Translations> = {
             ],
           },
           {
-            icon: '📊',
+            icon: '',
             title: 'Card Optimization',
             description: 'Spending pattern analysis and strategy recommendations',
             benefits: [
@@ -1767,7 +1767,7 @@ export const translations: Record<Language, Translations> = {
             ],
           },
           {
-            icon: '💼',
+            icon: '',
             title: 'Debt Management Consultation',
             description: 'DSR analysis and debt consolidation recommendations',
             benefits: [
@@ -2294,17 +2294,17 @@ export const translations: Record<Language, Translations> = {
         title: '专业财务指导',
         items: [
           {
-            icon: '🎯',
+            icon: '',
             title: '个性化解决方案',
             description: '专为您的业务需求和目标量身定制的财务策略。',
           },
           {
-            icon: '💼',
+            icon: '',
             title: '行业专业知识',
             description: '深入了解马来西亚金融格局和监管要求。',
           },
           {
-            icon: '🤝',
+            icon: '',
             title: '持续支持',
             description: '在您与我们的财务旅程中提供持续的指导和支持。',
           },
@@ -2351,32 +2351,32 @@ export const translations: Record<Language, Translations> = {
         description: '我们收集马来西亚所有合法机构（银行、数字银行、金融科技公司）的贷款产品信息，为客户创造更好的财务状况，帮助他们获得最佳低息贷款。我们不提供任何非法贷款。',
         features: [
           {
-            icon: '📊',
+            icon: '',
             title: '全面数据库',
             description: '50+持牌金融机构，包括银行、数字银行和金融科技公司',
           },
           {
-            icon: '💰',
+            icon: '',
             title: '最优利率',
             description: '比较并获得市场上最低的利率',
           },
           {
-            icon: '✅',
+            icon: '',
             title: '100%合法',
             description: '只与持牌和受监管的金融机构合作',
           },
           {
-            icon: '🎯',
+            icon: '',
             title: 'DSR优化',
             description: '美化债务服务比率，提高贷款批准概率',
           },
           {
-            icon: '🔄',
+            icon: '',
             title: '债务整合',
             description: '整合多个债务，减少月供压力',
           },
           {
-            icon: '⭐',
+            icon: '',
             title: '信用提升',
             description: '优化信用评分，改善CTOS/CCRIS报告',
           },
@@ -2461,22 +2461,22 @@ export const translations: Record<Language, Translations> = {
         title: '我们服务的对象',
         customers: [
           {
-            icon: '👔',
+            icon: '',
             title: '传统企业主',
             description: '40-50岁的传统企业主，需要贷款进行业务扩展或数字化转型',
           },
           {
-            icon: '🏢',
+            icon: '',
             title: '中小企业',
             description: '需要贷款的中小企业，包括制造业、零售、餐饮等',
           },
           {
-            icon: '💳',
+            icon: '',
             title: '高信用卡债务',
             description: '高信用卡债务客户，需要债务整合和财务优化',
           },
           {
-            icon: '🤝',
+            icon: '',
             title: '业务合作伙伴',
             description: '供应商、会员客户，需要全面的业务支持',
           },
@@ -2510,21 +2510,21 @@ export const translations: Record<Language, Translations> = {
         description: '马来西亚信用卡债务达RM 50.7B，其中RM 551.8M逾期（1.1%）。你是否也面临这些挑战？',
         items: [
           {
-            icon: '😰',
+            icon: '',
             iconComponent: React.createElement(AlertTriangle, { size: 32, strokeWidth: 1.5 }),
             title: '忘记还款',
             description: '逾期罚款 + 信用评分损失。每次逾期罚款RM 150-300，并影响CCRIS/CTOS记录。',
             data: 'RM 551.8M 逾期债务',
           },
           {
-            icon: '💸',
+            icon: '',
             iconComponent: React.createElement(TrendingUp, { size: 32, strokeWidth: 1.5 }),
             title: '不懂优化',
             description: '浪费奖励积分 + 高额年费。不了解信用卡优惠导致错失现金返还，支付不必要的年费。',
             data: '18% 年利率陷阱',
           },
           {
-            icon: '🔢',
+            icon: '',
             iconComponent: React.createElement(Layers, { size: 32, strokeWidth: 1.5 }),
             title: '多卡混乱',
             description: '账单日期不同，难以管理。持有2-3张卡，不同的还款日期容易遗漏。',
@@ -2537,31 +2537,31 @@ export const translations: Record<Language, Translations> = {
         title: '5大专业服务，全方位信用卡管理',
         items: [
           {
-            icon: '💬',
+            icon: '',
             iconComponent: React.createElement(Bell, { size: 28, strokeWidth: 1.5 }),
             title: '支付提醒',
             description: '通过WhatsApp、短信和电邮的三重提醒系统，确保按时还款，避免逾期费用',
           },
           {
-            icon: '💳',
+            icon: '',
             iconComponent: React.createElement(CreditCard, { size: 28, strokeWidth: 1.5 }),
             title: '代付服务',
             description: '2个工作日内自动付款，避免逾期罚款，保护您的信用评分',
           },
           {
-            icon: '🛍️',
+            icon: '',
             iconComponent: React.createElement(ShoppingCart, { size: 28, strokeWidth: 1.5 }),
             title: '代购服务',
             description: '自动选择最优信用卡，最大化奖励积分和现金返还收益',
           },
           {
-            icon: '📊',
+            icon: '',
             iconComponent: React.createElement(TrendingUp, { size: 28, strokeWidth: 1.5 }),
             title: '卡片优化',
             description: '消费模式分析，年费豁免协助，奖励积分最大化策略',
           },
           {
-            icon: '📉',
+            icon: '',
             iconComponent: React.createElement(LifeBuoy, { size: 28, strokeWidth: 1.5 }),
             title: '债务管理',
             description: 'DSR分析，债务整合建议，信用评分改善策略',
@@ -2861,22 +2861,22 @@ export const translations: Record<Language, Translations> = {
         title: '驱动我们前进的力量',
         items: [
           {
-            icon: '🎯',
+            icon: '',
             title: '客户至上',
             description: '我们始终将客户的成功放在首位。'
           },
           {
-            icon: '💡',
+            icon: '',
             title: '创新',
             description: '利用AI和技术改变金融服务。'
           },
           {
-            icon: '🤝',
+            icon: '',
             title: '诚信',
             description: '在所有交易中保持透明、诚实和道德。'
           },
           {
-            icon: '🚀',
+            icon: '',
             title: '卓越',
             description: '致力于每次都提供卓越的结果。'
           }
@@ -2954,32 +2954,32 @@ export const translations: Record<Language, Translations> = {
         title: '为什么与我们合作',
         items: [
           {
-            icon: '💰',
+            icon: '',
             title: '有竞争力的薪资',
             description: '高于市场水平的薪酬和绩效奖金',
           },
           {
-            icon: '🏥',
+            icon: '',
             title: '健康福利',
             description: '全面的医疗和牙科保险',
           },
           {
-            icon: '📚',
+            icon: '',
             title: '学习与发展',
             description: '持续培训和职业发展机会',
           },
           {
-            icon: '🏠',
+            icon: '',
             title: '灵活工作',
             description: '混合工作安排，工作时间灵活',
           },
           {
-            icon: '🎉',
+            icon: '',
             title: '团队活动',
             description: '定期的团队建设活动和公司活动',
           },
           {
-            icon: '🚀',
+            icon: '',
             title: '职业成长',
             description: '在成长型公司中明确的职业发展路径',
           },
@@ -3009,9 +3009,9 @@ export const translations: Record<Language, Translations> = {
         title: '每年节省 RM 1,200-5,000',
         subtitle: '通过专业信用卡管理服务',
         benefits: [
-          { icon: '💰', value: 'RM 500-2,000/年', label: '避免逾期罚款' },
-          { icon: '🎁', value: 'RM 800-3,000/年', label: '额外奖励与现金返还' },
-          { icon: '📈', value: '50-100分', label: '信用评分提升' },
+          { icon: '', value: 'RM 500-2,000/年', label: '避免逾期罚款' },
+          { icon: '', value: 'RM 800-3,000/年', label: '额外奖励与现金返还' },
+          { icon: '', value: '50-100分', label: '信用评分提升' },
         ],
         cta1: '免费WhatsApp咨询',
         cta2: '查看定价',
@@ -3023,19 +3023,19 @@ export const translations: Record<Language, Translations> = {
         subtitle: '马来西亚信用卡债务：RM 50.7B | 逾期债务：RM 551.8M (1.1%)',
         points: [
           {
-            icon: '😰',
+            icon: '',
             title: '忘记还款',
             description: '多张卡片，不同到期日，容易错过还款',
             impact: '逾期费RM 150-300/次 + 信用评分损害',
           },
           {
-            icon: '💸',
+            icon: '',
             title: '不懂优化',
             description: '不了解卡片奖励，积分浪费，年费高昂',
             impact: '每年损失RM 800-3,000收益',
           },
           {
-            icon: '🔢',
+            icon: '',
             title: '多卡混乱',
             description: '管理2-3张卡，账单混乱，压力大',
             impact: '最低还款陷阱，18%年利率',
@@ -3054,7 +3054,7 @@ export const translations: Record<Language, Translations> = {
         subtitle: '全方位信用卡管理，最大化您的收益',
         services: [
           {
-            icon: '⏰',
+            icon: '',
             title: '支付提醒服务',
             description: '三重提醒系统，确保您永不错过还款',
             benefits: [
@@ -3065,7 +3065,7 @@ export const translations: Record<Language, Translations> = {
             ],
           },
           {
-            icon: '💳',
+            icon: '',
             title: '代付服务',
             description: '我们代您支付，确保按时还款',
             benefits: [
@@ -3076,7 +3076,7 @@ export const translations: Record<Language, Translations> = {
             ],
           },
           {
-            icon: '🛍️',
+            icon: '',
             title: '代购服务',
             description: '使用最优信用卡，最大化奖励',
             benefits: [
@@ -3087,7 +3087,7 @@ export const translations: Record<Language, Translations> = {
             ],
           },
           {
-            icon: '📊',
+            icon: '',
             title: '信用卡优化',
             description: '消费模式分析与策略建议',
             benefits: [
@@ -3098,7 +3098,7 @@ export const translations: Record<Language, Translations> = {
             ],
           },
           {
-            icon: '💼',
+            icon: '',
             title: '债务管理咨询',
             description: 'DSR分析与债务整合建议',
             benefits: [
@@ -3625,17 +3625,17 @@ export const translations: Record<Language, Translations> = {
         title: 'Bimbingan Kewangan Pakar',
         items: [
           {
-            icon: '🎯',
+            icon: '',
             title: 'Penyelesaian Diperibadikan',
             description: 'Strategi kewangan disesuaikan khusus untuk keperluan dan matlamat perniagaan anda.',
           },
           {
-            icon: '💼',
+            icon: '',
             title: 'Kepakaran Industri',
             description: 'Pemahaman mendalam tentang landskap kewangan Malaysia dan keperluan peraturan.',
           },
           {
-            icon: '🤝',
+            icon: '',
             title: 'Sokongan Berterusan',
             description: 'Bimbingan dan sokongan berterusan sepanjang perjalanan kewangan anda bersama kami.',
           },
@@ -3682,32 +3682,32 @@ export const translations: Record<Language, Translations> = {
         description: 'Kami mengumpul maklumat produk pinjaman dari semua institusi berlesen di Malaysia (bank, bank digital, syarikat fintech), mewujudkan keadaan kewangan yang lebih baik untuk pelanggan, dan membantu mereka mendapatkan pinjaman faedah rendah terbaik. Kami tidak menyediakan sebarang pinjaman haram.',
         features: [
           {
-            icon: '📊',
+            icon: '',
             title: 'Pangkalan Data Menyeluruh',
             description: '50+ institusi kewangan berlesen termasuk bank, bank digital, dan syarikat fintech',
           },
           {
-            icon: '💰',
+            icon: '',
             title: 'Kadar Terbaik',
             description: 'Bandingkan dan dapatkan kadar faedah terendah yang tersedia di pasaran',
           },
           {
-            icon: '✅',
+            icon: '',
             title: '100% Sah',
             description: 'Hanya bekerja dengan institusi kewangan berlesen dan dikawal selia',
           },
           {
-            icon: '🎯',
+            icon: '',
             title: 'Pengoptimuman DSR',
             description: 'Tingkatkan nisbah perkhidmatan hutang untuk meningkatkan kebarangkalian kelulusan pinjaman',
           },
           {
-            icon: '🔄',
+            icon: '',
             title: 'Penyatuan Hutang',
             description: 'Satukan pelbagai hutang untuk mengurangkan tekanan bayaran bulanan',
           },
           {
-            icon: '⭐',
+            icon: '',
             title: 'Peningkatan Kredit',
             description: 'Optimumkan skor kredit dan tingkatkan laporan CTOS/CCRIS',
           },
@@ -3792,22 +3792,22 @@ export const translations: Record<Language, Translations> = {
         title: 'Siapa Yang Kami Layani',
         customers: [
           {
-            icon: '👔',
+            icon: '',
             title: 'Pemilik Perniagaan Tradisional',
             description: 'Pemilik perniagaan tradisional berusia 40-50 tahun yang memerlukan pinjaman untuk pengembangan perniagaan atau transformasi digital',
           },
           {
-            icon: '🏢',
+            icon: '',
             title: 'Syarikat PKS',
             description: 'Perusahaan kecil dan sederhana yang memerlukan pinjaman, termasuk pembuatan, runcit, F&B, dll.',
           },
           {
-            icon: '💳',
+            icon: '',
             title: 'Hutang Kad Kredit Tinggi',
             description: 'Pelanggan dengan hutang kad kredit tinggi yang memerlukan penyatuan hutang dan pengoptimuman kewangan',
           },
           {
-            icon: '🤝',
+            icon: '',
             title: 'Rakan Kongsi Perniagaan',
             description: 'Pembekal, pelanggan ahli yang memerlukan sokongan perniagaan yang menyeluruh',
           },
@@ -3841,21 +3841,21 @@ export const translations: Record<Language, Translations> = {
         description: 'Hutang kad kredit Malaysia mencapai RM 50.7B, dengan RM 551.8M tertunggak (1.1%). Adakah anda menghadapi cabaran ini?',
         items: [
           {
-            icon: '😰',
+            icon: '',
             iconComponent: React.createElement(AlertTriangle, { size: 32, strokeWidth: 1.5 }),
             title: 'Terlupa Bayaran',
             description: 'Penalti bayaran lewat + kerosakan skor kredit. Setiap bayaran lewat dikenakan penalti RM 150-300 dan menjejaskan rekod CCRIS/CTOS.',
             data: 'RM 551.8M Hutang Tertunggak',
           },
           {
-            icon: '💸',
+            icon: '',
             iconComponent: React.createElement(TrendingUp, { size: 32, strokeWidth: 1.5 }),
             title: 'Pengoptimuman Lemah',
             description: 'Mata ganjaran terbuang + yuran tahunan tinggi. Tidak memahami faedah kad menyebabkan kehilangan pulangan tunai dan membayar yuran tahunan yang tidak perlu.',
             data: 'Perangkap Faedah 18% Setahun',
           },
           {
-            icon: '🔢',
+            icon: '',
             iconComponent: React.createElement(Layers, { size: 32, strokeWidth: 1.5 }),
             title: 'Kad Pelbagai Keliru',
             description: 'Tarikh pengebilan berbeza, susah diuruskan. Memegang 2-3 kad dengan tarikh bayaran berbeza memudahkan terlepas bayaran.',
@@ -3868,31 +3868,31 @@ export const translations: Record<Language, Translations> = {
         title: '5 Perkhidmatan Profesional, Pengurusan Kad Kredit Komprehensif',
         items: [
           {
-            icon: '💬',
+            icon: '',
             iconComponent: React.createElement(Bell, { size: 28, strokeWidth: 1.5 }),
             title: 'Peringatan Pembayaran',
             description: 'Sistem peringatan tiga peringkat melalui WhatsApp, SMS, dan Email untuk memastikan pembayaran tepat masa dan elakkan bayaran lewat',
           },
           {
-            icon: '💳',
+            icon: '',
             iconComponent: React.createElement(CreditCard, { size: 28, strokeWidth: 1.5 }),
             title: 'Bayaran Bagi Pihak',
             description: 'Pembayaran automatik dalam 2 hari bekerja untuk elakkan penalti bayaran lewat dan melindungi skor kredit anda',
           },
           {
-            icon: '🛍️',
+            icon: '',
             iconComponent: React.createElement(ShoppingCart, { size: 28, strokeWidth: 1.5 }),
             title: 'Pembelian Bagi Pihak',
             description: 'Pilih kad kredit terbaik secara automatik untuk maksimumkan mata ganjaran dan pulangan tunai',
           },
           {
-            icon: '📊',
+            icon: '',
             iconComponent: React.createElement(TrendingUp, { size: 28, strokeWidth: 1.5 }),
             title: 'Pengoptimuman Kad',
             description: 'Analisis corak perbelanjaan, bantuan pengecualian yuran tahunan, strategi maksimumkan mata ganjaran',
           },
           {
-            icon: '📉',
+            icon: '',
             iconComponent: React.createElement(LifeBuoy, { size: 28, strokeWidth: 1.5 }),
             title: 'Pengurusan Hutang',
             description: 'Analisis DSR, cadangan penyatuan hutang, strategi peningkatan skor kredit',
@@ -4192,22 +4192,22 @@ export const translations: Record<Language, Translations> = {
         title: 'Apa Yang Mendorong Kami',
         items: [
           {
-            icon: '🎯',
+            icon: '',
             title: 'Pelanggan Dahulu',
             description: 'Kami mengutamakan kejayaan pelanggan di atas segalanya.'
           },
           {
-            icon: '💡',
+            icon: '',
             title: 'Inovasi',
             description: 'Menggunakan AI dan teknologi untuk mengubah perkhidmatan kewangan.'
           },
           {
-            icon: '🤝',
+            icon: '',
             title: 'Integriti',
             description: 'Telus, jujur, dan beretika dalam semua urusan kami.'
           },
           {
-            icon: '🚀',
+            icon: '',
             title: 'Kecemerlangan',
             description: 'Komited untuk menyampaikan hasil yang luar biasa setiap kali.'
           }
@@ -4282,32 +4282,32 @@ export const translations: Record<Language, Translations> = {
         title: 'Mengapa Bekerja Dengan Kami',
         items: [
           {
-            icon: '💰',
+            icon: '',
             title: 'Gaji Kompetitif',
             description: 'Pampasan di atas kadar pasaran dengan bonus prestasi',
           },
           {
-            icon: '🏥',
+            icon: '',
             title: 'Faedah Kesihatan',
             description: 'Insurans perubatan dan pergigian yang menyeluruh',
           },
           {
-            icon: '📚',
+            icon: '',
             title: 'Pembelajaran & Pembangunan',
             description: 'Latihan berterusan dan peluang pembangunan kerjaya',
           },
           {
-            icon: '🏠',
+            icon: '',
             title: 'Kerja Fleksibel',
             description: 'Susunan kerja hibrid dengan waktu fleksibel',
           },
           {
-            icon: '🎉',
+            icon: '',
             title: 'Acara Pasukan',
             description: 'Aktiviti pembinaan pasukan dan acara syarikat secara berkala',
           },
           {
-            icon: '🚀',
+            icon: '',
             title: 'Pertumbuhan Kerjaya',
             description: 'Laluan kemajuan kerjaya yang jelas dalam syarikat yang berkembang',
           },
@@ -4337,9 +4337,9 @@ export const translations: Record<Language, Translations> = {
         title: 'Jimat RM 1,200-5,000 Setahun',
         subtitle: 'Melalui Perkhidmatan Pengurusan Kad Kredit Profesional',
         benefits: [
-          { icon: '💰', value: 'RM 500-2,000/tahun', label: 'Elak Penalti Lewat Bayar' },
-          { icon: '🎁', value: 'RM 800-3,000/tahun', label: 'Ganjaran & Pulangan Tunai Tambahan' },
-          { icon: '📈', value: '50-100 Mata', label: 'Peningkatan Skor Kredit' },
+          { icon: '', value: 'RM 500-2,000/tahun', label: 'Elak Penalti Lewat Bayar' },
+          { icon: '', value: 'RM 800-3,000/tahun', label: 'Ganjaran & Pulangan Tunai Tambahan' },
+          { icon: '', value: '50-100 Mata', label: 'Peningkatan Skor Kredit' },
         ],
         cta1: 'Perundingan WhatsApp Percuma',
         cta2: 'Lihat Harga',
@@ -4351,19 +4351,19 @@ export const translations: Record<Language, Translations> = {
         subtitle: 'Hutang kad kredit Malaysia: RM 50.7B | Hutang tertunggak: RM 551.8M (1.1%)',
         points: [
           {
-            icon: '😰',
+            icon: '',
             title: 'Terlupa Bayar',
             description: 'Pelbagai kad, tarikh tamat berbeza, mudah terlepas bayaran',
             impact: 'Yuran lewat RM 150-300/kali + Kerosakan skor kredit',
           },
           {
-            icon: '💸',
+            icon: '',
             title: 'Tidak Tahu Cara Optimalkan',
             description: 'Tidak faham ganjaran kad, mata terbuang, yuran tahunan tinggi',
             impact: 'Kehilangan RM 800-3,000/tahun faedah',
           },
           {
-            icon: '🔢',
+            icon: '',
             title: 'Kekacauan Pelbagai Kad',
             description: 'Urus 2-3 kad, penyata keliru, tekanan',
             impact: 'Perangkap bayaran minimum, faedah 18% setahun',
@@ -4382,7 +4382,7 @@ export const translations: Record<Language, Translations> = {
         subtitle: 'Pengurusan kad kredit menyeluruh untuk memaksimumkan faedah anda',
         services: [
           {
-            icon: '⏰',
+            icon: '',
             title: 'Perkhidmatan Peringatan Bayaran',
             description: 'Sistem peringatan 3 peringkat memastikan anda tidak terlepas bayaran',
             benefits: [
@@ -4393,7 +4393,7 @@ export const translations: Record<Language, Translations> = {
             ],
           },
           {
-            icon: '💳',
+            icon: '',
             title: 'Perkhidmatan Bayaran Wakil',
             description: 'Kami bayar bagi pihak anda untuk memastikan bayaran tepat masa',
             benefits: [
@@ -4404,7 +4404,7 @@ export const translations: Record<Language, Translations> = {
             ],
           },
           {
-            icon: '🛍️',
+            icon: '',
             title: 'Perkhidmatan Pembelian Wakil',
             description: 'Gunakan kad yang paling optimum untuk memaksimumkan ganjaran',
             benefits: [
@@ -4415,7 +4415,7 @@ export const translations: Record<Language, Translations> = {
             ],
           },
           {
-            icon: '📊',
+            icon: '',
             title: 'Pengoptimuman Kad',
             description: 'Analisis corak perbelanjaan dan cadangan strategi',
             benefits: [
@@ -4426,7 +4426,7 @@ export const translations: Record<Language, Translations> = {
             ],
           },
           {
-            icon: '💼',
+            icon: '',
             title: 'Perundingan Pengurusan Hutang',
             description: 'Analisis DSR dan cadangan penyatuan hutang',
             benefits: [
