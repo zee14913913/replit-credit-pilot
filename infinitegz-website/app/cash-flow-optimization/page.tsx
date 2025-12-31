@@ -21,6 +21,18 @@ import {
   BarChart3,
   PieChart,
   LineChart
+,
+  Stethoscope,
+  Lightbulb,
+  Calculator,
+  CreditCard,
+  ShoppingCart,
+  Store,
+  Users,
+  FileText,
+  Building2,
+  ChefHat,
+  Shirt
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -83,9 +95,9 @@ export default function CashFlowOptimizationPage() {
   };
 
   const getHealthLabel = (score: number) => {
-    if (score >= 71) return '💖 Healthy';
-    if (score >= 41) return '⚠️ Warning';
-    return '🔴 Critical';
+    if (score >= 71) return 'Healthy';
+    if (score >= 41) return 'Warning';
+    return 'Critical';
   };
 
   return (
@@ -107,8 +119,8 @@ export default function CashFlowOptimizationPage() {
         <div className="relative z-10 container mx-auto px-6 py-20 text-center">
           {/* Tag */}
           <div className="inline-block mb-6">
-            <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold">
-              🩺 Health Diagnostic Service
+            <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold inline-flex items-center gap-2"><Activity className="w-4 h-4" />
+              Health Diagnostic Service
             </span>
           </div>
 
@@ -174,7 +186,7 @@ export default function CashFlowOptimizationPage() {
           {/* Section Header */}
           <div className="text-center mb-16">
             <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold inline-block mb-4">
-              🩺 Health Diagnostic
+              Health Diagnostic
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Cash Flow Health Score
@@ -190,7 +202,7 @@ export default function CashFlowOptimizationPage() {
               {/* Critical */}
               <div className="p-6 bg-card border-2 border-red-500/30 rounded-xl">
                 <div className="text-4xl font-bold text-red-400 mb-2">0-40</div>
-                <div className="text-lg font-semibold text-red-400 mb-3">🔴 Critical</div>
+                <div className="text-lg font-semibold text-red-400 mb-3">Critical</div>
                 <ul className="text-sm text-muted-foreground space-y-2">
                   <li>• High bankruptcy risk</li>
                   <li>• Urgent action needed</li>
@@ -201,7 +213,7 @@ export default function CashFlowOptimizationPage() {
               {/* Warning */}
               <div className="p-6 bg-card border-2 border-yellow-500/30 rounded-xl">
                 <div className="text-4xl font-bold text-yellow-400 mb-2">41-70</div>
-                <div className="text-lg font-semibold text-yellow-400 mb-3">🟡 Warning</div>
+                <div className="text-lg font-semibold text-yellow-400 mb-3">Warning</div>
                 <ul className="text-sm text-muted-foreground space-y-2">
                   <li>• Room for improvement</li>
                   <li>• Optimize now to avoid crisis</li>
@@ -212,7 +224,7 @@ export default function CashFlowOptimizationPage() {
               {/* Healthy */}
               <div className="p-6 bg-card border-2 border-border rounded-xl">
                 <div className="text-4xl font-bold text-white mb-2">71-100</div>
-                <div className="text-lg font-semibold text-white mb-3">💖 Healthy</div>
+                <div className="text-lg font-semibold text-white mb-3">Healthy</div>
                 <ul className="text-sm text-muted-foreground space-y-2">
                   <li>• Strong financial health</li>
                   <li>• Ready for growth</li>
@@ -254,7 +266,7 @@ export default function CashFlowOptimizationPage() {
             {/* Section Header */}
             <div className="text-center mb-12">
               <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                🧮 Free Health Check
+                Free Health Check
               </h2>
               <p className="text-xl text-muted-foreground">
                 Enter 5 numbers, get instant diagnosis
@@ -342,7 +354,7 @@ export default function CashFlowOptimizationPage() {
                   onClick={calculateHealthScore}
                   className="w-full py-4 bg-white text-white font-bold rounded-lg hover:shadow-lg hover:shadow-white/50 transition-all"
                 >
-                  🩺 Diagnose Now
+                  Diagnose Now
                 </button>
               </div>
             </div>
@@ -434,7 +446,7 @@ export default function CashFlowOptimizationPage() {
           {/* Section Header */}
           <div className="text-center mb-16">
             <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold inline-block mb-4">
-              💡 Real Transformations
+              Real Transformations
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Before & After: The Numbers Don't Lie
@@ -448,7 +460,7 @@ export default function CashFlowOptimizationPage() {
           <div className="max-w-5xl mx-auto mb-16">
             <div className="bg-gradient-to-br from-red-500/10 to-pink-500/10 border border-red-500/30 rounded-2xl p-8">
               <div className="flex items-start gap-4 mb-6">
-                <div className="text-4xl">🍜</div>
+                <div className="p-4 bg-card border border-border rounded-lg"><Store className="w-8 h-8 text-white" /></div>
                 <div>
                   <h3 className="text-2xl font-bold mb-2">Case 1: Restaurant Owner</h3>
                   <p className="text-lg text-red-400 font-semibold mb-1">"Business is good, but I'm running out of cash!"</p>
@@ -479,7 +491,7 @@ export default function CashFlowOptimizationPage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Owner Stress:</span>
-                      <span className="font-semibold text-red-400">⭐⭐⭐⭐⭐</span>
+                      <span className="font-semibold text-red-400">High</span>
                     </div>
                   </div>
                 </div>
@@ -497,7 +509,7 @@ export default function CashFlowOptimizationPage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Cash Gaps/Month:</span>
-                      <span className="font-semibold text-white">0 times ✓</span>
+                      <span className="font-semibold text-white">0 times</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Interest Saved:</span>
@@ -505,7 +517,7 @@ export default function CashFlowOptimizationPage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Owner Stress:</span>
-                      <span className="font-semibold text-white">⭐ (Relaxed)</span>
+                      <span className="font-semibold text-white">Low</span>
                     </div>
                   </div>
                 </div>
@@ -533,7 +545,7 @@ export default function CashFlowOptimizationPage() {
                 </div>
                 <div className="mt-4 pt-4 border-t border-border">
                   <div className="text-center">
-                    <span className="text-2xl font-bold text-white">💰 Result: RM 15,500 cash freed</span>
+                    <span className="text-2xl font-bold text-white">Result: RM 15,500 cash freed</span>
                     <p className="text-sm text-muted-foreground mt-1">Revenue grew 28% (used freed cash to expand menu)</p>
                   </div>
                 </div>
@@ -545,7 +557,7 @@ export default function CashFlowOptimizationPage() {
           <div className="max-w-5xl mx-auto">
             <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-border rounded-2xl p-8">
               <div className="flex items-start gap-4 mb-6">
-                <div className="text-4xl">👕</div>
+                <div className="p-4 bg-card border border-border rounded-lg"><Store className="w-8 h-8 text-white" /></div>
                 <div>
                   <h3 className="text-2xl font-bold mb-2">Case 2: Retail Store Owner</h3>
                   <p className="text-lg text-white font-semibold mb-1">"I made RM 30K profit, but only RM 500 in the bank?"</p>
@@ -583,7 +595,7 @@ export default function CashFlowOptimizationPage() {
                 <div className="grid md:grid-cols-2 gap-8">
                   {/* Before Metrics */}
                   <div>
-                    <div className="text-red-400 font-bold mb-4">📊 Before (Crisis)</div>
+                    <div className="text-red-400 font-bold mb-4">Before (Crisis)</div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between p-2 bg-background/30 rounded">
                         <span>Cash Conversion Cycle:</span>
@@ -610,7 +622,7 @@ export default function CashFlowOptimizationPage() {
 
                   {/* After Metrics */}
                   <div>
-                    <div className="text-white font-bold mb-4">📊 After (3 Months)</div>
+                    <div className="text-white font-bold mb-4">After (3 Months)</div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between p-2 bg-background/30 rounded">
                         <span>Cash Conversion Cycle:</span>
@@ -630,7 +642,7 @@ export default function CashFlowOptimizationPage() {
                       </div>
                       <div className="flex justify-between p-2 bg-card rounded font-bold">
                         <span>Cash Freed:</span>
-                        <span className="text-white">RM 53,000 ✓</span>
+                        <span className="text-white">RM 53,000</span>
                       </div>
                     </div>
                   </div>
@@ -640,7 +652,7 @@ export default function CashFlowOptimizationPage() {
               {/* Result */}
               <div className="bg-card border border-border rounded-xl p-6 text-center">
                 <div className="text-3xl font-bold text-white mb-2">
-                  💎 RM 53,000 Cash Released
+                  RM 53,000 Cash Released
                 </div>
                 <p className="text-muted-foreground mb-4">
                   Equivalent to 2 months of revenue, without taking a loan
@@ -664,7 +676,7 @@ export default function CashFlowOptimizationPage() {
           {/* Section Header */}
           <div className="text-center mb-16">
             <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold inline-block mb-4">
-              💳 Subscription Plans
+              Subscription Plans
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Continuous Health Monitoring

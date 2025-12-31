@@ -75,7 +75,7 @@ export default function EcommerceSolutionsPage() {
           {/* Tag */}
           <div className="inline-block mb-6">
             <span className="px-4 py-2 bg-gradient-to-r from-yellow-400/10 to-yellow-500/10 border border-border/30 rounded-full text-white text-sm font-semibold">
-              🌐 Platform Integration Service
+              Platform Integration Service
             </span>
           </div>
 
@@ -139,7 +139,7 @@ export default function EcommerceSolutionsPage() {
           {/* Section Header */}
           <div className="text-center mb-16">
             <span className="px-4 py-2 bg-card border border-border/30 rounded-full text-white text-sm font-semibold inline-block mb-4">
-              🌐 Platform Ecosystem
+              Platform Ecosystem
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               We Integrate All Major Platforms
@@ -376,7 +376,7 @@ export default function EcommerceSolutionsPage() {
                   {[
                     { icon: '📸', title: 'Poor Photos', desc: 'Phone camera, messy background, bad lighting. Click rate: 0.3% (avg: 2.5%)' },
                     { icon: '📝', title: 'Generic Titles', desc: '"Women Dress" (too vague) vs "Korean A-Line Dress | Slim Fit | S-3XL"' },
-                    { icon: '💰', title: 'Wrong Pricing', desc: 'RM 89 (RM 10 more than store). Competitors: RM 59-79 with free shipping' },
+                    { icon: 'Pricing', title: 'Wrong Pricing', desc: 'RM 89 (RM 10 more than store). Competitors: RM 59-79 with free shipping' },
                     { icon: '💬', title: 'Slow Response', desc: '8-hour reply time (avg: 2 min). 50% inquiries lost' },
                     { icon: '⭐', title: 'No Reviews', desc: '0 reviews vs competitors with 500+ reviews. Conversion: 0.1%' }
                   ].map((mistake, index) => (
@@ -531,7 +531,7 @@ export default function EcommerceSolutionsPage() {
           {/* Section Header */}
           <div className="text-center mb-16">
             <span className="px-4 py-2 bg-card border border-border/30 rounded-full text-white text-sm font-semibold inline-block mb-4">
-              💰 Service Packages
+              Service Packages
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Choose Your Growth Plan

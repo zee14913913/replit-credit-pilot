@@ -23,6 +23,7 @@ import {
   BarChart3,
   PieChart,
   Calendar,
+  Building2,
   Shield
 } from 'lucide-react';
 
@@ -110,8 +111,8 @@ export default function BusinessPlanningPage() {
         <div className="relative z-10 container mx-auto px-6 py-20 text-center">
           {/* Tag */}
           <div className="inline-block mb-6">
-            <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold">
-              📄 Professional Document Delivery
+            <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold inline-flex items-center gap-2"><FileText className="w-4 h-4" />
+              Professional Document Delivery
             </span>
           </div>
 
@@ -171,7 +172,7 @@ export default function BusinessPlanningPage() {
           {/* Section Header */}
           <div className="text-center mb-16">
             <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold inline-block mb-4">
-              📄 Document Gallery
+              Document Gallery
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               See What You'll Receive
@@ -370,7 +371,7 @@ export default function BusinessPlanningPage() {
           {/* Section Header */}
           <div className="text-center mb-16">
             <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold inline-block mb-4">
-              💰 Transparent Pricing
+              Transparent Pricing
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Choose Your Package
@@ -476,7 +477,7 @@ export default function BusinessPlanningPage() {
             <div className="bg-gradient-to-br from-red-500/10 to-pink-500/10 border border-red-500/30 rounded-2xl p-8">
               {/* Header */}
               <div className="flex items-start gap-4 mb-8">
-                <div className="text-5xl">🏭</div>
+                <div className="p-4 bg-card border border-border rounded-lg"><Building2 className="w-12 h-12 text-white" /></div>
                 <div>
                   <h3 className="text-2xl font-bold mb-2">Case: Factory Owner</h3>
                   <p className="text-lg text-red-400 font-semibold mb-1">
