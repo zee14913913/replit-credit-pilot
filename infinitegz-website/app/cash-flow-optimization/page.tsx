@@ -77,7 +77,7 @@ export default function CashFlowOptimizationPage() {
   };
 
   const getHealthColor = (score: number) => {
-    if (score >= 71) return 'text-pink-400 border-pink-500';
+    if (score >= 71) return 'text-purple-400 border-purple-500';
     if (score >= 41) return 'text-yellow-400 border-yellow-400';
     return 'text-red-400 border-red-400';
   };
@@ -96,12 +96,12 @@ export default function CashFlowOptimizationPage() {
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
         {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-yellow-400/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-purple-500/5 to-background" />
         
         {/* Animated Pulse */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-400 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
         </div>
 
         <div className="relative z-10 container mx-auto px-6 py-20 text-center">
@@ -113,7 +113,7 @@ export default function CashFlowOptimizationPage() {
           </div>
 
           {/* Title */}
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-purple-500 to-purple-400 bg-clip-text text-transparent">
             Is Your Business<br />Financially Healthy?
           </h1>
 
@@ -141,7 +141,7 @@ export default function CashFlowOptimizationPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="#health-check"
-              className="group px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-full hover:shadow-lg hover:shadow-purple-500/50 transition-all inline-flex items-center justify-center gap-2"
+              className="group px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-400 text-white font-bold rounded-full hover:shadow-lg hover:shadow-purple-500/50 transition-all inline-flex items-center justify-center gap-2"
             >
               Free Health Check
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -159,14 +159,14 @@ export default function CashFlowOptimizationPage() {
 
         {/* Scroll Indicator */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-pink-400/50 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-pink-400 rounded-full mt-2 animate-pulse" />
+          <div className="w-6 h-10 border-2 border-purple-400/50 rounded-full flex justify-center">
+            <div className="w-1 h-3 bg-purple-400 rounded-full mt-2 animate-pulse" />
           </div>
         </div>
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-pink-500 to-transparent opacity-30" />
+      <div className="h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-30" />
 
       {/* Health Score System Section */}
       <section className="py-20 relative overflow-hidden">
@@ -210,9 +210,9 @@ export default function CashFlowOptimizationPage() {
               </div>
 
               {/* Healthy */}
-              <div className="p-6 bg-pink-500/5 border-2 border-pink-500/30 rounded-xl">
-                <div className="text-4xl font-bold text-pink-400 mb-2">71-100</div>
-                <div className="text-lg font-semibold text-pink-400 mb-3">💖 Healthy</div>
+              <div className="p-6 bg-purple-500/5 border-2 border-purple-500/30 rounded-xl">
+                <div className="text-4xl font-bold text-purple-400 mb-2">71-100</div>
+                <div className="text-lg font-semibold text-purple-400 mb-3">💖 Healthy</div>
                 <ul className="text-sm text-muted-foreground space-y-2">
                   <li>• Strong financial health</li>
                   <li>• Ready for growth</li>
@@ -234,7 +234,7 @@ export default function CashFlowOptimizationPage() {
                 { icon: BarChart3, label: 'Ratio', desc: 'Current Ratio' }
               ].map((metric, index) => (
                 <div key={index} className="p-4 bg-card/50 border border-border rounded-lg text-center">
-                  <metric.icon className="w-8 h-8 text-pink-400 mx-auto mb-2" />
+                  <metric.icon className="w-8 h-8 text-purple-400 mx-auto mb-2" />
                   <div className="font-bold text-foreground mb-1">{metric.label}</div>
                   <div className="text-xs text-muted-foreground">{metric.desc}</div>
                 </div>
@@ -340,7 +340,7 @@ export default function CashFlowOptimizationPage() {
                 {/* Calculate Button */}
                 <button
                   onClick={calculateHealthScore}
-                  className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-lg hover:shadow-lg hover:shadow-purple-500/50 transition-all"
+                  className="w-full py-4 bg-gradient-to-r from-purple-600 to-purple-400 text-white font-bold rounded-lg hover:shadow-lg hover:shadow-purple-500/50 transition-all"
                 >
                   🩺 Diagnose Now
                 </button>
@@ -405,7 +405,7 @@ export default function CashFlowOptimizationPage() {
                       Want a complete optimization plan?
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                      <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg hover:shadow-lg transition-all">
+                      <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-400 text-white font-semibold rounded-lg hover:shadow-lg transition-all">
                         Download Full Report
                       </button>
                       <a
@@ -426,7 +426,7 @@ export default function CashFlowOptimizationPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-pink-500 to-transparent opacity-30" />
+      <div className="h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-30" />
 
       {/* Real Case Studies - WOW FACTOR */}
       <section className="py-20 relative overflow-hidden">
@@ -486,26 +486,26 @@ export default function CashFlowOptimizationPage() {
 
                 {/* After */}
                 <div className="bg-background/50 rounded-xl p-6">
-                  <div className="text-pink-400 font-bold mb-4 flex items-center gap-2">
+                  <div className="text-purple-400 font-bold mb-4 flex items-center gap-2">
                     <TrendingUp className="w-5 h-5" />
                     AFTER (3 Months)
                   </div>
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Cash Reserve:</span>
-                      <span className="font-semibold text-pink-400">RM 18,000 (20 days)</span>
+                      <span className="font-semibold text-purple-400">RM 18,000 (20 days)</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Cash Gaps/Month:</span>
-                      <span className="font-semibold text-pink-400">0 times ✓</span>
+                      <span className="font-semibold text-purple-400">0 times ✓</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Interest Saved:</span>
-                      <span className="font-semibold text-pink-400">RM 2,700/year</span>
+                      <span className="font-semibold text-purple-400">RM 2,700/year</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Owner Stress:</span>
-                      <span className="font-semibold text-pink-400">⭐ (Relaxed)</span>
+                      <span className="font-semibold text-purple-400">⭐ (Relaxed)</span>
                     </div>
                   </div>
                 </div>
@@ -548,7 +548,7 @@ export default function CashFlowOptimizationPage() {
                 <div className="text-4xl">👕</div>
                 <div>
                   <h3 className="text-2xl font-bold mb-2">Case 2: Retail Store Owner</h3>
-                  <p className="text-lg text-pink-400 font-semibold mb-1">"I made RM 30K profit, but only RM 500 in the bank?"</p>
+                  <p className="text-lg text-purple-400 font-semibold mb-1">"I made RM 30K profit, but only RM 500 in the bank?"</p>
                   <p className="text-muted-foreground">RM 100K revenue, RM 70K cost, RM 30K profit... where's the money?</p>
                 </div>
               </div>
@@ -610,27 +610,27 @@ export default function CashFlowOptimizationPage() {
 
                   {/* After Metrics */}
                   <div>
-                    <div className="text-pink-400 font-bold mb-4">📊 After (3 Months)</div>
+                    <div className="text-purple-400 font-bold mb-4">📊 After (3 Months)</div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between p-2 bg-background/30 rounded">
                         <span>Cash Conversion Cycle:</span>
-                        <span className="font-bold text-pink-400">48 days ↓69%</span>
+                        <span className="font-bold text-purple-400">48 days ↓69%</span>
                       </div>
                       <div className="flex justify-between p-2 bg-background/30 rounded">
                         <span>DIO (Inventory):</span>
-                        <span className="font-bold text-pink-400">60 days ↓67%</span>
+                        <span className="font-bold text-purple-400">60 days ↓67%</span>
                       </div>
                       <div className="flex justify-between p-2 bg-background/30 rounded">
                         <span>DSO (Receivables):</span>
-                        <span className="font-bold text-pink-400">33 days ↓56%</span>
+                        <span className="font-bold text-purple-400">33 days ↓56%</span>
                       </div>
                       <div className="flex justify-between p-2 bg-background/30 rounded">
                         <span>DPO (Payables):</span>
-                        <span className="font-bold text-pink-400">45 days ↑45%</span>
+                        <span className="font-bold text-purple-400">45 days ↑45%</span>
                       </div>
-                      <div className="flex justify-between p-2 bg-pink-500/20 rounded font-bold">
+                      <div className="flex justify-between p-2 bg-purple-500/20 rounded font-bold">
                         <span>Cash Freed:</span>
-                        <span className="text-pink-400">RM 53,000 ✓</span>
+                        <span className="text-purple-400">RM 53,000 ✓</span>
                       </div>
                     </div>
                   </div>
@@ -645,7 +645,7 @@ export default function CashFlowOptimizationPage() {
                 <p className="text-muted-foreground mb-4">
                   Equivalent to 2 months of revenue, without taking a loan
                 </p>
-                <div className="inline-flex items-center gap-2 text-sm text-pink-400">
+                <div className="inline-flex items-center gap-2 text-sm text-purple-400">
                   <CheckCircle className="w-4 h-4" />
                   No more emergency loans (save RM 4,500/year interest)
                 </div>
@@ -685,19 +685,19 @@ export default function CashFlowOptimizationPage() {
               </div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-pink-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <span className="text-sm">Monthly health report</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-pink-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <span className="text-sm">5-metric health score</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-pink-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <span className="text-sm">Basic recommendations</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-pink-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <span className="text-sm">Email support</span>
                 </li>
               </ul>
@@ -709,7 +709,7 @@ export default function CashFlowOptimizationPage() {
             {/* Pro (Popular) */}
             <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 border-2 border-purple-500 rounded-2xl p-8 relative scale-105 shadow-lg shadow-purple-500/20">
               <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <span className="px-4 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold rounded-full">
+                <span className="px-4 py-1 bg-gradient-to-r from-purple-600 to-purple-400 text-white text-sm font-bold rounded-full">
                   MOST POPULAR
                 </span>
               </div>
@@ -720,33 +720,33 @@ export default function CashFlowOptimizationPage() {
               </div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-pink-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <span className="text-sm font-semibold">Bi-weekly reports</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-pink-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <span className="text-sm font-semibold">Alert system (issues detected)</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-pink-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <span className="text-sm font-semibold">Detailed optimization plan</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-pink-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <span className="text-sm font-semibold">WhatsApp support</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-pink-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <span className="text-sm font-semibold">Quarterly strategy call</span>
                 </li>
               </ul>
-              <button className="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-lg hover:shadow-lg hover:shadow-purple-500/50 transition-all">
+              <button className="w-full py-3 bg-gradient-to-r from-purple-600 to-purple-400 text-white font-bold rounded-lg hover:shadow-lg hover:shadow-purple-500/50 transition-all">
                 Start Pro Trial
               </button>
             </div>
 
             {/* Enterprise */}
-            <div className="bg-card/80 backdrop-blur border border-border rounded-2xl p-8 hover:border-pink-500/50 transition-all">
+            <div className="bg-card/80 backdrop-blur border border-border rounded-2xl p-8 hover:border-purple-500/50 transition-all">
               <div className="text-center mb-6">
                 <div className="text-2xl font-bold mb-2">Enterprise</div>
                 <div className="text-4xl font-bold text-primary mb-2">RM 2,500<span className="text-lg text-muted-foreground">/mo</span></div>
@@ -754,23 +754,23 @@ export default function CashFlowOptimizationPage() {
               </div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-pink-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <span className="text-sm font-semibold">Weekly reports</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-pink-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <span className="text-sm font-semibold">Real-time monitoring</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-pink-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <span className="text-sm font-semibold">CFO-level consultation</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-pink-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <span className="text-sm font-semibold">Dedicated account manager</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-pink-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                   <span className="text-sm font-semibold">Custom dashboard</span>
                 </li>
               </ul>
@@ -783,7 +783,7 @@ export default function CashFlowOptimizationPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-pink-500 to-transparent opacity-30" />
+      <div className="h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-30" />
 
       {/* Final CTA */}
       <section className="py-20 relative overflow-hidden">
@@ -798,7 +798,7 @@ export default function CashFlowOptimizationPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="#health-check"
-              className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-full hover:shadow-lg hover:shadow-purple-500/50 transition-all inline-flex items-center justify-center gap-2"
+              className="px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-400 text-white font-bold rounded-full hover:shadow-lg hover:shadow-purple-500/50 transition-all inline-flex items-center justify-center gap-2"
             >
               Start Free Assessment
               <ArrowRight className="w-5 h-5" />

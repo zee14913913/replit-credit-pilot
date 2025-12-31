@@ -97,7 +97,7 @@ export default function BusinessPlanningPage() {
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
         {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 via-pink-500/5 to-background" />
         
         {/* Document Pattern */}
         <div className="absolute inset-0 opacity-5">
@@ -140,7 +140,7 @@ export default function BusinessPlanningPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="#packages"
-              className="group px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold rounded-full hover:shadow-lg hover:shadow-pink-500/50 transition-all inline-flex items-center justify-center gap-2"
+              className="group px-8 py-4 bg-gradient-to-r from-pink-600 to-pink-400 text-white font-bold rounded-full hover:shadow-lg hover:shadow-pink-500/50 transition-all inline-flex items-center justify-center gap-2"
             >
               View Packages
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -254,10 +254,10 @@ export default function BusinessPlanningPage() {
             {/* Retail BP */}
             <div className="group bg-card/50 border border-border rounded-2xl overflow-hidden hover:border-pink-500/50 transition-all hover:shadow-lg hover:shadow-pink-500/10">
               <div className="aspect-[3/4] bg-gradient-to-br from-purple-500/20 to-purple-500/20 flex items-center justify-center relative overflow-hidden">
-                <FileText className="w-24 h-24 text-purple-400 group-hover:scale-110 transition-transform" />
+                <FileText className="w-24 h-24 text-pink-400 group-hover:scale-110 transition-transform" />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4">
-                  <div className="text-xs text-purple-400 mb-1">Case Study</div>
+                  <div className="text-xs text-pink-400 mb-1">Case Study</div>
                   <div className="text-sm font-bold">Retail Industry</div>
                 </div>
               </div>
@@ -289,7 +289,7 @@ export default function BusinessPlanningPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-30" />
+      <div className="h-px bg-gradient-to-r from-transparent via-pink-500 to-transparent opacity-30" />
 
       {/* What's Included Checklist */}
       <section className="py-20 relative overflow-hidden bg-gradient-to-b from-background to-card/30">
@@ -317,13 +317,13 @@ export default function BusinessPlanningPage() {
                 icon: BarChart3,
                 title: 'Financial Forecast Model (Excel)',
                 desc: 'Editable 3-year projections with formulas',
-                color: 'text-purple-400'
+                color: 'text-pink-400'
               },
               {
                 icon: Target,
                 title: 'Industry Analysis Report (10-15 pages)',
                 desc: 'Market size, trends, and growth projections',
-                color: 'text-purple-400'
+                color: 'text-pink-400'
               },
               {
                 icon: Users,
@@ -335,7 +335,7 @@ export default function BusinessPlanningPage() {
                 icon: TrendingUp,
                 title: 'Financing Strategy Recommendation',
                 desc: 'Best banks, loan types, and terms',
-                color: 'text-purple-400'
+                color: 'text-pink-400'
               },
               {
                 icon: Award,
@@ -394,7 +394,7 @@ export default function BusinessPlanningPage() {
                 {/* Popular Badge */}
                 {pkg.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="px-4 py-1 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-sm font-bold rounded-full flex items-center gap-1">
+                    <span className="px-4 py-1 bg-gradient-to-r from-pink-600 to-pink-400 text-white text-sm font-bold rounded-full flex items-center gap-1">
                       <Star className="w-4 h-4 fill-current" />
                       MOST POPULAR
                     </span>
@@ -431,7 +431,7 @@ export default function BusinessPlanningPage() {
                 <button
                   className={`w-full py-3 font-bold rounded-lg transition-all ${
                     pkg.popular
-                      ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:shadow-lg hover:shadow-pink-500/50'
+                      ? 'bg-gradient-to-r from-pink-600 to-pink-400 text-white hover:shadow-lg hover:shadow-pink-500/50'
                       : 'bg-muted text-foreground hover:bg-muted/80'
                   }`}
                 >
@@ -453,7 +453,7 @@ export default function BusinessPlanningPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-30" />
+      <div className="h-px bg-gradient-to-r from-transparent via-pink-500 to-transparent opacity-30" />
 
       {/* Success Case Study - WOW FACTOR */}
       <section className="py-20 relative overflow-hidden">
@@ -553,20 +553,20 @@ export default function BusinessPlanningPage() {
               </div>
 
               {/* The Secret Sauce */}
-              <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl p-6">
+              <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-pink-500/30 rounded-xl p-6">
                 <div className="font-bold mb-4 flex items-center gap-2 text-lg">
-                  <Zap className="w-5 h-5 text-purple-400" />
+                  <Zap className="w-5 h-5 text-pink-400" />
                   Our "Bank Perspective" Approach
                 </div>
                 <div className="grid md:grid-cols-3 gap-6">
                   <div>
-                    <div className="text-purple-400 font-semibold mb-2 text-sm">1. Executive Summary</div>
+                    <div className="text-pink-400 font-semibold mb-2 text-sm">1. Executive Summary</div>
                     <div className="text-xs text-muted-foreground">
                       Compressed to 1 page using "3-30-3 Rule": 3 seconds to hook, 30 seconds for key data, 3 minutes for full summary
                     </div>
                   </div>
                   <div>
-                    <div className="text-purple-400 font-semibold mb-2 text-sm">2. Market Analysis</div>
+                    <div className="text-pink-400 font-semibold mb-2 text-sm">2. Market Analysis</div>
                     <div className="text-xs text-muted-foreground">
                       Used MIDA reports and industry data. Showed RM 28B market with 6.5% growth rate
                     </div>
@@ -578,7 +578,7 @@ export default function BusinessPlanningPage() {
                     </div>
                   </div>
                 </div>
-                <div className="mt-6 pt-6 border-t border-purple-500/30 text-center">
+                <div className="mt-6 pt-6 border-t border-pink-500/30 text-center">
                   <div className="text-2xl font-bold text-pink-400 mb-2">
                     RM 500K Loan Approved @ 5.8%
                   </div>
@@ -647,7 +647,7 @@ export default function BusinessPlanningPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-30" />
+      <div className="h-px bg-gradient-to-r from-transparent via-pink-500 to-transparent opacity-30" />
 
       {/* Final CTA */}
       <section className="py-20 relative overflow-hidden">
@@ -662,7 +662,7 @@ export default function BusinessPlanningPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="#packages"
-              className="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold rounded-full hover:shadow-lg hover:shadow-pink-500/50 transition-all inline-flex items-center justify-center gap-2"
+              className="px-8 py-4 bg-gradient-to-r from-pink-600 to-pink-400 text-white font-bold rounded-full hover:shadow-lg hover:shadow-pink-500/50 transition-all inline-flex items-center justify-center gap-2"
             >
               Choose Your Package
               <ArrowRight className="w-5 h-5" />
