@@ -91,14 +91,14 @@ export default function BusinessPlanningPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-black text-foreground">
       <ScrollProgress />
       <Header />
       
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
         {/* Gradient Background */}
-        <div className="absolute inset-0 bg-background" />
+        <div className="absolute inset-0 bg-black" />
         
         {/* Document Pattern */}
         <div className="absolute inset-0 opacity-5">
@@ -111,13 +111,13 @@ export default function BusinessPlanningPage() {
         <div className="relative z-10 container mx-auto px-6 py-20 text-center">
           {/* Tag */}
           <div className="inline-block mb-6">
-            <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold inline-flex items-center gap-2"><FileText className="w-4 h-4" />
+            <span className="px-4 py-2 bg-zinc-950/50 border border-zinc-800 rounded-full text-white text-sm font-semibold inline-flex items-center gap-2"><FileText className="w-4 h-4" />
               Professional Document Delivery
             </span>
           </div>
 
           {/* Title */}
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-pink-400 via-emerald-400 to-pink-400 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-black bg-clip-text text-transparent">
             Your Business Plan,<br />Done by Professionals
           </h1>
 
@@ -129,7 +129,7 @@ export default function BusinessPlanningPage() {
           {/* Stats Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-12">
             {successMetrics.map((stat, index) => (
-              <div key={index} className="p-4 bg-card/50 backdrop-blur border border-border rounded-lg">
+              <div key={index} className="p-4 bg-zinc-950/50/50 backdrop-blur border border-zinc-800 rounded-lg">
                 <div className="text-2xl md:text-3xl font-bold text-white mb-1">{stat.value}</div>
                 <div className="text-xs text-muted-foreground mb-1">{stat.label}</div>
                 <div className="text-xs text-white">{stat.change}</div>
@@ -157,21 +157,21 @@ export default function BusinessPlanningPage() {
 
         {/* Scroll Indicator */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-green-400/50 rounded-full flex justify-center">
+          <div className="w-6 h-10 border-2 border-zinc-700/50 rounded-full flex justify-center">
             <div className="w-1 h-3 bg-green-400 rounded-full mt-2 animate-pulse" />
           </div>
         </div>
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-30" />
+      <div className="h-px bg-black opacity-30" />
 
       {/* Business Plan Samples Gallery */}
       <section id="samples" className="py-20 relative overflow-hidden">
         <div className="container mx-auto px-6">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold inline-block mb-4">
+            <span className="px-4 py-2 bg-zinc-950/50 border border-zinc-800 rounded-full text-white text-sm font-semibold inline-block mb-4">
               Document Gallery
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -185,7 +185,7 @@ export default function BusinessPlanningPage() {
           {/* Sample Cards */}
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Manufacturing BP */}
-            <div className="group bg-card/50 border border-border rounded-2xl overflow-hidden hover:border-border/50 transition-all hover:shadow-lg hover:shadow-primary/10">
+            <div className="group bg-zinc-950/50/50 border border-zinc-800 rounded-2xl overflow-hidden hover:border-zinc-800/50 transition-all hover:shadow-lg hover:shadow-primary/10">
               <div className="aspect-[3/4] bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center relative overflow-hidden">
                 <FileText className="w-24 h-24 text-white group-hover:scale-110 transition-transform" />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
@@ -210,7 +210,7 @@ export default function BusinessPlanningPage() {
                   <CheckCircle className="w-4 h-4 text-white" />
                   <span className="text-sm">Chinese Version</span>
                 </div>
-                <div className="pt-3 border-t border-border">
+                <div className="pt-3 border-t border-zinc-800">
                   <div className="text-xs text-muted-foreground mb-1">Loan Approved</div>
                   <div className="text-lg font-bold text-white">RM 500K @ 5.5%</div>
                   <div className="text-xs text-muted-foreground">Maybank | 21 days approval</div>
@@ -219,12 +219,12 @@ export default function BusinessPlanningPage() {
             </div>
 
             {/* F&B BP */}
-            <div className="group bg-card/50 border border-border rounded-2xl overflow-hidden hover:border-border/50 transition-all hover:shadow-lg hover:shadow-primary/10">
+            <div className="group bg-zinc-950/50/50 border border-zinc-800 rounded-2xl overflow-hidden hover:border-zinc-800/50 transition-all hover:shadow-lg hover:shadow-primary/10">
               <div className="aspect-[3/4] bg-gradient-to-br from-yellow-400/20 to-red-500/20 flex items-center justify-center relative overflow-hidden">
-                <FileText className="w-24 h-24 text-yellow-400 group-hover:scale-110 transition-transform" />
+                <FileText className="w-24 h-24 text-zinc-300 group-hover:scale-110 transition-transform" />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4">
-                  <div className="text-xs text-yellow-400 mb-1">Case Study</div>
+                  <div className="text-xs text-zinc-300 mb-1">Case Study</div>
                   <div className="text-sm font-bold">F&B Industry</div>
                 </div>
               </div>
@@ -244,7 +244,7 @@ export default function BusinessPlanningPage() {
                   <CheckCircle className="w-4 h-4 text-white" />
                   <span className="text-sm">English Version</span>
                 </div>
-                <div className="pt-3 border-t border-border">
+                <div className="pt-3 border-t border-zinc-800">
                   <div className="text-xs text-muted-foreground mb-1">Loan Approved</div>
                   <div className="text-lg font-bold text-white">RM 300K @ 6.2%</div>
                   <div className="text-xs text-muted-foreground">CIMB | 18 days approval</div>
@@ -253,7 +253,7 @@ export default function BusinessPlanningPage() {
             </div>
 
             {/* Retail BP */}
-            <div className="group bg-card/50 border border-border rounded-2xl overflow-hidden hover:border-border/50 transition-all hover:shadow-lg hover:shadow-primary/10">
+            <div className="group bg-zinc-950/50/50 border border-zinc-800 rounded-2xl overflow-hidden hover:border-zinc-800/50 transition-all hover:shadow-lg hover:shadow-primary/10">
               <div className="aspect-[3/4] bg-gradient-to-br from-purple-500/20 to-purple-500/20 flex items-center justify-center relative overflow-hidden">
                 <FileText className="w-24 h-24 text-white group-hover:scale-110 transition-transform" />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
@@ -278,7 +278,7 @@ export default function BusinessPlanningPage() {
                   <CheckCircle className="w-4 h-4 text-white" />
                   <span className="text-sm">Bilingual (CN + EN)</span>
                 </div>
-                <div className="pt-3 border-t border-border">
+                <div className="pt-3 border-t border-zinc-800">
                   <div className="text-xs text-muted-foreground mb-1">Loan Approved</div>
                   <div className="text-lg font-bold text-white">RM 800K @ 5.8%</div>
                   <div className="text-xs text-muted-foreground">Hong Leong | 25 days approval</div>
@@ -290,7 +290,7 @@ export default function BusinessPlanningPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-30" />
+      <div className="h-px bg-black opacity-30" />
 
       {/* What's Included Checklist */}
       <section className="py-20 relative overflow-hidden bg-gradient-to-b from-background to-card/30">
@@ -330,7 +330,7 @@ export default function BusinessPlanningPage() {
                 icon: Users,
                 title: 'Competitive Analysis (5 Competitors)',
                 desc: 'Detailed comparison table with positioning',
-                color: 'text-yellow-400'
+                color: 'text-zinc-300'
               },
               {
                 icon: TrendingUp,
@@ -342,12 +342,12 @@ export default function BusinessPlanningPage() {
                 icon: Award,
                 title: '1-Hour Bank Meeting Coaching (Premium)',
                 desc: 'Prepare for Q&A and presentation tips',
-                color: 'text-yellow-400'
+                color: 'text-zinc-300'
               }
             ].map((item, index) => (
-              <div key={index} className="group p-6 bg-card/80 backdrop-blur border border-border rounded-xl hover:border-border/50 transition-all hover:shadow-lg">
+              <div key={index} className="group p-6 bg-zinc-950/50/80 backdrop-blur border border-zinc-800 rounded-xl hover:border-zinc-800/50 transition-all hover:shadow-lg">
                 <div className="flex items-start gap-4">
-                  <div className={`p-3 bg-background rounded-lg ${item.color}`}>
+                  <div className={`p-3 bg-black rounded-lg ${item.color}`}>
                     <item.icon className="w-6 h-6" />
                   </div>
                   <div>
@@ -363,14 +363,14 @@ export default function BusinessPlanningPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-30" />
+      <div className="h-px bg-black opacity-30" />
 
       {/* Service Packages */}
       <section id="packages" className="py-20 relative overflow-hidden">
         <div className="container mx-auto px-6">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold inline-block mb-4">
+            <span className="px-4 py-2 bg-zinc-950/50 border border-zinc-800 rounded-full text-white text-sm font-semibold inline-block mb-4">
               Transparent Pricing
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -386,10 +386,10 @@ export default function BusinessPlanningPage() {
             {packages.map((pkg, index) => (
               <div
                 key={index}
-                className={`relative bg-card/80 backdrop-blur border rounded-2xl p-8 transition-all hover:shadow-lg ${
+                className={`relative bg-zinc-950/50/80 backdrop-blur border rounded-2xl p-8 transition-all hover:shadow-lg ${
                   pkg.popular
-                    ? 'border-border scale-105 shadow-xl shadow-white/20'
-                    : 'border-border hover:border-border/50'
+                    ? 'border-zinc-800 scale-105 shadow-xl shadow-white/20'
+                    : 'border-zinc-800 hover:border-zinc-800/50'
                 }`}
               >
                 {/* Popular Badge */}
@@ -443,7 +443,7 @@ export default function BusinessPlanningPage() {
           </div>
 
           {/* Money Back Guarantee */}
-          <div className="max-w-3xl mx-auto mt-12 p-6 bg-card border border-border rounded-xl text-center">
+          <div className="max-w-3xl mx-auto mt-12 p-6 bg-zinc-950/50 border border-zinc-800 rounded-xl text-center">
             <Shield className="w-12 h-12 text-white mx-auto mb-3" />
             <h3 className="text-lg font-bold mb-2">100% Satisfaction Guarantee</h3>
             <p className="text-sm text-muted-foreground">
@@ -454,14 +454,14 @@ export default function BusinessPlanningPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-30" />
+      <div className="h-px bg-black opacity-30" />
 
       {/* Success Case Study - WOW FACTOR */}
       <section className="py-20 relative overflow-hidden">
         <div className="container mx-auto px-6">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold inline-block mb-4">
+            <span className="px-4 py-2 bg-zinc-950/50 border border-zinc-800 rounded-full text-white text-sm font-semibold inline-block mb-4">
               💡 Real Transformation
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -474,13 +474,13 @@ export default function BusinessPlanningPage() {
 
           {/* Case Study */}
           <div className="max-w-5xl mx-auto">
-            <div className="bg-gradient-to-br from-red-500/10 to-pink-500/10 border border-red-500/30 rounded-2xl p-8">
+            <div className="bg-gradient-to-br from-red-500/10 to-pink-500/10 border border-zinc-800 rounded-2xl p-8">
               {/* Header */}
               <div className="flex items-start gap-4 mb-8">
-                <div className="p-4 bg-card border border-border rounded-lg"><Building2 className="w-12 h-12 text-white" /></div>
+                <div className="p-4 bg-zinc-950/50 border border-zinc-800 rounded-lg"><Building2 className="w-12 h-12 text-white" /></div>
                 <div>
                   <h3 className="text-2xl font-bold mb-2">Case: Factory Owner</h3>
-                  <p className="text-lg text-red-400 font-semibold mb-1">
+                  <p className="text-lg text-zinc-300 font-semibold mb-1">
                     "Bank said my business plan is garbage"
                   </p>
                   <p className="text-muted-foreground">
@@ -492,25 +492,25 @@ export default function BusinessPlanningPage() {
               {/* Before/After Comparison */}
               <div className="grid md:grid-cols-2 gap-8 mb-8">
                 {/* His BP (Rejected) */}
-                <div className="bg-background/50 rounded-xl p-6">
-                  <div className="text-red-400 font-bold mb-4 flex items-center gap-2">
+                <div className="bg-black/50 rounded-xl p-6">
+                  <div className="text-zinc-300 font-bold mb-4 flex items-center gap-2">
                     ❌ His BP (Rejected)
                   </div>
                   <div className="space-y-3 text-sm">
-                    <div className="flex justify-between items-center p-3 bg-red-500/5 rounded-lg">
+                    <div className="flex justify-between items-center p-3 bg-zinc-900 rounded-lg">
                       <span>Pages:</span>
-                      <span className="font-semibold text-red-400">30 (too long)</span>
+                      <span className="font-semibold text-zinc-300">30 (too long)</span>
                     </div>
-                    <div className="flex justify-between items-center p-3 bg-red-500/5 rounded-lg">
+                    <div className="flex justify-between items-center p-3 bg-zinc-900 rounded-lg">
                       <span>Time Spent:</span>
-                      <span className="font-semibold text-red-400">2 weeks</span>
+                      <span className="font-semibold text-zinc-300">2 weeks</span>
                     </div>
-                    <div className="flex justify-between items-center p-3 bg-red-500/5 rounded-lg">
+                    <div className="flex justify-between items-center p-3 bg-zinc-900 rounded-lg">
                       <span>Result:</span>
-                      <span className="font-semibold text-red-400">REJECTED</span>
+                      <span className="font-semibold text-zinc-300">REJECTED</span>
                     </div>
-                    <div className="p-3 bg-red-500/10 rounded-lg">
-                      <div className="text-xs text-red-400 font-semibold mb-2">Bank Feedback:</div>
+                    <div className="p-3 bg-zinc-900 rounded-lg">
+                      <div className="text-xs text-zinc-300 font-semibold mb-2">Bank Feedback:</div>
                       <ul className="text-xs text-muted-foreground space-y-1">
                         <li>• Executive Summary too long (5 pages)</li>
                         <li>• Market analysis copied from Wikipedia</li>
@@ -523,24 +523,24 @@ export default function BusinessPlanningPage() {
                 </div>
 
                 {/* Our BP (Approved) */}
-                <div className="bg-background/50 rounded-xl p-6">
+                <div className="bg-black/50 rounded-xl p-6">
                   <div className="text-white font-bold mb-4 flex items-center gap-2">
                     ✓ Our BP (Approved)
                   </div>
                   <div className="space-y-3 text-sm">
-                    <div className="flex justify-between items-center p-3 bg-card rounded-lg">
+                    <div className="flex justify-between items-center p-3 bg-zinc-950/50 rounded-lg">
                       <span>Pages:</span>
                       <span className="font-semibold text-white">45 (well-structured)</span>
                     </div>
-                    <div className="flex justify-between items-center p-3 bg-card rounded-lg">
+                    <div className="flex justify-between items-center p-3 bg-zinc-950/50 rounded-lg">
                       <span>Delivery:</span>
                       <span className="font-semibold text-white">7 days</span>
                     </div>
-                    <div className="flex justify-between items-center p-3 bg-card rounded-lg">
+                    <div className="flex justify-between items-center p-3 bg-zinc-950/50 rounded-lg">
                       <span>Result:</span>
                       <span className="font-semibold text-white">APPROVED RM 500K</span>
                     </div>
-                    <div className="p-3 bg-card rounded-lg">
+                    <div className="p-3 bg-zinc-950/50 rounded-lg">
                       <div className="text-xs text-white font-semibold mb-2">Bank Response:</div>
                       <ul className="text-xs text-muted-foreground space-y-1">
                         <li>• "Most professional BP we've seen this year"</li>
@@ -554,7 +554,7 @@ export default function BusinessPlanningPage() {
               </div>
 
               {/* The Secret Sauce */}
-              <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-border rounded-xl p-6">
+              <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-zinc-800 rounded-xl p-6">
                 <div className="font-bold mb-4 flex items-center gap-2 text-lg">
                   <Zap className="w-5 h-5 text-white" />
                   Our "Bank Perspective" Approach
@@ -579,7 +579,7 @@ export default function BusinessPlanningPage() {
                     </div>
                   </div>
                 </div>
-                <div className="mt-6 pt-6 border-t border-border text-center">
+                <div className="mt-6 pt-6 border-t border-zinc-800 text-center">
                   <div className="text-2xl font-bold text-white mb-2">
                     RM 500K Loan Approved @ 5.8%
                   </div>
@@ -594,7 +594,7 @@ export default function BusinessPlanningPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-30" />
+      <div className="h-px bg-black opacity-30" />
 
       {/* FAQ Section */}
       <section className="py-20 relative overflow-hidden bg-gradient-to-b from-background to-card/30">
@@ -631,7 +631,7 @@ export default function BusinessPlanningPage() {
                   a: "Based on our 500+ clients: Average 21-25 days for approval (vs market average 45 days). Some clients get approved in as fast as 18 days."
                 }
               ].map((faq, index) => (
-                <div key={index} className="bg-card/80 backdrop-blur border border-border rounded-xl p-6 hover:border-border/50 transition-all">
+                <div key={index} className="bg-zinc-950/50/80 backdrop-blur border border-zinc-800 rounded-xl p-6 hover:border-zinc-800/50 transition-all">
                   <h3 className="text-lg font-bold mb-3 flex items-start gap-3">
                     <span className="text-white">Q:</span>
                     <span>{faq.q}</span>
@@ -648,7 +648,7 @@ export default function BusinessPlanningPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-30" />
+      <div className="h-px bg-black opacity-30" />
 
       {/* Final CTA */}
       <section className="py-20 relative overflow-hidden">

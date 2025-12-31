@@ -55,14 +55,14 @@ export default function EcommerceSolutionsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-black text-foreground">
       <ScrollProgress />
       <Header />
       
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
         {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 via-yellow-500/10 to-yellow-500/10" />
+        <div className="absolute inset-0 bg-black" />
         
         {/* Animated Network */}
         <div className="absolute inset-0 opacity-20">
@@ -74,13 +74,13 @@ export default function EcommerceSolutionsPage() {
         <div className="relative z-10 container mx-auto px-6 py-20 text-center">
           {/* Tag */}
           <div className="inline-block mb-6">
-            <span className="px-4 py-2 bg-gradient-to-r from-yellow-400/10 to-yellow-500/10 border border-border/30 rounded-full text-white text-sm font-semibold">
+            <span className="px-4 py-2 bg-gradient-to-r from-yellow-400/10 to-yellow-500/10 border border-zinc-800/30 rounded-full text-white text-sm font-semibold">
               Platform Integration Service
             </span>
           </div>
 
           {/* Title */}
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-yellow-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-black bg-clip-text text-transparent">
             From Zero to<br />500% GMV Growth
           </h1>
 
@@ -97,7 +97,7 @@ export default function EcommerceSolutionsPage() {
               { value: '6 Platforms', label: 'Integrated' },
               { value: '142', label: 'Clients Served' }
             ].map((stat, index) => (
-              <div key={index} className="p-4 bg-card/50 backdrop-blur border border-border rounded-lg">
+              <div key={index} className="p-4 bg-zinc-950/50/50 backdrop-blur border border-zinc-800 rounded-lg">
                 <div className="text-2xl md:text-3xl font-bold text-white mb-1">{stat.value}</div>
                 <div className="text-sm text-muted-foreground">{stat.label}</div>
               </div>
@@ -131,14 +131,14 @@ export default function EcommerceSolutionsPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-30" />
+      <div className="h-px bg-black opacity-30" />
 
       {/* Platform Ecosystem */}
       <section className="py-20 relative overflow-hidden">
         <div className="container mx-auto px-6">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <span className="px-4 py-2 bg-card border border-border/30 rounded-full text-white text-sm font-semibold inline-block mb-4">
+            <span className="px-4 py-2 bg-zinc-950/50 border border-zinc-800/30 rounded-full text-white text-sm font-semibold inline-block mb-4">
               Platform Ecosystem
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -153,7 +153,7 @@ export default function EcommerceSolutionsPage() {
           <div className="max-w-5xl mx-auto mb-16">
             {/* Your Business (Center) */}
             <div className="text-center mb-8">
-              <div className="inline-block p-6 bg-gradient-to-br from-yellow-400/20 to-yellow-500/20 border-2 border-border rounded-2xl backdrop-blur">
+              <div className="inline-block p-6 bg-gradient-to-br from-yellow-400/20 to-yellow-500/20 border-2 border-zinc-800 rounded-2xl backdrop-blur">
                 <ShoppingCart className="w-12 h-12 text-white mx-auto mb-3" />
                 <div className="text-xl font-bold">Your Business</div>
               </div>
@@ -166,7 +166,7 @@ export default function EcommerceSolutionsPage() {
 
             {/* Integration Hub */}
             <div className="text-center mb-8">
-              <div className="inline-block p-6 bg-card/80 backdrop-blur border border-border rounded-2xl">
+              <div className="inline-block p-6 bg-zinc-950/50/80 backdrop-blur border border-zinc-800 rounded-2xl">
                 <Globe className="w-10 h-10 text-white mx-auto mb-3" />
                 <div className="text-lg font-bold mb-1">INFINITE GZ</div>
                 <div className="text-sm text-muted-foreground">Integration Hub</div>
@@ -187,7 +187,7 @@ export default function EcommerceSolutionsPage() {
             {/* Platforms */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {platforms.map((platform, index) => (
-                <div key={index} className="group p-4 bg-card/50 border border-border rounded-xl hover:border-border/50 transition-all text-center">
+                <div key={index} className="group p-4 bg-zinc-950/50/50 border border-zinc-800 rounded-xl hover:border-zinc-800/50 transition-all text-center">
                   <div className={`w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br ${platform.color} flex items-center justify-center`}>
                     <ShoppingCart className="w-6 h-6 text-white" />
                   </div>
@@ -204,7 +204,7 @@ export default function EcommerceSolutionsPage() {
 
             {/* Unified Dashboard */}
             <div className="text-center">
-              <div className="inline-block p-6 bg-gradient-to-br from-yellow-500/20 to-yellow-500/20 border-2 border-border rounded-2xl backdrop-blur">
+              <div className="inline-block p-6 bg-gradient-to-br from-yellow-500/20 to-yellow-500/20 border-2 border-zinc-800 rounded-2xl backdrop-blur">
                 <BarChart3 className="w-12 h-12 text-white mx-auto mb-3" />
                 <div className="text-xl font-bold mb-2">Unified Dashboard</div>
                 <div className="text-sm text-muted-foreground space-y-1">
@@ -218,15 +218,15 @@ export default function EcommerceSolutionsPage() {
 
           {/* Platform Stats */}
           <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6">
-            <div className="p-6 bg-card border border-border/30 rounded-xl text-center">
+            <div className="p-6 bg-zinc-950/50 border border-zinc-800/30 rounded-xl text-center">
               <div className="text-3xl font-bold text-white mb-2">128.4B</div>
               <div className="text-sm text-muted-foreground">Southeast Asia E-commerce GMV (2024)</div>
             </div>
-            <div className="p-6 bg-card border border-border rounded-xl text-center">
+            <div className="p-6 bg-zinc-950/50 border border-zinc-800 rounded-xl text-center">
               <div className="text-3xl font-bold text-white mb-2">+12%</div>
               <div className="text-sm text-muted-foreground">Year-over-Year Growth</div>
             </div>
-            <div className="p-6 bg-card border border-border rounded-xl text-center">
+            <div className="p-6 bg-zinc-950/50 border border-zinc-800 rounded-xl text-center">
               <div className="text-3xl font-bold text-white mb-2">84%</div>
               <div className="text-sm text-muted-foreground">Market Share (Top 3 Platforms)</div>
             </div>
@@ -235,14 +235,14 @@ export default function EcommerceSolutionsPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-30" />
+      <div className="h-px bg-black opacity-30" />
 
       {/* Technical Capabilities */}
       <section className="py-20 relative overflow-hidden bg-gradient-to-b from-background to-card/30">
         <div className="container mx-auto px-6">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold inline-block mb-4">
+            <span className="px-4 py-2 bg-zinc-950/50 border border-zinc-800 rounded-full text-white text-sm font-semibold inline-block mb-4">
               💻 Technical Stack
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -256,9 +256,9 @@ export default function EcommerceSolutionsPage() {
           {/* Tech Stack Grid */}
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
             {techStack.map((stack, index) => (
-              <div key={index} className="p-6 bg-card/80 backdrop-blur border border-border rounded-xl hover:border-border/50 transition-all">
+              <div key={index} className="p-6 bg-zinc-950/50/80 backdrop-blur border border-zinc-800 rounded-xl hover:border-zinc-800/50 transition-all">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-card rounded-lg">
+                  <div className="p-2 bg-zinc-950/50 rounded-lg">
                     <Code className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="text-lg font-bold">{stack.category}</h3>
@@ -266,7 +266,7 @@ export default function EcommerceSolutionsPage() {
                 <div className="space-y-2">
                   {stack.items.map((item, i) => (
                     <div key={i} className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-zinc-300 flex-shrink-0" />
                       <span>{item}</span>
                     </div>
                   ))}
@@ -279,9 +279,9 @@ export default function EcommerceSolutionsPage() {
           <div className="max-w-6xl mx-auto">
             <h3 className="text-2xl font-bold mb-6 text-center">Feature Matrix</h3>
             <div className="overflow-x-auto">
-              <table className="w-full bg-card/80 backdrop-blur border border-border rounded-xl">
+              <table className="w-full bg-zinc-950/50/80 backdrop-blur border border-zinc-800 rounded-xl">
                 <thead>
-                  <tr className="border-b border-border">
+                  <tr className="border-b border-zinc-800">
                     <th className="p-4 text-left">Feature</th>
                     <th className="p-4 text-center">Basic</th>
                     <th className="p-4 text-center">Pro</th>
@@ -299,25 +299,25 @@ export default function EcommerceSolutionsPage() {
                     { feature: 'Customer Service System', basic: false, pro: true, enterprise: true },
                     { feature: 'ERP Integration', basic: false, pro: false, enterprise: true }
                   ].map((row, index) => (
-                    <tr key={index} className="border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
+                    <tr key={index} className="border-b border-zinc-800 last:border-0 hover:bg-muted/30 transition-colors">
                       <td className="p-4 font-medium">{row.feature}</td>
                       <td className="p-4 text-center">
                         {typeof row.basic === 'boolean' ? (
-                          row.basic ? <CheckCircle className="w-5 h-5 text-green-400 mx-auto" /> : <span className="text-muted-foreground">—</span>
+                          row.basic ? <CheckCircle className="w-5 h-5 text-zinc-300 mx-auto" /> : <span className="text-muted-foreground">—</span>
                         ) : (
                           <span className="text-sm">{row.basic}</span>
                         )}
                       </td>
                       <td className="p-4 text-center">
                         {typeof row.pro === 'boolean' ? (
-                          row.pro ? <CheckCircle className="w-5 h-5 text-green-400 mx-auto" /> : <span className="text-muted-foreground">—</span>
+                          row.pro ? <CheckCircle className="w-5 h-5 text-zinc-300 mx-auto" /> : <span className="text-muted-foreground">—</span>
                         ) : (
                           <span className="text-sm">{row.pro}</span>
                         )}
                       </td>
                       <td className="p-4 text-center">
                         {typeof row.enterprise === 'boolean' ? (
-                          row.enterprise ? <CheckCircle className="w-5 h-5 text-green-400 mx-auto" /> : <span className="text-muted-foreground">—</span>
+                          row.enterprise ? <CheckCircle className="w-5 h-5 text-zinc-300 mx-auto" /> : <span className="text-muted-foreground">—</span>
                         ) : (
                           <span className="text-sm">{row.enterprise}</span>
                         )}
@@ -332,14 +332,14 @@ export default function EcommerceSolutionsPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-30" />
+      <div className="h-px bg-black opacity-30" />
 
       {/* Success Case Study - WOW FACTOR */}
       <section id="case-study" className="py-20 relative overflow-hidden">
         <div className="container mx-auto px-6">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold inline-block mb-4">
+            <span className="px-4 py-2 bg-zinc-950/50 border border-zinc-800 rounded-full text-white text-sm font-semibold inline-block mb-4">
               💡 Real Transformation
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -352,7 +352,7 @@ export default function EcommerceSolutionsPage() {
 
           {/* Case Study */}
           <div className="max-w-6xl mx-auto">
-            <div className="bg-gradient-to-br from-yellow-400/10 to-yellow-500/10 border border-border/30 rounded-2xl p-8">
+            <div className="bg-gradient-to-br from-yellow-400/10 to-yellow-500/10 border border-zinc-800/30 rounded-2xl p-8">
               {/* Header */}
               <div className="flex items-start gap-4 mb-8">
                 <div className="text-5xl">👗</div>
@@ -368,8 +368,8 @@ export default function EcommerceSolutionsPage() {
               </div>
 
               {/* 5 Fatal Mistakes */}
-              <div className="bg-background/50 rounded-xl p-6 mb-8">
-                <div className="font-bold mb-4 text-red-400 flex items-center gap-2 text-lg">
+              <div className="bg-black/50 rounded-xl p-6 mb-8">
+                <div className="font-bold mb-4 text-zinc-300 flex items-center gap-2 text-lg">
                   ❌ 5 Fatal Mistakes Discovered
                 </div>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -380,7 +380,7 @@ export default function EcommerceSolutionsPage() {
                     { icon: '💬', title: 'Slow Response', desc: '8-hour reply time (avg: 2 min). 50% inquiries lost' },
                     { icon: '⭐', title: 'No Reviews', desc: '0 reviews vs competitors with 500+ reviews. Conversion: 0.1%' }
                   ].map((mistake, index) => (
-                    <div key={index} className="p-4 bg-red-500/5 border border-red-500/20 rounded-lg">
+                    <div key={index} className="p-4 bg-zinc-900 border border-zinc-800 rounded-lg">
                       <div className="text-2xl mb-2">{mistake.icon}</div>
                       <div className="font-semibold mb-1 text-sm">{mistake.title}</div>
                       <div className="text-xs text-muted-foreground">{mistake.desc}</div>
@@ -390,7 +390,7 @@ export default function EcommerceSolutionsPage() {
               </div>
 
               {/* 4-Week Transformation Plan */}
-              <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-500/10 border border-border rounded-xl p-6 mb-8">
+              <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-500/10 border border-zinc-800 rounded-xl p-6 mb-8">
                 <div className="font-bold mb-6 flex items-center gap-2 text-lg">
                   <Zap className="w-6 h-6 text-white" />
                   4-Week Transformation Plan
@@ -418,13 +418,13 @@ export default function EcommerceSolutionsPage() {
                       items: ['First 50 orders @ RM 39 (loss leader)', 'Photo review incentive (RM 10 voucher)', '80 reviews in 30 days']
                     }
                   ].map((phase, index) => (
-                    <div key={index} className="p-4 bg-background/50 rounded-lg">
+                    <div key={index} className="p-4 bg-black/50 rounded-lg">
                       <div className="text-white font-bold mb-2 text-sm">{phase.week}</div>
                       <div className="font-semibold mb-3">{phase.title}</div>
                       <ul className="space-y-1">
                         {phase.items.map((item, i) => (
                           <li key={i} className="text-xs text-muted-foreground flex items-start gap-1">
-                            <CheckCircle className="w-3 h-3 text-green-400 flex-shrink-0 mt-0.5" />
+                            <CheckCircle className="w-3 h-3 text-zinc-300 flex-shrink-0 mt-0.5" />
                             <span>{item}</span>
                           </li>
                         ))}
@@ -435,7 +435,7 @@ export default function EcommerceSolutionsPage() {
               </div>
 
               {/* GMV Growth Chart */}
-              <div className="bg-background/50 rounded-xl p-6 mb-8">
+              <div className="bg-black/50 rounded-xl p-6 mb-8">
                 <div className="font-bold mb-4 text-center">📈 GMV Growth Trajectory</div>
                 <div className="grid md:grid-cols-3 gap-6">
                   {[
@@ -467,10 +467,10 @@ export default function EcommerceSolutionsPage() {
                       reviews: '412 reviews'
                     }
                   ].map((period, index) => (
-                    <div key={index} className="p-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-xl">
-                      <div className="text-sm text-green-400 mb-2">{period.month}</div>
-                      <div className="text-3xl font-bold text-green-400 mb-1">{period.gmv}</div>
-                      <div className="text-sm text-green-400 mb-4">{period.growth} from previous</div>
+                    <div key={index} className="p-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-zinc-800 rounded-xl">
+                      <div className="text-sm text-zinc-300 mb-2">{period.month}</div>
+                      <div className="text-3xl font-bold text-zinc-300 mb-1">{period.gmv}</div>
+                      <div className="text-sm text-zinc-300 mb-4">{period.growth} from previous</div>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Orders:</span>
@@ -495,7 +495,7 @@ export default function EcommerceSolutionsPage() {
               </div>
 
               {/* Final Results */}
-              <div className="bg-gradient-to-r from-yellow-400/10 to-yellow-500/10 border border-border/30 rounded-xl p-6 text-center">
+              <div className="bg-gradient-to-r from-yellow-400/10 to-yellow-500/10 border border-zinc-800/30 rounded-xl p-6 text-center">
                 <div className="text-4xl font-bold text-white mb-2">
                   71x GMV Growth
                 </div>
@@ -504,15 +504,15 @@ export default function EcommerceSolutionsPage() {
                 </p>
                 <div className="grid md:grid-cols-3 gap-4 text-sm">
                   <div className="flex items-center justify-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-400" />
+                    <CheckCircle className="w-4 h-4 text-zinc-300" />
                     <span>Net profit: RM 18,500 (30%)</span>
                   </div>
                   <div className="flex items-center justify-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-400" />
+                    <CheckCircle className="w-4 h-4 text-zinc-300" />
                     <span>Repeat purchase: 18%</span>
                   </div>
                   <div className="flex items-center justify-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-400" />
+                    <CheckCircle className="w-4 h-4 text-zinc-300" />
                     <span>Planning 2nd store opening</span>
                   </div>
                 </div>
@@ -523,14 +523,14 @@ export default function EcommerceSolutionsPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-30" />
+      <div className="h-px bg-black opacity-30" />
 
       {/* Pricing Packages */}
       <section id="packages" className="py-20 relative overflow-hidden bg-gradient-to-b from-background to-card/30">
         <div className="container mx-auto px-6">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <span className="px-4 py-2 bg-card border border-border/30 rounded-full text-white text-sm font-semibold inline-block mb-4">
+            <span className="px-4 py-2 bg-zinc-950/50 border border-zinc-800/30 rounded-full text-white text-sm font-semibold inline-block mb-4">
               Service Packages
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -599,10 +599,10 @@ export default function EcommerceSolutionsPage() {
             ].map((pkg, index) => (
               <div
                 key={index}
-                className={`relative bg-card/80 backdrop-blur border rounded-2xl p-8 transition-all hover:shadow-lg ${
+                className={`relative bg-zinc-950/50/80 backdrop-blur border rounded-2xl p-8 transition-all hover:shadow-lg ${
                   pkg.popular
-                    ? 'border-border scale-105 shadow-xl shadow-yellow-400/20'
-                    : 'border-border hover:border-border/50'
+                    ? 'border-zinc-800 scale-105 shadow-xl shadow-yellow-400/20'
+                    : 'border-zinc-800 hover:border-zinc-800/50'
                 }`}
               >
                 {pkg.popular && (
@@ -624,7 +624,7 @@ export default function EcommerceSolutionsPage() {
                 <ul className="space-y-3 mb-8">
                   {pkg.features.map((feature, fIndex) => (
                     <li key={fIndex} className="flex items-start gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <CheckCircle className="w-5 h-5 text-zinc-300 flex-shrink-0 mt-0.5" />
                       <span className="text-sm">{feature}</span>
                     </li>
                   ))}
@@ -646,7 +646,7 @@ export default function EcommerceSolutionsPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-30" />
+      <div className="h-px bg-black opacity-30" />
 
       {/* Final CTA */}
       <section className="py-20 relative overflow-hidden">

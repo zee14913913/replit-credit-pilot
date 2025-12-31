@@ -8,12 +8,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // 高级墨黑色系统
-        background: '#050508', // 主背景 - 深邃墨黑带微蓝 rgb(5, 5, 8)
-        primary: '#FFFFFF', // 主文字颜色 rgb(255, 255, 255)
-        secondary: '#B4B9C3', // 次要文字颜色 - 银灰色 rgb(180, 185, 195)
-        'border-color': 'rgba(192, 192, 192, 0.2)', // 边框颜色 - 银色
-        'hover-bg': 'rgba(192, 192, 192, 0.1)', // Hover 背景 - 银色光泽
+        // X.AI 纯黑风格
+        background: '#000000', // 纯黑背景
+        primary: '#FFFFFF', // 主文字颜色
+        secondary: '#A1A1AA', // 次要文字颜色 - zinc-400
+        'border-color': 'rgba(63, 63, 70, 0.5)', // 边框颜色 - zinc-700
+        'hover-bg': 'rgba(63, 63, 70, 0.3)', // Hover 背景
       },
       fontFamily: {
         sans: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
