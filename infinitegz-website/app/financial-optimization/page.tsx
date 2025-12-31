@@ -437,7 +437,7 @@ export default function FinancialOptimizationPage() {
               },
               {
                 q: 'Do you charge for your services?',
-                a: '✅ Completely FREE for loan clients. Our income comes from bank partnership commissions.'
+                a: 'Completely FREE for loan clients. Our income comes from bank partnership commissions.'
               },
               {
                 q: 'How long to get assessment results?',

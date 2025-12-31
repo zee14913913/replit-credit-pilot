@@ -339,8 +339,9 @@ export default function EcommerceSolutionsPage() {
         <div className="container mx-auto px-6">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <span className="px-4 py-2 bg-zinc-950/50 border border-zinc-800 rounded-full text-white text-sm font-semibold inline-block mb-4">
-              💡 Real Transformation
+            <span className="px-4 py-2 bg-zinc-950/50 border border-zinc-800 rounded-full text-white text-sm font-semibold inline-flex items-center gap-2 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-lightbulb"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+              Real Transformation
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               From RM 500 to RM 35,600
@@ -355,7 +356,9 @@ export default function EcommerceSolutionsPage() {
             <div className="bg-gradient-to-br from-yellow-400/10 to-yellow-500/10 border border-zinc-800/30 rounded-2xl p-8">
               {/* Header */}
               <div className="flex items-start gap-4 mb-8">
-                <div className="text-5xl">👗</div>
+                <div className="p-4 bg-zinc-950/50 border border-zinc-800 rounded-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-shirt text-zinc-300"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
+                </div>
                 <div>
                   <h3 className="text-2xl font-bold mb-2">Case: Traditional Clothing Store</h3>
                   <p className="text-lg text-white font-semibold mb-1">
@@ -436,7 +439,10 @@ export default function EcommerceSolutionsPage() {
 
               {/* GMV Growth Chart */}
               <div className="bg-black/50 rounded-xl p-6 mb-8">
-                <div className="font-bold mb-4 text-center">📈 GMV Growth Trajectory</div>
+                <div className="font-bold mb-4 text-center flex items-center justify-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-trending-up text-zinc-300"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                  GMV Growth Trajectory
+                </div>
                 <div className="grid md:grid-cols-3 gap-6">
                   {[
                     {

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Test - X.AI Style</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #000000;
+            color: #FFFFFF;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #fff, #a1a1aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card {
+            background-color: rgba(63, 63, 70, 0.3);
+            border: 1px solid rgba(63, 63, 70, 0.5);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 1rem 0;
+        }
+        
+        .success {
+            color: #10b981;
+            font-size: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .info {
+            color: #a1a1aa;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .button {
+            background-color: #8b5cf6;
+            color: #000;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: all 0.3s;
+        }
+        
+        .button:hover {
+            background-color: #a78bfa;
+            transform: translateY(-2px);
+        }
+        
+        .code {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(63, 63, 70, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            color: #10b981;
+            margin: 1rem 0;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ CSS 测试成功</h1>
+        
+        <div class="card">
+            <div class="success">🎉 X.AI 纯黑风格已加载</div>
+            <div class="info">
+                如果您能看到这个页面的纯黑色背景和白色文字，
+                说明 CSS 是完全正常工作的！
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 style="color: #fff; margin-bottom: 1rem;">当前配色方案</h2>
+            <div class="code">
+                背景色: #000000 (纯黑)<br>
+                主文字: #FFFFFF (纯白)<br>
+                次要文字: #A1A1AA (灰色)<br>
+                品牌色: #8B5CF6 (紫色)
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="info">
+                <strong>🔗 正确的访问地址：</strong><br><br>
+                https://3005-if7r8uzt57f4gtx94xc9j-5634da27.sandbox.novita.ai
+            </div>
+        </div>
+        
+        <button class="button" onclick="location.href='/cash-flow-optimization'">
+            前往 Cash Flow 页面
+        </button>
+        
+        <div style="margin-top: 2rem; color: #71717a; font-size: 0.875rem;">
+            如果您看到白色背景，请尝试：<br>
+            1. 清除浏览器缓存 (Ctrl+Shift+R / Cmd+Shift+R)<br>
+            2. 使用隐私/无痕模式<br>
+            3. 确保访问的是端口 3005
+        </div>
+    </div>
+</body>
+</html>
