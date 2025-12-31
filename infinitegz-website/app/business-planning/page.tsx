@@ -141,7 +141,7 @@ export default function BusinessPlanningPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="#packages"
-              className="group px-8 py-4 bg-white text-white font-bold rounded-full hover:shadow-lg hover:shadow-white/50 transition-all inline-flex items-center justify-center gap-2"
+              className="group px-8 py-4 bg-primary text-background font-bold rounded-full hover:shadow-lg hover:shadow-primary/50 transition-all inline-flex items-center justify-center gap-2"
             >
               View Packages
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -185,7 +185,7 @@ export default function BusinessPlanningPage() {
           {/* Sample Cards */}
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Manufacturing BP */}
-            <div className="group bg-card/50 border border-border rounded-2xl overflow-hidden hover:border-border/50 transition-all hover:shadow-lg hover:shadow-white/10">
+            <div className="group bg-card/50 border border-border rounded-2xl overflow-hidden hover:border-border/50 transition-all hover:shadow-lg hover:shadow-primary/10">
               <div className="aspect-[3/4] bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center relative overflow-hidden">
                 <FileText className="w-24 h-24 text-white group-hover:scale-110 transition-transform" />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
@@ -219,7 +219,7 @@ export default function BusinessPlanningPage() {
             </div>
 
             {/* F&B BP */}
-            <div className="group bg-card/50 border border-border rounded-2xl overflow-hidden hover:border-border/50 transition-all hover:shadow-lg hover:shadow-white/10">
+            <div className="group bg-card/50 border border-border rounded-2xl overflow-hidden hover:border-border/50 transition-all hover:shadow-lg hover:shadow-primary/10">
               <div className="aspect-[3/4] bg-gradient-to-br from-yellow-400/20 to-red-500/20 flex items-center justify-center relative overflow-hidden">
                 <FileText className="w-24 h-24 text-yellow-400 group-hover:scale-110 transition-transform" />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
@@ -253,7 +253,7 @@ export default function BusinessPlanningPage() {
             </div>
 
             {/* Retail BP */}
-            <div className="group bg-card/50 border border-border rounded-2xl overflow-hidden hover:border-border/50 transition-all hover:shadow-lg hover:shadow-white/10">
+            <div className="group bg-card/50 border border-border rounded-2xl overflow-hidden hover:border-border/50 transition-all hover:shadow-lg hover:shadow-primary/10">
               <div className="aspect-[3/4] bg-gradient-to-br from-purple-500/20 to-purple-500/20 flex items-center justify-center relative overflow-hidden">
                 <FileText className="w-24 h-24 text-white group-hover:scale-110 transition-transform" />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
@@ -395,7 +395,7 @@ export default function BusinessPlanningPage() {
                 {/* Popular Badge */}
                 {pkg.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="px-4 py-1 bg-white text-white text-sm font-bold rounded-full flex items-center gap-1">
+                    <span className="px-4 py-1 bg-primary text-background text-sm font-bold rounded-full flex items-center gap-1">
                       <Star className="w-4 h-4 fill-current" />
                       MOST POPULAR
                     </span>
@@ -432,7 +432,7 @@ export default function BusinessPlanningPage() {
                 <button
                   className={`w-full py-3 font-bold rounded-lg transition-all ${
                     pkg.popular
-                      ? 'bg-white text-white hover:shadow-lg hover:shadow-white/50'
+                      ? 'bg-primary text-background hover:shadow-lg hover:shadow-primary/50'
                       : 'bg-muted text-foreground hover:bg-muted/80'
                   }`}
                 >
@@ -663,7 +663,7 @@ export default function BusinessPlanningPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="#packages"
-              className="px-8 py-4 bg-white text-white font-bold rounded-full hover:shadow-lg hover:shadow-white/50 transition-all inline-flex items-center justify-center gap-2"
+              className="px-8 py-4 bg-primary text-background font-bold rounded-full hover:shadow-lg hover:shadow-primary/50 transition-all inline-flex items-center justify-center gap-2"
             >
               Choose Your Package
               <ArrowRight className="w-5 h-5" />

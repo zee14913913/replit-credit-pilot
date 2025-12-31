@@ -125,7 +125,7 @@ export default function CashFlowOptimizationPage() {
           </div>
 
           {/* Title */}
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-white bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
             Is Your Business<br />Financially Healthy?
           </h1>
 
@@ -153,7 +153,7 @@ export default function CashFlowOptimizationPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="#health-check"
-              className="group px-8 py-4 bg-white text-white font-bold rounded-full hover:shadow-lg hover:shadow-white/50 transition-all inline-flex items-center justify-center gap-2"
+              className="group px-8 py-4 bg-primary text-background font-bold rounded-full hover:shadow-lg hover:shadow-primary/50 transition-all inline-flex items-center justify-center gap-2"
             >
               Free Health Check
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -352,7 +352,7 @@ export default function CashFlowOptimizationPage() {
                 {/* Calculate Button */}
                 <button
                   onClick={calculateHealthScore}
-                  className="w-full py-4 bg-white text-white font-bold rounded-lg hover:shadow-lg hover:shadow-white/50 transition-all"
+                  className="w-full py-4 bg-primary text-background font-bold rounded-lg hover:shadow-lg hover:shadow-primary/50 transition-all"
                 >
                   Diagnose Now
                 </button>
@@ -417,7 +417,7 @@ export default function CashFlowOptimizationPage() {
                       Want a complete optimization plan?
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                      <button className="px-6 py-3 bg-white text-white font-semibold rounded-lg hover:shadow-lg transition-all">
+                      <button className="px-6 py-3 bg-primary text-background font-semibold rounded-lg hover:shadow-lg transition-all">
                         Download Full Report
                       </button>
                       <a
@@ -721,7 +721,7 @@ export default function CashFlowOptimizationPage() {
             {/* Pro (Popular) */}
             <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 border-2 border-border rounded-2xl p-8 relative scale-105 shadow-lg shadow-white/20">
               <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <span className="px-4 py-1 bg-white text-white text-sm font-bold rounded-full">
+                <span className="px-4 py-1 bg-primary text-background text-sm font-bold rounded-full">
                   MOST POPULAR
                 </span>
               </div>
@@ -752,7 +752,7 @@ export default function CashFlowOptimizationPage() {
                   <span className="text-sm font-semibold">Quarterly strategy call</span>
                 </li>
               </ul>
-              <button className="w-full py-3 bg-white text-white font-bold rounded-lg hover:shadow-lg hover:shadow-white/50 transition-all">
+              <button className="w-full py-3 bg-primary text-background font-bold rounded-lg hover:shadow-lg hover:shadow-primary/50 transition-all">
                 Start Pro Trial
               </button>
             </div>
@@ -810,7 +810,7 @@ export default function CashFlowOptimizationPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="#health-check"
-              className="px-8 py-4 bg-white text-white font-bold rounded-full hover:shadow-lg hover:shadow-white/50 transition-all inline-flex items-center justify-center gap-2"
+              className="px-8 py-4 bg-primary text-background font-bold rounded-full hover:shadow-lg hover:shadow-primary/50 transition-all inline-flex items-center justify-center gap-2"
             >
               Start Free Assessment
               <ArrowRight className="w-5 h-5" />

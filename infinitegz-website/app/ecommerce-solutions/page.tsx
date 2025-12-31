@@ -108,7 +108,7 @@ export default function EcommerceSolutionsPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="#packages"
-              className="group px-8 py-4 bg-white text-white font-bold rounded-full hover:shadow-lg hover:shadow-yellow-400/50 transition-all inline-flex items-center justify-center gap-2"
+              className="group px-8 py-4 bg-primary text-background font-bold rounded-full hover:shadow-lg hover:shadow-yellow-400/50 transition-all inline-flex items-center justify-center gap-2"
             >
               View Packages
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -607,7 +607,7 @@ export default function EcommerceSolutionsPage() {
               >
                 {pkg.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="px-4 py-1 bg-white text-white text-sm font-bold rounded-full flex items-center gap-1">
+                    <span className="px-4 py-1 bg-primary text-background text-sm font-bold rounded-full flex items-center gap-1">
                       <Star className="w-4 h-4 fill-current" />
                       MOST POPULAR
                     </span>
@@ -633,7 +633,7 @@ export default function EcommerceSolutionsPage() {
                 <button
                   className={`w-full py-3 font-bold rounded-lg transition-all ${
                     pkg.popular
-                      ? 'bg-white text-white hover:shadow-lg hover:shadow-yellow-400/50'
+                      ? 'bg-primary text-background hover:shadow-lg hover:shadow-yellow-400/50'
                       : 'bg-muted text-foreground hover:bg-muted/80'
                   }`}
                 >
@@ -661,7 +661,7 @@ export default function EcommerceSolutionsPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="#packages"
-              className="px-8 py-4 bg-white text-white font-bold rounded-full hover:shadow-lg hover:shadow-yellow-400/50 transition-all inline-flex items-center justify-center gap-2"
+              className="px-8 py-4 bg-primary text-background font-bold rounded-full hover:shadow-lg hover:shadow-yellow-400/50 transition-all inline-flex items-center justify-center gap-2"
             >
               View Packages
               <ArrowRight className="w-5 h-5" />
