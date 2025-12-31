@@ -41,7 +41,7 @@ export default function ContentSection() {
             {t.home.content.tag}
           </div>
           
-          <h2 className="text-3xl tracking-tight md:text-4xl lg:text-5xl text-primary max-w-3xl mx-auto">
+          <h2 className="text-3xl tracking-tight md:text-4xl lg:text-5xl text-white max-w-3xl mx-auto font-bold" style={{ textShadow: '2px 2px 6px rgba(0,0,0,0.8), 0 0 15px rgba(255,255,255,0.2)' }}>
             {t.home.content.title}
           </h2>
         </div>
@@ -63,12 +63,12 @@ export default function ContentSection() {
               </div>
               
               {/* 标题 */}
-              <h3 className="text-lg font-normal text-primary mono-tag">
+              <h3 className="text-lg font-semibold text-white mono-tag" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.2)' }}>
                 {feature.title}
               </h3>
               
               {/* 描述 - 缩短 */}
-              <p className="text-sm text-secondary leading-relaxed">
+              <p className="text-sm text-zinc-200 leading-relaxed" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.6)' }}>
                 {feature.description.split('.')[0]}.
               </p>
             </div>

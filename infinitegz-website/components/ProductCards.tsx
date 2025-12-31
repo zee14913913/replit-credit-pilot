@@ -42,7 +42,7 @@ export default function ProductCards() {
             {t.home.products.tag}
           </div>
           
-          <h2 className="text-3xl tracking-tight md:text-4xl lg:text-5xl text-primary max-w-3xl mx-auto">
+          <h2 className="text-3xl tracking-tight md:text-4xl lg:text-5xl text-white max-w-3xl mx-auto font-bold" style={{ textShadow: '2px 2px 6px rgba(0,0,0,0.8), 0 0 15px rgba(255,255,255,0.2)' }}>
             {t.home.products.title}
           </h2>
         </div>
@@ -73,12 +73,12 @@ export default function ProductCards() {
                 </div>
 
                 {/* 标题 */}
-                <h3 className="text-2xl md:text-3xl font-normal tracking-tight text-primary">
+                <h3 className="text-2xl md:text-3xl font-semibold tracking-tight text-white" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.7), 0 0 12px rgba(255,255,255,0.2)' }}>
                   {product.title}
                 </h3>
 
                 {/* 描述 - 简化 */}
-                <p className="text-secondary text-base leading-loose max-w-xs mx-auto">
+                <p className="text-zinc-200 text-base leading-loose max-w-xs mx-auto" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.6)' }}>
                   {product.description}
                 </p>
               </div>
