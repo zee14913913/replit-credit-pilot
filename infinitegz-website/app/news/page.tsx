@@ -23,17 +23,17 @@ export default function NewsPage() {
         {/* Hero Section */}
         <section className="relative pb-px">
           <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl flex min-h-screen flex-col justify-center">
-            <div className="relative z-20 py-20 text-center">
-              <div className="space-y-8">
-                <div className="mono-tag text-secondary text-sm">
+            <div className="relative z-20 py-24 text-center">
+              <div className="space-y-12">
+                <div className="mono-tag text-white text-sm" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.2)' }}>
                   [ {t.news.hero.tag} ]
                 </div>
                 
-                <h1 className="text-primary mx-auto max-w-4xl text-balance text-5xl leading-tight tracking-tight md:text-7xl md:leading-tight lg:text-8xl lg:leading-tight">
+                <h1 className="text-white mx-auto max-w-4xl text-balance text-5xl leading-tight tracking-tight md:text-7xl md:leading-tight lg:text-8xl lg:leading-tight font-bold" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.9), 0 0 20px rgba(255,255,255,0.3)' }}>
                   {t.news.hero.title}
                 </h1>
                 
-                <p className="text-secondary mx-auto max-w-3xl text-lg md:text-xl leading-relaxed">
+                <p className="text-white mx-auto max-w-3xl text-lg md:text-xl leading-relaxed" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.8), 0 0 15px rgba(255,255,255,0.2)' }}>
                   {t.news.hero.description}
                 </p>
               </div>
@@ -47,20 +47,20 @@ export default function NewsPage() {
         </section>
 
         {/* News Grid */}
-        <section className="py-16 sm:py-32">
-          <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <section className="pt-24 pb-16 sm:pt-40 sm:pb-32">
+          <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-20">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12">
               {newsItems.map((news) => (
                 <Link
                   key={news.id}
                   href="#"
-                  className="group p-6 border border-border rounded-lg hover:border-primary/30 hover:bg-secondary/5 transition-all space-y-4"
+                  className="group p-8 border border-border rounded-lg hover:border-primary/30 hover:bg-secondary/5 transition-all space-y-6"
                 >
-                  <div className="mono-tag text-xs text-secondary">{news.category}</div>
-                  <h3 className="text-xl text-primary group-hover:text-primary/80 transition-colors">
+                  <div className="mono-tag text-xs text-zinc-200" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.6)' }}>{news.category}</div>
+                  <h3 className="text-xl text-white group-hover:text-zinc-100 transition-colors font-semibold" style={{ textShadow: '2px 2px 6px rgba(0,0,0,0.8), 0 0 15px rgba(255,255,255,0.2)' }}>
                     {news.title}
                   </h3>
-                  <div className="flex items-center justify-between text-sm text-secondary">
+                  <div className="flex items-center justify-between text-sm text-zinc-300" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.6)' }}>
                     <span>{news.date}</span>
                     <div className="flex items-center gap-2 text-primary">
                       <span>{t.common.readMore}</span>
