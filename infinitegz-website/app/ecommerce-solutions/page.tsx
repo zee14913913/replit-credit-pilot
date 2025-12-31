@@ -37,9 +37,9 @@ export default function EcommerceSolutionsPage() {
   // Platform data
   const platforms = [
     { name: 'Shopee', color: 'from-yellow-400 to-red-500', traffic: '43%' },
-    { name: 'Lazada', color: 'from-yellow-500 to-yellow-500', traffic: '9%' },
+    { name: 'Lazada', color: 'from-white to-white', traffic: '9%' },
     { name: 'TikTok Shop', color: 'from-black to-gray-700', traffic: '32%' },
-    { name: 'Instagram Shop', color: 'from-yellow-500 to-yellow-500', traffic: '8%' },
+    { name: 'Instagram Shop', color: 'from-white to-white', traffic: '8%' },
     { name: 'Facebook Shop', color: 'from-blue-600 to-blue-400', traffic: '5%' },
     { name: 'WooCommerce', color: 'from-yellow-600 to-indigo-600', traffic: '3%' }
   ];
@@ -74,7 +74,7 @@ export default function EcommerceSolutionsPage() {
         <div className="relative z-10 container mx-auto px-6 py-20 text-center">
           {/* Tag */}
           <div className="inline-block mb-6">
-            <span className="px-4 py-2 bg-gradient-to-r from-yellow-400/10 to-yellow-500/10 border border-yellow-400/30 rounded-full text-yellow-400 text-sm font-semibold">
+            <span className="px-4 py-2 bg-gradient-to-r from-yellow-400/10 to-yellow-500/10 border border-border/30 rounded-full text-white text-sm font-semibold">
               🌐 Platform Integration Service
             </span>
           </div>
@@ -98,7 +98,7 @@ export default function EcommerceSolutionsPage() {
               { value: '142', label: 'Clients Served' }
             ].map((stat, index) => (
               <div key={index} className="p-4 bg-card/50 backdrop-blur border border-border rounded-lg">
-                <div className="text-2xl md:text-3xl font-bold text-yellow-400 mb-1">{stat.value}</div>
+                <div className="text-2xl md:text-3xl font-bold text-white mb-1">{stat.value}</div>
                 <div className="text-sm text-muted-foreground">{stat.label}</div>
               </div>
             ))}
@@ -108,7 +108,7 @@ export default function EcommerceSolutionsPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="#packages"
-              className="group px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white font-bold rounded-full hover:shadow-lg hover:shadow-yellow-400/50 transition-all inline-flex items-center justify-center gap-2"
+              className="group px-8 py-4 bg-white text-white font-bold rounded-full hover:shadow-lg hover:shadow-yellow-400/50 transition-all inline-flex items-center justify-center gap-2"
             >
               View Packages
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -131,14 +131,14 @@ export default function EcommerceSolutionsPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-yellow-500 to-transparent opacity-30" />
+      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-30" />
 
       {/* Platform Ecosystem */}
       <section className="py-20 relative overflow-hidden">
         <div className="container mx-auto px-6">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <span className="px-4 py-2 bg-yellow-400/10 border border-yellow-400/30 rounded-full text-yellow-400 text-sm font-semibold inline-block mb-4">
+            <span className="px-4 py-2 bg-card border border-border/30 rounded-full text-white text-sm font-semibold inline-block mb-4">
               🌐 Platform Ecosystem
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -153,8 +153,8 @@ export default function EcommerceSolutionsPage() {
           <div className="max-w-5xl mx-auto mb-16">
             {/* Your Business (Center) */}
             <div className="text-center mb-8">
-              <div className="inline-block p-6 bg-gradient-to-br from-yellow-400/20 to-yellow-500/20 border-2 border-yellow-400 rounded-2xl backdrop-blur">
-                <ShoppingCart className="w-12 h-12 text-yellow-400 mx-auto mb-3" />
+              <div className="inline-block p-6 bg-gradient-to-br from-yellow-400/20 to-yellow-500/20 border-2 border-border rounded-2xl backdrop-blur">
+                <ShoppingCart className="w-12 h-12 text-white mx-auto mb-3" />
                 <div className="text-xl font-bold">Your Business</div>
               </div>
             </div>
@@ -167,7 +167,7 @@ export default function EcommerceSolutionsPage() {
             {/* Integration Hub */}
             <div className="text-center mb-8">
               <div className="inline-block p-6 bg-card/80 backdrop-blur border border-border rounded-2xl">
-                <Globe className="w-10 h-10 text-yellow-400 mx-auto mb-3" />
+                <Globe className="w-10 h-10 text-white mx-auto mb-3" />
                 <div className="text-lg font-bold mb-1">INFINITE GZ</div>
                 <div className="text-sm text-muted-foreground">Integration Hub</div>
               </div>
@@ -187,7 +187,7 @@ export default function EcommerceSolutionsPage() {
             {/* Platforms */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {platforms.map((platform, index) => (
-                <div key={index} className="group p-4 bg-card/50 border border-border rounded-xl hover:border-yellow-400/50 transition-all text-center">
+                <div key={index} className="group p-4 bg-card/50 border border-border rounded-xl hover:border-border/50 transition-all text-center">
                   <div className={`w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br ${platform.color} flex items-center justify-center`}>
                     <ShoppingCart className="w-6 h-6 text-white" />
                   </div>
@@ -204,8 +204,8 @@ export default function EcommerceSolutionsPage() {
 
             {/* Unified Dashboard */}
             <div className="text-center">
-              <div className="inline-block p-6 bg-gradient-to-br from-yellow-500/20 to-yellow-500/20 border-2 border-yellow-500 rounded-2xl backdrop-blur">
-                <BarChart3 className="w-12 h-12 text-yellow-400 mx-auto mb-3" />
+              <div className="inline-block p-6 bg-gradient-to-br from-yellow-500/20 to-yellow-500/20 border-2 border-border rounded-2xl backdrop-blur">
+                <BarChart3 className="w-12 h-12 text-white mx-auto mb-3" />
                 <div className="text-xl font-bold mb-2">Unified Dashboard</div>
                 <div className="text-sm text-muted-foreground space-y-1">
                   <div>• Real-time inventory sync</div>
@@ -218,16 +218,16 @@ export default function EcommerceSolutionsPage() {
 
           {/* Platform Stats */}
           <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6">
-            <div className="p-6 bg-yellow-400/5 border border-yellow-400/30 rounded-xl text-center">
-              <div className="text-3xl font-bold text-yellow-400 mb-2">128.4B</div>
+            <div className="p-6 bg-card border border-border/30 rounded-xl text-center">
+              <div className="text-3xl font-bold text-white mb-2">128.4B</div>
               <div className="text-sm text-muted-foreground">Southeast Asia E-commerce GMV (2024)</div>
             </div>
-            <div className="p-6 bg-yellow-500/5 border border-yellow-500/30 rounded-xl text-center">
-              <div className="text-3xl font-bold text-yellow-400 mb-2">+12%</div>
+            <div className="p-6 bg-card border border-border rounded-xl text-center">
+              <div className="text-3xl font-bold text-white mb-2">+12%</div>
               <div className="text-sm text-muted-foreground">Year-over-Year Growth</div>
             </div>
-            <div className="p-6 bg-yellow-500/5 border border-yellow-500/30 rounded-xl text-center">
-              <div className="text-3xl font-bold text-yellow-400 mb-2">84%</div>
+            <div className="p-6 bg-card border border-border rounded-xl text-center">
+              <div className="text-3xl font-bold text-white mb-2">84%</div>
               <div className="text-sm text-muted-foreground">Market Share (Top 3 Platforms)</div>
             </div>
           </div>
@@ -235,14 +235,14 @@ export default function EcommerceSolutionsPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-yellow-500 to-transparent opacity-30" />
+      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-30" />
 
       {/* Technical Capabilities */}
       <section className="py-20 relative overflow-hidden bg-gradient-to-b from-background to-card/30">
         <div className="container mx-auto px-6">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <span className="px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full text-yellow-400 text-sm font-semibold inline-block mb-4">
+            <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold inline-block mb-4">
               💻 Technical Stack
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -256,10 +256,10 @@ export default function EcommerceSolutionsPage() {
           {/* Tech Stack Grid */}
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
             {techStack.map((stack, index) => (
-              <div key={index} className="p-6 bg-card/80 backdrop-blur border border-border rounded-xl hover:border-yellow-500/50 transition-all">
+              <div key={index} className="p-6 bg-card/80 backdrop-blur border border-border rounded-xl hover:border-border/50 transition-all">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-yellow-500/10 rounded-lg">
-                    <Code className="w-6 h-6 text-yellow-400" />
+                  <div className="p-2 bg-card rounded-lg">
+                    <Code className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="text-lg font-bold">{stack.category}</h3>
                 </div>
@@ -332,14 +332,14 @@ export default function EcommerceSolutionsPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-yellow-500 to-transparent opacity-30" />
+      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-30" />
 
       {/* Success Case Study - WOW FACTOR */}
       <section id="case-study" className="py-20 relative overflow-hidden">
         <div className="container mx-auto px-6">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <span className="px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-full text-yellow-400 text-sm font-semibold inline-block mb-4">
+            <span className="px-4 py-2 bg-card border border-border rounded-full text-white text-sm font-semibold inline-block mb-4">
               💡 Real Transformation
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -352,13 +352,13 @@ export default function EcommerceSolutionsPage() {
 
           {/* Case Study */}
           <div className="max-w-6xl mx-auto">
-            <div className="bg-gradient-to-br from-yellow-400/10 to-yellow-500/10 border border-yellow-400/30 rounded-2xl p-8">
+            <div className="bg-gradient-to-br from-yellow-400/10 to-yellow-500/10 border border-border/30 rounded-2xl p-8">
               {/* Header */}
               <div className="flex items-start gap-4 mb-8">
                 <div className="text-5xl">👗</div>
                 <div>
                   <h3 className="text-2xl font-bold mb-2">Case: Traditional Clothing Store</h3>
-                  <p className="text-lg text-yellow-400 font-semibold mb-1">
+                  <p className="text-lg text-white font-semibold mb-1">
                     "Opened Shopee store, 3 months only sold RM 500"
                   </p>
                   <p className="text-muted-foreground">
@@ -390,9 +390,9 @@ export default function EcommerceSolutionsPage() {
               </div>
 
               {/* 4-Week Transformation Plan */}
-              <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-500/10 border border-yellow-500/30 rounded-xl p-6 mb-8">
+              <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-500/10 border border-border rounded-xl p-6 mb-8">
                 <div className="font-bold mb-6 flex items-center gap-2 text-lg">
-                  <Zap className="w-6 h-6 text-yellow-400" />
+                  <Zap className="w-6 h-6 text-white" />
                   4-Week Transformation Plan
                 </div>
                 <div className="grid md:grid-cols-4 gap-4">
@@ -419,7 +419,7 @@ export default function EcommerceSolutionsPage() {
                     }
                   ].map((phase, index) => (
                     <div key={index} className="p-4 bg-background/50 rounded-lg">
-                      <div className="text-yellow-400 font-bold mb-2 text-sm">{phase.week}</div>
+                      <div className="text-white font-bold mb-2 text-sm">{phase.week}</div>
                       <div className="font-semibold mb-3">{phase.title}</div>
                       <ul className="space-y-1">
                         {phase.items.map((item, i) => (
@@ -495,8 +495,8 @@ export default function EcommerceSolutionsPage() {
               </div>
 
               {/* Final Results */}
-              <div className="bg-gradient-to-r from-yellow-400/10 to-yellow-500/10 border border-yellow-400/30 rounded-xl p-6 text-center">
-                <div className="text-4xl font-bold text-yellow-400 mb-2">
+              <div className="bg-gradient-to-r from-yellow-400/10 to-yellow-500/10 border border-border/30 rounded-xl p-6 text-center">
+                <div className="text-4xl font-bold text-white mb-2">
                   71x GMV Growth
                 </div>
                 <p className="text-lg text-muted-foreground mb-4">
@@ -523,14 +523,14 @@ export default function EcommerceSolutionsPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-yellow-500 to-transparent opacity-30" />
+      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-30" />
 
       {/* Pricing Packages */}
       <section id="packages" className="py-20 relative overflow-hidden bg-gradient-to-b from-background to-card/30">
         <div className="container mx-auto px-6">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <span className="px-4 py-2 bg-yellow-400/10 border border-yellow-400/30 rounded-full text-yellow-400 text-sm font-semibold inline-block mb-4">
+            <span className="px-4 py-2 bg-card border border-border/30 rounded-full text-white text-sm font-semibold inline-block mb-4">
               💰 Service Packages
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -601,13 +601,13 @@ export default function EcommerceSolutionsPage() {
                 key={index}
                 className={`relative bg-card/80 backdrop-blur border rounded-2xl p-8 transition-all hover:shadow-lg ${
                   pkg.popular
-                    ? 'border-yellow-400 scale-105 shadow-xl shadow-yellow-400/20'
-                    : 'border-border hover:border-yellow-400/50'
+                    ? 'border-border scale-105 shadow-xl shadow-yellow-400/20'
+                    : 'border-border hover:border-border/50'
                 }`}
               >
                 {pkg.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="px-4 py-1 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white text-sm font-bold rounded-full flex items-center gap-1">
+                    <span className="px-4 py-1 bg-white text-white text-sm font-bold rounded-full flex items-center gap-1">
                       <Star className="w-4 h-4 fill-current" />
                       MOST POPULAR
                     </span>
@@ -616,7 +616,7 @@ export default function EcommerceSolutionsPage() {
 
                 <div className="text-center mb-8">
                   <h3 className="text-2xl font-bold mb-2">{pkg.name}</h3>
-                  <div className="text-4xl font-bold text-yellow-400 mb-1">{pkg.price}</div>
+                  <div className="text-4xl font-bold text-white mb-1">{pkg.price}</div>
                   <div className="text-sm text-muted-foreground mb-3">{pkg.period}</div>
                   <p className="text-sm text-muted-foreground">{pkg.desc}</p>
                 </div>
@@ -633,7 +633,7 @@ export default function EcommerceSolutionsPage() {
                 <button
                   className={`w-full py-3 font-bold rounded-lg transition-all ${
                     pkg.popular
-                      ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-white hover:shadow-lg hover:shadow-yellow-400/50'
+                      ? 'bg-white text-white hover:shadow-lg hover:shadow-yellow-400/50'
                       : 'bg-muted text-foreground hover:bg-muted/80'
                   }`}
                 >
@@ -646,7 +646,7 @@ export default function EcommerceSolutionsPage() {
       </section>
 
       {/* Laser Divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-yellow-500 to-transparent opacity-30" />
+      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-30" />
 
       {/* Final CTA */}
       <section className="py-20 relative overflow-hidden">
@@ -661,7 +661,7 @@ export default function EcommerceSolutionsPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="#packages"
-              className="px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white font-bold rounded-full hover:shadow-lg hover:shadow-yellow-400/50 transition-all inline-flex items-center justify-center gap-2"
+              className="px-8 py-4 bg-white text-white font-bold rounded-full hover:shadow-lg hover:shadow-yellow-400/50 transition-all inline-flex items-center justify-center gap-2"
             >
               View Packages
               <ArrowRight className="w-5 h-5" />
