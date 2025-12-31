@@ -37,7 +37,7 @@ export default function ContentSection() {
       <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16 sm:space-y-24">
         {/* 主标题区 - 简化 */}
         <div className={`text-center space-y-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="mono-tag text-secondary text-sm">
+          <div className="mono-tag text-white text-sm" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.2)' }}>
             {t.home.content.tag}
           </div>
           
