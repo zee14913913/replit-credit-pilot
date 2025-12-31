@@ -99,10 +99,8 @@ export default function Hero() {
 
             {/* 主标题 */}
             <div className="text-center space-y-6 animate-fadeIn delay-100">
-              <h1 className="text-5xl leading-tight tracking-tight md:text-6xl md:leading-tight lg:text-7xl lg:leading-tight xl:text-8xl xl:leading-tight">
-                <span className="inline-block bg-gradient-to-r from-secondary via-primary to-secondary bg-clip-text text-transparent py-2 whitespace-pre-line font-bold">
-                  {t.home.hero.title}
-                </span>
+              <h1 className="text-primary mx-auto max-w-4xl text-balance text-5xl leading-tight tracking-tight md:text-6xl md:leading-tight lg:text-7xl lg:leading-tight xl:text-8xl xl:leading-tight">
+                {t.home.hero.title}
               </h1>
               
               {/* 简短的副标题 */}

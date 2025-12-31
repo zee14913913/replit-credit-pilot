@@ -692,7 +692,7 @@ export const translations: Record<Language, Translations> = {
     },
     home: {
       hero: {
-        title: 'The World\'s Money,\nMade Yours.',
+        title: 'The World\'s Money, Made Yours.',
         subtitle: 'Your One-Stop Solution',
         description: 'For Loans, Financial Optimization, And Digital Advisory Services For Your Businesses.',
         bottomDescription: 'INFINITE GZ Provides Comprehensive Financial Analysis, Loan Matching From All Malaysian Banks And Fintech Companies, Plus 8 Complementary Services - All With Zero Upfront Fees.',
