@@ -555,7 +555,7 @@ export default function CashFlowOptimizationPage() {
 
           {/* Case 2: Retail Store */}
           <div className="max-w-5xl mx-auto">
-            <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-zinc-800 rounded-2xl p-8">
+            <div className="bg-zinc-950/50 border border-zinc-800 rounded-2xl p-8">
               <div className="flex items-start gap-4 mb-6">
                 <div className="p-4 bg-zinc-950/50 border border-zinc-800 rounded-lg"><Store className="w-8 h-8 text-white" /></div>
                 <div>
@@ -719,7 +719,7 @@ export default function CashFlowOptimizationPage() {
             </div>
 
             {/* Pro (Popular) */}
-            <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 border-2 border-zinc-800 rounded-2xl p-8 relative scale-105 shadow-lg shadow-white/20">
+            <div className="bg-zinc-950/50 border-2 border-zinc-800 rounded-2xl p-8 relative scale-105 shadow-lg shadow-white/20">
               <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                 <span className="px-4 py-1 bg-primary text-background text-sm font-bold rounded-full">
                   MOST POPULAR
@@ -799,7 +799,7 @@ export default function CashFlowOptimizationPage() {
 
       {/* Final CTA */}
       <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10" />
+        <div className="absolute inset-0 bg-zinc-950/50" />
         <div className="relative z-10 container mx-auto px-6 text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Ready to Optimize Your Cash Flow?

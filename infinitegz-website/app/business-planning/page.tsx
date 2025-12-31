@@ -186,7 +186,7 @@ export default function BusinessPlanningPage() {
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Manufacturing BP */}
             <div className="group bg-zinc-950/50/50 border border-zinc-800 rounded-2xl overflow-hidden hover:border-zinc-800/50 transition-all hover:shadow-lg hover:shadow-primary/10">
-              <div className="aspect-[3/4] bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center relative overflow-hidden">
+              <div className="aspect-[3/4] bg-zinc-950/50 flex items-center justify-center relative overflow-hidden">
                 <FileText className="w-24 h-24 text-white group-hover:scale-110 transition-transform" />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4">
@@ -220,7 +220,7 @@ export default function BusinessPlanningPage() {
 
             {/* F&B BP */}
             <div className="group bg-zinc-950/50/50 border border-zinc-800 rounded-2xl overflow-hidden hover:border-zinc-800/50 transition-all hover:shadow-lg hover:shadow-primary/10">
-              <div className="aspect-[3/4] bg-gradient-to-br from-yellow-400/20 to-red-500/20 flex items-center justify-center relative overflow-hidden">
+              <div className="aspect-[3/4] bg-zinc-950/50 flex items-center justify-center relative overflow-hidden">
                 <FileText className="w-24 h-24 text-zinc-300 group-hover:scale-110 transition-transform" />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4">
@@ -254,7 +254,7 @@ export default function BusinessPlanningPage() {
 
             {/* Retail BP */}
             <div className="group bg-zinc-950/50/50 border border-zinc-800 rounded-2xl overflow-hidden hover:border-zinc-800/50 transition-all hover:shadow-lg hover:shadow-primary/10">
-              <div className="aspect-[3/4] bg-gradient-to-br from-purple-500/20 to-purple-500/20 flex items-center justify-center relative overflow-hidden">
+              <div className="aspect-[3/4] bg-zinc-950/50 flex items-center justify-center relative overflow-hidden">
                 <FileText className="w-24 h-24 text-white group-hover:scale-110 transition-transform" />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4">
@@ -475,7 +475,7 @@ export default function BusinessPlanningPage() {
 
           {/* Case Study */}
           <div className="max-w-5xl mx-auto">
-            <div className="bg-gradient-to-br from-red-500/10 to-pink-500/10 border border-zinc-800 rounded-2xl p-8">
+            <div className="bg-zinc-950/50 border border-zinc-800 rounded-2xl p-8">
               {/* Header */}
               <div className="flex items-start gap-4 mb-8">
                 <div className="p-4 bg-zinc-950/50 border border-zinc-800 rounded-lg"><Building2 className="w-12 h-12 text-white" /></div>
@@ -495,7 +495,7 @@ export default function BusinessPlanningPage() {
                 {/* His BP (Rejected) */}
                 <div className="bg-black/50 rounded-xl p-6">
                   <div className="text-zinc-300 font-bold mb-4 flex items-center gap-2">
-                    ❌ His BP (Rejected)
+                    His BP (Rejected)
                   </div>
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between items-center p-3 bg-zinc-900 rounded-lg">
@@ -526,7 +526,7 @@ export default function BusinessPlanningPage() {
                 {/* Our BP (Approved) */}
                 <div className="bg-black/50 rounded-xl p-6">
                   <div className="text-white font-bold mb-4 flex items-center gap-2">
-                    ✓ Our BP (Approved)
+                    Our BP (Approved)
                   </div>
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between items-center p-3 bg-zinc-950/50 rounded-lg">
@@ -555,7 +555,7 @@ export default function BusinessPlanningPage() {
               </div>
 
               {/* The Secret Sauce */}
-              <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-zinc-800 rounded-xl p-6">
+              <div className="bg-zinc-950/50 border border-zinc-800 rounded-xl p-6">
                 <div className="font-bold mb-4 flex items-center gap-2 text-lg">
                   <Zap className="w-5 h-5 text-white" />
                   Our "Bank Perspective" Approach
@@ -653,7 +653,7 @@ export default function BusinessPlanningPage() {
 
       {/* Final CTA */}
       <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-purple-500/10" />
+        <div className="absolute inset-0 bg-zinc-950/50" />
         <div className="relative z-10 container mx-auto px-6 text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Ready to Get Your Loan Approved?

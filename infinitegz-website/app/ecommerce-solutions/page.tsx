@@ -36,12 +36,12 @@ export default function EcommerceSolutionsPage() {
 
   // Platform data
   const platforms = [
-    { name: 'Shopee', color: 'from-yellow-400 to-red-500', traffic: '43%' },
+    { name: 'Shopee', color: 'from-zinc-700 to-zinc-800', traffic: '43%' },
     { name: 'Lazada', color: 'from-white to-white', traffic: '9%' },
     { name: 'TikTok Shop', color: 'from-black to-gray-700', traffic: '32%' },
     { name: 'Instagram Shop', color: 'from-white to-white', traffic: '8%' },
-    { name: 'Facebook Shop', color: 'from-blue-600 to-blue-400', traffic: '5%' },
-    { name: 'WooCommerce', color: 'from-yellow-600 to-indigo-600', traffic: '3%' }
+    { name: 'Facebook Shop', color: 'from-zinc-700 to-zinc-800', traffic: '5%' },
+    { name: 'WooCommerce', color: 'from-zinc-700 to-zinc-800', traffic: '3%' }
   ];
 
   // Tech stack
@@ -74,7 +74,7 @@ export default function EcommerceSolutionsPage() {
         <div className="relative z-10 container mx-auto px-6 py-20 text-center">
           {/* Tag */}
           <div className="inline-block mb-6">
-            <span className="px-4 py-2 bg-gradient-to-r from-yellow-400/10 to-yellow-500/10 border border-zinc-800/30 rounded-full text-white text-sm font-semibold">
+            <span className="px-4 py-2 bg-zinc-950/50 border border-zinc-800/30 rounded-full text-white text-sm font-semibold">
               Platform Integration Service
             </span>
           </div>
@@ -153,7 +153,7 @@ export default function EcommerceSolutionsPage() {
           <div className="max-w-5xl mx-auto mb-16">
             {/* Your Business (Center) */}
             <div className="text-center mb-8">
-              <div className="inline-block p-6 bg-gradient-to-br from-yellow-400/20 to-yellow-500/20 border-2 border-zinc-800 rounded-2xl backdrop-blur">
+              <div className="inline-block p-6 bg-zinc-950/50 border-2 border-zinc-800 rounded-2xl backdrop-blur">
                 <ShoppingCart className="w-12 h-12 text-white mx-auto mb-3" />
                 <div className="text-xl font-bold">Your Business</div>
               </div>
@@ -161,7 +161,7 @@ export default function EcommerceSolutionsPage() {
 
             {/* Arrow Down */}
             <div className="flex justify-center mb-8">
-              <div className="w-0.5 h-12 bg-gradient-to-b from-yellow-400 to-transparent" />
+              <div className="w-0.5 h-12 bg-zinc-700" />
             </div>
 
             {/* Integration Hub */}
@@ -178,7 +178,7 @@ export default function EcommerceSolutionsPage() {
               <div className="grid grid-cols-6 gap-4 w-full max-w-4xl">
                 {[...Array(6)].map((_, i) => (
                   <div key={i} className="flex justify-center">
-                    <div className="w-0.5 h-12 bg-gradient-to-b from-yellow-400/50 to-transparent" />
+                    <div className="w-0.5 h-12 bg-zinc-700/50" />
                   </div>
                 ))}
               </div>
@@ -204,7 +204,7 @@ export default function EcommerceSolutionsPage() {
 
             {/* Unified Dashboard */}
             <div className="text-center">
-              <div className="inline-block p-6 bg-gradient-to-br from-yellow-500/20 to-yellow-500/20 border-2 border-zinc-800 rounded-2xl backdrop-blur">
+              <div className="inline-block p-6 bg-zinc-950/50 border-2 border-zinc-800 rounded-2xl backdrop-blur">
                 <BarChart3 className="w-12 h-12 text-white mx-auto mb-3" />
                 <div className="text-xl font-bold mb-2">Unified Dashboard</div>
                 <div className="text-sm text-muted-foreground space-y-1">
@@ -353,7 +353,7 @@ export default function EcommerceSolutionsPage() {
 
           {/* Case Study */}
           <div className="max-w-6xl mx-auto">
-            <div className="bg-gradient-to-br from-yellow-400/10 to-yellow-500/10 border border-zinc-800/30 rounded-2xl p-8">
+            <div className="bg-zinc-950/50 border border-zinc-800/30 rounded-2xl p-8">
               {/* Header */}
               <div className="flex items-start gap-4 mb-8">
                 <div className="p-4 bg-zinc-950/50 border border-zinc-800 rounded-lg">
@@ -393,7 +393,7 @@ export default function EcommerceSolutionsPage() {
               </div>
 
               {/* 4-Week Transformation Plan */}
-              <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-500/10 border border-zinc-800 rounded-xl p-6 mb-8">
+              <div className="bg-zinc-950/50 border border-zinc-800 rounded-xl p-6 mb-8">
                 <div className="font-bold mb-6 flex items-center gap-2 text-lg">
                   <Zap className="w-6 h-6 text-white" />
                   4-Week Transformation Plan
@@ -473,7 +473,7 @@ export default function EcommerceSolutionsPage() {
                       reviews: '412 reviews'
                     }
                   ].map((period, index) => (
-                    <div key={index} className="p-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-zinc-800 rounded-xl">
+                    <div key={index} className="p-6 bg-zinc-950/50 border border-zinc-800 rounded-xl">
                       <div className="text-sm text-zinc-300 mb-2">{period.month}</div>
                       <div className="text-3xl font-bold text-zinc-300 mb-1">{period.gmv}</div>
                       <div className="text-sm text-zinc-300 mb-4">{period.growth} from previous</div>
@@ -501,7 +501,7 @@ export default function EcommerceSolutionsPage() {
               </div>
 
               {/* Final Results */}
-              <div className="bg-gradient-to-r from-yellow-400/10 to-yellow-500/10 border border-zinc-800/30 rounded-xl p-6 text-center">
+              <div className="bg-zinc-950/50 border border-zinc-800/30 rounded-xl p-6 text-center">
                 <div className="text-4xl font-bold text-white mb-2">
                   71x GMV Growth
                 </div>
@@ -656,7 +656,7 @@ export default function EcommerceSolutionsPage() {
 
       {/* Final CTA */}
       <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 to-yellow-500/10" />
+        <div className="absolute inset-0 bg-zinc-950/50" />
         <div className="relative z-10 container mx-auto px-6 text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Ready to Scale Your E-Commerce?
