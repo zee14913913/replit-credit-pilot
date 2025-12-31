@@ -704,7 +704,7 @@ export const translations: Record<Language, Translations> = {
           {
             tag: 'Smart Analysis',
             title: 'CreditPilot',
-            description: 'Intelligent Loan Analysis System That Finds The Best Loan Products From All Malaysian Banks, Digital Banks, And Fintech Companies With AI-Powered Matching.',
+            description: 'AI-powered system finds best loan products from 50+ Malaysian banks and fintech companies.',
             features: ['DSR Beautification', 'Best Rate Matching', 'Smart Recommendations', 'Real-Time Analysis'],
             linkText: 'Use Now',
             linkUrl: 'https://portal.infinitegz.com/creditpilot',
@@ -712,7 +712,7 @@ export const translations: Record<Language, Translations> = {
           {
             tag: 'Expert Guidance',
             title: 'Loan Advisory',
-            description: 'Professional Consultation For All Types Of Loans Including Housing, Automotive, And Business Financing With Zero Upfront Fees And Success-Based Pricing.',
+            description: 'Expert loan consultation. Zero upfront fees. Success-based pricing only.',
             features: ['Zero Upfront Cost', 'Expert Consultation', 'Success-Based Fee', 'All Loan Types'],
             linkText: 'Consult Now',
             linkUrl: 'https://portal.infinitegz.com/advisory',
@@ -720,7 +720,7 @@ export const translations: Record<Language, Translations> = {
           {
             tag: 'Digital Transform',
             title: 'Digitalization & Accounting',
-            description: 'Complete Digital Transformation For Traditional Businesses Including E-Commerce Setup, Online Store Management, Accounting Services, And Tax Optimization.',
+            description: 'Full digital transformation for businesses. E-commerce setup, accounting, tax optimization.',
             features: ['Online Store Setup', '15% Tax Optimization', 'Accounting Services', 'Business Planning'],
             linkText: 'Learn More',
             linkUrl: 'https://portal.infinitegz.com/digital',
@@ -777,19 +777,19 @@ export const translations: Record<Language, Translations> = {
           {
             date: 'Dec 20, 2024',
             title: 'New OPR Rate Changes',
-            description: 'Bank Negara Malaysia Announces New Overnight Policy Rate. Learn How This Impacts Your Existing And Future Loan Applications.',
+            description: 'Bank Negara announces new OPR. Impact on your loan applications.',
             category: 'Policy Update',
           },
           {
             date: 'Dec 15, 2024',
             title: 'RM 2M Business Loan Success',
-            description: 'How We Helped A Traditional Manufacturing Business Secure Financing For Digital Transformation And Expansion Plans.',
+            description: 'Manufacturing business secures RM 2M financing for digital expansion.',
             category: 'Case Study',
           },
           {
             date: 'Dec 10, 2024',
             title: 'Year-End Tax Planning 2024',
-            description: 'Maximize Your Tax Relief Claims And Optimize Your Financial Position Before The Year-End Deadline Approaches.',
+            description: 'Maximize tax relief claims before year-end deadline.',
             category: 'Financial Tips',
           },
           {

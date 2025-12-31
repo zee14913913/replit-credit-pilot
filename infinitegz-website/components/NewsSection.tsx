@@ -32,11 +32,11 @@ export default function NewsSection() {
         </div>
 
         {/* 新闻网格 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
           {t.home.news.items.map((item, index) => (
             <article
               key={index}
-              className={`group space-y-4 cursor-pointer transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+              className={`group space-y-6 cursor-pointer transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
               style={{ transitionDelay: `${(index + 1) * 100}ms` }}
             >
               {/* 日期和分类 */}
@@ -55,7 +55,7 @@ export default function NewsSection() {
               </h3>
 
               {/* 描述 */}
-              <p className="text-sm text-secondary leading-relaxed">
+              <p className="text-base text-secondary leading-loose">
                 {item.description}
               </p>
 

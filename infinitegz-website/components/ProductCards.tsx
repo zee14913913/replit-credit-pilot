@@ -52,7 +52,7 @@ export default function ProductCards() {
           {t.home.products.items.map((product, index) => (
             <div
               key={index}
-              className={`card-3d group relative flex flex-col items-center text-center space-y-6 p-8 rounded-2xl border border-primary/5 hover:border-primary/20 hover:bg-gradient-to-b from-secondary/5 via-transparent to-transparent transition-all duration-700 ${
+              className={`card-3d group relative flex flex-col items-center text-center space-y-8 p-10 rounded-2xl border border-primary/5 hover:border-primary/20 hover:bg-gradient-to-b from-secondary/5 via-transparent to-transparent transition-all duration-700 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
               style={{ transitionDelay: `${index * 100}ms` }}
@@ -66,7 +66,7 @@ export default function ProductCards() {
               </div>
 
               {/* 内容 */}
-              <div className="space-y-4 flex-grow">
+              <div className="space-y-6 flex-grow">
                 {/* 标签 */}
                 <div className="mono-tag text-secondary text-xs">
                   {product.tag}
@@ -78,7 +78,7 @@ export default function ProductCards() {
                 </h3>
 
                 {/* 描述 - 简化 */}
-                <p className="text-secondary text-sm leading-relaxed">
+                <p className="text-secondary text-base leading-loose max-w-xs mx-auto">
                   {product.description}
                 </p>
               </div>
