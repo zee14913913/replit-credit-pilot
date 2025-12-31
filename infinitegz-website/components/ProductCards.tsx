@@ -38,11 +38,11 @@ export default function ProductCards() {
       <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16 sm:space-y-24">
         {/* Section 标题 - 简化 */}
         <div className={`text-center space-y-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="mono-tag text-white text-sm" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.2)' }}>
+          <div className="mono-tag text-secondary text-sm">
             {t.home.products.tag}
           </div>
           
-          <h2 className="text-3xl tracking-tight md:text-4xl lg:text-5xl text-white max-w-3xl mx-auto font-bold" style={{ textShadow: '2px 2px 6px rgba(0,0,0,0.8), 0 0 15px rgba(255,255,255,0.2)' }}>
+          <h2 className="text-3xl tracking-tight md:text-4xl lg:text-5xl text-primary max-w-3xl mx-auto">
             {t.home.products.title}
           </h2>
         </div>
@@ -68,17 +68,17 @@ export default function ProductCards() {
               {/* 内容 */}
               <div className="space-y-6 flex-grow">
                 {/* 标签 */}
-                <div className="mono-tag text-white text-xs" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.2)' }}>
+                <div className="mono-tag text-secondary text-xs">
                   {product.tag}
                 </div>
 
                 {/* 标题 */}
-                <h3 className="text-2xl md:text-3xl font-semibold tracking-tight text-white" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.7), 0 0 12px rgba(255,255,255,0.2)' }}>
+                <h3 className="text-2xl md:text-3xl font-normal tracking-tight text-primary">
                   {product.title}
                 </h3>
 
                 {/* 描述 - 简化 */}
-                <p className="text-zinc-200 text-base leading-loose max-w-xs mx-auto" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.6)' }}>
+                <p className="text-secondary text-base leading-loose max-w-xs mx-auto">
                   {product.description}
                 </p>
               </div>

@@ -20,13 +20,13 @@ export default function NewsSection() {
       <div className="mx-auto w-full px-4 lg:px-6 xl:max-w-7xl space-y-16">
         {/* Section 标题 */}
         <div className={`space-y-4 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="mono-tag text-white" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.2)' }}>
+          <div className="mono-tag text-secondary">
             {t.home.news.tag}
           </div>
-          <h2 className="text-3xl tracking-tight md:text-4xl lg:text-5xl text-white max-w-2xl font-bold" style={{ textShadow: '2px 2px 6px rgba(0,0,0,0.8), 0 0 15px rgba(255,255,255,0.2)' }}>
+          <h2 className="text-3xl tracking-tight md:text-4xl lg:text-5xl text-primary max-w-2xl">
             {t.home.news.title}
           </h2>
-          <p className="text-zinc-200 text-base md:text-lg max-w-2xl" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.7)' }}>
+          <p className="text-secondary text-base md:text-lg max-w-2xl">
             {t.home.news.description}
           </p>
         </div>
@@ -50,12 +50,12 @@ export default function NewsSection() {
               </div>
 
               {/* 标题 */}
-              <h3 className="text-xl md:text-2xl font-semibold tracking-tight text-white group-hover:text-zinc-100 transition-colors duration-150" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.2)' }}>
+              <h3 className="text-xl md:text-2xl font-normal tracking-tight text-primary group-hover:text-secondary transition-colors duration-150">
                 {item.title}
               </h3>
 
               {/* 描述 */}
-              <p className="text-base text-zinc-200 leading-loose" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.6)' }}>
+              <p className="text-base text-secondary leading-loose">
                 {item.description}
               </p>
 

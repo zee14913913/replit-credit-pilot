@@ -97,14 +97,16 @@ export default function Hero() {
               </Link>
             </div>
 
-            {/* 主标题 - 莹白色带阴影 */}
+            {/* 主标题 */}
             <div className="text-center space-y-6 animate-fadeIn delay-100">
-              <h1 className="text-5xl leading-tight tracking-tight md:text-6xl md:leading-tight lg:text-7xl lg:leading-tight xl:text-8xl xl:leading-tight text-white font-bold" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(255,255,255,0.3)' }}>
-                {t.home.hero.title}
+              <h1 className="text-5xl leading-tight tracking-tight md:text-6xl md:leading-tight lg:text-7xl lg:leading-tight xl:text-8xl xl:leading-tight">
+                <span className="inline-block bg-gradient-to-r from-secondary via-primary to-secondary bg-clip-text text-transparent py-2 whitespace-pre-line font-bold">
+                  {t.home.hero.title}
+                </span>
               </h1>
               
-              {/* 简短的副标题 - 莹白色带阴影 */}
-              <p className="text-white text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.7), 0 0 15px rgba(255,255,255,0.2)' }}>
+              {/* 简短的副标题 */}
+              <p className="text-secondary text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light">
                 {t.home.hero.description}
               </p>
             </div>

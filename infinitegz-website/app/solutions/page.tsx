@@ -39,15 +39,15 @@ export default function SolutionsPage() {
           <div className="relative z-20 mx-auto w-full px-4 lg:px-6 xl:max-w-7xl flex min-h-screen flex-col justify-center">
             <div className="py-20 text-center">
               <hgroup className="space-y-8">
-                <div className="mono-tag text-white text-sm" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.2)' }}>
+                <div className="mono-tag text-secondary text-sm">
                   [ {t.solutions.hero.tag} ]
                 </div>
                 
-                <h1 className="text-white mx-auto max-w-4xl text-balance text-5xl leading-tight tracking-tight md:text-7xl md:leading-tight lg:text-8xl lg:leading-tight font-bold" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.9), 0 0 20px rgba(255,255,255,0.3)' }}>
+                <h1 className="text-primary mx-auto max-w-4xl text-balance text-5xl leading-tight tracking-tight md:text-7xl md:leading-tight lg:text-8xl lg:leading-tight">
                   {t.solutions.hero.title}
                 </h1>
                 
-                <p className="text-white mx-auto max-w-3xl text-lg md:text-xl leading-relaxed" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.8), 0 0 15px rgba(255,255,255,0.2)' }}>
+                <p className="text-secondary mx-auto max-w-3xl text-lg md:text-xl leading-relaxed">
                   {t.solutions.hero.description}
                 </p>
                 
@@ -87,11 +87,11 @@ export default function SolutionsPage() {
                   className={`group bg-background p-8 sm:p-12 hover:bg-secondary/5 transition-colors ${index > 0 ? 'border-t lg:border-t-0 lg:border-l border-border' : ''}`}
                 >
                   <div className="space-y-6">
-                    <div className="mono-tag text-xs text-zinc-200" style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.6)' }}>[ {product.tag} ]</div>
-                    <h2 className="text-3xl sm:text-4xl text-white group-hover:text-zinc-100 transition-colors font-semibold" style={{ textShadow: '2px 2px 6px rgba(0,0,0,0.8), 0 0 15px rgba(255,255,255,0.2)' }}>
+                    <div className="mono-tag text-xs text-secondary">[ {product.tag} ]</div>
+                    <h2 className="text-3xl sm:text-4xl text-primary group-hover:text-primary/80 transition-colors">
                       {product.title}
                     </h2>
-                    <p className="text-zinc-100 text-base leading-relaxed" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.7)' }}>
+                    <p className="text-secondary text-base leading-relaxed">
                       {product.description}
                     </p>
                     <div className="flex items-center gap-2 text-sm text-primary">
